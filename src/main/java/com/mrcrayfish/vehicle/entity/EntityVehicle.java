@@ -87,7 +87,7 @@ public abstract class EntityVehicle extends Entity
             }
             else
             {
-                currentSpeed *= 0.85;
+                currentSpeed *= 0.91;
             }
 
             /* Determines the turn direction */
@@ -112,11 +112,12 @@ public abstract class EntityVehicle extends Entity
             {
                 float speedPercent = (float) (currentSpeed / MAX_SPEED);
 
-                float turnRotation = 10F * speedPercent;
-                this.rotationYaw += entity.moveStrafing > 0 ? -turnRotation : entity.moveStrafing < 0 ? turnRotation : 0;
+                //float turnRotation = 10F * Math.abs(speedPercent);
+                //this.rotationYaw += entity.moveStrafing > 0 ? -turnRotation : entity.moveStrafing < 0 ? turnRotation : 0;
 
-                float wheelRotation = 45F * Math.abs(speedPercent);
-                this.wheelAngle = entity.moveStrafing > 0 ? wheelRotation : entity.moveStrafing < 0 ? -wheelRotation : wheelAngle * 0.65F;
+                float wheelRotation = 35F;
+                this.wheelAngle = turnDirection == TurnDirection.RIGHT ? wheelRotation : turnDirection == TurnDirection.LEFT ? -wheelRotation : wheelAngle * 0.65F;
+                this.wheelAngle *= Math.max(0.5F, 1.0F - Math.abs(speedPercent));
                 this.frontWheelRotation -= (68F * speedPercent);
                 this.rearWheelRotation -= (68F * speedPercent);
 
@@ -125,10 +126,8 @@ public abstract class EntityVehicle extends Entity
                     this.rearWheelRotation -= 68F * (1.0 - speedPercent);
                 }
 
-                float originalYaw = this.rotationYaw;
-                this.rotationYaw -= (wheelAngle / 2);
+                this.rotationYaw -= wheelAngle * (speedPercent / 2);
                 this.moveRelative(0, 0, (float) currentSpeed, 0.01F);
-                this.rotationYaw = originalYaw;
 
                 this.motionY -= 0.08D;
 

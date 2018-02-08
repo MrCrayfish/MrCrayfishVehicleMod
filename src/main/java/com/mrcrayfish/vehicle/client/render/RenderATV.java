@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
 
@@ -58,7 +59,7 @@ public class RenderATV extends Render<EntityATV>
         {
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            if(GuiScreen.isCtrlKeyDown())
+            if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
             GlStateManager.rotate(entity.getTurnDirection().getDir() * 50F, 0, 1, 0);
             GlStateManager.scale(1.2, 1.2, 1.2);
             GlStateManager.translate(0, 0.15, 0.2);
@@ -75,7 +76,7 @@ public class RenderATV extends Render<EntityATV>
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
 
-            double wheelScale = 2.25F;
+            double wheelScale = 1.95F;
             double offsetCenter = 0.65625;
 
             GlStateManager.pushMatrix();
