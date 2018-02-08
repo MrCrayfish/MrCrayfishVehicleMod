@@ -3,11 +3,11 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -58,22 +58,25 @@ public class RenderATV extends Render<EntityATV>
         {
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
+            if(GuiScreen.isCtrlKeyDown())
+            GlStateManager.rotate(entity.getTurnDirection().getDir() * 50F, 0, 1, 0);
             GlStateManager.scale(1.2, 1.2, 1.2);
-            GlStateManager.translate(0, 0.125, 0.2);
+            GlStateManager.translate(0, 0.15, 0.2);
 
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, 0.125, 0);
+                GlStateManager.translate(0, 0.1875, 0);
                 Minecraft.getMinecraft().getRenderManager().renderEntity(BODY, 0, 0, 0, 0F, 0F, true);
             }
             GlStateManager.popMatrix();
 
-            float wheelSpin = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
-
             RenderHelper.disableStandardItemLighting();
 
-            double wheelScale = 2F;
-            double offsetCenter = 0.625;
+            float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
+            float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
+
+            double wheelScale = 2.25F;
+            double offsetCenter = 0.65625;
 
             GlStateManager.pushMatrix();
             {
@@ -84,7 +87,7 @@ public class RenderATV extends Render<EntityATV>
                     GlStateManager.rotate(wheelAngle, 0, 1, 0);
                     if(entity.isMoving())
                     {
-                        GlStateManager.rotate(-wheelSpin, 1, 0, 0);
+                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
                     }
                     GlStateManager.translate(0.0625 * wheelScale - 0.0625, -0.5375 * wheelScale, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
@@ -99,7 +102,7 @@ public class RenderATV extends Render<EntityATV>
                     GlStateManager.rotate(wheelAngle, 0, 1, 0);
                     if(entity.isMoving())
                     {
-                        GlStateManager.rotate(-wheelSpin, 1, 0, 0);
+                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
                     }
                     GlStateManager.translate(-0.0625 * wheelScale + 0.0625, -0.5375 * wheelScale, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
@@ -117,7 +120,7 @@ public class RenderATV extends Render<EntityATV>
                 {
                     if(entity.isMoving())
                     {
-                        GlStateManager.rotate(-wheelSpin, 1, 0, 0);
+                        GlStateManager.rotate(-rearWheelSpin, 1, 0, 0);
                     }
 
                     GlStateManager.translate(0.0625 * wheelScale - 0.0625, -0.5375 * wheelScale, 0.0);
@@ -132,7 +135,7 @@ public class RenderATV extends Render<EntityATV>
                 {
                     if(entity.isMoving())
                     {
-                        GlStateManager.rotate(-wheelSpin, 1, 0, 0);
+                        GlStateManager.rotate(-rearWheelSpin, 1, 0, 0);
                     }
                     GlStateManager.translate(-0.0625 * wheelScale + 0.0625, -0.5375 * wheelScale, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);

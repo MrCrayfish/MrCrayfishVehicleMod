@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
+  "modid": "vehicle-mod",
+  "name": "Vehicle Mod",
+  "description": "A mod developed during Mod Week Season 2. Adds in working Vehicles that you can actually drive!",
+  "version": "0.1.0",
+  "mcversion": "1.12.2",
+  "url": "https://mrcrayfish.com",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["MrCrayfish"],
+  "credits": "Thank you to IceLensFlare, EnvyingGolem47, Quin Lan and RainbowKappa for sponsoring during the development of this mod. Also thank you to Lemon Squee-Z for donating!",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
