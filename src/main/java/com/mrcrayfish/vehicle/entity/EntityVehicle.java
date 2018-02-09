@@ -47,6 +47,13 @@ public abstract class EntityVehicle extends Entity
     public float additionalYaw;
     public float prevAdditionalYaw;
 
+    private int lerpSteps;
+    private double lerpX;
+    private double lerpY;
+    private double lerpZ;
+    private double lerpYaw;
+    private double lerpPitch;
+
     public int soundLoop;
 
     protected EntityVehicle(World worldIn)
@@ -75,6 +82,13 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(SPEED, 0F);
         this.dataManager.register(DRIFTING, false);
         this.dataManager.register(ACCELERATING, false);
+    }
+
+    @Override
+    public void onUpdate()
+    {
+        super.onUpdate();
+        this.tickLerp();
     }
 
     @Override
@@ -186,11 +200,14 @@ public abstract class EntityVehicle extends Entity
 
                 if(this.isAccelerating())
                 {
-                    this.createRunningParticles();
-                }
-                if(this.isDrifting())
-                {
-                    for(int i = 0; i < 3; i++)
+                    if(this.isDrifting())
+                    {
+                        for(int i = 0; i < 3; i++)
+                        {
+                            this.createRunningParticles();
+                        }
+                    }
+                    else
                     {
                         this.createRunningParticles();
                     }
@@ -335,6 +352,34 @@ public abstract class EntityVehicle extends Entity
     public boolean isAccelerating()
     {
         return this.dataManager.get(ACCELERATING);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
+    {
+        this.lerpX = x;
+        this.lerpY = y;
+        this.lerpZ = z;
+        this.lerpYaw = (double)yaw;
+        this.lerpPitch = (double)pitch;
+        this.lerpSteps = 10;
+    }
+
+    private void tickLerp()
+    {
+        if (this.lerpSteps > 0 && !this.canPassengerSteer())
+        {
+            double d0 = this.posX + (this.lerpX - this.posX) / (double)this.lerpSteps;
+            double d1 = this.posY + (this.lerpY - this.posY) / (double)this.lerpSteps;
+            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double)this.lerpSteps;
+            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double)this.rotationYaw);
+            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.lerpSteps);
+            this.rotationPitch = (float)((double)this.rotationPitch + (this.lerpPitch - (double)this.rotationPitch) / (double)this.lerpSteps);
+            --this.lerpSteps;
+            this.setPosition(d0, d1, d2);
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+        }
     }
 
     public enum TurnDirection
