@@ -48,20 +48,21 @@ public class RenderATV extends Render<EntityATV>
     @Override
     public void doRender(EntityATV entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
+        float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
+
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
         if(entityLivingBase != null)
         {
-            entityLivingBase.renderYawOffset = currentYaw;
-            entityLivingBase.prevRenderYawOffset = currentYaw;
+            entityLivingBase.renderYawOffset = currentYaw - additionalYaw;
+            entityLivingBase.prevRenderYawOffset = currentYaw - additionalYaw;
         }
 
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            if(Keyboard.isKeyDown(Keyboard.KEY_SPACE))
-            GlStateManager.rotate(entity.getTurnDirection().getDir() * 50F, 0, 1, 0);
-            GlStateManager.scale(1.2, 1.2, 1.2);
+            GlStateManager.rotate(additionalYaw, 0, 1, 0);
+            GlStateManager.scale(1.25, 1.25, 1.25);
             GlStateManager.translate(0, 0.15, 0.2);
 
             GlStateManager.pushMatrix();
