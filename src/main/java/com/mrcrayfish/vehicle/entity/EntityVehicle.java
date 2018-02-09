@@ -32,6 +32,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> ACCELERATING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
 
     public static final double MAX_SPEED = 15;
 
@@ -43,7 +44,6 @@ public abstract class EntityVehicle extends Entity
     public float prevRearWheelRotation;
 
     public float deltaYaw;
-    public float prevDeltaYaw;
     public float additionalYaw;
     public float prevAdditionalYaw;
 
@@ -74,6 +74,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(SPEED, 0F);
         this.dataManager.register(DRIFTING, false);
+        this.dataManager.register(ACCELERATING, false);
     }
 
     @Override
@@ -96,6 +97,11 @@ public abstract class EntityVehicle extends Entity
         EntityLivingBase entity = (EntityLivingBase)this.getControllingPassenger();
         if(entity != null)
         {
+            if(!world.isRemote)
+            {
+                this.setAccelerating(entity.moveForward > 0);
+            }
+
             /* Handle the current speed of the vehicle based on rider's forward movement */
             if(entity.moveForward > 0)
             {
@@ -119,19 +125,23 @@ public abstract class EntityVehicle extends Entity
             }
 
             /* Determines the turn direction */
-            if(entity.moveStrafing > 0)
+            if(!world.isRemote)
             {
-                this.setTurnDirection(TurnDirection.RIGHT);
-            }
-            else if(entity.moveStrafing < 0)
-            {
-                this.setTurnDirection(TurnDirection.LEFT);
-            }
-            else
-            {
-                this.setTurnDirection(TurnDirection.FORWARD);
+                if(entity.moveStrafing > 0)
+                {
+                    this.setTurnDirection(TurnDirection.RIGHT);
+                }
+                else if(entity.moveStrafing < 0)
+                {
+                    this.setTurnDirection(TurnDirection.LEFT);
+                }
+                else
+                {
+                    this.setTurnDirection(TurnDirection.FORWARD);
+                }
             }
 
+            /* Calculates the additional render raw for drifting */
             TurnDirection turnDirection = getTurnDirection();
             if(this.isDrifting() && turnDirection != TurnDirection.FORWARD)
             {
@@ -153,7 +163,7 @@ public abstract class EntityVehicle extends Entity
                 this.deltaYaw = wheelAngle * speedPercent / (this.isDrifting() ? 1 : 2);
                 this.rotationYaw -= deltaYaw;
 
-                if(entity.moveForward > 0)
+                if(this.isAccelerating())
                 {
                     this.rearWheelRotation -= 68F * (1.0 - speedPercent);
                 }
@@ -174,10 +184,18 @@ public abstract class EntityVehicle extends Entity
 
                 this.doBlockCollisions();
 
-                if(entity.moveForward > 0)
+                if(this.isAccelerating())
                 {
                     this.createRunningParticles();
                 }
+                if(this.isDrifting())
+                {
+                    for(int i = 0; i < 3; i++)
+                    {
+                        this.createRunningParticles();
+                    }
+                }
+
                 if(entity.moveForward > 0 && soundLoop % 4 == 0)
                 {
                     world.playSound(posX, posY, posZ, ModSounds.DRIVING, SoundCategory.BLOCKS, 0.5F, 1.0F, false);
@@ -307,6 +325,16 @@ public abstract class EntityVehicle extends Entity
     public boolean isDrifting()
     {
         return this.dataManager.get(DRIFTING);
+    }
+
+    public void setAccelerating(boolean accelerating)
+    {
+        this.dataManager.set(ACCELERATING, accelerating);
+    }
+
+    public boolean isAccelerating()
+    {
+        return this.dataManager.get(ACCELERATING);
     }
 
     public enum TurnDirection
