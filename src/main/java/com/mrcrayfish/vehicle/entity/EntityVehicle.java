@@ -32,7 +32,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> ACCELERATING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     public static final double MAX_SPEED = 15;
 
@@ -81,7 +81,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(SPEED, 0F);
         this.dataManager.register(DRIFTING, false);
-        this.dataManager.register(ACCELERATING, false);
+        this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
     }
 
     @Override
@@ -113,11 +113,12 @@ public abstract class EntityVehicle extends Entity
         {
             if(!world.isRemote)
             {
-                this.setAccelerating(entity.moveForward > 0);
+                this.setAcceleration(Acceleration.fromEntity(entity));
             }
 
             /* Handle the current speed of the vehicle based on rider's forward movement */
-            if(entity.moveForward > 0)
+            Acceleration acceleration = this.getAcceleration();
+            if(acceleration == Acceleration.FORWARD)
             {
                 speed += 0.5F;
                 if(speed > MAX_SPEED)
@@ -125,7 +126,7 @@ public abstract class EntityVehicle extends Entity
                     speed = (float) MAX_SPEED;
                 }
             }
-            else if(entity.moveForward < 0)
+            else if(acceleration == Acceleration.REVERSE)
             {
                 speed -= 4.0F;
                 if(speed < -4.0F)
@@ -177,7 +178,7 @@ public abstract class EntityVehicle extends Entity
                 this.deltaYaw = wheelAngle * speedPercent / (this.isDrifting() ? 1 : 2);
                 this.rotationYaw -= deltaYaw;
 
-                if(this.isAccelerating())
+                if(acceleration == Acceleration.FORWARD)
                 {
                     this.rearWheelRotation -= 68F * (1.0 - speedPercent);
                 }
@@ -198,7 +199,7 @@ public abstract class EntityVehicle extends Entity
 
                 this.doBlockCollisions();
 
-                if(this.isAccelerating())
+                if(acceleration == Acceleration.FORWARD)
                 {
                     if(this.isDrifting())
                     {
@@ -344,14 +345,14 @@ public abstract class EntityVehicle extends Entity
         return this.dataManager.get(DRIFTING);
     }
 
-    public void setAccelerating(boolean accelerating)
+    public void setAcceleration(Acceleration direction)
     {
-        this.dataManager.set(ACCELERATING, accelerating);
+        this.dataManager.set(ACCELERATION_DIRECTION, direction.ordinal());
     }
 
-    public boolean isAccelerating()
+    public Acceleration getAcceleration()
     {
-        return this.dataManager.get(ACCELERATING);
+        return Acceleration.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
     }
 
     @Override
@@ -373,7 +374,7 @@ public abstract class EntityVehicle extends Entity
             double d0 = this.posX + (this.lerpX - this.posX) / (double)this.lerpSteps;
             double d1 = this.posY + (this.lerpY - this.posY) / (double)this.lerpSteps;
             double d2 = this.posZ + (this.lerpZ - this.posZ) / (double)this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double)this.rotationYaw);
+            double d3 = this.lerpYaw - (double)this.rotationYaw;
             this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.lerpSteps);
             this.rotationPitch = (float)((double)this.rotationPitch + (this.lerpPitch - (double)this.rotationPitch) / (double)this.lerpSteps);
             --this.lerpSteps;
@@ -396,6 +397,24 @@ public abstract class EntityVehicle extends Entity
         public int getDir()
         {
             return dir;
+        }
+    }
+
+    public enum Acceleration
+    {
+        FORWARD, NONE, REVERSE;
+
+        public static Acceleration fromEntity(EntityLivingBase entity)
+        {
+            if(entity.moveForward > 0)
+            {
+                return FORWARD;
+            }
+            else if(entity.moveForward < 0)
+            {
+                return REVERSE;
+            }
+            return NONE;
         }
     }
 }
