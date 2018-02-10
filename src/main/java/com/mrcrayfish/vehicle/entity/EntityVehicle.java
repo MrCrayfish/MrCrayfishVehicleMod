@@ -201,7 +201,7 @@ public abstract class EntityVehicle extends Entity
         }
 
         TurnDirection turnDirection = this.getTurnDirection();
-        if(this.isDrifting() && turnDirection != TurnDirection.FORWARD)
+        if(this.isDrifting() && acceleration == Acceleration.FORWARD && turnDirection != TurnDirection.FORWARD)
         {
             this.currentSpeed *= 0.95F;
         }
@@ -212,7 +212,7 @@ public abstract class EntityVehicle extends Entity
         TurnDirection turnDirection = this.getTurnDirection();
         if(this.isDrifting() && turnDirection != TurnDirection.FORWARD)
         {
-            this.additionalYaw = MathHelper.clamp(this.additionalYaw + 5F * turnDirection.getDir(), -25F, 25F);
+            this.additionalYaw = MathHelper.clamp(this.additionalYaw + 5F * turnDirection.getDir(), -35F, 35F);
         }
         else
         {
@@ -228,7 +228,7 @@ public abstract class EntityVehicle extends Entity
         TurnDirection direction = this.getTurnDirection();
         this.wheelAngle = direction == TurnDirection.RIGHT ? -wheelRotation : direction == TurnDirection.LEFT ? wheelRotation : wheelAngle * 0.5F;
         this.wheelAngle *= Math.max(0.25F, 1.0F - Math.abs(speedPercent));
-        this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1 : 2);
+        this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
 
         Acceleration acceleration = this.getAcceleration();
         if(acceleration == Acceleration.FORWARD)
