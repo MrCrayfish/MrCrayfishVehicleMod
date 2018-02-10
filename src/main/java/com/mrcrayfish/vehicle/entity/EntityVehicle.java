@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
@@ -9,6 +10,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -29,6 +33,7 @@ import javax.annotation.Nullable;
  */
 public abstract class EntityVehicle extends Entity
 {
+    private static final DataParameter<EnumDyeColor> COLOR = EntityDataManager.createKey(EntityVehicle.class, CustomDataSerializers.DYE_COLOR);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
@@ -56,6 +61,9 @@ public abstract class EntityVehicle extends Entity
 
     public int soundLoop;
 
+    @SideOnly(Side.CLIENT)
+    public ItemStack body;
+
     protected EntityVehicle(World worldIn)
     {
         super(worldIn);
@@ -78,10 +86,16 @@ public abstract class EntityVehicle extends Entity
     @Override
     protected void entityInit()
     {
+        this.dataManager.register(COLOR, EnumDyeColor.BLUE);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(SPEED, 0F);
         this.dataManager.register(DRIFTING, false);
         this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
+
+        if(world.isRemote)
+        {
+            body = new ItemStack(ModItems.BODY, 1, getColor().getMetadata());
+        }
     }
 
     @Override
@@ -270,7 +284,15 @@ public abstract class EntityVehicle extends Entity
     {
         if(!world.isRemote)
         {
-            player.startRiding(this);
+            ItemStack heldItem = player.getHeldItem(hand);
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemDye)
+            {
+                this.setColor(EnumDyeColor.byMetadata(heldItem.getMetadata()));
+            }
+            else
+            {
+                player.startRiding(this);
+            }
         }
         return true;
     }
@@ -332,6 +354,16 @@ public abstract class EntityVehicle extends Entity
     public float getNormalSpeed()
     {
         return (float) (getSpeed() / MAX_SPEED);
+    }
+
+    public void setColor(EnumDyeColor color)
+    {
+        this.dataManager.set(COLOR, color);
+    }
+
+    public EnumDyeColor getColor()
+    {
+        return this.dataManager.get(COLOR);
     }
 
     public void setSpeed(float speed)
@@ -398,6 +430,16 @@ public abstract class EntityVehicle extends Entity
             this.posZ = this.lerpZ;
             this.rotationYaw = (float)this.lerpYaw;
             this.rotationPitch = (float)this.lerpPitch;
+        }
+    }
+
+    @Override
+    public void notifyDataManagerChange(DataParameter<?> key)
+    {
+        super.notifyDataManagerChange(key);
+        if(COLOR.equals(key))
+        {
+            body = new ItemStack(ModItems.BODY, 1, this.dataManager.get(COLOR).getDyeDamage());
         }
     }
 

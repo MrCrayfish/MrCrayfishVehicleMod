@@ -20,6 +20,7 @@ import javax.annotation.Nullable;
  */
 public class EntityATV extends EntityVehicle
 {
+    //TODO make it so vehicle base can set properties
     public EntityATV(World worldIn)
     {
         super(worldIn);

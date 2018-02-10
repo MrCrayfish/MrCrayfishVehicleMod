@@ -21,11 +21,8 @@ import javax.annotation.Nullable;
  */
 public class RenderATV extends Render<EntityATV>
 {
-    public static final EntityItem BODY = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.BODY));
-    public static final EntityItem WHEEL = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.WHEEL));
-
-    public static float offsetRotationYaw = 0F;
-    public static float currentOffsetRotationYaw = 0F;
+    private static final EntityItem BODY = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.BODY));
+    private static final EntityItem WHEEL = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.WHEEL));
 
     static
     {
@@ -48,6 +45,8 @@ public class RenderATV extends Render<EntityATV>
     @Override
     public void doRender(EntityATV entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
+        BODY.setItem(entity.body);
+
         float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
 
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();

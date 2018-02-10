@@ -1,0 +1,6 @@
+{
+    "parent": "vehicle:item/body",
+    "textures": {
+        "color": "blocks/concrete_magenta"
+    }
+}

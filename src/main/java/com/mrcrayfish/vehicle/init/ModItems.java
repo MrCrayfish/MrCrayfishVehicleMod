@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
+import com.mrcrayfish.vehicle.item.ItemColoredVehicleBody;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import net.minecraft.item.Item;
 
@@ -13,7 +14,7 @@ public class ModItems
 
     static
     {
-        BODY = new ItemPart("body");
+        BODY = new ItemColoredVehicleBody("atv");
         WHEEL = new ItemPart("wheel");
     }
 
