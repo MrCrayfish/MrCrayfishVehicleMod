@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
@@ -20,6 +21,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
@@ -41,6 +43,8 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityBoat.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityBoat.class, DataSerializers.FLOAT);
 
     public double maxSpeed = 10.0;
     public float currentSpeed;
@@ -100,11 +104,23 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(DRIFTING, false);
         this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
+        this.dataManager.register(TIME_SINCE_HIT, 0);
+        this.dataManager.register(DAMAGE_TAKEN, 0F);
     }
 
     @Override
     public void onUpdate()
     {
+        if (this.getTimeSinceHit() > 0)
+        {
+            this.setTimeSinceHit(this.getTimeSinceHit() - 1);
+        }
+
+        if (this.getDamageTaken() > 0.0F)
+        {
+            this.setDamageTaken(this.getDamageTaken() - 1.0F);
+        }
+
         super.onUpdate();
         this.tickLerp();
     }
@@ -331,8 +347,39 @@ public abstract class EntityVehicle extends Entity
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
-        this.setDead();
-        return true;
+        if (this.isEntityInvulnerable(source))
+        {
+            return false;
+        }
+        else if (!this.world.isRemote && !this.isDead)
+        {
+            if (source instanceof EntityDamageSourceIndirect && source.getTrueSource() != null && this.isPassenger(source.getTrueSource()))
+            {
+                return false;
+            }
+            else
+            {
+                this.setTimeSinceHit(10);
+                this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
+
+                boolean flag = source.getTrueSource() instanceof EntityPlayer && ((EntityPlayer)source.getTrueSource()).capabilities.isCreativeMode;
+                if (flag || this.getDamageTaken() > 40.0F)
+                {
+                    if (!flag && this.world.getGameRules().getBoolean("doEntityDrops"))
+                    {
+                        //this.dropItemWithOffset(this.getItemBoat(), 1, 0.0F);
+                    }
+
+                    this.setDead();
+                }
+
+                return true;
+            }
+        }
+        else
+        {
+            return true;
+        }
     }
 
     @Override
@@ -379,6 +426,13 @@ public abstract class EntityVehicle extends Entity
 
     @Override
     protected void playStepSound(BlockPos pos, Block blockIn) {}
+
+    @SideOnly(Side.CLIENT)
+    public void performHurtAnimation()
+    {
+        this.setTimeSinceHit(10);
+        this.setDamageTaken(this.getDamageTaken() * 11.0F);
+    }
 
     public boolean isMoving()
     {
@@ -443,6 +497,38 @@ public abstract class EntityVehicle extends Entity
     public Acceleration getAcceleration()
     {
         return Acceleration.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
+    }
+
+    /**
+     * Sets the time to count down from since the last time entity was hit.
+     */
+    public void setTimeSinceHit(int timeSinceHit)
+    {
+        this.dataManager.set(TIME_SINCE_HIT, timeSinceHit);
+    }
+
+    /**
+     * Gets the time since the last hit.
+     */
+    public int getTimeSinceHit()
+    {
+        return this.dataManager.get(TIME_SINCE_HIT);
+    }
+
+    /**
+     * Sets the damage taken from the last hit.
+     */
+    public void setDamageTaken(float damageTaken)
+    {
+        this.dataManager.set(DAMAGE_TAKEN, damageTaken);
+    }
+
+    /**
+     * Gets the damage taken from the last hit.
+     */
+    public float getDamageTaken()
+    {
+        return this.dataManager.get(DAMAGE_TAKEN);
     }
 
     @Override

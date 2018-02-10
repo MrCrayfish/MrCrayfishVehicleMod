@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityATV;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -12,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
@@ -63,6 +65,8 @@ public class RenderATV extends Render<EntityATV>
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
             GlStateManager.scale(1.25, 1.25, 1.25);
             GlStateManager.translate(0, 0.15, 0.2);
+
+            this.setupBreakAnimation(entity, partialTicks);
 
             GlStateManager.pushMatrix();
             {
@@ -151,5 +155,21 @@ public class RenderATV extends Render<EntityATV>
             RenderHelper.enableStandardItemLighting();
         }
         GlStateManager.popMatrix();
+    }
+
+    public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
+    {
+        float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
+        float damageTaken = vehicle.getDamageTaken() - partialTicks;
+
+        if (damageTaken < 0.0F)
+        {
+            damageTaken = 0.0F;
+        }
+
+        if (timeSinceHit > 0.0F)
+        {
+            GlStateManager.rotate(MathHelper.sin(timeSinceHit) * timeSinceHit * damageTaken / 10.0F, 0, 0, 1);
+        }
     }
 }
