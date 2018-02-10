@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle;
 
+import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -24,6 +25,7 @@ public class VehicleMod
     {
         RegistrationHandler.init();
         PacketHandler.init();
+        CustomDataSerializers.register();
 
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "atv"), EntityATV.class, "ATV", 0, this, 64, 1, true);
 

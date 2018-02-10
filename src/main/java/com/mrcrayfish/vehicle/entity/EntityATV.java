@@ -24,5 +24,6 @@ public class EntityATV extends EntityVehicle
     public EntityATV(World worldIn)
     {
         super(worldIn);
+        this.setMaxSpeed(15);
     }
 }

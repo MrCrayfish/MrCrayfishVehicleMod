@@ -40,7 +40,7 @@ public class CustomDataSerializers
         }
     };
 
-    static
+    public static void register()
     {
         DataSerializers.registerSerializer(DYE_COLOR);
     }
