@@ -91,6 +91,25 @@ public abstract class EntityVehicle extends Entity
         this.tickLerp();
     }
 
+    /**
+     * Smooths the rendering on servers
+     */
+    private void tickLerp()
+    {
+        if (this.lerpSteps > 0 && !this.canPassengerSteer())
+        {
+            double d0 = this.posX + (this.lerpX - this.posX) / (double)this.lerpSteps;
+            double d1 = this.posY + (this.lerpY - this.posY) / (double)this.lerpSteps;
+            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double)this.lerpSteps;
+            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double)this.rotationYaw);
+            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.lerpSteps);
+            this.rotationPitch = (float)((double)this.rotationPitch + (this.lerpPitch - (double)this.rotationPitch) / (double)this.lerpSteps);
+            --this.lerpSteps;
+            this.setPosition(d0, d1, d2);
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+        }
+    }
+
     @Override
     public void onEntityUpdate()
     {
@@ -367,19 +386,18 @@ public abstract class EntityVehicle extends Entity
         this.lerpSteps = 10;
     }
 
-    private void tickLerp()
+    @Override
+    protected void addPassenger(Entity passenger)
     {
-        if (this.lerpSteps > 0 && !this.canPassengerSteer())
+        super.addPassenger(passenger);
+        if(this.canPassengerSteer() && this.lerpSteps > 0)
         {
-            double d0 = this.posX + (this.lerpX - this.posX) / (double)this.lerpSteps;
-            double d1 = this.posY + (this.lerpY - this.posY) / (double)this.lerpSteps;
-            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double)this.lerpSteps;
-            double d3 = this.lerpYaw - (double)this.rotationYaw;
-            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.lerpSteps);
-            this.rotationPitch = (float)((double)this.rotationPitch + (this.lerpPitch - (double)this.rotationPitch) / (double)this.lerpSteps);
-            --this.lerpSteps;
-            this.setPosition(d0, d1, d2);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
+            this.lerpSteps = 0;
+            this.posX = this.lerpX;
+            this.posY = this.lerpY;
+            this.posZ = this.lerpZ;
+            this.rotationYaw = (float)this.lerpYaw;
+            this.rotationPitch = (float)this.lerpPitch;
         }
     }
 
