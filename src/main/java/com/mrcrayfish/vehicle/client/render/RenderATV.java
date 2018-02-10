@@ -92,6 +92,7 @@ public class RenderATV extends Render<EntityATV>
                     }
                     GlStateManager.translate(0.0625 * wheelScale - 0.0625, -0.5375 * wheelScale, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
+                    GlStateManager.rotate(180F, 0, 1, 0);
                     Minecraft.getMinecraft().getRenderManager().renderEntity(WHEEL, 0, 0, 0, 0f, 0f, true);
                 }
                 GlStateManager.popMatrix();
@@ -126,6 +127,7 @@ public class RenderATV extends Render<EntityATV>
 
                     GlStateManager.translate(0.0625 * wheelScale - 0.0625, -0.5375 * wheelScale, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
+                    GlStateManager.rotate(180F, 0, 1, 0);
                     Minecraft.getMinecraft().getRenderManager().renderEntity(WHEEL, 0, 0, 0, 0f, 0f, true);
                 }
                 GlStateManager.popMatrix();
