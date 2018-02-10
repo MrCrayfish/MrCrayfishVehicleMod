@@ -280,12 +280,18 @@ public abstract class EntityVehicle extends Entity
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
             Acceleration acceleration = Acceleration.fromEntity(entity);
-            this.setAcceleration(acceleration);
-            PacketHandler.INSTANCE.sendToServer(new MessageAccelerating(acceleration));
+            if(this.getAcceleration() != acceleration)
+            {
+                this.setAcceleration(acceleration);
+                PacketHandler.INSTANCE.sendToServer(new MessageAccelerating(acceleration));
+            }
 
             boolean drifting = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
-            this.setDrifting(drifting);
-            PacketHandler.INSTANCE.sendToServer(new MessageDrift(drifting));
+            if(this.isDrifting() != drifting)
+            {
+                this.setDrifting(drifting);
+                PacketHandler.INSTANCE.sendToServer(new MessageDrift(drifting));
+            }
 
             TurnDirection direction = TurnDirection.FORWARD;
             if(entity.moveStrafing < 0)
@@ -296,8 +302,11 @@ public abstract class EntityVehicle extends Entity
             {
                 direction = TurnDirection.LEFT;
             }
-            this.setTurnDirection(direction);
-            PacketHandler.INSTANCE.sendToServer(new MessageTurn(direction));
+            if(this.getTurnDirection() != direction)
+            {
+                this.setTurnDirection(direction);
+                PacketHandler.INSTANCE.sendToServer(new MessageTurn(direction));
+            }
         }
     }
 
