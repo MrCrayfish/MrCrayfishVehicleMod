@@ -25,11 +25,13 @@ public class RenderATV extends Render<EntityATV>
 {
     private static final EntityItem BODY = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.BODY));
     private static final EntityItem WHEEL = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.WHEEL));
+    private static final EntityItem HANDLE_BAR = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.HANDLE_BAR));
 
     static
     {
         BODY.hoverStart = 0F;
         WHEEL.hoverStart = 0F;
+        HANDLE_BAR.hoverStart = 0F;
     }
 
     public RenderATV(RenderManager renderManager)
@@ -76,6 +78,20 @@ public class RenderATV extends Render<EntityATV>
             GlStateManager.popMatrix();
 
             RenderHelper.disableStandardItemLighting();
+
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.translate(0, 0.55, 0.5);
+                GlStateManager.rotate(-45F, 1, 0, 0);
+                GlStateManager.translate(0, 0.02, 0);
+                float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+                float wheelAngleNormal = wheelAngle / 45F;
+                float turnRotation = wheelAngleNormal * 15F;
+                GlStateManager.rotate(turnRotation, 0, 1, 0);
+
+                Minecraft.getMinecraft().getRenderManager().renderEntity(HANDLE_BAR, 0, 0, 0, 0F, 0F, true);
+            }
+            GlStateManager.popMatrix();
 
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
