@@ -70,6 +70,9 @@ public class RenderATV extends Render<EntityATV>
 
             this.setupBreakAnimation(entity, partialTicks);
 
+            RenderHelper.disableStandardItemLighting();
+
+            //Render the body
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.1875, 0);
@@ -77,14 +80,15 @@ public class RenderATV extends Render<EntityATV>
             }
             GlStateManager.popMatrix();
 
-            RenderHelper.disableStandardItemLighting();
+            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
 
+            //Render the handles bars
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.55, 0.5);
                 GlStateManager.rotate(-45F, 1, 0, 0);
                 GlStateManager.translate(0, 0.02, 0);
-                float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 15F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
@@ -101,7 +105,6 @@ public class RenderATV extends Render<EntityATV>
 
             GlStateManager.pushMatrix();
             {
-                float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
                 GlStateManager.translate(0.3, 0.13125, offsetCenter);
                 GlStateManager.pushMatrix();
                 {
