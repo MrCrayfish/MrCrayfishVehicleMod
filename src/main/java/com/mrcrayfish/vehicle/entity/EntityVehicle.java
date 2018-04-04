@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -11,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
@@ -183,7 +183,6 @@ public abstract class EntityVehicle extends Entity
 
             this.doBlockCollisions();
             this.createParticles();
-            this.playSounds();
         }
         else
         {
@@ -271,22 +270,6 @@ public abstract class EntityVehicle extends Entity
                 this.createRunningParticles();
             }
         }
-    }
-
-    private void playSounds()
-    {
-        if(soundLoop % 4 == 0)
-        {
-            if(this.getAcceleration() == Acceleration.FORWARD)
-            {
-                world.playSound(posX, posY, posZ, ModSounds.DRIVING, SoundCategory.BLOCKS, 0.5F, 1.0F, false);
-            }
-            else
-            {
-                world.playSound(posX, posY, posZ, ModSounds.IDLE, SoundCategory.BLOCKS, 1.0F, 1.0F, false);
-            }
-        }
-        soundLoop++;
     }
 
     @SideOnly(Side.CLIENT)
@@ -555,6 +538,10 @@ public abstract class EntityVehicle extends Entity
             this.posZ = this.lerpZ;
             this.rotationYaw = (float)this.lerpYaw;
             this.rotationPitch = (float)this.lerpPitch;
+        }
+        if(world.isRemote && passenger instanceof EntityPlayer)
+        {
+            Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding((EntityPlayer) passenger, this));
         }
     }
 

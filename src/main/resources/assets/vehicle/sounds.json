@@ -1,8 +1,5 @@
 {
     "driving": {
         "sounds": [ {"name": "vehicle:driving"}]
-    },
-    "idle": {
-        "sounds": [ {"name": "vehicle:idle"}]
     }
 }

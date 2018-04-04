@@ -13,12 +13,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class ModSounds
 {
     public static final SoundEvent DRIVING;
-    public static final SoundEvent IDLE;
 
     static
     {
         DRIVING = registerSound("vehicle:driving");
-        IDLE = registerSound("vehicle:idle");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -35,7 +33,6 @@ public class ModSounds
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
             event.getRegistry().register(DRIVING);
-            event.getRegistry().register(IDLE);
         }
     }
 }
