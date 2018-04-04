@@ -1,19 +1,10 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.init.ModSounds;
-import net.minecraft.block.Block;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -26,5 +17,12 @@ public class EntityATV extends EntityVehicle
         super(worldIn);
         this.setMaxSpeed(15);
         this.setSize(1.5F, 1.5F);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public SoundEvent getMovingSound()
+    {
+        return ModSounds.ATV_DRIVING;
     }
 }

@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
@@ -23,7 +22,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -67,8 +66,6 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
-    public int soundLoop;
-
     @SideOnly(Side.CLIENT)
     public ItemStack body;
 
@@ -85,10 +82,8 @@ public abstract class EntityVehicle extends Entity
         this.setPosition(posX, posY, posZ);
     }
 
-    public void setMaxSpeed(double maxSpeed)
-    {
-        this.maxSpeed = maxSpeed;
-    }
+    @SideOnly(Side.CLIENT)
+    public abstract SoundEvent getMovingSound();
 
     @Override
     public boolean canBeCollidedWith()
@@ -430,6 +425,11 @@ public abstract class EntityVehicle extends Entity
     public EnumDyeColor getColor()
     {
         return this.dataManager.get(COLOR);
+    }
+
+    public void setMaxSpeed(double maxSpeed)
+    {
+        this.maxSpeed = maxSpeed;
     }
 
     public void setSpeed(float speed)
