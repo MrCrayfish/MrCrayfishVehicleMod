@@ -7,7 +7,7 @@ public class Reference
 {
     public static final String MOD_ID = "vehicle";
     public static final String MOD_NAME = "Vehicle Mod";
-    public static final String MOD_VERSION = "0.2.0";
+    public static final String MOD_VERSION = "0.3.0";
     public static final String MOD_COMPATIBILITY = "[1.12.2]";
     public static final String MOD_DEPENDS = "required-after:obfuscate@[0.2.3,)";
 
