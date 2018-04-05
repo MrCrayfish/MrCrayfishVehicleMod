@@ -26,6 +26,7 @@ public class ClientEvents
     {
         ImmutableList.Builder<String> builder = ImmutableList.builder();
         builder.add("idle");
+        builder.add("driving");
         IGNORE_SOUNDS = builder.build();
     }
 

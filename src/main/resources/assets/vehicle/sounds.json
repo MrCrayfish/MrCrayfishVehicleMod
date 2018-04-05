@@ -1,5 +1,8 @@
 {
-    "driving": {
-        "sounds": [ {"name": "vehicle:driving"}]
+    "atv_engine_mono": {
+        "sounds": [ {"name": "vehicle:atv_engine_mono"}]
+    },
+    "atv_engine_stereo": {
+        "sounds": [ {"name": "vehicle:atv_engine_stereo"}]
     }
 }

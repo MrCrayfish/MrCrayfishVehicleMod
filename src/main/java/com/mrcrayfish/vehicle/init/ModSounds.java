@@ -6,17 +6,20 @@ import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Author: MrCrayfish
  */
 public class ModSounds
 {
-    public static final SoundEvent ATV_DRIVING;
+    public static final SoundEvent ATV_ENGINE_MONO;
+    public static final SoundEvent ATV_ENGINE_STEREO;
 
     static
     {
-        ATV_DRIVING = registerSound("vehicle:driving");
+        ATV_ENGINE_MONO = registerSound("vehicle:atv_engine_mono");
+        ATV_ENGINE_STEREO = registerSound("vehicle:atv_engine_stereo");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -32,7 +35,9 @@ public class ModSounds
         @SubscribeEvent
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
-            event.getRegistry().register(ATV_DRIVING);
+            IForgeRegistry<SoundEvent> registry = event.getRegistry();
+            registry.register(ATV_ENGINE_MONO);
+            registry.register(ATV_ENGINE_STEREO);
         }
     }
 }

@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.audio;
 
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
@@ -13,26 +12,28 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  * Author: MrCrayfish
  */
 @SideOnly(Side.CLIENT)
-public class MovingSoundVehicleRiding extends MovingSound
+public class MovingSoundVehicle extends MovingSound
 {
-    private final EntityPlayer player;
     private final EntityVehicle vehicle;
 
-    public MovingSoundVehicleRiding(EntityPlayer player, EntityVehicle vehicle)
+    public MovingSoundVehicle(EntityVehicle vehicle)
     {
-        super(vehicle.getRidingSound(), SoundCategory.NEUTRAL);
-        this.player = player;
+        super(vehicle.getMovingSound(), SoundCategory.NEUTRAL);
         this.vehicle = vehicle;
-        this.attenuationType = ISound.AttenuationType.NONE;
         this.repeat = true;
         this.repeatDelay = 0;
+        this.volume = 0.8F;
     }
 
     @Override
     public void update()
     {
-        if(!vehicle.isDead && player.isRiding() && player.getRidingEntity() == vehicle && player == Minecraft.getMinecraft().player)
+        if(!vehicle.isDead && vehicle.getControllingPassenger() != null && vehicle.getControllingPassenger() != Minecraft.getMinecraft().player)
         {
+            EntityPlayer localPlayer = Minecraft.getMinecraft().player;
+            this.xPosF = (float) (vehicle.posX + (localPlayer.posX - vehicle.posX) * 0.65);
+            this.yPosF = (float) (vehicle.posY + (localPlayer.posY - vehicle.posY) * 0.65);
+            this.zPosF = (float) (vehicle.posZ + (localPlayer.posZ - vehicle.posZ) * 0.65);
             this.pitch = 0.5F + 0.8F * vehicle.getNormalSpeed();
         }
         else

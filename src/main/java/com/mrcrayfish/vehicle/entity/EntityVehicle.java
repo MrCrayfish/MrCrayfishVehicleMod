@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -84,6 +85,9 @@ public abstract class EntityVehicle extends Entity
 
     @SideOnly(Side.CLIENT)
     public abstract SoundEvent getMovingSound();
+
+    @SideOnly(Side.CLIENT)
+    public abstract SoundEvent getRidingSound();
 
     @Override
     public boolean canBeCollidedWith()
@@ -542,6 +546,7 @@ public abstract class EntityVehicle extends Entity
         if(world.isRemote && passenger instanceof EntityPlayer)
         {
             Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding((EntityPlayer) passenger, this));
+            Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(this));
         }
     }
 
