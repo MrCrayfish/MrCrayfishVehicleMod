@@ -38,7 +38,6 @@ import javax.annotation.Nullable;
  */
 public abstract class EntityVehicle extends Entity
 {
-    private static final DataParameter<EnumDyeColor> COLOR = EntityDataManager.createKey(EntityVehicle.class, CustomDataSerializers.DYE_COLOR);
     private static final DataParameter<Float> SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
@@ -102,7 +101,6 @@ public abstract class EntityVehicle extends Entity
     protected void entityInit()
     {
         this.dataManager.register(SPEED, 0F);
-        this.dataManager.register(COLOR, EnumDyeColor.BLUE);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(DRIFTING, false);
         this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
@@ -314,17 +312,9 @@ public abstract class EntityVehicle extends Entity
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
-        if(!world.isRemote)
+        if(!world.isRemote && !player.isSneaking())
         {
-            ItemStack heldItem = player.getHeldItem(hand);
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemDye)
-            {
-                this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
-            }
-            else
-            {
-                player.startRiding(this);
-            }
+            player.startRiding(this);
         }
         return true;
     }
@@ -368,10 +358,7 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 9 * 0.0625;
-    }
+    public abstract double getMountedYOffset();
 
     @Override
     protected boolean canBeRidden(Entity entityIn)
@@ -380,19 +367,10 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound)
-    {
-        if(compound.hasKey("color", Constants.NBT.TAG_INT))
-        {
-            this.setColor(EnumDyeColor.byMetadata(compound.getInteger("color")));
-        }
-    }
+    protected void readEntityFromNBT(NBTTagCompound compound) {}
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound)
-    {
-        compound.setInteger("color", this.getColor().getMetadata());
-    }
+    protected void writeEntityToNBT(NBTTagCompound compound) {}
 
     @Nullable
     public Entity getControllingPassenger()
@@ -422,16 +400,6 @@ public abstract class EntityVehicle extends Entity
     public boolean isMoving()
     {
         return this.currentSpeed != 0;
-    }
-
-    public void setColor(EnumDyeColor color)
-    {
-        this.dataManager.set(COLOR, color);
-    }
-
-    public EnumDyeColor getColor()
-    {
-        return this.dataManager.get(COLOR);
     }
 
     public void setMaxSpeed(double maxSpeed)
@@ -550,19 +518,6 @@ public abstract class EntityVehicle extends Entity
         {
             Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding((EntityPlayer) passenger, this));
             Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(this));
-        }
-    }
-
-    @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(COLOR.equals(key))
-            {
-                body = new ItemStack(ModItems.ATV_BODY, 1, this.dataManager.get(COLOR).getMetadata());
-            }
         }
     }
 

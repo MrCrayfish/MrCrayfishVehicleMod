@@ -9,7 +9,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityATV extends EntityVehicle
+public class EntityATV extends EntityColoredVehicle
 {
     //TODO make it so vehicle base can set properties
     public EntityATV(World worldIn)
@@ -31,5 +31,11 @@ public class EntityATV extends EntityVehicle
     public SoundEvent getRidingSound()
     {
         return ModSounds.ATV_ENGINE_STEREO;
+    }
+
+    @Override
+    public double getMountedYOffset()
+    {
+        return 9 * 0.0625;
     }
 }
