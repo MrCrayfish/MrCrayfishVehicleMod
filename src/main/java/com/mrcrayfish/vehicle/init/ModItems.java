@@ -9,22 +9,22 @@ import net.minecraft.item.Item;
  */
 public class ModItems
 {
-    public static final Item BODY;
     public static final Item WHEEL;
-    public static final Item HANDLE_BAR;
+    public static final Item ATV_BODY;
+    public static final Item ATV_HANDLE_BAR;
 
     static
     {
-        BODY = new ItemColoredVehicleBody("atv");
         WHEEL = new ItemPart("wheel");
-        HANDLE_BAR = new ItemPart("handle_bar");
+        ATV_BODY = new ItemColoredVehicleBody("atv");
+        ATV_HANDLE_BAR = new ItemPart("handle_bar");
     }
 
     public static void register()
     {
-        register(BODY);
         register(WHEEL);
-        register(HANDLE_BAR);
+        register(ATV_BODY);
+        register(ATV_HANDLE_BAR);
     }
 
     private static void register(Item item)

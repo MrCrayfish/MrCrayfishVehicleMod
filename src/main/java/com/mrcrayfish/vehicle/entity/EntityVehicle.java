@@ -558,7 +558,7 @@ public abstract class EntityVehicle extends Entity
         {
             if(COLOR.equals(key))
             {
-                body = new ItemStack(ModItems.BODY, 1, this.dataManager.get(COLOR).getMetadata());
+                body = new ItemStack(ModItems.ATV_BODY, 1, this.dataManager.get(COLOR).getMetadata());
             }
         }
     }

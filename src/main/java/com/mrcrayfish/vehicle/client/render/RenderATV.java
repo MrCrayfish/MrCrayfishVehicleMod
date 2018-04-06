@@ -4,7 +4,6 @@ import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
@@ -14,7 +13,6 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.input.Keyboard;
 
 import javax.annotation.Nullable;
 
@@ -23,9 +21,9 @@ import javax.annotation.Nullable;
  */
 public class RenderATV extends Render<EntityATV>
 {
-    private static final EntityItem BODY = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.BODY));
+    private static final EntityItem BODY = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.ATV_BODY));
     private static final EntityItem WHEEL = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.WHEEL));
-    private static final EntityItem HANDLE_BAR = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.HANDLE_BAR));
+    private static final EntityItem HANDLE_BAR = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.ATV_HANDLE_BAR));
 
     static
     {
