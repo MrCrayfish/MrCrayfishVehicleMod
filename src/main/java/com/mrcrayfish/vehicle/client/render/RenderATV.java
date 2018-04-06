@@ -6,6 +6,8 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
@@ -21,17 +23,6 @@ import javax.annotation.Nullable;
  */
 public class RenderATV extends Render<EntityATV>
 {
-    private static final EntityItem BODY = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.ATV_BODY));
-    private static final EntityItem WHEEL = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.WHEEL));
-    private static final EntityItem HANDLE_BAR = new EntityItem(Minecraft.getMinecraft().world, 0, 0, 0, new ItemStack(ModItems.ATV_HANDLE_BAR));
-
-    static
-    {
-        BODY.hoverStart = 0F;
-        WHEEL.hoverStart = 0F;
-        HANDLE_BAR.hoverStart = 0F;
-    }
-
     public RenderATV(RenderManager renderManager)
     {
         super(renderManager);
@@ -47,8 +38,6 @@ public class RenderATV extends Render<EntityATV>
     @Override
     public void doRender(EntityATV entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
-        BODY.setItem(entity.body);
-
         float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
 
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
@@ -64,17 +53,20 @@ public class RenderATV extends Render<EntityATV>
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
             GlStateManager.scale(1.25, 1.25, 1.25);
-            GlStateManager.translate(0, 0.15, 0.2);
+            GlStateManager.translate(0, -0.03125, 0.2);
 
             this.setupBreakAnimation(entity, partialTicks);
 
             RenderHelper.disableStandardItemLighting();
 
+            double bodyLevelToGround = 0.4375;
+            double bodyOffset = 4.375 * 0.0625;
+
             //Render the body
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, 0.1875, 0);
-                Minecraft.getMinecraft().getRenderManager().renderEntity(BODY, 0, 0, 0, 0F, 0F, true);
+                GlStateManager.translate(0, bodyLevelToGround + bodyOffset, 0);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
 
@@ -83,7 +75,7 @@ public class RenderATV extends Render<EntityATV>
             //Render the handles bars
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, 0.55, 0.5);
+                GlStateManager.translate(0, 0.7 + bodyOffset, 0.25);
                 GlStateManager.rotate(-45F, 1, 0, 0);
                 GlStateManager.translate(0, 0.02, 0);
 
@@ -91,7 +83,8 @@ public class RenderATV extends Render<EntityATV>
                 float turnRotation = wheelAngleNormal * 15F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-                Minecraft.getMinecraft().getRenderManager().renderEntity(HANDLE_BAR, 0, 0, 0, 0F, 0F, true);
+                //TODO change to entity itemstack instance
+                Minecraft.getMinecraft().getRenderItem().renderItem(new ItemStack(ModItems.ATV_HANDLE_BAR), ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
 
@@ -100,10 +93,11 @@ public class RenderATV extends Render<EntityATV>
 
             double wheelScale = 1.95F;
             double offsetCenter = 0.65625;
+            double wheelYOffset = bodyOffset + 0.03125;
 
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0.3, 0.13125, offsetCenter);
+                GlStateManager.translate(0.3, wheelYOffset, offsetCenter);
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.rotate(wheelAngle, 0, 1, 0);
@@ -111,10 +105,10 @@ public class RenderATV extends Render<EntityATV>
                     {
                         GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
                     }
-                    GlStateManager.translate(0.0625 * wheelScale - 0.0625, -0.5375 * wheelScale, 0.0);
+                    GlStateManager.translate(0.0625 * wheelScale - 0.0625, 0.0, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderManager().renderEntity(WHEEL, 0, 0, 0, 0f, 0f, true);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
 
@@ -127,9 +121,9 @@ public class RenderATV extends Render<EntityATV>
                     {
                         GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
                     }
-                    GlStateManager.translate(-0.0625 * wheelScale + 0.0625, -0.5375 * wheelScale, 0.0);
+                    GlStateManager.translate(-0.0625 * wheelScale + 0.0625, 0.0, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderManager().renderEntity(WHEEL, 0, 0, 0, 0f, 0f, true);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }
@@ -137,7 +131,7 @@ public class RenderATV extends Render<EntityATV>
 
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0.3, 0.13125, -offsetCenter);
+                GlStateManager.translate(0.3, wheelYOffset, -offsetCenter);
 
                 GlStateManager.pushMatrix();
                 {
@@ -146,10 +140,10 @@ public class RenderATV extends Render<EntityATV>
                         GlStateManager.rotate(-rearWheelSpin, 1, 0, 0);
                     }
 
-                    GlStateManager.translate(0.0625 * wheelScale - 0.0625, -0.5375 * wheelScale, 0.0);
+                    GlStateManager.translate(0.0625 * wheelScale - 0.0625, 0.0, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderManager().renderEntity(WHEEL, 0, 0, 0, 0f, 0f, true);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
 
@@ -161,9 +155,9 @@ public class RenderATV extends Render<EntityATV>
                     {
                         GlStateManager.rotate(-rearWheelSpin, 1, 0, 0);
                     }
-                    GlStateManager.translate(-0.0625 * wheelScale + 0.0625, -0.5375 * wheelScale, 0.0);
+                    GlStateManager.translate(-0.0625 * wheelScale + 0.0625, 0.0, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderManager().renderEntity(WHEEL, 0, 0, 0, 0f, 0f, true);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }

@@ -70,6 +70,9 @@ public abstract class EntityVehicle extends Entity
     @SideOnly(Side.CLIENT)
     public ItemStack body;
 
+    @SideOnly(Side.CLIENT)
+    public ItemStack wheel = new ItemStack(ModItems.WHEEL);
+
     protected EntityVehicle(World worldIn)
     {
         super(worldIn);

@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.entity.EntityATV;
+import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -39,7 +40,7 @@ public class ClientEvents
             return;
 
         Entity ridingEntity = player.getRidingEntity();
-        if(ridingEntity instanceof EntityATV)
+        if(ridingEntity instanceof EntityVehicle)
         {
             ModelPlayer model = event.getModelPlayer();
 
@@ -47,13 +48,21 @@ public class ClientEvents
 
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 12F;
 
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(15F);
-
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-15F);
+            if(ridingEntity instanceof EntityATV)
+            {
+                float turnRotation = wheelAngleNormal * 12F;
+                model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
+                model.bipedRightArm.rotateAngleY = (float) Math.toRadians(15F);
+                model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
+                model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-15F);
+            }
+            else if (ridingEntity instanceof EntityDuneBuggy)
+            {
+                float turnRotation = wheelAngleNormal * 8F;
+                model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-50F - turnRotation);
+                model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-50F + turnRotation);
+            }
 
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);

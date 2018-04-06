@@ -1,9 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "blocks/coal_block",
-        "1": "blocks/hardened_clay_stained_cyan",
-        "2": "vehicle:models/cray_industries"
+        "0": "blocks/concrete_blue",
+        "1": "blocks/concrete_cyan"
     },
     "display": {
         "gui": {
@@ -204,22 +203,6 @@
                 "west": { "texture": "#1", "uv": [ 0.00, 0.00, 2.00, 2.00 ] },
                 "up": { "texture": "#1", "uv": [ 0.00, 0.00, 2.20, 2.00 ] },
                 "down": { "texture": "#1", "uv": [ 0.00, 0.00, 2.20, 2.00 ] }
-            }
-        },
-        {
-            "name": "logo_1",
-            "from": [ 6.99, 9.80, 7.00 ],
-            "to": [ 7.10, 10.10, 7.90 ], 
-            "faces": {
-                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 14.00, 4.00 ] }
-            }
-        },
-        {
-            "name": "logo_2",
-            "from": [ 6.99, 9.80, 8.10 ],
-            "to": [ 7.10, 10.10, 9.00 ], 
-            "faces": {
-                "west": { "texture": "#2", "uv": [ 0.00, 4.00, 14.00, 8.00 ] }
             }
         }
     ]
