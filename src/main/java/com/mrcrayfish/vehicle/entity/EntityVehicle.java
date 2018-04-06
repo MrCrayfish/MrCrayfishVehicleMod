@@ -66,11 +66,11 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
+    /**
+     * ItemStack instances used for rendering
+     */
     @SideOnly(Side.CLIENT)
-    public ItemStack body;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack wheel = new ItemStack(ModItems.WHEEL);
+    public ItemStack body, wheel;
 
     protected EntityVehicle(World worldIn)
     {

@@ -42,10 +42,6 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
     {
         RenderHelper.enableStandardItemLighting();
 
-        ItemStack body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
-        ItemStack handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
-        ItemStack wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
-
         float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
 
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
@@ -72,7 +68,7 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, bodyLevelToGround + bodyOffset, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(body, ItemCameraTransforms.TransformType.NONE);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
 
@@ -91,7 +87,7 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
                 GlStateManager.translate(0, 0, -0.2);
 
                 //TODO change to entity itemstack instance
-                Minecraft.getMinecraft().getRenderItem().renderItem(handleBar, ItemCameraTransforms.TransformType.NONE);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
 
                 GlStateManager.pushMatrix();
                 {
@@ -103,7 +99,7 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
                     }
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(wheel, ItemCameraTransforms.TransformType.NONE);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }
@@ -130,7 +126,7 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
                     GlStateManager.translate(0.0625 * wheelScale - wheelZOffset, 0.0, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(wheel, ItemCameraTransforms.TransformType.NONE);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
 
@@ -144,7 +140,7 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
                     }
                     GlStateManager.translate(-0.0625 * wheelScale + wheelZOffset, 0.0, 0.0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(wheel, ItemCameraTransforms.TransformType.NONE);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }
@@ -152,7 +148,7 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
         }
         GlStateManager.popMatrix();
 
-        RenderHelper.disableStandardItemLighting();
+       // RenderHelper.disableStandardItemLighting();
     }
 
     public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)

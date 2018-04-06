@@ -162,8 +162,6 @@ public class RenderATV extends Render<EntityATV>
                 GlStateManager.popMatrix();
             }
             GlStateManager.popMatrix();
-
-            RenderHelper.enableStandardItemLighting();
         }
         GlStateManager.popMatrix();
     }
