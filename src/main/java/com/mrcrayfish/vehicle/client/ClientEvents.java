@@ -21,16 +21,6 @@ import java.util.List;
  */
 public class ClientEvents
 {
-    private static final List<String> IGNORE_SOUNDS;
-
-    static
-    {
-        ImmutableList.Builder<String> builder = ImmutableList.builder();
-        builder.add("idle");
-        builder.add("driving");
-        IGNORE_SOUNDS = builder.build();
-    }
-
     @SubscribeEvent
     public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
     {
@@ -68,18 +58,6 @@ public class ClientEvents
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
             model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
-        }
-    }
-
-    @SubscribeEvent
-    public void onMissingMap(RegistryEvent.MissingMappings<SoundEvent> event)
-    {
-        for(RegistryEvent.MissingMappings.Mapping<SoundEvent> missing : event.getMappings())
-        {
-            if(missing.key.getResourceDomain().equals(Reference.MOD_ID) && IGNORE_SOUNDS.contains(missing.key.getResourcePath()))
-            {
-                missing.ignore();
-            }
         }
     }
 }

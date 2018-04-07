@@ -41,14 +41,12 @@ public class EntityATV extends EntityColoredVehicle
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public SoundEvent getMovingSound()
     {
         return ModSounds.ATV_ENGINE_MONO;
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
     public SoundEvent getRidingSound()
     {
         return ModSounds.ATV_ENGINE_STEREO;

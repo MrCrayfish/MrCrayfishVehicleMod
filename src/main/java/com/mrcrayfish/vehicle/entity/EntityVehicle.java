@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
-import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
@@ -13,8 +11,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -27,7 +23,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -85,10 +80,8 @@ public abstract class EntityVehicle extends Entity
         this.setPosition(posX, posY, posZ);
     }
 
-    @SideOnly(Side.CLIENT)
     public abstract SoundEvent getMovingSound();
 
-    @SideOnly(Side.CLIENT)
     public abstract SoundEvent getRidingSound();
 
     @Override
@@ -514,10 +507,9 @@ public abstract class EntityVehicle extends Entity
             this.rotationYaw = (float)this.lerpYaw;
             this.rotationPitch = (float)this.lerpPitch;
         }
-        if(world.isRemote && passenger instanceof EntityPlayer)
+        if(passenger instanceof EntityPlayer)
         {
-            Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding((EntityPlayer) passenger, this));
-            Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(this));
+            VehicleMod.proxy.playVehicleSound((EntityPlayer) passenger, this);
         }
     }
 
