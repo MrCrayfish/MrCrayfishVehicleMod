@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.entity.Entity;
@@ -30,10 +31,23 @@ public class ClientEvents
             return;
 
         Entity ridingEntity = player.getRidingEntity();
+        ModelPlayer model = event.getModelPlayer();
+
+        if(ridingEntity instanceof EntityCouch)
+        {
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-25F);
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+            return;
+        }
+
         if(ridingEntity instanceof EntityVehicle)
         {
-            ModelPlayer model = event.getModelPlayer();
-
             EntityVehicle vehicle = (EntityVehicle) ridingEntity;
 
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();

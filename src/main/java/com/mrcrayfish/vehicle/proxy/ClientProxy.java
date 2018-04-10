@@ -4,10 +4,12 @@ import com.mrcrayfish.vehicle.client.ClientEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.render.RenderATV;
+import com.mrcrayfish.vehicle.client.render.RenderCouch;
 import com.mrcrayfish.vehicle.client.render.RenderDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -23,6 +25,7 @@ public class ClientProxy implements Proxy
     {
         RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, RenderATV::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDuneBuggy.class, RenderDuneBuggy::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
     }
 

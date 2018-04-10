@@ -1,42 +1,31 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.entity.EntityATV;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderATV extends RenderVehicle<EntityATV>
+public class RenderCouch extends RenderVehicle<EntityCouch>
 {
-    public RenderATV(RenderManager renderManager)
+    public RenderCouch(RenderManager renderManager)
     {
         super(renderManager);
     }
 
-    @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityATV entity)
-    {
-        return null;
-    }
-
-    @Override
-    public void doRender(EntityATV entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityCouch entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 
@@ -54,8 +43,7 @@ public class RenderATV extends RenderVehicle<EntityATV>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
-            GlStateManager.scale(1.25, 1.25, 1.25);
-            GlStateManager.translate(0, -0.03125, 0.2);
+            GlStateManager.translate(0, -0.03125, 0.1);
 
             this.setupBreakAnimation(entity, partialTicks);
 
@@ -65,6 +53,7 @@ public class RenderATV extends RenderVehicle<EntityATV>
             //Render the body
             GlStateManager.pushMatrix();
             {
+                GlStateManager.rotate(90F, 0, 1, 0);
                 GlStateManager.translate(0, bodyLevelToGround + bodyOffset, 0);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
@@ -73,7 +62,7 @@ public class RenderATV extends RenderVehicle<EntityATV>
             float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
 
             //Render the handles bars
-            GlStateManager.pushMatrix();
+           /* GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.7 + bodyOffset, 0.25);
                 GlStateManager.rotate(-45F, 1, 0, 0);
@@ -86,18 +75,19 @@ public class RenderATV extends RenderVehicle<EntityATV>
                 //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(new ItemStack(ModItems.ATV_HANDLE_BAR), ItemCameraTransforms.TransformType.NONE);
             }
-            GlStateManager.popMatrix();
+            GlStateManager.popMatrix();*/
 
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
 
             double wheelScale = 1.95F;
-            double offsetCenter = 0.65625;
+            double offsetCenter = 0.45;
             double wheelYOffset = bodyOffset + 0.03125;
+            double wheelZOffset = 0.58;
 
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0.3, wheelYOffset, offsetCenter);
+                GlStateManager.translate(wheelZOffset, wheelYOffset, offsetCenter);
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.rotate(wheelAngle, 0, 1, 0);
@@ -112,7 +102,7 @@ public class RenderATV extends RenderVehicle<EntityATV>
                 }
                 GlStateManager.popMatrix();
 
-                GlStateManager.translate(-0.6, 0, 0);
+                GlStateManager.translate(-(wheelZOffset * 2), 0, 0);
 
                 GlStateManager.pushMatrix();
                 {
@@ -131,7 +121,7 @@ public class RenderATV extends RenderVehicle<EntityATV>
 
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0.3, wheelYOffset, -offsetCenter);
+                GlStateManager.translate(wheelZOffset, wheelYOffset, -offsetCenter);
 
                 GlStateManager.pushMatrix();
                 {
@@ -147,7 +137,7 @@ public class RenderATV extends RenderVehicle<EntityATV>
                 }
                 GlStateManager.popMatrix();
 
-                GlStateManager.translate(-0.6, 0, 0);
+                GlStateManager.translate(-(wheelZOffset * 2), 0, 0);
 
                 GlStateManager.pushMatrix();
                 {

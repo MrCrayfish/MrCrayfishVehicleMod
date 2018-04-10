@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderDuneBuggy extends Render<EntityDuneBuggy>
+public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
 {
     public RenderDuneBuggy(RenderManager renderManager)
     {
@@ -148,63 +148,6 @@ public class RenderDuneBuggy extends Render<EntityDuneBuggy>
         }
         GlStateManager.popMatrix();
 
-       // RenderHelper.disableStandardItemLighting();
-    }
-
-    public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
-    {
-        float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
-        float damageTaken = vehicle.getDamageTaken() - partialTicks;
-
-        if (damageTaken < 0.0F)
-        {
-            damageTaken = 0.0F;
-        }
-
-        if (timeSinceHit > 0.0F)
-        {
-            GlStateManager.rotate(MathHelper.sin(timeSinceHit) * timeSinceHit * damageTaken / 10.0F, 0, 0, 1);
-        }
-    }
-
-    protected void unsetBrightness()
-    {
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
-        GlStateManager.enableTexture2D();
-        GlStateManager.glTexEnvi(8960, 8704, OpenGlHelper.GL_COMBINE);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_COMBINE_RGB, 8448);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_RGB, OpenGlHelper.defaultTexUnit);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE1_RGB, OpenGlHelper.GL_PRIMARY_COLOR);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_RGB, 768);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND1_RGB, 768);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_COMBINE_ALPHA, 8448);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_ALPHA, OpenGlHelper.defaultTexUnit);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE1_ALPHA, OpenGlHelper.GL_PRIMARY_COLOR);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND1_ALPHA, 770);
-        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit);
-        GlStateManager.glTexEnvi(8960, 8704, OpenGlHelper.GL_COMBINE);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_COMBINE_RGB, 8448);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_RGB, 768);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND1_RGB, 768);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_RGB, 5890);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE1_RGB, OpenGlHelper.GL_PREVIOUS);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_COMBINE_ALPHA, 8448);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_ALPHA, 5890);
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        GlStateManager.setActiveTexture(OpenGlHelper.GL_TEXTURE2);
-        GlStateManager.disableTexture2D();
-        GlStateManager.bindTexture(0);
-        GlStateManager.glTexEnvi(8960, 8704, OpenGlHelper.GL_COMBINE);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_COMBINE_RGB, 8448);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_RGB, 768);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND1_RGB, 768);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_RGB, 5890);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE1_RGB, OpenGlHelper.GL_PREVIOUS);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_COMBINE_ALPHA, 8448);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_OPERAND0_ALPHA, 770);
-        GlStateManager.glTexEnvi(8960, OpenGlHelper.GL_SOURCE0_ALPHA, 5890);
-        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
+        RenderHelper.disableStandardItemLighting();
     }
 }

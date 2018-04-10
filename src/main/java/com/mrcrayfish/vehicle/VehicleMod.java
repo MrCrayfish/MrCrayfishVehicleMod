@@ -5,13 +5,17 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -35,6 +39,11 @@ public class VehicleMod
 
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "atv"), EntityATV.class, "ATV", 0, this, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "dune_buggy"), EntityDuneBuggy.class, "Dune Buggy", 1, this, 64, 1, true);
+
+        if(Loader.isModLoaded("cfm"))
+        {
+            EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "couch"), EntityCouch.class, "Couch", 2, this, 64, 1, true);
+        }
 
         proxy.preInit();
     }
