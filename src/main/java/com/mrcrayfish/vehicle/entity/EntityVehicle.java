@@ -42,6 +42,7 @@ public abstract class EntityVehicle extends Entity
 
     public double maxSpeed = 10.0;
     public float currentSpeed;
+    public float speedMultiplier;
 
     public float wheelAngle;
     public float prevWheelAngle;
@@ -142,45 +143,47 @@ public abstract class EntityVehicle extends Entity
     {
         super.onEntityUpdate();
 
-        this.prevWheelAngle = this.wheelAngle;
-        this.prevFrontWheelRotation = this.frontWheelRotation;
-        this.prevRearWheelRotation = this.rearWheelRotation;
-        this.prevAdditionalYaw = this.additionalYaw;
+        prevWheelAngle = wheelAngle;
+        prevFrontWheelRotation = frontWheelRotation;
+        prevRearWheelRotation = rearWheelRotation;
+        prevAdditionalYaw = additionalYaw;
 
         if(world.isRemote)
         {
-            this.onClientUpdate();
+            onClientUpdate();
         }
 
-        this.currentSpeed = this.getSpeed();
+        currentSpeed = getSpeed();
 
-        EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
+        EntityLivingBase entity = (EntityLivingBase) getControllingPassenger();
         if(entity != null)
         {
             /* Handle the current speed of the vehicle based on rider's forward movement */
-            this.updateSpeed();
-            this.updateDrifting();
-            this.updateWheels();
+            updateSpeed();
+            updateDrifting();
+            updateWheels();
 
-            this.setSpeed(currentSpeed);
+            currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
+            setSpeed(currentSpeed);
 
-            this.rotationYaw -= this.deltaYaw;
-            this.motionY -= 0.08D;
+            rotationYaw -= deltaYaw;
+            motionY -= 0.08D;
 
-            this.moveRelative(0, 0, currentSpeed, 0.01F);
-            this.move(MoverType.SELF, this.motionX * Math.abs(currentSpeed), this.motionY, this.motionZ * Math.abs(currentSpeed));
+            moveRelative(0, 0, currentSpeed, 0.01F);
+            move(MoverType.SELF, motionX * Math.abs(currentSpeed), motionY, motionZ * Math.abs(currentSpeed));
 
-            this.motionY *= 0.9800000190734863D;
-            this.motionX *= 0.8;
-            this.motionZ *= 0.8;
+            motionX *= 0.8;
+            motionY *= 0.9800000190734863D;
+            motionZ *= 0.8;
+            speedMultiplier *= 0.85;
 
-            this.doBlockCollisions();
-            this.createParticles();
+            doBlockCollisions();
+            createParticles();
         }
         else
         {
             currentSpeed = 0F;
-            this.setSpeed(currentSpeed);
+            setSpeed(currentSpeed);
         }
     }
 

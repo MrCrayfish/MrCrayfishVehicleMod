@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.entity.Entity;
@@ -39,6 +40,19 @@ public class ClientEvents
             model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-25F);
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+            return;
+        }
+
+        if(ridingEntity instanceof EntityShoppingCart)
+        {
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-70F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-70F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
