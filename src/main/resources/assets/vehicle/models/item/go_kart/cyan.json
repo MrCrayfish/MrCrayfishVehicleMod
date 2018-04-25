@@ -1,0 +1,6 @@
+{
+    "parent": "vehicle:item/go_kart_body",
+    "textures": {
+        "color": "blocks/concrete_cyan"
+    }
+}

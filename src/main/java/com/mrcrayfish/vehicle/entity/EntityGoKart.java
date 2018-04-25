@@ -11,7 +11,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKart extends EntityVehicle
+public class EntityGoKart extends EntityColoredVehicle
 {
     /**
      * ItemStack instances used for rendering
