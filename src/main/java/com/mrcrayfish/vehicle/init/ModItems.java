@@ -17,6 +17,7 @@ public class ModItems
     public static final Item DUNE_BUGGY_WHEEL;
     public static final Item GO_KART_BODY;
     public static final Item GO_KART_STEERING_WHEEL;
+    public static final Item SHOPPING_CART_BODY;
 
     static
     {
@@ -28,6 +29,7 @@ public class ModItems
         DUNE_BUGGY_WHEEL = new ItemPart("dune_buggy_wheel");
         GO_KART_BODY = new ItemPart("go_kart_body");
         GO_KART_STEERING_WHEEL = new ItemPart("go_kart_steering_wheel");
+        SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
     }
 
     public static void register()
@@ -40,6 +42,7 @@ public class ModItems
         register(DUNE_BUGGY_WHEEL);
         register(GO_KART_BODY);
         register(GO_KART_STEERING_WHEEL);
+        register(SHOPPING_CART_BODY);
     }
 
     private static void register(Item item)

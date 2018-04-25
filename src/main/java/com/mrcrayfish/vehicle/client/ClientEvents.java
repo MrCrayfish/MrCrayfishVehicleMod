@@ -3,11 +3,13 @@ package com.mrcrayfish.vehicle.client;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityGoKart;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.entity.Entity;
@@ -34,12 +36,35 @@ public class ClientEvents
         Entity ridingEntity = player.getRidingEntity();
         ModelPlayer model = event.getModelPlayer();
 
+        if(player.getDataManager().get(CommonEvents.PUSHING_CART))
+        {
+            player.renderYawOffset = player.rotationYawHead;
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
+            return;
+        }
+
         if(ridingEntity instanceof EntityCouch)
         {
             model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
             model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-25F);
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+            return;
+        }
+
+        if(ridingEntity instanceof EntityShoppingCart)
+        {
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-70F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-70F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
