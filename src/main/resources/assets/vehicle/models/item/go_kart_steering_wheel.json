@@ -3,7 +3,7 @@
     "textures": {
         "0": "blocks/concrete_silver",
         "1": "blocks/concrete_gray",
-        "2": "blocks/concrete_red"
+        "2": "blocks/concrete_black"
     },
     "display": {
         "gui": {
