@@ -55,7 +55,10 @@ public class Wheel
                 }
                 GlStateManager.translate((((width * scale) / 2) / 16F) * side.offset, 0, 0);
                 GlStateManager.scale(scale, scale, scale);
-                GlStateManager.rotate(180F, 0, 1, 0);
+                if(side == Side.RIGHT)
+                {
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                }
                 Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
