@@ -9,12 +9,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
 public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
 {
+    protected List<Wheel> wheels = new ArrayList<>();
+
     protected RenderVehicle(RenderManager renderManager)
     {
         super(renderManager);
@@ -25,6 +29,12 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
     protected ResourceLocation getEntityTexture(T entity)
     {
         return null;
+    }
+
+    @Override
+    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
+    {
+        wheels.forEach(wheel -> wheel.render(entity, partialTicks));
     }
 
     public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)

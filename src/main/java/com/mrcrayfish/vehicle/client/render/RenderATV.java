@@ -26,6 +26,10 @@ public class RenderATV extends RenderVehicle<EntityATV>
     public RenderATV(RenderManager renderManager)
     {
         super(renderManager);
+        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.95F));
+        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.95F));
+        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.95F));
+        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.95F));
     }
 
     @Nullable
@@ -88,80 +92,8 @@ public class RenderATV extends RenderVehicle<EntityATV>
             }
             GlStateManager.popMatrix();
 
-            float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
-            float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
-
-            double wheelScale = 1.95F;
-            double offsetCenter = 0.65625;
-            double wheelYOffset = bodyOffset + 0.03125;
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0.3, wheelYOffset, offsetCenter);
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
-                    if(entity.isMoving())
-                    {
-                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
-                    }
-                    GlStateManager.translate(0.0625 * wheelScale - 0.0625, 0.0, 0.0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-
-                GlStateManager.translate(-0.6, 0, 0);
-
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
-                    if(entity.isMoving())
-                    {
-                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
-                    }
-                    GlStateManager.translate(-0.0625 * wheelScale + 0.0625, 0.0, 0.0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0.3, wheelYOffset, -offsetCenter);
-
-                GlStateManager.pushMatrix();
-                {
-                    if(entity.isMoving())
-                    {
-                        GlStateManager.rotate(-rearWheelSpin, 1, 0, 0);
-                    }
-
-                    GlStateManager.translate(0.0625 * wheelScale - 0.0625, 0.0, 0.0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-
-                GlStateManager.translate(-0.6, 0, 0);
-
-                GlStateManager.pushMatrix();
-                {
-                    if(entity.isMoving())
-                    {
-                        GlStateManager.rotate(-rearWheelSpin, 1, 0, 0);
-                    }
-                    GlStateManager.translate(-0.0625 * wheelScale + 0.0625, 0.0, 0.0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
+            GlStateManager.translate(0, bodyOffset + 0.03125, 0);
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
     }
