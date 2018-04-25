@@ -4,5 +4,11 @@
     },
     "atv_engine_stereo": {
         "sounds": [ {"name": "vehicle:atv_engine_stereo"}]
+    },
+    "go_kart_engine_mono": {
+        "sounds": [ {"name": "vehicle:go_kart_engine_mono"}]
+    },
+    "go_kart_engine_stereo": {
+        "sounds": [ {"name": "vehicle:go_kart_engine_stereo"}]
     }
 }
