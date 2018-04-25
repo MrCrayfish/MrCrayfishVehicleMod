@@ -35,13 +35,16 @@ public class ClientProxy implements Proxy
     @Override
     public void playVehicleSound(EntityPlayer player, EntityVehicle vehicle)
     {
-        if(vehicle.getRidingSound() != null)
+        Minecraft.getMinecraft().addScheduledTask(() ->
         {
-            Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding(player, vehicle));
-        }
-        if(vehicle.getMovingSound() != null)
-        {
-            Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(vehicle));
-        }
+            if(vehicle.getRidingSound() != null)
+            {
+                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding(player, vehicle));
+            }
+            if(vehicle.getMovingSound() != null)
+            {
+                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(vehicle));
+            }
+        });
     }
 }
