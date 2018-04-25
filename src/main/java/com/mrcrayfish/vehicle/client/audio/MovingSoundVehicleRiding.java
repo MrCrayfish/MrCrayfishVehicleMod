@@ -33,7 +33,7 @@ public class MovingSoundVehicleRiding extends MovingSound
     {
         if(!vehicle.isDead && player.isRiding() && player.getRidingEntity() == vehicle && player == Minecraft.getMinecraft().player)
         {
-            this.pitch = 0.5F + 0.8F * vehicle.getNormalSpeed();
+            this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getNormalSpeed());
         }
         else
         {

@@ -85,6 +85,16 @@ public abstract class EntityVehicle extends Entity
 
     public abstract SoundEvent getRidingSound();
 
+    public float getMinEnginePitch()
+    {
+        return 0.5F;
+    }
+
+    public float getMaxEnginePitch()
+    {
+        return 1.2F;
+    }
+
     @Override
     public boolean canBeCollidedWith()
     {

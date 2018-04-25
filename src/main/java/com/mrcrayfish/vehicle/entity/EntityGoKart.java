@@ -52,6 +52,18 @@ public class EntityGoKart extends EntityColoredVehicle
     }
 
     @Override
+    public float getMinEnginePitch()
+    {
+        return 0.8F;
+    }
+
+    @Override
+    public float getMaxEnginePitch()
+    {
+        return 1.6F;
+    }
+
+    @Override
     public double getMountedYOffset()
     {
         return 0;

@@ -34,7 +34,7 @@ public class MovingSoundVehicle extends MovingSound
             this.xPosF = (float) (vehicle.posX + (localPlayer.posX - vehicle.posX) * 0.65);
             this.yPosF = (float) (vehicle.posY + (localPlayer.posY - vehicle.posY) * 0.65);
             this.zPosF = (float) (vehicle.posZ + (localPlayer.posZ - vehicle.posZ) * 0.65);
-            this.pitch = 0.5F + 0.8F * vehicle.getNormalSpeed();
+            this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getNormalSpeed());
         }
         else
         {
