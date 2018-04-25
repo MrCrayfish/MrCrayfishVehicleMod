@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityATV;
 import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -33,6 +34,16 @@ public class ClientEvents
 
         Entity ridingEntity = player.getRidingEntity();
         ModelPlayer model = event.getModelPlayer();
+
+        if(player.getDataManager().get(CommonEvents.PUSHING_CART))
+        {
+            player.renderYawOffset = player.rotationYawHead;
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
+            return;
+        }
 
         if(ridingEntity instanceof EntityCouch)
         {

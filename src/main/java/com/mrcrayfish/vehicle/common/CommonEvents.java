@@ -1,8 +1,13 @@
 package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
 import com.mrcrayfish.vehicle.Reference;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,6 +20,7 @@ import java.util.List;
  */
 public class CommonEvents
 {
+    public static final DataParameter<Boolean> PUSHING_CART = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
 
     private static final List<String> IGNORE_ITEMS;
     private static final List<String> IGNORE_SOUNDS;
@@ -70,6 +76,15 @@ public class CommonEvents
             {
                 missing.ignore();
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityInit(EntityLivingInitEvent event)
+    {
+        if(event.getEntityLiving() instanceof EntityPlayer)
+        {
+            event.getEntityLiving().getDataManager().register(PUSHING_CART, false);
         }
     }
 }
