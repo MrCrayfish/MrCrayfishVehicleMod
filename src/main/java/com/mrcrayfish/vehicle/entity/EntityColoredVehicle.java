@@ -7,6 +7,7 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
@@ -17,7 +18,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public abstract class EntityColoredVehicle extends EntityVehicle
 {
-    private static final DataParameter<EnumDyeColor> COLOR = EntityDataManager.createKey(EntityColoredVehicle.class, CustomDataSerializers.DYE_COLOR);
+    private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     protected EntityColoredVehicle(World worldIn)
     {
@@ -28,17 +29,17 @@ public abstract class EntityColoredVehicle extends EntityVehicle
     protected void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(COLOR, EnumDyeColor.BLUE);
+        this.dataManager.register(COLOR, EnumDyeColor.BLUE.getMetadata());
     }
 
     public void setColor(EnumDyeColor color)
     {
-        this.dataManager.set(COLOR, color);
+        this.dataManager.set(COLOR, color.getMetadata());
     }
 
     public EnumDyeColor getColor()
     {
-        return this.dataManager.get(COLOR);
+        return EnumDyeColor.byMetadata(this.dataManager.get(COLOR));
     }
 
     @Override
@@ -67,7 +68,7 @@ public abstract class EntityColoredVehicle extends EntityVehicle
         {
             if(COLOR.equals(key))
             {
-                body.setItemDamage(this.dataManager.get(COLOR).getMetadata());
+                body.setItemDamage(this.dataManager.get(COLOR));
             }
         }
     }
