@@ -23,6 +23,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -391,10 +392,24 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound) {}
+    protected void readEntityFromNBT(NBTTagCompound compound)
+    {
+        if(compound.hasKey("maxSpeed", Constants.NBT.TAG_FLOAT))
+        {
+            this.setMaxSpeed(compound.getFloat("maxSpeed"));
+        }
+        if(compound.hasKey("turnSensitivity", Constants.NBT.TAG_INT))
+        {
+            this.setTurnSensitivity(compound.getInteger("turnSensitivity"));
+        }
+    }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound) {}
+    protected void writeEntityToNBT(NBTTagCompound compound)
+    {
+        compound.setFloat("maxSpeed", this.getMaxSpeed());
+        compound.setInteger("turnSensitivity", this.getTurnSensitivity());
+    }
 
     @Nullable
     public Entity getControllingPassenger()
