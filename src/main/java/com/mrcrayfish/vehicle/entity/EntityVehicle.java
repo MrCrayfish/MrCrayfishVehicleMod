@@ -33,7 +33,8 @@ import javax.annotation.Nullable;
  */
 public abstract class EntityVehicle extends Entity
 {
-    private static final DataParameter<Float> SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
@@ -41,11 +42,11 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
-    public double maxSpeed = 10.0;
     public float currentSpeed;
     public float speedMultiplier;
 
     public int turnAngle;
+
     public float wheelAngle;
     public float prevWheelAngle;
     public float frontWheelRotation;
@@ -106,7 +107,8 @@ public abstract class EntityVehicle extends Entity
     @Override
     protected void entityInit()
     {
-        this.dataManager.register(SPEED, 0F);
+        this.dataManager.register(CURRENT_SPEED, 0F);
+        this.dataManager.register(MAX_SPEED, 10F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(TURN_SENSITIVITY, 10);
         this.dataManager.register(DRIFTING, false);
@@ -206,9 +208,9 @@ public abstract class EntityVehicle extends Entity
         if(acceleration == Acceleration.FORWARD)
         {
             this.currentSpeed += 0.5F;
-            if(this.currentSpeed > this.maxSpeed)
+            if(this.currentSpeed > this.getMaxSpeed())
             {
-                this.currentSpeed = (float) this.maxSpeed;
+                this.currentSpeed = this.getMaxSpeed();
             }
         }
         else if(acceleration == Acceleration.REVERSE)
@@ -263,8 +265,8 @@ public abstract class EntityVehicle extends Entity
             this.turnAngle *= 0.75;
         }
 
-        float speedPercent = (float) (this.currentSpeed / this.maxSpeed);
-        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent));
+        float speedPercent = (float) (this.currentSpeed / this.getMaxSpeed());
+        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent)); //TODO turn resistance
         this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
 
         Acceleration acceleration = this.getAcceleration();
@@ -424,14 +426,19 @@ public abstract class EntityVehicle extends Entity
         return this.currentSpeed != 0;
     }
 
-    public void setMaxSpeed(double maxSpeed)
+    public void setMaxSpeed(float maxSpeed)
     {
-        this.maxSpeed = maxSpeed;
+        this.dataManager.set(MAX_SPEED, maxSpeed);
+    }
+
+    public float getMaxSpeed()
+    {
+        return this.dataManager.get(MAX_SPEED);
     }
 
     public void setSpeed(float speed)
     {
-        this.dataManager.set(SPEED, speed);
+        this.dataManager.set(CURRENT_SPEED, speed);
     }
 
     public float getSpeed()
@@ -441,7 +448,7 @@ public abstract class EntityVehicle extends Entity
 
     public float getNormalSpeed()
     {
-        return (float) (this.currentSpeed / maxSpeed);
+        return this.currentSpeed / this.getMaxSpeed();
     }
 
     public double getKilometersPreHour()
