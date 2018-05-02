@@ -224,7 +224,7 @@ public abstract class EntityVehicle extends Entity
         }
         else
         {
-            this.currentSpeed *= 0.85;
+            this.currentSpeed *= 0.9;
         }
 
         TurnDirection turnDirection = this.getTurnDirection();
