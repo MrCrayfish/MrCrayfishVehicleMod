@@ -216,7 +216,7 @@ public abstract class EntityVehicle extends Entity
         }
         else if(acceleration == Acceleration.REVERSE)
         {
-            this.currentSpeed -= 4.0F;
+            this.currentSpeed -= 1.5F;
             if(this.currentSpeed < -4.0F)
             {
                 this.currentSpeed = -4.0F;
