@@ -1,0 +1,6 @@
+{
+    "parent": "vehicle:item/mini_bike_handle_bar",
+    "textures": {
+        "color": "blocks/concrete_white"
+    }
+}

@@ -4,12 +4,8 @@ import com.mrcrayfish.vehicle.client.ClientEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.render.*;
-import com.mrcrayfish.vehicle.entity.EntityATV;
-import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
-import com.mrcrayfish.vehicle.entity.EntityGoKart;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +24,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGoKart.class, RenderGoKart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
     }
 

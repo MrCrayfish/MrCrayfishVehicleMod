@@ -9,9 +9,9 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Author: MrCrayfish
  */
-public class ItemColoredVehicleBody extends ItemVehicleBody implements SubItems
+public class ItemColoredPart extends ItemVehicleBody implements SubItems
 {
-    public ItemColoredVehicleBody(String id)
+    public ItemColoredPart(String id)
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);

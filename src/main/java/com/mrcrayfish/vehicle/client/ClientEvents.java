@@ -1,24 +1,14 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import com.mrcrayfish.vehicle.entity.EntityATV;
-import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
-import com.mrcrayfish.vehicle.entity.EntityGoKart;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -44,6 +34,16 @@ public class ClientEvents
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
             return;
+        }
+
+        if (ridingEntity instanceof EntityMiniBike)
+        {
+            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
+            float wheelAngleNormal = wheelAngle / 45F;
+            float turnRotation = wheelAngleNormal * 8F;
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
         }
 
         if(ridingEntity instanceof EntityCouch)

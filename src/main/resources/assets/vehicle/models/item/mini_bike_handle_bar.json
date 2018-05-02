@@ -1,0 +1,269 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "0": "blocks/concrete_silver",
+        "color": "blocks/concrete_red",
+        "2": "blocks/concrete_black"
+    },
+    "display": {
+        "gui": {
+            "rotation": [ 30, 225, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.625, 0.625, 0.625 ]
+        },
+        "ground": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 3, 0 ],
+            "scale": [ 0.25, 0.25, 0.25 ]
+        },
+        "fixed": {
+            "rotation": [ 0, 0, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        },
+        "thirdperson_righthand": {
+            "rotation": [ 75, 45, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "thirdperson_lefthand": {
+            "rotation": [ 75, 255, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 45, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 225, 0 ],
+            "translation": [ 0, 2.5, 0 ],
+            "scale": [ 0.4, 0.4, 0.4 ]
+        }
+    },
+    "elements": [
+        {
+            "name": "handle_bar_1",
+            "from": [ 7.50, 8.20, 16.70 ], 
+            "to": [ 8.50, 11.80, 17.70 ], 
+            "rotation": { "origin": [ 8.0, 10.5, 16.5 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 3.60 ] },
+                "east": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 3.60 ] },
+                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 3.60 ] },
+                "west": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 3.60 ] },
+                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_2",
+            "from": [ 6.20, 11.80, 16.70 ], 
+            "to": [ 9.80, 12.30, 17.70 ], 
+            "rotation": { "origin": [ 8.0, 10.5, 16.5 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 0.50 ] },
+                "east": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 0.50 ] },
+                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 0.50 ] },
+                "west": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 0.50 ] },
+                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 1.00 ] },
+                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_3",
+            "from": [ 6.20, 7.70, 16.70 ], 
+            "to": [ 9.80, 8.20, 17.70 ], 
+            "rotation": { "origin": [ 8.0, 10.5, 16.5 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 0.50 ] },
+                "east": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 0.50 ] },
+                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 0.50 ] },
+                "west": { "texture": "#0", "uv": [ 0.00, 0.00, 1.00, 0.50 ] },
+                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 1.00 ] },
+                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 3.60, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_4",
+            "from": [ 5.20, 0.20, 16.70 ], 
+            "to": [ 6.20, 16.20, 17.70 ], 
+            "rotation": { "origin": [ 8.0, 10.5, 16.5 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_5",
+            "from": [ 9.80, 0.20, 16.70 ], 
+            "to": [ 10.80, 16.20, 17.70 ], 
+            "rotation": { "origin": [ 8.0, 10.5, 16.5 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 16.00 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "front_axel",
+            "from": [ 5.00, 1.30, 20.50 ], 
+            "to": [ 11.00, 2.10, 21.30 ], 
+            "rotation": { "origin": [ 8.0, 1.7, 20.899999998509884 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 6.00, 0.80 ] },
+                "east": { "texture": "#0", "uv": [ 0.00, 0.00, 0.80, 0.80 ] },
+                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 6.00, 0.80 ] },
+                "west": { "texture": "#0", "uv": [ 0.00, 0.00, 0.80, 0.80 ] },
+                "up": { "texture": "#0", "uv": [ 0.00, 0.00, 6.00, 0.80 ] },
+                "down": { "texture": "#0", "uv": [ 0.00, 0.00, 6.00, 0.80 ] }
+            }
+        },
+        {
+            "name": "axel_connection_3",
+            "from": [ 5.10, 1.00, 20.20 ], 
+            "to": [ 6.30, 2.40, 21.60 ], 
+            "rotation": { "origin": [ 8.0, 1.7, 20.9 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.40, 1.40 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.40, 1.40 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] }
+            }
+        },
+        {
+            "name": "axel_connection_4",
+            "from": [ 9.70, 1.00, 20.20 ], 
+            "to": [ 10.90, 2.40, 21.60 ], 
+            "rotation": { "origin": [ 8.0, 1.7, 20.9 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.40, 1.40 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.40, 1.40 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 1.20, 1.40 ] }
+            }
+        },
+        {
+            "name": "handle_bar_6",
+            "from": [ 5.20, 15.80, 14.50 ], 
+            "to": [ 6.20, 16.80, 15.50 ], 
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_7",
+            "from": [ 9.80, 15.80, 14.50 ], 
+            "to": [ 10.80, 16.80, 15.50 ], 
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_8",
+            "from": [ 1.20, 15.80, 14.50 ], 
+            "to": [ 5.20, 16.80, 15.50 ], 
+            "rotation": { "origin": [ 5.200000002980232, 16.0, 15.50000000745058 ], "axis": "y", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "handle_bar_9",
+            "from": [ 10.80, 15.80, 14.50 ], 
+            "to": [ 14.80, 16.80, 15.50 ], 
+            "rotation": { "origin": [ 10.799999997019768, 16.0, 15.5 ], "axis": "y", "angle": 22.5 },
+            "faces": {
+                "north": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
+                "east": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "south": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
+                "west": { "texture": "#color", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "up": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
+                "down": { "texture": "#color", "uv": [ 0.00, 0.00, 4.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "grip_1",
+            "from": [ 1.10, 15.70, 14.40 ], 
+            "to": [ 4.10, 16.90, 15.60 ], 
+            "rotation": { "origin": [ 5.200000002980232, 16.0, 15.50000000745058 ], "axis": "y", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 1.20, 1.20 ] },
+                "south": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 1.20, 1.20 ] },
+                "up": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] },
+                "down": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] }
+            }
+        },
+        {
+            "name": "grip_2",
+            "from": [ 4.10, 15.50, 14.20 ], 
+            "to": [ 4.60, 17.10, 15.80 ], 
+            "rotation": { "origin": [ 5.200000002980232, 16.0, 15.50000000745058 ], "axis": "y", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 1.60, 1.60 ] },
+                "south": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 1.60, 1.60 ] },
+                "up": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] },
+                "down": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] }
+            }
+        },
+        {
+            "name": "grip_3",
+            "from": [ 11.90, 15.70, 14.40 ], 
+            "to": [ 14.90, 16.90, 15.60 ], 
+            "rotation": { "origin": [ 10.799999997019768, 16.0, 15.5 ], "axis": "y", "angle": 22.5 },
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 1.20, 1.20 ] },
+                "south": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 1.20, 1.20 ] },
+                "up": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] },
+                "down": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.20 ] }
+            }
+        },
+        {
+            "name": "grip_4",
+            "from": [ 11.40, 15.50, 14.20 ], 
+            "to": [ 11.90, 17.10, 15.80 ], 
+            "rotation": { "origin": [ 10.799999997019768, 16.0, 15.5 ], "axis": "y", "angle": 22.5 },
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 1.60, 1.60 ] },
+                "south": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 1.60, 1.60 ] },
+                "up": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] },
+                "down": { "texture": "#2", "uv": [ 0.00, 0.00, 0.50, 1.60 ] }
+            }
+        }
+    ]
+}

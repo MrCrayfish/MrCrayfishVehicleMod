@@ -2,11 +2,7 @@ package com.mrcrayfish.vehicle;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
-import com.mrcrayfish.vehicle.entity.EntityATV;
-import com.mrcrayfish.vehicle.entity.EntityDuneBuggy;
-import com.mrcrayfish.vehicle.entity.EntityGoKart;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
@@ -44,6 +40,7 @@ public class VehicleMod
         }
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "go_kart"), EntityGoKart.class, "Go-Kart", 3, this, 64, 1, true);
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "shopping_cart"), EntityShoppingCart.class, "Shopping Cart", 4, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "mini_bike"), EntityMiniBike.class, "mini_bike", 5, this, 64, 1, true);
 
         proxy.preInit();
     }

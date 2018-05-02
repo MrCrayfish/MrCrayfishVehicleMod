@@ -1,5 +1,6 @@
-package com.mrcrayfish.vehicle.entity;
+package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityATV extends EntityColoredVehicle
+public class EntityDuneBuggy extends EntityVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -19,12 +20,12 @@ public class EntityATV extends EntityColoredVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack handleBar;
 
-    //TODO make it so vehicle base can set properties
-    public EntityATV(World worldIn)
+    public EntityDuneBuggy(World worldIn)
     {
         super(worldIn);
-        this.setMaxSpeed(15);
-        this.setSize(1.5F, 1.5F);
+        this.setMaxSpeed(10);
+        this.setSize(0.75F, 0.75F);
+        this.stepHeight = 0.5F;
     }
 
     @Override
@@ -34,9 +35,9 @@ public class EntityATV extends EntityColoredVehicle
 
         if(world.isRemote)
         {
-            body = new ItemStack(ModItems.ATV_BODY);
-            handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
-            wheel = new ItemStack(ModItems.WHEEL);
+            body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
+            handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
+            wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
         }
     }
 
@@ -55,6 +56,6 @@ public class EntityATV extends EntityColoredVehicle
     @Override
     public double getMountedYOffset()
     {
-        return 9 * 0.0625;
+        return 3.25 * 0.0625;
     }
 }

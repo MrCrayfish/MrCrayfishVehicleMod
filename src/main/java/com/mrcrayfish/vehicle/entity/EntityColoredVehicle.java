@@ -18,7 +18,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public abstract class EntityColoredVehicle extends EntityVehicle
 {
-    private static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     protected EntityColoredVehicle(World worldIn)
     {

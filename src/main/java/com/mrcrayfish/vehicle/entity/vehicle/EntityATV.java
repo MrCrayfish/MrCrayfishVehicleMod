@@ -1,5 +1,6 @@
-package com.mrcrayfish.vehicle.entity;
+package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -11,20 +12,20 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKart extends EntityColoredVehicle
+public class EntityATV extends EntityColoredVehicle
 {
     /**
      * ItemStack instances used for rendering
      */
     @SideOnly(Side.CLIENT)
-    public ItemStack steeringWheel;
+    public ItemStack handleBar;
 
-    public EntityGoKart(World worldIn)
+    //TODO make it so vehicle base can set properties
+    public EntityATV(World worldIn)
     {
         super(worldIn);
-        this.setMaxSpeed(20F);
-        this.setTurnSensitivity(15);
-        this.setSize(1.5F, 1.5F);
+        this.setMaxSpeed(15);
+        this.setSize(1.5F, 1.0F);
     }
 
     @Override
@@ -34,39 +35,27 @@ public class EntityGoKart extends EntityColoredVehicle
 
         if(world.isRemote)
         {
-            body = new ItemStack(ModItems.GO_KART_BODY);
+            body = new ItemStack(ModItems.ATV_BODY);
+            handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
             wheel = new ItemStack(ModItems.WHEEL);
-            steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
         }
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO;
+        return ModSounds.ATV_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO;
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.6F;
+        return ModSounds.ATV_ENGINE_STEREO;
     }
 
     @Override
     public double getMountedYOffset()
     {
-        return 0;
+        return 9 * 0.0625;
     }
 }
