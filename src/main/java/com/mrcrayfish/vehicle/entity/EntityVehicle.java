@@ -44,6 +44,7 @@ public abstract class EntityVehicle extends Entity
     public float currentSpeed;
     public float speedMultiplier;
 
+    public int turnAngle;
     public float wheelAngle;
     public float prevWheelAngle;
     public float frontWheelRotation;
@@ -243,12 +244,25 @@ public abstract class EntityVehicle extends Entity
 
     private void updateWheels()
     {
-        float wheelRotation = 45F; //change to global var
-        float speedPercent = (float) (this.currentSpeed / this.maxSpeed);
-
         TurnDirection direction = this.getTurnDirection();
-        this.wheelAngle = direction == TurnDirection.RIGHT ? -wheelRotation : direction == TurnDirection.LEFT ? wheelRotation : wheelAngle * 0.5F;
-        this.wheelAngle *= Math.max(0.25F, 1.0F - Math.abs(speedPercent));
+        if(direction != TurnDirection.FORWARD)
+        {
+            if(Math.abs(this.turnAngle + direction.dir * 10) < 45)
+            {
+                this.turnAngle += direction.dir * 10;
+                if(this.turnAngle > 45)
+                {
+                    this.turnAngle = 45;
+                }
+            }
+        }
+        else
+        {
+            this.turnAngle *= 0.75;
+        }
+
+        float speedPercent = (float) (this.currentSpeed / this.maxSpeed);
+        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent));
         this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
 
         Acceleration acceleration = this.getAcceleration();
