@@ -422,8 +422,8 @@ public abstract class EntityVehicle extends Entity
     {
         super.updatePassenger(passenger);
         //TODO change to config option
-        //passenger.rotationYaw -= deltaYaw;
-        //passenger.setRotationYawHead(this.rotationYaw);
+        passenger.rotationYaw -= deltaYaw;
+        passenger.setRotationYawHead(this.rotationYaw);
     }
 
     @Override
