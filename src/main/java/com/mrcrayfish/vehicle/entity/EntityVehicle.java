@@ -35,6 +35,7 @@ public abstract class EntityVehicle extends Entity
 {
     private static final DataParameter<Float> SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
@@ -107,6 +108,7 @@ public abstract class EntityVehicle extends Entity
     {
         this.dataManager.register(SPEED, 0F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
+        this.dataManager.register(TURN_SENSITIVITY, 10);
         this.dataManager.register(DRIFTING, false);
         this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
         this.dataManager.register(TIME_SINCE_HIT, 0);
@@ -247,7 +249,7 @@ public abstract class EntityVehicle extends Entity
         TurnDirection direction = this.getTurnDirection();
         if(direction != TurnDirection.FORWARD)
         {
-            if(Math.abs(this.turnAngle + direction.dir * 10) < 45)
+            if(Math.abs(this.turnAngle + direction.dir * getTurnSensitivity()) < 45)
             {
                 this.turnAngle += direction.dir * 10;
                 if(this.turnAngle > 45)
@@ -475,6 +477,16 @@ public abstract class EntityVehicle extends Entity
     public Acceleration getAcceleration()
     {
         return Acceleration.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
+    }
+
+    public void setTurnSensitivity(int sensitivity)
+    {
+        this.dataManager.set(TURN_SENSITIVITY, sensitivity);
+    }
+
+    public int getTurnSensitivity()
+    {
+        return this.dataManager.get(TURN_SENSITIVITY);
     }
 
     /**

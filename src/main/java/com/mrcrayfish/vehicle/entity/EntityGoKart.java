@@ -23,6 +23,7 @@ public class EntityGoKart extends EntityColoredVehicle
     {
         super(worldIn);
         this.setMaxSpeed(20F);
+        this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.5F);
     }
 
