@@ -43,6 +43,10 @@ public class RenderMiniBike extends RenderVehicle<EntityMiniBike>
             GlStateManager.scale(1.05, 1.05, 1.05);
             GlStateManager.translate(0, 0.15, 0.15);
 
+            float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -20F, 0, 0, 1);
+
             this.setupBreakAnimation(entity, partialTicks);
 
             GlStateManager.pushMatrix();
@@ -62,16 +66,19 @@ public class RenderMiniBike extends RenderVehicle<EntityMiniBike>
             }
             GlStateManager.popMatrix();
 
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
-            double wheelScale = 1.65F;
+
 
             //Render the handles bars
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.5, 10.5 * 0.0625);
                 GlStateManager.rotate(-22.5F, 1, 0, 0);
+
+                float wheelScale = 1.65F;
+                float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 25F;
+
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 GlStateManager.translate(0, 0, -10.5 * 0.0625);

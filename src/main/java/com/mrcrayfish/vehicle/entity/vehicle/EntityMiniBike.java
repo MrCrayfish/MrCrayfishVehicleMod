@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.EntityColoredMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityMiniBike extends EntityColoredVehicle
+public class EntityMiniBike extends EntityColoredMotorcycle
 {
     /**
      * ItemStack instances used for rendering

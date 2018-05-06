@@ -43,10 +43,12 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
+    public float prevCurrentSpeed;
     public float currentSpeed;
     public float speedMultiplier;
 
     public int turnAngle;
+    public int prevTurnAngle;
 
     public float wheelAngle;
     public float prevWheelAngle;
@@ -159,6 +161,8 @@ public abstract class EntityVehicle extends Entity
     {
         super.onEntityUpdate();
 
+        prevCurrentSpeed = currentSpeed;
+        prevTurnAngle = turnAngle;
         prevWheelAngle = wheelAngle;
         prevFrontWheelRotation = frontWheelRotation;
         prevRearWheelRotation = rearWheelRotation;
@@ -252,13 +256,10 @@ public abstract class EntityVehicle extends Entity
         TurnDirection direction = this.getTurnDirection();
         if(direction != TurnDirection.FORWARD)
         {
-            if(Math.abs(this.turnAngle + direction.dir * getTurnSensitivity()) < 45)
+            this.turnAngle += direction.dir * getTurnSensitivity();
+            if(Math.abs(this.turnAngle) > 45)
             {
-                this.turnAngle += direction.dir * 10;
-                if(this.turnAngle > 45)
-                {
-                    this.turnAngle = 45;
-                }
+                this.turnAngle = 45 * direction.dir;
             }
         }
         else
