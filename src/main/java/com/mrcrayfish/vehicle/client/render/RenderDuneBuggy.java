@@ -138,7 +138,5 @@ public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
-
-        RenderHelper.disableStandardItemLighting();
     }
 }
