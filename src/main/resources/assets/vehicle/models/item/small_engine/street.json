@@ -1,5 +1,5 @@
 {
-    "parent": "vehicle:item/engine",
+    "parent": "vehicle:item/small_engine",
     "textures": {
         "tier": "blocks/gold_block"
     }

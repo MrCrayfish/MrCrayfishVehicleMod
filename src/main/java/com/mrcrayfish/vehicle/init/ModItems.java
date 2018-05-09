@@ -38,7 +38,7 @@ public class ModItems
         MINI_BIKE_BODY = new ItemColoredPart("mini_bike_body");
         MINI_BIKE_HANDLE_BAR = new ItemColoredPart("mini_bike_handle_bar");
 
-        ENGINE = new ItemEngine("engine");
+        ENGINE = new ItemEngine("small_engine");
     }
 
     public static void register()
