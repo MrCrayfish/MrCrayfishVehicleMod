@@ -19,6 +19,7 @@ public class RenderGoKart extends RenderVehicle<EntityGoKart>
     public RenderGoKart(RenderManager renderManager)
     {
         super(renderManager);
+        this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F));
         wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F));
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F));

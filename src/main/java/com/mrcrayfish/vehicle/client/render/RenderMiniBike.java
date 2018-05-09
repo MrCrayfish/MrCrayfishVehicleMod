@@ -1,14 +1,12 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
-import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 
 /**
  * Author: MrCrayfish
@@ -18,6 +16,7 @@ public class RenderMiniBike extends RenderVehicle<EntityMiniBike>
     public RenderMiniBike(RenderManager renderManager)
     {
         super(renderManager);
+        this.setEnginePosition(0F, 7.25F, 3F, 180F, 1.0F);
         this.wheels.add(new Wheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, -6.7F, 1.65F));
     }
 
@@ -56,17 +55,13 @@ public class RenderMiniBike extends RenderVehicle<EntityMiniBike>
             }
             GlStateManager.popMatrix();
 
-            double bodyOffset = 0.5;
-
             //Render the body
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, bodyOffset, 0);
+                GlStateManager.translate(0, 0.5, 0);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
-
-
 
             //Render the handles bars
             GlStateManager.pushMatrix();

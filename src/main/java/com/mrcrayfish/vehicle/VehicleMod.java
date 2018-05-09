@@ -3,9 +3,12 @@ package com.mrcrayfish.vehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -22,6 +25,15 @@ public class VehicleMod
 {
     @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_SERVER)
     public static Proxy proxy;
+
+    public static final CreativeTabs CREATIVE_TAB = new CreativeTabs("tabVehicle")
+    {
+        @Override
+        public ItemStack getTabIconItem()
+        {
+            return new ItemStack(ModItems.ENGINE);
+        }
+    };
 
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event)

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.item.ItemColoredPart;
+import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import net.minecraft.item.Item;
 
@@ -21,6 +22,8 @@ public class ModItems
     public static final Item MINI_BIKE_BODY;
     public static final Item MINI_BIKE_HANDLE_BAR;
 
+    public static final Item ENGINE;
+
     static
     {
         WHEEL = new ItemPart("wheel");
@@ -34,6 +37,8 @@ public class ModItems
         SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
         MINI_BIKE_BODY = new ItemColoredPart("mini_bike_body");
         MINI_BIKE_HANDLE_BAR = new ItemColoredPart("mini_bike_handle_bar");
+
+        ENGINE = new ItemEngine("engine");
     }
 
     public static void register()
@@ -49,6 +54,8 @@ public class ModItems
         register(SHOPPING_CART_BODY);
         register(MINI_BIKE_BODY);
         register(MINI_BIKE_HANDLE_BAR);
+
+        register(ENGINE);
     }
 
     private static void register(Item item)

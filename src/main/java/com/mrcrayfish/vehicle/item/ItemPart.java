@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import net.minecraft.item.Item;
 
 /**
@@ -11,5 +12,6 @@ public class ItemPart extends Item
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);
+        this.setCreativeTab(VehicleMod.CREATIVE_TAB);
     }
 }

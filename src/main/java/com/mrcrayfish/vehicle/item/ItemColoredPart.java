@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleMod;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
@@ -17,6 +18,7 @@ public class ItemColoredPart extends ItemVehicleBody implements SubItems
         this.setRegistryName(id);
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
+        this.setCreativeTab(VehicleMod.CREATIVE_TAB);
     }
 
     @Override

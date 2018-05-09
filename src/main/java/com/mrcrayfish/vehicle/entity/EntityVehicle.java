@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
@@ -42,6 +43,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -68,11 +70,16 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
+    private EngineType engineType = EngineType.POOR;
+
     /**
      * ItemStack instances used for rendering
      */
     @SideOnly(Side.CLIENT)
     public ItemStack body, wheel;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack engine;
 
     protected EntityVehicle(World worldIn)
     {
@@ -118,6 +125,12 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
         this.dataManager.register(TIME_SINCE_HIT, 0);
         this.dataManager.register(DAMAGE_TAKEN, 0F);
+        this.dataManager.register(ENGINE_TYPE, 0);
+
+        if(this.world.isRemote)
+        {
+            engine = new ItemStack(ModItems.ENGINE);
+        }
     }
 
     @Override
@@ -212,18 +225,18 @@ public abstract class EntityVehicle extends Entity
         Acceleration acceleration = this.getAcceleration();
         if(acceleration == Acceleration.FORWARD)
         {
-            this.currentSpeed += 0.5F;
-            if(this.currentSpeed > this.getMaxSpeed())
+            this.currentSpeed += 0.5F * engineType.getAccelerationMultiplier();
+            if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
             {
-                this.currentSpeed = this.getMaxSpeed();
+                this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
             }
         }
         else if(acceleration == Acceleration.REVERSE)
         {
-            this.currentSpeed -= 1.5F;
-            if(this.currentSpeed < -4.0F)
+            this.currentSpeed -= 1.5F * engineType.getAccelerationMultiplier();
+            if(this.currentSpeed < -(4.0F  + engineType.getAdditionalMaxSpeed() / 2))
             {
-                this.currentSpeed = -4.0F;
+                this.currentSpeed = -(4.0F  + engineType.getAdditionalMaxSpeed() / 2);
             }
         }
         else
@@ -395,6 +408,10 @@ public abstract class EntityVehicle extends Entity
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
+        if(compound.hasKey("engineType", Constants.NBT.TAG_INT))
+        {
+            this.setEngineType(EngineType.getType(compound.getInteger("engineType")));
+        }
         if(compound.hasKey("maxSpeed", Constants.NBT.TAG_FLOAT))
         {
             this.setMaxSpeed(compound.getFloat("maxSpeed"));
@@ -408,6 +425,7 @@ public abstract class EntityVehicle extends Entity
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
+        compound.setInteger("engineType", this.dataManager.get(ENGINE_TYPE));
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
     }
@@ -542,6 +560,27 @@ public abstract class EntityVehicle extends Entity
     public float getDamageTaken()
     {
         return this.dataManager.get(DAMAGE_TAKEN);
+    }
+
+    public void setEngineType(EngineType engineType)
+    {
+        this.dataManager.set(ENGINE_TYPE, engineType.ordinal());
+        this.engineType = engineType;
+    }
+
+    @Override
+    public void notifyDataManagerChange(DataParameter<?> key)
+    {
+        super.notifyDataManagerChange(key);
+        if(world.isRemote)
+        {
+            if(ENGINE_TYPE.equals(key))
+            {
+                EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
+                this.engineType = type;
+                engine.setItemDamage(type.ordinal());
+            }
+        }
     }
 
     @Override

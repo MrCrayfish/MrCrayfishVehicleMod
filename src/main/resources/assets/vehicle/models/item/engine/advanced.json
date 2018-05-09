@@ -1,0 +1,6 @@
+{
+    "parent": "vehicle:item/engine",
+    "textures": {
+        "tier": "blocks/iron_block"
+    }
+}
