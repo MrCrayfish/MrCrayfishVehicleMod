@@ -112,4 +112,10 @@ public class EntityShoppingCart extends EntityVehicle
     {
         super.dismountRidingEntity();
     }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return false;
+    }
 }

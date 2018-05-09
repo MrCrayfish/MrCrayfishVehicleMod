@@ -58,4 +58,10 @@ public class EntityDuneBuggy extends EntityVehicle
     {
         return 3.25 * 0.0625;
     }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return false;
+    }
 }

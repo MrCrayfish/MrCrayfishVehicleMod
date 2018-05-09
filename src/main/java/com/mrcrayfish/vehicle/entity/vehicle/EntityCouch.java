@@ -50,4 +50,10 @@ public class EntityCouch extends EntityVehicle
     {
         return 0.525;
     }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return false;
+    }
 }

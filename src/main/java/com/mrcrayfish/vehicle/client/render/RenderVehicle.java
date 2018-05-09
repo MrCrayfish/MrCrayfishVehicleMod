@@ -39,16 +39,19 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
     {
         wheels.forEach(wheel -> wheel.render(entity, partialTicks));
 
-        GlStateManager.pushMatrix();
+        if(entity.shouldRenderEngine())
         {
-            GlStateManager.translate(enginePosition.x * 0.0625, enginePosition.y * 0.0625, enginePosition.z * 0.0625);
-            GlStateManager.translate(0, -0.5, 0);
-            GlStateManager.scale(enginePosition.scale, enginePosition.scale, enginePosition.scale);
-            GlStateManager.translate(0, 0.5, 0);
-            GlStateManager.rotate(enginePosition.rotation, 0, 1, 0);
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.engine, ItemCameraTransforms.TransformType.NONE);
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.translate(enginePosition.x * 0.0625, enginePosition.y * 0.0625, enginePosition.z * 0.0625);
+                GlStateManager.translate(0, -0.5, 0);
+                GlStateManager.scale(enginePosition.scale, enginePosition.scale, enginePosition.scale);
+                GlStateManager.translate(0, 0.5, 0);
+                GlStateManager.rotate(enginePosition.rotation, 0, 1, 0);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.engine, ItemCameraTransforms.TransformType.NONE);
+            }
+            GlStateManager.popMatrix();
         }
-        GlStateManager.popMatrix();
     }
 
     public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)

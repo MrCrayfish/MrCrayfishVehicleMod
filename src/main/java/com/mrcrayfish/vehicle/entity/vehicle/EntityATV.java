@@ -58,4 +58,10 @@ public class EntityATV extends EntityColoredVehicle
     {
         return 9 * 0.0625;
     }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return false;
+    }
 }

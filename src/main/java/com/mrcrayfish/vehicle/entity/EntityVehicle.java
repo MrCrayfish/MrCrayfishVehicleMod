@@ -568,6 +568,12 @@ public abstract class EntityVehicle extends Entity
         this.engineType = engineType;
     }
 
+    @SideOnly(Side.CLIENT)
+    public boolean shouldRenderEngine()
+    {
+        return true;
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
