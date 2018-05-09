@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.item;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -46,9 +47,14 @@ public class ItemEngine extends ItemPart implements SubItems
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack)
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        EngineType type = EngineType.getType(stack.getMetadata());
-        return super.getUnlocalizedName(stack) + "." + type.toString().toLowerCase();
+        if(this.isInCreativeTab(tab))
+        {
+            for(EngineType type : EngineType.values())
+            {
+                items.add(new ItemStack(this, 1, type.ordinal()));
+            }
+        }
     }
 }
