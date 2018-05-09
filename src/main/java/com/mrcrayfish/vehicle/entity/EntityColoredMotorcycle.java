@@ -85,6 +85,7 @@ public abstract class EntityColoredMotorcycle extends EntityMotorcycle
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
+        super.writeEntityToNBT(compound);
         compound.setInteger("color", this.getColor().getMetadata());
     }
 }

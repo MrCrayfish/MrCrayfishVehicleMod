@@ -70,8 +70,6 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
-    private EngineType engineType = EngineType.POOR;
-
     /**
      * ItemStack instances used for rendering
      */
@@ -222,6 +220,7 @@ public abstract class EntityVehicle extends Entity
 
     private void updateSpeed()
     {
+        EngineType engineType = this.getEngineType();
         Acceleration acceleration = this.getAcceleration();
         if(acceleration == Acceleration.FORWARD)
         {
@@ -425,7 +424,7 @@ public abstract class EntityVehicle extends Entity
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
-        compound.setInteger("engineType", this.dataManager.get(ENGINE_TYPE));
+        compound.setInteger("engineType", this.getEngineType().ordinal());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
     }
@@ -565,7 +564,16 @@ public abstract class EntityVehicle extends Entity
     public void setEngineType(EngineType engineType)
     {
         this.dataManager.set(ENGINE_TYPE, engineType.ordinal());
-        this.engineType = engineType;
+
+        if(this.world.isRemote)
+        {
+
+        }
+    }
+
+    public EngineType getEngineType()
+    {
+        return EngineType.getType(this.dataManager.get(ENGINE_TYPE));
     }
 
     @SideOnly(Side.CLIENT)
@@ -583,7 +591,6 @@ public abstract class EntityVehicle extends Entity
             if(ENGINE_TYPE.equals(key))
             {
                 EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
-                this.engineType = type;
                 engine.setItemDamage(type.ordinal());
             }
         }
