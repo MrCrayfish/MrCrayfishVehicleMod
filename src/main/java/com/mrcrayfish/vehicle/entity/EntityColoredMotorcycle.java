@@ -17,7 +17,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public abstract class EntityColoredMotorcycle extends EntityMotorcycle
 {
-    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityColoredMotorcycle.class, DataSerializers.VARINT);
 
     public EntityColoredMotorcycle(World worldIn)
     {

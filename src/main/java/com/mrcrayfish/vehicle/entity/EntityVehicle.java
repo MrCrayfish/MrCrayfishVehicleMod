@@ -564,11 +564,6 @@ public abstract class EntityVehicle extends Entity
     public void setEngineType(EngineType engineType)
     {
         this.dataManager.set(ENGINE_TYPE, engineType.ordinal());
-
-        if(this.world.isRemote)
-        {
-
-        }
     }
 
     public EngineType getEngineType()
