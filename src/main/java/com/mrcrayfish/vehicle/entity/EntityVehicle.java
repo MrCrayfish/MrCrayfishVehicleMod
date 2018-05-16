@@ -37,6 +37,7 @@ public abstract class EntityVehicle extends Entity
 {
     private static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
@@ -117,10 +118,11 @@ public abstract class EntityVehicle extends Entity
     {
         this.dataManager.register(CURRENT_SPEED, 0F);
         this.dataManager.register(MAX_SPEED, 10F);
+        this.dataManager.register(ACCELERATION_SPEED, 0.5F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(TURN_SENSITIVITY, 10);
         this.dataManager.register(DRIFTING, false);
-        this.dataManager.register(ACCELERATION_DIRECTION, Acceleration.NONE.ordinal());
+        this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.dataManager.register(TIME_SINCE_HIT, 0);
         this.dataManager.register(DAMAGE_TAKEN, 0F);
         this.dataManager.register(ENGINE_TYPE, 0);
@@ -221,18 +223,18 @@ public abstract class EntityVehicle extends Entity
     private void updateSpeed()
     {
         EngineType engineType = this.getEngineType();
-        Acceleration acceleration = this.getAcceleration();
-        if(acceleration == Acceleration.FORWARD)
+        AccelerationDirection acceleration = this.getAcceleration();
+        if(acceleration == AccelerationDirection.FORWARD)
         {
-            this.currentSpeed += 0.5F * engineType.getAccelerationMultiplier();
+            this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
             if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
             {
                 this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
             }
         }
-        else if(acceleration == Acceleration.REVERSE)
+        else if(acceleration == AccelerationDirection.REVERSE)
         {
-            this.currentSpeed -= 1.5F * engineType.getAccelerationMultiplier();
+            this.currentSpeed -= this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
             if(this.currentSpeed < -(4.0F  + engineType.getAdditionalMaxSpeed() / 2))
             {
                 this.currentSpeed = -(4.0F  + engineType.getAdditionalMaxSpeed() / 2);
@@ -244,7 +246,7 @@ public abstract class EntityVehicle extends Entity
         }
 
         TurnDirection turnDirection = this.getTurnDirection();
-        if(this.isDrifting() && acceleration == Acceleration.FORWARD && turnDirection != TurnDirection.FORWARD)
+        if(this.isDrifting() && acceleration == AccelerationDirection.FORWARD && turnDirection != TurnDirection.FORWARD)
         {
             this.currentSpeed *= 0.95F;
         }
@@ -283,8 +285,8 @@ public abstract class EntityVehicle extends Entity
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent)); //TODO turn resistance
         this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
 
-        Acceleration acceleration = this.getAcceleration();
-        if(acceleration == Acceleration.FORWARD)
+        AccelerationDirection acceleration = this.getAcceleration();
+        if(acceleration == AccelerationDirection.FORWARD)
         {
             this.rearWheelRotation -= 68F * (1.0 - speedPercent);
         }
@@ -294,7 +296,7 @@ public abstract class EntityVehicle extends Entity
 
     private void createParticles()
     {
-        if(this.getAcceleration() == Acceleration.FORWARD)
+        if(this.getAcceleration() == AccelerationDirection.FORWARD)
         {
             if(this.isDrifting())
             {
@@ -316,7 +318,7 @@ public abstract class EntityVehicle extends Entity
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
-            Acceleration acceleration = Acceleration.fromEntity(entity);
+            AccelerationDirection acceleration = AccelerationDirection.fromEntity(entity);
             if(this.getAcceleration() != acceleration)
             {
                 this.setAcceleration(acceleration);
@@ -415,6 +417,10 @@ public abstract class EntityVehicle extends Entity
         {
             this.setMaxSpeed(compound.getFloat("maxSpeed"));
         }
+        if(compound.hasKey("accelerationSpeed", Constants.NBT.TAG_FLOAT))
+        {
+            this.setAccelerationSpeed(compound.getFloat("accelerationSpeed"));
+        }
         if(compound.hasKey("turnSensitivity", Constants.NBT.TAG_INT))
         {
             this.setTurnSensitivity(compound.getInteger("turnSensitivity"));
@@ -426,6 +432,7 @@ public abstract class EntityVehicle extends Entity
     {
         compound.setInteger("engineType", this.getEngineType().ordinal());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
+        compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
     }
 
@@ -484,6 +491,16 @@ public abstract class EntityVehicle extends Entity
         return this.currentSpeed / this.getMaxSpeed();
     }
 
+    public float getAccelerationSpeed()
+    {
+        return this.dataManager.get(ACCELERATION_SPEED);
+    }
+
+    public void setAccelerationSpeed(float speed)
+    {
+        this.dataManager.set(ACCELERATION_SPEED, speed);
+    }
+
     public double getKilometersPreHour()
     {
         return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 3.6;
@@ -509,14 +526,14 @@ public abstract class EntityVehicle extends Entity
         return this.dataManager.get(DRIFTING);
     }
 
-    public void setAcceleration(Acceleration direction)
+    public void setAcceleration(AccelerationDirection direction)
     {
         this.dataManager.set(ACCELERATION_DIRECTION, direction.ordinal());
     }
 
-    public Acceleration getAcceleration()
+    public AccelerationDirection getAcceleration()
     {
-        return Acceleration.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
+        return AccelerationDirection.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
     }
 
     public void setTurnSensitivity(int sensitivity)
@@ -639,11 +656,11 @@ public abstract class EntityVehicle extends Entity
         }
     }
 
-    public enum Acceleration
+    public enum AccelerationDirection
     {
         FORWARD, NONE, REVERSE;
 
-        public static Acceleration fromEntity(EntityLivingBase entity)
+        public static AccelerationDirection fromEntity(EntityLivingBase entity)
         {
             if(entity.moveForward > 0)
             {

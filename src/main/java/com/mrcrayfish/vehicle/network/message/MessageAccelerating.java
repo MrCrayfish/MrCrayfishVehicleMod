@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageAccelerating implements IMessage, IMessageHandler<MessageAccelerating, IMessage>
 {
-	private EntityVehicle.Acceleration acceleration;
+	private EntityVehicle.AccelerationDirection acceleration;
 
 	public MessageAccelerating() {}
 
-	public MessageAccelerating(EntityVehicle.Acceleration acceleration)
+	public MessageAccelerating(EntityVehicle.AccelerationDirection acceleration)
 	{
 		this.acceleration = acceleration;
 	}
@@ -28,7 +28,7 @@ public class MessageAccelerating implements IMessage, IMessageHandler<MessageAcc
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		this.acceleration = EntityVehicle.Acceleration.values()[buf.readInt()];
+		this.acceleration = EntityVehicle.AccelerationDirection.values()[buf.readInt()];
 	}
 
 	@Override
