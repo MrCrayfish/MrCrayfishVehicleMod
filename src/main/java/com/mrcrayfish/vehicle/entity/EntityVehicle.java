@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.client.ClientEvents;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -204,28 +203,23 @@ public abstract class EntityVehicle extends Entity
 
         if(world.isRemote)
         {
-            onClientUpdate();
+            this.onClientUpdate();
         }
 
-        currentSpeed = getSpeed();
+        if(this.getControllingPassenger() != null)
+        {
+            this.createParticles();
+        }
 
-        EntityLivingBase entity = (EntityLivingBase) getControllingPassenger();
-        if(entity != null)
-        {
-            currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
-            setSpeed(currentSpeed);
-            createParticles();
-        }
-        else
-        {
-            currentSpeed *= 0.5F;
-            setSpeed(currentSpeed);
-        }
+        currentSpeed = this.getSpeed();
 
         /* Handle the current speed of the vehicle based on rider's forward movement */
-        updateSpeed();
-        updateDrifting();
-        updateWheels();
+        this.updateSpeed();
+        this.updateDrifting();
+        this.updateWheels();
+
+        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
+        this.setSpeed(currentSpeed);
 
         motionY -= 0.08D;
         rotationYaw -= deltaYaw;
@@ -238,7 +232,7 @@ public abstract class EntityVehicle extends Entity
         motionZ *= 0.8;
         speedMultiplier *= 0.85;
 
-        doBlockCollisions();
+        this.doBlockCollisions();
     }
 
     private void updateSpeed()
@@ -270,7 +264,7 @@ public abstract class EntityVehicle extends Entity
         }
         else
         {
-            this.currentSpeed *= 0.9;
+            this.currentSpeed *= 0.5;
         }
     }
 
@@ -484,7 +478,7 @@ public abstract class EntityVehicle extends Entity
     @Nullable
     public Entity getControllingPassenger()
     {
-        return this.getPassengers().isEmpty() ? null : (Entity) this.getPassengers().get(0);
+        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
     }
 
     @Override
@@ -550,7 +544,7 @@ public abstract class EntityVehicle extends Entity
 
     public double getKilometersPreHour()
     {
-        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 3.6;
+        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20 * 3.6;
     }
 
     public void setTurnDirection(TurnDirection turnDirection)
