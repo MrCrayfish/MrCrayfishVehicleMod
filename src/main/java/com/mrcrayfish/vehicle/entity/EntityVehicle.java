@@ -130,7 +130,7 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
         this.dataManager.register(CURRENT_SPEED, 0F);
         this.dataManager.register(MAX_SPEED, 10F);
