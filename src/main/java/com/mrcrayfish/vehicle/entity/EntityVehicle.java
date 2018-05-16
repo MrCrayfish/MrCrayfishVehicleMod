@@ -7,6 +7,8 @@ import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import com.mrcrayfish.vehicle.network.message.MessageTurn;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,10 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -296,18 +295,26 @@ public abstract class EntityVehicle extends Entity
 
     private void createParticles()
     {
-        if(this.getAcceleration() == AccelerationDirection.FORWARD)
+        int x = MathHelper.floor(this.posX);
+        int y = MathHelper.floor(this.posY - 0.2D);
+        int z = MathHelper.floor(this.posZ);
+        BlockPos pos = new BlockPos(x, y, z);
+        IBlockState state = this.world.getBlockState(pos);
+        if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
         {
-            if(this.isDrifting())
+            if(this.getAcceleration() == AccelerationDirection.FORWARD)
             {
-                for(int i = 0; i < 3; i++)
+                if(this.isDrifting())
                 {
-                    this.createRunningParticles();
+                    for(int i = 0; i < 3; i++)
+                    {
+                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
+                    }
                 }
-            }
-            else
-            {
-                this.createRunningParticles();
+                else
+                {
+                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
+                }
             }
         }
     }
