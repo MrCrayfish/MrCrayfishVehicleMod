@@ -26,6 +26,7 @@ public class MovingSoundHornRiding extends MovingSound
         this.repeat = true;
         this.repeatDelay = 0;
         this.volume = 0.001F;
+        this.pitch = 0.85F;
     }
 
     @Override
