@@ -153,18 +153,22 @@ public abstract class EntityVehicle extends Entity
     @Override
     public void onUpdate()
     {
-        if (this.getTimeSinceHit() > 0)
+        if(this.getTimeSinceHit() > 0)
         {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
 
-        if (this.getDamageTaken() > 0.0F)
+        if(this.getDamageTaken() > 0.0F)
         {
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
 
         super.onUpdate();
-        this.tickLerp();
+
+        if(this.getControllingPassenger() != null)
+        {
+            this.tickLerp();
+        }
     }
 
     /**
@@ -172,14 +176,14 @@ public abstract class EntityVehicle extends Entity
      */
     private void tickLerp()
     {
-        if (this.lerpSteps > 0 && !this.canPassengerSteer())
+        if(this.lerpSteps > 0 && !this.canPassengerSteer())
         {
-            double d0 = this.posX + (this.lerpX - this.posX) / (double)this.lerpSteps;
-            double d1 = this.posY + (this.lerpY - this.posY) / (double)this.lerpSteps;
-            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double)this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double)this.rotationYaw);
-            this.rotationYaw = (float)((double)this.rotationYaw + d3 / (double)this.lerpSteps);
-            this.rotationPitch = (float)((double)this.rotationPitch + (this.lerpPitch - (double)this.rotationPitch) / (double)this.lerpSteps);
+            double d0 = this.posX + (this.lerpX - this.posX) / (double) this.lerpSteps;
+            double d1 = this.posY + (this.lerpY - this.posY) / (double) this.lerpSteps;
+            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double) this.lerpSteps;
+            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
+            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
+            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
             --this.lerpSteps;
             this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);
@@ -208,72 +212,78 @@ public abstract class EntityVehicle extends Entity
         EntityLivingBase entity = (EntityLivingBase) getControllingPassenger();
         if(entity != null)
         {
-            /* Handle the current speed of the vehicle based on rider's forward movement */
-            updateSpeed();
-            updateDrifting();
-            updateWheels();
-
             currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
             setSpeed(currentSpeed);
-
-            rotationYaw -= deltaYaw;
-            motionY -= 0.08D;
-
-            moveRelative(0, 0, currentSpeed, 0.01F);
-            move(MoverType.SELF, motionX * Math.abs(currentSpeed), motionY, motionZ * Math.abs(currentSpeed));
-
-            motionX *= 0.8;
-            motionY *= 0.9800000190734863D;
-            motionZ *= 0.8;
-            speedMultiplier *= 0.85;
-
-            doBlockCollisions();
             createParticles();
         }
         else
         {
-            currentSpeed = 0F;
+            currentSpeed *= 0.5F;
             setSpeed(currentSpeed);
         }
+
+        /* Handle the current speed of the vehicle based on rider's forward movement */
+        updateSpeed();
+        updateDrifting();
+        updateWheels();
+
+        motionY -= 0.08D;
+        rotationYaw -= deltaYaw;
+
+        moveRelative(0, 0, currentSpeed, 0.01F);
+        move(MoverType.SELF, motionX * Math.abs(currentSpeed), motionY, motionZ * Math.abs(currentSpeed));
+
+        motionX *= 0.8;
+        motionY *= 0.9800000190734863D;
+        motionZ *= 0.8;
+        speedMultiplier *= 0.85;
+
+        doBlockCollisions();
     }
 
     private void updateSpeed()
     {
         EngineType engineType = this.getEngineType();
         AccelerationDirection acceleration = this.getAcceleration();
-        if(acceleration == AccelerationDirection.FORWARD)
+        if(this.getControllingPassenger() != null)
         {
-            this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-            if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+            if(acceleration == AccelerationDirection.FORWARD)
             {
-                this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+                {
+                    this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                }
             }
-        }
-        else if(acceleration == AccelerationDirection.REVERSE)
-        {
-            this.currentSpeed -= this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-            if(this.currentSpeed < -(4.0F  + engineType.getAdditionalMaxSpeed() / 2))
+            else if(acceleration == AccelerationDirection.REVERSE)
             {
-                this.currentSpeed = -(4.0F  + engineType.getAdditionalMaxSpeed() / 2);
+                this.currentSpeed -= this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                if(this.currentSpeed < -(4.0F + engineType.getAdditionalMaxSpeed() / 2))
+                {
+                    this.currentSpeed = -(4.0F + engineType.getAdditionalMaxSpeed() / 2);
+                }
+            }
+            else
+            {
+                this.currentSpeed *= 0.9;
             }
         }
         else
         {
             this.currentSpeed *= 0.9;
         }
-
-        TurnDirection turnDirection = this.getTurnDirection();
-        if(this.isDrifting() && acceleration == AccelerationDirection.FORWARD && turnDirection != TurnDirection.FORWARD)
-        {
-            this.currentSpeed *= 0.95F;
-        }
     }
 
     private void updateDrifting()
     {
         TurnDirection turnDirection = this.getTurnDirection();
-        if(this.isDrifting() && turnDirection != TurnDirection.FORWARD)
+        if(this.getControllingPassenger() != null && this.isDrifting() && turnDirection != TurnDirection.FORWARD)
         {
+            AccelerationDirection acceleration = this.getAcceleration();
+            if(acceleration == AccelerationDirection.FORWARD)
+            {
+                this.currentSpeed *= 0.95F;
+            }
             this.additionalYaw = MathHelper.clamp(this.additionalYaw + 5F * turnDirection.getDir(), -35F, 35F);
         }
         else
@@ -285,7 +295,7 @@ public abstract class EntityVehicle extends Entity
     private void updateWheels()
     {
         TurnDirection direction = this.getTurnDirection();
-        if(direction != TurnDirection.FORWARD)
+        if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
         {
             this.turnAngle += direction.dir * getTurnSensitivity();
             if(Math.abs(this.turnAngle) > 45)
@@ -303,7 +313,7 @@ public abstract class EntityVehicle extends Entity
         this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
 
         AccelerationDirection acceleration = this.getAcceleration();
-        if(acceleration == AccelerationDirection.FORWARD)
+        if(this.getControllingPassenger() != null && acceleration == AccelerationDirection.FORWARD)
         {
             this.rearWheelRotation -= 68F * (1.0 - speedPercent);
         }
@@ -326,12 +336,12 @@ public abstract class EntityVehicle extends Entity
                 {
                     for(int i = 0; i < 3; i++)
                     {
-                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
+                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
                     }
                 }
                 else
                 {
-                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double)this.rand.nextFloat() - 0.5D) * (double)this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
+                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
                 }
             }
         }
@@ -397,13 +407,13 @@ public abstract class EntityVehicle extends Entity
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
-        if (this.isEntityInvulnerable(source))
+        if(this.isEntityInvulnerable(source))
         {
             return false;
         }
-        else if (!this.world.isRemote && !this.isDead)
+        else if(!this.world.isRemote && !this.isDead)
         {
-            if (source instanceof EntityDamageSourceIndirect && source.getTrueSource() != null && this.isPassenger(source.getTrueSource()))
+            if(source instanceof EntityDamageSourceIndirect && source.getTrueSource() != null && this.isPassenger(source.getTrueSource()))
             {
                 return false;
             }
@@ -412,10 +422,10 @@ public abstract class EntityVehicle extends Entity
                 this.setTimeSinceHit(10);
                 this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
 
-                boolean flag = source.getTrueSource() instanceof EntityPlayer && ((EntityPlayer)source.getTrueSource()).capabilities.isCreativeMode;
-                if (flag || this.getDamageTaken() > 40.0F)
+                boolean flag = source.getTrueSource() instanceof EntityPlayer && ((EntityPlayer) source.getTrueSource()).capabilities.isCreativeMode;
+                if(flag || this.getDamageTaken() > 40.0F)
                 {
-                    if (!flag && this.world.getGameRules().getBoolean("doEntityDrops"))
+                    if(!flag && this.world.getGameRules().getBoolean("doEntityDrops"))
                     {
                         //this.dropItemWithOffset(this.getItemBoat(), 1, 0.0F);
                     }
@@ -474,7 +484,7 @@ public abstract class EntityVehicle extends Entity
     @Nullable
     public Entity getControllingPassenger()
     {
-        return this.getPassengers().isEmpty() ? null : (Entity)this.getPassengers().get(0);
+        return this.getPassengers().isEmpty() ? null : (Entity) this.getPassengers().get(0);
     }
 
     @Override
@@ -487,7 +497,9 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {}
+    protected void playStepSound(BlockPos pos, Block blockIn)
+    {
+    }
 
     @SideOnly(Side.CLIENT)
     public void performHurtAnimation()
@@ -670,8 +682,8 @@ public abstract class EntityVehicle extends Entity
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;
-        this.lerpYaw = (double)yaw;
-        this.lerpPitch = (double)pitch;
+        this.lerpYaw = (double) yaw;
+        this.lerpPitch = (double) pitch;
         this.lerpSteps = 10;
     }
 
@@ -685,12 +697,23 @@ public abstract class EntityVehicle extends Entity
             this.posX = this.lerpX;
             this.posY = this.lerpY;
             this.posZ = this.lerpZ;
-            this.rotationYaw = (float)this.lerpYaw;
-            this.rotationPitch = (float)this.lerpPitch;
+            this.rotationYaw = (float) this.lerpYaw;
+            this.rotationPitch = (float) this.lerpPitch;
         }
         if(passenger instanceof EntityPlayer && world.isRemote)
         {
             VehicleMod.proxy.playVehicleSound((EntityPlayer) passenger, this);
+        }
+    }
+
+    @Override
+    protected void removePassenger(Entity passenger)
+    {
+        super.removePassenger(passenger);
+        if(this.getControllingPassenger() == null)
+        {
+            this.rotationYaw -= this.additionalYaw;
+            this.additionalYaw = 0;
         }
     }
 
