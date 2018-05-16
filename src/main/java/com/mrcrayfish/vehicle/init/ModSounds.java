@@ -13,6 +13,8 @@ import net.minecraftforge.registries.IForgeRegistry;
  */
 public class ModSounds
 {
+    public static final SoundEvent HORN_MONO;
+    public static final SoundEvent HORN_STEREO;
     public static final SoundEvent ATV_ENGINE_MONO;
     public static final SoundEvent ATV_ENGINE_STEREO;
     public static final SoundEvent GO_KART_ENGINE_MONO;
@@ -20,6 +22,8 @@ public class ModSounds
 
     static
     {
+        HORN_MONO = registerSound("vehicle:horn_mono");
+        HORN_STEREO = registerSound("vehicle:horn_stereo");
         ATV_ENGINE_MONO = registerSound("vehicle:atv_engine_mono");
         ATV_ENGINE_STEREO = registerSound("vehicle:atv_engine_stereo");
         GO_KART_ENGINE_MONO = registerSound("vehicle:go_kart_engine_mono");
@@ -40,6 +44,8 @@ public class ModSounds
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
             IForgeRegistry<SoundEvent> registry = event.getRegistry();
+            registry.register(HORN_MONO);
+            registry.register(HORN_STEREO);
             registry.register(ATV_ENGINE_MONO);
             registry.register(ATV_ENGINE_STEREO);
             registry.register(GO_KART_ENGINE_MONO);

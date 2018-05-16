@@ -1,4 +1,10 @@
 {
+    "horn_mono": {
+        "sounds": [ {"name": "vehicle:horn_mono"}]
+    },
+    "horn_stereo": {
+        "sounds": [ {"name": "vehicle:horn_stereo"}]
+    },
     "atv_engine_mono": {
         "sounds": [ {"name": "vehicle:atv_engine_mono"}]
     },

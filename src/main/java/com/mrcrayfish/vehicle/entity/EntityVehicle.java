@@ -1,11 +1,15 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.ClientEvents;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
+import com.mrcrayfish.vehicle.network.message.MessageHorn;
 import com.mrcrayfish.vehicle.network.message.MessageTurn;
+import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -45,6 +49,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -97,6 +102,17 @@ public abstract class EntityVehicle extends Entity
 
     public abstract SoundEvent getRidingSound();
 
+    //TODO ability to change with nbt
+    public SoundEvent getHornSound()
+    {
+        return ModSounds.HORN_MONO;
+    }
+
+    public SoundEvent getHornRidingSound()
+    {
+        return ModSounds.HORN_STEREO;
+    }
+
     public float getMinEnginePitch()
     {
         return 0.5F;
@@ -126,6 +142,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(TIME_SINCE_HIT, 0);
         this.dataManager.register(DAMAGE_TAKEN, 0F);
         this.dataManager.register(ENGINE_TYPE, 0);
+        this.dataManager.register(HORN, false);
 
         if(this.world.isRemote)
         {
@@ -345,6 +362,10 @@ public abstract class EntityVehicle extends Entity
                 this.setDrifting(drifting);
                 PacketHandler.INSTANCE.sendToServer(new MessageDrift(drifting));
             }
+
+            boolean horn = ClientProxy.KEY_HORN.isKeyDown();
+            this.setHorn(horn);
+            PacketHandler.INSTANCE.sendToServer(new MessageHorn(horn));
 
             TurnDirection direction = TurnDirection.FORWARD;
             if(entity.moveStrafing < 0)
@@ -618,6 +639,16 @@ public abstract class EntityVehicle extends Entity
         return false;
     }
 
+    public void setHorn(boolean activated)
+    {
+        this.dataManager.set(HORN, activated);
+    }
+
+    public boolean getHorn()
+    {
+        return this.dataManager.get(HORN);
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
@@ -657,7 +688,7 @@ public abstract class EntityVehicle extends Entity
             this.rotationYaw = (float)this.lerpYaw;
             this.rotationPitch = (float)this.lerpPitch;
         }
-        if(passenger instanceof EntityPlayer)
+        if(passenger instanceof EntityPlayer && world.isRemote)
         {
             VehicleMod.proxy.playVehicleSound((EntityPlayer) passenger, this);
         }
