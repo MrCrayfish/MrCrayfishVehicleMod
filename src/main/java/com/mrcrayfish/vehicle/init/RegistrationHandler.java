@@ -103,5 +103,6 @@ public class RegistrationHandler
     public static void init()
     {
         ModItems.register();
+        ModBlocks.register();
     }
 }
