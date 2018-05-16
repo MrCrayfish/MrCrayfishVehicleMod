@@ -25,7 +25,7 @@ public class EntityShoppingCart extends EntityVehicle
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
         super.entityInit();
 

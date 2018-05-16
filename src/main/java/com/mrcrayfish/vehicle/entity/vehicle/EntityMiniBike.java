@@ -33,7 +33,7 @@ public class EntityMiniBike extends EntityColoredMotorcycle
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
         super.entityInit();
 

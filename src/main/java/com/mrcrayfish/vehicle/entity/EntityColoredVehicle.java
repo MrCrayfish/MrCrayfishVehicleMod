@@ -26,7 +26,7 @@ public abstract class EntityColoredVehicle extends EntityVehicle
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
         super.entityInit();
         this.dataManager.register(COLOR, EnumDyeColor.BLUE.getMetadata());

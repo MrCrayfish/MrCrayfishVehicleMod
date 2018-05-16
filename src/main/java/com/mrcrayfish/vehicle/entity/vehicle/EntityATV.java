@@ -29,7 +29,7 @@ public class EntityATV extends EntityColoredVehicle
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
         super.entityInit();
 

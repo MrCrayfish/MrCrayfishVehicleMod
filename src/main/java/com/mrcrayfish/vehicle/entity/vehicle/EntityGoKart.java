@@ -30,7 +30,7 @@ public class EntityGoKart extends EntityColoredVehicle
     }
 
     @Override
-    protected void entityInit()
+    public void entityInit()
     {
         super.entityInit();
 
