@@ -9,6 +9,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -80,6 +81,18 @@ public class EntityMiniBike extends EntityColoredMotorcycle
     public float getMaxEnginePitch()
     {
         return 1.8F;
+    }
+
+    @Override
+    public boolean shouldShowEngineSmoke()
+    {
+        return true;
+    }
+
+    @Override
+    public Vec3d getEngineSmokePosition()
+    {
+        return new Vec3d(0, 0.55, 0);
     }
 
     @Override

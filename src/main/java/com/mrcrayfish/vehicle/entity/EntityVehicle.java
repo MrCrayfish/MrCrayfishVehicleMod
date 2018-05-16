@@ -22,6 +22,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
@@ -317,6 +318,12 @@ public abstract class EntityVehicle extends Entity
                 }
             }
         }
+
+        if(this.shouldShowEngineSmoke() && this.ticksExisted % 2 == 0)
+        {
+            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F);
+            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ, Block.getStateId(state));
+        }
     }
 
     @SideOnly(Side.CLIENT)
@@ -599,6 +606,16 @@ public abstract class EntityVehicle extends Entity
     public boolean shouldRenderEngine()
     {
         return true;
+    }
+
+    public Vec3d getEngineSmokePosition()
+    {
+        return new Vec3d(0, 0, 0);
+    }
+
+    public boolean shouldShowEngineSmoke()
+    {
+        return false;
     }
 
     @Override
