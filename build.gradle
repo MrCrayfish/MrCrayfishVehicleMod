@@ -38,7 +38,7 @@ repositories {
 }
 
 dependencies {
-    compile "com.mrcrayfish:obfuscate:0.2.3-1.12.2"
+    compile "com.mrcrayfish:obfuscate:0.2.4-1.12.2"
 }
 
 processResources {
