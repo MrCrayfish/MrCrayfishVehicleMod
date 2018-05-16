@@ -26,11 +26,13 @@ public class MovingSoundVehicleRiding extends MovingSound
         this.attenuationType = ISound.AttenuationType.NONE;
         this.repeat = true;
         this.repeatDelay = 0;
+        this.volume = 0.001F;
     }
 
     @Override
     public void update()
     {
+        this.volume = 0.8F;
         if(!vehicle.isDead && player.isRiding() && player.getRidingEntity() == vehicle && player == Minecraft.getMinecraft().player)
         {
             this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getNormalSpeed());

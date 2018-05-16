@@ -22,12 +22,13 @@ public class MovingSoundVehicle extends MovingSound
         this.vehicle = vehicle;
         this.repeat = true;
         this.repeatDelay = 0;
-        this.volume = 0.8F;
+        this.volume = 0.001F;
     }
 
     @Override
     public void update()
     {
+        this.volume = 0.8F;
         if(!vehicle.isDead && vehicle.getControllingPassenger() != null && vehicle.getControllingPassenger() != Minecraft.getMinecraft().player)
         {
             EntityPlayer localPlayer = Minecraft.getMinecraft().player;
