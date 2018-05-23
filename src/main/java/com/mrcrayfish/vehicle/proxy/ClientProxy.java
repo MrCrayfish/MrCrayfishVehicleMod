@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
+import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -28,10 +29,16 @@ public class ClientProxy implements Proxy
     {
         RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, RenderATV::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDuneBuggy.class, RenderDuneBuggy::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGoKart.class, RenderGoKart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
+
+        if(Loader.isModLoaded("cfm"))
+        {
+            RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
+        }
+
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         ClientRegistry.registerKeyBinding(KEY_HORN);
     }

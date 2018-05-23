@@ -92,7 +92,7 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity instanceof EntityGoKart)
+        if(ridingEntity instanceof EntityGoKart || ridingEntity instanceof EntityBumperCar)
         {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);

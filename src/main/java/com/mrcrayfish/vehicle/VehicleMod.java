@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
@@ -26,6 +27,8 @@ public class VehicleMod
     @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_SERVER)
     public static Proxy proxy;
 
+    public int nextEntityId;
+
     public static final CreativeTabs CREATIVE_TAB = new CreativeTabs("tabVehicle")
     {
         @Override
@@ -44,16 +47,28 @@ public class VehicleMod
         PacketHandler.init();
         CustomDataSerializers.register();
 
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "atv"), EntityATV.class, "ATV", 0, this, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "dune_buggy"), EntityDuneBuggy.class, "Dune Buggy", 1, this, 64, 1, true);
-        if(Loader.isModLoaded("cfm"))
-        {
-            EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "couch"), EntityCouch.class, "Couch", 2, this, 64, 1, true);
-        }
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "go_kart"), EntityGoKart.class, "Go-Kart", 3, this, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "shopping_cart"), EntityShoppingCart.class, "Shopping Cart", 4, this, 64, 1, true);
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "mini_bike"), EntityMiniBike.class, "mini_bike", 5, this, 64, 1, true);
+        registerVehicles();
 
         proxy.preInit();
+    }
+
+    private void registerVehicles()
+    {
+        registerVehicle("atv", EntityATV.class);
+        registerVehicle("dune_buggy", EntityDuneBuggy.class);
+        registerVehicle("go_kart", EntityGoKart.class);
+        registerVehicle("shopping_cart", EntityShoppingCart.class);
+        registerVehicle("mini_bike", EntityMiniBike.class);
+        registerVehicle("bumper_car", EntityBumperCar.class);
+
+        if(Loader.isModLoaded("cfm"))
+        {
+            registerVehicle("couch", EntityCouch.class);
+        }
+    }
+
+    private void registerVehicle(String id, Class<? extends EntityVehicle> clazz)
+    {
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, id, nextEntityId++, this, 64, 1, true);
     }
 }

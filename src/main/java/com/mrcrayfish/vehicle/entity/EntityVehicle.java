@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -16,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -32,6 +34,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -67,6 +70,10 @@ public abstract class EntityVehicle extends Entity
     public float deltaYaw;
     public float additionalYaw;
     public float prevAdditionalYaw;
+
+    public float additionalMotionX;
+    public float additionalMotionY;
+    public float additionalMotionZ;
 
     private int lerpSteps;
     private double lerpX;
@@ -162,37 +169,12 @@ public abstract class EntityVehicle extends Entity
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
 
+        this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;
+
         super.onUpdate();
-
-        if(this.getControllingPassenger() != null)
-        {
-            this.tickLerp();
-        }
-    }
-
-    /**
-     * Smooths the rendering on servers
-     */
-    private void tickLerp()
-    {
-        if(this.lerpSteps > 0 && !this.canPassengerSteer())
-        {
-            double d0 = this.posX + (this.lerpX - this.posX) / (double) this.lerpSteps;
-            double d1 = this.posY + (this.lerpY - this.posY) / (double) this.lerpSteps;
-            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double) this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
-            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
-            --this.lerpSteps;
-            this.setPosition(d0, d1, d2);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
-    }
-
-    @Override
-    public void onEntityUpdate()
-    {
-        super.onEntityUpdate();
+        this.tickLerp();
 
         prevCurrentSpeed = currentSpeed;
         prevTurnAngle = turnAngle;
@@ -225,14 +207,46 @@ public abstract class EntityVehicle extends Entity
         rotationYaw -= deltaYaw;
 
         moveRelative(0, 0, currentSpeed, 0.01F);
-        move(MoverType.SELF, motionX * Math.abs(currentSpeed), motionY, motionZ * Math.abs(currentSpeed));
+        move(MoverType.SELF, motionX * Math.abs(currentSpeed) + additionalMotionX, motionY + additionalMotionY, motionZ * Math.abs(currentSpeed) + additionalMotionZ);
 
         motionX *= 0.8;
         motionY *= 0.9800000190734863D;
         motionZ *= 0.8;
+        additionalMotionX *= 0.8;
+        additionalMotionY *= 0.9800000190734863D;
+        additionalMotionZ *= 0.8;
         speedMultiplier *= 0.85;
 
         this.doBlockCollisions();
+
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), entity -> entity instanceof EntityBumperCar);
+
+        if (!list.isEmpty())
+        {
+            for(Entity entity : list)
+            {
+                this.applyEntityCollision(entity);
+            }
+        }
+    }
+
+    /**
+     * Smooths the rendering on servers
+     */
+    private void tickLerp()
+    {
+        if(this.lerpSteps > 0 && !this.canPassengerSteer())
+        {
+            double d0 = this.posX + (this.lerpX - this.posX) / (double) this.lerpSteps;
+            double d1 = this.posY + (this.lerpY - this.posY) / (double) this.lerpSteps;
+            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double) this.lerpSteps;
+            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
+            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
+            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
+            --this.lerpSteps;
+            this.setPosition(d0, d1, d2);
+            this.setRotation(this.rotationYaw, this.rotationPitch);
+        }
     }
 
     private void updateSpeed()

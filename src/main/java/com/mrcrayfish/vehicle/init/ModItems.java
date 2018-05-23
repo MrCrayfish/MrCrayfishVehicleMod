@@ -21,6 +21,7 @@ public class ModItems
     public static final Item SHOPPING_CART_BODY;
     public static final Item MINI_BIKE_BODY;
     public static final Item MINI_BIKE_HANDLE_BAR;
+    public static final Item BUMPER_CAR_BODY;
 
     public static final Item ENGINE;
 
@@ -37,6 +38,7 @@ public class ModItems
         SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
         MINI_BIKE_BODY = new ItemColoredPart("mini_bike_body");
         MINI_BIKE_HANDLE_BAR = new ItemColoredPart("mini_bike_handle_bar");
+        BUMPER_CAR_BODY = new ItemColoredPart("bumper_car_body");
 
         ENGINE = new ItemEngine("small_engine");
     }
@@ -54,6 +56,7 @@ public class ModItems
         register(SHOPPING_CART_BODY);
         register(MINI_BIKE_BODY);
         register(MINI_BIKE_HANDLE_BAR);
+        register(BUMPER_CAR_BODY);
 
         register(ENGINE);
     }

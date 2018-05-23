@@ -16,5 +16,14 @@
     },
     "go_kart_engine_stereo": {
         "sounds": [ {"name": "vehicle:go_kart_engine_stereo"}]
+    },
+    "electric_engine_mono": {
+        "sounds": [ {"name": "vehicle:electric_engine_mono"}]
+    },
+    "electric_engine_stereo": {
+        "sounds": [ {"name": "vehicle:electric_engine_stereo"}]
+    },
+    "bonk": {
+        "sounds": [ {"name": "vehicle:bonk"}]
     }
 }

@@ -19,6 +19,9 @@ public class ModSounds
     public static final SoundEvent ATV_ENGINE_STEREO;
     public static final SoundEvent GO_KART_ENGINE_MONO;
     public static final SoundEvent GO_KART_ENGINE_STEREO;
+    public static final SoundEvent ELECTRIC_ENGINE_MONO;
+    public static final SoundEvent ELECTRIC_ENGINE_STEREO;
+    public static final SoundEvent BONK;
 
     static
     {
@@ -28,6 +31,9 @@ public class ModSounds
         ATV_ENGINE_STEREO = registerSound("vehicle:atv_engine_stereo");
         GO_KART_ENGINE_MONO = registerSound("vehicle:go_kart_engine_mono");
         GO_KART_ENGINE_STEREO = registerSound("vehicle:go_kart_engine_stereo");
+        ELECTRIC_ENGINE_MONO = registerSound("vehicle:electric_engine_mono");
+        ELECTRIC_ENGINE_STEREO = registerSound("vehicle:electric_engine_stereo");
+        BONK = registerSound("vehicle:bonk");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -50,7 +56,9 @@ public class ModSounds
             registry.register(ATV_ENGINE_STEREO);
             registry.register(GO_KART_ENGINE_MONO);
             registry.register(GO_KART_ENGINE_STEREO);
-
+            registry.register(ELECTRIC_ENGINE_MONO);
+            registry.register(ELECTRIC_ENGINE_STEREO);
+            registry.register(BONK);
         }
     }
 }
