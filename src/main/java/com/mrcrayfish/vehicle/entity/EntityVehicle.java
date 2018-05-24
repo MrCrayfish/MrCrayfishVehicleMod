@@ -71,9 +71,8 @@ public abstract class EntityVehicle extends Entity
     public float additionalYaw;
     public float prevAdditionalYaw;
 
-    public float additionalMotionX;
-    public float additionalMotionY;
-    public float additionalMotionZ;
+    public float vehicleMotionX;
+    public float vehicleMotionZ;
 
     private int lerpSteps;
     private double lerpX;
@@ -169,9 +168,9 @@ public abstract class EntityVehicle extends Entity
             this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
 
-        this.prevPosX = this.posX;
-        this.prevPosY = this.posY;
-        this.prevPosZ = this.posZ;
+        prevPosX = posX;
+        prevPosY = posY;
+        prevPosZ = posZ;
 
         super.onUpdate();
         this.tickLerp();
@@ -188,6 +187,7 @@ public abstract class EntityVehicle extends Entity
             this.onClientUpdate();
         }
 
+        /* If there driver, create particles */
         if(this.getControllingPassenger() != null)
         {
             this.createParticles();
@@ -200,27 +200,28 @@ public abstract class EntityVehicle extends Entity
         this.updateDrifting();
         this.updateWheels();
 
+        /* Updates the direction of the vehicle */
+        rotationYaw -= deltaYaw;
+
+        /* Applies the speed multiplier to the current speed */
         currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
         this.setSpeed(currentSpeed);
 
-        motionY -= 0.08D;
-        rotationYaw -= deltaYaw;
+        /* Updates the vehicle motion and applies it on top of the normal motion */
+        this.updateVehicleMotion();
+        move(MoverType.SELF, motionX + vehicleMotionX, motionY, motionZ + vehicleMotionZ);
 
-        moveRelative(0, 0, currentSpeed, 0.01F);
-        move(MoverType.SELF, motionX * Math.abs(currentSpeed) + additionalMotionX, motionY + additionalMotionY, motionZ * Math.abs(currentSpeed) + additionalMotionZ);
-
+        /* Reduces the motion and speed multiplier */
         motionX *= 0.8;
-        motionY *= 0.9800000190734863D;
+        motionY *= 0.8D;
         motionZ *= 0.8;
-        additionalMotionX *= 0.8;
-        additionalMotionY *= 0.9800000190734863D;
-        additionalMotionZ *= 0.8;
         speedMultiplier *= 0.85;
 
+        /* Checks for block collisions */
         this.doBlockCollisions();
 
+        /* Checks for collisions with any other vehicles */
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), entity -> entity instanceof EntityBumperCar);
-
         if (!list.isEmpty())
         {
             for(Entity entity : list)
@@ -228,6 +229,15 @@ public abstract class EntityVehicle extends Entity
                 this.applyEntityCollision(entity);
             }
         }
+    }
+
+    private void updateVehicleMotion()
+    {
+        float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
+        float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
+        this.vehicleMotionX = (-currentSpeed * f1);
+        this.motionY -= 0.08D;
+        this.vehicleMotionZ = (currentSpeed * f2);
     }
 
     /**
@@ -316,8 +326,8 @@ public abstract class EntityVehicle extends Entity
             this.turnAngle *= 0.75;
         }
 
-        float speedPercent = (float) (this.currentSpeed / this.getMaxSpeed());
-        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent)); //TODO turn resistance
+        float speedPercent = this.currentSpeed / this.getMaxSpeed();
+        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent));
         this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
 
         AccelerationDirection acceleration = this.getAcceleration();
@@ -558,7 +568,7 @@ public abstract class EntityVehicle extends Entity
 
     public double getKilometersPreHour()
     {
-        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20 * 3.6;
+        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20;
     }
 
     public void setTurnDirection(TurnDirection turnDirection)

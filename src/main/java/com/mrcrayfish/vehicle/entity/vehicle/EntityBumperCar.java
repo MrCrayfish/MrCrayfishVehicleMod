@@ -4,13 +4,9 @@ import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -59,8 +55,8 @@ public class EntityBumperCar extends EntityColoredVehicle
 
     private void applyBumperCollision(EntityBumperCar entity)
     {
-        entity.additionalMotionX += motionX * 2 * currentSpeed;
-        entity.additionalMotionZ += motionZ * 2 * currentSpeed;
+        entity.motionX += vehicleMotionX * 2;
+        entity.motionZ += vehicleMotionZ * 2;
         world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.BONK, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
         this.currentSpeed *= 0.25F;
     }
