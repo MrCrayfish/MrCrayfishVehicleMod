@@ -3,22 +3,47 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
-import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+
+import java.awt.*;
+import java.text.DecimalFormat;
 
 /**
  * Author: MrCrayfish
  */
 public class ClientEvents
 {
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END)
+        {
+            Minecraft mc = Minecraft.getMinecraft();
+            if(mc.inGameHasFocus)
+            {
+                EntityPlayer player = mc.player;
+                if(player != null)
+                {
+                    Entity entity = player.getRidingEntity();
+                    if(entity instanceof EntityVehicle)
+                    {
+                        String speed = new DecimalFormat("0.0").format(((EntityVehicle) entity).getKilometersPreHour());
+                        mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
+                    }
+                }
+            }
+        }
+    }
+
     @SubscribeEvent
     public void onPreRender(ModelPlayerEvent.Render.Pre event)
     {
