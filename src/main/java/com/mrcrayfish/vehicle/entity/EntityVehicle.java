@@ -68,6 +68,7 @@ public abstract class EntityVehicle extends Entity
     public float prevRearWheelRotation;
 
     public float deltaYaw;
+    public float drifting;
     public float additionalYaw;
     public float prevAdditionalYaw;
 
@@ -302,12 +303,13 @@ public abstract class EntityVehicle extends Entity
             {
                 this.currentSpeed *= 0.95F;
             }
-            this.additionalYaw = MathHelper.clamp(this.additionalYaw + 5F * turnDirection.getDir(), -35F, 35F);
+            this.drifting = Math.min(1.0F, this.drifting + (1.0F / 8.0F));
         }
         else
         {
-            this.additionalYaw *= 0.85F;
+            this.drifting *= 0.85F;
         }
+        this.additionalYaw = 35F * (turnAngle / 45F) * drifting;
     }
 
     private void updateWheels()
@@ -732,6 +734,7 @@ public abstract class EntityVehicle extends Entity
         {
             this.rotationYaw -= this.additionalYaw;
             this.additionalYaw = 0;
+            this.drifting = 0;
         }
     }
 
