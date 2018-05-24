@@ -203,6 +203,7 @@ public abstract class EntityVehicle extends Entity
 
         /* Updates the direction of the vehicle */
         rotationYaw -= deltaYaw;
+        motionY -= 0.08D;
 
         /* Applies the speed multiplier to the current speed */
         currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
@@ -214,7 +215,7 @@ public abstract class EntityVehicle extends Entity
 
         /* Reduces the motion and speed multiplier */
         motionX *= 0.8;
-        motionY *= 0.8D;
+        motionY *= 0.98D;
         motionZ *= 0.8;
         speedMultiplier *= 0.85;
 
@@ -237,7 +238,6 @@ public abstract class EntityVehicle extends Entity
         float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
         float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
         this.vehicleMotionX = (-currentSpeed * f1);
-        this.motionY -= 0.08D;
         this.vehicleMotionZ = (currentSpeed * f2);
     }
 
@@ -328,9 +328,13 @@ public abstract class EntityVehicle extends Entity
             this.turnAngle *= 0.75;
         }
 
-        float speedPercent = this.currentSpeed / this.getMaxSpeed();
+        float speedPercent = this.getNormalSpeed();
+        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
+        this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / (this.isDrifting() ? 1.5F : 2F);
+
+        /*float speedPercent = this.currentSpeed / this.getMaxSpeed();
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent));
-        this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);
+        this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);*/
 
         AccelerationDirection acceleration = this.getAcceleration();
         if(this.getControllingPassenger() != null && acceleration == AccelerationDirection.FORWARD)
