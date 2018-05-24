@@ -513,13 +513,28 @@ public abstract class EntityVehicle extends Entity
         super.updatePassenger(passenger);
         //TODO change to config option
         passenger.rotationYaw -= deltaYaw;
-        passenger.setRotationYawHead(this.rotationYaw);
+        passenger.setRotationYawHead(passenger.rotationYaw);
+        applyYawToEntity(passenger);
+    }
+
+    private void applyYawToEntity(Entity entityToUpdate)
+    {
+        entityToUpdate.setRenderYawOffset(this.rotationYaw);
+        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
+        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
+        entityToUpdate.prevRotationYaw += f1 - f;
+        entityToUpdate.rotationYaw += f1 - f;
+        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void applyOrientationToEntity(Entity entityToUpdate)
+    {
+        this.applyYawToEntity(entityToUpdate);
     }
 
     @Override
-    protected void playStepSound(BlockPos pos, Block blockIn)
-    {
-    }
+    protected void playStepSound(BlockPos pos, Block blockIn) {}
 
     @SideOnly(Side.CLIENT)
     public void performHurtAnimation()
