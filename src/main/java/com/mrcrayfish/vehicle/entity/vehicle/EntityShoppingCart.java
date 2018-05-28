@@ -1,11 +1,9 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
@@ -15,7 +13,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class EntityShoppingCart extends EntityVehicle
+public class EntityShoppingCart extends EntityLandVehicle
 {
     private EntityPlayer pusher;
 

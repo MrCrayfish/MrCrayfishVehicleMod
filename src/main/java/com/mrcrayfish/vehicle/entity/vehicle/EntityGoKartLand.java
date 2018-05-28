@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityColoredLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKart extends EntityColoredVehicle
+public class EntityGoKartLand extends EntityColoredLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -21,7 +21,7 @@ public class EntityGoKart extends EntityColoredVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack steeringWheel;
 
-    public EntityGoKart(World worldIn)
+    public EntityGoKartLand(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(20F);

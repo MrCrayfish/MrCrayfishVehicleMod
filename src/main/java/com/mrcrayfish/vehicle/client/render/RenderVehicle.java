@@ -18,8 +18,6 @@ import java.util.List;
  */
 public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
 {
-    protected List<Wheel> wheels = new ArrayList<>();
-
     private PartPosition enginePosition = new PartPosition(0, 0, 0, 0, 1.0F);
 
     protected RenderVehicle(RenderManager renderManager)
@@ -37,8 +35,6 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        wheels.forEach(wheel -> wheel.render(entity, partialTicks));
-
         if(entity.shouldRenderEngine())
         {
             GlStateManager.pushMatrix();

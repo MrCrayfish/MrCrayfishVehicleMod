@@ -1,40 +1,31 @@
-package com.mrcrayfish.vehicle.client.render;
+package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
+import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCarLand;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderGoKart extends RenderVehicle<EntityGoKart>
+public class RenderBumperCar extends RenderLandVehicle<EntityBumperCarLand>
 {
-    public RenderGoKart(RenderManager renderManager)
+    public RenderBumperCar(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F));
-    }
-
-    @Nullable
-    @Override
-    protected ResourceLocation getEntityTexture(EntityGoKart entity)
-    {
-        return null;
+        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F));
+        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F));
+        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F));
+        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F));
     }
 
     @Override
-    public void doRender(EntityGoKart entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityBumperCarLand entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 
@@ -52,11 +43,12 @@ public class RenderGoKart extends RenderVehicle<EntityGoKart>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
-            GlStateManager.scale(1, 1, 1);
+            GlStateManager.translate(0, 0, 0.4F);
+            GlStateManager.scale(1.2, 1.2, 1.2);
 
             this.setupBreakAnimation(entity, partialTicks);
 
-            double bodyOffset = 0.5625;
+            double bodyOffset = 0.5;
 
             //Render the body
             GlStateManager.pushMatrix();
@@ -69,7 +61,7 @@ public class RenderGoKart extends RenderVehicle<EntityGoKart>
             //Render the handles bars
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, bodyOffset + 0.09, 0.49);
+                GlStateManager.translate(0, bodyOffset + 0.2, 0);
                 GlStateManager.rotate(-45F, 1, 0, 0);
                 GlStateManager.translate(0, -0.02, 0);
                 GlStateManager.scale(0.9, 0.9, 0.9);
@@ -84,7 +76,7 @@ public class RenderGoKart extends RenderVehicle<EntityGoKart>
             }
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0, 3.5F * 0.0625F, 0);
+            GlStateManager.translate(0, 2.5F * 0.0625F * 0.75F, 0);
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();

@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
-import com.mrcrayfish.vehicle.client.render.*;
+import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
@@ -27,12 +27,12 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
-        RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, RenderATV::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityATVLand.class, RenderATV::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDuneBuggy.class, RenderDuneBuggy::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityGoKart.class, RenderGoKart::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGoKartLand.class, RenderGoKart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBumperCarLand.class, RenderBumperCar::new);
 
         if(Loader.isModLoaded("cfm"))
         {

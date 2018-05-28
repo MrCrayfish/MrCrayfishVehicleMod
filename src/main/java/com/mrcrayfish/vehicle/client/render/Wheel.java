@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -37,7 +38,7 @@ public class Wheel
         this(side, position, 2.0F, scale, offsetX, offsetZ);
     }
 
-    public void render(EntityVehicle vehicle, float partialTicks)
+    public void render(EntityLandVehicle vehicle, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
@@ -66,7 +67,7 @@ public class Wheel
         GlStateManager.popMatrix();
     }
 
-    private float getWheelRotation(EntityVehicle vehicle, float partialTicks)
+    private float getWheelRotation(EntityLandVehicle vehicle, float partialTicks)
     {
         if(position == Position.REAR)
         {

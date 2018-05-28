@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
@@ -38,9 +39,9 @@ public class MessageDrift implements IMessage, IMessageHandler<MessageDrift, IMe
 	{
 		EntityPlayerMP player = ctx.getServerHandler().player;
 		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityVehicle)
+		if(riding instanceof EntityLandVehicle)
 		{
-			((EntityVehicle) riding).setDrifting(message.drifting);
+			((EntityLandVehicle) riding).setDrifting(message.drifting);
 		}
 		return null;
 	}

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class EntityCouch extends EntityVehicle
+public class EntityCouch extends EntityLandVehicle
 {
     public EntityCouch(World worldIn)
     {

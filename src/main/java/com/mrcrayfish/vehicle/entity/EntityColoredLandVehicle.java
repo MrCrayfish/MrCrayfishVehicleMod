@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
@@ -16,11 +15,11 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityColoredVehicle extends EntityVehicle
+public abstract class EntityColoredLandVehicle extends EntityLandVehicle
 {
-    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityColoredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityColoredLandVehicle.class, DataSerializers.VARINT);
 
-    protected EntityColoredVehicle(World worldIn)
+    protected EntityColoredLandVehicle(World worldIn)
     {
         super(worldIn);
     }

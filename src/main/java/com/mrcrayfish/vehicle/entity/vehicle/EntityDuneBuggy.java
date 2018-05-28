@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -12,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityDuneBuggy extends EntityVehicle
+public class EntityDuneBuggy extends EntityLandVehicle
 {
     /**
      * ItemStack instances used for rendering

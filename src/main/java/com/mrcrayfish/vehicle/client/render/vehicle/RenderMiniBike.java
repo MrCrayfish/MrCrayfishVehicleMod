@@ -1,5 +1,7 @@
-package com.mrcrayfish.vehicle.client.render;
+package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,7 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 /**
  * Author: MrCrayfish
  */
-public class RenderMiniBike extends RenderVehicle<EntityMiniBike>
+public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
 {
     public RenderMiniBike(RenderManager renderManager)
     {

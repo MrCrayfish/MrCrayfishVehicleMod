@@ -1,5 +1,6 @@
-package com.mrcrayfish.vehicle.client.render;
+package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityColoredLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityBumperCar extends EntityColoredVehicle
+public class EntityBumperCarLand extends EntityColoredLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -22,7 +22,7 @@ public class EntityBumperCar extends EntityColoredVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack steeringWheel;
 
-    public EntityBumperCar(World worldIn)
+    public EntityBumperCarLand(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(10);
@@ -47,13 +47,13 @@ public class EntityBumperCar extends EntityColoredVehicle
     @Override
     public void applyEntityCollision(Entity entityIn)
     {
-        if(entityIn instanceof EntityBumperCar && this.isBeingRidden())
+        if(entityIn instanceof EntityBumperCarLand && this.isBeingRidden())
         {
-            applyBumperCollision((EntityBumperCar) entityIn);
+            applyBumperCollision((EntityBumperCarLand) entityIn);
         }
     }
 
-    private void applyBumperCollision(EntityBumperCar entity)
+    private void applyBumperCollision(EntityBumperCarLand entity)
     {
         entity.motionX += vehicleMotionX * 2;
         entity.motionZ += vehicleMotionZ * 2;

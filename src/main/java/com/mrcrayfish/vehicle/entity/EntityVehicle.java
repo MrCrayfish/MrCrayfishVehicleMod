@@ -1,23 +1,19 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCarLand;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
-import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import com.mrcrayfish.vehicle.network.message.MessageHorn;
 import com.mrcrayfish.vehicle.network.message.MessageTurn;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
-import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -46,7 +42,6 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
@@ -60,17 +55,9 @@ public abstract class EntityVehicle extends Entity
     public int turnAngle;
     public int prevTurnAngle;
 
+    public float deltaYaw;
     public float wheelAngle;
     public float prevWheelAngle;
-    public float frontWheelRotation;
-    public float prevFrontWheelRotation;
-    public float rearWheelRotation;
-    public float prevRearWheelRotation;
-
-    public float deltaYaw;
-    public float drifting;
-    public float additionalYaw;
-    public float prevAdditionalYaw;
 
     public float vehicleMotionX;
     public float vehicleMotionZ;
@@ -143,7 +130,6 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(ACCELERATION_SPEED, 0.5F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(TURN_SENSITIVITY, 10);
-        this.dataManager.register(DRIFTING, false);
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.dataManager.register(TIME_SINCE_HIT, 0);
         this.dataManager.register(DAMAGE_TAKEN, 0F);
@@ -179,9 +165,6 @@ public abstract class EntityVehicle extends Entity
         prevCurrentSpeed = currentSpeed;
         prevTurnAngle = turnAngle;
         prevWheelAngle = wheelAngle;
-        prevFrontWheelRotation = frontWheelRotation;
-        prevRearWheelRotation = rearWheelRotation;
-        prevAdditionalYaw = additionalYaw;
 
         if(world.isRemote)
         {
@@ -194,20 +177,15 @@ public abstract class EntityVehicle extends Entity
             this.createParticles();
         }
 
-        currentSpeed = this.getSpeed();
-
         /* Handle the current speed of the vehicle based on rider's forward movement */
         this.updateSpeed();
-        this.updateDrifting();
-        this.updateWheels();
+        this.updateTurning();
+        this.updateVehicle();
+        this.setSpeed(currentSpeed);
 
         /* Updates the direction of the vehicle */
         rotationYaw -= deltaYaw;
         motionY -= 0.08D;
-
-        /* Applies the speed multiplier to the current speed */
-        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
-        this.setSpeed(currentSpeed);
 
         /* Updates the vehicle motion and applies it on top of the normal motion */
         this.updateVehicleMotion();
@@ -223,7 +201,7 @@ public abstract class EntityVehicle extends Entity
         this.doBlockCollisions();
 
         /* Checks for collisions with any other vehicles */
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), entity -> entity instanceof EntityBumperCar);
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), entity -> entity instanceof EntityBumperCarLand);
         if (!list.isEmpty())
         {
             for(Entity entity : list)
@@ -233,13 +211,9 @@ public abstract class EntityVehicle extends Entity
         }
     }
 
-    private void updateVehicleMotion()
-    {
-        float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
-        float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
-        this.vehicleMotionX = (-currentSpeed * f1);
-        this.vehicleMotionZ = (currentSpeed * f2);
-    }
+    public void updateVehicle() {}
+
+    public abstract void updateVehicleMotion();
 
     /**
      * Smooths the rendering on servers
@@ -262,6 +236,8 @@ public abstract class EntityVehicle extends Entity
 
     private void updateSpeed()
     {
+        currentSpeed = this.getSpeed();
+
         EngineType engineType = this.getEngineType();
         AccelerationDirection acceleration = this.getAcceleration();
         if(this.getControllingPassenger() != null)
@@ -291,28 +267,12 @@ public abstract class EntityVehicle extends Entity
         {
             this.currentSpeed *= 0.5;
         }
+
+        /* Applies the speed multiplier to the current speed */
+        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
     }
 
-    private void updateDrifting()
-    {
-        TurnDirection turnDirection = this.getTurnDirection();
-        if(this.getControllingPassenger() != null && this.isDrifting() && turnDirection != TurnDirection.FORWARD)
-        {
-            AccelerationDirection acceleration = this.getAcceleration();
-            if(acceleration == AccelerationDirection.FORWARD)
-            {
-                this.currentSpeed *= 0.95F;
-            }
-            this.drifting = Math.min(1.0F, this.drifting + (1.0F / 8.0F));
-        }
-        else
-        {
-            this.drifting *= 0.85F;
-        }
-        this.additionalYaw = 35F * (turnAngle / 45F) * drifting;
-    }
-
-    private void updateWheels()
+    private void updateTurning()
     {
         TurnDirection direction = this.getTurnDirection();
         if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
@@ -327,53 +287,16 @@ public abstract class EntityVehicle extends Entity
         {
             this.turnAngle *= 0.75;
         }
-
-        float speedPercent = this.getNormalSpeed();
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
-        this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / (this.isDrifting() ? 1.5F : 2F);
-
-        /*float speedPercent = this.currentSpeed / this.getMaxSpeed();
-        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(speedPercent));
-        this.deltaYaw = this.wheelAngle * speedPercent / (this.isDrifting() ? 1.5F : 2F);*/
-
-        AccelerationDirection acceleration = this.getAcceleration();
-        if(this.getControllingPassenger() != null && acceleration == AccelerationDirection.FORWARD)
-        {
-            this.rearWheelRotation -= 68F * (1.0 - speedPercent);
-        }
-        this.frontWheelRotation -= (68F * speedPercent);
-        this.rearWheelRotation -= (68F * speedPercent);
+        this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
     }
 
-    private void createParticles()
+    public void createParticles()
     {
-        int x = MathHelper.floor(this.posX);
-        int y = MathHelper.floor(this.posY - 0.2D);
-        int z = MathHelper.floor(this.posZ);
-        BlockPos pos = new BlockPos(x, y, z);
-        IBlockState state = this.world.getBlockState(pos);
-        if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
-        {
-            if(this.getAcceleration() == AccelerationDirection.FORWARD)
-            {
-                if(this.isDrifting())
-                {
-                    for(int i = 0; i < 3; i++)
-                    {
-                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
-                    }
-                }
-                else
-                {
-                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
-                }
-            }
-        }
-
         if(this.shouldShowEngineSmoke() && this.ticksExisted % 2 == 0)
         {
-            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F);
-            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ, Block.getStateId(state));
+            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.rotationYaw * 0.017453292F);
+            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ);
         }
     }
 
@@ -388,13 +311,6 @@ public abstract class EntityVehicle extends Entity
             {
                 this.setAcceleration(acceleration);
                 PacketHandler.INSTANCE.sendToServer(new MessageAccelerating(acceleration));
-            }
-
-            boolean drifting = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
-            if(this.isDrifting() != drifting)
-            {
-                this.setDrifting(drifting);
-                PacketHandler.INSTANCE.sendToServer(new MessageDrift(drifting));
             }
 
             boolean horn = ClientProxy.KEY_HORN.isKeyDown();
@@ -602,16 +518,6 @@ public abstract class EntityVehicle extends Entity
         return TurnDirection.values()[this.dataManager.get(TURN_DIRECTION)];
     }
 
-    public void setDrifting(boolean drifting)
-    {
-        this.dataManager.set(DRIFTING, drifting);
-    }
-
-    public boolean isDrifting()
-    {
-        return this.dataManager.get(DRIFTING);
-    }
-
     public void setAcceleration(AccelerationDirection direction)
     {
         this.dataManager.set(ACCELERATION_DIRECTION, direction.ordinal());
@@ -742,18 +648,6 @@ public abstract class EntityVehicle extends Entity
         if(passenger instanceof EntityPlayer && world.isRemote)
         {
             VehicleMod.proxy.playVehicleSound((EntityPlayer) passenger, this);
-        }
-    }
-
-    @Override
-    protected void removePassenger(Entity passenger)
-    {
-        super.removePassenger(passenger);
-        if(this.getControllingPassenger() == null)
-        {
-            this.rotationYaw -= this.additionalYaw;
-            this.additionalYaw = 0;
-            this.drifting = 0;
         }
     }
 

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityColoredLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityATV extends EntityColoredVehicle
+public class EntityATVLand extends EntityColoredLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -21,7 +21,7 @@ public class EntityATV extends EntityColoredVehicle
     public ItemStack handleBar;
 
     //TODO make it so vehicle base can set properties
-    public EntityATV(World worldIn)
+    public EntityATVLand(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(15);

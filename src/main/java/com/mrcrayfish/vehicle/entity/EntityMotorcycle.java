@@ -5,7 +5,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityMotorcycle extends EntityVehicle
+public abstract class EntityMotorcycle extends EntityLandVehicle
 {
     public float prevLeanAngle;
     public float leanAngle;
