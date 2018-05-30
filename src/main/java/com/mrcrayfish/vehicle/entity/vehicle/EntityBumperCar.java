@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityBumperCarLand extends EntityColoredLandVehicle
+public class EntityBumperCar extends EntityColoredLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -22,7 +22,7 @@ public class EntityBumperCarLand extends EntityColoredLandVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack steeringWheel;
 
-    public EntityBumperCarLand(World worldIn)
+    public EntityBumperCar(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(10);
@@ -47,13 +47,13 @@ public class EntityBumperCarLand extends EntityColoredLandVehicle
     @Override
     public void applyEntityCollision(Entity entityIn)
     {
-        if(entityIn instanceof EntityBumperCarLand && this.isBeingRidden())
+        if(entityIn instanceof EntityBumperCar && this.isBeingRidden())
         {
-            applyBumperCollision((EntityBumperCarLand) entityIn);
+            applyBumperCollision((EntityBumperCar) entityIn);
         }
     }
 
-    private void applyBumperCollision(EntityBumperCarLand entity)
+    private void applyBumperCollision(EntityBumperCar entity)
     {
         entity.motionX += vehicleMotionX * 2;
         entity.motionZ += vehicleMotionZ * 2;

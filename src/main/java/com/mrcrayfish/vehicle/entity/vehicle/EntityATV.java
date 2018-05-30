@@ -12,7 +12,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityATVLand extends EntityColoredLandVehicle
+public class EntityATV extends EntityColoredLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -21,7 +21,7 @@ public class EntityATVLand extends EntityColoredLandVehicle
     public ItemStack handleBar;
 
     //TODO make it so vehicle base can set properties
-    public EntityATVLand(World worldIn)
+    public EntityATV(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(15);

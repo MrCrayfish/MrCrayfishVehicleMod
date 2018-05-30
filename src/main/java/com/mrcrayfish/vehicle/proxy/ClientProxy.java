@@ -27,12 +27,12 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
-        RenderingRegistry.registerEntityRenderingHandler(EntityATVLand.class, RenderATV::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, RenderATV::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityDuneBuggy.class, RenderDuneBuggy::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityGoKartLand.class, RenderGoKart::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGoKart.class, RenderGoKart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBumperCarLand.class, RenderBumperCar::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
 
         if(Loader.isModLoaded("cfm"))
         {

@@ -1,9 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityATVLand;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,7 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderATV extends RenderLandVehicle<EntityATVLand>
+public class RenderATV extends RenderLandVehicle<EntityATV>
 {
     public RenderATV(RenderManager renderManager)
     {
@@ -32,13 +31,13 @@ public class RenderATV extends RenderLandVehicle<EntityATVLand>
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityATVLand entity)
+    protected ResourceLocation getEntityTexture(EntityATV entity)
     {
         return null;
     }
 
     @Override
-    public void doRender(EntityATVLand entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityATV entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 

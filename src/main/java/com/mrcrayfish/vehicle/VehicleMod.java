@@ -54,12 +54,12 @@ public class VehicleMod
 
     private void registerVehicles()
     {
-        registerVehicle("atv", EntityATVLand.class);
+        registerVehicle("atv", EntityATV.class);
         registerVehicle("dune_buggy", EntityDuneBuggy.class);
-        registerVehicle("go_kart", EntityGoKartLand.class);
+        registerVehicle("go_kart", EntityGoKart.class);
         registerVehicle("shopping_cart", EntityShoppingCart.class);
         registerVehicle("mini_bike", EntityMiniBike.class);
-        registerVehicle("bumper_car", EntityBumperCarLand.class);
+        registerVehicle("bumper_car", EntityBumperCar.class);
 
         if(Loader.isModLoaded("cfm"))
         {

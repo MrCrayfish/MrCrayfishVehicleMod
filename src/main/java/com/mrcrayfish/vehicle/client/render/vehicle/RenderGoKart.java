@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKartLand;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderGoKart extends RenderLandVehicle<EntityGoKartLand>
+public class RenderGoKart extends RenderLandVehicle<EntityGoKart>
 {
     public RenderGoKart(RenderManager renderManager)
     {
@@ -30,13 +30,13 @@ public class RenderGoKart extends RenderLandVehicle<EntityGoKartLand>
 
     @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityGoKartLand entity)
+    protected ResourceLocation getEntityTexture(EntityGoKart entity)
     {
         return null;
     }
 
     @Override
-    public void doRender(EntityGoKartLand entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityGoKart entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 

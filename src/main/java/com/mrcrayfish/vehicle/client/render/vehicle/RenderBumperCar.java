@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCarLand;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -13,7 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 /**
  * Author: MrCrayfish
  */
-public class RenderBumperCar extends RenderLandVehicle<EntityBumperCarLand>
+public class RenderBumperCar extends RenderLandVehicle<EntityBumperCar>
 {
     public RenderBumperCar(RenderManager renderManager)
     {
@@ -25,7 +25,7 @@ public class RenderBumperCar extends RenderLandVehicle<EntityBumperCarLand>
     }
 
     @Override
-    public void doRender(EntityBumperCarLand entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityBumperCar entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 

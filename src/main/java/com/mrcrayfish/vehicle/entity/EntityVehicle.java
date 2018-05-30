@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCarLand;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -201,7 +201,7 @@ public abstract class EntityVehicle extends Entity
         this.doBlockCollisions();
 
         /* Checks for collisions with any other vehicles */
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), entity -> entity instanceof EntityBumperCarLand);
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), entity -> entity instanceof EntityBumperCar);
         if (!list.isEmpty())
         {
             for(Entity entity : list)

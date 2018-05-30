@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKartLand extends EntityColoredLandVehicle
+public class EntityGoKart extends EntityColoredLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -21,7 +21,7 @@ public class EntityGoKartLand extends EntityColoredLandVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack steeringWheel;
 
-    public EntityGoKartLand(World worldIn)
+    public EntityGoKart(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(20F);
