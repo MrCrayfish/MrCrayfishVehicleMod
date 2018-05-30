@@ -29,6 +29,7 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     {
         super(worldIn);
         this.setMaxSpeed(15F);
+        this.setTurnSensitivity(15);
     }
 
     @Override
