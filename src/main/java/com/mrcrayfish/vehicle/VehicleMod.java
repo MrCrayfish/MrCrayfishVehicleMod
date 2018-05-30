@@ -60,6 +60,7 @@ public class VehicleMod
         registerVehicle("shopping_cart", EntityShoppingCart.class);
         registerVehicle("mini_bike", EntityMiniBike.class);
         registerVehicle("bumper_car", EntityBumperCar.class);
+        registerVehicle("jet_ski", EntityJetSki.class);
 
         if(Loader.isModLoaded("cfm"))
         {

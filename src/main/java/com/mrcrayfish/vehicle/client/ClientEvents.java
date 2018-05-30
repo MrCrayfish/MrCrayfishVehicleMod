@@ -58,6 +58,17 @@ public class ClientEvents
             GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 20F, 0, 0, 1);
             GlStateManager.translate(0, -offset, 0);
         }
+
+        if(ridingEntity instanceof EntityJetSki)
+        {
+            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            double offset = vehicle.getMountedYOffset() * 3 - 3 * 0.0625;
+            GlStateManager.translate(0, offset, 0);
+            float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
+            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * event.getPartialTicks()) / 45F;
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 10F, 0, 0, 1);
+            GlStateManager.translate(0, -offset, 0);
+        }
     }
 
     @SubscribeEvent
@@ -142,7 +153,7 @@ public class ClientEvents
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
 
-            if(ridingEntity instanceof EntityATV)
+            if(ridingEntity instanceof EntityATV || ridingEntity instanceof EntityJetSki)
             {
                 float turnRotation = wheelAngleNormal * 12F;
                 model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);

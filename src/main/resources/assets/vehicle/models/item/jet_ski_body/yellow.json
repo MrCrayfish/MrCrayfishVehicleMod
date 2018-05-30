@@ -1,0 +1,6 @@
+{
+    "parent": "vehicle:item/jet_ski_body",
+    "textures": {
+        "color": "blocks/concrete_yellow"
+    }
+}
