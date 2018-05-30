@@ -160,6 +160,14 @@ public class ClientEvents
                 model.bipedRightArm.rotateAngleY = (float) Math.toRadians(15F);
                 model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
                 model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-15F);
+
+                if(ridingEntity instanceof EntityJetSki && ridingEntity.getControllingPassenger() != player)
+                {
+                    model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
+                    model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
+                    model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
+                    model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
+                }
             }
             else if (ridingEntity instanceof EntityDuneBuggy)
             {

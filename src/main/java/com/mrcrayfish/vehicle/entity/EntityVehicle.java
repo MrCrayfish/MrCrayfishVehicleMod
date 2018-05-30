@@ -444,7 +444,7 @@ public abstract class EntityVehicle extends Entity
         applyYawToEntity(passenger);
     }
 
-    private void applyYawToEntity(Entity entityToUpdate)
+    protected void applyYawToEntity(Entity entityToUpdate)
     {
         entityToUpdate.setRenderYawOffset(this.rotationYaw);
         float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
