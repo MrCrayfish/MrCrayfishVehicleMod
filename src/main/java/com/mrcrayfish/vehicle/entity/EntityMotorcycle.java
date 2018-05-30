@@ -20,6 +20,6 @@ public abstract class EntityMotorcycle extends EntityLandVehicle
     {
         this.prevLeanAngle = this.leanAngle;
         super.onEntityUpdate();
-        this.leanAngle = this.turnAngle / 45F;
+        this.leanAngle = this.turnAngle / (float) getMaxTurnAngle();
     }
 }

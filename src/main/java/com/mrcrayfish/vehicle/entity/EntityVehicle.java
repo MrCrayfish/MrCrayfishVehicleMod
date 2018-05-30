@@ -42,6 +42,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
@@ -130,6 +131,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(ACCELERATION_SPEED, 0.5F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(TURN_SENSITIVITY, 10);
+        this.dataManager.register(MAX_TURN_ANGLE, 45);
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.dataManager.register(TIME_SINCE_HIT, 0);
         this.dataManager.register(DAMAGE_TAKEN, 0F);
@@ -278,9 +280,9 @@ public abstract class EntityVehicle extends Entity
         if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
         {
             this.turnAngle += direction.dir * getTurnSensitivity();
-            if(Math.abs(this.turnAngle) > 45)
+            if(Math.abs(this.turnAngle) > getMaxTurnAngle())
             {
-                this.turnAngle = 45 * direction.dir;
+                this.turnAngle = getMaxTurnAngle() * direction.dir;
             }
         }
         else
@@ -410,6 +412,10 @@ public abstract class EntityVehicle extends Entity
         {
             this.setTurnSensitivity(compound.getInteger("turnSensitivity"));
         }
+        if(compound.hasKey("maxTurnAngle", Constants.NBT.TAG_INT))
+        {
+            this.setMaxTurnAngle(compound.getInteger("maxTurnAngle"));
+        }
     }
 
     @Override
@@ -419,6 +425,7 @@ public abstract class EntityVehicle extends Entity
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
+        compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
     }
 
     @Nullable
@@ -536,6 +543,16 @@ public abstract class EntityVehicle extends Entity
     public int getTurnSensitivity()
     {
         return this.dataManager.get(TURN_SENSITIVITY);
+    }
+
+    public void setMaxTurnAngle(int turnAngle)
+    {
+        this.dataManager.set(MAX_TURN_ANGLE, turnAngle);
+    }
+
+    public int getMaxTurnAngle()
+    {
+        return this.dataManager.get(MAX_TURN_ANGLE);
     }
 
     /**
