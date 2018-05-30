@@ -61,6 +61,7 @@ public abstract class EntityVehicle extends Entity
     public float prevWheelAngle;
 
     public float vehicleMotionX;
+    public float vehicleMotionY;
     public float vehicleMotionZ;
 
     private int lerpSteps;
@@ -187,11 +188,10 @@ public abstract class EntityVehicle extends Entity
 
         /* Updates the direction of the vehicle */
         rotationYaw -= deltaYaw;
-        motionY -= 0.08D;
 
         /* Updates the vehicle motion and applies it on top of the normal motion */
         this.updateVehicleMotion();
-        move(MoverType.SELF, motionX + vehicleMotionX, motionY, motionZ + vehicleMotionZ);
+        move(MoverType.SELF, motionX + vehicleMotionX, motionY + vehicleMotionY, motionZ + vehicleMotionZ);
 
         /* Reduces the motion and speed multiplier */
         motionX *= 0.8;
