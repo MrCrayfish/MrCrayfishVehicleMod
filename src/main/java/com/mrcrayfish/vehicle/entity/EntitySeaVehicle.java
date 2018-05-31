@@ -25,35 +25,37 @@ public abstract class EntitySeaVehicle extends EntityVehicle
     }
 
     @Override
-    public void updateVehicle()
-    {
-
-    }
-
-    @Override
     public void updateVehicleMotion()
     {
         if(isOnWater())
         {
-            double floatingY = ((this.waterLevel - 0.25D) - this.getEntityBoundingBox().minY) / (double) this.height;
-            if(floatingY > 0.0D)
-            {
-                this.motionY += floatingY;
-            }
             if(isUnderWater())
             {
-                this.motionY += 0.04D;
+                motionY += 0.08D;
             }
-            this.motionY *= 0.75D;
+            else
+            {
+                double floatingY = ((waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - posY)) / (double) height;
+                motionY += floatingY * 0.05D;
+                if(Math.abs(floatingY) < 0.01D)
+                {
+                    setPosition(posX, waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())), posZ);
+                    motionY = 0.0D;
+                }
 
-            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F;
-            float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
-            this.vehicleMotionX = (-currentSpeed * f1);
-            this.vehicleMotionZ = (currentSpeed * f2);
+            }
+            motionY *= 0.75D;
+
+            float f1 = MathHelper.sin(rotationYaw * 0.017453292F) / 20F;
+            float f2 = MathHelper.cos(rotationYaw * 0.017453292F) / 20F;
+            vehicleMotionX = (-currentSpeed * f1);
+            vehicleMotionZ = (currentSpeed * f2);
         }
         else
         {
-            this.motionY -= 0.08D;
+            motionY -= 0.08D;
+            vehicleMotionX *= 0.75F;
+            vehicleMotionZ *= 0.75F;
         }
     }
 
