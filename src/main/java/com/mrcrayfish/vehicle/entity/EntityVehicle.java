@@ -416,6 +416,10 @@ public abstract class EntityVehicle extends Entity
         {
             this.setMaxTurnAngle(compound.getInteger("maxTurnAngle"));
         }
+        if(compound.hasKey("stepHeight", Constants.NBT.TAG_FLOAT))
+        {
+            this.stepHeight = compound.getFloat("stepHeight");
+        }
     }
 
     @Override
@@ -426,6 +430,7 @@ public abstract class EntityVehicle extends Entity
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
+        compound.setFloat("stepHeight", this.stepHeight);
     }
 
     @Nullable
