@@ -23,7 +23,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
 {
-    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityColoredMotorcycle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntitySeaVehicle.class, DataSerializers.VARINT);
 
     public EntityColoredSeaVehicle(World worldIn)
     {
