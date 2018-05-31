@@ -32,7 +32,8 @@ public class RenderJetSki extends RenderVehicle<EntityJetSki>
 
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -10F, 0, 0, 1);
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -15F, 0, 0, 1);
+            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
 
             this.setupBreakAnimation(entity, partialTicks);
 

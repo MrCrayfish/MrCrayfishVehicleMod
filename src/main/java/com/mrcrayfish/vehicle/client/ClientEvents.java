@@ -66,7 +66,8 @@ public class ClientEvents
             GlStateManager.translate(0, offset, 0);
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
             float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * event.getPartialTicks()) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 10F, 0, 0, 1);
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
+            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
             GlStateManager.translate(0, -offset, 0);
         }
     }
