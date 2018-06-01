@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
+import java.awt.Color;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
@@ -28,17 +30,17 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
     public void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(COLOR, EnumDyeColor.BLUE.getMetadata());
+        this.dataManager.register(COLOR, 3949738);
     }
 
-    public void setColor(EnumDyeColor color)
+    public void setColor(int color)
     {
-        this.dataManager.set(COLOR, color.getMetadata());
+        this.dataManager.set(COLOR, color);
     }
 
-    public EnumDyeColor getColor()
+    public Color getColor()
     {
-        return EnumDyeColor.byMetadata(this.dataManager.get(COLOR));
+        return new Color(this.dataManager.get(COLOR));
     }
 
     @Override
@@ -49,7 +51,7 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
             ItemStack heldItem = player.getHeldItem(hand);
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemDye)
             {
-                this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
+                this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()).getColorValue());
             }
             else
             {
@@ -67,7 +69,14 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
         {
             if(COLOR.equals(key))
             {
-                body.setItemDamage(this.dataManager.get(COLOR));
+            	NBTTagCompound nbt;
+            	if(body.hasTagCompound()) {
+            		nbt = body.getTagCompound(); 
+            	} else {
+            		nbt = new NBTTagCompound();
+            	}
+            	nbt.setInteger("color", this.dataManager.get(COLOR));
+                body.setTagCompound(nbt);
             }
         }
     }
@@ -78,7 +87,7 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
         super.readEntityFromNBT(compound);
         if(compound.hasKey("color", Constants.NBT.TAG_INT))
         {
-            this.setColor(EnumDyeColor.byMetadata(compound.getInteger("color")));
+            this.setColor(compound.getInteger("color"));
         }
     }
 
@@ -86,6 +95,6 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
-        compound.setInteger("color", this.getColor().getMetadata());
+        compound.setInteger("color", this.getColor().getRGB());
     }
 }

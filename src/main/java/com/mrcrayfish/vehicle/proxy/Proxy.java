@@ -9,6 +9,8 @@ import net.minecraft.entity.player.EntityPlayer;
 public interface Proxy
 {
     void preInit();
+    
+    default void init() {}
 
     void playVehicleSound(EntityPlayer player, EntityVehicle vehicle);
 }

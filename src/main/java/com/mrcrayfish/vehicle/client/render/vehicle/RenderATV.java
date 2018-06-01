@@ -1,9 +1,14 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import java.awt.Color;
+
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import com.mrcrayfish.vehicle.init.ModItems;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -12,8 +17,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -66,7 +69,7 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
             //Render the body
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, bodyLevelToGround + bodyOffset, 0);
+            	GlStateManager.translate(0, bodyLevelToGround + bodyOffset, 0);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();

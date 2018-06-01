@@ -1,10 +1,21 @@
 package com.mrcrayfish.vehicle.client;
 
+import java.awt.Color;
+import java.text.DecimalFormat;
+
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,9 +24,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.awt.*;
-import java.text.DecimalFormat;
 
 /**
  * Author: MrCrayfish

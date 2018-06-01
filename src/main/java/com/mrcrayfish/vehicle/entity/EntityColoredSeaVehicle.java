@@ -1,8 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
-import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
+import java.awt.Color;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
@@ -12,9 +11,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -34,17 +30,17 @@ public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
     public void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(COLOR, EnumDyeColor.BLUE.getMetadata());
+        this.dataManager.register(COLOR, 0xFFFFFF);
     }
 
-    public void setColor(EnumDyeColor color)
+    public void setColor(int color)
     {
-        this.dataManager.set(COLOR, color.getMetadata());
+        this.dataManager.set(COLOR, color);
     }
 
-    public EnumDyeColor getColor()
+    public Color getColor()
     {
-        return EnumDyeColor.byMetadata(this.dataManager.get(COLOR));
+        return new Color(this.dataManager.get(COLOR));
     }
 
     @Override
@@ -55,7 +51,7 @@ public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
             ItemStack heldItem = player.getHeldItem(hand);
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemDye)
             {
-                this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
+                this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()).getColorValue());
             }
             else
             {
@@ -73,7 +69,14 @@ public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
         {
             if(COLOR.equals(key))
             {
-                body.setItemDamage(this.dataManager.get(COLOR));
+            	NBTTagCompound nbt;
+            	if(body.hasTagCompound()) {
+            		nbt = body.getTagCompound(); 
+            	} else {
+            		nbt = new NBTTagCompound();
+            	}
+            	nbt.setInteger("color", this.dataManager.get(COLOR));
+                body.setTagCompound(nbt);
             }
         }
     }
@@ -84,7 +87,7 @@ public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
         super.readEntityFromNBT(compound);
         if(compound.hasKey("color", Constants.NBT.TAG_INT))
         {
-            this.setColor(EnumDyeColor.byMetadata(compound.getInteger("color")));
+            this.setColor(compound.getInteger("color"));
         }
     }
 
@@ -92,6 +95,6 @@ public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
-        compound.setInteger("color", this.getColor().getMetadata());
+        compound.setInteger("color", this.getColor().getRGB());
     }
 }

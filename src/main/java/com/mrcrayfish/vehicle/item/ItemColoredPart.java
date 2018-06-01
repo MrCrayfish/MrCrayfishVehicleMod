@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation;
 /**
  * Author: MrCrayfish
  */
-public class ItemColoredPart extends ItemVehicleBody implements SubItems
+public class ItemColoredPart extends ItemVehicleBody
 {
     public ItemColoredPart(String id)
     {
@@ -19,17 +19,6 @@ public class ItemColoredPart extends ItemVehicleBody implements SubItems
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
-    }
-
-    @Override
-    public NonNullList<ResourceLocation> getModels()
-    {
-        NonNullList<ResourceLocation> modelLocations = NonNullList.create();
-        for(EnumDyeColor color : EnumDyeColor.values())
-        {
-            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + color.getName()));
-        }
-        return modelLocations;
     }
 
     public String getUnlocalizedName(ItemStack stack)
