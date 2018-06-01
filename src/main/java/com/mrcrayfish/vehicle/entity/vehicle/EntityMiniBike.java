@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.entity.EntityColoredMotorcycle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -50,8 +51,15 @@ public class EntityMiniBike extends EntityColoredMotorcycle
         {
             if(COLOR.equals(key))
             {
-                body.setItemDamage(this.dataManager.get(COLOR));
-                handleBar.setItemDamage(this.dataManager.get(COLOR));
+            	NBTTagCompound nbt;
+            	if(body.hasTagCompound()) {
+            		nbt = body.getTagCompound(); 
+            	} else {
+            		nbt = new NBTTagCompound();
+            	}
+            	nbt.setInteger("color", this.dataManager.get(COLOR));
+                body.setTagCompound(nbt);
+                handleBar.setTagCompound(nbt);
             }
         }
     }

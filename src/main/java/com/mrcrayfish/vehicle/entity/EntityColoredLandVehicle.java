@@ -30,7 +30,7 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
     public void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(COLOR, 3949738);
+        this.dataManager.register(COLOR, 0xFFFFFF);
     }
 
     public void setColor(int color)
