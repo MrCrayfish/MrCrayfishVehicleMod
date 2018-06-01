@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.entity;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -37,7 +36,7 @@ public abstract class EntitySeaVehicle extends EntityVehicle
             {
                 double floatingY = ((waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - posY)) / (double) height;
                 motionY += floatingY * 0.05D;
-                if(Math.abs(floatingY) < 0.01D)
+                if(Math.abs(floatingY) < 0.1D)
                 {
                     setPosition(posX, waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())), posZ);
                     motionY = 0.0D;
