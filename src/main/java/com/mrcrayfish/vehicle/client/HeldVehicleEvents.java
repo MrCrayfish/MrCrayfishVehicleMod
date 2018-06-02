@@ -15,8 +15,10 @@ import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -47,19 +49,87 @@ public class HeldVehicleEvents
         }
     }
 
+    public static final Map<UUID, AnimationCounter> idToCounter = new HashMap<>();
+
     @SubscribeEvent
     public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
     {
-        EntityPlayer player = event.getEntityPlayer();
         ModelPlayer model = event.getModelPlayer();
-        if(!player.getDataManager().get(CommonEvents.HELD_VEHICLE).hasNoTags())
+        EntityPlayer player = event.getEntityPlayer();
+
+        boolean holdingVehicle = !player.getDataManager().get(CommonEvents.HELD_VEHICLE).hasNoTags();
+        if(holdingVehicle && !idToCounter.containsKey(player.getUniqueID()))
         {
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F);
-            model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F);
-            model.bipedRightArm.rotationPointY -= 1.5F;
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-180F);
-            model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(5F);
-            model.bipedLeftArm.rotationPointY -= 1.5F;
+            idToCounter.put(player.getUniqueID(), new AnimationCounter(40));
+        }
+        else if(idToCounter.containsKey(player.getUniqueID()))
+        {
+            if(idToCounter.get(player.getUniqueID()).getProgress(event.getPartialTicks()) == 0F)
+            {
+                idToCounter.remove(player.getUniqueID());
+                return;
+            }
+        }
+        else
+        {
+            return;
+        }
+
+        AnimationCounter counter = idToCounter.get(player.getUniqueID());
+        counter.update(holdingVehicle);
+        float progress = counter.getProgress(event.getPartialTicks());
+        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
+        model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F * progress);
+        model.bipedRightArm.rotationPointY -= 1.5F * progress;
+        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
+        model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(5F * progress);
+        model.bipedLeftArm.rotationPointY -= 1.5F * progress;
+    }
+
+    public static class AnimationCounter
+    {
+        private int maxCount;
+        private int prevCount;
+        private int currentCount;
+
+        private AnimationCounter(int maxCount)
+        {
+            this.maxCount = maxCount;
+        }
+
+        public int update(boolean increment)
+        {
+            prevCount = currentCount;
+            if(increment)
+            {
+                if(currentCount < maxCount)
+                {
+                    currentCount++;
+                }
+            }
+            else
+            {
+                if(currentCount > 0)
+                {
+                    currentCount -= 2;
+                }
+            }
+            return currentCount;
+        }
+
+        public int getMaxCount()
+        {
+            return maxCount;
+        }
+
+        public int getCurrentCount()
+        {
+            return currentCount;
+        }
+
+        public float getProgress(float partialTicks)
+        {
+            return (prevCount + (currentCount - prevCount) * partialTicks) / (float) maxCount;
         }
     }
 }

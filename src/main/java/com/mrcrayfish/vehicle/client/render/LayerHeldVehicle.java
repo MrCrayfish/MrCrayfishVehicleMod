@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
@@ -48,6 +49,13 @@ public class LayerHeldVehicle implements LayerRenderer<AbstractClientPlayer>
             {
                 GlStateManager.pushMatrix();
                 {
+                    HeldVehicleEvents.AnimationCounter counter = HeldVehicleEvents.idToCounter.get(player.getUniqueID());
+                    if(counter != null)
+                    {
+                        float width = cachedEntity.width / 2;
+                        GlStateManager.translate(0F, 1F - 1F * counter.getProgress(partialTicks), -0.5F * Math.sin(Math.PI * counter.getProgress(partialTicks)) - width * (1.0F - counter.getProgress(partialTicks)));
+                    }
+
                     Vec3d heldOffset = cachedEntity.getHeldOffset();
                     GlStateManager.translate(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
                     GlStateManager.rotate(180F, 1, 0, 0);
