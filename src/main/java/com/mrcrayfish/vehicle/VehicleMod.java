@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
@@ -47,6 +48,7 @@ public class VehicleMod
         RegistrationHandler.init();
         PacketHandler.init();
         CustomDataSerializers.register();
+        HeldVehicleDataHandler.register();
 
         registerVehicles();
 

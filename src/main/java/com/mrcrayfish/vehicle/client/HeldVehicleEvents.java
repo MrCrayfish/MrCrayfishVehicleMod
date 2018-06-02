@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -11,9 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.lang.reflect.InvocationTargetException;
@@ -81,5 +78,4 @@ public class HeldVehicleEvents
             cachedEntity = null;
         }
     }
-
 }

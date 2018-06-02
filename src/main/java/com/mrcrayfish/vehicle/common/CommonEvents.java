@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.common;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
@@ -18,6 +19,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
@@ -118,10 +121,20 @@ public class CommonEvents
                         Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
                         if(entity != null)
                         {
-                            entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, (player.getRotationYawHead() + 90F) % 360.0F, 0F);
+                            //Updates the DataParameter
+                            NBTTagCompound tag = new NBTTagCompound();
+                            player.getDataManager().set(HELD_VEHICLE, tag);
 
+                            //Updates the player capability
+                            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                            if(heldVehicle != null)
+                            {
+                                heldVehicle.setVehicleTag(tag);
+                            }
+
+                            //Sets the positions and spawns the entity
+                            entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, (player.getRotationYawHead() + 90F) % 360.0F, 0F);
                             world.spawnEntity(entity);
-                            player.getDataManager().set(HELD_VEHICLE, new NBTTagCompound());
                         }
                     }
                 }
@@ -144,6 +157,15 @@ public class CommonEvents
                             tagCompound.setString("id", id);
                             targetEntity.writeToNBT(tagCompound);
                             player.getDataManager().set(HELD_VEHICLE, tagCompound);
+
+                            //Updates the held vehicle capability
+                            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                            if(heldVehicle != null)
+                            {
+                                heldVehicle.setVehicleTag(tagCompound);
+                            }
+
+                            //Removes the entity from the world
                             world.removeEntity(targetEntity);
                         }
                     }
@@ -164,5 +186,45 @@ public class CommonEvents
     {
         ResourceLocation resourcelocation = EntityList.getKey(entity);
         return resourcelocation == null ? null : resourcelocation.toString();
+    }
+
+    @SubscribeEvent
+    public void onPlayerLoadData(PlayerEvent.LoadFromFile event)
+    {
+        EntityPlayer player = event.getEntityPlayer();
+        HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+        if(heldVehicle != null)
+        {
+            System.out.println(heldVehicle.getVehicleTag());
+            player.getDataManager().set(CommonEvents.HELD_VEHICLE, heldVehicle.getVehicleTag());
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(LivingDeathEvent event)
+    {
+        Entity entity = event.getEntityLiving();
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            NBTTagCompound tagCompound = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
+            if(!tagCompound.hasNoTags())
+            {
+                NBTTagCompound blankTag = new NBTTagCompound();
+                HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                if(heldVehicle != null)
+                {
+                    heldVehicle.setVehicleTag(blankTag);
+                }
+                player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
+
+                Entity vehicle = EntityList.createEntityFromNBT(tagCompound, player.world);
+                if(vehicle != null)
+                {
+                    vehicle.setPositionAndRotation(player.posX, player.posY + player.getEyeHeight(), player.posZ, (player.getRotationYawHead() + 90F) % 360.0F, 0F);
+                    player.world.spawnEntity(vehicle);
+                }
+            }
+        }
     }
 }
