@@ -69,6 +69,11 @@ public class HeldVehicleEvents
                 idToCounter.remove(player.getUniqueID());
                 return;
             }
+            if(!holdingVehicle)
+            {
+                AnimationCounter counter = idToCounter.get(player.getUniqueID());
+                player.renderYawOffset = player.getRotationYawHead() - (player.getRotationYawHead() - player.renderYawOffset) * counter.getProgress(event.getPartialTicks());
+            }
         }
         else
         {
