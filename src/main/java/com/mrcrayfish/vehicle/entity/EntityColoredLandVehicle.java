@@ -50,13 +50,10 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemDye)
             {
                 this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
-            }
-            else
-            {
-                player.startRiding(this);
+                return true;
             }
         }
-        return true;
+        return super.processInitialInteract(player, hand);
     }
 
     @Override

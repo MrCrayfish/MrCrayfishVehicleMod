@@ -342,8 +342,9 @@ public abstract class EntityVehicle extends Entity
         if(!world.isRemote && !player.isSneaking())
         {
             player.startRiding(this);
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
