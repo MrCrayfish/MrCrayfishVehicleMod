@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -19,6 +20,7 @@ public class EntityCouch extends EntityLandVehicle
         super(worldIn);
         this.setMaxSpeed(10);
         this.setSize(1.0F, 1.0F);
+        this.setHeldOffset(new Vec3d(2D, 2D, 0D));
     }
 
     @Override

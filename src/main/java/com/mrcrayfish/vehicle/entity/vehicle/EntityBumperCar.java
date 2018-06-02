@@ -7,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -28,6 +29,7 @@ public class EntityBumperCar extends EntityColoredLandVehicle
         this.setMaxSpeed(10);
         this.setSize(1.5F, 1.0F);
         this.setTurnSensitivity(20);
+        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
         this.stepHeight = 0.625F;
     }
 

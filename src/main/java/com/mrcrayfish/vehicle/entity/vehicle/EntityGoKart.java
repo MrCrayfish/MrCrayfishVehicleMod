@@ -27,6 +27,7 @@ public class EntityGoKart extends EntityColoredLandVehicle
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(12);
         this.setSize(1.5F, 0.5F);
+        this.setHeldOffset(new Vec3d(3D, 0.5D, 0D));
         this.stepHeight = 0.625F;
     }
 

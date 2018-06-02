@@ -27,6 +27,7 @@ public class EntityMiniBike extends EntityColoredMotorcycle
         super(worldIn);
         this.setMaxSpeed(18F);
         this.setTurnSensitivity(12);
+        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
     }
 
     @Override

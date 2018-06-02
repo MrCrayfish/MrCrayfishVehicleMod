@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,6 +27,7 @@ public class EntityATV extends EntityColoredLandVehicle
         super(worldIn);
         this.setMaxSpeed(15);
         this.setSize(1.5F, 1.0F);
+        this.setHeldOffset(new Vec3d(4D, 3.5D, 0D));
     }
 
     @Override
