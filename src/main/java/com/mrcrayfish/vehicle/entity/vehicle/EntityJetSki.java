@@ -34,6 +34,7 @@ public class EntityJetSki extends EntityColoredSeaVehicle
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
+        this.setHeldOffset(new Vec3d(1D, 0D, 0D));
     }
 
     @Override

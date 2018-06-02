@@ -17,6 +17,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -114,12 +115,13 @@ public class CommonEvents
             {
                 if(event instanceof PlayerInteractEvent.RightClickBlock)
                 {
+                    Vec3d clickedVec = ((PlayerInteractEvent.RightClickBlock) event).getHitVec();
                     if(!world.isRemote && event.getFace() == EnumFacing.UP)
                     {
                         BlockPos pos = event.getPos().up();
                         NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                         Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
-                        if(entity != null)
+                        if(entity != null && entity instanceof EntityVehicle)
                         {
                             //Updates the DataParameter
                             NBTTagCompound tag = new NBTTagCompound();
@@ -133,7 +135,9 @@ public class CommonEvents
                             }
 
                             //Sets the positions and spawns the entity
-                            entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, (player.getRotationYawHead() + 90F) % 360.0F, 0F);
+                            float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                            Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                            entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y + heldOffset.y * 0.0625D, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
                             world.spawnEntity(entity);
                         }
                     }
@@ -195,7 +199,6 @@ public class CommonEvents
         HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
         if(heldVehicle != null)
         {
-            System.out.println(heldVehicle.getVehicleTag());
             player.getDataManager().set(CommonEvents.HELD_VEHICLE, heldVehicle.getVehicleTag());
         }
     }
@@ -219,9 +222,11 @@ public class CommonEvents
                 player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
 
                 Entity vehicle = EntityList.createEntityFromNBT(tagCompound, player.world);
-                if(vehicle != null)
+                if(vehicle != null && vehicle instanceof EntityVehicle)
                 {
-                    vehicle.setPositionAndRotation(player.posX, player.posY + player.getEyeHeight(), player.posZ, (player.getRotationYawHead() + 90F) % 360.0F, 0F);
+                    float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                    Vec3d heldOffset = ((EntityVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                    vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.spawnEntity(vehicle);
                 }
             }

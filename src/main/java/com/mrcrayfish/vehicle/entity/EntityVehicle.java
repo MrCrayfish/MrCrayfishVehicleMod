@@ -71,6 +71,8 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
+    private Vec3d heldOffset = Vec3d.ZERO;
+
     /**
      * ItemStack instances used for rendering
      */
@@ -627,6 +629,16 @@ public abstract class EntityVehicle extends Entity
     public boolean getHorn()
     {
         return this.dataManager.get(HORN);
+    }
+
+    public void setHeldOffset(Vec3d heldOffset)
+    {
+        this.heldOffset = heldOffset;
+    }
+
+    public Vec3d getHeldOffset()
+    {
+        return heldOffset;
     }
 
     @Override
