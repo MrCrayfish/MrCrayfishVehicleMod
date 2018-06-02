@@ -120,7 +120,7 @@ public class CommonEvents
                 if(player.getDataManager().get(HELD_VEHICLE).hasNoTags())
                 {
                     Entity targetEntity = event.getTarget();
-                    if(targetEntity instanceof EntityVehicle)
+                    if(targetEntity instanceof EntityVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
                     {
                         NBTTagCompound tagCompound = new NBTTagCompound();
                         String id = getEntityString(targetEntity);
