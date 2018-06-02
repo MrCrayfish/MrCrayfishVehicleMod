@@ -5,9 +5,11 @@ import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -15,6 +17,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -139,6 +142,9 @@ public class CommonEvents
                             Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                             entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y + heldOffset.y * 0.0625D, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
                             world.spawnEntity(entity);
+
+                            //Plays place sound
+                            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         }
                     }
                 }
@@ -152,7 +158,7 @@ public class CommonEvents
                 if(!world.isRemote)
                 {
                     Entity targetEntity = ((PlayerInteractEvent.EntityInteract) event).getTarget();
-                    if(targetEntity instanceof EntityVehicle)
+                    if(targetEntity instanceof EntityVehicle && !targetEntity.isDead)
                     {
                         NBTTagCompound tagCompound = new NBTTagCompound();
                         String id = getEntityString(targetEntity);
@@ -171,6 +177,9 @@ public class CommonEvents
 
                             //Removes the entity from the world
                             world.removeEntity(targetEntity);
+
+                            //Plays pick up sound
+                            world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         }
                     }
                 }

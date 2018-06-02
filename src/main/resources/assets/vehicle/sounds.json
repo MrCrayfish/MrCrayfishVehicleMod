@@ -25,5 +25,8 @@
     },
     "bonk": {
         "sounds": [ {"name": "vehicle:bonk"}]
+    },
+    "pick_up_vehicle": {
+        "sounds": [ {"name": "vehicle:pick_up_vehicle"}]
     }
 }
