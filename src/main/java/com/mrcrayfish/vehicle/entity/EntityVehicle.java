@@ -144,8 +144,12 @@ public abstract class EntityVehicle extends Entity
         if(this.world.isRemote)
         {
             engine = new ItemStack(ModItems.ENGINE);
+            this.onClientInit();
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public void onClientInit() {}
 
     @Override
     public void onUpdate()

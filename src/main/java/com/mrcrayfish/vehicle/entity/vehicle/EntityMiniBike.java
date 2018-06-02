@@ -31,16 +31,12 @@ public class EntityMiniBike extends EntityColoredMotorcycle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.MINI_BIKE_BODY);
-            wheel = new ItemStack(ModItems.WHEEL);
-            handleBar = new ItemStack(ModItems.MINI_BIKE_HANDLE_BAR);
-        }
+        body = new ItemStack(ModItems.MINI_BIKE_BODY);
+        wheel = new ItemStack(ModItems.WHEEL);
+        handleBar = new ItemStack(ModItems.MINI_BIKE_HANDLE_BAR);
     }
 
     @Override

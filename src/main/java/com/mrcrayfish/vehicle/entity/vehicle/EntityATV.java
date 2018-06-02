@@ -31,16 +31,12 @@ public class EntityATV extends EntityColoredLandVehicle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.ATV_BODY);
-            handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
-            wheel = new ItemStack(ModItems.WHEEL);
-        }
+        body = new ItemStack(ModItems.ATV_BODY);
+        handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
+        wheel = new ItemStack(ModItems.WHEEL);
     }
 
     @Override

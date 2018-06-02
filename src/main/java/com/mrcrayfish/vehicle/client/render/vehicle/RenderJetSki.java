@@ -62,7 +62,7 @@ public class RenderJetSki extends RenderVehicle<EntityJetSki>
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
                 //TODO change to entity itemstack instance
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.handle_bar, ItemCameraTransforms.TransformType.NONE);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
         }

@@ -32,16 +32,12 @@ public class EntityGoKart extends EntityColoredLandVehicle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.GO_KART_BODY);
-            wheel = new ItemStack(ModItems.WHEEL);
-            steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
-        }
+        body = new ItemStack(ModItems.GO_KART_BODY);
+        wheel = new ItemStack(ModItems.WHEEL);
+        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override

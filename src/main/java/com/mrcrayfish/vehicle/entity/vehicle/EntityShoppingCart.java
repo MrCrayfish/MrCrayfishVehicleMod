@@ -10,6 +10,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -27,15 +29,11 @@ public class EntityShoppingCart extends EntityLandVehicle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.SHOPPING_CART_BODY);
-            wheel = new ItemStack(ModItems.WHEEL);
-        }
+        body = new ItemStack(ModItems.SHOPPING_CART_BODY);
+        wheel = new ItemStack(ModItems.WHEEL);
     }
 
     @Override

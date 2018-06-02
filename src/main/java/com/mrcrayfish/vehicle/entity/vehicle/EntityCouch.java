@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -24,15 +26,11 @@ public class EntityCouch extends EntityLandVehicle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
-            wheel = new ItemStack(ModItems.WHEEL);
-        }
+        body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
+        wheel = new ItemStack(ModItems.WHEEL);
     }
 
     @Override

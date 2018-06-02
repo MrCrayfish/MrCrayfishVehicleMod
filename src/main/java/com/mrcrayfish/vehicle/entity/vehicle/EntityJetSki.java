@@ -3,9 +3,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 import com.mrcrayfish.vehicle.entity.EntityColoredSeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
@@ -26,7 +24,7 @@ public class EntityJetSki extends EntityColoredSeaVehicle
      * ItemStack instances used for rendering
      */
     @SideOnly(Side.CLIENT)
-    public ItemStack handle_bar;
+    public ItemStack handleBar;
 
     public EntityJetSki(World worldIn)
     {
@@ -38,15 +36,11 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.JET_SKI_BODY);
-            handle_bar = new ItemStack(ModItems.ATV_HANDLE_BAR);
-        }
+        body = new ItemStack(ModItems.JET_SKI_BODY);
+        handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
     }
 
     @Override

@@ -32,16 +32,12 @@ public class EntityDuneBuggy extends EntityLandVehicle
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
-            handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
-            wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
-        }
+        body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
+        handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
+        wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
     }
 
     @Override
