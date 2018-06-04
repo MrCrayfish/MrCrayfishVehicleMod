@@ -190,27 +190,11 @@ public class CommonEvents
                         float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
                         Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
-                        //Gets the clicked vec if it was a right click block event
-                        if(event instanceof PlayerInteractEvent.RightClickBlock)
-                        {
-                            Vec3d clickedVec = event.getHitVec();
-                            entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y + heldOffset.y * 0.0625D, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
-                        }
-                        /*else if(event instanceof PlayerInteractEvent.RightClickEmpty)
-                        {
-                            Vec3d lookVec = player.getLookVec();
-                            double posX = player.posX + lookVec.x;
-                            double posY = player.posY + player.getEyeHeight() + lookVec.y;
-                            double posZ = player.posZ + lookVec.z;
-                            entity.setPositionAndRotation(posX + heldOffset.x * 0.0625D, posY + heldOffset.y * 0.0625D, posZ + heldOffset.z * 0.0625D, rotation, 0F);
-                            entity.motionX = lookVec.x;
-                            entity.motionY = lookVec.y;
-                            entity.motionZ = lookVec.z;
-                        }*/
-
-                        world.spawnEntity(entity);
+                        Vec3d clickedVec = event.getHitVec();
+                        entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y + heldOffset.y * 0.0625D, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
 
                         //Plays place sound
+                        world.spawnEntity(entity);
                         world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         event.setCanceled(true);
@@ -236,15 +220,15 @@ public class CommonEvents
             if(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.RightClickItem)
             {
                 EntityPlayer player = event.getEntityPlayer();
-                if(player.isSneaking())
+                if(!player.getDataManager().get(HELD_VEHICLE).hasNoTags())
                 {
-                    if(!player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+                    if(player.isSneaking())
                     {
-                        if(event.isCancelable())
-                        {
-                            event.setCanceled(true);
-                        }
                         PacketHandler.INSTANCE.sendToServer(new MessageThrowVehicle());
+                    }
+                    if(event.isCancelable())
+                    {
+                        event.setCanceled(true);
                     }
                 }
             }
