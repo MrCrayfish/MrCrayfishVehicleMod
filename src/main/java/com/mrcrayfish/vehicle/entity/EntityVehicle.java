@@ -200,9 +200,18 @@ public abstract class EntityVehicle extends Entity
         move(MoverType.SELF, motionX + vehicleMotionX, motionY + vehicleMotionY, motionZ + vehicleMotionZ);
 
         /* Reduces the motion and speed multiplier */
-        motionX *= 0.8;
-        motionY *= 0.98D;
-        motionZ *= 0.8;
+        if(this.onGround)
+        {
+            motionX *= 0.8;
+            motionY *= 0.98D;
+            motionZ *= 0.8;
+        }
+        else
+        {
+            motionX *= 0.98;
+            motionY *= 0.98D;
+            motionZ *= 0.98;
+        }
         speedMultiplier *= 0.85;
 
         /* Checks for block collisions */

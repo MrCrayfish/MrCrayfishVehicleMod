@@ -46,16 +46,19 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     @Override
     public void createParticles()
     {
-        if(this.getAcceleration() == AccelerationDirection.FORWARD)
+        if(state == State.ON_WATER)
         {
-            for(int i = 0; i < 5; i++)
+            if(this.getAcceleration() == AccelerationDirection.FORWARD)
             {
-                this.world.spawnParticle(EnumParticleTypes.WATER_SPLASH, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D);
-            }
+                for(int i = 0; i < 5; i++)
+                {
+                    this.world.spawnParticle(EnumParticleTypes.WATER_SPLASH, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D);
+                }
 
-            for(int i = 0; i < 5; i++)
-            {
-                this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 2.0D, 0.0D, -this.motionZ * 2.0D);
+                for(int i = 0; i < 5; i++)
+                {
+                    this.world.spawnParticle(EnumParticleTypes.WATER_BUBBLE, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 2.0D, 0.0D, -this.motionZ * 2.0D);
+                }
             }
         }
     }
@@ -63,6 +66,7 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     @Override
     public void updateVehicle()
     {
+        super.updateVehicle();
         this.prevLeanAngle = this.leanAngle;
         this.leanAngle = this.turnAngle / (float) getMaxTurnAngle();
     }
