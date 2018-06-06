@@ -23,6 +23,8 @@ public class ModSounds
     public static final SoundEvent ELECTRIC_ENGINE_STEREO;
     public static final SoundEvent BONK;
     public static final SoundEvent PICK_UP_VEHICLE;
+    public static final SoundEvent SPEED_BOAT_ENGINE_MONO;
+    public static final SoundEvent SPEED_BOAT_ENGINE_STEREO;
 
     static
     {
@@ -36,6 +38,8 @@ public class ModSounds
         ELECTRIC_ENGINE_STEREO = registerSound("vehicle:electric_engine_stereo");
         BONK = registerSound("vehicle:bonk");
         PICK_UP_VEHICLE = registerSound("vehicle:pick_up_vehicle");
+        SPEED_BOAT_ENGINE_MONO = registerSound("vehicle:speed_boat_engine_mono");
+        SPEED_BOAT_ENGINE_STEREO = registerSound("vehicle:speed_boat_engine_stereo");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -62,6 +66,8 @@ public class ModSounds
             registry.register(ELECTRIC_ENGINE_STEREO);
             registry.register(BONK);
             registry.register(PICK_UP_VEHICLE);
+            registry.register(SPEED_BOAT_ENGINE_MONO);
+            registry.register(SPEED_BOAT_ENGINE_STEREO);
         }
     }
 }
