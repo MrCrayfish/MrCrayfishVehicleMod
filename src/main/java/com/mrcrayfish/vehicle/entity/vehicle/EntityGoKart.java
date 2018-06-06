@@ -27,20 +27,17 @@ public class EntityGoKart extends EntityColoredLandVehicle
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(12);
         this.setSize(1.5F, 0.5F);
+        this.setHeldOffset(new Vec3d(3D, 0.5D, 0D));
         this.stepHeight = 0.625F;
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.GO_KART_BODY);
-            wheel = new ItemStack(ModItems.WHEEL);
-            steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
-        }
+        body = new ItemStack(ModItems.GO_KART_BODY);
+        wheel = new ItemStack(ModItems.WHEEL);
+        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override

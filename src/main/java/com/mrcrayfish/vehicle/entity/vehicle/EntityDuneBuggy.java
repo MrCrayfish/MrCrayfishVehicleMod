@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -26,20 +27,17 @@ public class EntityDuneBuggy extends EntityLandVehicle
         super(worldIn);
         this.setMaxSpeed(10);
         this.setSize(0.75F, 0.75F);
+        this.setHeldOffset(new Vec3d(2D, 0D, 0D));
         this.stepHeight = 0.5F;
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
-            handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
-            wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
-        }
+        body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
+        handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
+        wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
     }
 
     @Override

@@ -7,7 +7,10 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -19,18 +22,15 @@ public class EntityCouch extends EntityLandVehicle
         super(worldIn);
         this.setMaxSpeed(10);
         this.setSize(1.0F, 1.0F);
+        this.setHeldOffset(new Vec3d(2D, 2D, 0D));
     }
 
     @Override
-    public void entityInit()
+    @SideOnly(Side.CLIENT)
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
-            wheel = new ItemStack(ModItems.WHEEL);
-        }
+        body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
+        wheel = new ItemStack(ModItems.WHEEL);
     }
 
     @Override

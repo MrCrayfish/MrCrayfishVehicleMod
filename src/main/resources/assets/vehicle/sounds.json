@@ -25,5 +25,14 @@
     },
     "bonk": {
         "sounds": [ {"name": "vehicle:bonk"}]
+    },
+    "pick_up_vehicle": {
+        "sounds": [ {"name": "vehicle:pick_up_vehicle"}]
+    },
+    "speed_boat_engine_mono": {
+        "sounds": [ {"name": "vehicle:speed_boat_engine_mono"}]
+    },
+    "speed_boat_engine_stereo": {
+        "sounds": [ {"name": "vehicle:speed_boat_engine_stereo"}]
     }
 }

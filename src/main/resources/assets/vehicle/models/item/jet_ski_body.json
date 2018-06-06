@@ -2,8 +2,10 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
         "0": "blocks/concrete_white",
+        "color": "blocks/concrete_red",
         "2": "blocks/anvil_base",
-        "3": "blocks/wool_colored_black"
+        "3": "blocks/wool_colored_black",
+        "4": "vehicle:models/cray_industries"
     },
     "display": {
         "gui": {
@@ -402,6 +404,92 @@
                 "east": { "texture": "#0", "uv": [ 0.00, 0.00, 1.20, 4.00 ] },
                 "south": { "texture": "#0", "uv": [ 0.00, 0.00, 9.20, 4.00 ] },
                 "west": { "texture": "#0", "uv": [ 0.00, 0.00, 1.20, 4.00 ] }
+            }
+        },
+        {
+            "name": "exhaust_1",
+            "from": [ 6.70, -1.30, -6.00 ], 
+            "to": [ 9.30, -0.50, -3.00 ], 
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 2.60, 0.80 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 0.80 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 0.80 ] },
+                "up": { "texture": "#2", "uv": [ 0.00, 0.00, 2.60, 3.00 ] },
+                "down": { "texture": "#2", "uv": [ 0.00, 0.00, 2.60, 3.00 ] }
+            }
+        },
+        {
+            "name": "exhaust_2",
+            "from": [ 6.70, 0.50, -6.00 ], 
+            "to": [ 9.30, 1.30, -3.00 ], 
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 2.60, 0.80 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 0.80 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 0.80 ] },
+                "up": { "texture": "#2", "uv": [ 0.00, 0.00, 2.60, 3.00 ] },
+                "down": { "texture": "#2", "uv": [ 0.00, 0.00, 2.60, 3.00 ] }
+            }
+        },
+        {
+            "name": "exhaust_3",
+            "from": [ 6.70, -0.50, -6.00 ], 
+            "to": [ 7.50, 0.50, -3.00 ], 
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 0.80, 1.00 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.00 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "exhaust_4",
+            "from": [ 8.50, -0.50, -6.00 ], 
+            "to": [ 9.30, 0.50, -3.00 ], 
+            "faces": {
+                "north": { "texture": "#2", "uv": [ 0.00, 0.00, 0.80, 1.00 ] },
+                "east": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.00 ] },
+                "west": { "texture": "#2", "uv": [ 0.00, 0.00, 3.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "exhaust_5",
+            "from": [ 7.50, -0.50, -5.10 ], 
+            "to": [ 8.50, 0.50, -2.10 ], 
+            "faces": {
+                "north": { "texture": "#3", "uv": [ 0.00, 0.00, 1.00, 1.00 ] },
+                "east": { "texture": "#3", "uv": [ 0.00, 0.00, 3.00, 1.00 ] },
+                "west": { "texture": "#3", "uv": [ 0.00, 0.00, 3.00, 1.00 ] }
+            }
+        },
+        {
+            "name": "logo_1",
+            "from": [ 0.90, -0.50, -2.00 ], 
+            "to": [ 1.90, 1.50, 5.00 ], 
+            "faces": {
+                "west": { "texture": "#4", "uv": [ 0.00, 0.00, 14.00, 4.00 ] }
+            }
+        },
+        {
+            "name": "logo_2",
+            "from": [ 0.90, -0.50, 6.00 ], 
+            "to": [ 1.90, 1.50, 13.00 ], 
+            "faces": {
+                "west": { "texture": "#4", "uv": [ 0.00, 4.00, 14.00, 8.00 ] }
+            }
+        },
+        {
+            "name": "logo_3",
+            "from": [ 14.10, -0.50, 5.00 ], 
+            "to": [ 15.10, 1.50, 12.00 ], 
+            "faces": {
+                "east": { "texture": "#4", "uv": [ 0.00, 0.00, 14.00, 4.00 ] }
+            }
+        },
+        {
+            "name": "logo_4",
+            "from": [ 14.10, -0.50, -3.00 ], 
+            "to": [ 15.10, 1.50, 4.00 ], 
+            "faces": {
+                "east": { "texture": "#4", "uv": [ 0.00, 4.00, 14.00, 8.00 ] }
             }
         }
     ]

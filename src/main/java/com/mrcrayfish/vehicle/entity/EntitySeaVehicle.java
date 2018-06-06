@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
  */
 public abstract class EntitySeaVehicle extends EntityVehicle
 {
+    protected State state;
+    protected State previousState;
     private float waterLevel;
 
     public EntitySeaVehicle(World worldIn)
@@ -26,35 +28,57 @@ public abstract class EntitySeaVehicle extends EntityVehicle
     @Override
     public void updateVehicleMotion()
     {
-        if(isOnWater())
+        if(state == State.ON_WATER || state == State.UNDER_WATER)
         {
-            if(isUnderWater())
+            if(state == State.UNDER_WATER)
             {
-                motionY += 0.08D;
+                this.motionY += 0.12D;
             }
             else
             {
                 double floatingY = ((waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - posY)) / (double) height;
                 motionY += floatingY * 0.05D;
-                if(Math.abs(floatingY) < 0.1D)
+                if(Math.abs(floatingY) < 0.1D && motionY > 0 && Math.abs(motionY) < 0.1D)
                 {
                     setPosition(posX, waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())), posZ);
                     motionY = 0.0D;
                 }
-
+                motionY *= 0.75D;
             }
-            motionY *= 0.75D;
 
             float f1 = MathHelper.sin(rotationYaw * 0.017453292F) / 20F;
             float f2 = MathHelper.cos(rotationYaw * 0.017453292F) / 20F;
             vehicleMotionX = (-currentSpeed * f1);
             vehicleMotionZ = (currentSpeed * f2);
+            motionX *= 0.5;
+            motionZ *= 0.5;
+        }
+        else if(state == State.IN_AIR)
+        {
+            motionY -= 0.08D;
+            if(previousState == State.UNDER_WATER || previousState == State.ON_WATER)
+            {
+                motionX = vehicleMotionX;
+                motionZ = vehicleMotionZ;
+                vehicleMotionX = 0;
+                vehicleMotionZ = 0;
+            }
         }
         else
         {
-            motionY -= 0.08D;
             vehicleMotionX *= 0.75F;
             vehicleMotionZ *= 0.75F;
+        }
+    }
+
+    @Override
+    public void updateVehicle()
+    {
+        previousState = state;
+        state = getState();
+        if(state == State.IN_AIR)
+        {
+            deltaYaw *= 2;
         }
     }
 
@@ -141,5 +165,30 @@ public abstract class EntitySeaVehicle extends EntityVehicle
             mutableBlockPos.release();
         }
         return flag;
+    }
+
+    protected State getState()
+    {
+        if(isUnderWater())
+        {
+            return State.UNDER_WATER;
+        }
+        else if(isOnWater())
+        {
+            return State.ON_WATER;
+        }
+        else if(onGround)
+        {
+            return State.ON_LAND;
+        }
+        else
+        {
+            return State.IN_AIR;
+        }
+    }
+
+    protected enum State
+    {
+        ON_WATER, UNDER_WATER, IN_AIR, ON_LAND;
     }
 }

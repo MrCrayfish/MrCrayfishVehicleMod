@@ -51,7 +51,7 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
             {
                 this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
             }
-            else
+            else if(!player.isSneaking())
             {
                 player.startRiding(this);
             }

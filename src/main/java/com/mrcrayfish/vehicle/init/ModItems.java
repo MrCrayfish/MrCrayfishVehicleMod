@@ -23,6 +23,7 @@ public class ModItems
     public static final Item MINI_BIKE_HANDLE_BAR;
     public static final Item BUMPER_CAR_BODY;
     public static final Item JET_SKI_BODY;
+    public static final Item SPEED_BOAT_BODY;
 
     public static final Item ENGINE;
 
@@ -41,6 +42,7 @@ public class ModItems
         MINI_BIKE_HANDLE_BAR = new ItemColoredPart("mini_bike_handle_bar");
         BUMPER_CAR_BODY = new ItemColoredPart("bumper_car_body");
         JET_SKI_BODY = new ItemColoredPart("jet_ski_body");
+        SPEED_BOAT_BODY = new ItemColoredPart("speed_boat_body");
 
         ENGINE = new ItemEngine("small_engine");
     }
@@ -60,6 +62,7 @@ public class ModItems
         register(MINI_BIKE_HANDLE_BAR);
         register(BUMPER_CAR_BODY);
         register(JET_SKI_BODY);
+        register(SPEED_BOAT_BODY);
 
         register(ENGINE);
     }

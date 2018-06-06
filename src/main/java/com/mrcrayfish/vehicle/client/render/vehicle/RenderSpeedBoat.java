@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
+import com.mrcrayfish.vehicle.entity.vehicle.EntitySpeedBoat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -11,15 +12,15 @@ import net.minecraft.client.renderer.entity.RenderManager;
 /**
  * Author: MrCrayfish
  */
-public class RenderJetSki extends RenderVehicle<EntityJetSki>
+public class RenderSpeedBoat extends RenderVehicle<EntitySpeedBoat>
 {
-    public RenderJetSki(RenderManager renderManager)
+    public RenderSpeedBoat(RenderManager renderManager)
     {
         super(renderManager);
     }
 
     @Override
-    public void doRender(EntityJetSki entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntitySpeedBoat entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 
@@ -27,8 +28,8 @@ public class RenderJetSki extends RenderVehicle<EntityJetSki>
         {
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            GlStateManager.scale(1.25, 1.25, 1.25);
-            GlStateManager.translate(0, -0.03125, 0.2);
+            GlStateManager.scale(1, 1, 1);
+            GlStateManager.translate(0, -0.03125, 0.6875);
 
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
@@ -53,7 +54,7 @@ public class RenderJetSki extends RenderVehicle<EntityJetSki>
             //Render the handles bars
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, 0.8 + bodyOffset, 0.25);
+                GlStateManager.translate(0, 0.65 + bodyOffset, -0.125);
                 GlStateManager.rotate(-45F, 1, 0, 0);
                 GlStateManager.translate(0, 0.02, 0);
 
@@ -61,7 +62,6 @@ public class RenderJetSki extends RenderVehicle<EntityJetSki>
                 float turnRotation = wheelAngleNormal * 15F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-                //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();

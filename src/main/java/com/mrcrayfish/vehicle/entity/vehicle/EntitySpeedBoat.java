@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityJetSki extends EntityColoredSeaVehicle
+public class EntitySpeedBoat extends EntityColoredSeaVehicle
 {
     public float prevLeanAngle;
     public float leanAngle;
@@ -26,21 +26,21 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack handleBar;
 
-    public EntityJetSki(World worldIn)
+    public EntitySpeedBoat(World worldIn)
     {
         super(worldIn);
-        this.setMaxSpeed(15F);
+        this.setMaxSpeed(20F);
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
-        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setHeldOffset(new Vec3d(6D, -0.5D, 0D));
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
-        body = new ItemStack(ModItems.JET_SKI_BODY);
-        handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
+        body = new ItemStack(ModItems.SPEED_BOAT_BODY);
+        handleBar = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override
@@ -86,49 +86,18 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     @Override
     public float getMinEnginePitch()
     {
-        return 1.2F;
+        return 1.0F;
     }
 
     @Override
     public float getMaxEnginePitch()
     {
-        return 2.2F;
+        return 2.0F;
     }
 
     @Override
     public double getMountedYOffset()
     {
-        return 10 * 0.0625;
-    }
-
-    @Override
-    public void updatePassenger(Entity passenger)
-    {
-        if (this.isPassenger(passenger))
-        {
-            float offset = 0.0F;
-            float yOffset = (float)((this.isDead ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
-
-            if (this.getPassengers().size() > 1)
-            {
-                int index = this.getPassengers().indexOf(passenger);
-                if (index > 0)
-                {
-                    offset += index * -0.5F;
-                }
-            }
-
-            Vec3d vec3d = (new Vec3d((double)offset, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
-            passenger.setPosition(this.posX + vec3d.x, this.posY + (double)yOffset, this.posZ + vec3d.z);
-            passenger.rotationYaw -= deltaYaw;
-            passenger.setRotationYawHead(passenger.rotationYaw);
-            this.applyYawToEntity(passenger);
-        }
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return this.getPassengers().size() < 3;
+        return 4 * 0.0625;
     }
 }

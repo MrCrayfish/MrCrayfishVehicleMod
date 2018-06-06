@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.proxy;
 
 import com.mrcrayfish.vehicle.client.ClientEvents;
+import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
@@ -34,6 +35,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityJetSki.class, RenderJetSki::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySpeedBoat.class, RenderSpeedBoat::new);
 
         if(Loader.isModLoaded("cfm"))
         {
@@ -41,6 +43,7 @@ public class ClientProxy implements Proxy
         }
 
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
+        MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
         ClientRegistry.registerKeyBinding(KEY_HORN);
     }
 

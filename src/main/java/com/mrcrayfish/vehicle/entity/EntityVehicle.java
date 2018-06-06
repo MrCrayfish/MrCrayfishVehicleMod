@@ -71,6 +71,8 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
+    private Vec3d heldOffset = Vec3d.ZERO;
+
     /**
      * ItemStack instances used for rendering
      */
@@ -142,8 +144,12 @@ public abstract class EntityVehicle extends Entity
         if(this.world.isRemote)
         {
             engine = new ItemStack(ModItems.ENGINE);
+            this.onClientInit();
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public void onClientInit() {}
 
     @Override
     public void onUpdate()
@@ -194,9 +200,18 @@ public abstract class EntityVehicle extends Entity
         move(MoverType.SELF, motionX + vehicleMotionX, motionY + vehicleMotionY, motionZ + vehicleMotionZ);
 
         /* Reduces the motion and speed multiplier */
-        motionX *= 0.8;
-        motionY *= 0.98D;
-        motionZ *= 0.8;
+        if(this.onGround)
+        {
+            motionX *= 0.8;
+            motionY *= 0.98D;
+            motionZ *= 0.8;
+        }
+        else
+        {
+            motionX *= 0.98;
+            motionY *= 0.98D;
+            motionZ *= 0.98;
+        }
         speedMultiplier *= 0.85;
 
         /* Checks for block collisions */
@@ -342,8 +357,9 @@ public abstract class EntityVehicle extends Entity
         if(!world.isRemote && !player.isSneaking())
         {
             player.startRiding(this);
+            return true;
         }
-        return true;
+        return false;
     }
 
     @Override
@@ -626,6 +642,16 @@ public abstract class EntityVehicle extends Entity
     public boolean getHorn()
     {
         return this.dataManager.get(HORN);
+    }
+
+    public void setHeldOffset(Vec3d heldOffset)
+    {
+        this.heldOffset = heldOffset;
+    }
+
+    public Vec3d getHeldOffset()
+    {
+        return heldOffset;
     }
 
     @Override
