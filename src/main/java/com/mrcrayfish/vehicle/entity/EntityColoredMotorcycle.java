@@ -51,7 +51,7 @@ public abstract class EntityColoredMotorcycle extends EntityMotorcycle
             {
                 this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
             }
-            else
+            else if(!player.isSneaking())
             {
                 player.startRiding(this);
             }
