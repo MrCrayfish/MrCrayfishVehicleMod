@@ -50,10 +50,13 @@ public abstract class EntityColoredMotorcycle extends EntityMotorcycle
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemDye)
             {
                 this.setColor(EnumDyeColor.byDyeDamage(heldItem.getItemDamage()));
-                return true;
+            }
+            else
+            {
+                player.startRiding(this);
             }
         }
-        return super.processInitialInteract(player, hand);
+        return true;
     }
 
     @Override
