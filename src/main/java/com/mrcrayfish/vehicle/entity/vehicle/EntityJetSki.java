@@ -74,25 +74,25 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO;
+        return ModSounds.SPEED_BOAT_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO;
+        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
     }
 
     @Override
     public float getMinEnginePitch()
     {
-        return 1.0F;
+        return 1.2F;
     }
 
     @Override
     public float getMaxEnginePitch()
     {
-        return 2.0F;
+        return 2.2F;
     }
 
     @Override
