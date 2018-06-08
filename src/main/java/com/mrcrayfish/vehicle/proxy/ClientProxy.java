@@ -1,35 +1,18 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import org.lwjgl.input.Keyboard;
-
 import com.mrcrayfish.vehicle.client.ClientEvents;
+import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderATV;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderBumperCar;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderCouch;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderDuneBuggy;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderGoKart;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderJetSki;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderMiniBike;
-import com.mrcrayfish.vehicle.client.render.vehicle.RenderShoppingCart;
+import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemColoredPart;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -37,7 +20,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.items.IItemHandler;
+import org.lwjgl.input.Keyboard;
 
 /**
  * Author: MrCrayfish
@@ -56,6 +39,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityJetSki.class, RenderJetSki::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySpeedBoat.class, RenderSpeedBoat::new);
 
         if(Loader.isModLoaded("cfm"))
         {
@@ -63,6 +47,7 @@ public class ClientProxy implements Proxy
         }
 
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
+        MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
         ClientRegistry.registerKeyBinding(KEY_HORN);
     }
 
@@ -72,7 +57,7 @@ public class ClientProxy implements Proxy
         	if(stack.hasTagCompound() && index == 1) {
         		return stack.getTagCompound().getInteger("color");
         	}
-        	return 0xFFFFFF; // White
+        	return 0x7f0000; // Red
         };
         
         for(Item item : RegistrationHandler.Items.getItems()) {

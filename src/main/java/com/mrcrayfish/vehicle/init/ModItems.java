@@ -12,7 +12,7 @@ public class ModItems
 {
     public static final Item WHEEL;
     public static final Item ATV_BODY;
-    public static final Item ATV_HANDLE_BAR;
+    public static final Item HANDLE_BAR;
     public static final Item DUNE_BUGGY_BODY;
     public static final Item DUNE_BUGGY_HANDLE_BAR;
     public static final Item DUNE_BUGGY_WHEEL;
@@ -23,6 +23,7 @@ public class ModItems
     public static final Item MINI_BIKE_HANDLE_BAR;
     public static final Item BUMPER_CAR_BODY;
     public static final Item JET_SKI_BODY;
+    public static final Item SPEED_BOAT_BODY;
 
     public static final Item ENGINE;
 
@@ -30,7 +31,7 @@ public class ModItems
     {
         WHEEL = new ItemPart("wheel");
         ATV_BODY = new ItemColoredPart("atv");
-        ATV_HANDLE_BAR = new ItemPart("handle_bar");
+        HANDLE_BAR = new ItemPart("handle_bar");
         DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body");
         DUNE_BUGGY_HANDLE_BAR = new ItemPart("dune_buggy_handle_bar");
         DUNE_BUGGY_WHEEL = new ItemPart("dune_buggy_wheel");
@@ -41,6 +42,7 @@ public class ModItems
         MINI_BIKE_HANDLE_BAR = new ItemColoredPart("mini_bike_handle_bar");
         BUMPER_CAR_BODY = new ItemColoredPart("bumper_car_body");
         JET_SKI_BODY = new ItemColoredPart("jet_ski_body");
+        SPEED_BOAT_BODY = new ItemColoredPart("speed_boat_body");
 
         ENGINE = new ItemEngine("small_engine");
     }
@@ -49,7 +51,7 @@ public class ModItems
     {
         register(WHEEL);
         register(ATV_BODY);
-        register(ATV_HANDLE_BAR);
+        register(HANDLE_BAR);
         register(DUNE_BUGGY_BODY);
         register(DUNE_BUGGY_HANDLE_BAR);
         register(DUNE_BUGGY_WHEEL);
@@ -60,6 +62,7 @@ public class ModItems
         register(MINI_BIKE_HANDLE_BAR);
         register(BUMPER_CAR_BODY);
         register(JET_SKI_BODY);
+        register(SPEED_BOAT_BODY);
 
         register(ENGINE);
     }

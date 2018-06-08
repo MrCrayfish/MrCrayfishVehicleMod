@@ -36,7 +36,7 @@ public class EntityATV extends EntityColoredLandVehicle
         if(world.isRemote)
         {
             body = new ItemStack(ModItems.ATV_BODY);
-            handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
+            handleBar = new ItemStack(ModItems.HANDLE_BAR);
             wheel = new ItemStack(ModItems.WHEEL);
         }
     }

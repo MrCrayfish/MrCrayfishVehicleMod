@@ -23,15 +23,10 @@ public class EntityShoppingCart extends EntityLandVehicle
     }
 
     @Override
-    public void entityInit()
+    public void onClientInit()
     {
-        super.entityInit();
-
-        if(world.isRemote)
-        {
-            body = new ItemStack(ModItems.SHOPPING_CART_BODY);
-            wheel = new ItemStack(ModItems.WHEEL);
-        }
+        body = new ItemStack(ModItems.SHOPPING_CART_BODY);
+        wheel = new ItemStack(ModItems.WHEEL);
     }
 
     @Override

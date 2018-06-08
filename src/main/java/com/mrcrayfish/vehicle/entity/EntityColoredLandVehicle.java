@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import java.awt.Color;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemDye;
@@ -13,6 +11,8 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+
+import java.awt.*;
 
 /**
  * Author: MrCrayfish
@@ -30,7 +30,7 @@ public abstract class EntityColoredLandVehicle extends EntityLandVehicle
     public void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(COLOR, 0xFFFFFF);
+        this.dataManager.register(COLOR, 0x7f0000);
     }
 
     public void setColor(int color)

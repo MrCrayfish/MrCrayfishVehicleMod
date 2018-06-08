@@ -71,6 +71,11 @@ public abstract class EntityVehicle extends Entity
     private double lerpYaw;
     private double lerpPitch;
 
+    protected State state;
+    protected State previousState;
+
+    private Vec3d heldOffset = Vec3d.ZERO;
+
     /**
      * ItemStack instances used for rendering
      */
@@ -142,8 +147,12 @@ public abstract class EntityVehicle extends Entity
         if(this.world.isRemote)
         {
             engine = new ItemStack(ModItems.ENGINE);
+            onClientInit();
         }
     }
+
+    @SideOnly(Side.CLIENT)
+    public void onClientInit() {}
 
     @Override
     public void onUpdate()
@@ -628,6 +637,16 @@ public abstract class EntityVehicle extends Entity
         return this.dataManager.get(HORN);
     }
 
+    public void setHeldOffset(Vec3d heldOffset)
+    {
+        this.heldOffset = heldOffset;
+    }
+
+    public Vec3d getHeldOffset()
+    {
+        return heldOffset;
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
@@ -706,5 +725,14 @@ public abstract class EntityVehicle extends Entity
             }
             return NONE;
         }
+    }
+
+    public State getDefaultState() {
+        return State.ON_LAND;
+    }
+
+    protected enum State
+    {
+        ON_WATER, UNDER_WATER, IN_AIR, ON_LAND
     }
 }

@@ -30,7 +30,7 @@ public abstract class EntityColoredSeaVehicle extends EntitySeaVehicle
     public void entityInit()
     {
         super.entityInit();
-        this.dataManager.register(COLOR, 0xFFFFFF);
+        this.dataManager.register(COLOR, 0x7f0000);
     }
 
     public void setColor(int color)

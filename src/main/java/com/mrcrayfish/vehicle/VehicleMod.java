@@ -22,13 +22,16 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 /**
  * Author: MrCrayfish
  */
-@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MOD_COMPATIBILITY, dependencies = Reference.MOD_DEPENDS)
+@Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MOD_COMPATIBILITY, dependencies = Reference.MOD_DEPENDS, useMetadata = true)
 public class VehicleMod
 {
     @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_SERVER)
     public static Proxy proxy;
 
     public int nextEntityId;
+
+    @Mod.Instance
+    public static VehicleMod instance;
 
     public static final CreativeTabs CREATIVE_TAB = new CreativeTabs("tabVehicle")
     {
@@ -67,6 +70,7 @@ public class VehicleMod
         registerVehicle("mini_bike", EntityMiniBike.class);
         registerVehicle("bumper_car", EntityBumperCar.class);
         registerVehicle("jet_ski", EntityJetSki.class);
+        registerVehicle("speed_boat", EntitySpeedBoat.class);
 
         if(Loader.isModLoaded("cfm"))
         {

@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -12,15 +11,17 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 public class Wheel
 {
     private float offsetX;
+    private float offsetY;
     private float offsetZ;
     private float width;
     private float scale;
     private Side side;
     private Position position;
 
-    public Wheel(Side side, Position position, float width, float scale, float offsetX, float offsetZ)
+    public Wheel(Side side, Position position, float width, float scale, float offsetX, float offsetY, float offsetZ)
     {
         this.offsetX = offsetX;
+        this.offsetY = offsetY;
         this.offsetZ = offsetZ;
         this.width = width;
         this.scale = scale;
@@ -30,19 +31,24 @@ public class Wheel
 
     public Wheel(Side side, Position position, float offsetX, float offsetZ)
     {
-        this(side, position, 2.0F, 1.0F, offsetX, offsetZ);
+        this(side, position, 2.0F, 1.0F, offsetX, 0.0f, offsetZ);
     }
 
     public Wheel(Side side, Position position, float offsetX, float offsetZ, float scale)
     {
-        this(side, position, 2.0F, scale, offsetX, offsetZ);
+        this(side, position, 2.0F, scale, offsetX, 0.0f, offsetZ);
+    }
+
+    public Wheel(Side side, Position position, float offsetX, float offsetY, float offsetZ, float scale)
+    {
+        this(side, position, 2.0F, scale, offsetX, offsetY, offsetZ);
     }
 
     public void render(EntityLandVehicle vehicle, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
-            GlStateManager.translate((offsetX / 16F) * side.offset, 0, offsetZ / 16F);
+            GlStateManager.translate((offsetX / 16F) * side.offset, offsetY, offsetZ / 16F);
             GlStateManager.pushMatrix();
             {
                 if(position == Position.FRONT)

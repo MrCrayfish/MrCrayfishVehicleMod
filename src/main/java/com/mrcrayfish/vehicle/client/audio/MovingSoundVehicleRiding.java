@@ -23,7 +23,7 @@ public class MovingSoundVehicleRiding extends MovingSound
         super(vehicle.getRidingSound(), SoundCategory.NEUTRAL);
         this.player = player;
         this.vehicle = vehicle;
-        this.attenuationType = ISound.AttenuationType.NONE;
+        this.attenuationType = AttenuationType.NONE;
         this.repeat = true;
         this.repeatDelay = 0;
         this.volume = 0.001F;

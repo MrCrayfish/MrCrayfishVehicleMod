@@ -21,7 +21,7 @@ public class RenderLandVehicle<T extends EntityLandVehicle> extends RenderVehicl
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        wheels.forEach(wheel -> wheel.render(entity, partialTicks));
+//        wheels.forEach(wheel -> wheel.render(entity, partialTicks));
         super.doRender(entity, x, y, z, entityYaw, partialTicks);
     }
 }

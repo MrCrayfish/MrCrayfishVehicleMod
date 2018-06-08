@@ -1,0 +1,19 @@
+{
+    "_comment": "Generated using Husky's JSON Generator v3.",
+    "forge_marker": 1,
+    "defaults": {
+        "model": "cube_all",
+        "textures": {
+            "all": "hva:blocks/yellow_middle_line_left_corner_asphalt"
+        },
+        "transform": "forge:default-block"
+    },
+    "variants": {
+        "normal": [
+            {}
+        ],
+        "inventory": [
+            {}
+        ]
+    }
+}

@@ -1,6 +1,6 @@
 [
 {
-  "modid": "vehicle-mod",
+  "modid": "vehicle",
   "name": "Vehicle Mod",
   "description": "A mod developed during Mod Week Season 2. Adds in working Vehicles that you can actually drive!",
   "version": "0.11.0",
@@ -12,5 +12,17 @@
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
-}
+},
+  {
+    "modid": "hva",
+    "name": "Husky's Vehicle Addon",
+    "description": "This is an addon for MrCrayfish's Vehicle Mod",
+    "version": "0.0.1",
+    "mcversion": "1.12.2",
+    "authorList": ["HuskyTheArtist"],
+    "credits": "Thanks to MrCrayfish for creating the original mod",
+    "dependencies": [
+      "vehicle"
+    ]
+  }
 ]
