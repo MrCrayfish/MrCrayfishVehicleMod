@@ -5,9 +5,6 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
-import net.hdt.hva.entity.vehicle.EntityHighBoosterBoard;
-import net.hdt.hva.entity.vehicle.EntitySantaSleight;
-import net.hdt.hva.entity.vehicle.EntitySleight;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -155,37 +152,6 @@ public class ClientEvents
             model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-70F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
-            return;
-        }
-
-        if(ridingEntity instanceof EntitySleight)
-        {
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
-            return;
-        }
-
-        if(ridingEntity instanceof EntityHighBoosterBoard)
-        {
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(0F);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(0F);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(0F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(0F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(0F);
-            return;
-        }
-
-        if(ridingEntity instanceof EntitySantaSleight)
-        {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);

@@ -204,7 +204,7 @@ public abstract class EntityVehicle extends Entity
 
         /* Reduces the motion and speed multiplier */
         motionX *= 0.8;
-        motionY *= 0.98D;
+//        motionY *= 0.98D;
         motionZ *= 0.8;
         speedMultiplier *= 0.85;
 
