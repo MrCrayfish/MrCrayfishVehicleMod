@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.init;
 
-import com.mrcrayfish.vehicle.item.ItemColoredPart;
 import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
@@ -32,19 +31,19 @@ public class ModItems
     static
     {
         WHEEL = new ItemPart("wheel");
-        ATV_BODY = new ItemColoredPart("atv");
+        ATV_BODY = new ItemPart("atv").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
-        DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body");
+        DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body").setColored();
         DUNE_BUGGY_HANDLE_BAR = new ItemPart("dune_buggy_handle_bar");
         DUNE_BUGGY_WHEEL = new ItemPart("dune_buggy_wheel");
-        GO_KART_BODY = new ItemColoredPart("go_kart");
+        GO_KART_BODY = new ItemPart("go_kart").setColored();
         GO_KART_STEERING_WHEEL = new ItemPart("go_kart_steering_wheel");
         SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
-        MINI_BIKE_BODY = new ItemColoredPart("mini_bike_body");
-        MINI_BIKE_HANDLE_BAR = new ItemColoredPart("mini_bike_handle_bar");
-        BUMPER_CAR_BODY = new ItemColoredPart("bumper_car_body");
-        JET_SKI_BODY = new ItemColoredPart("jet_ski_body");
-        SPEED_BOAT_BODY = new ItemColoredPart("speed_boat_body");
+        MINI_BIKE_BODY = new ItemPart("mini_bike_body").setColored();
+        MINI_BIKE_HANDLE_BAR = new ItemPart("mini_bike_handle_bar").setColored();
+        BUMPER_CAR_BODY = new ItemPart("bumper_car_body").setColored();
+        JET_SKI_BODY = new ItemPart("jet_ski_body").setColored();
+        SPEED_BOAT_BODY = new ItemPart("speed_boat_body").setColored();
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();

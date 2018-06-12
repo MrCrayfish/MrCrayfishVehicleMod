@@ -1,9 +1,10 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredMotorcycle;
+import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -14,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityMiniBike extends EntityColoredMotorcycle
+public class EntityMiniBike extends EntityMotorcycle
 {
     /**
      * ItemStack instances used for rendering
@@ -47,8 +48,11 @@ public class EntityMiniBike extends EntityColoredMotorcycle
         {
             if(COLOR.equals(key))
             {
-                body.setItemDamage(this.dataManager.get(COLOR));
-                handleBar.setItemDamage(this.dataManager.get(COLOR));
+                if(!handleBar.hasTagCompound())
+                {
+                    handleBar.setTagCompound(new NBTTagCompound());
+                }
+                handleBar.getTagCompound().setInteger("color", this.dataManager.get(COLOR));
             }
         }
     }
@@ -93,5 +97,11 @@ public class EntityMiniBike extends EntityColoredMotorcycle
     public double getMountedYOffset()
     {
         return 9.5 * 0.0625;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
     }
 }

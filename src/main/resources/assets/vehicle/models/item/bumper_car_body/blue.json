@@ -1,6 +1,0 @@
-{
-    "parent": "vehicle:item/bumper_car_body",
-    "textures": {
-        "color": "blocks/concrete_blue"
-    }
-}

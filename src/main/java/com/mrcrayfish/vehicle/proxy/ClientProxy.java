@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
+import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -66,7 +67,7 @@ public class ClientProxy implements Proxy
         };
         RegistrationHandler.Items.getItems().forEach(item ->
         {
-            if(item instanceof ItemSprayCan)
+            if(item instanceof ItemSprayCan || (item instanceof ItemPart && ((ItemPart) item).isColored()))
             {
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
             }

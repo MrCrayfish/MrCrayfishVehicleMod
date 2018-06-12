@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredLandVehicle;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -13,7 +13,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKart extends EntityColoredLandVehicle
+public class EntityGoKart extends EntityLandVehicle
 {
     /**
      * ItemStack instances used for rendering
@@ -80,5 +80,11 @@ public class EntityGoKart extends EntityColoredLandVehicle
     public double getMountedYOffset()
     {
         return 0;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
     }
 }

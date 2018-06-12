@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageHorn;
@@ -15,6 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -48,6 +51,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -140,6 +144,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(DAMAGE_TAKEN, 0F);
         this.dataManager.register(ENGINE_TYPE, 0);
         this.dataManager.register(HORN, false);
+        this.dataManager.register(COLOR, 0);
 
         if(this.world.isRemote)
         {
@@ -356,10 +361,20 @@ public abstract class EntityVehicle extends Entity
     {
         if(!world.isRemote && !player.isSneaking())
         {
-            player.startRiding(this);
-            return true;
+            ItemStack heldItem = player.getHeldItem(hand);
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
+            {
+                if(heldItem.hasTagCompound() && heldItem.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
+                {
+                    this.setColor(heldItem.getTagCompound().getInteger("color"));
+                }
+            }
+            else
+            {
+                player.startRiding(this);
+            }
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -436,6 +451,10 @@ public abstract class EntityVehicle extends Entity
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
+        if(compound.hasKey("color", Constants.NBT.TAG_INT))
+        {
+            this.setColor(compound.getInteger("color"));
+        }
     }
 
     @Override
@@ -447,6 +466,7 @@ public abstract class EntityVehicle extends Entity
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
         compound.setFloat("stepHeight", this.stepHeight);
+        compound.setInteger("color", this.getColor());
     }
 
     @Nullable
@@ -644,6 +664,24 @@ public abstract class EntityVehicle extends Entity
         return this.dataManager.get(HORN);
     }
 
+    public boolean canBeColored()
+    {
+        return false;
+    }
+
+    public void setColor(int color)
+    {
+        if(this.canBeColored())
+        {
+            this.dataManager.set(COLOR, color);
+        }
+    }
+
+    public int getColor()
+    {
+        return this.dataManager.get(COLOR);
+    }
+
     public void setHeldOffset(Vec3d heldOffset)
     {
         this.heldOffset = heldOffset;
@@ -664,6 +702,14 @@ public abstract class EntityVehicle extends Entity
             {
                 EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
                 engine.setItemDamage(type.ordinal());
+            }
+            else if(COLOR.equals(key))
+            {
+                if(!body.hasTagCompound())
+                {
+                    body.setTagCompound(new NBTTagCompound());
+                }
+                body.getTagCompound().setInteger("color", this.dataManager.get(COLOR));
             }
         }
     }
