@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.init;
 import com.mrcrayfish.vehicle.item.ItemColoredPart;
 import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemPart;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.item.Item;
 
 /**
@@ -26,6 +27,7 @@ public class ModItems
     public static final Item SPEED_BOAT_BODY;
 
     public static final Item ENGINE;
+    public static final Item SPRAY_CAN;
 
     static
     {
@@ -45,6 +47,7 @@ public class ModItems
         SPEED_BOAT_BODY = new ItemColoredPart("speed_boat_body");
 
         ENGINE = new ItemEngine("small_engine");
+        SPRAY_CAN = new ItemSprayCan();
     }
 
     public static void register()
@@ -65,6 +68,7 @@ public class ModItems
         register(SPEED_BOAT_BODY);
 
         register(ENGINE);
+        register(SPRAY_CAN);
     }
 
     private static void register(Item item)

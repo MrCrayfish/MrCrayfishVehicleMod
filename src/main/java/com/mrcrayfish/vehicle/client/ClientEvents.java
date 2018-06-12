@@ -5,14 +5,25 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -94,6 +105,24 @@ public class ClientEvents
 
         Entity ridingEntity = player.getRidingEntity();
         ModelPlayer model = event.getModelPlayer();
+
+
+        if(!player.isRiding())
+        {
+            boolean rightHanded = player.getPrimaryHand() == EnumHandSide.RIGHT;
+            ItemStack rightItem = rightHanded ? player.getHeldItemMainhand() : player.getHeldItemOffhand();
+            ItemStack leftItem = rightHanded ? player.getHeldItemOffhand() : player.getHeldItemMainhand();
+            if(!rightItem.isEmpty() && rightItem.getItem() instanceof ItemSprayCan)
+            {
+                copyModelAngles(model.bipedHead, model.bipedRightArm);
+                model.bipedRightArm.rotateAngleX += Math.toRadians(-80F);
+            }
+            if(!leftItem.isEmpty() && leftItem.getItem() instanceof ItemSprayCan)
+            {
+                ModelBiped.copyModelAngles(model.bipedHead, model.bipedLeftArm);
+                model.bipedLeftArm.rotateAngleX += Math.toRadians(-80F);
+            }
+        }
 
         if(player.getDataManager().get(CommonEvents.PUSHING_CART))
         {
@@ -212,5 +241,13 @@ public class ClientEvents
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
             model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
         }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
+    {
+        dest.rotateAngleX = source.rotateAngleX;
+        dest.rotateAngleY = source.rotateAngleY;
+        dest.rotateAngleZ = source.rotateAngleZ;
     }
 }

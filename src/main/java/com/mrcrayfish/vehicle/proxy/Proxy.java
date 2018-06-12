@@ -10,5 +10,7 @@ public interface Proxy
 {
     void preInit();
 
+    default void init() {}
+
     void playVehicleSound(EntityPlayer player, EntityVehicle vehicle);
 }

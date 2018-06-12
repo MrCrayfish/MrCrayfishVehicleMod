@@ -1,5 +1,6 @@
 itemGroup.tabVehicle=MrCrayfish's Vehicle Mod
 
 item.small_engine.name=Small Engine
+item.spray_can.name=Spray Can
 
 tile.traffic_cone.name=Traffic Cone

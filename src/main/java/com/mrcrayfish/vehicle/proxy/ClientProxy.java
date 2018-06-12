@@ -9,14 +9,20 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.RegistrationHandler;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
 
 /**
  * Author: MrCrayfish
@@ -45,6 +51,26 @@ public class ClientProxy implements Proxy
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
         ClientRegistry.registerKeyBinding(KEY_HORN);
+    }
+
+    @Override
+    public void init()
+    {
+        IItemColor color = (stack, index) ->
+        {
+            if(index == 0 && stack.hasTagCompound() && stack.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
+            {
+                return stack.getTagCompound().getInteger("color");
+            }
+            return -1;
+        };
+        RegistrationHandler.Items.getItems().forEach(item ->
+        {
+            if(item instanceof ItemSprayCan)
+            {
+                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
+            }
+        });
     }
 
     @Override
