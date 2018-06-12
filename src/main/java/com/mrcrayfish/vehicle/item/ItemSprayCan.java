@@ -36,8 +36,8 @@ public class ItemSprayCan extends Item implements SubItems
     public NonNullList<ResourceLocation> getModels()
     {
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
-        modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5)));
         modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "_lid"));
+        modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5)));
         return modelLocations;
     }
 
