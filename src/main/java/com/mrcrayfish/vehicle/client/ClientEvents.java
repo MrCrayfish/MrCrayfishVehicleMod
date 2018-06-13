@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
+import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -260,6 +261,18 @@ public class ClientEvents
             ItemStack stack = event.getItemStack().copy();
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
+    {
+        if(!event.getItem().isEmpty() && event.getItem().getItem() instanceof ItemSprayCan && event.getItem().getMetadata() == 0)
+        {
+            ItemStack stack = event.getItem().copy();
+            stack.setItemDamage(1);
+            Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), stack, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
             event.setCanceled(true);
         }
     }
