@@ -1,6 +1,9 @@
 itemGroup.tabVehicle=MrCrayfish's Vehicle Mod
 
 item.small_engine.name=Small Engine
+
 item.spray_can.name=Spray Can
+item.spray_can.info=Use this spray can to paint vehicles. To add a color to the spray can, combine it with one or more dyes in a crafting table.
+item.spray_can.empty=No Color
 
 tile.traffic_cone.name=Traffic Cone

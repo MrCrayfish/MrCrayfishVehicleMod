@@ -46,7 +46,7 @@ public class ItemSprayCan extends Item implements SubItems
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = "Use this spray can to paint vehicles. To change the color, combine the spray can with one or more dyes in a crafting table.";
+            String info = I18n.format("item.spray_can.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
@@ -54,6 +54,10 @@ public class ItemSprayCan extends Item implements SubItems
             if(hasColor(stack))
             {
                 tooltip.add(I18n.format("item.color", TextFormatting.DARK_GRAY.toString() + String.format("#%06X", createTagCompound(stack).getInteger("color"))));
+            }
+            else
+            {
+                tooltip.add(I18n.format("item.spray_can.empty"));
             }
             tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
         }
