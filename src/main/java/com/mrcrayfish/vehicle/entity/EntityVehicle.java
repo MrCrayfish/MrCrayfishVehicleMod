@@ -142,7 +142,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(DAMAGE_TAKEN, 0F);
         this.dataManager.register(ENGINE_TYPE, 0);
         this.dataManager.register(HORN, false);
-        this.dataManager.register(COLOR, 16383998);
+        this.dataManager.register(COLOR, 3949738);
 
         if(this.world.isRemote)
         {
