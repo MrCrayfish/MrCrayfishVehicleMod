@@ -39,8 +39,6 @@ public class RenderAluminumBoat extends RenderVehicle<EntityAluminumBoat>
     {
         RenderHelper.enableStandardItemLighting();
 
-        Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(true);
-
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(x, y, z);
