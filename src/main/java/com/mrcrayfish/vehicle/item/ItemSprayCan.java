@@ -106,7 +106,7 @@ public class ItemSprayCan extends Item implements SubItems
     {
         NBTTagCompound tagCompound = createTagCompound(stack);
         int remainingSprays = tagCompound.getInteger("remainingSprays");
-        return remainingSprays >= 0 && remainingSprays < MAX_SPRAYS;
+        return tagCompound.hasKey("color", Constants.NBT.TAG_INT) && remainingSprays >= 0 && remainingSprays < MAX_SPRAYS;
     }
 
     @Override
