@@ -362,9 +362,13 @@ public abstract class EntityVehicle extends Entity
             ItemStack heldItem = player.getHeldItem(hand);
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
             {
-                if(heldItem.hasTagCompound() && heldItem.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
+                if(canBeColored() && heldItem.hasTagCompound() && heldItem.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
                 {
-                    this.setColor(heldItem.getTagCompound().getInteger("color"));
+                    int color = heldItem.getTagCompound().getInteger("color");
+                    if(this.getColor() != color)
+                    {
+                        this.setColor(heldItem.getTagCompound().getInteger("color"));
+                    }
                 }
             }
             else
