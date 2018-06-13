@@ -16,8 +16,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumDyeColor;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -144,7 +142,7 @@ public abstract class EntityVehicle extends Entity
         this.dataManager.register(DAMAGE_TAKEN, 0F);
         this.dataManager.register(ENGINE_TYPE, 0);
         this.dataManager.register(HORN, false);
-        this.dataManager.register(COLOR, 0);
+        this.dataManager.register(COLOR, 16383998);
 
         if(this.world.isRemote)
         {
