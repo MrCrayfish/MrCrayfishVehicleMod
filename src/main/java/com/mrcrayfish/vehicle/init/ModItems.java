@@ -31,12 +31,12 @@ public class ModItems
     static
     {
         WHEEL = new ItemPart("wheel");
-        ATV_BODY = new ItemPart("atv").setColored();
+        ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
         DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body").setColored();
         DUNE_BUGGY_HANDLE_BAR = new ItemPart("dune_buggy_handle_bar");
         DUNE_BUGGY_WHEEL = new ItemPart("dune_buggy_wheel");
-        GO_KART_BODY = new ItemPart("go_kart").setColored();
+        GO_KART_BODY = new ItemPart("go_kart_body").setColored();
         GO_KART_STEERING_WHEEL = new ItemPart("go_kart_steering_wheel");
         SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
         MINI_BIKE_BODY = new ItemPart("mini_bike_body").setColored();

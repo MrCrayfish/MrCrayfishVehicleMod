@@ -46,6 +46,8 @@ public class CommonEvents
     {
         ImmutableList.Builder<String> builder = ImmutableList.builder();
         builder.add("body");
+        builder.add("atv");
+        builder.add("go_kart");
         IGNORE_ITEMS = builder.build();
 
         builder = ImmutableList.builder();
