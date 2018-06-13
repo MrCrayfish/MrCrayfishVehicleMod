@@ -34,5 +34,11 @@
     },
     "speed_boat_engine_stereo": {
         "sounds": [ {"name": "vehicle:speed_boat_engine_stereo"}]
+    },
+    "spray_can_spray": {
+        "sounds": [ {"name": "vehicle:spray_can_spray"}]
+    },
+    "spray_can_shake": {
+        "sounds": [ {"name": "vehicle:spray_can_shake"}]
     }
 }

@@ -1,12 +1,18 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
+import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
+
+import java.sql.Ref;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -25,6 +31,8 @@ public class ModSounds
     public static final SoundEvent PICK_UP_VEHICLE;
     public static final SoundEvent SPEED_BOAT_ENGINE_MONO;
     public static final SoundEvent SPEED_BOAT_ENGINE_STEREO;
+    public static final SoundEvent SPRAY_CAN_SPRAY;
+    public static final SoundEvent SPRAY_CAN_SHAKE;
 
     static
     {
@@ -40,6 +48,8 @@ public class ModSounds
         PICK_UP_VEHICLE = registerSound("vehicle:pick_up_vehicle");
         SPEED_BOAT_ENGINE_MONO = registerSound("vehicle:speed_boat_engine_mono");
         SPEED_BOAT_ENGINE_STEREO = registerSound("vehicle:speed_boat_engine_stereo");
+        SPRAY_CAN_SPRAY = registerSound("vehicle:spray_can_spray");
+        SPRAY_CAN_SHAKE = registerSound("vehicle:spray_can_shake");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -68,6 +78,8 @@ public class ModSounds
             registry.register(PICK_UP_VEHICLE);
             registry.register(SPEED_BOAT_ENGINE_MONO);
             registry.register(SPEED_BOAT_ENGINE_STEREO);
+            registry.register(SPRAY_CAN_SPRAY);
+            registry.register(SPRAY_CAN_SHAKE);
         }
     }
 }

@@ -368,6 +368,7 @@ public abstract class EntityVehicle extends Entity
                     if(this.getColor() != color)
                     {
                         this.setColor(heldItem.getTagCompound().getInteger("color"));
+                        player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     }
                 }
             }
