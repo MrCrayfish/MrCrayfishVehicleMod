@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -460,9 +461,24 @@ public abstract class EntityVehicle extends Entity
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
-        if(compound.hasKey("color", Constants.NBT.TAG_INT))
+        if(compound.hasKey("color", Constants.NBT.TAG_INT_ARRAY))
         {
-            this.setColor(compound.getInteger("color"));
+            int[] c = compound.getIntArray("color");
+            if(c.length == 3)
+            {
+                int color = ((c[0] & 0xFF) << 16) | ((c[1] & 0xFF) << 8) | ((c[2] & 0xFF));
+                this.setColor(color);
+            }
+        }
+        else if(compound.hasKey("color", Constants.NBT.TAG_INT))
+        {
+            int index = compound.getInteger("color");
+            EnumDyeColor[] values = EnumDyeColor.values();
+            if(index >= 0 && index < values.length)
+            {
+                this.setColor(values[index].getColorValue());
+            }
+            compound.removeTag("color");
         }
     }
 
@@ -475,7 +491,7 @@ public abstract class EntityVehicle extends Entity
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
         compound.setFloat("stepHeight", this.stepHeight);
-        compound.setInteger("color", this.getColor());
+        compound.setIntArray("color", this.getColorRGB());
     }
 
     @Nullable
@@ -686,9 +702,21 @@ public abstract class EntityVehicle extends Entity
         }
     }
 
+    public void setColorRGB(int r, int g, int b)
+    {
+        int color = ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF));
+        this.dataManager.set(COLOR, color);
+    }
+
     public int getColor()
     {
         return this.dataManager.get(COLOR);
+    }
+
+    public int[] getColorRGB()
+    {
+        int color = this.dataManager.get(COLOR);
+        return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
     }
 
     public void setHeldOffset(Vec3d heldOffset)
