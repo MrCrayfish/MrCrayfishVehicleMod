@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,6 +24,8 @@ import java.util.List;
  */
 public class ItemSprayCan extends Item implements SubItems
 {
+    public static final int MAX_SPRAYS = 5;
+
     public ItemSprayCan()
     {
         this.setUnlocalizedName("spray_can");
@@ -46,7 +49,7 @@ public class ItemSprayCan extends Item implements SubItems
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = "Use this spray can to paint vehicles. To change the color, combine the spray can with one or more dyes in a crafting table.";
+            String info = I18n.format("item.spray_can.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
@@ -55,17 +58,29 @@ public class ItemSprayCan extends Item implements SubItems
             {
                 tooltip.add(I18n.format("item.color", TextFormatting.DARK_GRAY.toString() + String.format("#%06X", createTagCompound(stack).getInteger("color"))));
             }
+            else
+            {
+                tooltip.add(I18n.format("item.spray_can.empty"));
+            }
             tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
         }
     }
 
-    private static NBTTagCompound createTagCompound(ItemStack stack)
+    public static NBTTagCompound createTagCompound(ItemStack stack)
     {
         if(!stack.hasTagCompound())
         {
             stack.setTagCompound(new NBTTagCompound());
         }
-        return stack.getTagCompound();
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if(tagCompound != null)
+        {
+            if(!tagCompound.hasKey("remainingSprays", Constants.NBT.TAG_INT))
+            {
+                tagCompound.setInteger("remainingSprays", MAX_SPRAYS);
+            }
+        }
+        return tagCompound;
     }
 
     public boolean hasColor(ItemStack stack)
@@ -84,5 +99,37 @@ public class ItemSprayCan extends Item implements SubItems
     {
         NBTTagCompound tagCompound = createTagCompound(stack);
         tagCompound.setInteger("color", color);
+    }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = createTagCompound(stack);
+        int remainingSprays = tagCompound.getInteger("remainingSprays");
+        return tagCompound.hasKey("color", Constants.NBT.TAG_INT) && remainingSprays >= 0 && remainingSprays < MAX_SPRAYS;
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = createTagCompound(stack);
+        return 1.0D - (tagCompound.getInteger("remainingSprays") / (double) MAX_SPRAYS);
+    }
+
+    public static float getRemainingSprays(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = createTagCompound(stack);
+        return (tagCompound.getInteger("remainingSprays") / (float) MAX_SPRAYS);
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+    {
+         if(this.isInCreativeTab(tab))
+         {
+             ItemStack stack = new ItemStack(this, 1, 0);
+             createTagCompound(stack);
+             items.add(stack);
+         }
     }
 }

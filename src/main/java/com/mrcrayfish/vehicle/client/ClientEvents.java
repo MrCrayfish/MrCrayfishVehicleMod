@@ -1,12 +1,15 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
+import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -15,7 +18,9 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.MathHelper;
@@ -34,6 +39,8 @@ import java.text.DecimalFormat;
  */
 public class ClientEvents
 {
+    private int lastSlot = -1;
+
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
@@ -274,6 +281,25 @@ public class ClientEvents
     }
 
     @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(event.phase == TickEvent.Phase.END && player != null)
+        {
+            int slot = player.inventory.currentItem;
+            if(this.lastSlot != slot)
+            {
+                this.lastSlot = slot;
+                if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemSprayCan)
+                {
+                    float pitch = 0.85F + 0.15F * ItemSprayCan.getRemainingSprays(player.inventory.getCurrentItem());
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getRecord(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public void onRenderHand(RenderSpecificHandEvent event)
     {
         if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemSprayCan && event.getItemStack().getMetadata() == 0)
@@ -281,6 +307,18 @@ public class ClientEvents
             ItemStack stack = event.getItemStack().copy();
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
+    {
+        if(!event.getItem().isEmpty() && event.getItem().getItem() instanceof ItemSprayCan && event.getItem().getMetadata() == 0)
+        {
+            ItemStack stack = event.getItem().copy();
+            stack.setItemDamage(1);
+            Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), stack, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
             event.setCanceled(true);
         }
     }

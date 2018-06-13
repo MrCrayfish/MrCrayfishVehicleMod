@@ -25,7 +25,7 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        ItemStack weapon = ItemStack.EMPTY;
+        ItemStack sprayCan = ItemStack.EMPTY;
         List<ItemStack> dyes = Lists.<ItemStack>newArrayList();
 
         for (int i = 0; i < inv.getSizeInventory(); ++i)
@@ -35,11 +35,11 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             {
                 if (stack.getItem() instanceof ItemSprayCan)
                 {
-                    if (!weapon.isEmpty())
+                    if (!sprayCan.isEmpty())
                     {
                         return false;
                     }
-                    weapon = stack;
+                    sprayCan = stack;
                 }
                 else
                 {
@@ -52,14 +52,14 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             }
         }
 
-        return !weapon.isEmpty() && !dyes.isEmpty();
+        return !sprayCan.isEmpty() && !dyes.isEmpty();
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        ItemStack weapon = ItemStack.EMPTY;
-        ItemSprayCan gun = null;
+        ItemStack sprayCanStack = ItemStack.EMPTY;
+        ItemSprayCan sprayCan = null;
         int[] combinedValues = new int[3];
         int combinedColor = 0;
         int colorCount = 0;
@@ -72,17 +72,17 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             {
                 if (stack.getItem() instanceof ItemSprayCan)
                 {
-                    gun = (ItemSprayCan) stack.getItem();
-                    if (!weapon.isEmpty())
+                    sprayCan = (ItemSprayCan) stack.getItem();
+                    if (!sprayCanStack.isEmpty())
                     {
                         return ItemStack.EMPTY;
                     }
-                    weapon = stack.copy();
-                    weapon.setCount(1);
+                    sprayCanStack = stack.copy();
+                    sprayCanStack.setCount(1);
 
-                    if (gun.hasColor(stack))
+                    if (sprayCan.hasColor(stack))
                     {
-                        int color = gun.getColor(weapon);
+                        int color = sprayCan.getColor(sprayCanStack);
                         float red = (float)(color >> 16 & 255) / 255.0F;
                         float green = (float)(color >> 8 & 255) / 255.0F;
                         float blue = (float)(color & 255) / 255.0F;
@@ -113,7 +113,7 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             }
         }
 
-        if (gun == null)
+        if (sprayCan == null)
         {
             return ItemStack.EMPTY;
         }
@@ -129,8 +129,8 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             blue = (int)((float)blue * averageColor / maxValue);
             int finalColor = (red << 8) + green;
             finalColor = (finalColor << 8) + blue;
-            gun.setColor(weapon, finalColor);
-            return weapon;
+            sprayCan.setColor(sprayCanStack, finalColor);
+            return sprayCanStack;
         }
     }
 
