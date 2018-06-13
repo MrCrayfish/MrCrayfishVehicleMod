@@ -362,13 +362,19 @@ public abstract class EntityVehicle extends Entity
             ItemStack heldItem = player.getHeldItem(hand);
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
             {
-                if(canBeColored() && heldItem.hasTagCompound() && heldItem.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
+                if(canBeColored())
                 {
-                    int color = heldItem.getTagCompound().getInteger("color");
-                    if(this.getColor() != color)
+                    NBTTagCompound tagCompound = ItemSprayCan.createTagCompound(heldItem);
+                    int remainingSprays = tagCompound.getInteger("remainingSprays");
+                    if(tagCompound.hasKey("color", Constants.NBT.TAG_INT) && remainingSprays > 0)
                     {
-                        this.setColor(heldItem.getTagCompound().getInteger("color"));
-                        player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        int color = tagCompound.getInteger("color");
+                        if(this.getColor() != color)
+                        {
+                            this.setColor(tagCompound.getInteger("color"));
+                            player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            tagCompound.setInteger("remainingSprays", remainingSprays - 1);
+                        }
                     }
                 }
             }
