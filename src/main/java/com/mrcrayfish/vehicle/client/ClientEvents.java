@@ -6,8 +6,10 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
@@ -16,6 +18,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
@@ -35,6 +38,8 @@ import java.text.DecimalFormat;
  */
 public class ClientEvents
 {
+    private int lastSlot = -1;
+
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
@@ -251,6 +256,24 @@ public class ClientEvents
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
         dest.rotateAngleZ = source.rotateAngleZ;
+    }
+
+    @SubscribeEvent
+    public void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        if(event.phase == TickEvent.Phase.END && player != null)
+        {
+            int slot = player.inventory.currentItem;
+            if(this.lastSlot != slot)
+            {
+                this.lastSlot = slot;
+                if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemSprayCan)
+                {
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(ModSounds.SPRAY_CAN_SHAKE, 1.0F));
+                }
+            }
+        }
     }
 
     @SubscribeEvent
