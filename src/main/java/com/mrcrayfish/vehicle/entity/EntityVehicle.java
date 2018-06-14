@@ -39,6 +39,8 @@ import java.util.List;
  */
 public abstract class EntityVehicle extends Entity
 {
+    private static final int[] DYE_TO_COLOR = new int[] {16383998, 16351261, 13061821, 3847130, 16701501, 8439583, 15961002, 4673362, 10329495, 1481884, 8991416, 3949738, 8606770, 6192150, 11546150, 1908001};
+
     private static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
@@ -473,10 +475,9 @@ public abstract class EntityVehicle extends Entity
         else if(compound.hasKey("color", Constants.NBT.TAG_INT))
         {
             int index = compound.getInteger("color");
-            EnumDyeColor[] values = EnumDyeColor.values();
-            if(index >= 0 && index < values.length)
+            if(index >= 0 && index < DYE_TO_COLOR.length)
             {
-                this.setColor(values[index].getColorValue());
+                this.setColor(DYE_TO_COLOR[index]);
             }
             compound.removeTag("color");
         }
