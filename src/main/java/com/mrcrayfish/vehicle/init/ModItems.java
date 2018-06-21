@@ -25,6 +25,7 @@ public class ModItems
     public static final Item JET_SKI_BODY;
     public static final Item SPEED_BOAT_BODY;
     public static final Item ALUMINUM_BOAT_BODY;
+    public static final Item SMART_CAR_BODY;
 
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
@@ -46,6 +47,7 @@ public class ModItems
         JET_SKI_BODY = new ItemPart("jet_ski_body").setColored();
         SPEED_BOAT_BODY = new ItemPart("speed_boat_body").setColored();
         ALUMINUM_BOAT_BODY = new ItemPart("aluminum_boat_body").setColored();
+        SMART_CAR_BODY = new ItemPart("smart_car_body").setColored();
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
@@ -68,6 +70,7 @@ public class ModItems
         register(JET_SKI_BODY);
         register(SPEED_BOAT_BODY);
         register(ALUMINUM_BOAT_BODY);
+        register(SMART_CAR_BODY);
 
         register(ENGINE);
         register(SPRAY_CAN);
