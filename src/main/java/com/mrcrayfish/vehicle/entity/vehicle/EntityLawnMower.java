@@ -3,11 +3,13 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -74,6 +76,7 @@ public class EntityLawnMower extends EntityLandVehicle
                         {
                             world.setBlockToAir(pos);
                             world.playSound(null, pos, SoundType.PLANT.getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            world.playEvent(2001, pos, Block.getStateId(state));
                         }
                     }
                     else if(state.getBlock() instanceof BlockDoublePlant)
@@ -83,6 +86,7 @@ public class EntityLawnMower extends EntityLandVehicle
                         {
                             world.setBlockToAir(pos);
                             world.playSound(null, pos, SoundType.PLANT.getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            world.playEvent(2001, pos, Block.getStateId(state));
                         }
                     }
                 }
