@@ -126,7 +126,6 @@ public class ClientEvents
         Entity ridingEntity = player.getRidingEntity();
         ModelPlayer model = event.getModelPlayer();
 
-
         if(!player.isRiding())
         {
             boolean rightHanded = player.getPrimaryHand() == EnumHandSide.RIGHT;
@@ -151,6 +150,23 @@ public class ClientEvents
             model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
+            return;
+        }
+
+        if(ridingEntity instanceof EntityLawnMower)
+        {
+            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
+            float wheelAngleNormal = wheelAngle / 45F;
+            float turnRotation = wheelAngleNormal * 6F;
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
             return;
         }
 
@@ -181,7 +197,7 @@ public class ClientEvents
             return;
         }
 
-        if (ridingEntity instanceof EntityMiniBike)
+        if(ridingEntity instanceof EntityMiniBike)
         {
             EntityVehicle vehicle = (EntityVehicle) ridingEntity;
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
@@ -267,7 +283,7 @@ public class ClientEvents
                     model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
                 }
             }
-            else if (ridingEntity instanceof EntityDuneBuggy)
+            else if(ridingEntity instanceof EntityDuneBuggy)
             {
                 float turnRotation = wheelAngleNormal * 8F;
                 model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-50F - turnRotation);

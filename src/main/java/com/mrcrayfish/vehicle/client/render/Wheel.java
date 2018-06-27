@@ -40,6 +40,11 @@ public class Wheel
         this(side, position, 2.0F, scale, offsetX, 0F, offsetZ);
     }
 
+    public Wheel(Side side, Position position, float offsetX, float offsetY, float offsetZ, float scale)
+    {
+        this(side, position, 2.0F, scale, offsetX, offsetY, offsetZ);
+    }
+
     public void render(EntityLandVehicle vehicle, float partialTicks)
     {
         GlStateManager.pushMatrix();

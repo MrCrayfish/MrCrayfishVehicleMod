@@ -75,6 +75,7 @@ public class VehicleMod
         registerVehicle("speed_boat", EntitySpeedBoat.class);
         registerVehicle("aluminum_boat", EntityAluminumBoat.class);
         registerVehicle("smart_car", EntitySmartCar.class);
+        registerVehicle("lawn_mower", EntityLawnMower.class);
 
         if(Loader.isModLoaded("cfm"))
         {
