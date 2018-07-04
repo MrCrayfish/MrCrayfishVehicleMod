@@ -6,9 +6,12 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -17,6 +20,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityMoped extends EntityMotorcycle
 {
+    private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(EntityMoped.class, DataSerializers.BOOLEAN);
+
     /**
      * ItemStack instances used for rendering
      */
@@ -33,6 +38,13 @@ public class EntityMoped extends EntityMotorcycle
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
         this.setHeldOffset(new Vec3d(7D, 2D, 0D));
+    }
+
+    @Override
+    public void entityInit()
+    {
+        super.entityInit();
+        this.dataManager.register(CHEST, false);
     }
 
     @Override
@@ -109,5 +121,32 @@ public class EntityMoped extends EntityMotorcycle
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound)
+    {
+        super.readEntityFromNBT(compound);
+        if(compound.hasKey("chest", Constants.NBT.TAG_BYTE))
+        {
+            this.setChest(compound.getBoolean("chest"));
+        }
+    }
+
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound compound)
+    {
+        super.writeEntityToNBT(compound);
+        compound.setBoolean("chest", this.hasChest());
+    }
+
+    public boolean hasChest()
+    {
+        return this.dataManager.get(CHEST);
+    }
+
+    public void setChest(boolean chest)
+    {
+        this.dataManager.set(CHEST, chest);
     }
 }

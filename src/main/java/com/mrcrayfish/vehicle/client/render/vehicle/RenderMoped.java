@@ -130,21 +130,24 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             }
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0, 0.85, -0.675);
-            GlStateManager.rotate(180F, 0, 1, 0);
-            GlStateManager.scale(1.0F, -1.0F, -1.0F);
-            GlStateManager.scale(0.6F, 0.6F, 0.6F);
-            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+            if(entity.hasChest())
+            {
+                GlStateManager.translate(0, 0.85, -0.675);
+                GlStateManager.rotate(180F, 0, 1, 0);
+                GlStateManager.scale(1.0F, -1.0F, -1.0F);
+                GlStateManager.scale(0.6F, 0.6F, 0.6F);
+                GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-            if(this.isChristmas)
-            {
-                this.bindTexture(TEXTURE_CHRISTMAS);
+                if(this.isChristmas)
+                {
+                    this.bindTexture(TEXTURE_CHRISTMAS);
+                }
+                else
+                {
+                    this.bindTexture(TEXTURE_NORMAL);
+                }
+                MODEL_CHEST.renderAll();
             }
-            else
-            {
-                this.bindTexture(TEXTURE_NORMAL);
-            }
-            MODEL_CHEST.renderAll();
         }
         GlStateManager.popMatrix();
     }
