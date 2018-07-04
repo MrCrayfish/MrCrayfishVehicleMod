@@ -118,6 +118,8 @@ public class ClientEvents
     @SubscribeEvent
     public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
     {
+        if(true)return;
+
         EntityPlayer player = event.getEntityPlayer();
 
         if(player.equals(Minecraft.getMinecraft().player) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
@@ -150,6 +152,19 @@ public class ClientEvents
             model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
+            return;
+        }
+
+        if(ridingEntity instanceof EntityMoped)
+        {
+            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
+            float wheelAngleNormal = wheelAngle / 45F;
+            float turnRotation = wheelAngleNormal * 6F;
+            //model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
+            //model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
+            //model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
+            //model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
             return;
         }
 

@@ -27,6 +27,9 @@ public class ModItems
     public static final Item ALUMINUM_BOAT_BODY;
     public static final Item SMART_CAR_BODY;
     public static final Item LAWN_MOWER_BODY;
+    public static final Item MOPED_BODY;
+    public static final Item MOPED_MUD_GUARD;
+    public static final Item MOPED_HANDLE_BAR;
 
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
@@ -50,6 +53,9 @@ public class ModItems
         ALUMINUM_BOAT_BODY = new ItemPart("aluminum_boat_body").setColored();
         SMART_CAR_BODY = new ItemPart("smart_car_body").setColored();
         LAWN_MOWER_BODY = new ItemPart("lawn_mower_body").setColored();
+        MOPED_BODY = new ItemPart("moped_body").setColored();
+        MOPED_MUD_GUARD = new ItemPart("moped_mud_guard").setColored();
+        MOPED_HANDLE_BAR = new ItemPart("moped_handle_bar").setColored();
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
@@ -74,6 +80,9 @@ public class ModItems
         register(ALUMINUM_BOAT_BODY);
         register(SMART_CAR_BODY);
         register(LAWN_MOWER_BODY);
+        register(MOPED_BODY);
+        register(MOPED_MUD_GUARD);
+        register(MOPED_HANDLE_BAR);
 
         register(ENGINE);
         register(SPRAY_CAN);
