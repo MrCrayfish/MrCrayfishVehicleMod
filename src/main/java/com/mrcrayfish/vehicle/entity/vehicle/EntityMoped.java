@@ -84,13 +84,13 @@ public class EntityMoped extends EntityMotorcycle
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO;
+        return ModSounds.MOPED_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO;
+        return ModSounds.MOPED_ENGINE_STEREO;
     }
 
     @Override
@@ -102,7 +102,7 @@ public class EntityMoped extends EntityMotorcycle
     @Override
     public float getMaxEnginePitch()
     {
-        return 1.8F;
+        return 1.2F;
     }
 
     @Override

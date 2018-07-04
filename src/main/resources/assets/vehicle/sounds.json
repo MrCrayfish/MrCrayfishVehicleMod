@@ -40,5 +40,11 @@
     },
     "spray_can_shake": {
         "sounds": [ {"name": "vehicle:spray_can_shake"}]
+    },
+    "moped_engine_mono": {
+        "sounds": [ {"name": "vehicle:moped_engine_mono"}]
+    },
+    "moped_engine_stereo": {
+        "sounds": [ {"name": "vehicle:moped_engine_stereo"}]
     }
 }

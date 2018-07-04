@@ -33,6 +33,8 @@ public class ModSounds
     public static final SoundEvent SPEED_BOAT_ENGINE_STEREO;
     public static final SoundEvent SPRAY_CAN_SPRAY;
     public static final SoundEvent SPRAY_CAN_SHAKE;
+    public static final SoundEvent MOPED_ENGINE_MONO;
+    public static final SoundEvent MOPED_ENGINE_STEREO;
 
     static
     {
@@ -50,6 +52,8 @@ public class ModSounds
         SPEED_BOAT_ENGINE_STEREO = registerSound("vehicle:speed_boat_engine_stereo");
         SPRAY_CAN_SPRAY = registerSound("vehicle:spray_can_spray");
         SPRAY_CAN_SHAKE = registerSound("vehicle:spray_can_shake");
+        MOPED_ENGINE_MONO = registerSound("vehicle:moped_engine_mono");
+        MOPED_ENGINE_STEREO = registerSound("vehicle:moped_engine_stereo");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -80,6 +84,8 @@ public class ModSounds
             registry.register(SPEED_BOAT_ENGINE_STEREO);
             registry.register(SPRAY_CAN_SPRAY);
             registry.register(SPRAY_CAN_SHAKE);
+            registry.register(MOPED_ENGINE_MONO);
+            registry.register(MOPED_ENGINE_STEREO);
         }
     }
 }
