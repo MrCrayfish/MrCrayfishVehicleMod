@@ -43,7 +43,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
             GlStateManager.scale(1.2, 1.2, 1.2);
-            GlStateManager.translate(0, 0.1, 0.15);
+            GlStateManager.translate(0, 0.1, 0.125);
 
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
@@ -77,7 +77,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 25F;
 
-                GlStateManager.rotate(turnRotation, 0, 1, 0);
+                GlStateManager.rotate(turnRotation / 2, 0, 1, 0);
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 GlStateManager.translate(0, 0, -11.5 * 0.0625);
 
