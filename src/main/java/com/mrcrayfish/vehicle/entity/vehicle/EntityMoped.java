@@ -32,7 +32,7 @@ public class EntityMoped extends EntityMotorcycle
         this.setMaxSpeed(12F);
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
-        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setHeldOffset(new Vec3d(7D, 2D, 0D));
     }
 
     @Override
