@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
@@ -27,6 +28,7 @@ public class ItemEngine extends ItemPart implements SubItems
         super(id);
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
+        this.setCreativeTab(VehicleMod.CREATIVE_TAB);
     }
 
     @Override

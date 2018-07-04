@@ -14,7 +14,6 @@ public class ItemPart extends Item
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);
-        this.setCreativeTab(VehicleMod.CREATIVE_TAB);
     }
 
     public ItemPart setColored()
