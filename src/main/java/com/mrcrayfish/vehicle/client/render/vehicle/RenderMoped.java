@@ -4,23 +4,37 @@ import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMoped;
+import net.minecraft.block.BlockChest;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.ResourceLocation;
+
+import java.util.Calendar;
 
 /**
  * Author: MrCrayfish
  */
 public class RenderMoped extends RenderLandVehicle<EntityMoped>
 {
+    private static final ModelChest MODEL_CHEST = new ModelChest();
+    private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
+    private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
+    public final boolean isChristmas;
+
+
     public RenderMoped(RenderManager renderManager)
     {
         super(renderManager);
         this.setEnginePosition(0F, 7.25F, 3F, 180F, 1.0F);
         this.wheels.add(new Wheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, -6.7F, 1.5F));
+
+        Calendar calendar = Calendar.getInstance();
+        this.isChristmas = calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DAY_OF_MONTH) >= 24 && calendar.get(Calendar.DAY_OF_MONTH) <= 26;
     }
 
     @Override
@@ -115,6 +129,22 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 GlStateManager.popMatrix();
             }
             GlStateManager.popMatrix();
+
+            GlStateManager.translate(0, 0.85, -0.675);
+            GlStateManager.rotate(180F, 0, 1, 0);
+            GlStateManager.scale(1.0F, -1.0F, -1.0F);
+            GlStateManager.scale(0.6F, 0.6F, 0.6F);
+            GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+
+            if(this.isChristmas)
+            {
+                this.bindTexture(TEXTURE_CHRISTMAS);
+            }
+            else
+            {
+                this.bindTexture(TEXTURE_NORMAL);
+            }
+            MODEL_CHEST.renderAll();
         }
         GlStateManager.popMatrix();
     }
