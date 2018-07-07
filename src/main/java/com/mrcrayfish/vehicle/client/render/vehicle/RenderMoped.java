@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.ClientEvents;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
@@ -8,11 +9,15 @@ import net.minecraft.block.BlockChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Calendar;
 
@@ -21,7 +26,7 @@ import java.util.Calendar;
  */
 public class RenderMoped extends RenderLandVehicle<EntityMoped>
 {
-    private static final ModelChest MODEL_CHEST = new ModelChest();
+    private static final ModelChest MOPED_CHEST = new ModelChest();
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
     private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
     public final boolean isChristmas;
@@ -56,12 +61,14 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
-            GlStateManager.scale(1.2, 1.2, 1.2);
+            double scale = 1.2;
+            GlStateManager.scale(scale, scale,scale);
             GlStateManager.translate(0, 0.1, 0.125);
 
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -20F, 0, 0, 1);
+            float angle = turnAngleNormal * currentSpeedNormal * -20F;
+            GlStateManager.rotate(angle, 0, 0, 1);
 
             this.setupBreakAnimation(entity, partialTicks);
 
@@ -72,7 +79,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             }
             GlStateManager.popMatrix();
 
-            //Render the body
+            //Render body
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.5625, 0);
@@ -80,7 +87,6 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             }
             GlStateManager.popMatrix();
 
-            //Render the handles bars
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.5, 11.5 * 0.0625);
@@ -95,6 +101,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 GlStateManager.translate(0, 0, -11.5 * 0.0625);
 
+                //Render handles bars
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0, 0.835, 0.525);
@@ -104,6 +111,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 }
                 GlStateManager.popMatrix();
 
+                //Render front bar and mud guard
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0, -0.12, 0.785);
@@ -113,7 +121,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 }
                 GlStateManager.popMatrix();
 
-
+                //Render front wheel
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0, -0.4, 14.5 * 0.0625);
@@ -132,21 +140,61 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
 
             if(entity.hasChest())
             {
-                GlStateManager.translate(0, 0.85, -0.675);
-                GlStateManager.rotate(180F, 0, 1, 0);
-                GlStateManager.scale(1.0F, -1.0F, -1.0F);
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+                //Render chest
+                GlStateManager.pushMatrix();
+                {
+                    GlStateManager.translate(0, 0.859, -0.675);
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                    GlStateManager.scale(1.0F, -1.0F, -1.0F);
+                    GlStateManager.scale(0.6F, 0.6F, 0.6F);
+                    GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-                if(this.isChristmas)
-                {
-                    this.bindTexture(TEXTURE_CHRISTMAS);
+                    if(this.isChristmas)
+                    {
+                        this.bindTexture(TEXTURE_CHRISTMAS);
+                    }
+                    else
+                    {
+                        this.bindTexture(TEXTURE_NORMAL);
+                    }
+                    MOPED_CHEST.renderAll();
                 }
-                else
+                GlStateManager.popMatrix();
+
+                //Render chest raytrace boxes
+                GlStateManager.pushMatrix();
                 {
-                    this.bindTexture(TEXTURE_NORMAL);
+                    if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox())
+                    {
+                        double scaleInv = 1 / scale;
+                        GlStateManager.scale(scaleInv, scaleInv, scaleInv);
+                        GlStateManager.rotate(-angle, 0, 0, 1);
+                        GlStateManager.translate(0, -0.1 * scale, -0.125 * scale);
+                        GlStateManager.rotate(angle, 0, 0, 1);
+                        GlStateManager.enableBlend();
+                        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                        GlStateManager.glLineWidth(2.0F);
+                        GlStateManager.disableTexture2D();
+                        GlStateManager.disableLighting();
+                        GlStateManager.depthMask(false);
+                        for (AxisAlignedBB box : ClientEvents.MOPED_BOXES)
+                        {
+                            if (box.equals(ClientEvents.MOPED_CHEST))
+                            {
+                                RenderGlobal.drawSelectionBoundingBox(box, 0, 1, 0, 1);
+                            }
+                            else
+                            {
+                                RenderGlobal.drawSelectionBoundingBox(box, 1, 0, 0, 1);
+                            }
+                        }
+                        GlStateManager.depthMask(true);
+                        GlStateManager.enableLighting();
+                        GlStateManager.enableTexture2D();
+                        GlStateManager.disableBlend();
+                    }
                 }
-                MODEL_CHEST.renderAll();
+                GlStateManager.popMatrix();
             }
         }
         GlStateManager.popMatrix();
