@@ -411,17 +411,14 @@ public class ClientEvents
         double distanceShortest = Double.MAX_VALUE;
         for (EntityMoped moped : Minecraft.getMinecraft().world.getEntitiesWithinAABB(EntityMoped.class, box))
         {
-            if (moped.hasChest())
+            RayTraceResultRotated lookObjectPutative = rayTraceRotated(moped, eyes, focus);
+            if (lookObjectPutative != null)
             {
-                RayTraceResultRotated lookObjectPutative = rayTraceRotated(moped, eyes, focus);
-                if (lookObjectPutative != null)
+                double distance = lookObjectPutative.getDistanceToEyes();
+                if (distance < distanceShortest)
                 {
-                    double distance = lookObjectPutative.getDistanceToEyes();
-                    if (distance < distanceShortest)
-                    {
-                        lookObject = lookObjectPutative;
-                        distanceShortest = distance;
-                    }
+                    lookObject = lookObjectPutative;
+                    distanceShortest = distance;
                 }
             }
         }
@@ -453,7 +450,7 @@ public class ClientEvents
     }
 
     @Nullable
-    public RayTraceResultRotated rayTraceRotated(Entity entity, Vec3d start, Vec3d end)
+    public RayTraceResultRotated rayTraceRotated(EntityMoped entity, Vec3d start, Vec3d end)
     {
         Vec3d pos = entity.getPositionVector();
         double angle = -entity.rotationYaw * (Math.PI / 180);
@@ -462,7 +459,7 @@ public class ClientEvents
         RayTraceResult lookObject = null;
         AxisAlignedBB boxHit = null;
         double distanceShortest = Double.MAX_VALUE;
-        for (int i = 0; i < MOPED_BOXES.length; i++)
+        for (int i = entity.hasChest() ? 0 : 1; i < MOPED_BOXES.length; i++)
         {
             RayTraceResult lookObjectPutative = MOPED_BOXES[i].offset(pos).calculateIntercept(startRotated, endRotated);
             if (lookObjectPutative != null)
