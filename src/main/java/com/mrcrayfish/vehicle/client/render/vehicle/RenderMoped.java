@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.ClientEvents;
+import com.mrcrayfish.vehicle.client.ClientEvents.IEntityRaytraceBoxProvider;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
@@ -16,8 +16,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 
 import java.util.Calendar;
 
@@ -177,17 +175,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                         GlStateManager.disableTexture2D();
                         GlStateManager.disableLighting();
                         GlStateManager.depthMask(false);
-                        for (AxisAlignedBB box : ClientEvents.MOPED_BOXES)
-                        {
-                            if (box.equals(ClientEvents.MOPED_CHEST))
-                            {
-                                RenderGlobal.drawSelectionBoundingBox(box, 0, 1, 0, 1);
-                            }
-                            else
-                            {
-                                RenderGlobal.drawSelectionBoundingBox(box, 1, 0, 0, 1);
-                            }
-                        }
+                        ((IEntityRaytraceBoxProvider) entity).drawBoxes();
                         GlStateManager.depthMask(true);
                         GlStateManager.enableLighting();
                         GlStateManager.enableTexture2D();
