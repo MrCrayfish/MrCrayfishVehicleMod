@@ -17,5 +17,6 @@ public class PacketHandler
 		INSTANCE.registerMessage(MessageDrift.class, MessageDrift.class, 2, Side.SERVER);
 		INSTANCE.registerMessage(MessageHorn.class, MessageHorn.class, 3, Side.SERVER);
 		INSTANCE.registerMessage(MessageThrowVehicle.class, MessageThrowVehicle.class, 4, Side.SERVER);
+		INSTANCE.registerMessage(MessageFlaps.class, MessageFlaps.class, 5, Side.SERVER);
 	}
 }
