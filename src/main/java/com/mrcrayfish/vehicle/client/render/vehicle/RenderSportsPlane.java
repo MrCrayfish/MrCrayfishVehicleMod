@@ -25,8 +25,6 @@ public class RenderSportsPlane extends RenderVehicle<EntitySportsPlane>
     @Override
     public void doRender(EntitySportsPlane entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(true);
-
         RenderHelper.enableStandardItemLighting();
 
         EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
