@@ -257,7 +257,7 @@ public abstract class EntityVehicle extends Entity
         }
     }
 
-    private void updateSpeed()
+    protected void updateSpeed()
     {
         currentSpeed = this.getSpeed();
 

@@ -47,10 +47,12 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntitySmartCar.class, RenderSmartCar::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityLawnMower.class, RenderLawnMower::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMoped.class, RenderMoped::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySportsPlane.class, RenderSportsPlane::new);
 
         if(Loader.isModLoaded("cfm"))
         {
             RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
+            RenderingRegistry.registerEntityRenderingHandler(EntityBath.class, RenderBath::new);
         }
 
         MinecraftForge.EVENT_BUS.register(new ClientEvents());

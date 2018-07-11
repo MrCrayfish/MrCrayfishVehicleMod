@@ -77,10 +77,12 @@ public class VehicleMod
         registerVehicle("smart_car", EntitySmartCar.class);
         registerVehicle("lawn_mower", EntityLawnMower.class);
         registerVehicle("moped", EntityMoped.class);
+        registerVehicle("sports_plane", EntitySportsPlane.class);
 
         if(Loader.isModLoaded("cfm"))
         {
             registerVehicle("couch", EntityCouch.class);
+            registerVehicle("bath", EntityBath.class);
         }
     }
 

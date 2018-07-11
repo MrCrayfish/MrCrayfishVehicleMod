@@ -46,5 +46,11 @@
     },
     "moped_engine_stereo": {
         "sounds": [ {"name": "vehicle:moped_engine_stereo"}]
+    },
+    "sports_plane_engine_mono": {
+        "sounds": [ {"name": "vehicle:sports_plane_engine_mono"}]
+    },
+    "sports_plane_engine_stereo": {
+        "sounds": [ {"name": "vehicle:sports_plane_engine_stereo"}]
     }
 }

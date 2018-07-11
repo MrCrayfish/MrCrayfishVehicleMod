@@ -30,6 +30,11 @@ public class ModItems
     public static final Item MOPED_BODY;
     public static final Item MOPED_MUD_GUARD;
     public static final Item MOPED_HANDLE_BAR;
+    public static final Item SPORTS_PLANE_BODY;
+    public static final Item SPORTS_PLANE_WING;
+    public static final Item SPORTS_PLANE_WHEEL_COVER;
+    public static final Item SPORTS_PLANE_LEG;
+    public static final Item SPORTS_PLANE_PROPELLER;
 
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
@@ -56,6 +61,11 @@ public class ModItems
         MOPED_BODY = new ItemPart("moped_body").setColored();
         MOPED_MUD_GUARD = new ItemPart("moped_mud_guard").setColored();
         MOPED_HANDLE_BAR = new ItemPart("moped_handle_bar").setColored();
+        SPORTS_PLANE_BODY = new ItemPart("sports_plane_body").setColored();
+        SPORTS_PLANE_WING = new ItemPart("sports_plane_wing").setColored();
+        SPORTS_PLANE_WHEEL_COVER = new ItemPart("sports_plane_wheel_cover").setColored();
+        SPORTS_PLANE_LEG = new ItemPart("sports_plane_leg");
+        SPORTS_PLANE_PROPELLER = new ItemPart("sports_plane_propeller").setColored();
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
@@ -83,6 +93,11 @@ public class ModItems
         register(MOPED_BODY);
         register(MOPED_MUD_GUARD);
         register(MOPED_HANDLE_BAR);
+        register(SPORTS_PLANE_BODY);
+        register(SPORTS_PLANE_WING);
+        register(SPORTS_PLANE_WHEEL_COVER);
+        register(SPORTS_PLANE_LEG);
+        register(SPORTS_PLANE_PROPELLER);
 
         register(ENGINE);
         register(SPRAY_CAN);

@@ -58,6 +58,7 @@ public class CommonEvents
         builder = ImmutableList.builder();
         builder.add("vehicle_atv");
         builder.add("couch");
+        builder.add("bath");
         IGNORE_ENTITIES = builder.build();
     }
 
