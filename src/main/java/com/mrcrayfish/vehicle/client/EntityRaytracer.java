@@ -382,7 +382,7 @@ public class EntityRaytracer
     {
         for (Entry<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entry : entityRaytraceParts.entrySet())
         {
-        	Map<ItemStack, List<TriangleRayTrace>> partTriangles = Maps.<ItemStack, List<TriangleRayTrace>>newHashMap();
+            Map<ItemStack, List<TriangleRayTrace>> partTriangles = Maps.<ItemStack, List<TriangleRayTrace>>newHashMap();
             for (Entry<ItemStack, List<MatrixTransformation>> entryPart : entry.getValue().entrySet())
             {
                 ItemStack part = entryPart.getKey();
@@ -702,9 +702,9 @@ public class EntityRaytracer
         // Perform raytrace on the triangles of the entity's parts
         for (Entry<ItemStack, List<TriangleRayTrace>> entry : entityRaytraceTriangles.get(entity.getClass()).entrySet())
         {
-        	for (TriangleRayTrace triangle : entry.getValue())
+            for (TriangleRayTrace triangle : entry.getValue())
             {
-        		lookObjectPutative2 = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle, entry.getKey());
+                lookObjectPutative2 = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle, entry.getKey());
                 if (lookObjectPutative2 != null)
                 {
                     double distance = eyeVecRotated.distanceTo(lookObjectPutative2.getHit());
@@ -775,9 +775,9 @@ public class EntityRaytracer
                 BufferBuilder buffer = tessellator.getBuffer();
                 for (List<TriangleRayTrace> partTriangles : EntityRaytracer.entityRaytraceTriangles.get(entity.getClass()).values())
                 {
-                	for (TriangleRayTrace triangle : partTriangles)
+                    for (TriangleRayTrace triangle : partTriangles)
                     {
-                		triangle.draw(tessellator, buffer, 1, 0, 0, 0.5F);
+                        triangle.draw(tessellator, buffer, 1, 0, 0, 0.5F);
                     }
                 }
                 entity.drawInteractionBoxes();
