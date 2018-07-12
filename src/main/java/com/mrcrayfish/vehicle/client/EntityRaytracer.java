@@ -364,7 +364,10 @@ public class EntityRaytracer
 
     /**
      * Generates a list of transformed triangles that represent each IBakedModel of each rendered item part for
-     * each raytraceable entity class, and finds the nearest superclass in common between those classes
+     * each raytraceable entity class, and finds the nearest superclass in common between those classes.
+     * <p>
+     * 
+     * <strong>Note:</strong> this must be called on the client during the {@link net.minecraftforge.fml.common.event.FMLInitializationEvent init} phase.
      */
     public static void init()
     {
