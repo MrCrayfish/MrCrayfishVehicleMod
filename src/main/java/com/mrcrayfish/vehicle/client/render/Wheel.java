@@ -47,7 +47,6 @@ public class Wheel
 
     public void render(EntityLandVehicle vehicle, float partialTicks)
     {
-        scale = 1.4F;
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate((offsetX / 16F) * side.offset, offsetY / 16F, offsetZ / 16F);

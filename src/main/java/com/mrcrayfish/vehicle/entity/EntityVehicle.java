@@ -257,7 +257,7 @@ public abstract class EntityVehicle extends Entity
         }
     }
 
-    private void updateSpeed()
+    protected void updateSpeed()
     {
         currentSpeed = this.getSpeed();
 
@@ -295,7 +295,7 @@ public abstract class EntityVehicle extends Entity
         currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
     }
 
-    private void updateTurning()
+    protected void updateTurning()
     {
         TurnDirection direction = this.getTurnDirection();
         if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
@@ -579,7 +579,7 @@ public abstract class EntityVehicle extends Entity
 
     public double getKilometersPreHour()
     {
-        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20;
+        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posY - this.prevPosY, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20;
     }
 
     public void setTurnDirection(TurnDirection turnDirection)

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
@@ -16,10 +17,12 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -55,6 +58,16 @@ public class ClientEvents
                     }
                 }
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onFovUpdate(FOVUpdateEvent event)
+    {
+        Entity ridingEntity = Minecraft.getMinecraft().player.getRidingEntity();
+        if(ridingEntity instanceof EntityAirVehicle)
+        {
+            event.setNewfov(1.0F);
         }
     }
 
@@ -107,6 +120,32 @@ public class ClientEvents
             GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
             GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
             GlStateManager.translate(0, -(offset + ridingEntity.getEyeHeight()) - 0.25, 0);
+        }
+
+        if(ridingEntity instanceof EntitySportsPlane)
+        {
+            EntitySportsPlane vehicle = (EntitySportsPlane) ridingEntity;
+            GlStateManager.translate(0, -8 * 0.0625, 0.5);
+            GlStateManager.translate(0, 0.625, 0);
+            float bodyPitch = vehicle.prevBodyRotationX + (vehicle.bodyRotationX - vehicle.prevBodyRotationX) * event.getPartialTicks();
+            float bodyRoll = vehicle.prevBodyRotationZ + (vehicle.bodyRotationZ - vehicle.prevBodyRotationZ) * event.getPartialTicks();
+            GlStateManager.rotate(bodyRoll, 0, 0, 1);
+            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+            GlStateManager.translate(0, -0.625, 0);
+            GlStateManager.translate(0, 8 * 0.0625, -0.5);
+        }
+
+        if(ridingEntity instanceof EntityBath)
+        {
+            EntityBath vehicle = (EntityBath) ridingEntity;
+            GlStateManager.translate(0, 0, 0.25);
+            GlStateManager.translate(0, 0.625, 0);
+            float bodyPitch = vehicle.prevBodyRotationX + (vehicle.bodyRotationX - vehicle.prevBodyRotationX) * event.getPartialTicks();
+            float bodyRoll = vehicle.prevBodyRotationZ + (vehicle.bodyRotationZ - vehicle.prevBodyRotationZ) * event.getPartialTicks();
+            GlStateManager.rotate(bodyRoll, 0, 0, 1);
+            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+            GlStateManager.translate(0, -0.625, 0);
+            GlStateManager.translate(0, 0, -0.25);
         }
     }
 
@@ -164,6 +203,28 @@ public class ClientEvents
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-55F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-55F);
 
+            return;
+        }
+
+        if(ridingEntity instanceof EntitySportsPlane)
+        {
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+            return;
+        }
+
+        if(ridingEntity instanceof EntityBath)
+        {
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-80F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
             return;
         }
 
