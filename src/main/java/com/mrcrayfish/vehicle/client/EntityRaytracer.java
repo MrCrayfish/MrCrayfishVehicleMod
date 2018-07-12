@@ -400,10 +400,10 @@ public class EntityRaytracer
                 try
                 {
                     // Generate triangles for all faceless and faced quads
-                    generateTriangles(model.getQuads(null, null, 0L), matrix, triangles, part);
+                    generateTriangles(model.getQuads(null, null, 0L), matrix, triangles);
                     for (EnumFacing facing : EnumFacing.values())
                     {
-                        generateTriangles(model.getQuads(null, facing, 0L), matrix, triangles, part);
+                        generateTriangles(model.getQuads(null, facing, 0L), matrix, triangles);
                     }
                 }
                 catch (Exception e) {}
@@ -441,9 +441,8 @@ public class EntityRaytracer
      * @param list list of BakedQuad
      * @param matrix part-specific matrix mirroring the GL operation performed on that part during rendering
      * @param triangles list of all triangles for the given raytraceable entity class
-     * @param part the item part
      */
-    private static void generateTriangles(List<BakedQuad> list, Matrix4d matrix, List<TriangleRayTrace> triangles, ItemStack part)
+    private static void generateTriangles(List<BakedQuad> list, Matrix4d matrix, List<TriangleRayTrace> triangles)
     {
         for (int i = 0; i < list.size(); i++)
         {
