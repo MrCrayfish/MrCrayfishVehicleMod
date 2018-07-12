@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceBoxProvider;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityShoppingCart extends EntityLandVehicle
+public class EntityShoppingCart extends EntityLandVehicle implements IEntityRaytraceBoxProvider
 {
     private EntityPlayer pusher;
 

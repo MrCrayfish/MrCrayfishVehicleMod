@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceBoxProvider;
 import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityJetSki extends EntitySeaVehicle
+public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceBoxProvider
 {
     public float prevLeanAngle;
     public float leanAngle;

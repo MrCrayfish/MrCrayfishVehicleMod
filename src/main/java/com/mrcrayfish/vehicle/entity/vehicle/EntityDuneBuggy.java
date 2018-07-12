@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceBoxProvider;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -14,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityDuneBuggy extends EntityLandVehicle
+public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytraceBoxProvider
 {
     /**
      * ItemStack instances used for rendering

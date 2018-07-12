@@ -9,36 +9,18 @@ import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -46,9 +28,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 import java.text.DecimalFormat;
-import java.util.List;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -56,7 +35,6 @@ import javax.annotation.Nullable;
 public class ClientEvents
 {
     private int lastSlot = -1;
-    private static final Class<? extends Entity>[] entityRaytraceClasses = new Class[]{EntityMoped.class};
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
@@ -382,126 +360,5 @@ public class ClientEvents
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), stack, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
             event.setCanceled(true);
         }
-    }
-
-    @SubscribeEvent
-    public void openMopedChest(MouseEvent event)
-    {
-        if (event.getButton() != 1 || !event.isButtonstate())
-            return;
-        
-        float reach = Minecraft.getMinecraft().playerController.getBlockReachDistance();
-        Vec3d eyes = Minecraft.getMinecraft().player.getPositionEyes(1);
-        Vec3d focus = eyes.add(Minecraft.getMinecraft().player.getLook(1).scale(reach));
-        AxisAlignedBB box = new AxisAlignedBB(eyes, eyes).grow(reach);
-        RayTraceResultRotated lookObject = null;
-        double distanceShortest = Double.MAX_VALUE;
-        for (Class<? extends Entity> raytraceClass : entityRaytraceClasses)
-        {
-            for (Entity entity : Minecraft.getMinecraft().world.getEntitiesWithinAABB(raytraceClass, box))
-            {
-                RayTraceResultRotated lookObjectPutative = rayTraceEntityRotated((IEntityRaytraceBoxProvider) entity, eyes, focus);
-                if (lookObjectPutative != null)
-                {
-                    double distance = lookObjectPutative.getDistanceToEyes();
-                    if (distance < distanceShortest)
-                    {
-                        lookObject = lookObjectPutative;
-                        distanceShortest = distance;
-                    }
-                }
-            }
-        }
-        if (lookObject != null)
-        {
-            double eyeDistance = lookObject.getDistanceToEyes();
-            if (eyeDistance <= reach)
-            {
-                Vec3d hit = focus;
-                RayTraceResult lookObjectMC = Minecraft.getMinecraft().objectMouseOver;
-                boolean bypass = false;
-                if (lookObjectMC != null && lookObjectMC.typeOfHit != Type.MISS)
-                {
-                    hit = lookObjectMC.hitVec;
-                    if (lookObjectMC.typeOfHit == Type.ENTITY && lookObjectMC.entityHit == lookObject.entityHit)
-                        bypass = true;
-                }
-                if (bypass || eyeDistance < hit.distanceTo(eyes))
-                {
-                    if (((IEntityRaytraceBoxProvider) lookObject.entityHit).processHit(lookObject.getBoxHit()))
-                    {
-                        event.setCanceled(true);
-                    }
-                }
-            }
-        }
-    }
-
-    @Nullable
-    public RayTraceResultRotated rayTraceEntityRotated(IEntityRaytraceBoxProvider boxProvider, Vec3d start, Vec3d end)
-    {
-        Entity entity = boxProvider.getEntity();
-        Vec3d pos = entity.getPositionVector();
-        double angle = -entity.rotationYaw * (Math.PI / 180);
-        Vec3d startRotated = rotateVecXZ(start, angle, pos);
-        Vec3d endRotated = rotateVecXZ(end, angle, pos);
-        RayTraceResult lookObject = null;
-        AxisAlignedBB boxHit = null;
-        double distanceShortest = Double.MAX_VALUE;
-        List<AxisAlignedBB> boxes = boxProvider.getApplicableBoxes();
-        for (AxisAlignedBB box : boxes)
-        {
-            RayTraceResult lookObjectPutative = box.offset(pos).calculateIntercept(startRotated, endRotated);
-            if (lookObjectPutative != null)
-            {
-                double distance = startRotated.distanceTo(lookObjectPutative.hitVec);
-                if (distance < distanceShortest)
-                {
-                    lookObject = lookObjectPutative;
-                    boxHit = box;
-                    distanceShortest = distance;
-                }
-            }
-        }
-        return lookObject == null ? null : new RayTraceResultRotated(entity, rotateVecXZ(lookObject.hitVec, -angle, pos), boxHit, distanceShortest);
-    }
-
-    private Vec3d rotateVecXZ(Vec3d vec, double angle, Vec3d rotationPoint)
-    {
-        double x = rotationPoint.x + Math.cos(angle) * (vec.x - rotationPoint.x) - Math.sin(angle) * (vec.z - rotationPoint.z);
-        double z = rotationPoint.z + Math.sin(angle) * (vec.x - rotationPoint.x) + Math.cos(angle) * (vec.z - rotationPoint.z);
-        return new Vec3d(x, vec.y, z);
-    }
-
-    private static class RayTraceResultRotated extends RayTraceResult
-    {
-        private AxisAlignedBB boxHit;
-        private double distanceToEyes;
-
-        public RayTraceResultRotated(Entity entityHit, Vec3d hitVec, AxisAlignedBB boxHit, double distanceToEyes)
-        {
-            super(entityHit, hitVec);
-            this.boxHit = boxHit;
-            this.distanceToEyes = distanceToEyes;
-        }
-
-        public AxisAlignedBB getBoxHit()
-        {
-            return boxHit;
-        }
-
-        public double getDistanceToEyes()
-        {
-            return distanceToEyes;
-        }
-    }
-
-    public static interface IEntityRaytraceBoxProvider
-    {
-        public Entity getEntity();
-        public List<AxisAlignedBB> getApplicableBoxes();
-        public boolean processHit(AxisAlignedBB boxHit);
-        @SideOnly(Side.CLIENT)
-        public void drawBoxes();
     }
 }

@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
 import net.minecraft.client.Minecraft;
@@ -139,5 +140,6 @@ public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

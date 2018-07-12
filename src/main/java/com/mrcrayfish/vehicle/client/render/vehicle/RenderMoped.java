@@ -1,20 +1,17 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.ClientEvents.IEntityRaytraceBoxProvider;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceBoxProvider;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMoped;
-import net.minecraft.block.BlockChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Calendar;
@@ -28,7 +25,6 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
     private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
     public final boolean isChristmas;
-
 
     public RenderMoped(RenderManager renderManager)
     {
@@ -59,14 +55,12 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
-            double scale = 1.2;
-            GlStateManager.scale(scale, scale,scale);
+            GlStateManager.scale(1.2, 1.2, 1.2);
             GlStateManager.translate(0, 0.1, 0.125);
 
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            float angle = turnAngleNormal * currentSpeedNormal * -20F;
-            GlStateManager.rotate(angle, 0, 0, 1);
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -20F, 0, 0, 1);
 
             this.setupBreakAnimation(entity, partialTicks);
 
@@ -158,33 +152,9 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                     MOPED_CHEST.renderAll();
                 }
                 GlStateManager.popMatrix();
-
-                //Render chest raytrace boxes
-                GlStateManager.pushMatrix();
-                {
-                    if (Minecraft.getMinecraft().getRenderManager().isDebugBoundingBox())
-                    {
-                        double scaleInv = 1 / scale;
-                        GlStateManager.scale(scaleInv, scaleInv, scaleInv);
-                        GlStateManager.rotate(-angle, 0, 0, 1);
-                        GlStateManager.translate(0, -0.1 * scale, -0.125 * scale);
-                        GlStateManager.rotate(angle, 0, 0, 1);
-                        GlStateManager.enableBlend();
-                        GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                        GlStateManager.glLineWidth(2.0F);
-                        GlStateManager.disableTexture2D();
-                        GlStateManager.disableLighting();
-                        GlStateManager.depthMask(false);
-                        ((IEntityRaytraceBoxProvider) entity).drawBoxes();
-                        GlStateManager.depthMask(true);
-                        GlStateManager.enableLighting();
-                        GlStateManager.enableTexture2D();
-                        GlStateManager.disableBlend();
-                    }
-                }
-                GlStateManager.popMatrix();
             }
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }
