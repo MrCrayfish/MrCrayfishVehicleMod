@@ -42,7 +42,7 @@ public class EntityBath extends EntityAirVehicle
         {
             for(int i = 0; i < 4; i++)
             {
-                world.spawnParticle(EnumParticleTypes.DRIP_WATER, false, posX - 0.25 + 0.5 * rand.nextGaussian(), posY + 0.5 * rand.nextGaussian(), posZ - 0.25 + 0.5 * rand.nextGaussian(), 0, 0, 0, 0);
+                world.spawnParticle(EnumParticleTypes.DRIP_WATER, posX - 0.25 + 0.5 * rand.nextGaussian(), posY + 0.5 * rand.nextGaussian(), posZ - 0.25 + 0.5 * rand.nextGaussian(), 0, 0, 0, 0);
             }
         }
     }
