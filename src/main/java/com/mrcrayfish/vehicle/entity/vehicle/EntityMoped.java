@@ -13,7 +13,6 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -168,7 +167,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceBoxP
     }
 
     @Override
-    public boolean processHit(@Nullable Item partHit, @Nullable AxisAlignedBB boxHit)
+    public boolean processHit(@Nullable ItemStack partHit, @Nullable AxisAlignedBB boxHit)
     {
         if (boxHit != null)
         {
