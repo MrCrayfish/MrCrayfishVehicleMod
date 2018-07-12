@@ -117,17 +117,6 @@ public class EntityRaytracer
                 MatrixTransformation.createScale(0.9));
         entityRaytraceParts.put(EntityBumperCar.class, bumperCarParts);
 
-        // Couch
-        if(Loader.isModLoaded("cfm"))
-        {
-            HashMap<ItemStack, List<MatrixTransformation>> couchParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
-            createTranformListForPart(Item.getByNameOrId("cfm:couch_jeb"), couchParts,
-                    MatrixTransformation.createTranslation(0, -0.03125, 0.1),
-                    MatrixTransformation.createRotation(90, 0, 1, 0),
-                    MatrixTransformation.createTranslation(0, 0.7109375, 0));
-            entityRaytraceParts.put(EntityCouch.class, couchParts);
-        }
-
         // Dune buggy
         List<MatrixTransformation> duneBuggyTransformGlobal = Lists.<MatrixTransformation>newArrayList();
         duneBuggyTransformGlobal.add(MatrixTransformation.createScale(1.3));
@@ -279,6 +268,25 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0.46875, -0.1875, 0.125),
                 MatrixTransformation.createRotation(100, 0, 1, 0));
         entityRaytraceParts.put(EntitySportsPlane.class, sportsPlaneParts);
+
+        if(Loader.isModLoaded("cfm"))
+        {
+            // Bath
+            HashMap<ItemStack, List<MatrixTransformation>> bathParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
+            createTranformListForPart(Item.getByNameOrId("cfm:bath_bottom"), bathParts,
+                    MatrixTransformation.createTranslation(0, -0.03125, -0.25),
+                    MatrixTransformation.createRotation(90F, 0, 1, 0),
+                    MatrixTransformation.createTranslation(0, 0.5, 0));
+            entityRaytraceParts.put(EntityBath.class, bathParts);
+
+            // Couch
+            HashMap<ItemStack, List<MatrixTransformation>> couchParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
+            createTranformListForPart(Item.getByNameOrId("cfm:couch_jeb"), couchParts,
+                    MatrixTransformation.createTranslation(0, -0.03125, 0.1),
+                    MatrixTransformation.createRotation(90, 0, 1, 0),
+                    MatrixTransformation.createTranslation(0, 0.7109375, 0));
+            entityRaytraceParts.put(EntityCouch.class, couchParts);
+        }
     }
 
     /**
