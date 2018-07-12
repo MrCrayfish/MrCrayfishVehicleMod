@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,14 +56,14 @@ import com.mrcrayfish.vehicle.init.ModItems;
 public class EntityRaytracer
 {
     /**
-     * Maps raytraceable entities to lists of matrix transformations that correspond to the static GL operation performed on them during rendering
+     * Maps raytraceable entities to maps, which map matrix transformations that correspond to the static GL operation performed on them during rendering
      */
     private static final Map<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entityRaytraceParts = Maps.<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>>newHashMap();
 
     /**
-     * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise the faces their BakedQuads
+     * Maps raytraceable entities to maps, which map rendered model item parts to static versions of the triangles that comprise the faces of their BakedQuads
      */
-    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, List<TriangleRayTrace>> entityRaytraceTriangles = Maps.<Class<? extends IEntityRaytraceBoxProvider>, List<TriangleRayTrace>>newHashMap();
+    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, List<TriangleRayTrace>>> entityRaytraceTriangles = Maps.<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, List<TriangleRayTrace>>>newHashMap();
 
     /**
      * Nearest common superclass shared by all raytraceable entity classes
@@ -275,7 +276,7 @@ public class EntityRaytracer
             HashMap<ItemStack, List<MatrixTransformation>> bathParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
             createTranformListForPart(Item.getByNameOrId("cfm:bath_bottom"), bathParts,
                     MatrixTransformation.createTranslation(0, -0.03125, -0.25),
-                    MatrixTransformation.createRotation(90F, 0, 1, 0),
+                    MatrixTransformation.createRotation(90, 0, 1, 0),
                     MatrixTransformation.createTranslation(0, 0.5, 0));
             entityRaytraceParts.put(EntityBath.class, bathParts);
 
@@ -381,7 +382,7 @@ public class EntityRaytracer
     {
         for (Entry<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entry : entityRaytraceParts.entrySet())
         {
-            List<TriangleRayTrace> triangles = Lists.<TriangleRayTrace>newArrayList();
+        	Map<ItemStack, List<TriangleRayTrace>> partTriangles = Maps.<ItemStack, List<TriangleRayTrace>>newHashMap();
             for (Entry<ItemStack, List<MatrixTransformation>> entryPart : entry.getValue().entrySet())
             {
                 ItemStack part = entryPart.getKey();
@@ -395,6 +396,7 @@ public class EntityRaytracer
                     tranform.transform(matrix);
                 }
                 finalizeMatrix(matrix);
+                ArrayList<TriangleRayTrace> triangles = Lists.<TriangleRayTrace>newArrayList();
                 try
                 {
                     // Generate triangles for all faceless and faced quads
@@ -405,8 +407,9 @@ public class EntityRaytracer
                     }
                 }
                 catch (Exception e) {}
+                partTriangles.put(part, triangles);
             }
-            entityRaytraceTriangles.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), triangles);
+            entityRaytraceTriangles.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), partTriangles);
         }
         // Find nearest common superclass
         for (Class<? extends Entity> raytraceClass : entityRaytraceParts.keySet())
@@ -470,8 +473,8 @@ public class EntityRaytracer
             triangle1[7] = triangle2[4] = Float.intBitsToFloat(data[size + 1]);
             triangle1[8] = triangle2[5] = Float.intBitsToFloat(data[size + 2]);
 
-            transformAndAdd(triangle1, matrix, triangles, part);
-            transformAndAdd(triangle2, matrix, triangles, part);
+            transformAndAdd(triangle1, matrix, triangles);
+            transformAndAdd(triangle2, matrix, triangles);
         }
     }
 
@@ -481,9 +484,8 @@ public class EntityRaytracer
      * @param triangle array of the three vertices that comprise the triangle
      * @param matrix part-specific matrix mirroring the GL operation performed on that part during rendering
      * @param triangles list of all triangles for the given raytraceable entity class
-     * @param part the item part
      */
-    private static void transformAndAdd(float[] triangle, Matrix4d matrix, List<TriangleRayTrace> triangles, ItemStack part)
+    private static void transformAndAdd(float[] triangle, Matrix4d matrix, List<TriangleRayTrace> triangles)
     {
         for (int i = 0; i < 9; i += 3)
         {
@@ -493,7 +495,7 @@ public class EntityRaytracer
             triangle[i + 1] = (float) vec.y;
             triangle[i + 2] = (float) vec.z;
         }
-        triangles.add(new TriangleRayTrace(triangle, part));
+        triangles.add(new TriangleRayTrace(triangle));
     }
 
     /**
@@ -698,18 +700,21 @@ public class EntityRaytracer
         Vec3d look = forwardVecRotated.subtract(eyeVecRotated).normalize().scale(reach);
         float[] direction = new float[]{(float) look.x, (float) look.y, (float) look.z};
         // Perform raytrace on the triangles of the entity's parts
-        for (TriangleRayTrace triangle : entityRaytraceTriangles.get(entity.getClass()))
+        for (Entry<ItemStack, List<TriangleRayTrace>> entry : entityRaytraceTriangles.get(entity.getClass()).entrySet())
         {
-            lookObjectPutative2 = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle);
-            if (lookObjectPutative2 != null)
+        	for (TriangleRayTrace triangle : entry.getValue())
             {
-                double distance = eyeVecRotated.distanceTo(lookObjectPutative2.getHit());
-                if (distance < distanceShortest)
+        		lookObjectPutative2 = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle, entry.getKey());
+                if (lookObjectPutative2 != null)
                 {
-                    // Invalidate the interaction box hit if the part hit is closer to the player's eyes
-                    lookObject = null;
-                    lookObject2 = lookObjectPutative2;
-                    distanceShortest = distance;
+                    double distance = eyeVecRotated.distanceTo(lookObjectPutative2.getHit());
+                    if (distance < distanceShortest)
+                    {
+                        // Invalidate the interaction box hit if the part hit is closer to the player's eyes
+                        lookObject = null;
+                        lookObject2 = lookObjectPutative2;
+                        distanceShortest = distance;
+                    }
                 }
             }
         }
@@ -768,9 +773,12 @@ public class EntityRaytracer
                 GlStateManager.disableLighting();
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
-                for (TriangleRayTrace triangle : EntityRaytracer.entityRaytraceTriangles.get(entity.getClass()))
+                for (List<TriangleRayTrace> partTriangles : EntityRaytracer.entityRaytraceTriangles.get(entity.getClass()).values())
                 {
-                    triangle.draw(tessellator, buffer, 1, 0, 0, 0.5F);
+                	for (TriangleRayTrace triangle : partTriangles)
+                    {
+                		triangle.draw(tessellator, buffer, 1, 0, 0, 0.5F);
+                    }
                 }
                 entity.drawInteractionBoxes();
                 GlStateManager.enableLighting();
@@ -787,22 +795,15 @@ public class EntityRaytracer
     public static class TriangleRayTrace
     {
         private final float[] data;
-        private ItemStack part;
 
-        public TriangleRayTrace(float[] data, ItemStack part)
+        public TriangleRayTrace(float[] data)
         {
             this.data = data;
-            this.part = part;
         }
 
         public float[] getData()
         {
             return data;
-        }
-
-        public ItemStack getPart()
-        {
-            return part;
         }
 
         public void draw(Tessellator tessellator, BufferBuilder buffer, float red, float green, float blue, float alpha)
@@ -854,7 +855,7 @@ public class EntityRaytracer
          * 
          * @result new instance of this class, if the ray intersect the triangle - null if the ray does not
          */
-        public static RayTraceResultTriangle calculateIntercept(float[] eyes, float[] direction, Vec3d posEntity, TriangleRayTrace triangle)
+        public static RayTraceResultTriangle calculateIntercept(float[] eyes, float[] direction, Vec3d posEntity, TriangleRayTrace triangle, ItemStack part)
         {
             float[] data = triangle.getData();
             float[] vec0 = {data[0] + (float) posEntity.x, data[1] + (float) posEntity.y, data[2] + (float) posEntity.z};
@@ -882,7 +883,7 @@ public class EntityRaytracer
                     float v = dot(direction, qvec) * inv_det;
                     if (v >= 0 && u + v <= 1)
                     {
-                        return new RayTraceResultTriangle(triangle.getPart(), edge1[0] * u + edge2[0] * v + vec0[0], edge1[1] * u + edge2[1] * v + vec0[1], edge1[2] * u + edge2[2] * v + vec0[2]);
+                        return new RayTraceResultTriangle(part, edge1[0] * u + edge2[0] * v + vec0[0], edge1[1] * u + edge2[1] * v + vec0[1], edge1[2] * u + edge2[2] * v + vec0[2]);
                     }
                 }
             }
