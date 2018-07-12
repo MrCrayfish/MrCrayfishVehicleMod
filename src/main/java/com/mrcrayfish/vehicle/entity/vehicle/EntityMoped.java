@@ -171,7 +171,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceBoxP
     {
         if (boxHit != null)
         {
-            //TODO open moped (lookObject.entityHit) inventory GUI
+            //TODO open moped inventory GUI
 
             //TODO debug code - delete this code and this comment before release
             {
