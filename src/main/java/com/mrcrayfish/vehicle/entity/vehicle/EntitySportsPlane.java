@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 import javax.annotation.Nullable;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceBoxProvider;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytraceBoxProvider
+public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytraceable
 {
     public float wheelSpeed;
     public float wheelRotation;
@@ -161,6 +161,6 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(partHit.getTagCompound().getString(EntityRaytracer.PART_NAME)).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
             return true;
         }
-        return IEntityRaytraceBoxProvider.super.processHit(partHit, boxHit);
+        return IEntityRaytraceable.super.processHit(partHit, boxHit);
     }
 }

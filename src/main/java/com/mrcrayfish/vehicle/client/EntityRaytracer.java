@@ -71,12 +71,12 @@ public class EntityRaytracer
     /**
      * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise static versions of the faces of their BakedQuads
      */
-    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityRaytraceTrianglesStatic = Maps.<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>>newHashMap();
+    public static final Map<Class<? extends IEntityRaytraceable>, Map<ItemStack, TriangleRayTraceList>> entityRaytraceTrianglesStatic = Maps.<Class<? extends IEntityRaytraceable>, Map<ItemStack, TriangleRayTraceList>>newHashMap();
 
     /**
      * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise dynamic versions of the faces of their BakedQuads
      */
-    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityRaytraceTrianglesDynamic = Maps.<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>>newHashMap();
+    public static final Map<Class<? extends IEntityRaytraceable>, Map<ItemStack, TriangleRayTraceList>> entityRaytraceTrianglesDynamic = Maps.<Class<? extends IEntityRaytraceable>, Map<ItemStack, TriangleRayTraceList>>newHashMap();
 
     /**
      * Nearest common superclass shared by all raytraceable entity classes
@@ -427,7 +427,7 @@ public class EntityRaytracer
                 ItemStack part = entryPart.getKey();
                 partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part), null), entryPart.getValue()));
             }
-            entityRaytraceTrianglesDynamic.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), partTriangles);
+            entityRaytraceTrianglesDynamic.put((Class<? extends IEntityRaytraceable>) entry.getKey(), partTriangles);
         }
         // Create static triangles for raytraceable entities
         for (Entry<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entry : entityRaytracePartsStatic.entrySet())
@@ -448,7 +448,7 @@ public class EntityRaytracer
 
                 partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part), matrix)));
             }
-            entityRaytraceTrianglesStatic.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), partTriangles);
+            entityRaytraceTrianglesStatic.put((Class<? extends IEntityRaytraceable>) entry.getKey(), partTriangles);
         }
         List<Class<? extends Entity>> entityRaytraceClasses = Lists.<Class<? extends Entity>>newArrayList();
         entityRaytraceClasses.addAll(entityRaytracePartsStatic.keySet());
@@ -678,14 +678,14 @@ public class EntityRaytracer
      * 
      * @param entity raytraceable entity
      */
-    public static void interactWithEntity(IEntityRaytraceBoxProvider entity)
+    public static void interactWithEntity(IEntityRaytraceable entity)
     {
         Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, EnumHand.MAIN_HAND);
     }
 
     /**
      * Performs raytrace on interaction boxes and item part triangles of all raytraceable entities within reach of the player upon right-click,
-     * and cancels it if the clicked raytraceable entity returns true from {@link IEntityRaytraceBoxProvider#processHit processHit}
+     * and cancels it if the clicked raytraceable entity returns true from {@link IEntityRaytraceable#processHit processHit}
      * 
      * @param event mouse event
      */
@@ -710,7 +710,7 @@ public class EntityRaytracer
         {
             if (entityRaytracePartsDynamic.keySet().contains(entity.getClass()) || entityRaytracePartsStatic.keySet().contains(entity.getClass()))
             {
-                lookObjectPutative = rayTraceEntityRotated((IEntityRaytraceBoxProvider) entity, eyeVec, forwardVec, reach);
+                lookObjectPutative = rayTraceEntityRotated((IEntityRaytraceable) entity, eyeVec, forwardVec, reach);
                 if (lookObjectPutative != null)
                 {
                     distance = lookObjectPutative.getDistanceToEyes();
@@ -746,7 +746,7 @@ public class EntityRaytracer
                 // If not bypassed, process the hit only if it is closer to the player's eyes than what MC thinks the player is looking
                 if (bypass || eyeDistance < hit.distanceTo(eyeVec))
                 {
-                    if (((IEntityRaytraceBoxProvider) lookObject.entityHit).processHit(lookObject.getPartHit(), lookObject.getBoxHit()))
+                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject.getPartHit(), lookObject.getBoxHit()))
                     {
                         // Cancel right-click
                         event.setCanceled(true);
@@ -767,7 +767,7 @@ public class EntityRaytracer
      * @return the result of the raytrace
      */
     @Nullable
-    public static RayTraceResultRotated rayTraceEntityRotated(IEntityRaytraceBoxProvider boxProvider, Vec3d eyeVec, Vec3d forwardVec, double reach)
+    public static RayTraceResultRotated rayTraceEntityRotated(IEntityRaytraceable boxProvider, Vec3d eyeVec, Vec3d forwardVec, double reach)
     {
         Entity entity = (Entity) boxProvider;
         Vec3d pos = entity.getPositionVector();
@@ -832,7 +832,7 @@ public class EntityRaytracer
      * @return the result of the raytrace
      */
     private static RayTraceResultTriangle raytraceTriangles(Entity entity, Vec3d pos, Vec3d eyeVecRotated, double distanceShortest, RayTraceResultTriangle lookPart,
-            float[] eyes, float[] direction, Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityTriangles)
+            float[] eyes, float[] direction, Map<Class<? extends IEntityRaytraceable>, Map<ItemStack, TriangleRayTraceList>> entityTriangles)
     {
         Map<ItemStack, TriangleRayTraceList> triangles = entityTriangles.get(entity.getClass());
         if (triangles != null)
@@ -892,7 +892,7 @@ public class EntityRaytracer
      * @param z entity's z position
      * @param yaw entity's rotation yaw
      */
-    public static void renderRaytraceElements(IEntityRaytraceBoxProvider entity, double x, double y, double z, float yaw)
+    public static void renderRaytraceElements(IEntityRaytraceable entity, double x, double y, double z, float yaw)
     {
         //Debug: set true to render raytrace triangles/boxes
         if (true) //TODO keep above comments, but set this to false and delete this comment before release
@@ -927,7 +927,7 @@ public class EntityRaytracer
      * @param buffer tessellator's vertex buffer
      * @param entityTriangles map containing the traingles for the given ray traceable entity
      */
-    private static void renderRaytraceTriangles(IEntityRaytraceBoxProvider entity, Tessellator tessellator, BufferBuilder buffer, Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityTriangles)
+    private static void renderRaytraceTriangles(IEntityRaytraceable entity, Tessellator tessellator, BufferBuilder buffer, Map<Class<? extends IEntityRaytraceable>, Map<ItemStack, TriangleRayTraceList>> entityTriangles)
     {
         Map<ItemStack, TriangleRayTraceList> map = entityTriangles.get(entity.getClass());
         if (map != null)
@@ -1182,7 +1182,7 @@ public class EntityRaytracer
      *     <li>Only classes that extend {@link net.minecraft.entity.Entity Entity} should implement this interface.</li>
      * </ul>
      */
-    public static interface IEntityRaytraceBoxProvider
+    public static interface IEntityRaytraceable
     {
         /**
          * Called when either an item part is clicked or an entity-specific interaction box is clicked.

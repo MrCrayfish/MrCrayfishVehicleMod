@@ -6,7 +6,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceBoxProvider;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -33,7 +33,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceBoxProvider
+public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(EntityMoped.class, DataSerializers.BOOLEAN);
     private static final AxisAlignedBB CHEST_BOX = new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375);
@@ -179,7 +179,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceBoxP
             }
             return true;
         }
-        return IEntityRaytraceBoxProvider.super.processHit(partHit, boxHit);
+        return IEntityRaytraceable.super.processHit(partHit, boxHit);
     }
 
     @Override
