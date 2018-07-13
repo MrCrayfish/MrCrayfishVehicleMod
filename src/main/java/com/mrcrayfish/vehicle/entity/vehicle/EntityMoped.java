@@ -199,7 +199,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceBoxP
     {
         if (hasChest())
         {
-            RenderGlobal.drawSelectionBoundingBox(CHEST_BOX, 0, 1, 0, 1);
+            RenderGlobal.drawSelectionBoundingBox(CHEST_BOX, 0, 1, 0, 0.4F);
         }
     }
 }

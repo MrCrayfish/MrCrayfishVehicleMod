@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 
 import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4d;
@@ -44,6 +45,7 @@ import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 
@@ -56,14 +58,25 @@ import com.mrcrayfish.vehicle.init.ModItems;
 public class EntityRaytracer
 {
     /**
-     * Maps raytraceable entities to maps, which map matrix transformations that correspond to the static GL operation performed on them during rendering
+     * Maps raytraceable entities to maps, which map rendered model item parts to matrix transformations that correspond to the static GL operation 
+     * performed on them during rendering
      */
-    private static final Map<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entityRaytraceParts = Maps.<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>>newHashMap();
+    private static final Map<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entityRaytracePartsStatic = Maps.<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>>newHashMap();
 
     /**
-     * Maps raytraceable entities to maps, which map rendered model item parts to static versions of the triangles that comprise the faces of their BakedQuads
+     * Maps raytraceable entities to maps, which map matrix transformations that correspond to all GL operation performed on them during rendering
      */
-    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, List<TriangleRayTrace>>> entityRaytraceTriangles = Maps.<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, List<TriangleRayTrace>>>newHashMap();
+    private static final Map<Class<? extends Entity>, Map<ItemStack, BiFunction<ItemStack, Entity, Matrix4d>>> entityRaytracePartsDynamic = Maps.<Class<? extends Entity>, Map<ItemStack, BiFunction<ItemStack, Entity, Matrix4d>>>newHashMap();
+
+    /**
+     * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise static versions of the faces of their BakedQuads
+     */
+    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityRaytraceTrianglesStatic = Maps.<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>>newHashMap();
+
+    /**
+     * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise dynamic versions of the faces of their BakedQuads
+     */
+    public static final Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityRaytraceTrianglesDynamic = Maps.<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>>newHashMap();
 
     /**
      * Nearest common superclass shared by all raytraceable entity classes
@@ -80,16 +93,17 @@ public class EntityRaytracer
     static
     {
         /**
-         * All GL operation performed on each item part during rendering must be accounted for by performing
-         * the same matrix transformations on the triangles that will comprise the faces their BakedQuads
+         * For a static raytrace, all static GL operation performed on each item part during rendering must be accounted
+         * for by performing the same matrix transformations on the triangles that will comprise the faces their BakedQuads
          */
 
         // Aluminum boat
-        HashMap<ItemStack, List<MatrixTransformation>> aluminumBoatParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
-        createTranformListForPart(ModItems.ALUMINUM_BOAT_BODY, aluminumBoatParts,
-                MatrixTransformation.createScale(1.1),
-                MatrixTransformation.createTranslation(0, 0.5, 0.2));
-        entityRaytraceParts.put(EntityAluminumBoat.class, aluminumBoatParts);
+        //TODO uncomment out the code blow and delete this comment before release
+//        HashMap<ItemStack, List<MatrixTransformation>> aluminumBoatParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
+//        createTranformListForPart(ModItems.ALUMINUM_BOAT_BODY, aluminumBoatParts,
+//                MatrixTransformation.createScale(1.1),
+//                MatrixTransformation.createTranslation(0, 0.5, 0.2));
+//        entityRaytracePartsStatic.put(EntityAluminumBoat.class, aluminumBoatParts);
 
         // ATV
         List<MatrixTransformation> atvTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -102,7 +116,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.9734375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
-        entityRaytraceParts.put(EntityATV.class, atvParts);
+        entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
         List<MatrixTransformation> bumperCarTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -116,7 +130,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
-        entityRaytraceParts.put(EntityBumperCar.class, bumperCarParts);
+        entityRaytracePartsStatic.put(EntityBumperCar.class, bumperCarParts);
 
         // Dune buggy
         List<MatrixTransformation> duneBuggyTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -127,7 +141,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.505, 0));
         createTranformListForPart(ModItems.DUNE_BUGGY_HANDLE_BAR, duneBuggyParts, duneBuggyTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.5, -0.0046875));
-        entityRaytraceParts.put(EntityDuneBuggy.class, duneBuggyParts);
+        entityRaytracePartsStatic.put(EntityDuneBuggy.class, duneBuggyParts);
 
         // Go kart
         List<MatrixTransformation> goKartTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -144,7 +158,7 @@ public class EntityRaytracer
         createEngineTransforms(0, 7.5, -9, 180, 1.2, goKartEngineTransforms);
         goKartTransformGlobal.addAll(goKartEngineTransforms);
         createTranformListForPart(ModItems.ENGINE, goKartParts, goKartTransformGlobal);
-        entityRaytraceParts.put(EntityGoKart.class, goKartParts);
+        entityRaytracePartsStatic.put(EntityGoKart.class, goKartParts);
 
         // Jet ski
         List<MatrixTransformation> jetSkiTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -157,7 +171,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 1.0734375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
-        entityRaytraceParts.put(EntityJetSki.class, jetSkiParts);
+        entityRaytracePartsStatic.put(EntityJetSki.class, jetSkiParts);
 
         // Lawn mower
         List<MatrixTransformation> lawnMowerTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -170,7 +184,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.4, -0.15),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
-        entityRaytraceParts.put(EntityLawnMower.class, lawnMowerParts);
+        entityRaytracePartsStatic.put(EntityLawnMower.class, lawnMowerParts);
 
         // Mini bike
         List<MatrixTransformation> miniBikeTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -186,7 +200,7 @@ public class EntityRaytracer
         createEngineTransforms(0, 7.25, 3, 180, 1, miniBikeEngineTransforms);
         miniBikeTransformGlobal.addAll(miniBikeEngineTransforms);
         createTranformListForPart(ModItems.ENGINE, miniBikeParts, miniBikeTransformGlobal);
-        entityRaytraceParts.put(EntityMiniBike.class, miniBikeParts);
+        entityRaytracePartsStatic.put(EntityMiniBike.class, miniBikeParts);
 
         // Moped
         List<MatrixTransformation> mopedTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -202,14 +216,14 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, -0.12, 0.785),
                 MatrixTransformation.createRotation(-22.5, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
-        entityRaytraceParts.put(EntityMoped.class, mopedParts);
+        entityRaytracePartsStatic.put(EntityMoped.class, mopedParts);
 
         // Shopping cart
         HashMap<ItemStack, List<MatrixTransformation>> cartParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
         createTranformListForPart(ModItems.SHOPPING_CART_BODY, cartParts,
                 MatrixTransformation.createScale(1.05),
                 MatrixTransformation.createTranslation(0, 0.53, 0.165));
-        entityRaytraceParts.put(EntityShoppingCart.class, cartParts);
+        entityRaytracePartsStatic.put(EntityShoppingCart.class, cartParts);
 
         // Smart car
         List<MatrixTransformation> smartCarTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -223,7 +237,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-67.5, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
-        entityRaytraceParts.put(EntitySmartCar.class, smartCarParts);
+        entityRaytracePartsStatic.put(EntitySmartCar.class, smartCarParts);
 
         // Speed boat
         List<MatrixTransformation> speedBoatTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -235,7 +249,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.65, -0.125),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
-        entityRaytraceParts.put(EntitySpeedBoat.class, speedBoatParts);
+        entityRaytracePartsStatic.put(EntitySpeedBoat.class, speedBoatParts);
 
         // Sports plane
         List<MatrixTransformation> sportsPlaneTransformGlobal = Lists.<MatrixTransformation>newArrayList();
@@ -268,7 +282,7 @@ public class EntityRaytracer
         createTranformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_LEG, "legLeft"), sportsPlaneParts, sportsPlaneTransformGlobal,
                 MatrixTransformation.createTranslation(0.46875, -0.1875, 0.125),
                 MatrixTransformation.createRotation(100, 0, 1, 0));
-        entityRaytraceParts.put(EntitySportsPlane.class, sportsPlaneParts);
+        entityRaytracePartsStatic.put(EntitySportsPlane.class, sportsPlaneParts);
 
         if(Loader.isModLoaded("cfm"))
         {
@@ -278,7 +292,7 @@ public class EntityRaytracer
                     MatrixTransformation.createTranslation(0, -0.03125, -0.25),
                     MatrixTransformation.createRotation(90, 0, 1, 0),
                     MatrixTransformation.createTranslation(0, 0.5, 0));
-            entityRaytraceParts.put(EntityBath.class, bathParts);
+            entityRaytracePartsStatic.put(EntityBath.class, bathParts);
 
             // Couch
             HashMap<ItemStack, List<MatrixTransformation>> couchParts = Maps.<ItemStack, List<MatrixTransformation>>newHashMap();
@@ -286,7 +300,31 @@ public class EntityRaytracer
                     MatrixTransformation.createTranslation(0, -0.03125, 0.1),
                     MatrixTransformation.createRotation(90, 0, 1, 0),
                     MatrixTransformation.createTranslation(0, 0.7109375, 0));
-            entityRaytraceParts.put(EntityCouch.class, couchParts);
+            entityRaytracePartsStatic.put(EntityCouch.class, couchParts);
+        }
+
+        //TODO debug code (dynamic test code) - delete this code and this comment before release
+        {
+            /**
+             * For a dynamic raytrace, all GL operation performed be accounted for
+             */
+
+            Map<ItemStack, BiFunction<ItemStack, Entity, Matrix4d>> aluminumBoatPartsDynamic = Maps.<ItemStack, BiFunction<ItemStack, Entity, Matrix4d>> newHashMap();
+            aluminumBoatPartsDynamic.put(new ItemStack(ModItems.ALUMINUM_BOAT_BODY), (part, entity) ->
+            {
+                EntityVehicle aluminumBoat = (EntityVehicle) entity;
+                Matrix4d matrix = new Matrix4d();
+                matrix.setIdentity();
+                MatrixTransformation.createScale(1.1).transform(matrix);
+                MatrixTransformation.createTranslation(0, 0.5, 0.2).transform(matrix);
+                double currentSpeedNormal = aluminumBoat.currentSpeed / aluminumBoat.getMaxSpeed();
+                double turnAngleNormal = aluminumBoat.turnAngle / 45.0;
+                MatrixTransformation.createRotation(turnAngleNormal * currentSpeedNormal * -15.0, 0, 0, 1).transform(matrix);
+                MatrixTransformation.createRotation(-8 * Math.min(1.0F, currentSpeedNormal), 1, 0, 0).transform(matrix);
+                finalizeMatrix(matrix);
+                return matrix;
+            });
+            entityRaytracePartsDynamic.put(EntityAluminumBoat.class, aluminumBoatPartsDynamic);
         }
     }
 
@@ -372,22 +410,33 @@ public class EntityRaytracer
     }
 
     /**
-     * Generates a list of transformed triangles that represent each IBakedModel of each rendered item part for
-     * each raytraceable entity class, and finds the nearest superclass in common between those classes.
+     * Generates lists of dynamic matrix-generating triangles and static lists of transformed triangles that represent each dynamic/static IBakedModel 
+     * of each rendered item part for each raytraceable entity class, and finds the nearest superclass in common between those classes.
      * <p>
      * 
      * <strong>Note:</strong> this must be called on the client during the {@link net.minecraftforge.fml.common.event.FMLInitializationEvent init} phase.
      */
     public static void init()
     {
-        for (Entry<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entry : entityRaytraceParts.entrySet())
+        // Create dynamic triangles for raytraceable entities
+        for (Entry<Class<? extends Entity>, Map<ItemStack, BiFunction<ItemStack, Entity, Matrix4d>>> entry : entityRaytracePartsDynamic.entrySet())
         {
-            Map<ItemStack, List<TriangleRayTrace>> partTriangles = Maps.<ItemStack, List<TriangleRayTrace>>newHashMap();
+            Map<ItemStack, TriangleRayTraceList> partTriangles = Maps.<ItemStack, TriangleRayTraceList>newHashMap();
+            for (Entry<ItemStack, BiFunction<ItemStack, Entity, Matrix4d>> entryPart : entry.getValue().entrySet())
+            {
+                ItemStack part = entryPart.getKey();
+                partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part), null), entryPart.getValue()));
+            }
+            entityRaytraceTrianglesDynamic.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), partTriangles);
+        }
+        // Create static triangles for raytraceable entities
+        for (Entry<Class<? extends Entity>, Map<ItemStack, List<MatrixTransformation>>> entry : entityRaytracePartsStatic.entrySet())
+        {
+            Map<ItemStack, TriangleRayTraceList> partTriangles = Maps.<ItemStack, TriangleRayTraceList>newHashMap();
             for (Entry<ItemStack, List<MatrixTransformation>> entryPart : entry.getValue().entrySet())
             {
                 ItemStack part = entryPart.getKey();
-                // Get model
-                IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(part, null, Minecraft.getMinecraft().player);
+
                 // Generate part-specific matrix
                 Matrix4d matrix = new Matrix4d();
                 matrix.setIdentity();
@@ -396,28 +445,21 @@ public class EntityRaytracer
                     tranform.transform(matrix);
                 }
                 finalizeMatrix(matrix);
-                ArrayList<TriangleRayTrace> triangles = Lists.<TriangleRayTrace>newArrayList();
-                try
-                {
-                    // Generate triangles for all faceless and faced quads
-                    generateTriangles(model.getQuads(null, null, 0L), matrix, triangles);
-                    for (EnumFacing facing : EnumFacing.values())
-                    {
-                        generateTriangles(model.getQuads(null, facing, 0L), matrix, triangles);
-                    }
-                }
-                catch (Exception e) {}
-                partTriangles.put(part, triangles);
+
+                partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part), matrix)));
             }
-            entityRaytraceTriangles.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), partTriangles);
+            entityRaytraceTrianglesStatic.put((Class<? extends IEntityRaytraceBoxProvider>) entry.getKey(), partTriangles);
         }
+        List<Class<? extends Entity>> entityRaytraceClasses = Lists.<Class<? extends Entity>>newArrayList();
+        entityRaytraceClasses.addAll(entityRaytracePartsStatic.keySet());
+        entityRaytraceClasses.addAll(entityRaytracePartsDynamic.keySet());
         // Find nearest common superclass
-        for (Class<? extends Entity> raytraceClass : entityRaytraceParts.keySet())
+        for (Class<? extends Entity> raytraceClass : entityRaytraceClasses)
         {
             if (entityRaytraceSuperclass != null)
             {
                 Class<?> nearestSuperclass = raytraceClass;
-                do
+                while (!nearestSuperclass.isAssignableFrom(entityRaytraceSuperclass))
                 {
                     nearestSuperclass = nearestSuperclass.getSuperclass();
                     if (nearestSuperclass == Entity.class)
@@ -425,7 +467,6 @@ public class EntityRaytracer
                         break;
                     }
                 }
-                while (!nearestSuperclass.isAssignableFrom(entityRaytraceSuperclass));
                 entityRaytraceSuperclass = (Class<? extends Entity>) nearestSuperclass;
             }
             else
@@ -436,13 +477,47 @@ public class EntityRaytracer
     }
 
     /**
-     * Converts BakedQuad into pairs of transformed triangles that represent them
+     * Gets an IBakedModel from a part stack
+     * 
+     * @param part 
+     */
+    private static IBakedModel getModel(ItemStack part)
+    {
+        return Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(part, null, Minecraft.getMinecraft().player);
+    }
+
+    /**
+     * Converts an IBakedModel into triangles that represent its quads
+     * 
+     * @param model rendered model of entity
+     * @param matrix part-specific matrix mirroring the static GL operations performed on that part during rendering - should be null for dynamic triangles
+     * 
+     * @return list of all triangles
+     */
+    private static ArrayList<TriangleRayTrace> generateTriangles(IBakedModel model, @Nullable Matrix4d matrix)
+    {
+        ArrayList<TriangleRayTrace> triangles = Lists.<TriangleRayTrace>newArrayList();
+        try
+        {
+            // Generate triangles for all faceless and faced quads
+            generateTriangles(model.getQuads(null, null, 0L), matrix, triangles);
+            for (EnumFacing facing : EnumFacing.values())
+            {
+                generateTriangles(model.getQuads(null, facing, 0L), matrix, triangles);
+            }
+        }
+        catch (Exception e) {}
+        return triangles;
+    }
+
+    /**
+     * Converts a BakedQuad into pairs of transformed triangles that represent them
      * 
      * @param list list of BakedQuad
-     * @param matrix part-specific matrix mirroring the GL operation performed on that part during rendering
+     * @param matrix part-specific matrix mirroring the static GL operations performed on that part during rendering - should be null for dynamic triangles
      * @param triangles list of all triangles for the given raytraceable entity class
      */
-    private static void generateTriangles(List<BakedQuad> list, Matrix4d matrix, List<TriangleRayTrace> triangles)
+    private static void generateTriangles(List<BakedQuad> list, @Nullable Matrix4d matrix, List<TriangleRayTrace> triangles)
     {
         for (int i = 0; i < list.size(); i++)
         {
@@ -472,29 +547,44 @@ public class EntityRaytracer
             triangle1[7] = triangle2[4] = Float.intBitsToFloat(data[size + 1]);
             triangle1[8] = triangle2[5] = Float.intBitsToFloat(data[size + 2]);
 
-            transformAndAdd(triangle1, matrix, triangles);
-            transformAndAdd(triangle2, matrix, triangles);
+            transformTriangleAndAdd(triangle1, matrix, triangles);
+            transformTriangleAndAdd(triangle2, matrix, triangles);
         }
     }
 
     /**
-     * Transforms a triangle by the part-specific matrix and adds it to the list of all triangles for the given raytraceable entity class
+     * Transforms a static triangle by the part-specific matrix and adds it to the list of all triangles for the given raytraceable entity class, or simply
+     * adds a dynamic triangle to that list
+     * 
+     * @param triangle array of the three vertices that comprise the triangle
+     * @param matrix part-specific matrix mirroring the static GL operations performed on that part during rendering - should be null for dynamic triangles
+     * @param triangles list of all triangles for the given raytraceable entity class
+     */
+    private static void transformTriangleAndAdd(float[] triangle, @Nullable Matrix4d matrix, List<TriangleRayTrace> triangles)
+    {
+        triangles.add(new TriangleRayTrace(matrix != null ? getTransformedTriangle(triangle, matrix) : triangle));
+    }
+
+    /**
+     * gets a new triangle transformed by the passed part-specific matrix
      * 
      * @param triangle array of the three vertices that comprise the triangle
      * @param matrix part-specific matrix mirroring the GL operation performed on that part during rendering
-     * @param triangles list of all triangles for the given raytraceable entity class
+     * 
+     * @return new transformed triangle
      */
-    private static void transformAndAdd(float[] triangle, Matrix4d matrix, List<TriangleRayTrace> triangles)
+    private static float[] getTransformedTriangle(float[] triangle, Matrix4d matrix)
     {
+        float[] triangleNew = new float[9];
         for (int i = 0; i < 9; i += 3)
         {
             Vector4d vec = new Vector4d(triangle[i], triangle[i + 1], triangle[i + 2], 1);
             matrix.transform(vec);
-            triangle[i] = (float) vec.x;
-            triangle[i + 1] = (float) vec.y;
-            triangle[i + 2] = (float) vec.z;
+            triangleNew[i] = (float) vec.x;
+            triangleNew[i + 1] = (float) vec.y;
+            triangleNew[i + 2] = (float) vec.z;
         }
-        triangles.add(new TriangleRayTrace(triangle));
+        return triangleNew;
     }
 
     /**
@@ -584,7 +674,9 @@ public class EntityRaytracer
     }
 
     /**
-     * Performs a general interaction with an entity
+     * Performs a general interaction with a raytraceable entity
+     * 
+     * @param entity raytraceable entity
      */
     public static void interactWithEntity(IEntityRaytraceBoxProvider entity)
     {
@@ -594,12 +686,14 @@ public class EntityRaytracer
     /**
      * Performs raytrace on interaction boxes and item part triangles of all raytraceable entities within reach of the player upon right-click,
      * and cancels it if the clicked raytraceable entity returns true from {@link IEntityRaytraceBoxProvider#processHit processHit}
+     * 
+     * @param event mouse event
      */
     @SubscribeEvent
     public static void raytraceEntities(MouseEvent event)
     {
-        // Return if the mouse is not being right clicked or if the mouse is being released
-        if (event.getButton() != 1 || !event.isButtonstate())
+        // Return if the mouse is not being right clicked, if the mouse is being released, or if there are no entity classes to raytrace
+        if (event.getButton() != 1 || !event.isButtonstate() || entityRaytraceSuperclass == null)
         {
             return;
         }
@@ -610,14 +704,16 @@ public class EntityRaytracer
         RayTraceResultRotated lookObject = null;
         double distanceShortest = Double.MAX_VALUE;
         // Perform raytrace on all raytraceable entities within reach of the player
+        RayTraceResultRotated lookObjectPutative;
+        double distance;
         for (Entity entity : Minecraft.getMinecraft().world.getEntitiesWithinAABB(entityRaytraceSuperclass, box))
         {
-            if (entityRaytraceParts.keySet().contains(entity.getClass()))
+            if (entityRaytracePartsDynamic.keySet().contains(entity.getClass()) || entityRaytracePartsStatic.keySet().contains(entity.getClass()))
             {
-                RayTraceResultRotated lookObjectPutative = rayTraceEntityRotated((IEntityRaytraceBoxProvider) entity, eyeVec, forwardVec, reach);
+                lookObjectPutative = rayTraceEntityRotated((IEntityRaytraceBoxProvider) entity, eyeVec, forwardVec, reach);
                 if (lookObjectPutative != null)
                 {
-                    double distance = lookObjectPutative.getDistanceToEyes();
+                    distance = lookObjectPutative.getDistanceToEyes();
                     if (distance < distanceShortest)
                     {
                         lookObject = lookObjectPutative;
@@ -633,8 +729,8 @@ public class EntityRaytracer
             {
                 Vec3d hit = forwardVec;
                 RayTraceResult lookObjectMC = Minecraft.getMinecraft().objectMouseOver;
-                // if the hit entity is a raytraceable entity, process the hit regardless of what MC thinks the player is looking at
-                boolean bypass = entityRaytraceParts.keySet().contains(lookObject.entityHit.getClass());
+                // If the hit entity is a raytraceable entity, process the hit regardless of what MC thinks the player is looking at
+                boolean bypass = entityRaytracePartsStatic.keySet().contains(lookObject.entityHit.getClass());
                 if (!bypass && lookObjectMC != null && lookObjectMC.typeOfHit != Type.MISS)
                 {
                     // Set hit to what MC thinks the player is looking at if the player is not looking at the hit entity
@@ -662,6 +758,13 @@ public class EntityRaytracer
 
     /**
      * Performs raytrace on interaction boxes and item part triangles of raytraceable entity
+     * 
+     * @param boxProvider
+     * @param eyeVec position of the player's eyes
+     * @param forwardVec eyeVec extended by reach distance in the direction the player is looking in
+     * @param reach distance at which players can interact with objects in the world
+     * 
+     * @return the result of the raytrace
      */
     @Nullable
     public static RayTraceResultRotated rayTraceEntityRotated(IEntityRaytraceBoxProvider boxProvider, Vec3d eyeVec, Vec3d forwardVec, double reach)
@@ -674,55 +777,88 @@ public class EntityRaytracer
         Vec3d eyeVecRotated = rotateVecXZ(eyeVec, angle, pos);
         Vec3d forwardVecRotated = rotateVecXZ(forwardVec, angle, pos);
 
-        RayTraceResult lookObject = null;
+        RayTraceResult lookBox = null;
         AxisAlignedBB boxHit = null;
         double distanceShortest = Double.MAX_VALUE;
-        RayTraceResult lookObjectPutative;
+        RayTraceResult lookBoxPutative;
         // Perform raytrace on the entity's interaction boxes
+        double distance;
         for (AxisAlignedBB box : boxProvider.getInteractionBoxes())
         {
-            lookObjectPutative = box.offset(pos).calculateIntercept(eyeVecRotated, forwardVecRotated);
-            if (lookObjectPutative != null)
+            lookBoxPutative = box.offset(pos).calculateIntercept(eyeVecRotated, forwardVecRotated);
+            if (lookBoxPutative != null)
             {
-                double distance = eyeVecRotated.distanceTo(lookObjectPutative.hitVec);
+                distance = eyeVecRotated.distanceTo(lookBoxPutative.hitVec);
                 if (distance < distanceShortest)
                 {
-                    lookObject = lookObjectPutative;
+                    lookBox = lookBoxPutative;
                     boxHit = box;
                     distanceShortest = distance;
                 }
             }
         }
-        RayTraceResultTriangle lookObject2 = null;
-        RayTraceResultTriangle lookObjectPutative2;
         float[] eyes = new float[]{(float) eyeVecRotated.x, (float) eyeVecRotated.y, (float) eyeVecRotated.z};
         Vec3d look = forwardVecRotated.subtract(eyeVecRotated).normalize().scale(reach);
         float[] direction = new float[]{(float) look.x, (float) look.y, (float) look.z};
-        // Perform raytrace on the triangles of the entity's parts
-        for (Entry<ItemStack, List<TriangleRayTrace>> entry : entityRaytraceTriangles.get(entity.getClass()).entrySet())
+        // Perform raytrace on the dynamic triangles of the entity's parts
+        RayTraceResultTriangle lookPart = null;
+        lookPart = raytraceTriangles(entity, pos, eyeVecRotated, distanceShortest, lookPart, eyes, direction, entityRaytraceTrianglesDynamic);
+        // If no closer intersection than that of the interaction boxes found, then perform raytrace on the static triangles of the entity's parts
+        boolean isDynamic = lookPart != null;
+        if (!isDynamic)
         {
-            for (TriangleRayTrace triangle : entry.getValue())
+            lookPart = raytraceTriangles(entity, pos, eyeVecRotated, distanceShortest, lookPart, eyes, direction, entityRaytraceTrianglesStatic);
+        }
+        // Return the result object of hit with hit vector rotated back in the same direction as the entity's rotation yaw, or null it no hit occurred
+        if (lookPart != null)
+        {
+            return new RayTraceResultRotated(entity, rotateVecXZ(lookPart.getHit(), -angle, pos), lookPart.getDistance(), lookPart.getPart());
+        }
+        return lookBox == null ? null : new RayTraceResultRotated(entity, rotateVecXZ(lookBox.hitVec, -angle, pos), distanceShortest, boxHit);
+    }
+
+    /**
+     * Performs raytrace on interaction boxes and item part triangles of raytraceable entity
+     * 
+     * @param entity raytraced entity
+     * @param pos position of the raytraced entity 
+     * @param eyeVecRotated position of the player's eyes taking into account the rotation yaw of the raytraced entity
+     * @param distanceShortest distance of the closest viewed interaction box
+     * @param lookPart closest viewed interaction part
+     * @param eyes position of the eyes of the player
+     * @param direction normalized direction vector the player is looking in scaled by the player reach distance
+     * @param entityTriangles list of triangles for the raytraced entity
+     * 
+     * @return the result of the raytrace
+     */
+    private static RayTraceResultTriangle raytraceTriangles(Entity entity, Vec3d pos, Vec3d eyeVecRotated, double distanceShortest, RayTraceResultTriangle lookPart,
+            float[] eyes, float[] direction, Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityTriangles)
+    {
+        Map<ItemStack, TriangleRayTraceList> triangles = entityTriangles.get(entity.getClass());
+        if (triangles != null)
+        {
+            RayTraceResultTriangle lookObjectPutative;
+            ItemStack part;
+            double distance;
+            for (Entry<ItemStack, TriangleRayTraceList> entry : triangles.entrySet())
             {
-                lookObjectPutative2 = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle, entry.getKey());
-                if (lookObjectPutative2 != null)
+                part = entry.getKey();
+                for (TriangleRayTrace triangle : entry.getValue().getTriangles(part, entity))
                 {
-                    double distance = eyeVecRotated.distanceTo(lookObjectPutative2.getHit());
-                    if (distance < distanceShortest)
+                    lookObjectPutative = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle.getData(), part);
+                    if (lookObjectPutative != null)
                     {
-                        // Invalidate the interaction box hit if the part hit is closer to the player's eyes
-                        lookObject = null;
-                        lookObject2 = lookObjectPutative2;
-                        distanceShortest = distance;
+                        distance = lookObjectPutative.calculateAndSaveDistance(eyeVecRotated);
+                        if (distance < distanceShortest)
+                        {
+                            lookPart = lookObjectPutative;
+                            distanceShortest = distance;
+                        }
                     }
                 }
             }
         }
-        // Return the result object of hit with hit vector rotated back in the same direction as the entity's rotation yaw, or null it no hit occurred
-        if (lookObject == null)
-        {
-            return lookObject2 == null ? null : new RayTraceResultRotated(entity, rotateVecXZ(lookObject2.getHit(), -angle, pos), distanceShortest, lookObject2.getPart());
-        }
-        return new RayTraceResultRotated(entity, rotateVecXZ(lookObject.hitVec, -angle, pos), distanceShortest, boxHit);
+        return lookPart;
     }
 
     /**
@@ -772,19 +908,37 @@ public class EntityRaytracer
                 GlStateManager.disableLighting();
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
-                for (List<TriangleRayTrace> partTriangles : EntityRaytracer.entityRaytraceTriangles.get(entity.getClass()).values())
-                {
-                    for (TriangleRayTrace triangle : partTriangles)
-                    {
-                        triangle.draw(tessellator, buffer, 1, 0, 0, 0.5F);
-                    }
-                }
+                renderRaytraceTriangles(entity, tessellator, buffer, entityRaytraceTrianglesStatic);
+                renderRaytraceTriangles(entity, tessellator, buffer, entityRaytraceTrianglesDynamic);
                 entity.drawInteractionBoxes();
                 GlStateManager.enableLighting();
                 GlStateManager.enableTexture2D();
                 GlStateManager.disableBlend();
             }
             GlStateManager.popMatrix();
+        }
+    }
+
+    /**
+     * Renders the triangles of the parts of a raytraceable entity
+     * 
+     * @param entity raytraceable entity
+     * @param tessellator rendered plane tiler
+     * @param buffer tessellator's vertex buffer
+     * @param entityTriangles map containing the traingles for the given ray traceable entity
+     */
+    private static void renderRaytraceTriangles(IEntityRaytraceBoxProvider entity, Tessellator tessellator, BufferBuilder buffer, Map<Class<? extends IEntityRaytraceBoxProvider>, Map<ItemStack, TriangleRayTraceList>> entityTriangles)
+    {
+        Map<ItemStack, TriangleRayTraceList> map = entityTriangles.get(entity.getClass());
+        if (map != null)
+        {
+            for (Entry<ItemStack, TriangleRayTraceList> entry : map.entrySet())
+            {
+                for (TriangleRayTrace triangle : entry.getValue().getTriangles(entry.getKey(), (Entity) entity))
+                {
+                    triangle.draw(tessellator, buffer, 1, 0, 0, 0.4F);
+                }
+            }
         }
     }
 
@@ -816,15 +970,69 @@ public class EntityRaytracer
     }
 
     /**
+     * Wrapper class for raytraceable triangles
+     */
+    public static class TriangleRayTraceList
+    {
+        private final List<TriangleRayTrace> triangles;
+        private final BiFunction<ItemStack, Entity, Matrix4d> matrixFactory;
+
+        /**
+         * Constructor for static triangles
+         * 
+         * @param triangles raytraceable triangle list
+         */
+        public TriangleRayTraceList(List<TriangleRayTrace> triangles)
+        {
+            this(triangles, null);
+        }
+
+        /**
+         * Constructor for dynamic triangles
+         * 
+         * @param triangles raytraceable triangle list
+         * @param matrixFactory function for dynamic triangles that takes the iten part and the raytraced
+         * entity as arguments and outputs that part's dynamically generated transformation matrix
+         */
+        public TriangleRayTraceList(List<TriangleRayTrace> triangles, @Nullable BiFunction<ItemStack, Entity, Matrix4d> matrixFactory)
+        {
+            this.triangles = triangles;
+            this.matrixFactory = matrixFactory;
+        }
+
+        /**
+         * Gets list of static pre-transformed triangles, or gets a new list of dynamically transformed triangles
+         * 
+         * @param part rendered item-part
+         * @param entity raytraced entity
+         */
+        public List<TriangleRayTrace> getTriangles(ItemStack part, Entity entity)
+        {
+            if (matrixFactory != null)
+            {
+                List<TriangleRayTrace> triangles = Lists.<TriangleRayTrace>newArrayList();
+                Matrix4d matrix = matrixFactory.apply(part, entity);
+                for (TriangleRayTrace triangle : this.triangles)
+                {
+                    triangles.add(new TriangleRayTrace(getTransformedTriangle(triangle.getData(), matrix)));
+                }
+                return triangles;
+            }
+            return this.triangles;
+        }
+    }
+
+    /**
      * The result of a raytrace on a triangle.
      * <p>
-     * This class utilizes a Möller–Trumbore intersection algorithm.
+     * This class utilizes a Möller/Trumbore intersection algorithm.
      */
     private static class RayTraceResultTriangle
     {
         private static final float EPSILON = 0.000001F;
-        private float x, y, z;
-        private ItemStack part;
+        private final float x, y, z;
+        private final ItemStack part;
+        private double distance; 
 
         public RayTraceResultTriangle(ItemStack part, float x, float y, float z)
         {
@@ -844,19 +1052,30 @@ public class EntityRaytracer
             return part;
         }
 
+        public double calculateAndSaveDistance(Vec3d eyeVec)
+        {
+            distance = eyeVec.distanceTo(getHit());
+            return distance;
+        }
+
+        public double getDistance()
+        {
+            return distance;
+        }
+
         /**
-         * Raytrace a triangle using a Möller–Trumbore intersection algorithm
+         * Raytrace a triangle using a Möller/Trumbore intersection algorithm
          * 
          * @param eyes position of the eyes of the player
          * @param direction normalized direction vector scaled by reach distance that represents the player's looking direction
          * @param posEntity position of the entity being raytraced
-         * @param triangle triangle of a part of the entity being raytraced
+         * @param data triangle data of a part of the entity being raytraced
+         * @param part rendered item-part
          * 
          * @result new instance of this class, if the ray intersect the triangle - null if the ray does not
          */
-        public static RayTraceResultTriangle calculateIntercept(float[] eyes, float[] direction, Vec3d posEntity, TriangleRayTrace triangle, ItemStack part)
+        public static RayTraceResultTriangle calculateIntercept(float[] eyes, float[] direction, Vec3d posEntity, float[] data, ItemStack part)
         {
-            float[] data = triangle.getData();
             float[] vec0 = {data[0] + (float) posEntity.x, data[1] + (float) posEntity.y, data[2] + (float) posEntity.z};
             float[] vec1 = {data[3] + (float) posEntity.x, data[4] + (float) posEntity.y, data[5] + (float) posEntity.z};
             float[] vec2 = {data[6] + (float) posEntity.x, data[7] + (float) posEntity.y, data[8] + (float) posEntity.z};
@@ -867,19 +1086,19 @@ public class EntityRaytracer
             float[] qvec = new float[3];
             float det;
             float inv_det;
-            sub(edge1, vec1, vec0);
-            sub(edge2, vec2, vec0);
-            cross(pvec, direction, edge2);
-            det = dot(edge1, pvec);
+            subtract(edge1, vec1, vec0);
+            subtract(edge2, vec2, vec0);
+            crossProduct(pvec, direction, edge2);
+            det = dotProduct(edge1, pvec);
             if (det >= EPSILON)
             {
                 inv_det = 1f / det;
-                sub(tvec, eyes, vec0);
-                float u = dot(tvec, pvec) * inv_det;
+                subtract(tvec, eyes, vec0);
+                float u = dotProduct(tvec, pvec) * inv_det;
                 if (u >= 0 && u <= 1)
                 {
-                    cross(qvec, tvec, edge1);
-                    float v = dot(direction, qvec) * inv_det;
+                    crossProduct(qvec, tvec, edge1);
+                    float v = dotProduct(direction, qvec) * inv_det;
                     if (v >= 0 && u + v <= 1)
                     {
                         return new RayTraceResultTriangle(part, edge1[0] * u + edge2[0] * v + vec0[0], edge1[1] * u + edge2[1] * v + vec0[1], edge1[2] * u + edge2[2] * v + vec0[2]);
@@ -889,19 +1108,19 @@ public class EntityRaytracer
             return null;
         }
 
-        private static void cross(float[] result, float[] v1, float[] v2)
+        private static void crossProduct(float[] result, float[] v1, float[] v2)
         {
             result[0] = v1[1] * v2[2] - v1[2] * v2[1];
             result[1] = v1[2] * v2[0] - v1[0] * v2[2];
             result[2] = v1[0] * v2[1] - v1[1] * v2[0];
         }
 
-        private static float dot(float[] v1, float[] v2)
+        private static float dotProduct(float[] v1, float[] v2)
         {
             return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2];
         }
 
-        private static void sub(float[] result, float[] v1, float[] v2)
+        private static void subtract(float[] result, float[] v1, float[] v2)
         {
             result[0] = v1[0] - v2[0];
             result[1] = v1[1] - v2[1];
@@ -914,9 +1133,9 @@ public class EntityRaytracer
      */
     private static class RayTraceResultRotated extends RayTraceResult
     {
-        private ItemStack partHit;
-        private AxisAlignedBB boxHit;
-        private double distanceToEyes;
+        private final ItemStack partHit;
+        private final AxisAlignedBB boxHit;
+        private final double distanceToEyes;
 
         public RayTraceResultRotated(Entity entityHit, Vec3d hitVec, double distanceToEyes, ItemStack partHit)
         {
@@ -955,7 +1174,13 @@ public class EntityRaytracer
     }
 
     /**
-     * This must be implemented by all entities that raytraces are to be performed on
+     * Interface that allows entities to be raytraceable
+     * <p>
+     * <strong>Note:</strong>
+     * <ul>
+     *     <li>This must be implemented by all entities that raytraces are to be performed on.</li>
+     *     <li>Only classes that extend {@link net.minecraft.entity.Entity Entity} should implement this interface.</li>
+     * </ul>
      */
     public static interface IEntityRaytraceBoxProvider
     {
@@ -973,7 +1198,11 @@ public class EntityRaytracer
         {
             if (partHit != null)
             {
-                interactWithEntity(this);
+                boolean cancel = Minecraft.getMinecraft().player.getRidingEntity() != this;
+                if (cancel)
+                {
+                    interactWithEntity(this);
+                }
 
                 //TODO debug code - delete this code and this comment before release
                 {
@@ -983,7 +1212,7 @@ public class EntityRaytracer
                         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(partName.toString()).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
                     }
                 }
-                return true;
+                return cancel;
             }
             return false;
         }
