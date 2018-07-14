@@ -811,7 +811,7 @@ public class EntityRaytracer
     }
 
     /**
-     * Performs raytrace on interaction boxes and item part triangles of raytraceable entity
+     * Sets the current shortest distance to the current closest viewed object
      * 
      * @param lookObject current closest viewed object
      * @param distanceShortest distance from eyes to the current closest viewed object
@@ -1027,7 +1027,8 @@ public class EntityRaytracer
     }
 
     /**
-     * Version of {@link boxToTriangles boxToTriangles} without a matrix-generating function for static interaction boxes
+     * Version of {@link EntityRaytracer#boxToTriangles(AxisAlignedBB, BiFunction) boxToTriangles}
+     * without a matrix-generating function for static interaction boxes
      * 
      * @param boxes raytraceable interaction box list
      * 
