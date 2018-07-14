@@ -1107,8 +1107,8 @@ public class EntityRaytracer
      */
     public static class TriangleRayTraceList
     {
-    	private final List<TriangleRayTrace> triangles;
-    	private final BiFunction<RayTracePart, Entity, Matrix4d> matrixFactory;
+        private final List<TriangleRayTrace> triangles;
+        private final BiFunction<RayTracePart, Entity, Matrix4d> matrixFactory;
 
         /**
          * Constructor for static triangles
