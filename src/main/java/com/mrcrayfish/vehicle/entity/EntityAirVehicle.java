@@ -205,8 +205,8 @@ public abstract class EntityAirVehicle extends EntityVehicle
     public NBTTagCompound writeToNBT(NBTTagCompound compound)
     {
         super.writeToNBT(compound);
-        compound.setInteger("flapDirection", this.dataManager.get(FLAP_DIRECTION));
-        compound.setFloat("lift", this.dataManager.get(LIFT));
+        compound.setInteger("flapDirection", this.getFlapDirection().ordinal());
+        compound.setFloat("lift", this.getLift());
         return compound;
     }
 
