@@ -48,12 +48,12 @@ import javax.annotation.Nullable;
 public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable, IChest
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(EntityMoped.class, DataSerializers.BOOLEAN);
-    private static final AxisAlignedBB CHEST_BOX = new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375);
-    private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = Maps.<RayTracePart, TriangleRayTraceList>newHashMap();
+    private static final RayTracePart CHEST_BOX = new RayTracePart(new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375));
+    private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
     static
     {
-        interactionBoxMapStatic.put(new RayTracePart(CHEST_BOX), EntityRaytracer.boxToTriangles(CHEST_BOX, null));
+        interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
     }
 
     private InventoryBasic inventory;
@@ -220,9 +220,9 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 
     @Override
     @SideOnly(Side.CLIENT)
-    public List<AxisAlignedBB> getApplicableInteractionBoxes()
+    public List<RayTracePart> getApplicableInteractionBoxes()
     {
-        List<AxisAlignedBB> boxes = Lists.<AxisAlignedBB>newArrayList();
+        List<RayTracePart> boxes = Lists.newArrayList();
         if (hasChest())
         {
             boxes.add(CHEST_BOX);
@@ -236,7 +236,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     {
         if (hasChest())
         {
-            RenderGlobal.drawSelectionBoundingBox(CHEST_BOX, 0, 1, 0, 0.4F);
+            RenderGlobal.drawSelectionBoundingBox(CHEST_BOX.getBox(), 0, 1, 0, 0.4F);
         }
     }
 

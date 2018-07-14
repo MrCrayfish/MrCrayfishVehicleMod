@@ -771,12 +771,13 @@ public class EntityRaytracer
         RayTraceResultTriangle lookBox = null;
         RayTraceResultTriangle lookPart = null;
         double distanceShortest = Double.MAX_VALUE;
-        List<AxisAlignedBB> interactionBoxes = boxProvider.getApplicableInteractionBoxes();
+        List<RayTracePart> boxesApplicable = boxProvider.getApplicableInteractionBoxes();
+        List<RayTracePart> partsNonApplicable = boxProvider.getNonApplicableParts();
 
         // Perform raytrace on the dynamic boxes and triangles of the entity's parts
-        lookBox = raytraceBoxTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, interactionBoxes, boxProvider.getDynamicInteractionBoxMap());
+        lookBox = raytracePartTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, boxesApplicable, false, boxProvider.getDynamicInteractionBoxMap());
         distanceShortest = updateShortestDistance(lookBox, distanceShortest);
-        lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, direction, eyes, entityRaytraceTrianglesDynamic);
+        lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, partsNonApplicable, true, entityRaytraceTrianglesDynamic.get(entity.getClass()));
         distanceShortest = updateShortestDistance(lookPart, distanceShortest);
 
         boolean isDynamic = lookBox != null || lookPart != null;
@@ -784,9 +785,9 @@ public class EntityRaytracer
         // If no closer intersection than that of the dynamic boxes and triangles found, then perform raytrace on the static boxes and triangles of the entity's parts
         if (!isDynamic)
         {
-            lookBox = raytraceBoxTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, interactionBoxes, boxProvider.getStaticInteractionBoxMap());
+            lookBox = raytracePartTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, boxesApplicable, false, boxProvider.getStaticInteractionBoxMap());
             distanceShortest = updateShortestDistance(lookBox, distanceShortest);
-            lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, direction, eyes, entityRaytraceTrianglesStatic);
+            lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, partsNonApplicable, true, entityRaytraceTrianglesStatic.get(entity.getClass()));
         }
         // Return the result object of hit with hit vector rotated back in the same direction as the entity's rotation yaw, or null it no hit occurred
         if (lookPart != null)
@@ -814,37 +815,7 @@ public class EntityRaytracer
     }
 
     /**
-     * Performs raytrace on interaction boxes of raytraceable entity
-     * 
-     * @param entity raytraced entity
-     * @param pos position of the raytraced entity 
-     * @param eyeVecRotated position of the player's eyes taking into account the rotation yaw of the raytraced entity
-     * @param lookBox current closest viewed object
-     * @param distanceShortest distance from eyes to the current closest viewed object
-     * @param eyes position of the eyes of the player
-     * @param direction normalized direction vector the player is looking in scaled by the player reach distance
-     * @param boxesApplicable list of interaction boxes that currently apply to the raytraced entity
-     * @param boxesAll map containing the interaction boxes for the raytraced entity
-     * 
-     * @return the result of the interaction box raytrace
-     */
-    private static RayTraceResultTriangle raytraceBoxTriangles(Entity entity, Vec3d pos, Vec3d eyeVecRotated, RayTraceResultTriangle lookBox, double distanceShortest,
-            float[] eyes, float[] direction, List<AxisAlignedBB> boxesApplicable, Map<RayTracePart, TriangleRayTraceList> boxesAll)
-    {
-        for (Entry<RayTracePart, TriangleRayTraceList> entry : boxesAll.entrySet())
-        {
-            if (boxesApplicable.contains(entry.getKey().getBox()))
-            {
-                lookBox = raytraceTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, entry.getKey(), entry.getValue());
-                distanceShortest = updateShortestDistance(lookBox,
-                        distanceShortest);
-            }
-        }
-        return lookBox;
-    }
-
-    /**
-     * Performs raytrace on item part triangles of raytraceable entity
+     * Performs raytrace on part triangles of raytraceable entity
      * 
      * @param entity raytraced entity
      * @param pos position of the raytraced entity 
@@ -853,60 +824,40 @@ public class EntityRaytracer
      * @param distanceShortest distance from eyes to the current closest viewed object
      * @param eyes position of the eyes of the player
      * @param direction normalized direction vector the player is looking in scaled by the player reach distance
-     * @param entityTriangles map containing the triangles for the raytraced entity
+     * @param partsApplicable list of parts that currently apply to the raytraced entity - if null, all are applicable
+     * @param parts triangles for the part
      * 
-     * @return the result of the item part raytrace
+     * @return the result of the part raytrace
      */
     private static RayTraceResultTriangle raytracePartTriangles(Entity entity, Vec3d pos, Vec3d eyeVecRotated, RayTraceResultTriangle lookPart, double distanceShortest,
-            float[] eyes, float[] direction, Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityTriangles)
+            float[] eyes, float[] direction, @Nullable List<RayTracePart> partsApplicable, boolean invalidateParts, Map<RayTracePart, TriangleRayTraceList> parts)
     {
-        Map<RayTracePart, TriangleRayTraceList> triangles = entityTriangles.get(entity.getClass());
-        if (triangles != null)
+        if (parts != null)
         {
-            for (Entry<RayTracePart, TriangleRayTraceList> entry : triangles.entrySet())
+            for (Entry<RayTracePart, TriangleRayTraceList> entry : parts.entrySet())
             {
-                lookPart = raytraceTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, entry.getKey(), entry.getValue());
-                distanceShortest = updateShortestDistance(lookPart,
-                        distanceShortest);
-            }
-        }
-        return lookPart;
-    }
-
-    /**
-     * Performs raytrace on interaction boxes and item part triangles of raytraceable entity
-     * 
-     * @param entity raytraced entity
-     * @param pos position of the raytraced entity 
-     * @param eyeVecRotated position of the player's eyes taking into account the rotation yaw of the raytraced entity
-     * @param lookObject current closest viewed object
-     * @param distanceShortest distance from eyes to the current closest viewed object
-     * @param eyes position of the eyes of the player
-     * @param direction normalized direction vector the player is looking in scaled by the player reach distance
-     * @param part raytrace part
-     * @param triangles list of triangles for the raytraced entity
-     * 
-     * @return the result of the raytrace
-     */
-    private static RayTraceResultTriangle raytraceTriangles(Entity entity, Vec3d pos, Vec3d eyeVecRotated, RayTraceResultTriangle lookObject,
-            double distanceShortest, float[] eyes, float[] direction, RayTracePart part, TriangleRayTraceList triangles)
-    {
-        RayTraceResultTriangle lookObjectPutative;
-        double distance;
-        for (TriangleRayTrace triangle : triangles.getTriangles(part, entity))
-        {
-            lookObjectPutative = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle.getData(), part);
-            if (lookObjectPutative != null)
-            {
-                distance = lookObjectPutative.calculateAndSaveDistance(eyeVecRotated);
-                if (distance < distanceShortest)
+                if (partsApplicable == null || (invalidateParts ? !partsApplicable.contains(entry.getKey()) : partsApplicable.contains(entry.getKey())))
                 {
-                    lookObject = lookObjectPutative;
-                    distanceShortest = distance;
+                    RayTraceResultTriangle lookObjectPutative;
+                    double distance;
+                    RayTracePart part = entry.getKey();
+                    for (TriangleRayTrace triangle : entry.getValue().getTriangles(part, entity))
+                    {
+                        lookObjectPutative = RayTraceResultTriangle.calculateIntercept(eyes, direction, pos, triangle.getData(), part);
+                        if (lookObjectPutative != null)
+                        {
+                            distance = lookObjectPutative.calculateAndSaveDistance(eyeVecRotated);
+                            if (distance < distanceShortest)
+                            {
+                                lookPart = lookObjectPutative;
+                                distanceShortest = distance;
+                            }
+                        }
+                    }
                 }
             }
         }
-        return lookObject;
+        return lookPart;
     }
 
     /**
@@ -1366,13 +1317,25 @@ public class EntityRaytracer
         }
 
         /**
-         * List of all applicable interaction boxes for the entity
+         * List of all currently applicable interaction boxes for the entity
          * 
-         * @return box list
+         * @return box list - if null, all box are assumed to be applicable
          */
-        default List<AxisAlignedBB> getApplicableInteractionBoxes()
+        @Nullable
+        default List<RayTracePart> getApplicableInteractionBoxes()
         {
-            return Lists.newArrayList();
+            return null;
+        }
+
+        /**
+         * List of all currently non-applicable item parts for the entity
+         * 
+         * @return part list - if null, all parts are assumed to be applicable
+         */
+        @Nullable
+        default List<RayTracePart> getNonApplicableParts()
+        {
+            return null;
         }
 
         /**
