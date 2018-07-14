@@ -26,14 +26,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -1294,15 +1290,6 @@ public class EntityRaytracer
                 if (cancel)
                 {
                     interactWithEntity(this);
-                }
-
-                //TODO debug code - delete this code and this comment before release
-                {
-                    ResourceLocation partName = Item.REGISTRY.getNameForObject(stack.getItem());
-                    if (partName != null)
-                    {
-                        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(partName.toString()).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
-                    }
                 }
                 return cancel;
             }
