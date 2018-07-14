@@ -202,8 +202,8 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     @SideOnly(Side.CLIENT)
     public boolean processHit(RayTraceResultRotated result)
     {
-        AxisAlignedBB hitBox = result.getPartHit().getBox();
-        if (hitBox == CHEST_BOX && this.hasChest())
+        RayTracePart partHit = result.getPartHit();
+        if (partHit == CHEST_BOX && this.hasChest())
         {
             PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
             return true;
