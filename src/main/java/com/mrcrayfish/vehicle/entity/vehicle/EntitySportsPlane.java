@@ -1,9 +1,8 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import javax.annotation.Nullable;
-
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -154,13 +153,14 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
     }
 
     @Override
-    public boolean processHit(@Nullable ItemStack partHit, @Nullable AxisAlignedBB boxHit)//TODO debug method - delete this method and this comment before release
+    public boolean processHit(RayTraceResultRotated result)//TODO debug method - delete this method and this comment before release
     {
-        if (partHit != null && partHit.hasTagCompound())
+    	ItemStack stackHit = result.getPartHit().getStack();
+        if (stackHit != null && stackHit.hasTagCompound())
         {
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(partHit.getTagCompound().getString(EntityRaytracer.PART_NAME)).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(stackHit.getTagCompound().getString(EntityRaytracer.PART_NAME)).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
             return true;
         }
-        return IEntityRaytraceable.super.processHit(partHit, boxHit);
+        return IEntityRaytraceable.super.processHit(result);
     }
 }
