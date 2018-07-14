@@ -4,12 +4,14 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageFlaps;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * Author: MrCrayfish
@@ -197,6 +199,29 @@ public abstract class EntityAirVehicle extends EntityVehicle
             this.lift -= 0.06F * (Math.min(currentSpeed, 15F) / 15F);
         }
         this.setLift(this.lift);
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    {
+        super.writeToNBT(compound);
+        compound.setInteger("flapDirection", this.dataManager.get(FLAP_DIRECTION));
+        compound.setFloat("lift", this.dataManager.get(LIFT));
+        return compound;
+    }
+
+    @Override
+    protected void readEntityFromNBT(NBTTagCompound compound)
+    {
+        super.readEntityFromNBT(compound);
+        if(compound.hasKey("flapDirection", Constants.NBT.TAG_INT))
+        {
+            this.setFlapDirection(FlapDirection.values()[compound.getInteger("flapDirection")]);
+        }
+        if(compound.hasKey("lift", Constants.NBT.TAG_FLOAT))
+        {
+            this.setLift(compound.getFloat("lift"));
+        }
     }
 
     public void setFlapDirection(FlapDirection flapDirection)
