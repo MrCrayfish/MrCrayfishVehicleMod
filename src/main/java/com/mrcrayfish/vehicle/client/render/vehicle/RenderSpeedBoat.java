@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySpeedBoat;
@@ -67,5 +68,6 @@ public class RenderSpeedBoat extends RenderVehicle<EntitySpeedBoat>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

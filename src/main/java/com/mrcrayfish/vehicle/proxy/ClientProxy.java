@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.proxy;
 
 import com.mrcrayfish.vehicle.client.ClientEvents;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
@@ -78,6 +79,7 @@ public class ClientProxy implements Proxy
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
             }
         });
+        EntityRaytracer.init();
     }
 
     @Override
