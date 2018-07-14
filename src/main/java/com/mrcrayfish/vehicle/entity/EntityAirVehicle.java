@@ -111,7 +111,7 @@ public abstract class EntityAirVehicle extends EntityVehicle
                 }
 
                 EngineType engineType = this.getEngineType();
-                float accelerationSpeed = this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineType.getAccelerationMultiplier();
                 if(this.currentSpeed < getMaxSpeed())
                 {
                     this.currentSpeed += accelerationSpeed;
@@ -194,7 +194,7 @@ public abstract class EntityAirVehicle extends EntityVehicle
         }
         else if(flapDirection == FlapDirection.DOWN)
         {
-            this. lift -= 0.06F * (Math.min(currentSpeed, 15F) / 15F);
+            this.lift -= 0.06F * (Math.min(currentSpeed, 15F) / 15F);
         }
         this.setLift(this.lift);
     }
@@ -222,6 +222,11 @@ public abstract class EntityAirVehicle extends EntityVehicle
     public boolean isFlying()
     {
         return !this.onGround;
+    }
+
+    protected float getModifiedAccelerationSpeed()
+    {
+        return super.getAccelerationSpeed();
     }
 
     public enum FlapDirection

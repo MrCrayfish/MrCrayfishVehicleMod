@@ -138,7 +138,7 @@ public class EntitySportsPlane extends EntityAirVehicle
     }
 
     @Override
-    public float getAccelerationSpeed()
+    protected float getModifiedAccelerationSpeed()
     {
         return super.getAccelerationSpeed() * (propellerSpeed / 120F);
     }
