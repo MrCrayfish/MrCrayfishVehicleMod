@@ -21,6 +21,7 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -99,12 +100,12 @@ public class CommonEvents
     }
 
     @SubscribeEvent
-    public void onEntityInit(EntityLivingInitEvent event)
+    public void onEntityInit(EntityEvent.EntityConstructing event)
     {
-        if(event.getEntityLiving() instanceof EntityPlayer)
+        if(event.getEntity() instanceof EntityPlayer)
         {
-            event.getEntityLiving().getDataManager().register(PUSHING_CART, false);
-            event.getEntityLiving().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
+            event.getEntity().getDataManager().register(PUSHING_CART, false);
+            event.getEntity().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
         }
     }
 
