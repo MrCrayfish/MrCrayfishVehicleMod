@@ -1,6 +1,6 @@
 [
 {
-  "modid": "vehicle-mod",
+  "modid": "vehicle",
   "name": "Vehicle Mod",
   "description": "A mod developed during Mod Week Season 2. Adds in working Vehicles that you can actually drive!",
   "version": "0.17.3",
@@ -8,7 +8,7 @@
   "url": "https://mrcrayfish.com",
   "updateUrl": "",
   "authorList": ["MrCrayfish"],
-  "credits": "Thank you to IceLensFlare, EnvyingGolem47, Quin Lan and RainbowKappa for sponsoring during the development of this mod. Also thank you to Lemon Squee-Z for donating!",
+  "credits": "Phylogeny https://github.com/Phylogeny",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
