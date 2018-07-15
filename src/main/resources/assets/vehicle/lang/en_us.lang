@@ -9,3 +9,11 @@ item.spray_can.empty=No Color
 tile.traffic_cone.name=Traffic Cone
 
 entity.moped.name=Moped
+
+vehicle.config.title = MrCrayfish's Vehicle Mod Config
+vehicle.config.client=Client
+vehicle.config.client.tooltip=Client-only configs
+vehicle.config.client.debug=Debug
+vehicle.config.client.debug.tooltip=Configuration options for debugging vehicles
+vehicle.config.client.debug.render_outlines=Render Vehicle Outlines
+vehicle.config.client.debug.render_outlines.tooltip=If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.
