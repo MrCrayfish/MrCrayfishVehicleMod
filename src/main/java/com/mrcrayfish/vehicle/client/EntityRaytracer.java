@@ -13,6 +13,7 @@ import javax.vecmath.Matrix4d;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector4d;
 
+import com.mrcrayfish.vehicle.VehicleConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -894,7 +895,7 @@ public class EntityRaytracer
     public static void renderRaytraceElements(IEntityRaytraceable entity, double x, double y, double z, float yaw)
     {
         //Debug: set true to render raytrace triangles/boxes
-        if (true) //TODO keep above comments, but set this to false and delete this comment before release
+        if (VehicleConfig.CLIENT.debug.renderOutlines) //TODO keep above comments, but set this to false and delete this comment before release
         {
             GlStateManager.pushMatrix();
             {
