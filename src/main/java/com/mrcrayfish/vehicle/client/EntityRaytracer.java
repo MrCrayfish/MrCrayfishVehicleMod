@@ -1214,16 +1214,15 @@ public class EntityRaytracer
 
         public RayTracePart(AxisAlignedBB partBox)
         {
-            this(null, partBox);
+            this(ItemStack.EMPTY, partBox);
         }
 
-        private RayTracePart(@Nullable ItemStack partHit, @Nullable AxisAlignedBB boxHit)
+        private RayTracePart(ItemStack partHit, @Nullable AxisAlignedBB boxHit)
         {
             partStack = partHit;
             partBox = boxHit;
         }
 
-        @Nullable
         public ItemStack getStack()
         {
             return partStack;
@@ -1285,7 +1284,7 @@ public class EntityRaytracer
         default boolean processHit(RayTraceResultRotated result)
         {
             ItemStack stack = result.getPartHit().getStack();
-            if (stack != null)
+            if (!stack.isEmpty())
             {
                 boolean cancel = !Minecraft.getMinecraft().player.isSneaking() && Minecraft.getMinecraft().player.getRidingEntity() != this;
                 if (cancel)
