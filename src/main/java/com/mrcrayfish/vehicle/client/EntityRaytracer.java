@@ -646,18 +646,16 @@ public class EntityRaytracer
             switch (type)
             {
                 case ROTATION:      temp.set(new AxisAngle4d(x, y, z, (float) Math.toRadians(angle)));
-                                    matrix.mul(temp);
                                     break;
                 case TRANSLATION:   temp.set(new Vector3d(x, y, z));
-                                    matrix.mul(temp);
                                     break;
                 case SCALE:         Vector3d scaleVec = new Vector3d(x, y, z);
                                     temp.setIdentity();
                                     temp.m00 = scaleVec.x;
                                     temp.m11 = scaleVec.y;
                                     temp.m22 = scaleVec.z;
-                                    matrix.mul(temp);
             }
+            matrix.mul(temp);
         }
     }
 
@@ -933,11 +931,15 @@ public class EntityRaytracer
         Map<RayTracePart, TriangleRayTraceList> map = entityTriangles.get(entity.getClass());
         if (map != null)
         {
+            List<RayTracePart> partsNonApplicable = entity.getNonApplicableParts();
             for (Entry<RayTracePart, TriangleRayTraceList> entry : map.entrySet())
             {
-                for (TriangleRayTrace triangle : entry.getValue().getTriangles(entry.getKey(), (Entity) entity))
+                if (partsNonApplicable == null || !partsNonApplicable.contains(entry.getKey()))
                 {
-                    triangle.draw(tessellator, buffer, 1, 0, 0, 0.4F);
+                    for (TriangleRayTrace triangle : entry.getValue().getTriangles(entry.getKey(), (Entity) entity))
+                    {
+                        triangle.draw(tessellator, buffer, 1, 0, 0, 0.4F);
+                    }
                 }
             }
         }
