@@ -195,18 +195,21 @@ public class ClientEvents
         if(ridingEntity instanceof EntityGolfCart)
         {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-80F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-80F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
 
             EntityVehicle vehicle = (EntityVehicle) ridingEntity;
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 6F;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
+            if(vehicle.getControllingPassenger() == player)
+            {
+                float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
+                float wheelAngleNormal = wheelAngle / 45F;
+                float turnRotation = wheelAngleNormal * 6F;
+                model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
+                model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
+                model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
+                model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
+            }
 
             return;
         }
