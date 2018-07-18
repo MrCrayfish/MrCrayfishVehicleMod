@@ -278,6 +278,19 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(100, 0, 1, 0));
         entityRaytracePartsStatic.put(EntitySportsPlane.class, sportsPlaneParts);
 
+        // Golf Cart
+        List<MatrixTransformation> golfCartTransformGlobal = Lists.newArrayList();
+        golfCartTransformGlobal.add(MatrixTransformation.createScale(1.15));
+        golfCartTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.75, 0));
+        HashMap<ItemStack, List<MatrixTransformation>> golfCartParts = Maps.newHashMap();
+        createTranformListForPart(ModItems.GOLF_CART_BODY, golfCartParts, golfCartTransformGlobal);
+        createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, golfCartParts, golfCartTransformGlobal,
+                MatrixTransformation.createTranslation(-0.345, 0.425, 0.1),
+                MatrixTransformation.createRotation(-45, 1, 0, 0),
+                MatrixTransformation.createTranslation(0, -0.02, 0),
+                MatrixTransformation.createScale(0.95));
+        entityRaytracePartsStatic.put(EntityGolfCart.class, golfCartParts);
+
         if(Loader.isModLoaded("cfm"))
         {
             // Bath
