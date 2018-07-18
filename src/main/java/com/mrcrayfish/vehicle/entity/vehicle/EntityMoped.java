@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -16,19 +17,24 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageAttachChest;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.*;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -49,11 +55,13 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(EntityMoped.class, DataSerializers.BOOLEAN);
     private static final RayTracePart CHEST_BOX = new RayTracePart(new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375));
+    private static final RayTracePart TRAY_BOX = new RayTracePart(createScaledBoundingBox(-4 * 0.0625, 8 * 0.0625 + 0.1, -4.5 * 0.0625, 4 * 0.0625, 9F * 0.0625F + 0.1, -12.5 * 0.0625, 1.2));
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
     static
     {
         interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
+        interactionBoxMapStatic.put(TRAY_BOX, EntityRaytracer.boxToTriangles(TRAY_BOX.getBox(), null));
     }
 
     private InventoryBasic inventory;
@@ -203,9 +211,14 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     public boolean processHit(RayTraceResultRotated result)
     {
         RayTracePart partHit = result.getPartHit();
-        if (partHit == CHEST_BOX && this.hasChest())
+        if(partHit == CHEST_BOX && this.hasChest())
         {
             PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
+            return true;
+        }
+        else if(partHit == TRAY_BOX && !this.hasChest())
+        {
+            PacketHandler.INSTANCE.sendToServer(new MessageAttachChest(this.getEntityId()));
             return true;
         }
         return IEntityRaytraceable.super.processHit(result);
@@ -227,6 +240,10 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         {
             boxes.add(CHEST_BOX);
         }
+        else
+        {
+            boxes.add(TRAY_BOX);
+        }
         return boxes;
     }
 
@@ -238,6 +255,11 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         {
             RenderGlobal.drawSelectionBoundingBox(CHEST_BOX.getBox(), 0, 1, 0, 0.4F);
         }
+        else
+        {
+            RenderGlobal.drawSelectionBoundingBox(TRAY_BOX.getBox(), 0, 1, 0, 0.4F);
+        }
+
     }
 
     private void initInventory()
@@ -276,5 +298,35 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
             this.initInventory();
         }
         return inventory;
+    }
+
+    @Override
+    public void attachChest(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+        {
+            this.setChest(true);
+            this.initInventory();
+
+            NBTTagCompound itemTag = stack.getTagCompound();
+            if(itemTag != null)
+            {
+                NBTTagCompound blockEntityTag = itemTag.getCompoundTag("BlockEntityTag");
+                if(!blockEntityTag.hasNoTags() && blockEntityTag.hasKey("Items", Constants.NBT.TAG_LIST))
+                {
+                    NonNullList<ItemStack> chestInventory = NonNullList.withSize(27, ItemStack.EMPTY);
+                    ItemStackHelper.loadAllItems(blockEntityTag, chestInventory);
+                    for(int i = 0; i < chestInventory.size(); i++)
+                    {
+                        this.inventory.setInventorySlotContents(i, chestInventory.get(i));
+                    }
+                }
+            }
+        }
+    }
+
+    private static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
+    {
+        return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
     }
 }
