@@ -32,7 +32,7 @@ public class VehicleConfig
         @Config.Name("Render Vehicle Outlines")
         @Config.Comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.")
         @Config.LangKey(Reference.MOD_ID + ".config.client.debug.render_outlines")
-        public boolean renderOutlines;
+        public boolean renderOutlines = false;
     }
 
     @SubscribeEvent
