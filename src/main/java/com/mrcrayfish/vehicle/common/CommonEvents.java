@@ -17,6 +17,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -25,6 +26,7 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 
@@ -179,28 +181,31 @@ public class CommonEvents
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
                     if(entity != null && entity instanceof EntityVehicle)
                     {
-                        //Updates the DataParameter
-                        NBTTagCompound tag = new NBTTagCompound();
-                        player.getDataManager().set(HELD_VEHICLE, tag);
-
-                        //Updates the player capability
-                        HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                        if(heldVehicle != null)
+                        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
+                        server.addScheduledTask(() ->
                         {
-                            heldVehicle.setVehicleTag(tag);
-                        }
+                            //Updates the DataParameter
+                            NBTTagCompound tag = new NBTTagCompound();
+                            player.getDataManager().set(HELD_VEHICLE, tag);
 
-                        //Sets the positions and spawns the entity
-                        float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                        Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                            //Updates the player capability
+                            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                            if(heldVehicle != null)
+                            {
+                                heldVehicle.setVehicleTag(tag);
+                            }
 
-                        Vec3d clickedVec = event.getHitVec();
-                        entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y + heldOffset.y * 0.0625D, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+                            //Sets the positions and spawns the entity
+                            float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                            Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
-                        //Plays place sound
-                        world.spawnEntity(entity);
-                        world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            Vec3d clickedVec = event.getHitVec();
+                            entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
 
+                            //Plays place sound
+                            world.spawnEntity(entity);
+                            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        });
                         event.setCanceled(true);
                     }
                 }
