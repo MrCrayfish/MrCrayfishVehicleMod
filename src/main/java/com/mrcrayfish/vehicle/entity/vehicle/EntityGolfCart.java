@@ -26,6 +26,7 @@ public class EntityGolfCart extends EntityLandVehicle
     public EntityGolfCart(World worldIn)
     {
         super(worldIn);
+        this.setSize(2F, 1F);
     }
 
     @Override
