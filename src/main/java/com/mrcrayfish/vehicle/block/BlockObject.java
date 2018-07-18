@@ -49,6 +49,6 @@ public class BlockObject extends Block
 
     public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
     {
-        return BlockFaceShape.MIDDLE_POLE;
+        return BlockFaceShape.UNDEFINED;
     }
 }
