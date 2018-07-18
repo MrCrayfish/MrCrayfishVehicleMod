@@ -78,6 +78,7 @@ public class VehicleMod
         registerVehicle("lawn_mower", EntityLawnMower.class);
         registerVehicle("moped", EntityMoped.class);
         registerVehicle("sports_plane", EntitySportsPlane.class);
+        registerVehicle("golf_cart", EntityGolfCart.class);
 
         if(Loader.isModLoaded("cfm"))
         {

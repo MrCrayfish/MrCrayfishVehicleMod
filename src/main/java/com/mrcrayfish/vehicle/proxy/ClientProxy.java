@@ -48,6 +48,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityLawnMower.class, RenderLawnMower::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMoped.class, RenderMoped::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySportsPlane.class, RenderSportsPlane::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGolfCart.class, RenderGolfCart::new);
 
         if(Loader.isModLoaded("cfm"))
         {
