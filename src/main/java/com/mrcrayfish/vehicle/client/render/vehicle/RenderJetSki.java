@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
 import net.minecraft.client.Minecraft;
@@ -67,5 +68,6 @@ public class RenderJetSki extends RenderVehicle<EntityJetSki>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

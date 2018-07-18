@@ -1,10 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMoped;
-import net.minecraft.block.BlockChest;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,11 +20,10 @@ import java.util.Calendar;
  */
 public class RenderMoped extends RenderLandVehicle<EntityMoped>
 {
-    private static final ModelChest MODEL_CHEST = new ModelChest();
+    private static final ModelChest MOPED_CHEST = new ModelChest();
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
     private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
     public final boolean isChristmas;
-
 
     public RenderMoped(RenderManager renderManager)
     {
@@ -72,7 +70,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             }
             GlStateManager.popMatrix();
 
-            //Render the body
+            //Render body
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.5625, 0);
@@ -80,7 +78,6 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             }
             GlStateManager.popMatrix();
 
-            //Render the handles bars
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, 0.5, 11.5 * 0.0625);
@@ -95,6 +92,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 GlStateManager.translate(0, 0, -11.5 * 0.0625);
 
+                //Render handles bars
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0, 0.835, 0.525);
@@ -104,6 +102,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 }
                 GlStateManager.popMatrix();
 
+                //Render front bar and mud guard
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0, -0.12, 0.785);
@@ -113,7 +112,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 }
                 GlStateManager.popMatrix();
 
-
+                //Render front wheel
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0, -0.4, 14.5 * 0.0625);
@@ -132,23 +131,29 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
 
             if(entity.hasChest())
             {
-                GlStateManager.translate(0, 0.85, -0.675);
-                GlStateManager.rotate(180F, 0, 1, 0);
-                GlStateManager.scale(1.0F, -1.0F, -1.0F);
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(-0.5F, -0.5F, -0.5F);
+                //Render chest
+                GlStateManager.pushMatrix();
+                {
+                    GlStateManager.translate(0, 0.859, -0.675);
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                    GlStateManager.scale(1.0F, -1.0F, -1.0F);
+                    GlStateManager.scale(0.6F, 0.6F, 0.6F);
+                    GlStateManager.translate(-0.5F, -0.5F, -0.5F);
 
-                if(this.isChristmas)
-                {
-                    this.bindTexture(TEXTURE_CHRISTMAS);
+                    if(this.isChristmas)
+                    {
+                        this.bindTexture(TEXTURE_CHRISTMAS);
+                    }
+                    else
+                    {
+                        this.bindTexture(TEXTURE_NORMAL);
+                    }
+                    MOPED_CHEST.renderAll();
                 }
-                else
-                {
-                    this.bindTexture(TEXTURE_NORMAL);
-                }
-                MODEL_CHEST.renderAll();
+                GlStateManager.popMatrix();
             }
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

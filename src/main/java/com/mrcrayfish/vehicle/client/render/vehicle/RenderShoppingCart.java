@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.Minecraft;
@@ -156,6 +157,6 @@ public class RenderShoppingCart extends RenderVehicle<EntityShoppingCart>
         GlStateManager.popMatrix();
 
         //RenderHelper.disableStandardItemLighting();
-
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

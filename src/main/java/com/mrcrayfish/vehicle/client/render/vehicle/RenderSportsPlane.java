@@ -1,8 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
-import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySportsPlane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,7 +9,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -99,6 +97,7 @@ public class RenderSportsPlane extends RenderVehicle<EntitySportsPlane>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 
     public void renderWheel(EntitySportsPlane vehicle, float offsetX, float offsetY, float offsetZ, float wheelScale, float legRotation, float partialTicks)

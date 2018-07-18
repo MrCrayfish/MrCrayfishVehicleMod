@@ -1,26 +1,62 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import java.util.List;
+import java.util.Map;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTracePart;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.TriangleRayTraceList;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
+import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
+
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.RenderGlobal;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
-public class EntityMoped extends EntityMotorcycle
+public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable, IChest
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(EntityMoped.class, DataSerializers.BOOLEAN);
+    private static final RayTracePart CHEST_BOX = new RayTracePart(new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375));
+    private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
+
+    static
+    {
+        interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
+    }
+
+    private InventoryBasic inventory;
 
     /**
      * ItemStack instances used for rendering
@@ -130,6 +166,11 @@ public class EntityMoped extends EntityMotorcycle
         if(compound.hasKey("chest", Constants.NBT.TAG_BYTE))
         {
             this.setChest(compound.getBoolean("chest"));
+            if(compound.hasKey("inventory", Constants.NBT.TAG_LIST))
+            {
+                this.initInventory();
+                InventoryUtil.readInventoryToNBT(compound, "inventory", inventory);
+            }
         }
     }
 
@@ -137,7 +178,14 @@ public class EntityMoped extends EntityMotorcycle
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
-        compound.setBoolean("chest", this.hasChest());
+
+        boolean hasChest = this.hasChest();
+        compound.setBoolean("chest", hasChest);
+
+        if(hasChest && inventory != null)
+        {
+            InventoryUtil.writeInventoryToNBT(compound, "inventory", inventory);
+        }
     }
 
     public boolean hasChest()
@@ -148,5 +196,85 @@ public class EntityMoped extends EntityMotorcycle
     public void setChest(boolean chest)
     {
         this.dataManager.set(CHEST, chest);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public boolean processHit(RayTraceResultRotated result)
+    {
+        RayTracePart partHit = result.getPartHit();
+        if (partHit == CHEST_BOX && this.hasChest())
+        {
+            PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
+            return true;
+        }
+        return IEntityRaytraceable.super.processHit(result);
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public Map<RayTracePart, TriangleRayTraceList> getStaticInteractionBoxMap()
+    {
+        return interactionBoxMapStatic;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public List<RayTracePart> getApplicableInteractionBoxes()
+    {
+        List<RayTracePart> boxes = Lists.newArrayList();
+        if (hasChest())
+        {
+            boxes.add(CHEST_BOX);
+        }
+        return boxes;
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
+    {
+        if (hasChest())
+        {
+            RenderGlobal.drawSelectionBoundingBox(CHEST_BOX.getBox(), 0, 1, 0, 0.4F);
+        }
+    }
+
+    private void initInventory()
+    {
+        InventoryBasic original = inventory;
+        inventory = new InventoryBasic(this.getName(), false, 27);
+        // Copies the inventory if it exists already over to the new instance
+        if(original != null)
+        {
+            for(int i = 0; i < original.getSizeInventory(); i++)
+            {
+                ItemStack stack = original.getStackInSlot(i);
+                if (!stack.isEmpty())
+                {
+                    inventory.setInventorySlotContents(i, stack.copy());
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onKillEntity(EntityLivingBase entityLivingIn)
+    {
+        if(this.hasChest() && inventory != null)
+        {
+            InventoryHelper.dropInventoryItems(world, this, inventory);
+        }
+    }
+
+    @Nullable
+    @Override
+    public IInventory getChest()
+    {
+        if(this.hasChest() && inventory == null)
+        {
+            this.initInventory();
+        }
+        return inventory;
     }
 }

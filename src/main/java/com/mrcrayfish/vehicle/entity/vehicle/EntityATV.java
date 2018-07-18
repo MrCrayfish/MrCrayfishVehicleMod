@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityATV extends EntityLandVehicle
+public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
 {
     /**
      * ItemStack instances used for rendering
