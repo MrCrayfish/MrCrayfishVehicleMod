@@ -37,6 +37,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
@@ -310,7 +311,6 @@ public class EntityRaytracer
             entityRaytracePartsStatic.put(EntityCouch.class, couchParts);
         }
 
-        //TODO debug code (dynamic test code) - delete this code and this comment before release
         //For a dynamic raytrace, all GL operation performed be accounted for
         /* Map<ItemStack, BiFunction<RayTracePart, Entity, Matrix4d>> aluminumBoatPartsDynamic = Maps.<ItemStack, BiFunction<RayTracePart, Entity, Matrix4d>>newHashMap();
         aluminumBoatPartsDynamic.put(new ItemStack(ModItems.ALUMINUM_BOAT_BODY), (part, entity) ->
@@ -905,8 +905,7 @@ public class EntityRaytracer
      */
     public static void renderRaytraceElements(IEntityRaytraceable entity, double x, double y, double z, float yaw)
     {
-        //Debug: set true to render raytrace triangles/boxes
-        if (VehicleConfig.CLIENT.debug.renderOutlines) //TODO keep above comments, but set this to false and delete this comment before release
+        if (VehicleConfig.CLIENT.debug.renderOutlines)
         {
             GlStateManager.pushMatrix();
             {
@@ -1296,6 +1295,7 @@ public class EntityRaytracer
          * 
          * @return whether or not the right-click that initiated the hit should be canceled
          */
+        @SideOnly(Side.CLIENT)
         default boolean processHit(RayTraceResultRotated result)
         {
             ItemStack stack = result.getPartHit().getStack();
@@ -1316,6 +1316,7 @@ public class EntityRaytracer
          * 
          * @return box to triangle map
          */
+        @SideOnly(Side.CLIENT)
         default Map<RayTracePart, TriangleRayTraceList> getStaticInteractionBoxMap()
         {
             return Maps.newHashMap();
@@ -1326,6 +1327,7 @@ public class EntityRaytracer
          * 
          * @return box to triangle map
          */
+        @SideOnly(Side.CLIENT)
         default Map<RayTracePart, TriangleRayTraceList> getDynamicInteractionBoxMap()
         {
             return Maps.newHashMap();
@@ -1337,6 +1339,7 @@ public class EntityRaytracer
          * @return box list - if null, all box are assumed to be applicable
          */
         @Nullable
+        @SideOnly(Side.CLIENT)
         default List<RayTracePart> getApplicableInteractionBoxes()
         {
             return null;
@@ -1348,6 +1351,7 @@ public class EntityRaytracer
          * @return part list - if null, all parts are assumed to be applicable
          */
         @Nullable
+        @SideOnly(Side.CLIENT)
         default List<RayTracePart> getNonApplicableParts()
         {
             return null;
@@ -1359,6 +1363,7 @@ public class EntityRaytracer
          * @param tessellator rendered plane tiler
          * @param buffer tessellator's vertex buffer
          */
+        @SideOnly(Side.CLIENT)
         default void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer) {}
     }
 }
