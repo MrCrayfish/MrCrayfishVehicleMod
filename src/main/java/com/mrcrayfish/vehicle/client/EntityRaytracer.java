@@ -349,7 +349,7 @@ public class EntityRaytracer
 
     /**
      * Creates part-specific transforms for a raytraceable entity's rendered engine. Arguments passed here should be the same as
-     * those passed to {@link com.mrcrayfish.vehicle.client.render.RenderVehicle#setEnginePosition createTranformListForPart} by the entity's renderer.
+     * those passed to {@link com.mrcrayfish.vehicle.client.render.RenderVehicle#setEnginePosition setEnginePosition} by the entity's renderer.
      * 
      * @param x engine's x position
      * @param y engine's y position

@@ -10,7 +10,7 @@ tile.traffic_cone.name=Traffic Cone
 
 entity.moped.name=Moped
 
-vehicle.config.title = MrCrayfish's Vehicle Mod Config
+vehicle.config.title=MrCrayfish's Vehicle Mod Config
 vehicle.config.client=Client
 vehicle.config.client.tooltip=Client-only configs
 vehicle.config.client.debug=Debug
