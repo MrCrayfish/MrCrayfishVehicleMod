@@ -171,7 +171,8 @@ public class CommonEvents
             {
                 if(!player.getDataManager().get(HELD_VEHICLE).hasNoTags())
                 {
-                    if(event.getFace() != EnumFacing.UP)
+                    Vec3d clickedVec = event.getHitVec();
+                    if(clickedVec == null || event.getFace() != EnumFacing.UP)
                     {
                         event.setCanceled(true);
                         return;
@@ -199,7 +200,6 @@ public class CommonEvents
                             float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
                             Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
-                            Vec3d clickedVec = event.getHitVec();
                             entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
 
                             //Plays place sound
