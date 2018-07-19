@@ -254,6 +254,12 @@ public abstract class EntityAirVehicle extends EntityVehicle
         return super.getAccelerationSpeed();
     }
 
+    /*
+     * Overridden to prevent players from taking fall damage when landing a plane
+     */
+    @Override
+    public void fall(float distance, float damageMultiplier) {}
+
     public enum FlapDirection
     {
         UP, DOWN, NONE;
