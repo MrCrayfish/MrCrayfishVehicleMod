@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -26,7 +25,6 @@ import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 
@@ -182,8 +180,8 @@ public class CommonEvents
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
                     if(entity != null && entity instanceof EntityVehicle)
                     {
-                        MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-                        if (server.getEntityFromUuid(entity.getUniqueID()) == null)
+                        MinecraftServer server = world.getMinecraftServer();
+                        if (world != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
                         {
                             server.addScheduledTask(() ->
                             {

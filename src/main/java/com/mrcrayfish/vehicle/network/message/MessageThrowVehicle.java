@@ -12,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -32,10 +31,10 @@ public class MessageThrowVehicle implements IMessage, IMessageHandler<MessageThr
     public IMessage onMessage(MessageThrowVehicle message, MessageContext ctx)
     {
         EntityPlayer player = ctx.getServerHandler().player;
-        if(player.isSneaking())
+        MinecraftServer server = player.world.getMinecraftServer();
+        if(server != null && player.isSneaking())
         {
             //Spawns the vehicle and plays the placing sound
-            MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
             server.addScheduledTask(() ->
             {
                 if(!player.getDataManager().get(CommonEvents.HELD_VEHICLE).hasNoTags())
