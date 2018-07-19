@@ -43,6 +43,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 
 /**
  * Author: Phylogeny
@@ -1301,12 +1303,17 @@ public class EntityRaytracer
             ItemStack stack = result.getPartHit().getStack();
             if (!stack.isEmpty())
             {
-                boolean cancel = !Minecraft.getMinecraft().player.isSneaking() && Minecraft.getMinecraft().player.getRidingEntity() != this;
-                if (cancel)
+                boolean notRiding = Minecraft.getMinecraft().player.getRidingEntity() != this;
+                if (notRiding)
                 {
+                    if (Minecraft.getMinecraft().player.isSneaking())
+                    {
+                        PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
+                        return true;
+                    }
                     interactWithEntity(this);
                 }
-                return cancel;
+                return notRiding;
             }
             return false;
         }

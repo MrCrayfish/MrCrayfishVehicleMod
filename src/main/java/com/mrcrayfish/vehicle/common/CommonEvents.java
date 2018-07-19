@@ -112,47 +112,44 @@ public class CommonEvents
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event)
     {
-        if(event.getHand() == EnumHand.OFF_HAND)
-            return;
-
-        World world = event.getWorld();
-        if(!world.isRemote)
+        if (pickUpVehicle(event.getWorld(), event.getEntityPlayer(), event.getHand(), event.getTarget()))
         {
-            EntityPlayer player = event.getEntityPlayer();
-            if(player.isSneaking())
+            event.setCanceled(true);
+        }
+    }
+
+    public static boolean pickUpVehicle(World world, EntityPlayer player, EnumHand hand, Entity targetEntity)
+    {
+        if (hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+        {
+            if (targetEntity instanceof EntityVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
             {
-                if(player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                String id = getEntityString(targetEntity);
+                if (id != null)
                 {
-                    Entity targetEntity = event.getTarget();
-                    if(targetEntity instanceof EntityVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
+                    tagCompound.setString("id", id);
+                    targetEntity.writeToNBT(tagCompound);
+                    player.getDataManager().set(HELD_VEHICLE, tagCompound);
+
+                    //Updates the held vehicle capability
+                    HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                    if (heldVehicle != null)
                     {
-                        NBTTagCompound tagCompound = new NBTTagCompound();
-                        String id = getEntityString(targetEntity);
-                        if(id != null)
-                        {
-                            tagCompound.setString("id", id);
-                            targetEntity.writeToNBT(tagCompound);
-                            player.getDataManager().set(HELD_VEHICLE, tagCompound);
-
-                            //Updates the held vehicle capability
-                            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                            if(heldVehicle != null)
-                            {
-                                heldVehicle.setVehicleTag(tagCompound);
-                            }
-
-                            //Removes the entity from the world
-                            world.removeEntity(targetEntity);
-
-                            //Plays pick up sound
-                            world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                            event.setCanceled(true);
-                        }
+                        heldVehicle.setVehicleTag(tagCompound);
                     }
+
+                    //Removes the entity from the world
+                    world.removeEntity(targetEntity);
+
+                    //Plays pick up sound
+                    world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @SubscribeEvent
@@ -181,7 +178,7 @@ public class CommonEvents
                     if(entity != null && entity instanceof EntityVehicle)
                     {
                         MinecraftServer server = world.getMinecraftServer();
-                        if (world != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
+                        if (server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
                         {
                             server.addScheduledTask(() ->
                             {
@@ -246,7 +243,7 @@ public class CommonEvents
     }
 
     @Nullable
-    private String getEntityString(Entity entity)
+    private static String getEntityString(Entity entity)
     {
         ResourceLocation resourcelocation = EntityList.getKey(entity);
         return resourcelocation == null ? null : resourcelocation.toString();
