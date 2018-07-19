@@ -183,30 +183,33 @@ public class CommonEvents
                     if(entity != null && entity instanceof EntityVehicle)
                     {
                         MinecraftServer server = FMLCommonHandler.instance().getMinecraftServerInstance();
-                        server.addScheduledTask(() ->
+                        if (server.getEntityFromUuid(entity.getUniqueID()) == null)
                         {
-                            //Updates the DataParameter
-                            NBTTagCompound tag = new NBTTagCompound();
-                            player.getDataManager().set(HELD_VEHICLE, tag);
-
-                            //Updates the player capability
-                            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                            if(heldVehicle != null)
+                            server.addScheduledTask(() ->
                             {
-                                heldVehicle.setVehicleTag(tag);
-                            }
+                                //Updates the DataParameter
+                                NBTTagCompound tag = new NBTTagCompound();
+                                player.getDataManager().set(HELD_VEHICLE, tag);
 
-                            //Sets the positions and spawns the entity
-                            float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                            Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                                //Updates the player capability
+                                HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                                if(heldVehicle != null)
+                                {
+                                    heldVehicle.setVehicleTag(tag);
+                                }
 
-                            entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+                                //Sets the positions and spawns the entity
+                                float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                                Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
-                            //Plays place sound
-                            world.spawnEntity(entity);
-                            world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                        });
-                        event.setCanceled(true);
+                                entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+
+                                //Plays place sound
+                                world.spawnEntity(entity);
+                                world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            });
+                            event.setCanceled(true);
+                        }
                     }
                 }
             }
