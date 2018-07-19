@@ -22,7 +22,6 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
     @SideOnly(Side.CLIENT)
     public ItemStack handleBar;
 
-    //TODO make it so vehicle base can set properties
     public EntityATV(World worldIn)
     {
         super(worldIn);

@@ -75,10 +75,6 @@ public class RenderShoppingCart extends RenderVehicle<EntityShoppingCart>
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 15F;
 
-
-                //TODO change to entity itemstack instance
-                //Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
-
                 GlStateManager.pushMatrix();
                 {
                     GlStateManager.translate(0.3, 0, 0);
