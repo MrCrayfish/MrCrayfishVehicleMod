@@ -1,21 +1,14 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -150,17 +143,5 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
     protected float getModifiedAccelerationSpeed()
     {
         return super.getAccelerationSpeed() * (propellerSpeed / 120F);
-    }
-
-    @Override
-    public boolean processHit(RayTraceResultRotated result)//TODO debug method - delete this method and this comment before release
-    {
-        ItemStack stackHit = result.getPartHit().getStack();
-        if (!stackHit.isEmpty() && stackHit.hasTagCompound())
-        {
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(stackHit.getTagCompound().getString(EntityRaytracer.PART_NAME)).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
-            return true;
-        }
-        return IEntityRaytraceable.super.processHit(result);
     }
 }
