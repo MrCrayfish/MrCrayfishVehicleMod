@@ -398,7 +398,8 @@ public abstract class EntityVehicle extends Entity
         }
         else if(!this.world.isRemote && !this.isDead)
         {
-            if(source instanceof EntityDamageSourceIndirect && source.getTrueSource() != null && this.isPassenger(source.getTrueSource()))
+            Entity trueSource = source.getTrueSource();
+            if(source instanceof EntityDamageSourceIndirect && trueSource != null && this.isPassenger(trueSource))
             {
                 return false;
             }
@@ -407,7 +408,7 @@ public abstract class EntityVehicle extends Entity
                 this.setTimeSinceHit(10);
                 this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
 
-                boolean flag = source.getTrueSource() instanceof EntityPlayer && ((EntityPlayer) source.getTrueSource()).capabilities.isCreativeMode;
+                boolean flag = trueSource instanceof EntityPlayer && ((EntityPlayer) trueSource).capabilities.isCreativeMode;
                 if(flag || this.getDamageTaken() > 40.0F)
                 {
                     if(!flag && this.world.getGameRules().getBoolean("doEntityDrops"))
@@ -415,6 +416,10 @@ public abstract class EntityVehicle extends Entity
                         //this.dropItemWithOffset(this.getItemBoat(), 1, 0.0F);
                     }
 
+                    if (trueSource instanceof EntityLivingBase)
+                    {
+                        this.onKillEntity((EntityLivingBase) trueSource);
+                    }
                     this.setDead();
                 }
 
