@@ -155,7 +155,7 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
     @Override
     public boolean processHit(RayTraceResultRotated result)//TODO debug method - delete this method and this comment before release
     {
-    	ItemStack stackHit = result.getPartHit().getStack();
+        ItemStack stackHit = result.getPartHit().getStack();
         if (!stackHit.isEmpty() && stackHit.hasTagCompound())
         {
             Minecraft.getMinecraft().player.sendMessage(new TextComponentString(stackHit.getTagCompound().getString(EntityRaytracer.PART_NAME)).setStyle(new Style().setColor(TextFormatting.values()[Minecraft.getMinecraft().world.rand.nextInt(15) + 1])));
