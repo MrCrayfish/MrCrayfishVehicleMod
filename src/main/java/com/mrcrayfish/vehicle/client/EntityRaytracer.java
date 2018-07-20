@@ -312,7 +312,6 @@ public class EntityRaytracer
             entityRaytracePartsStatic.put(EntityCouch.class, couchParts);
         }
 
-        //TODO debug code (dynamic test code) - delete this code and this comment before release
         //For a dynamic raytrace, all GL operation performed be accounted for
         /* Map<ItemStack, BiFunction<RayTracePart, Entity, Matrix4d>> aluminumBoatPartsDynamic = Maps.<ItemStack, BiFunction<RayTracePart, Entity, Matrix4d>>newHashMap();
         aluminumBoatPartsDynamic.put(new ItemStack(ModItems.ALUMINUM_BOAT_BODY), (part, entity) ->
@@ -907,8 +906,7 @@ public class EntityRaytracer
      */
     public static void renderRaytraceElements(IEntityRaytraceable entity, double x, double y, double z, float yaw)
     {
-        //Debug: set true to render raytrace triangles/boxes
-        if (VehicleConfig.CLIENT.debug.renderOutlines) //TODO keep above comments, but set this to false and delete this comment before release
+        if (VehicleConfig.CLIENT.debug.renderOutlines)
         {
             GlStateManager.pushMatrix();
             {
