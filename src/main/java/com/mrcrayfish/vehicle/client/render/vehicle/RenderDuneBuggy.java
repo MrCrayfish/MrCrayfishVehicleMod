@@ -79,7 +79,6 @@ public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 GlStateManager.translate(0, 0, -0.2);
 
-                //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
 
                 GlStateManager.pushMatrix();

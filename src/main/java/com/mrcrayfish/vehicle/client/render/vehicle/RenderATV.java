@@ -85,8 +85,7 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
                 float turnRotation = wheelAngleNormal * 15F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-                //TODO change to entity itemstack instance
-                Minecraft.getMinecraft().getRenderItem().renderItem(new ItemStack(ModItems.ATV_HANDLE_BAR), ItemCameraTransforms.TransformType.NONE);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
 

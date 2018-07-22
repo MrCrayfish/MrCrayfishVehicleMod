@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -20,9 +19,7 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachChest;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
@@ -38,11 +35,9 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -60,8 +55,11 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 
     static
     {
-        interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
-        interactionBoxMapStatic.put(TRAY_BOX, EntityRaytracer.boxToTriangles(TRAY_BOX.getBox(), null));
+        if(FMLCommonHandler.instance().getSide().isClient())
+        {
+            interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
+            interactionBoxMapStatic.put(TRAY_BOX, EntityRaytracer.boxToTriangles(TRAY_BOX.getBox(), null));
+        }
     }
 
     private InventoryBasic inventory;
@@ -239,7 +237,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     public List<RayTracePart> getApplicableInteractionBoxes()
     {
         List<RayTracePart> boxes = Lists.newArrayList();
-        if (hasChest())
+        if(hasChest())
         {
             boxes.add(CHEST_BOX);
         }
@@ -254,7 +252,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     @SideOnly(Side.CLIENT)
     public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
     {
-        if (hasChest())
+        if(hasChest())
         {
             RenderGlobal.drawSelectionBoundingBox(CHEST_BOX.getBox(), 0, 1, 0, 0.4F);
         }
@@ -275,7 +273,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
             for(int i = 0; i < original.getSizeInventory(); i++)
             {
                 ItemStack stack = original.getStackInSlot(i);
-                if (!stack.isEmpty())
+                if(!stack.isEmpty())
                 {
                     inventory.setInventorySlotContents(i, stack.copy());
                 }

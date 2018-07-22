@@ -72,7 +72,6 @@ public class RenderBumperCar extends RenderLandVehicle<EntityBumperCar>
                 float turnRotation = wheelAngleNormal * 25F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-                //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();

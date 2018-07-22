@@ -32,7 +32,6 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     @SideOnly(Side.CLIENT)
     public ItemStack steeringWheel;
 
-    //TODO make it so vehicle base can set properties
     public EntityLawnMower(World worldIn)
     {
         super(worldIn);

@@ -1331,6 +1331,7 @@ public class EntityRaytracer
          * 
          * @return box to triangle map
          */
+        @SideOnly(Side.CLIENT)
         default Map<RayTracePart, TriangleRayTraceList> getStaticInteractionBoxMap()
         {
             return Maps.newHashMap();
@@ -1341,6 +1342,7 @@ public class EntityRaytracer
          * 
          * @return box to triangle map
          */
+        @SideOnly(Side.CLIENT)
         default Map<RayTracePart, TriangleRayTraceList> getDynamicInteractionBoxMap()
         {
             return Maps.newHashMap();
@@ -1352,6 +1354,7 @@ public class EntityRaytracer
          * @return box list - if null, all box are assumed to be applicable
          */
         @Nullable
+        @SideOnly(Side.CLIENT)
         default List<RayTracePart> getApplicableInteractionBoxes()
         {
             return null;
@@ -1363,6 +1366,7 @@ public class EntityRaytracer
          * @return part list - if null, all parts are assumed to be applicable
          */
         @Nullable
+        @SideOnly(Side.CLIENT)
         default List<RayTracePart> getNonApplicableParts()
         {
             return null;
@@ -1374,6 +1378,7 @@ public class EntityRaytracer
          * @param tessellator rendered plane tiler
          * @param buffer tessellator's vertex buffer
          */
+        @SideOnly(Side.CLIENT)
         default void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer) {}
     }
 }
