@@ -25,6 +25,20 @@ public class VehicleConfig
         @Config.Comment("Configuration options for debugging vehicles")
         @Config.LangKey(Reference.MOD_ID + ".config.client.debug")
         public Debug debug = new Debug();
+
+        @Config.Name("Interaction")
+        @Config.Comment("Configuration options for vehicle interaction")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.interaction")
+        public Interaction interaction = new Interaction();
+    }
+
+    public static class Interaction
+    {
+        @Config.Name("Left-Click Enabled")
+        @Config.Comment("If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. "
+                + "This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.interaction.left_click")
+        public boolean enabledLeftClick = true;
     }
 
     public static class Debug
