@@ -38,6 +38,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 import com.google.common.collect.Lists;
@@ -1298,6 +1299,7 @@ public class EntityRaytracer
          * 
          * @return whether or not the click that initiated the hit should be canceled
          */
+        @SideOnly(Side.CLIENT)
         default boolean processHit(RayTraceResultRotated result, boolean rightClick)
         {
             EntityPlayer player = Minecraft.getMinecraft().player;
