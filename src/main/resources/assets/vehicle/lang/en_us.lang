@@ -10,10 +10,14 @@ tile.traffic_cone.name=Traffic Cone
 
 entity.moped.name=Moped
 
-vehicle.config.title = MrCrayfish's Vehicle Mod Config
+vehicle.config.title=MrCrayfish's Vehicle Mod Config
 vehicle.config.client=Client
 vehicle.config.client.tooltip=Client-only configs
 vehicle.config.client.debug=Debug
 vehicle.config.client.debug.tooltip=Configuration options for debugging vehicles
 vehicle.config.client.debug.render_outlines=Render Vehicle Outlines
 vehicle.config.client.debug.render_outlines.tooltip=If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.
+vehicle.config.client.interaction=Interaction
+vehicle.config.client.interaction.tooltip=Configuration options for vehicle interaction
+vehicle.config.client.interaction.left_click=Left-Click Enabled
+vehicle.config.client.interaction.left_click.tooltip=If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.

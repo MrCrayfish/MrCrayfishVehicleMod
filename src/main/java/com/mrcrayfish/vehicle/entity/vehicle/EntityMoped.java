@@ -206,20 +206,23 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 
     @Override
     @SideOnly(Side.CLIENT)
-    public boolean processHit(RayTraceResultRotated result)
+    public boolean processHit(RayTraceResultRotated result, boolean rightClick)
     {
-        RayTracePart partHit = result.getPartHit();
-        if(partHit == CHEST_BOX && this.hasChest())
+        if (rightClick)
         {
-            PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
-            return true;
+            RayTracePart partHit = result.getPartHit();
+            if(partHit == CHEST_BOX && this.hasChest())
+            {
+                PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
+                return true;
+            }
+            else if(partHit == TRAY_BOX && !this.hasChest())
+            {
+                PacketHandler.INSTANCE.sendToServer(new MessageAttachChest(this.getEntityId()));
+                return true;
+            }
         }
-        else if(partHit == TRAY_BOX && !this.hasChest())
-        {
-            PacketHandler.INSTANCE.sendToServer(new MessageAttachChest(this.getEntityId()));
-            return true;
-        }
-        return IEntityRaytraceable.super.processHit(result);
+        return IEntityRaytraceable.super.processHit(result, rightClick);
     }
 
     @Override

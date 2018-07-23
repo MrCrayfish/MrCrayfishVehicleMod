@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -44,6 +45,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 
 /**
  * Author: Phylogeny
@@ -349,7 +352,7 @@ public class EntityRaytracer
 
     /**
      * Creates part-specific transforms for a raytraceable entity's rendered engine. Arguments passed here should be the same as
-     * those passed to {@link com.mrcrayfish.vehicle.client.render.RenderVehicle#setEnginePosition createTranformListForPart} by the entity's renderer.
+     * those passed to {@link com.mrcrayfish.vehicle.client.render.RenderVehicle#setEnginePosition setEnginePosition} by the entity's renderer.
      * 
      * @param x engine's x position
      * @param y engine's y position
@@ -683,7 +686,7 @@ public class EntityRaytracer
     }
 
     /**
-     * Performs raytrace on interaction boxes and item part triangles of all raytraceable entities within reach of the player upon right-click,
+     * Performs raytrace on interaction boxes and item part triangles of all raytraceable entities within reach of the player upon click,
      * and cancels it if the clicked raytraceable entity returns true from {@link IEntityRaytraceable#processHit processHit}
      * 
      * @param event mouse event
@@ -691,8 +694,8 @@ public class EntityRaytracer
     @SubscribeEvent
     public static void raytraceEntities(MouseEvent event)
     {
-        // Return if the mouse is not being right clicked, if the mouse is being released, or if there are no entity classes to raytrace
-        if (event.getButton() != 1 || !event.isButtonstate() || entityRaytraceSuperclass == null)
+        // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
+        if ((event.getButton() != 1 && (!VehicleConfig.CLIENT.interaction.enabledLeftClick || event.getButton() != 0)) || !event.isButtonstate() || entityRaytraceSuperclass == null)
         {
             return;
         }
@@ -745,9 +748,9 @@ public class EntityRaytracer
                 // If not bypassed, process the hit only if it is closer to the player's eyes than what MC thinks the player is looking
                 if (bypass || eyeDistance < hit.distanceTo(eyeVec))
                 {
-                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject))
+                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject, event.getButton() == 1))
                     {
-                        // Cancel right-click
+                        // Cancel click
                         event.setCanceled(true);
                     }
                 }
@@ -1292,21 +1295,33 @@ public class EntityRaytracer
          * Default behavior is to perform a general interaction with the entity when a part is clicked.
          * 
          * @param result item part hit - null if none was hit
+         * @param rightClick whether the click was a right-click or a left-click
          * 
-         * @return whether or not the right-click that initiated the hit should be canceled
+         * @return whether or not the click that initiated the hit should be canceled
          */
         @SideOnly(Side.CLIENT)
-        default boolean processHit(RayTraceResultRotated result)
+        default boolean processHit(RayTraceResultRotated result, boolean rightClick)
         {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            boolean notRiding = player.getRidingEntity() != this;
+            if (!rightClick && notRiding)
+            {
+                Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
+                return true;
+            }
             ItemStack stack = result.getPartHit().getStack();
             if (!stack.isEmpty())
             {
-                boolean cancel = !Minecraft.getMinecraft().player.isSneaking() && Minecraft.getMinecraft().player.getRidingEntity() != this;
-                if (cancel)
+                if (notRiding)
                 {
+                    if (player.isSneaking())
+                    {
+                        PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
+                        return true;
+                    }
                     interactWithEntity(this);
                 }
-                return cancel;
+                return notRiding;
             }
             return false;
         }
