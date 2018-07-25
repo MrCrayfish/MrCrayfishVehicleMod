@@ -138,7 +138,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
             PacketHandler.INSTANCE.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getMinecraft().player.getEntityId()));
             return true;
         }
-        return false;
+        return EntityRaytracer.IEntityRaytraceable.super.processHit(result, rightClick);
     }
 
     @Override
