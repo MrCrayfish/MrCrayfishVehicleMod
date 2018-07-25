@@ -37,6 +37,8 @@ public class ModItems
     public static final Item SPORTS_PLANE_PROPELLER;
     public static final Item GOLF_CART_BODY;
 
+    public static final Item TRAILER_BODY;
+
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
 
@@ -68,6 +70,8 @@ public class ModItems
         SPORTS_PLANE_LEG = new ItemPart("sports_plane_leg");
         SPORTS_PLANE_PROPELLER = new ItemPart("sports_plane_propeller").setColored();
         GOLF_CART_BODY = new ItemPart("golf_cart_body").setColored();
+
+        TRAILER_BODY = new ItemPart("trailer_body").setColored();
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
@@ -101,6 +105,8 @@ public class ModItems
         register(SPORTS_PLANE_LEG);
         register(SPORTS_PLANE_PROPELLER);
         register(GOLF_CART_BODY);
+
+        register(TRAILER_BODY);
 
         register(ENGINE);
         register(SPRAY_CAN);

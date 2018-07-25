@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +14,9 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -65,6 +70,38 @@ public abstract class EntityVehicle extends Entity
 
     @SideOnly(Side.CLIENT)
     public void onClientInit() {}
+
+    @Override
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    {
+        if(!world.isRemote && !player.isSneaking())
+        {
+            ItemStack heldItem = player.getHeldItem(hand);
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
+            {
+                if(canBeColored())
+                {
+                    NBTTagCompound tagCompound = ItemSprayCan.createTagCompound(heldItem);
+                    int remainingSprays = tagCompound.getInteger("remainingSprays");
+                    if(tagCompound.hasKey("color", Constants.NBT.TAG_INT) && remainingSprays > 0)
+                    {
+                        int color = tagCompound.getInteger("color");
+                        if(this.getColor() != color)
+                        {
+                            this.setColor(tagCompound.getInteger("color"));
+                            player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            tagCompound.setInteger("remainingSprays", remainingSprays - 1);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                player.startRiding(this);
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
@@ -338,5 +375,10 @@ public abstract class EntityVehicle extends Entity
     public Vec3d getHeldOffset()
     {
         return heldOffset;
+    }
+
+    protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
+    {
+        return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
     }
 }

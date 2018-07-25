@@ -315,6 +315,13 @@ public class EntityRaytracer
             entityRaytracePartsStatic.put(EntityCouch.class, couchParts);
         }
 
+        List<MatrixTransformation> trailerTransformGlobal = Lists.newArrayList();
+        trailerTransformGlobal.add(MatrixTransformation.createScale(1.1));
+        HashMap<ItemStack, List<MatrixTransformation>> trailerParts = Maps.newHashMap();
+        createTranformListForPart(ModItems.TRAILER_BODY, trailerParts, trailerTransformGlobal,
+                MatrixTransformation.createTranslation(0, 0.8, 0));
+        entityRaytracePartsStatic.put(EntityTrailer.class, trailerParts);
+
         //For a dynamic raytrace, all GL operation performed be accounted for
         /* Map<ItemStack, BiFunction<RayTracePart, Entity, Matrix4d>> aluminumBoatPartsDynamic = Maps.<ItemStack, BiFunction<RayTracePart, Entity, Matrix4d>>newHashMap();
         aluminumBoatPartsDynamic.put(new ItemStack(ModItems.ALUMINUM_BOAT_BODY), (part, entity) ->

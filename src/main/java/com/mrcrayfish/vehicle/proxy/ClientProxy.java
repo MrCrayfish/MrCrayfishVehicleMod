@@ -55,6 +55,8 @@ public class ClientProxy implements Proxy
             RenderingRegistry.registerEntityRenderingHandler(EntityBath.class, RenderBath::new);
         }
 
+        RenderingRegistry.registerEntityRenderingHandler(EntityTrailer.class, RenderTrailer::new);
+
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
         ClientRegistry.registerKeyBinding(KEY_HORN);

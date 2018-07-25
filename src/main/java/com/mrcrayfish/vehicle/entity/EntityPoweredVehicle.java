@@ -296,38 +296,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     }
 
     @Override
-    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
-    {
-        if(!world.isRemote && !player.isSneaking())
-        {
-            ItemStack heldItem = player.getHeldItem(hand);
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
-            {
-                if(canBeColored())
-                {
-                    NBTTagCompound tagCompound = ItemSprayCan.createTagCompound(heldItem);
-                    int remainingSprays = tagCompound.getInteger("remainingSprays");
-                    if(tagCompound.hasKey("color", Constants.NBT.TAG_INT) && remainingSprays > 0)
-                    {
-                        int color = tagCompound.getInteger("color");
-                        if(this.getColor() != color)
-                        {
-                            this.setColor(tagCompound.getInteger("color"));
-                            player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                            tagCompound.setInteger("remainingSprays", remainingSprays - 1);
-                        }
-                    }
-                }
-            }
-            else
-            {
-                player.startRiding(this);
-            }
-        }
-        return true;
-    }
-
-    @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
         if(compound.hasKey("engineType", Constants.NBT.TAG_INT))

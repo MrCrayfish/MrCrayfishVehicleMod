@@ -326,9 +326,4 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
             }
         }
     }
-
-    private static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
-    {
-        return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
-    }
 }
