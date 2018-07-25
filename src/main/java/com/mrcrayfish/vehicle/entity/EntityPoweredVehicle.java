@@ -492,7 +492,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     }
 
     @Override
-    protected void addPassenger(Entity passenger)
+    public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
         if(passenger instanceof EntityPlayer && world.isRemote)

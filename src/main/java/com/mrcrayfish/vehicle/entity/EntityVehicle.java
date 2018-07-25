@@ -116,7 +116,7 @@ public abstract class EntityVehicle extends Entity
                     }
                 }
             }
-            else
+            else if(this.canBeRidden(player))
             {
                 player.startRiding(this);
             }
@@ -279,7 +279,7 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    protected void addPassenger(Entity passenger)
+    public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
         if(this.canPassengerSteer() && this.lerpSteps > 0)
@@ -297,10 +297,6 @@ public abstract class EntityVehicle extends Entity
     public void updatePassenger(Entity passenger)
     {
         super.updatePassenger(passenger);
-        //TODO change to config option
-        //passenger.rotationYaw = this.rotationYaw;
-        //passenger.setRotationYawHead(passenger.rotationYaw);
-        //applyYawToEntity(passenger);
     }
 
     protected void applyYawToEntity(Entity entityToUpdate)

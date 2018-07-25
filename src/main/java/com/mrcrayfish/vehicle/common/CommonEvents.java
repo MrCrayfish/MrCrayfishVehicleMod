@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -116,7 +117,16 @@ public class CommonEvents
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event)
     {
-        if (pickUpVehicle(event.getWorld(), event.getEntityPlayer(), event.getHand(), event.getTarget()))
+        if(pickUpVehicle(event.getWorld(), event.getEntityPlayer(), event.getHand(), event.getTarget()))
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerInteract(PlayerInteractEvent.EntityInteract event)
+    {
+        if(attachVehicleToTrailer(event.getWorld(), event.getEntityPlayer(), event.getTarget()))
         {
             event.setCanceled(true);
         }
@@ -124,33 +134,73 @@ public class CommonEvents
 
     public static boolean pickUpVehicle(World world, EntityPlayer player, EnumHand hand, Entity targetEntity)
     {
-        if (hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+        if (hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking())
         {
-            if (targetEntity instanceof EntityPoweredVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
+            if(player.getDataManager().get(HELD_VEHICLE).hasNoTags())
             {
-                NBTTagCompound tagCompound = new NBTTagCompound();
-                String id = getEntityString(targetEntity);
-                if (id != null)
+                if(targetEntity instanceof EntityVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
                 {
-                    tagCompound.setString("id", id);
-                    targetEntity.writeToNBT(tagCompound);
-                    player.getDataManager().set(HELD_VEHICLE, tagCompound);
-
-                    //Updates the held vehicle capability
-                    HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                    if (heldVehicle != null)
+                    NBTTagCompound tagCompound = new NBTTagCompound();
+                    String id = getEntityString(targetEntity);
+                    if(id != null)
                     {
-                        heldVehicle.setVehicleTag(tagCompound);
+                        tagCompound.setString("id", id);
+                        targetEntity.writeToNBT(tagCompound);
+                        player.getDataManager().set(HELD_VEHICLE, tagCompound);
+
+                        //Updates the held vehicle capability
+                        HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                        if(heldVehicle != null)
+                        {
+                            heldVehicle.setVehicleTag(tagCompound);
+                        }
+
+                        //Removes the entity from the world
+                        world.removeEntity(targetEntity);
+
+                        //Plays pick up sound
+                        world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                        return true;
+                    }
+                }
+            }
+            else if(targetEntity instanceof EntityTrailer && !targetEntity.isBeingRidden() && !targetEntity.isDead)
+            {
+                NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
+                Entity vehicle = EntityList.createEntityFromNBT(tagCompound, world);
+                if(vehicle != null && vehicle instanceof EntityVehicle)
+                {
+                    vehicle.setPositionAndRotation(targetEntity.posX, targetEntity.posY, targetEntity.posZ, targetEntity.rotationYaw, targetEntity.rotationPitch);
+
+                    //Updates the DataParameter
+                    NBTTagCompound tag = new NBTTagCompound();
+                    player.getDataManager().set(HELD_VEHICLE, tag);
+
+                    //Updates the player capability
+                    HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                    if(heldVehicle != null)
+                    {
+                        heldVehicle.setVehicleTag(tag);
                     }
 
-                    //Removes the entity from the world
-                    world.removeEntity(targetEntity);
-
-                    //Plays pick up sound
-                    world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                    return true;
+                    //Plays place sound
+                    world.spawnEntity(vehicle);
+                    world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    vehicle.startRiding(targetEntity);
                 }
+            }
+        }
+        return false;
+    }
+
+    public static boolean attachVehicleToTrailer(World world, EntityPlayer player, Entity entity)
+    {
+        if(!world.isRemote && player.isSneaking() && !player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+        {
+            if(entity instanceof EntityTrailer && entity.getPassengers().size() == 0)
+            {
+
             }
         }
         return false;
@@ -179,7 +229,7 @@ public class CommonEvents
 
                     NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
-                    if(entity != null && entity instanceof EntityPoweredVehicle)
+                    if(entity != null && entity instanceof EntityVehicle)
                     {
                         MinecraftServer server = world.getMinecraftServer();
                         if (server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
