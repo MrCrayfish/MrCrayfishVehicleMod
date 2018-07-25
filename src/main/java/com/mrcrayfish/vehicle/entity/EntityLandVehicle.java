@@ -33,6 +33,8 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public float rearWheelRotation;
     public float prevRearWheelRotation;
 
+    private Vec3d towBarVec = Vec3d.ZERO;
+
     public EntityLandVehicle(World worldIn)
     {
         super(worldIn);
@@ -169,5 +171,20 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public boolean isDrifting()
     {
         return this.dataManager.get(DRIFTING);
+    }
+
+    public void setTowBarPosition(Vec3d towBarVec)
+    {
+        this.towBarVec = towBarVec;
+    }
+
+    public Vec3d getTowBarVec()
+    {
+        return towBarVec;
+    }
+
+    public boolean canTowTrailer()
+    {
+        return false;
     }
 }

@@ -80,6 +80,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
         this.setHeldOffset(new Vec3d(7D, 2D, 0D));
+        this.setTowBarPosition(new Vec3d(0.0, 0.0, -1.0));
     }
 
     @Override

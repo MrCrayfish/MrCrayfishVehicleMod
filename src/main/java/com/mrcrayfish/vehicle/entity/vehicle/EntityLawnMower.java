@@ -124,4 +124,10 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     {
         return true;
     }
+
+    @Override
+    public boolean canTowTrailer()
+    {
+        return true;
+    }
 }
