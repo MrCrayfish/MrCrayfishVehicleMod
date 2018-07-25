@@ -84,7 +84,7 @@ public abstract class EntityVehicle extends Entity
                 if(trailerId != -1)
                 {
                     EntityLandVehicle landVehicle = (EntityLandVehicle) this;
-                    if(landVehicle.canTowTrailer())
+                    if(landVehicle.canTowTrailer() && landVehicle.getTrailer() == null)
                     {
                         Entity entity = world.getEntityByID(trailerId);
                         if(entity instanceof EntityTrailer)

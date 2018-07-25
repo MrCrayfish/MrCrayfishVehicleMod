@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.block.Block;
@@ -33,6 +34,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public float rearWheelRotation;
     public float prevRearWheelRotation;
 
+    private EntityTrailer trailer = null;
     private Vec3d towBarVec = Vec3d.ZERO;
 
     public EntityLandVehicle(World worldIn)
@@ -56,6 +58,17 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
         this.updateDrifting();
         this.updateWheels();
+    }
+
+    @Override
+    public void onUpdateVehicle()
+    {
+        super.onUpdateVehicle();
+
+        if(trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
+        {
+            trailer = null;
+        }
     }
 
     @Override
@@ -186,5 +199,16 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public boolean canTowTrailer()
     {
         return false;
+    }
+
+    public void setTrailer(EntityTrailer trailer)
+    {
+        this.trailer = trailer;
+        trailer.setPullingEntity(this);
+    }
+
+    public EntityTrailer getTrailer()
+    {
+        return trailer;
     }
 }

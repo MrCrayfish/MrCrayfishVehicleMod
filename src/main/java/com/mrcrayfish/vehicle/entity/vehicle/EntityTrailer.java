@@ -65,7 +65,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
 
         if(this.pullingEntity != null)
         {
-            if(this.pullingEntity.isDead)
+            if(this.pullingEntity.isDead || (this.pullingEntity instanceof EntityLandVehicle && ((EntityLandVehicle) this.pullingEntity).getTrailer() != this))
             {
                 this.pullingEntity = null;
                 return;
@@ -124,6 +124,11 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     public void setPullingEntity(Entity pullingEntity)
     {
         this.pullingEntity = pullingEntity;
+    }
+
+    public Entity getPullingEntity()
+    {
+        return pullingEntity;
     }
 
     @Override
