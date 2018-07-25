@@ -1303,33 +1303,29 @@ public class EntityRaytracer
         @SideOnly(Side.CLIENT)
         default boolean processHit(RayTraceResultRotated result, boolean rightClick)
         {
-            EntityPlayer player = Minecraft.getMinecraft().player;
-            boolean notRiding = player.getRidingEntity() != this;
-            if (!rightClick && notRiding)
+            if (!(Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this))
             {
-                Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
-                return true;
-            }
-            ItemStack stack = result.getPartHit().getStack();
-            if (!stack.isEmpty())
-            {
-                if (notRiding)
+                EntityPlayer player = Minecraft.getMinecraft().player;
+                boolean notRiding = player.getRidingEntity() != this;
+                if (!rightClick && notRiding)
                 {
-                    if (player.isSneaking())
+                    Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
+                    return true;
+                }
+                ItemStack stack = result.getPartHit().getStack();
+                if (!stack.isEmpty())
+                {
+                    if (notRiding)
                     {
-                        PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
-                        return true;
-                    }
-                    if (Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this)
-                    {
-                        notRiding = false;
-                    }
-                    else
-                    {
+                        if (player.isSneaking())
+                        {
+                            PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
+                            return true;
+                        }
                         interactWithEntity(this);
                     }
+                    return notRiding;
                 }
-                return notRiding;
             }
             return false;
         }
