@@ -1,18 +1,24 @@
 package com.mrcrayfish.vehicle.proxy;
 
 import com.mrcrayfish.vehicle.client.ClientEvents;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.RegistrationHandler;
+import com.mrcrayfish.vehicle.item.ItemPart;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -36,10 +42,17 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityJetSki.class, RenderJetSki::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySpeedBoat.class, RenderSpeedBoat::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityAluminumBoat.class, RenderAluminumBoat::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySmartCar.class, RenderSmartCar::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityLawnMower.class, RenderLawnMower::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityMoped.class, RenderMoped::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntitySportsPlane.class, RenderSportsPlane::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityGolfCart.class, RenderGolfCart::new);
 
         if(Loader.isModLoaded("cfm"))
         {
             RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
+            RenderingRegistry.registerEntityRenderingHandler(EntityBath.class, RenderBath::new);
         }
 
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
@@ -48,7 +61,28 @@ public class ClientProxy implements Proxy
     }
 
     @Override
-    public void playVehicleSound(EntityPlayer player, EntityVehicle vehicle)
+    public void init()
+    {
+        IItemColor color = (stack, index) ->
+        {
+            if(index == 0 && stack.hasTagCompound() && stack.getTagCompound().hasKey("color", Constants.NBT.TAG_INT))
+            {
+                return stack.getTagCompound().getInteger("color");
+            }
+            return -1;
+        };
+        RegistrationHandler.Items.getItems().forEach(item ->
+        {
+            if(item instanceof ItemSprayCan || (item instanceof ItemPart && ((ItemPart) item).isColored()))
+            {
+                Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
+            }
+        });
+        EntityRaytracer.init();
+    }
+
+    @Override
+    public void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle)
     {
         Minecraft.getMinecraft().addScheduledTask(() ->
         {

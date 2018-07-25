@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
@@ -81,7 +82,6 @@ public class RenderGoKart extends RenderLandVehicle<EntityGoKart>
                 float turnRotation = wheelAngleNormal * 25F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-                //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
@@ -90,5 +90,6 @@ public class RenderGoKart extends RenderLandVehicle<EntityGoKart>
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

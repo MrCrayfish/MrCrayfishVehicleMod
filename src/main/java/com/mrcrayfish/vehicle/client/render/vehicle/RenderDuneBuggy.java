@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
+public class RenderDuneBuggy extends RenderPoweredVehicle<EntityDuneBuggy>
 {
     public RenderDuneBuggy(RenderManager renderManager)
     {
@@ -78,7 +79,6 @@ public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
                 GlStateManager.rotate(22.5F, 1, 0, 0);
                 GlStateManager.translate(0, 0, -0.2);
 
-                //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
 
                 GlStateManager.pushMatrix();
@@ -139,5 +139,6 @@ public class RenderDuneBuggy extends RenderVehicle<EntityDuneBuggy>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

@@ -1,9 +1,9 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredSeaVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntitySpeedBoat extends EntityColoredSeaVehicle
+public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytraceable
 {
     public float prevLeanAngle;
     public float leanAngle;
@@ -39,6 +39,7 @@ public class EntitySpeedBoat extends EntityColoredSeaVehicle
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SPEED_BOAT_BODY);
         handleBar = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
@@ -99,5 +100,11 @@ public class EntitySpeedBoat extends EntityColoredSeaVehicle
     public double getMountedYOffset()
     {
         return 4 * 0.0625;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
     }
 }

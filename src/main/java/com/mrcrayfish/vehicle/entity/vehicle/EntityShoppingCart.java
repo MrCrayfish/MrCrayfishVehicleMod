@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -16,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityShoppingCart extends EntityLandVehicle
+public class EntityShoppingCart extends EntityLandVehicle implements IEntityRaytraceable
 {
     private EntityPlayer pusher;
 
@@ -32,6 +33,7 @@ public class EntityShoppingCart extends EntityLandVehicle
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SHOPPING_CART_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
     }

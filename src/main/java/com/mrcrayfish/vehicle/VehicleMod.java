@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
@@ -13,10 +13,10 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -55,6 +55,12 @@ public class VehicleMod
         proxy.preInit();
     }
 
+    @Mod.EventHandler
+    public void onInit(FMLInitializationEvent event)
+    {
+        proxy.init();
+    }
+
     private void registerVehicles()
     {
         registerVehicle("atv", EntityATV.class);
@@ -65,14 +71,21 @@ public class VehicleMod
         registerVehicle("bumper_car", EntityBumperCar.class);
         registerVehicle("jet_ski", EntityJetSki.class);
         registerVehicle("speed_boat", EntitySpeedBoat.class);
+        registerVehicle("aluminum_boat", EntityAluminumBoat.class);
+        registerVehicle("smart_car", EntitySmartCar.class);
+        registerVehicle("lawn_mower", EntityLawnMower.class);
+        registerVehicle("moped", EntityMoped.class);
+        registerVehicle("sports_plane", EntitySportsPlane.class);
+        registerVehicle("golf_cart", EntityGolfCart.class);
 
         if(Loader.isModLoaded("cfm"))
         {
             registerVehicle("couch", EntityCouch.class);
+            registerVehicle("bath", EntityBath.class);
         }
     }
 
-    private void registerVehicle(String id, Class<? extends EntityVehicle> clazz)
+    private void registerVehicle(String id, Class<? extends EntityPoweredVehicle> clazz)
     {
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, id, nextEntityId++, this, 64, 1, true);
     }

@@ -2,4 +2,22 @@ itemGroup.tabVehicle=MrCrayfish's Vehicle Mod
 
 item.small_engine.name=Small Engine
 
+item.spray_can.name=Spray Can
+item.spray_can.info=Use this spray can to paint vehicles. To add a color to the spray can, combine it with one or more dyes in a crafting table. You can also refill spray cans by placing them with a non-colored spray can in a crafting table.
+item.spray_can.empty=No Color
+
 tile.traffic_cone.name=Traffic Cone
+
+entity.moped.name=Moped
+
+vehicle.config.title=MrCrayfish's Vehicle Mod Config
+vehicle.config.client=Client
+vehicle.config.client.tooltip=Client-only configs
+vehicle.config.client.debug=Debug
+vehicle.config.client.debug.tooltip=Configuration options for debugging vehicles
+vehicle.config.client.debug.render_outlines=Render Vehicle Outlines
+vehicle.config.client.debug.render_outlines.tooltip=If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.
+vehicle.config.client.interaction=Interaction
+vehicle.config.client.interaction.tooltip=Configuration options for vehicle interaction
+vehicle.config.client.interaction.left_click=Left-Click Enabled
+vehicle.config.client.interaction.left_click.tooltip=If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.

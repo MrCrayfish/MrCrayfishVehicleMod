@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredSeaVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityJetSki extends EntityColoredSeaVehicle
+public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceable
 {
     public float prevLeanAngle;
     public float leanAngle;
@@ -39,6 +40,7 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.JET_SKI_BODY);
         handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
     }
@@ -130,5 +132,11 @@ public class EntityJetSki extends EntityColoredSeaVehicle
     protected boolean canFitPassenger(Entity passenger)
     {
         return this.getPassengers().size() < 3;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
     }
 }

@@ -34,5 +34,23 @@
     },
     "speed_boat_engine_stereo": {
         "sounds": [ {"name": "vehicle:speed_boat_engine_stereo"}]
+    },
+    "spray_can_spray": {
+        "sounds": [ {"name": "vehicle:spray_can_spray"}]
+    },
+    "spray_can_shake": {
+        "sounds": [ {"name": "vehicle:spray_can_shake"}]
+    },
+    "moped_engine_mono": {
+        "sounds": [ {"name": "vehicle:moped_engine_mono"}]
+    },
+    "moped_engine_stereo": {
+        "sounds": [ {"name": "vehicle:moped_engine_stereo"}]
+    },
+    "sports_plane_engine_mono": {
+        "sounds": [ {"name": "vehicle:sports_plane_engine_mono"}]
+    },
+    "sports_plane_engine_stereo": {
+        "sounds": [ {"name": "vehicle:sports_plane_engine_stereo"}]
     }
 }

@@ -4,18 +4,45 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.network.message.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
 
 public class PacketHandler
 {
-	public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
+    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
+    private static int messageId = 0;
 
-	public static void init()
-	{
-		INSTANCE.registerMessage(MessageTurn.class, MessageTurn.class, 0, Side.SERVER);
-		INSTANCE.registerMessage(MessageAccelerating.class, MessageAccelerating.class, 1, Side.SERVER);
-		INSTANCE.registerMessage(MessageDrift.class, MessageDrift.class, 2, Side.SERVER);
-		INSTANCE.registerMessage(MessageHorn.class, MessageHorn.class, 3, Side.SERVER);
-		INSTANCE.registerMessage(MessageThrowVehicle.class, MessageThrowVehicle.class, 4, Side.SERVER);
-	}
+    private static enum Side
+    {
+        CLIENT, SERVER, BOTH;
+    }
+
+    public static void init()
+    {
+        registerMessage(MessageTurn.class, Side.SERVER);
+        registerMessage(MessageAccelerating.class, Side.SERVER);
+        registerMessage(MessageDrift.class, Side.SERVER);
+        registerMessage(MessageHorn.class, Side.SERVER);
+        registerMessage(MessageThrowVehicle.class, Side.SERVER);
+        registerMessage(MessagePickupVehicle.class, Side.SERVER);
+        registerMessage(MessageFlaps.class, Side.SERVER);
+        registerMessage(MessageVehicleChest.class, Side.SERVER);
+        registerMessage(MessageAttachChest.class, Side.SERVER);
+    }
+
+    private static void registerMessage(Class packet, Side side)
+    {
+        if (side != Side.CLIENT)
+        {
+            registerMessage(packet, net.minecraftforge.fml.relauncher.Side.SERVER);
+        }
+
+        if (side != Side.SERVER)
+        {
+            registerMessage(packet, net.minecraftforge.fml.relauncher.Side.CLIENT);
+        }
+    }
+
+    private static void registerMessage(Class packet, net.minecraftforge.fml.relauncher.Side side)
+    {
+        INSTANCE.registerMessage(packet, packet, messageId++, side);
+    }
 }

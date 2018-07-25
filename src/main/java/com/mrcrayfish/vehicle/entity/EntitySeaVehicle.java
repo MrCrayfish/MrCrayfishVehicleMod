@@ -8,12 +8,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
-
 /**
  * Author: MrCrayfish
  */
-public abstract class EntitySeaVehicle extends EntityVehicle
+public abstract class EntitySeaVehicle extends EntityPoweredVehicle
 {
     protected State state;
     protected State previousState;
@@ -123,7 +121,6 @@ public abstract class EntitySeaVehicle extends EntityVehicle
         return inWater;
     }
 
-    @Nullable
     private boolean isUnderWater()
     {
         AxisAlignedBB axisAligned = this.getEntityBoundingBox();

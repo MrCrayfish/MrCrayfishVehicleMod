@@ -1,24 +1,19 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
-import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderCouch extends RenderVehicle<EntityCouch>
+public class RenderCouch extends RenderPoweredVehicle<EntityCouch>
 {
     public RenderCouch(RenderManager renderManager)
     {
@@ -61,23 +56,6 @@ public class RenderCouch extends RenderVehicle<EntityCouch>
             GlStateManager.popMatrix();
 
             float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
-
-            //Render the handles bars
-           /* GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, 0.7 + bodyOffset, 0.25);
-                GlStateManager.rotate(-45F, 1, 0, 0);
-                GlStateManager.translate(0, 0.02, 0);
-
-                float wheelAngleNormal = wheelAngle / 45F;
-                float turnRotation = wheelAngleNormal * 15F;
-                GlStateManager.rotate(turnRotation, 0, 1, 0);
-
-                //TODO change to entity itemstack instance
-                Minecraft.getMinecraft().getRenderItem().renderItem(new ItemStack(ModItems.ATV_HANDLE_BAR), ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();*/
-
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
 
@@ -155,5 +133,6 @@ public class RenderCouch extends RenderVehicle<EntityCouch>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

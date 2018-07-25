@@ -50,6 +50,11 @@ public class RegistrationHandler
             ITEMS.add(item);
         }
 
+        public static List<Item> getItems()
+        {
+            return ITEMS;
+        }
+
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Item> event)
         {
@@ -104,5 +109,6 @@ public class RegistrationHandler
     {
         ModItems.register();
         ModBlocks.register();
+        ModRecipes.register();
     }
 }

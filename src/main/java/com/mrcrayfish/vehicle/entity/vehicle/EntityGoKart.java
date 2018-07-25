@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EntityColoredLandVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -13,7 +14,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKart extends EntityColoredLandVehicle
+public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceable
 {
     /**
      * ItemStack instances used for rendering
@@ -35,6 +36,7 @@ public class EntityGoKart extends EntityColoredLandVehicle
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.GO_KART_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
@@ -80,5 +82,11 @@ public class EntityGoKart extends EntityColoredLandVehicle
     public double getMountedYOffset()
     {
         return 0;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
     }
 }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.Item;
@@ -15,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityCouch extends EntityLandVehicle
+public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceable
 {
     public EntityCouch(World worldIn)
     {
@@ -29,6 +29,7 @@ public class EntityCouch extends EntityLandVehicle
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
         wheel = new ItemStack(ModItems.WHEEL);
     }

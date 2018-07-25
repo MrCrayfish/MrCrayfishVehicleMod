@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -36,9 +36,9 @@ public class MessageHorn implements IMessage, IMessageHandler<MessageHorn, IMess
 	{
 		EntityPlayerMP player = ctx.getServerHandler().player;
 		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityVehicle)
+		if(riding instanceof EntityPoweredVehicle)
 		{
-			((EntityVehicle) riding).setHorn(message.horn);
+			((EntityPoweredVehicle) riding).setHorn(message.horn);
 		}
 		return null;
 	}

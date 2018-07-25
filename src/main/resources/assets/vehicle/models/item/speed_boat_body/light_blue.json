@@ -1,6 +1,0 @@
-{
-    "parent": "vehicle:item/speed_boat_body",
-    "textures": {
-        "color": "blocks/concrete_light_blue"
-    }
-}

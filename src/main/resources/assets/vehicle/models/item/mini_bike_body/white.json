@@ -1,6 +1,0 @@
-{
-    "parent": "vehicle:item/mini_bike_body",
-    "textures": {
-        "color": "blocks/concrete_white"
-    }
-}

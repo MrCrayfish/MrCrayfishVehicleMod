@@ -1,10 +1,9 @@
 package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.obfuscate.common.event.EntityLivingInitEvent;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
@@ -17,10 +16,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -46,6 +47,8 @@ public class CommonEvents
     {
         ImmutableList.Builder<String> builder = ImmutableList.builder();
         builder.add("body");
+        builder.add("atv");
+        builder.add("go_kart");
         IGNORE_ITEMS = builder.build();
 
         builder = ImmutableList.builder();
@@ -56,6 +59,7 @@ public class CommonEvents
         builder = ImmutableList.builder();
         builder.add("vehicle_atv");
         builder.add("couch");
+        builder.add("bath");
         IGNORE_ENTITIES = builder.build();
     }
 
@@ -96,59 +100,56 @@ public class CommonEvents
     }
 
     @SubscribeEvent
-    public void onEntityInit(EntityLivingInitEvent event)
+    public void onEntityInit(EntityEvent.EntityConstructing event)
     {
-        if(event.getEntityLiving() instanceof EntityPlayer)
+        if(event.getEntity() instanceof EntityPlayer)
         {
-            event.getEntityLiving().getDataManager().register(PUSHING_CART, false);
-            event.getEntityLiving().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
+            event.getEntity().getDataManager().register(PUSHING_CART, false);
+            event.getEntity().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
         }
     }
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event)
     {
-        if(event.getHand() == EnumHand.OFF_HAND)
-            return;
-
-        World world = event.getWorld();
-        if(!world.isRemote)
+        if (pickUpVehicle(event.getWorld(), event.getEntityPlayer(), event.getHand(), event.getTarget()))
         {
-            EntityPlayer player = event.getEntityPlayer();
-            if(player.isSneaking())
+            event.setCanceled(true);
+        }
+    }
+
+    public static boolean pickUpVehicle(World world, EntityPlayer player, EnumHand hand, Entity targetEntity)
+    {
+        if (hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+        {
+            if (targetEntity instanceof EntityPoweredVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
             {
-                if(player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+                NBTTagCompound tagCompound = new NBTTagCompound();
+                String id = getEntityString(targetEntity);
+                if (id != null)
                 {
-                    Entity targetEntity = event.getTarget();
-                    if(targetEntity instanceof EntityVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
+                    tagCompound.setString("id", id);
+                    targetEntity.writeToNBT(tagCompound);
+                    player.getDataManager().set(HELD_VEHICLE, tagCompound);
+
+                    //Updates the held vehicle capability
+                    HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                    if (heldVehicle != null)
                     {
-                        NBTTagCompound tagCompound = new NBTTagCompound();
-                        String id = getEntityString(targetEntity);
-                        if(id != null)
-                        {
-                            tagCompound.setString("id", id);
-                            targetEntity.writeToNBT(tagCompound);
-                            player.getDataManager().set(HELD_VEHICLE, tagCompound);
-
-                            //Updates the held vehicle capability
-                            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                            if(heldVehicle != null)
-                            {
-                                heldVehicle.setVehicleTag(tagCompound);
-                            }
-
-                            //Removes the entity from the world
-                            world.removeEntity(targetEntity);
-
-                            //Plays pick up sound
-                            world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                            event.setCanceled(true);
-                        }
+                        heldVehicle.setVehicleTag(tagCompound);
                     }
+
+                    //Removes the entity from the world
+                    world.removeEntity(targetEntity);
+
+                    //Plays pick up sound
+                    world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     @SubscribeEvent
@@ -165,7 +166,8 @@ public class CommonEvents
             {
                 if(!player.getDataManager().get(HELD_VEHICLE).hasNoTags())
                 {
-                    if(event.getFace() != EnumFacing.UP)
+                    Vec3d clickedVec = event.getHitVec();
+                    if(clickedVec == null || event.getFace() != EnumFacing.UP)
                     {
                         event.setCanceled(true);
                         return;
@@ -173,31 +175,36 @@ public class CommonEvents
 
                     NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
-                    if(entity != null && entity instanceof EntityVehicle)
+                    if(entity != null && entity instanceof EntityPoweredVehicle)
                     {
-                        //Updates the DataParameter
-                        NBTTagCompound tag = new NBTTagCompound();
-                        player.getDataManager().set(HELD_VEHICLE, tag);
-
-                        //Updates the player capability
-                        HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                        if(heldVehicle != null)
+                        MinecraftServer server = world.getMinecraftServer();
+                        if (server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
                         {
-                            heldVehicle.setVehicleTag(tag);
+                            server.addScheduledTask(() ->
+                            {
+                                //Updates the DataParameter
+                                NBTTagCompound tag = new NBTTagCompound();
+                                player.getDataManager().set(HELD_VEHICLE, tag);
+
+                                //Updates the player capability
+                                HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                                if(heldVehicle != null)
+                                {
+                                    heldVehicle.setVehicleTag(tag);
+                                }
+
+                                //Sets the positions and spawns the entity
+                                float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                                Vec3d heldOffset = ((EntityPoweredVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+
+                                entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+
+                                //Plays place sound
+                                world.spawnEntity(entity);
+                                world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            });
+                            event.setCanceled(true);
                         }
-
-                        //Sets the positions and spawns the entity
-                        float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                        Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
-
-                        Vec3d clickedVec = event.getHitVec();
-                        entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y + heldOffset.y * 0.0625D, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
-
-                        //Plays place sound
-                        world.spawnEntity(entity);
-                        world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                        event.setCanceled(true);
                     }
                 }
             }
@@ -236,7 +243,7 @@ public class CommonEvents
     }
 
     @Nullable
-    private String getEntityString(Entity entity)
+    private static String getEntityString(Entity entity)
     {
         ResourceLocation resourcelocation = EntityList.getKey(entity);
         return resourcelocation == null ? null : resourcelocation.toString();
@@ -272,10 +279,10 @@ public class CommonEvents
                 player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
 
                 Entity vehicle = EntityList.createEntityFromNBT(tagCompound, player.world);
-                if(vehicle != null && vehicle instanceof EntityVehicle)
+                if(vehicle != null && vehicle instanceof EntityPoweredVehicle)
                 {
                     float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                    Vec3d heldOffset = ((EntityVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                    Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                     vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.spawnEntity(vehicle);
                 }

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageAccelerating implements IMessage, IMessageHandler<MessageAccelerating, IMessage>
 {
-	private EntityVehicle.AccelerationDirection acceleration;
+	private EntityPoweredVehicle.AccelerationDirection acceleration;
 
 	public MessageAccelerating() {}
 
-	public MessageAccelerating(EntityVehicle.AccelerationDirection acceleration)
+	public MessageAccelerating(EntityPoweredVehicle.AccelerationDirection acceleration)
 	{
 		this.acceleration = acceleration;
 	}
@@ -28,7 +28,7 @@ public class MessageAccelerating implements IMessage, IMessageHandler<MessageAcc
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		this.acceleration = EntityVehicle.AccelerationDirection.values()[buf.readInt()];
+		this.acceleration = EntityPoweredVehicle.AccelerationDirection.values()[buf.readInt()];
 	}
 
 	@Override
@@ -36,9 +36,9 @@ public class MessageAccelerating implements IMessage, IMessageHandler<MessageAcc
 	{
 		EntityPlayerMP player = ctx.getServerHandler().player;
 		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityVehicle)
+		if(riding instanceof EntityPoweredVehicle)
 		{
-			((EntityVehicle) riding).setAcceleration(message.acceleration);
+			((EntityPoweredVehicle) riding).setAcceleration(message.acceleration);
 		}
 		return null;
 	}
