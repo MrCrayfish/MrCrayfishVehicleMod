@@ -64,6 +64,12 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
 
         if(this.pullingEntity != null)
         {
+            if(this.pullingEntity.isDead)
+            {
+                this.pullingEntity = null;
+                return;
+            }
+
             Vec3d towBar = pullingEntity.getPositionVector();
             if(pullingEntity instanceof EntityLandVehicle)
             {
