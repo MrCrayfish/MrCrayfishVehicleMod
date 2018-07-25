@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -80,6 +81,11 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
             this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.posZ, towBar.x - this.posX)) - 90F;
             Vec3d vec = new Vec3d(0, 0, -23 * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
             this.setPosition(vec.x, vec.y, vec.z);
+        }
+        else if(!world.isRemote)
+        {
+            this.motionY -= 0.08D;
+            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
         }
 
         float speed = (float) (Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posY - this.prevPosY, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20);
