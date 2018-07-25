@@ -1,0 +1,23 @@
+itemGroup.tabVehicle=MrCrayfish載具模組
+
+item.small_engine.name=小引擎
+
+item.spray_can.name=噴霧罐
+item.spray_can.info=使用此噴霧罐以塗裝、改變載具的外觀。\n要為此噴霧罐添加顏色，將此噴霧罐與一種或多種染料在工作台中合成。\n要為此噴霧罐進行補充，將此噴霧罐與一瓶無色噴霧罐在工作台中合成。
+item.spray_can.empty=沒有顏色
+
+tile.traffic_cone.name=交通錐
+
+entity.moped.name=輕便摩托車
+
+vehicle.config.title=MrCrayfish載具模組配置
+vehicle.config.client=用戶端
+vehicle.config.client.tooltip=僅用戶端配置
+vehicle.config.client.debug=調試
+vehicle.config.client.debug.tooltip=用於調試載具
+vehicle.config.client.debug.render_outlines=渲染載具輪廓
+vehicle.config.client.debug.render_outlines.tooltip=如果為true，則渲染載具模型上所有元素的輪廓。用於調試交互。
+vehicle.config.client.interaction=Interaction
+vehicle.config.client.interaction.tooltip=Configuration options for vehicle interaction
+vehicle.config.client.interaction.left_click=Left-Click Enabled
+vehicle.config.client.interaction.left_click.tooltip=If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.
