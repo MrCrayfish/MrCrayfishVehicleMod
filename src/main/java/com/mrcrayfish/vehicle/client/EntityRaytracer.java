@@ -1320,7 +1320,14 @@ public class EntityRaytracer
                         PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
                         return true;
                     }
-                    interactWithEntity(this);
+                    if (Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this)
+                    {
+                        notRiding = false;
+                    }
+                    else
+                    {
+                        interactWithEntity(this);
+                    }
                 }
                 return notRiding;
             }
