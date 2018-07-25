@@ -14,6 +14,7 @@ import javax.vecmath.Vector3d;
 import javax.vecmath.Vector4d;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -352,7 +353,7 @@ public class EntityRaytracer
 
     /**
      * Creates part-specific transforms for a raytraceable entity's rendered engine. Arguments passed here should be the same as
-     * those passed to {@link com.mrcrayfish.vehicle.client.render.RenderVehicle#setEnginePosition setEnginePosition} by the entity's renderer.
+     * those passed to {@link RenderPoweredVehicle#setEnginePosition setEnginePosition} by the entity's renderer.
      * 
      * @param x engine's x position
      * @param y engine's y position

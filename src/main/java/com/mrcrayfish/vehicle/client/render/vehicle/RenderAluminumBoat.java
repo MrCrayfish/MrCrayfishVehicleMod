@@ -1,9 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityAluminumBoat;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -17,7 +16,7 @@ import net.minecraft.entity.Entity;
 /**
  * Author: MrCrayfish
  */
-public class RenderAluminumBoat extends RenderVehicle<EntityAluminumBoat>
+public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
 {
     public ModelRenderer noWater;
 

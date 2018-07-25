@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class RenderLandVehicle<T extends EntityLandVehicle> extends RenderVehicle<T>
+public class RenderLandVehicle<T extends EntityLandVehicle> extends RenderPoweredVehicle<T>
 {
     protected List<Wheel> wheels = new ArrayList<>();
 

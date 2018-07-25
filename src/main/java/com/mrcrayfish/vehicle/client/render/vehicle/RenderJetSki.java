@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 /**
  * Author: MrCrayfish
  */
-public class RenderJetSki extends RenderVehicle<EntityJetSki>
+public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
 {
     public RenderJetSki(RenderManager renderManager)
     {

@@ -14,11 +14,11 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class RenderVehicle<T extends EntityPoweredVehicle> extends Render<T>
+public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> extends Render<T>
 {
     private PartPosition enginePosition = new PartPosition(0, 0, 0, 0, 1.0F);
 
-    protected RenderVehicle(RenderManager renderManager)
+    protected RenderPoweredVehicle(RenderManager renderManager)
     {
         super(renderManager);
     }
