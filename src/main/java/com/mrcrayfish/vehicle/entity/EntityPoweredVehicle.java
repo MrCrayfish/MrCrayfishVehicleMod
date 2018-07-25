@@ -298,6 +298,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
+        super.readEntityFromNBT(compound);
         if(compound.hasKey("engineType", Constants.NBT.TAG_INT))
         {
             this.setEngineType(EngineType.getType(compound.getInteger("engineType")));
@@ -327,6 +328,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
+        super.writeEntityToNBT(compound);
         compound.setInteger("engineType", this.getEngineType().ordinal());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
