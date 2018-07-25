@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
@@ -26,6 +27,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 
 import javax.annotation.Nullable;
@@ -287,6 +289,29 @@ public class CommonEvents
                     Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                     vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.spawnEntity(vehicle);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerTick(TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END)
+        {
+            EntityPlayer player = event.player;
+            World world = player.world;
+            if(player.isSneaking())
+            {
+                int trailerId = player.getDataManager().get(TRAILER);
+                if(trailerId != -1)
+                {
+                    Entity entity = world.getEntityByID(trailerId);
+                    if(entity instanceof EntityTrailer)
+                    {
+                        ((EntityTrailer) entity).setPullingEntity(null);
+                    }
+                    player.getDataManager().set(TRAILER, -1);
                 }
             }
         }
