@@ -26,6 +26,7 @@ public class PacketHandler
         registerMessage(MessageFlaps.class, Side.SERVER);
         registerMessage(MessageVehicleChest.class, Side.SERVER);
         registerMessage(MessageAttachChest.class, Side.SERVER);
+        registerMessage(MessageAttachTrailer.class, Side.SERVER);
     }
 
     private static void registerMessage(Class packet, Side side)

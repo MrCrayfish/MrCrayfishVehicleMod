@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
@@ -43,12 +45,12 @@ public abstract class EntityVehicle extends Entity
     @SideOnly(Side.CLIENT)
     public ItemStack body, wheel;
 
-    private int lerpSteps;
-    private double lerpX;
-    private double lerpY;
-    private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
+    protected int lerpSteps;
+    protected double lerpX;
+    protected double lerpY;
+    protected double lerpZ;
+    protected double lerpYaw;
+    protected double lerpPitch;
 
     public EntityVehicle(World worldIn)
     {
@@ -76,6 +78,18 @@ public abstract class EntityVehicle extends Entity
     {
         if(!world.isRemote && !player.isSneaking())
         {
+            int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
+            if(trailerId != -1)
+            {
+                Entity entity = world.getEntityByID(trailerId);
+                if(entity instanceof EntityTrailer)
+                {
+                    ((EntityTrailer) entity).setPullingEntity(this);
+                    player.getDataManager().set(CommonEvents.TRAILER, -1);
+                    return true;
+                }
+            }
+
             ItemStack heldItem = player.getHeldItem(hand);
             if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
             {
@@ -239,6 +253,7 @@ public abstract class EntityVehicle extends Entity
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
     {
+        //super.setPositionAndRotationDirect(x, y, z, yaw, pitch, posRotationIncrements, teleport);
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;

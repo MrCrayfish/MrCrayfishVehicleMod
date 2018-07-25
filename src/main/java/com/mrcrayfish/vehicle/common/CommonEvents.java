@@ -38,6 +38,7 @@ public class CommonEvents
 {
     public static final DataParameter<Boolean> PUSHING_CART = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
     public static final DataParameter<NBTTagCompound> HELD_VEHICLE = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.COMPOUND_TAG);
+    public static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.VARINT);
 
     private static final List<String> IGNORE_ITEMS;
     private static final List<String> IGNORE_SOUNDS;
@@ -106,6 +107,7 @@ public class CommonEvents
         {
             event.getEntity().getDataManager().register(PUSHING_CART, false);
             event.getEntity().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
+            event.getEntity().getDataManager().register(TRAILER, -1);
         }
     }
 
