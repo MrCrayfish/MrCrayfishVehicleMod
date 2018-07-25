@@ -95,7 +95,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     @Override
     public double getMountedYOffset()
     {
-        return 0;
+        return 8 * 0.0625;
     }
 
     @Override
@@ -108,6 +108,17 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     protected boolean canBeRidden(Entity entityIn)
     {
         return false;
+    }
+
+    @Override
+    public void updatePassenger(Entity passenger)
+    {
+        if(passenger instanceof EntityVehicle)
+        {
+            Vec3d offset = new Vec3d(0, 0, -0.55).rotateYaw((float) Math.toRadians(-this.rotationYaw));
+            passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset(), this.posZ + offset.z);
+            passenger.rotationYaw = this.rotationYaw;
+        }
     }
 
     public void setPullingEntity(Entity pullingEntity)
