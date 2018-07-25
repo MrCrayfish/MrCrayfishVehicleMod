@@ -80,20 +80,21 @@ public abstract class EntityVehicle extends Entity
         {
             if(this instanceof EntityLandVehicle)
             {
-                EntityLandVehicle landVehicle = (EntityLandVehicle) this;
-                if(landVehicle.canTowTrailer())
+                int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
+                if(trailerId != -1)
                 {
-                    int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
-                    if(trailerId != -1)
+                    EntityLandVehicle landVehicle = (EntityLandVehicle) this;
+                    if(landVehicle.canTowTrailer())
                     {
                         Entity entity = world.getEntityByID(trailerId);
                         if(entity instanceof EntityTrailer)
                         {
-                            ((EntityTrailer) entity).setPullingEntity(this);
+                            EntityTrailer trailer = (EntityTrailer) entity;
+                            landVehicle.setTrailer(trailer);
                             player.getDataManager().set(CommonEvents.TRAILER, -1);
-                            return true;
                         }
                     }
+                    return true;
                 }
             }
 
