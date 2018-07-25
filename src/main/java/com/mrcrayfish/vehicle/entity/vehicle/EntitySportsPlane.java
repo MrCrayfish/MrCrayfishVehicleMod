@@ -51,6 +51,7 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
     @Override
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SPORTS_PLANE_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         wing = new ItemStack(ModItems.SPORTS_PLANE_WING);

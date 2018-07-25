@@ -38,6 +38,7 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.BUMPER_CAR_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);

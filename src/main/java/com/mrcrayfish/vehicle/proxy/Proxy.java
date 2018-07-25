@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -12,5 +12,5 @@ public interface Proxy
 
     default void init() {}
 
-    void playVehicleSound(EntityPlayer player, EntityVehicle vehicle);
+    void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle);
 }

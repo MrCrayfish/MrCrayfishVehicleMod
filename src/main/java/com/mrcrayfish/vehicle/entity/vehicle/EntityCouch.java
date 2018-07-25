@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.Item;
@@ -30,6 +29,7 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
         wheel = new ItemStack(ModItems.WHEEL);
     }

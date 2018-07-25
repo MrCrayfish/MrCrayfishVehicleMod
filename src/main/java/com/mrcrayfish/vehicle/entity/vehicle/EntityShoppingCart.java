@@ -33,6 +33,7 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SHOPPING_CART_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
     }

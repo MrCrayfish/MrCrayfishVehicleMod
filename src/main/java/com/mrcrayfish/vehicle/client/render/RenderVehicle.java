@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -10,13 +10,11 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
+public abstract class RenderVehicle<T extends EntityPoweredVehicle> extends Render<T>
 {
     private PartPosition enginePosition = new PartPosition(0, 0, 0, 0, 1.0F);
 
@@ -50,7 +48,7 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
         }
     }
 
-    public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
+    public void setupBreakAnimation(EntityPoweredVehicle vehicle, float partialTicks)
     {
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         float damageTaken = vehicle.getDamageTaken() - partialTicks;

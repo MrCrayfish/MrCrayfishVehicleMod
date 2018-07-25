@@ -20,9 +20,9 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityLandVehicle extends EntityVehicle
+public abstract class EntityLandVehicle extends EntityPoweredVehicle
 {
-    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
 
     public float drifting;
     public float additionalYaw;

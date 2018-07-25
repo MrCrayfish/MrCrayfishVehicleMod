@@ -93,6 +93,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.MOPED_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         handleBar = new ItemStack(ModItems.MOPED_HANDLE_BAR);
@@ -282,7 +283,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     }
 
     @Override
-    public void onKillEntity(EntityLivingBase entityLivingIn)
+    protected void onVehicleDestroyed(EntityLivingBase entity)
     {
         if(this.hasChest() && inventory != null)
         {

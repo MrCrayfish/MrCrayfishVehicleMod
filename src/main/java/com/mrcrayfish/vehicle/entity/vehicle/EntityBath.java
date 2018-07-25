@@ -33,6 +33,7 @@ public class EntityBath extends EntityAirVehicle implements IEntityRaytraceable
     @Override
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(Item.getByNameOrId("cfm:bath_bottom"), 1, 0);
     }
 

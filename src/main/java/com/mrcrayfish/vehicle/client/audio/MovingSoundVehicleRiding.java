@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.audio;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.MovingSound;
@@ -16,9 +16,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class MovingSoundVehicleRiding extends MovingSound
 {
     private final EntityPlayer player;
-    private final EntityVehicle vehicle;
+    private final EntityPoweredVehicle vehicle;
 
-    public MovingSoundVehicleRiding(EntityPlayer player, EntityVehicle vehicle)
+    public MovingSoundVehicleRiding(EntityPlayer player, EntityPoweredVehicle vehicle)
     {
         super(vehicle.getRidingSound(), SoundCategory.NEUTRAL);
         this.player = player;

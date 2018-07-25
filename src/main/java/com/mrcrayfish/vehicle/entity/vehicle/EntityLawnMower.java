@@ -44,6 +44,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.LAWN_MOWER_BODY);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
         wheel = new ItemStack(ModItems.WHEEL);

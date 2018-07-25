@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;

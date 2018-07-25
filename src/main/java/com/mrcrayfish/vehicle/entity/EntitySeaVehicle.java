@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntitySeaVehicle extends EntityVehicle
+public abstract class EntitySeaVehicle extends EntityPoweredVehicle
 {
     protected State state;
     protected State previousState;

@@ -35,6 +35,7 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.ALUMINUM_BOAT_BODY);
     }
 

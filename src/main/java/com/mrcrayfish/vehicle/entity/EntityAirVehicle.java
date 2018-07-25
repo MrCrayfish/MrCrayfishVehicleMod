@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -16,7 +15,7 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityAirVehicle extends EntityVehicle
+public abstract class EntityAirVehicle extends EntityPoweredVehicle
 {
     private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(EntityAirVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityAirVehicle.class, DataSerializers.FLOAT);

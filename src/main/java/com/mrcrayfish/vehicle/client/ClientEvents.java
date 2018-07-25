@@ -5,7 +5,7 @@ import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
@@ -17,7 +17,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
@@ -51,9 +50,9 @@ public class ClientEvents
                 if(player != null)
                 {
                     Entity entity = player.getRidingEntity();
-                    if(entity instanceof EntityVehicle)
+                    if(entity instanceof EntityPoweredVehicle)
                     {
-                        String speed = new DecimalFormat("0.0").format(((EntityVehicle) entity).getKilometersPreHour());
+                        String speed = new DecimalFormat("0.0").format(((EntityPoweredVehicle) entity).getKilometersPreHour());
                         mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
                     }
                 }
@@ -77,7 +76,7 @@ public class ClientEvents
         Entity ridingEntity = event.getEntityPlayer().getRidingEntity();
         if(ridingEntity instanceof EntityMotorcycle)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             double offset = vehicle.getMountedYOffset() * 3 - 3 * 0.0625;
             GlStateManager.translate(0, offset, 0);
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
@@ -88,7 +87,7 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntityJetSki)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             double offset = vehicle.getMountedYOffset() * 3 - 3 * 0.0625;
             GlStateManager.translate(0, offset, 0);
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
@@ -100,7 +99,7 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntitySpeedBoat)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             double offset = vehicle.getMountedYOffset();
             GlStateManager.translate(0, offset + ridingEntity.getEyeHeight() + 0.25, 0);
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
@@ -112,7 +111,7 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntityAluminumBoat)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             double offset = vehicle.getMountedYOffset();
             GlStateManager.translate(0, offset + ridingEntity.getEyeHeight() + 0.25, 0);
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
@@ -194,7 +193,7 @@ public class ClientEvents
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-80F);
             model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
 
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             if(vehicle.getControllingPassenger() == player)
             {
                 float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
@@ -211,7 +210,7 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntityMoped)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
@@ -252,7 +251,7 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntityLawnMower)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
@@ -283,7 +282,7 @@ public class ClientEvents
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
             model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
 
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
@@ -296,7 +295,7 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntityMiniBike)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 8F;
@@ -337,7 +336,7 @@ public class ClientEvents
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
             model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
 
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
@@ -357,9 +356,9 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity instanceof EntityVehicle)
+        if(ridingEntity instanceof EntityPoweredVehicle)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
 
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
             float wheelAngleNormal = wheelAngle / 45F;

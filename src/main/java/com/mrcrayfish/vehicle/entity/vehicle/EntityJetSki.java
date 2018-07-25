@@ -40,6 +40,7 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.JET_SKI_BODY);
         handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
     }

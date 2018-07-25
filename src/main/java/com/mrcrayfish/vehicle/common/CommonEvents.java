@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.common;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
@@ -122,7 +122,7 @@ public class CommonEvents
     {
         if (hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && player.getDataManager().get(HELD_VEHICLE).hasNoTags())
         {
-            if (targetEntity instanceof EntityVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
+            if (targetEntity instanceof EntityPoweredVehicle && !targetEntity.isBeingRidden() && !targetEntity.isDead)
             {
                 NBTTagCompound tagCompound = new NBTTagCompound();
                 String id = getEntityString(targetEntity);
@@ -175,7 +175,7 @@ public class CommonEvents
 
                     NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
-                    if(entity != null && entity instanceof EntityVehicle)
+                    if(entity != null && entity instanceof EntityPoweredVehicle)
                     {
                         MinecraftServer server = world.getMinecraftServer();
                         if (server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
@@ -195,7 +195,7 @@ public class CommonEvents
 
                                 //Sets the positions and spawns the entity
                                 float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                                Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                                Vec3d heldOffset = ((EntityPoweredVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
                                 entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
 
@@ -279,10 +279,10 @@ public class CommonEvents
                 player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
 
                 Entity vehicle = EntityList.createEntityFromNBT(tagCompound, player.world);
-                if(vehicle != null && vehicle instanceof EntityVehicle)
+                if(vehicle != null && vehicle instanceof EntityPoweredVehicle)
                 {
                     float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                    Vec3d heldOffset = ((EntityVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                    Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                     vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.spawnEntity(vehicle);
                 }

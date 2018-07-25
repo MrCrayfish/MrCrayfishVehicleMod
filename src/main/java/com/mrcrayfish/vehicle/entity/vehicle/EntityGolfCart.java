@@ -33,6 +33,7 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
     @Override
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.GOLF_CART_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);

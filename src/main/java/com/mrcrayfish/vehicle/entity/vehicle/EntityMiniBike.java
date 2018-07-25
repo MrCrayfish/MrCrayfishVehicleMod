@@ -36,6 +36,7 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.MINI_BIKE_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         handleBar = new ItemStack(ModItems.MINI_BIKE_HANDLE_BAR);

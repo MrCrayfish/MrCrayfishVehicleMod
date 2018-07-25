@@ -39,6 +39,7 @@ public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytrace
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SPEED_BOAT_BODY);
         handleBar = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }

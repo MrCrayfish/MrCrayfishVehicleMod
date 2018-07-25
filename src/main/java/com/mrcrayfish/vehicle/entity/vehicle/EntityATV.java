@@ -34,6 +34,7 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.ATV_BODY);
         handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
         wheel = new ItemStack(ModItems.WHEEL);

@@ -8,7 +8,7 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemPart;
@@ -23,8 +23,6 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import org.lwjgl.input.Keyboard;
-
-import java.awt.*;
 
 /**
  * Author: MrCrayfish
@@ -84,7 +82,7 @@ public class ClientProxy implements Proxy
     }
 
     @Override
-    public void playVehicleSound(EntityPlayer player, EntityVehicle vehicle)
+    public void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle)
     {
         Minecraft.getMinecraft().addScheduledTask(() ->
         {
