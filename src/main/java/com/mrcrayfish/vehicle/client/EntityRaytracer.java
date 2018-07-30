@@ -680,10 +680,11 @@ public class EntityRaytracer
      * Performs a general interaction with a raytraceable entity
      * 
      * @param entity raytraceable entity
+     * @param result the result of the raytrace
      */
-    public static void interactWithEntity(IEntityRaytraceable entity)
+    public static void interactWithEntity(IEntityRaytraceable entity, RayTraceResult result)
     {
-        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, EnumHand.MAIN_HAND);
+        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, result, EnumHand.MAIN_HAND);
     }
 
     /**
@@ -1322,7 +1323,7 @@ public class EntityRaytracer
                             PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
                             return true;
                         }
-                        interactWithEntity(this);
+                        interactWithEntity(this, result);
                     }
                     return notRiding;
                 }
