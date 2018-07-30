@@ -687,10 +687,11 @@ public class EntityRaytracer
      * Performs a general interaction with a raytraceable entity
      * 
      * @param entity raytraceable entity
+     * @param result the result of the raytrace
      */
-    public static void interactWithEntity(IEntityRaytraceable entity)
+    public static void interactWithEntity(IEntityRaytraceable entity, RayTraceResult result)
     {
-        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, EnumHand.MAIN_HAND);
+        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, result, EnumHand.MAIN_HAND);
     }
 
     /**
@@ -1310,26 +1311,29 @@ public class EntityRaytracer
         @SideOnly(Side.CLIENT)
         default boolean processHit(RayTraceResultRotated result, boolean rightClick)
         {
-            EntityPlayer player = Minecraft.getMinecraft().player;
-            boolean notRiding = player.getRidingEntity() != this;
-            if (!rightClick && notRiding)
+            if (!(Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this))
             {
-                Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
-                return true;
-            }
-            ItemStack stack = result.getPartHit().getStack();
-            if (!stack.isEmpty())
-            {
-                if (notRiding)
+                EntityPlayer player = Minecraft.getMinecraft().player;
+                boolean notRiding = player.getRidingEntity() != this;
+                if (!rightClick && notRiding)
                 {
-                    if (player.isSneaking())
-                    {
-                        PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
-                        return true;
-                    }
-                    interactWithEntity(this);
+                    Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
+                    return true;
                 }
-                return notRiding;
+                ItemStack stack = result.getPartHit().getStack();
+                if (!stack.isEmpty())
+                {
+                    if (notRiding)
+                    {
+                        if (player.isSneaking())
+                        {
+                            PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
+                            return true;
+                        }
+                        interactWithEntity(this, result);
+                    }
+                    return notRiding;
+                }
             }
             return false;
         }
