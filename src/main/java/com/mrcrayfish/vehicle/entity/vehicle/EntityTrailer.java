@@ -49,6 +49,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     public EntityTrailer(World worldIn)
     {
         super(worldIn);
+        this.setHeldOffset(new Vec3d(0D, 3D, 0D));
     }
 
     @Override

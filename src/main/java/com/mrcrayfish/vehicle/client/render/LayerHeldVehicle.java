@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,7 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 public class LayerHeldVehicle implements LayerRenderer<AbstractClientPlayer>
 {
     private Class<? extends Entity> cachedClass = null;
-    private EntityPoweredVehicle cachedEntity = null;
+    private EntityVehicle cachedEntity = null;
 
     @Override
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
@@ -31,12 +32,12 @@ public class LayerHeldVehicle implements LayerRenderer<AbstractClientPlayer>
         if(!tagCompound.hasNoTags())
         {
             Class<? extends Entity> entityClass = EntityList.getClassFromName(tagCompound.getString("id"));
-            if(entityClass != null && cachedClass != entityClass && EntityPoweredVehicle.class.isAssignableFrom(entityClass))
+            if(entityClass != null && cachedClass != entityClass && EntityVehicle.class.isAssignableFrom(entityClass))
             {
                 try
                 {
                     cachedClass = entityClass;
-                    cachedEntity = (EntityPoweredVehicle) entityClass.getDeclaredConstructor(World.class).newInstance(player.world);
+                    cachedEntity = (EntityVehicle) entityClass.getDeclaredConstructor(World.class).newInstance(player.world);
                     cachedEntity.readFromNBT(tagCompound);
                     cachedEntity.getDataManager().getAll().forEach(dataEntry -> cachedEntity.notifyDataManagerChange(dataEntry.getKey()));
                 }
