@@ -684,13 +684,14 @@ public class EntityRaytracer
     }
 
     /**
-     * Performs a general interaction with a raytraceable entity
+     * Performs a specific and general interaction with a raytraceable entity
      * 
      * @param entity raytraceable entity
      * @param result the result of the raytrace
      */
     public static void interactWithEntity(IEntityRaytraceable entity, RayTraceResult result)
     {
+        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, EnumHand.MAIN_HAND);
         Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, result, EnumHand.MAIN_HAND);
     }
 
