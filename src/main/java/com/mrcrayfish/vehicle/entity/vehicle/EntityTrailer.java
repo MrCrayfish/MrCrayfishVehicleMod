@@ -108,7 +108,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     @Override
     protected boolean canBeRidden(Entity entityIn)
     {
-        return false;
+        return true;
     }
 
     @Override
@@ -120,6 +120,12 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
             passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset() + offset.y, this.posZ + offset.z);
             passenger.rotationYaw = this.rotationYaw;
         }
+    }
+
+    @Override
+    protected boolean canFitPassenger(Entity passenger)
+    {
+        return passenger instanceof EntityVehicle && this.getPassengers().size() == 0;
     }
 
     public void setPullingEntity(Entity pullingEntity)
