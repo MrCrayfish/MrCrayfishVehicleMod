@@ -77,9 +77,9 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
             //Render the handles bars
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, 0.7 + bodyOffset, 0.25);
+                GlStateManager.translate(0, 0.775 + bodyOffset, 0.25);
                 GlStateManager.rotate(-45F, 1, 0, 0);
-                GlStateManager.translate(0, 0.02, 0);
+                GlStateManager.translate(0, -0.025, 0);
 
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 15F;
