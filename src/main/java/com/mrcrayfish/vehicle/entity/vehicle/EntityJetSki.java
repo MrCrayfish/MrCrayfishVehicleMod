@@ -132,7 +132,7 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
     @Override
     protected boolean canFitPassenger(Entity passenger)
     {
-        return this.getPassengers().size() < 3;
+        return this.getPassengers().size() < 2;
     }
 
     @Override
