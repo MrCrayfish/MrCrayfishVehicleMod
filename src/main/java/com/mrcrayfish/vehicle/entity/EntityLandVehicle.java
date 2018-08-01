@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.block.Block;
@@ -9,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -17,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -37,6 +41,9 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     private EntityTrailer trailer = null;
     private Vec3d towBarVec = Vec3d.ZERO;
 
+    @SideOnly(Side.CLIENT)
+    public ItemStack towBar;
+
     public EntityLandVehicle(World worldIn)
     {
         super(worldIn);
@@ -47,6 +54,13 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     {
         super.entityInit();
         this.dataManager.register(DRIFTING, false);
+    }
+
+    @Override
+    public void onClientInit()
+    {
+        super.onClientInit();
+        towBar = new ItemStack(ModItems.TOW_BAR);
     }
 
     @Override

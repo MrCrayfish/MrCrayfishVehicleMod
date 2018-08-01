@@ -38,6 +38,7 @@ public class ModItems
     public static final Item GOLF_CART_BODY;
 
     public static final Item TRAILER_BODY;
+    public static final Item TOW_BAR;
 
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
@@ -72,6 +73,7 @@ public class ModItems
         GOLF_CART_BODY = new ItemPart("golf_cart_body").setColored();
 
         TRAILER_BODY = new ItemPart("trailer_body").setColored();
+        TOW_BAR = new ItemPart("tow_bar");
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
@@ -107,6 +109,7 @@ public class ModItems
         register(GOLF_CART_BODY);
 
         register(TRAILER_BODY);
+        register(TOW_BAR);
 
         register(ENGINE);
         register(SPRAY_CAN);

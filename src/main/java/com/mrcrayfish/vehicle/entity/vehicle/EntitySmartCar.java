@@ -29,7 +29,7 @@ public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytrace
         this.setTurnSensitivity(12);
         this.setSize(1.85F, 1.15F);
         this.setHeldOffset(new Vec3d(3D, 1D, 0D));
-        this.setTowBarPosition(new Vec3d(0D, 0D, -1.5D));
+        this.setTowBarPosition(new Vec3d(0D, 0D, -1.35D));
         this.stepHeight = 1F;
     }
 

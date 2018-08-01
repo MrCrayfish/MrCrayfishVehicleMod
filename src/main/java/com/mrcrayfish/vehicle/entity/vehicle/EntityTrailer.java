@@ -76,11 +76,12 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
             if(pullingEntity instanceof EntityLandVehicle)
             {
                 EntityLandVehicle landVehicle = (EntityLandVehicle) pullingEntity;
-                towBar = towBar.add(landVehicle.getTowBarVec().rotateYaw((float) Math.toRadians(-landVehicle.rotationYaw + landVehicle.additionalYaw)));
+                Vec3d towBarVec = landVehicle.getTowBarVec();
+                towBarVec = new Vec3d(towBarVec.x, 0, towBarVec.z);
+                towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-landVehicle.rotationYaw + landVehicle.additionalYaw)));
             }
-
             this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.posZ, towBar.x - this.posX)) - 90F;
-            Vec3d vec = new Vec3d(0, 0, -23 * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
+            Vec3d vec = new Vec3d(0, 0, -25 * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
             this.setPosition(vec.x, vec.y, vec.z);
         }
         else if(!world.isRemote)

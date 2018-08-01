@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
@@ -56,6 +57,19 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
+
+            //TODO clean this up
+            if(entity.canTowTrailer())
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.rotate(180F, 0, 1, 0);
+
+                Vec3d towBarOffset = entity.getTowBarVec();
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
+            }
+
             GlStateManager.scale(1.25, 1.25, 1.25);
             GlStateManager.translate(0, -0.03125, 0.2);
 
