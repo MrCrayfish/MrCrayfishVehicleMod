@@ -174,4 +174,10 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
         this.lerpPitch = (double) pitch;
         this.lerpSteps = 1;
     }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
 }

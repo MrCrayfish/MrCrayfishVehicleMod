@@ -90,4 +90,10 @@ public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytrace
     {
         return true;
     }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
 }

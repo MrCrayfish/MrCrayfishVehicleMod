@@ -169,7 +169,7 @@ public class CommonEvents
             {
                 NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                 Entity vehicle = EntityList.createEntityFromNBT(tagCompound, world);
-                if(vehicle != null && vehicle instanceof EntityVehicle)
+                if(vehicle != null && vehicle instanceof EntityVehicle && ((EntityVehicle) vehicle).canMountTrailer())
                 {
                     vehicle.setPositionAndRotation(targetEntity.posX, targetEntity.posY, targetEntity.posZ, targetEntity.rotationYaw, targetEntity.rotationPitch);
 
