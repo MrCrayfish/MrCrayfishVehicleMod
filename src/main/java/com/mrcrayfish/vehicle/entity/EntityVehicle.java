@@ -38,6 +38,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
     private Vec3d heldOffset = Vec3d.ZERO;
+    private Vec3d trailerOffset = Vec3d.ZERO;
 
     /**
      * ItemStack instances used for rendering
@@ -394,6 +395,16 @@ public abstract class EntityVehicle extends Entity
     public Vec3d getHeldOffset()
     {
         return heldOffset;
+    }
+
+    public void setTrailerOffset(Vec3d trailerOffset)
+    {
+        this.trailerOffset = trailerOffset;
+    }
+
+    public Vec3d getTrailerOffset()
+    {
+        return trailerOffset;
     }
 
     protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)

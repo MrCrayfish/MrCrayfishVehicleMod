@@ -115,8 +115,8 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     {
         if(passenger instanceof EntityVehicle)
         {
-            Vec3d offset = new Vec3d(0, 0, -0.55).rotateYaw((float) Math.toRadians(-this.rotationYaw));
-            passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset(), this.posZ + offset.z);
+            Vec3d offset = ((EntityVehicle) passenger).getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
+            passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset() + offset.y, this.posZ + offset.z);
             passenger.rotationYaw = this.rotationYaw;
         }
     }

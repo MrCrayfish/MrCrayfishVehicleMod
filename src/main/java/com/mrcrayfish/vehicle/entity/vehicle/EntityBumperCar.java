@@ -31,6 +31,7 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         this.setSize(1.5F, 1.0F);
         this.setTurnSensitivity(20);
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.5625D));
         this.stepHeight = 0.625F;
     }
 

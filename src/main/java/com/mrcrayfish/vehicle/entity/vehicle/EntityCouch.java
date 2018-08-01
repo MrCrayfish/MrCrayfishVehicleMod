@@ -23,6 +23,7 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
         this.setMaxSpeed(10);
         this.setSize(1.0F, 1.0F);
         this.setHeldOffset(new Vec3d(2D, 2D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, 0D, -0.25D));
     }
 
     @Override
