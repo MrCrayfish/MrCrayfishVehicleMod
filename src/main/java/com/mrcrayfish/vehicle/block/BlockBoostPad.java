@@ -52,7 +52,7 @@ public class BlockBoostPad extends BlockRotatedObject
                 worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 1.0F, 0.5F);
             }
             poweredVehicle.setBoosting(true);
-            poweredVehicle.currentSpeed = poweredVehicle.getMaxSpeed();
+            poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
             poweredVehicle.speedMultiplier = 0.5F;
         }
     }

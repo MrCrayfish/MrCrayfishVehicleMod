@@ -379,6 +379,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.dataManager.get(MAX_SPEED);
     }
 
+    public float getActualMaxSpeed()
+    {
+        return this.dataManager.get(MAX_SPEED) + this.getEngineType().getAdditionalMaxSpeed();
+    }
+
     public void setSpeed(float speed)
     {
         this.dataManager.set(CURRENT_SPEED, speed);
@@ -396,7 +401,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public float getActualSpeed()
     {
-        return (this.currentSpeed + this.currentSpeed * this.speedMultiplier) / this.getMaxSpeed();
+        return (this.currentSpeed + this.currentSpeed * this.speedMultiplier) / this.getActualMaxSpeed();
     }
 
     public float getAccelerationSpeed()
