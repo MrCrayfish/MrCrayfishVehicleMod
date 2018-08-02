@@ -8,6 +8,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -46,14 +47,18 @@ public class BlockBoostPad extends BlockRotatedObject
     {
         if(entityIn instanceof EntityPoweredVehicle && entityIn.getControllingPassenger() != null)
         {
-            EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
-            if(!poweredVehicle.isBoosting())
+            EnumFacing facing = state.getValue(FACING);
+            if(facing == entityIn.getHorizontalFacing())
             {
-                worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
+                if(!poweredVehicle.isBoosting())
+                {
+                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                }
+                poweredVehicle.setBoosting(true);
+                poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
+                poweredVehicle.speedMultiplier = 0.5F;
             }
-            poweredVehicle.setBoosting(true);
-            poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
-            poweredVehicle.speedMultiplier = 0.5F;
         }
     }
 }
