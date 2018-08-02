@@ -2,8 +2,8 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
         "particle": "blocks/concrete_orange",
-        "0": "vehicle:blocks/boost_pad",
-        "1": "vehicle:blocks/boost_pad"
+        "0": "blocks/concrete_orange",
+        "1": "blocks/concrete_white"
     },
     "display": {
         "gui": {
