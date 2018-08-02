@@ -7,6 +7,7 @@ item.spray_can.info=Use this spray can to paint vehicles. To add a color to the 
 item.spray_can.empty=No Color
 
 tile.traffic_cone.name=Traffic Cone
+tile.boost_pad.name=Boost Pad
 
 entity.moped.name=Moped
 
