@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
+import com.mrcrayfish.vehicle.block.BlockBoostPad;
 import com.mrcrayfish.vehicle.block.BlockTrafficCone;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
 import net.minecraft.block.Block;
@@ -11,15 +12,18 @@ import net.minecraft.item.ItemBlock;
 public class ModBlocks
 {
     public static final Block TRAFFIC_CONE;
+    public static final Block BOOST_PAD;
 
     static
     {
         TRAFFIC_CONE = new BlockTrafficCone();
+        BOOST_PAD = new BlockBoostPad();
     }
 
     public static void register()
     {
         registerBlock(TRAFFIC_CONE, new ItemTrafficCone(TRAFFIC_CONE));
+        registerBlock(BOOST_PAD);
     }
 
     private static void registerBlock(Block block)

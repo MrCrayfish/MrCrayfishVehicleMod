@@ -104,6 +104,16 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void updateVehicleMotion()
     {
+        float currentSpeed = this.currentSpeed;
+
+        if(speedMultiplier > 1.0F)
+        {
+            speedMultiplier = 1.0F;
+        }
+
+        /* Applies the speed multiplier to the current speed */
+        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
+
         float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
         float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
         this.vehicleMotionX = (-currentSpeed * f1);

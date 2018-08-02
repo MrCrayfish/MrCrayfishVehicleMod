@@ -52,5 +52,8 @@
     },
     "sports_plane_engine_stereo": {
         "sounds": [ {"name": "vehicle:sports_plane_engine_stereo"}]
+    },
+    "boost_pad": {
+        "sounds": [ {"name": "vehicle:boost_pad"}]
     }
 }

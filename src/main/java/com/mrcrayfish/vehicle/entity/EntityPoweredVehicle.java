@@ -51,6 +51,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float prevCurrentSpeed;
     public float currentSpeed;
     public float speedMultiplier;
+    public boolean boosting;
+    public int boostTimer;
 
     public int turnAngle;
     public int prevTurnAngle;
@@ -175,7 +177,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             motionY *= 0.98D;
             motionZ *= 0.98;
         }
-        speedMultiplier *= 0.85;
+
+        if(boostTimer > 0)
+        {
+            boostTimer--;
+        }
+        else
+        {
+            boosting = false;
+            speedMultiplier *= 0.85;
+        }
 
         /* Checks for block collisions */
         this.doBlockCollisions();
@@ -228,9 +239,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.currentSpeed *= 0.5;
         }
-
-        /* Applies the speed multiplier to the current speed */
-        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
     }
 
     protected void updateTurning()
@@ -386,6 +394,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.currentSpeed / this.getMaxSpeed();
     }
 
+    public float getActualSpeed()
+    {
+        return (this.currentSpeed + this.currentSpeed * this.speedMultiplier) / this.getMaxSpeed();
+    }
+
     public float getAccelerationSpeed()
     {
         return this.dataManager.get(ACCELERATION_SPEED);
@@ -475,6 +488,17 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean getHorn()
     {
         return this.dataManager.get(HORN);
+    }
+
+    public void setBoosting(boolean boosting)
+    {
+        this.boosting = boosting;
+        this.boostTimer = 10;
+    }
+
+    public boolean isBoosting()
+    {
+        return boosting;
     }
 
     @Override

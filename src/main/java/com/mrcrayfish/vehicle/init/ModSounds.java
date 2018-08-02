@@ -37,6 +37,7 @@ public class ModSounds
     public static final SoundEvent MOPED_ENGINE_STEREO;
     public static final SoundEvent SPORTS_PLANE_ENGINE_MONO;
     public static final SoundEvent SPORTS_PLANE_ENGINE_STEREO;
+    public static final SoundEvent BOOST_PAD;
 
     static
     {
@@ -58,6 +59,7 @@ public class ModSounds
         MOPED_ENGINE_STEREO = registerSound("vehicle:moped_engine_stereo");
         SPORTS_PLANE_ENGINE_MONO = registerSound("vehicle:sports_plane_engine_mono");
         SPORTS_PLANE_ENGINE_STEREO = registerSound("vehicle:sports_plane_engine_stereo");
+        BOOST_PAD = registerSound("vehicle:boost_pad");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -92,6 +94,7 @@ public class ModSounds
             registry.register(MOPED_ENGINE_STEREO);
             registry.register(SPORTS_PLANE_ENGINE_MONO);
             registry.register(SPORTS_PLANE_ENGINE_STEREO);
+            registry.register(BOOST_PAD);
         }
     }
 }
