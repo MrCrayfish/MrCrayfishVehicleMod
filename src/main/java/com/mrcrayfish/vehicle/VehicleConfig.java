@@ -30,6 +30,11 @@ public class VehicleConfig
         @Config.Comment("Configuration options for vehicle interaction")
         @Config.LangKey(Reference.MOD_ID + ".config.client.interaction")
         public Interaction interaction = new Interaction();
+
+        @Config.Name("Show Speedometer")
+        @Config.Comment("If true, displays a speedometer on the HUD when driving a vehicle")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.speedometer")
+        public boolean enabledSpeedometer = true;
     }
 
     public static class Interaction
