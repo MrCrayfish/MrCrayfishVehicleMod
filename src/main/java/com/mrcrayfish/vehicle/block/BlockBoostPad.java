@@ -1,13 +1,13 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyBool;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -22,11 +22,15 @@ import javax.annotation.Nullable;
  */
 public class BlockBoostPad extends BlockRotatedObject
 {
+    public static final PropertyBool LEFT = PropertyBool.create("left");
+    public static final PropertyBool RIGHT = PropertyBool.create("right");
+
     protected static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.0625D, 1.0D);
 
     public BlockBoostPad()
     {
         super(Material.ROCK, "boost_pad");
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(LEFT, false).withProperty(RIGHT, false));
     }
 
     @Override
@@ -60,5 +64,32 @@ public class BlockBoostPad extends BlockRotatedObject
                 poweredVehicle.speedMultiplier = 0.5F;
             }
         }
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        EnumFacing facing = state.getValue(FACING);
+        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.LEFT) == this)
+        {
+            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.LEFT) == StateHelper.Direction.UP)
+            {
+                state = state.withProperty(LEFT, true);
+            }
+        }
+        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.RIGHT) == this)
+        {
+            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.RIGHT) == StateHelper.Direction.UP)
+            {
+                state = state.withProperty(RIGHT, true);
+            }
+        }
+        return state;
+    }
+
+    @Override
+    protected BlockStateContainer createBlockState()
+    {
+        return new BlockStateContainer(this, FACING, LEFT, RIGHT);
     }
 }
