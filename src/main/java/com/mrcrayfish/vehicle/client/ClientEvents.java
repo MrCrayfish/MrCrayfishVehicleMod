@@ -378,6 +378,23 @@ public class ClientEvents
                     model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
                     model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
                 }
+
+                if(ridingEntity instanceof EntityATV && ridingEntity.getControllingPassenger() != player)
+                {
+                    model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
+                    model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
+                    model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(15F);
+                    model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-20F);
+                    model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
+                    model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(-15F);
+
+                    model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+                    model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
+                    model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+                    model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+
+                    return;
+                }
             }
             else if(ridingEntity instanceof EntityDuneBuggy)
             {

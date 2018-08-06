@@ -34,6 +34,7 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, -0.09375D, -0.65D));
     }
 
     @Override
@@ -131,7 +132,7 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
     @Override
     protected boolean canFitPassenger(Entity passenger)
     {
-        return this.getPassengers().size() < 3;
+        return this.getPassengers().size() < 2;
     }
 
     @Override

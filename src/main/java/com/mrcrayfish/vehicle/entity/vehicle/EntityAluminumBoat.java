@@ -135,4 +135,10 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
     {
         return true;
     }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
 }

@@ -130,4 +130,10 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
     {
         return true;
     }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
 }

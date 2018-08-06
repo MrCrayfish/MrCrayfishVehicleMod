@@ -1,7 +1,11 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,6 +16,9 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSourceIndirect;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -31,6 +38,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
     private Vec3d heldOffset = Vec3d.ZERO;
+    private Vec3d trailerOffset = Vec3d.ZERO;
 
     /**
      * ItemStack instances used for rendering
@@ -38,12 +46,12 @@ public abstract class EntityVehicle extends Entity
     @SideOnly(Side.CLIENT)
     public ItemStack body, wheel;
 
-    private int lerpSteps;
-    private double lerpX;
-    private double lerpY;
-    private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
+    protected int lerpSteps;
+    protected double lerpX;
+    protected double lerpY;
+    protected double lerpZ;
+    protected double lerpYaw;
+    protected double lerpPitch;
 
     public EntityVehicle(World worldIn)
     {
@@ -65,6 +73,58 @@ public abstract class EntityVehicle extends Entity
 
     @SideOnly(Side.CLIENT)
     public void onClientInit() {}
+
+    @Override
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    {
+        if(!world.isRemote && !player.isSneaking())
+        {
+            if(this instanceof EntityLandVehicle)
+            {
+                int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
+                if(trailerId != -1)
+                {
+                    EntityLandVehicle landVehicle = (EntityLandVehicle) this;
+                    if(landVehicle.canTowTrailer() && landVehicle.getTrailer() == null)
+                    {
+                        Entity entity = world.getEntityByID(trailerId);
+                        if(entity instanceof EntityTrailer)
+                        {
+                            EntityTrailer trailer = (EntityTrailer) entity;
+                            landVehicle.setTrailer(trailer);
+                            player.getDataManager().set(CommonEvents.TRAILER, -1);
+                        }
+                    }
+                    return true;
+                }
+            }
+
+            ItemStack heldItem = player.getHeldItem(hand);
+            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
+            {
+                if(canBeColored())
+                {
+                    NBTTagCompound tagCompound = ItemSprayCan.createTagCompound(heldItem);
+                    int remainingSprays = tagCompound.getInteger("remainingSprays");
+                    if(tagCompound.hasKey("color", Constants.NBT.TAG_INT) && remainingSprays > 0)
+                    {
+                        int color = tagCompound.getInteger("color");
+                        if(this.getColor() != color)
+                        {
+                            this.setColor(tagCompound.getInteger("color"));
+                            player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            tagCompound.setInteger("remainingSprays", remainingSprays - 1);
+                        }
+                    }
+                }
+            }
+            else if(this.canBeRidden(player))
+            {
+                player.startRiding(this);
+            }
+        }
+        return true;
+    }
 
     @Override
     protected void readEntityFromNBT(NBTTagCompound compound)
@@ -202,6 +262,7 @@ public abstract class EntityVehicle extends Entity
     @SideOnly(Side.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
     {
+        //super.setPositionAndRotationDirect(x, y, z, yaw, pitch, posRotationIncrements, teleport);
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;
@@ -220,7 +281,7 @@ public abstract class EntityVehicle extends Entity
     }
 
     @Override
-    protected void addPassenger(Entity passenger)
+    public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
         if(this.canPassengerSteer() && this.lerpSteps > 0)
@@ -238,10 +299,6 @@ public abstract class EntityVehicle extends Entity
     public void updatePassenger(Entity passenger)
     {
         super.updatePassenger(passenger);
-        //TODO change to config option
-        //passenger.rotationYaw = this.rotationYaw;
-        //passenger.setRotationYawHead(passenger.rotationYaw);
-        //applyYawToEntity(passenger);
     }
 
     protected void applyYawToEntity(Entity entityToUpdate)
@@ -338,5 +395,25 @@ public abstract class EntityVehicle extends Entity
     public Vec3d getHeldOffset()
     {
         return heldOffset;
+    }
+
+    public void setTrailerOffset(Vec3d trailerOffset)
+    {
+        this.trailerOffset = trailerOffset;
+    }
+
+    public Vec3d getTrailerOffset()
+    {
+        return trailerOffset;
+    }
+
+    public boolean canMountTrailer()
+    {
+        return true;
+    }
+
+    protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
+    {
+        return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
     }
 }

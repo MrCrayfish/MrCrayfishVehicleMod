@@ -27,6 +27,7 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
         this.setMaxTurnAngle(90);
         this.setTurnSensitivity(15);
         this.setHeldOffset(new Vec3d(4D, 9.25D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.25D));
     }
 
     @Override

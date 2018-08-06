@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -16,6 +17,8 @@ public class EntityBath extends EntityAirVehicle implements IEntityRaytraceable
     public EntityBath(World worldIn)
     {
         super(worldIn);
+        this.setHeldOffset(new Vec3d(4D, -3.75D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, 0D, -0.4375D));
     }
 
     @Override
@@ -40,7 +43,7 @@ public class EntityBath extends EntityAirVehicle implements IEntityRaytraceable
     @Override
     public void updateVehicle()
     {
-        if(this.isFlying())
+        if(this.isFlying() && this.getControllingPassenger() != null)
         {
             for(int i = 0; i < 4; i++)
             {

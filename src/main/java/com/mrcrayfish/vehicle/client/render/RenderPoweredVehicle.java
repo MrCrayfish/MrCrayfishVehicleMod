@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> extends Render<T>
+public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> extends RenderVehicle<T>
 {
     private PartPosition enginePosition = new PartPosition(0, 0, 0, 0, 1.0F);
 
@@ -45,22 +45,6 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.engine, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
-        }
-    }
-
-    public void setupBreakAnimation(EntityPoweredVehicle vehicle, float partialTicks)
-    {
-        float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
-        float damageTaken = vehicle.getDamageTaken() - partialTicks;
-
-        if (damageTaken < 0.0F)
-        {
-            damageTaken = 0.0F;
-        }
-
-        if (timeSinceHit > 0.0F)
-        {
-            GlStateManager.rotate(MathHelper.sin(timeSinceHit) * timeSinceHit * damageTaken / 10.0F, 0, 0, 1);
         }
     }
 

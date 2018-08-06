@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.render.LayerHeldVehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import net.minecraft.client.Minecraft;
@@ -72,7 +73,7 @@ public class HeldVehicleEvents
             if(!holdingVehicle)
             {
                 AnimationCounter counter = idToCounter.get(player.getUniqueID());
-                player.renderYawOffset = player.getRotationYawHead() - (player.getRotationYawHead() - player.renderYawOffset) * counter.getProgress(event.getPartialTicks());
+                player.renderYawOffset = player.getRotationYawHead() - (player.getRotationYawHead() - player.prevRenderYawOffset) * counter.getProgress(event.getPartialTicks());
             }
         }
         else
@@ -85,21 +86,21 @@ public class HeldVehicleEvents
         float progress = counter.getProgress(event.getPartialTicks());
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
         model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F * progress);
-        model.bipedRightArm.rotationPointY -= 1.5F * progress;
+        model.bipedRightArm.rotationPointY = -1.5F * progress;
         model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
         model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(5F * progress);
-        model.bipedLeftArm.rotationPointY -= 1.5F * progress;
+        model.bipedLeftArm.rotationPointY = -1.5F * progress;
     }
 
     public static class AnimationCounter
     {
-        private int maxCount;
+        private final int MAX_COUNT;
         private int prevCount;
         private int currentCount;
 
         private AnimationCounter(int maxCount)
         {
-            this.maxCount = maxCount;
+            this.MAX_COUNT = maxCount;
         }
 
         public int update(boolean increment)
@@ -107,7 +108,7 @@ public class HeldVehicleEvents
             prevCount = currentCount;
             if(increment)
             {
-                if(currentCount < maxCount)
+                if(currentCount < MAX_COUNT)
                 {
                     currentCount++;
                 }
@@ -116,7 +117,7 @@ public class HeldVehicleEvents
             {
                 if(currentCount > 0)
                 {
-                    currentCount -= 2;
+                    currentCount = Math.max(0, currentCount - 2);
                 }
             }
             return currentCount;
@@ -124,7 +125,7 @@ public class HeldVehicleEvents
 
         public int getMaxCount()
         {
-            return maxCount;
+            return MAX_COUNT;
         }
 
         public int getCurrentCount()
@@ -134,7 +135,7 @@ public class HeldVehicleEvents
 
         public float getProgress(float partialTicks)
         {
-            return (prevCount + (currentCount - prevCount) * partialTicks) / (float) maxCount;
+            return (prevCount + (currentCount - prevCount) * partialTicks) / (float) MAX_COUNT;
         }
     }
 }

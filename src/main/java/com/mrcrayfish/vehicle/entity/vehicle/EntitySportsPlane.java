@@ -145,4 +145,10 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
     {
         return super.getAccelerationSpeed() * (propellerSpeed / 120F);
     }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
 }

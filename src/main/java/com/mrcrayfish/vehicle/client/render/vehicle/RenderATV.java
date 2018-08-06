@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
@@ -24,10 +25,10 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
     public RenderATV(RenderManager renderManager)
     {
         super(renderManager);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.95F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.95F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.95F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.95F));
+        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
+        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
+        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F));
+        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F));
     }
 
     @Nullable
@@ -56,6 +57,19 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
+
+            //TODO clean this up
+            if(entity.canTowTrailer())
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.rotate(180F, 0, 1, 0);
+
+                Vec3d towBarOffset = entity.getTowBarVec();
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
+            }
+
             GlStateManager.scale(1.25, 1.25, 1.25);
             GlStateManager.translate(0, -0.03125, 0.2);
 
@@ -77,9 +91,9 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
             //Render the handles bars
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, 0.7 + bodyOffset, 0.25);
+                GlStateManager.translate(0, 0.775 + bodyOffset, 0.25);
                 GlStateManager.rotate(-45F, 1, 0, 0);
-                GlStateManager.translate(0, 0.02, 0);
+                GlStateManager.translate(0, -0.025, 0);
 
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 15F;
