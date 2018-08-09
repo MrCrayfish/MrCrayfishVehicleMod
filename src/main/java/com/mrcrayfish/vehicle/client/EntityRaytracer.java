@@ -1188,7 +1188,7 @@ public class EntityRaytracer
             subtract(edge2, vec2, vec0);
             crossProduct(pvec, direction, edge2);
             det = dotProduct(edge1, pvec);
-            if (det >= EPSILON)
+            if (det <= -EPSILON || det >= EPSILON)
             {
                 inv_det = 1f / det;
                 subtract(tvec, eyes, vec0);
@@ -1197,7 +1197,7 @@ public class EntityRaytracer
                 {
                     crossProduct(qvec, tvec, edge1);
                     float v = dotProduct(direction, qvec) * inv_det;
-                    if (v >= 0 && u + v <= 1)
+                    if (v >= 0 && u + v <= 1 && inv_det * dotProduct(edge2, qvec) > EPSILON)
                     {
                         return new RayTraceResultTriangle(part, edge1[0] * u + edge2[0] * v + vec0[0], edge1[1] * u + edge2[1] * v + vec0[1], edge1[2] * u + edge2[2] * v + vec0[2]);
                     }

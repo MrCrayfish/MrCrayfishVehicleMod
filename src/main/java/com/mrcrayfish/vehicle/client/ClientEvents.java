@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
@@ -41,7 +42,7 @@ public class ClientEvents
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.END)
+        if(VehicleConfig.CLIENT.enabledSpeedometer && event.phase == TickEvent.Phase.END)
         {
             Minecraft mc = Minecraft.getMinecraft();
             if(mc.inGameHasFocus)
