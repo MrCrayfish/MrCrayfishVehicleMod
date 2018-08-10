@@ -68,7 +68,7 @@ public class BlockBoostRamp extends BlockRotatedObject
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = 0.5F;
-                poweredVehicle.motionY = 0.75F;
+                poweredVehicle.motionY = 1.0F;
             }
         }
     }
