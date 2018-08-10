@@ -36,7 +36,7 @@ public class BakedModelRamp implements IBakedModel
     {
         ImmutableMap.Builder<ItemCameraTransforms.TransformType, Matrix4f> builder = ImmutableMap.builder();
         builder.put(ItemCameraTransforms.TransformType.FIXED, new TransformationBuilder().setScale(0.5F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.GUI, new TransformationBuilder().setTranslation(0.1F, 2, 0).setRotation(20, 110.5F, 0).setScale(0.7F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.GUI, new TransformationBuilder().setTranslation(0.1F, 2, 0).setRotation(30.0F, 45.0F, 0).setScale(0.625F).build().getMatrix());
         builder.put(ItemCameraTransforms.TransformType.GROUND, new TransformationBuilder().setTranslation(0, 1, 0).setScale(0.25F).build().getMatrix());
         builder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, new TransformationBuilder().setTranslation(0, 4, 0).setRotation(0, -45, 0).setScale(0.4F).build().getMatrix());
         builder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, new TransformationBuilder().setTranslation(0, 4, 0).setRotation(0, 135, 0).setScale(0.4F).build().getMatrix());
@@ -65,50 +65,61 @@ public class BakedModelRamp implements IBakedModel
             BakedQuadBuilder builder = new BakedQuadBuilder(format);
             builder.setFacing(EnumFacing.NORTH);
 
-            if(state != null && state.getPropertyKeys().contains(BlockRotatedObject.FACING))
-            {
-                EnumFacing facing = state.getValue(BlockRotatedObject.FACING);
-                builder.setFacing(facing);
-            }
-
-            builder.setTexture(rampTexture);
-
+            EnumFacing facing = EnumFacing.NORTH;
             float startHeight = 0.0F;
             float endHeight = 0.5F;
+            boolean left = false;
+            boolean right = false;
 
-            if(state != null && state.getPropertyKeys().contains(BlockBoostRamp.STACKED))
+            if(state != null)
             {
-                if(state.getValue(BlockBoostRamp.STACKED))
+                if(state.getPropertyKeys().contains(BlockRotatedObject.FACING))
+                {
+                    facing = state.getValue(BlockRotatedObject.FACING);
+                    builder.setFacing(facing);
+                }
+                if(state.getPropertyKeys().contains(BlockBoostRamp.STACKED) && state.getValue(BlockBoostRamp.STACKED))
                 {
                     startHeight = 0.5F;
                     endHeight = 1.0F;
                 }
+                left = state.getPropertyKeys().contains(BlockBoostRamp.LEFT) && state.getValue(BlockBoostRamp.LEFT);
+                right = state.getPropertyKeys().contains(BlockBoostRamp.RIGHT) && state.getValue(BlockBoostRamp.RIGHT);
             }
 
+            builder.setTexture(rampTexture);
+
+            int offsetStart = left ? 0 : 1;
+            int offsetEnd = right ? 16 : 15;
+
             //Boost Pad
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), EnumFacing.UP);
+            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetStart * 0.0625F, offsetStart, 0), EnumFacing.UP);
+            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetEnd * 0.0625F, offsetEnd, 0), EnumFacing.UP);
+            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetEnd * 0.0625F, offsetEnd, 16), EnumFacing.UP);
+            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetStart * 0.0625F, offsetStart, 16), EnumFacing.UP);
             quads.add(builder.build());
 
             builder.setTexture(anvilTexture);
 
-            //Left Trim
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 0, 0, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 0, 0, 16), EnumFacing.UP);
-            quads.add(builder.build());
+            if(!left)
+            {
+                //Left Trim
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 0, 0, 0), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 0, 0, 16), EnumFacing.UP);
+                quads.add(builder.build());
+            }
 
-            //Right Trim
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1, 16, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1, 16, 16), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), EnumFacing.UP);
-            quads.add(builder.build());
-
-            EnumFacing facing = builder.getFacing();
+            if(!right)
+            {
+                //Right Trim
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1, 16, 0), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1, 16, 16), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), EnumFacing.UP);
+                quads.add(builder.build());
+            }
 
             //Left Side
             builder.put(new BakedQuadBuilder.VertexData(1, 0, 0, 0, 0), facing.rotateYCCW());
@@ -183,15 +194,6 @@ public class BakedModelRamp implements IBakedModel
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
-        ImmutableMap.Builder<ItemCameraTransforms.TransformType, Matrix4f> builder = ImmutableMap.builder();
-        builder.put(ItemCameraTransforms.TransformType.FIXED, new TransformationBuilder().setScale(0.5F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.GUI, new TransformationBuilder().setTranslation(0.1F, 2, 0).setRotation(30.0F, 45.0F, 0).setScale(0.625F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.GROUND, new TransformationBuilder().setTranslation(0, 1, 0).setScale(0.25F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, new TransformationBuilder().setTranslation(0, 4, 0).setRotation(0, -45, 0).setScale(0.4F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, new TransformationBuilder().setTranslation(0, 4, 0).setRotation(0, 135, 0).setScale(0.4F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, new TransformationBuilder().setTranslation(0, 2.5F, 3.5F).setRotation(75, 315, 0).setScale(0.375F).build().getMatrix());
-        builder.put(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, new TransformationBuilder().setTranslation(0, 2.5F, 3.5F).setRotation(75, 135, 0).setScale(0.375F).build().getMatrix());
-        ImmutableMap<ItemCameraTransforms.TransformType, Matrix4f> CAMERA_TRANSFORMATIONS = builder.build();
         return Pair.of(this, CAMERA_TRANSFORMATIONS.get(cameraTransformType));
     }
 }

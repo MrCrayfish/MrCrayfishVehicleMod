@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -12,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -23,6 +25,8 @@ import java.util.List;
 public class BlockBoostRamp extends BlockRotatedObject
 {
     public static final PropertyBool STACKED = PropertyBool.create("stacked");
+    public static final PropertyBool LEFT = PropertyBool.create("left");
+    public static final PropertyBool RIGHT = PropertyBool.create("right");
 
     private static final AxisAlignedBB COLLISION_BASE = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.0625, 1.0);
     private static final AxisAlignedBB COLLISION_STACKED_BASE = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.5625, 1.0);
@@ -98,6 +102,29 @@ public class BlockBoostRamp extends BlockRotatedObject
     }
 
     @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    {
+        EnumFacing facing = state.getValue(FACING);
+        state = state.withProperty(LEFT, false);
+        state = state.withProperty(RIGHT, false);
+        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.LEFT) == this)
+        {
+            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.LEFT) == StateHelper.Direction.DOWN)
+            {
+                state = state.withProperty(RIGHT, true);
+            }
+        }
+        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.RIGHT) == this)
+        {
+            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.RIGHT) == StateHelper.Direction.DOWN)
+            {
+                state = state.withProperty(LEFT, true);
+            }
+        }
+        return state;
+    }
+
+    @Override
     public int getMetaFromState(IBlockState state)
     {
         return state.getValue(FACING).getHorizontalIndex() + (state.getValue(STACKED) ? 4 : 0);
@@ -112,6 +139,6 @@ public class BlockBoostRamp extends BlockRotatedObject
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING, STACKED);
+        return new BlockStateContainer(this, FACING, STACKED, LEFT, RIGHT);
     }
 }
