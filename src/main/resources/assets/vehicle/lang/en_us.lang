@@ -8,6 +8,7 @@ item.spray_can.empty=No Color
 
 tile.traffic_cone.name=Traffic Cone
 tile.boost_pad.name=Boost Pad
+tile.boost_ramp.name=Boost Ramp
 
 entity.moped.name=Moped
 
