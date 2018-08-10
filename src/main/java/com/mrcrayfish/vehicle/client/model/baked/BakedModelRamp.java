@@ -60,11 +60,12 @@ public class BakedModelRamp implements IBakedModel
     public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
     {
         List<BakedQuad> quads = Lists.newArrayList();
-        if(side == null && state != null)
+        if(side == null)
         {
             BakedQuadBuilder builder = new BakedQuadBuilder(format);
+            builder.setFacing(EnumFacing.NORTH);
 
-            if(state.getPropertyKeys().contains(BlockRotatedObject.FACING))
+            if(state != null && state.getPropertyKeys().contains(BlockRotatedObject.FACING))
             {
                 EnumFacing facing = state.getValue(BlockRotatedObject.FACING);
                 builder.setFacing(facing);
@@ -75,7 +76,7 @@ public class BakedModelRamp implements IBakedModel
             float startHeight = 0.0F;
             float endHeight = 0.5F;
 
-            if(state.getPropertyKeys().contains(BlockBoostRamp.STACKED))
+            if(state != null && state.getPropertyKeys().contains(BlockBoostRamp.STACKED))
             {
                 if(state.getValue(BlockBoostRamp.STACKED))
                 {
@@ -182,6 +183,15 @@ public class BakedModelRamp implements IBakedModel
     @Override
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
+        ImmutableMap.Builder<ItemCameraTransforms.TransformType, Matrix4f> builder = ImmutableMap.builder();
+        builder.put(ItemCameraTransforms.TransformType.FIXED, new TransformationBuilder().setScale(0.5F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.GUI, new TransformationBuilder().setTranslation(0.1F, 2, 0).setRotation(30.0F, 45.0F, 0).setScale(0.625F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.GROUND, new TransformationBuilder().setTranslation(0, 1, 0).setScale(0.25F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_LEFT_HAND, new TransformationBuilder().setTranslation(0, 4, 0).setRotation(0, -45, 0).setScale(0.4F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.FIRST_PERSON_RIGHT_HAND, new TransformationBuilder().setTranslation(0, 4, 0).setRotation(0, 135, 0).setScale(0.4F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.THIRD_PERSON_LEFT_HAND, new TransformationBuilder().setTranslation(0, 2.5F, 3.5F).setRotation(75, 315, 0).setScale(0.375F).build().getMatrix());
+        builder.put(ItemCameraTransforms.TransformType.THIRD_PERSON_RIGHT_HAND, new TransformationBuilder().setTranslation(0, 2.5F, 3.5F).setRotation(75, 135, 0).setScale(0.375F).build().getMatrix());
+        ImmutableMap<ItemCameraTransforms.TransformType, Matrix4f> CAMERA_TRANSFORMATIONS = builder.build();
         return Pair.of(this, CAMERA_TRANSFORMATIONS.get(cameraTransformType));
     }
 }

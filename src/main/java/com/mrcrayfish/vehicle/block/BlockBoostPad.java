@@ -72,7 +72,6 @@ public class BlockBoostPad extends BlockRotatedObject
         EnumFacing facing = state.getValue(FACING);
         if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.LEFT) == this)
         {
-            System.out.println(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.LEFT));
             if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.LEFT) == StateHelper.Direction.DOWN)
             {
                 state = state.withProperty(RIGHT, true);
