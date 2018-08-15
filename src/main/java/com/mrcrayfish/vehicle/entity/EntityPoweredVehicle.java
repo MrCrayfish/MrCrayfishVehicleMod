@@ -53,6 +53,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float speedMultiplier;
     public boolean boosting;
     public int boostTimer;
+    public boolean launching;
+    public int launchingTimer;
 
     public int turnAngle;
     public int prevTurnAngle;
@@ -186,6 +188,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             boosting = false;
             speedMultiplier *= 0.85;
+        }
+
+        if(launchingTimer > 0)
+        {
+            boostTimer--;
+        }
+        else
+        {
+            launching = false;
         }
 
         /* Checks for block collisions */
@@ -504,6 +515,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean isBoosting()
     {
         return boosting;
+    }
+
+    public void setLaunching(boolean launching)
+    {
+        this.launching = launching;
+    }
+
+    public boolean isLaunching()
+    {
+        return launching;
     }
 
     @Override

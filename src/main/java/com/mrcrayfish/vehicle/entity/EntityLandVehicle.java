@@ -117,7 +117,10 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
         float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
         this.vehicleMotionX = (-currentSpeed * f1);
-        this.motionY -= 0.08D;
+        if(!launching)
+        {
+            this.motionY -= 0.08D;
+        }
         this.vehicleMotionZ = (currentSpeed * f2);
     }
 
