@@ -17,6 +17,7 @@ public class CustomLoader implements ICustomModelLoader
 	{
 		Builder<String, IModel> builder = new Builder<>();
 		builder.put("boost_ramp", new ModelRamp());
+		builder.put("steep_boost_ramp", new ModelSteepRamp());
 		BLOCK_MODELS = builder.build();
 	}
 
