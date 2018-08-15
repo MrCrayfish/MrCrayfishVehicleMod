@@ -192,7 +192,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
         if(launchingTimer > 0)
         {
-            boostTimer--;
+            launchingTimer--;
         }
         else
         {
@@ -520,6 +520,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public void setLaunching(boolean launching)
     {
         this.launching = launching;
+        this.launchingTimer = 2;
     }
 
     public boolean isLaunching()
