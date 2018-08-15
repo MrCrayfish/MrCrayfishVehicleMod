@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.util.Bounds;
 import com.mrcrayfish.vehicle.util.StateHelper;
+import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -47,6 +48,8 @@ public class BlockBoostRamp extends BlockRotatedObject
     private static final AxisAlignedBB[] COLLISION_STACKED_SIX = new Bounds(12, 14, 0, 16, 15, 16).getRotatedBounds();
     private static final AxisAlignedBB[] COLLISION_STACKED_SEVEN = new Bounds(14, 15, 0, 16, 16, 16).getRotatedBounds();
 
+    private static final AxisAlignedBB BOUNDING_BOX_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+
     public BlockBoostRamp()
     {
         super(Material.ROCK, "boost_ramp");
@@ -72,6 +75,12 @@ public class BlockBoostRamp extends BlockRotatedObject
                 poweredVehicle.motionY = (poweredVehicle.currentSpeed * 0.5) / 20F + 0.1;
             }
         }
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        return !state.getValue(STACKED) ? BOUNDING_BOX_BOTTOM : FULL_BLOCK_AABB;
     }
 
     @Override

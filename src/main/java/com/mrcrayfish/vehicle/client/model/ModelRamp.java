@@ -20,7 +20,7 @@ public class ModelRamp implements IModel
     @Override
     public Collection<ResourceLocation> getTextures()
     {
-        return ImmutableSet.of(new ResourceLocation("minecraft", "blocks/anvil_base"), new ResourceLocation("vehicle", "blocks/boost_pad"));
+        return ImmutableSet.of(new ResourceLocation("minecraft", "blocks/concrete_gray"), new ResourceLocation("vehicle", "blocks/boost_pad"));
     }
 
     @Override

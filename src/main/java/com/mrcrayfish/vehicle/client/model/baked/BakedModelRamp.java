@@ -5,16 +5,13 @@ import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.block.BlockBoostRamp;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.client.util.BakedQuadBuilder;
-import com.mrcrayfish.vehicle.client.util.QuadHelper;
 import com.mrcrayfish.vehicle.client.util.TransformationBuilder;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
@@ -46,13 +43,13 @@ public class BakedModelRamp implements IBakedModel
     }
 
     private VertexFormat format;
-    private TextureAtlasSprite anvilTexture;
+    private TextureAtlasSprite mainTexture;
     private TextureAtlasSprite rampTexture;
 
     public BakedModelRamp(VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
     {
         this.format = format;
-        this.anvilTexture = bakedTextureGetter.apply(new ResourceLocation("minecraft", "blocks/concrete_gray"));
+        this.mainTexture = bakedTextureGetter.apply(new ResourceLocation("minecraft", "blocks/concrete_gray"));
         this.rampTexture = bakedTextureGetter.apply(new ResourceLocation("vehicle", "blocks/boost_pad"));
     }
 
@@ -99,7 +96,7 @@ public class BakedModelRamp implements IBakedModel
             builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetStart * 0.0625F, offsetStart, 16), EnumFacing.UP);
             quads.add(builder.build());
 
-            builder.setTexture(anvilTexture);
+            builder.setTexture(mainTexture);
 
             if(!left)
             {
@@ -182,7 +179,7 @@ public class BakedModelRamp implements IBakedModel
     @Override
     public TextureAtlasSprite getParticleTexture()
     {
-        return anvilTexture;
+        return mainTexture;
     }
 
     @Override
