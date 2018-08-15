@@ -89,7 +89,7 @@ public class BlockBoostRamp extends BlockRotatedObject
                     worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
-                poweredVehicle.setLaunching(true);
+                poweredVehicle.setLaunching(2);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = 1.0F;
                 poweredVehicle.motionY = (poweredVehicle.currentSpeed * 0.5) / 20F + 0.1;

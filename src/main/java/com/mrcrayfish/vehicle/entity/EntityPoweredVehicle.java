@@ -517,10 +517,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return boosting;
     }
 
-    public void setLaunching(boolean launching)
+    public void setLaunching(int hold)
     {
-        this.launching = launching;
-        this.launchingTimer = 2;
+        this.launching = true;
+        this.launchingTimer = hold;
     }
 
     public boolean isLaunching()
