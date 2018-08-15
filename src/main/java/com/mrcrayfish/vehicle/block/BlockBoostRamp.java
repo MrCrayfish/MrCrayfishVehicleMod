@@ -11,6 +11,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -65,12 +66,12 @@ public class BlockBoostRamp extends BlockRotatedObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = "Drive on this Boost Ramp to give your vehicle a speed boost and send it flying into the air!";
+            String info = I18n.format("vehicle.tile.boost_ramp.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
         {
-            tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 

@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
@@ -36,16 +37,17 @@ public class ItemEngine extends ItemPart implements SubItems
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
         EngineType type = EngineType.getType(stack.getMetadata());
-        tooltip.add(type.getTierColor() + TextFormatting.BOLD.toString() + type.getTierName() + " Tier");
+        String tierName = I18n.format("vehicle.engine_tier." + type.getTierName() + ".name");
+        tooltip.add(type.getTierColor() + TextFormatting.BOLD.toString() + tierName);
         if(GuiScreen.isShiftKeyDown())
         {
-            tooltip.add(TextFormatting.YELLOW + "Acceleration: " + TextFormatting.RESET + type.getAccelerationMultiplier() + "x");
-            tooltip.add(TextFormatting.YELLOW + "Additional Max Speed: " + TextFormatting.RESET + (type.getAdditionalMaxSpeed() * 3.6) + "kph");
-            tooltip.add(TextFormatting.YELLOW + "Fuel Consumption: " + TextFormatting.RESET + type.getFuelConsumption() + "pt");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.acceleration") + ": " + TextFormatting.RESET + type.getAccelerationMultiplier() + "x");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.additional_max_speed") + ": " + TextFormatting.RESET + (type.getAdditionalMaxSpeed() * 3.6) + "kph");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.fuel_consumption") + ": " + TextFormatting.RESET + type.getFuelConsumption() + "pt");
         }
         else
         {
-            tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Stats");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 

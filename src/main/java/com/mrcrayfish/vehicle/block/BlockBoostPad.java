@@ -9,6 +9,7 @@ import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
@@ -44,12 +45,12 @@ public class BlockBoostPad extends BlockRotatedObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = "Drive on this Boost Pad to give your vehicle a speed boost!";
+            String info = I18n.format("vehicle.tile.boost_pad.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
         {
-            tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 

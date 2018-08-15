@@ -9,11 +9,11 @@ import net.minecraft.util.text.TextFormatting;
  */
 public enum EngineType
 {
-    POOR(0.75F, -2F, 0F, "Wood", TextFormatting.WHITE),
-    BASIC(1.0F, 0F, 0F, "Stone", TextFormatting.DARK_GRAY),
-    ADVANCED(1.25F, 1F, 0F, "Iron", TextFormatting.GRAY),
-    STREET(1.5F, 3F, 0F, "Gold", TextFormatting.GOLD),
-    RACING(1.1F, 6F, 0F, "Diamond", TextFormatting.AQUA);
+    POOR(0.75F, -2F, 0F, "wood", TextFormatting.WHITE),
+    BASIC(1.0F, 0F, 0F, "stone", TextFormatting.DARK_GRAY),
+    ADVANCED(1.25F, 1F, 0F, "iron", TextFormatting.GRAY),
+    STREET(1.5F, 3F, 0F, "gold", TextFormatting.GOLD),
+    RACING(1.1F, 6F, 0F, "diamond", TextFormatting.AQUA);
 
     float accelerationMultiplier;
     float additionalMaxSpeed;
