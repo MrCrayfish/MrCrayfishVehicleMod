@@ -3,7 +3,7 @@
     "textures": {
         "particle": "vehicle:blocks/boost_pad",
         "0": "vehicle:blocks/boost_pad",
-        "1": "blocks/anvil_base"
+        "1": "blocks/concrete_gray"
     },
     "display": {
         "gui": {

@@ -52,7 +52,7 @@ public class BakedModelRamp implements IBakedModel
     public BakedModelRamp(VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter)
     {
         this.format = format;
-        this.anvilTexture = bakedTextureGetter.apply(new ResourceLocation("minecraft", "blocks/anvil_base"));
+        this.anvilTexture = bakedTextureGetter.apply(new ResourceLocation("minecraft", "blocks/concrete_gray"));
         this.rampTexture = bakedTextureGetter.apply(new ResourceLocation("vehicle", "blocks/boost_pad"));
     }
 
