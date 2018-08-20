@@ -55,6 +55,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public int boostTimer;
     public boolean launching;
     public int launchingTimer;
+    public boolean disableFallDamage;
 
     public int turnAngle;
     public int prevTurnAngle;
@@ -192,6 +193,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
         if(launchingTimer > 0)
         {
+            //Ensures fall damage is disabled while launching
+            disableFallDamage = true;
             launchingTimer--;
         }
         else
@@ -521,6 +524,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     {
         this.launching = true;
         this.launchingTimer = hold;
+        this.disableFallDamage = true;
     }
 
     public boolean isLaunching()
@@ -549,6 +553,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         if(passenger instanceof EntityPlayer && world.isRemote)
         {
             VehicleMod.proxy.playVehicleSound((EntityPlayer) passenger, this);
+        }
+    }
+
+    @Override
+    public void fall(float distance, float damageMultiplier)
+    {
+        if(!disableFallDamage)
+        {
+            super.fall(distance, damageMultiplier);
+        }
+        if(launchingTimer <= 0 && distance > 3)
+        {
+            disableFallDamage = false;
         }
     }
 
