@@ -100,4 +100,34 @@ public class ItemJerryCan extends Item
         stack.setTagCompound(tagCompound);
         items.add(stack);
     }
+
+    @Override
+    public boolean showDurabilityBar(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if(tagCompound != null)
+        {
+            float fuel = tagCompound.getFloat("fuel");
+            return fuel < this.capacity;
+        }
+        return false;
+    }
+
+    @Override
+    public double getDurabilityForDisplay(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if(tagCompound != null)
+        {
+            float fuel = tagCompound.getFloat("fuel");
+            return 1.0D - (fuel / capacity);
+        }
+        return 1.0D;
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
+    {
+        return slotChanged;
+    }
 }
