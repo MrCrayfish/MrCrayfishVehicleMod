@@ -53,8 +53,14 @@ public class ClientEvents
                     Entity entity = player.getRidingEntity();
                     if(entity instanceof EntityPoweredVehicle)
                     {
-                        String speed = new DecimalFormat("0.0").format(((EntityPoweredVehicle) entity).getKilometersPreHour());
+                        EntityPoweredVehicle vehicle = (EntityPoweredVehicle) entity;
+
+                        String speed = new DecimalFormat("0.0").format(vehicle.getKilometersPreHour());
                         mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
+
+                        DecimalFormat format = new DecimalFormat("0.0##");
+                        String fuel = format.format(vehicle.getCurrentFuel()) + "/" + format.format(vehicle.getFuelCapacity());
+                        mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "Fuel: " + TextFormatting.YELLOW + fuel, 10, 25, Color.WHITE.getRGB());
                     }
                 }
             }

@@ -161,6 +161,9 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void createParticles()
     {
+        if(!this.hasFuel())
+            return;
+
         int x = MathHelper.floor(this.posX);
         int y = MathHelper.floor(this.posY - 0.2D);
         int z = MathHelper.floor(this.posZ);
