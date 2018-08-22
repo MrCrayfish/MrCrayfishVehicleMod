@@ -147,7 +147,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
         {
             float fuel = ItemJerryCan.getCurrentFuel(stack);
-            fuel -= this.addFuel(fuel >= 1.0F ? 1.0F : fuel);
+            float rate = 0.1F;
+            fuel -= this.addFuel(fuel >= rate ? rate : fuel);
             ItemJerryCan.setCurrentFuel(stack, fuel);
             return true;
         }
