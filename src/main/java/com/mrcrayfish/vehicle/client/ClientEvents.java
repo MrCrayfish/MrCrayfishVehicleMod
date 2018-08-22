@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,7 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -24,6 +26,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
@@ -453,6 +456,25 @@ public class ClientEvents
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
             event.setCanceled(true);
+        }
+
+        if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemJerryCan && Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown())
+        {
+            Entity entity = Minecraft.getMinecraft().objectMouseOver.entityHit;
+            if(entity instanceof EntityPoweredVehicle)
+            {
+                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
+                if(poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
+                {
+                    float fuel = ItemJerryCan.getCurrentFuel(event.getItemStack());
+                    if(fuel > 0F)
+                    {
+                        double offset = Math.sin(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.01;
+                        GlStateManager.translate(0, 0.35 + offset, -0.2);
+                        GlStateManager.rotate(-25F, 1, 0, 0);
+                    }
+                }
+            }
         }
     }
 
