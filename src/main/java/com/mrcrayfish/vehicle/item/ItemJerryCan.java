@@ -7,10 +7,13 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -18,12 +21,17 @@ import java.util.List;
  */
 public class ItemJerryCan extends Item
 {
-    public ItemJerryCan()
+    private final DecimalFormat FUEL_FORMAT = new DecimalFormat("0.#%");
+
+    private final float capacity;
+
+    public ItemJerryCan(String id, float capacity)
     {
-        this.setUnlocalizedName("jerry_can");
-        this.setRegistryName("jerry_can");
+        this.setUnlocalizedName(id);
+        this.setRegistryName(id);
         this.setMaxStackSize(1);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
+        this.capacity = capacity;
     }
 
     @Override
@@ -36,7 +44,36 @@ public class ItemJerryCan extends Item
         }
         else
         {
+            String currentFuel = TextFormatting.RESET + FUEL_FORMAT.format(getCurrentFuel(stack) / getCapacity(stack));
+            tooltip.add(TextFormatting.AQUA + TextFormatting.BOLD.toString() + I18n.format("item.jerry_can.fuel", currentFuel));
             tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
+    }
+
+    public static float getCurrentFuel(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        {
+            NBTTagCompound tagCompound = stack.getTagCompound();
+            if(tagCompound != null)
+            {
+                return tagCompound.getFloat("fuel");
+            }
+        }
+        return 0F;
+    }
+
+    public float getCapacity(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        {
+            NBTTagCompound tagCompound = stack.getTagCompound();
+            if(tagCompound != null && tagCompound.hasKey("capacity", Constants.NBT.TAG_FLOAT))
+            {
+                float capacity = tagCompound.getFloat("capacity");
+                return capacity > 0F ? capacity : this.capacity;
+            }
+        }
+        return this.capacity;
     }
 }

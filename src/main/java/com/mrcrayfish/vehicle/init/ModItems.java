@@ -79,7 +79,7 @@ public class ModItems
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
-        JERRY_CAN = new ItemJerryCan();
+        JERRY_CAN = new ItemJerryCan("jerry_can", 10F);
     }
 
     public static void register()
