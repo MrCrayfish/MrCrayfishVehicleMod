@@ -46,6 +46,8 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         this.setMaxTurnAngle(25);
         this.setTurnSensitivity(2);
         this.setSize(3F, 1.6875F);
+        this.setFuelCapacity(60F);
+        this.setFuelConsumption(0.005F);
     }
 
     @Override

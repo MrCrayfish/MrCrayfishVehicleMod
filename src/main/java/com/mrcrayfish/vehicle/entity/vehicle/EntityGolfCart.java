@@ -28,6 +28,7 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
     {
         super(worldIn);
         this.setSize(2F, 1F);
+        //TODO figure out electric vehicles
     }
 
     @Override

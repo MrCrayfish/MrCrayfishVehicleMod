@@ -40,6 +40,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
         this.setHeldOffset(new Vec3d(4D, 3.5D, 0D));
         this.setTowBarPosition(new Vec3d(0.0, 0.0, -0.6));
         this.setTrailerOffset(new Vec3d(0D, -0.01D, -1.0D));
+        this.setFuelCapacity(5F);
     }
 
     @Override
