@@ -33,6 +33,7 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.5625D));
         this.stepHeight = 0.625F;
+        //TODO figure out fuel system
     }
 
     @Override

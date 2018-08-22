@@ -19,6 +19,7 @@ public class EntityBath extends EntityAirVehicle implements IEntityRaytraceable
         super(worldIn);
         this.setHeldOffset(new Vec3d(4D, -3.75D, 0D));
         this.setTrailerOffset(new Vec3d(0D, 0D, -0.4375D));
+        this.setFuelConsumption(0.0F);
     }
 
     @Override

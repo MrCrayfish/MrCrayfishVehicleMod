@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.item.ItemEngine;
+import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.item.Item;
@@ -42,6 +43,7 @@ public class ModItems
 
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
+    public static final Item JERRY_CAN;
 
     static
     {
@@ -77,6 +79,7 @@ public class ModItems
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
+        JERRY_CAN = new ItemJerryCan("jerry_can", 10F);
     }
 
     public static void register()
@@ -113,6 +116,7 @@ public class ModItems
 
         register(ENGINE);
         register(SPRAY_CAN);
+        register(JERRY_CAN);
     }
 
     private static void register(Item item)

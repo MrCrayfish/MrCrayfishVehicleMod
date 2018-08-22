@@ -34,6 +34,8 @@ public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytrace
         this.setSize(1.5F, 1.0F);
         this.setHeldOffset(new Vec3d(6D, -0.5D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.09375D, -0.75D));
+        this.setFuelCapacity(25F);
+        this.setFuelConsumption(0.003F);
     }
 
     @Override

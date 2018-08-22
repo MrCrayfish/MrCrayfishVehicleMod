@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
 import net.minecraft.client.Minecraft;
@@ -100,8 +101,14 @@ public class ClientEvents
                     Entity entity = player.getRidingEntity();
                     if(entity instanceof EntityPoweredVehicle)
                     {
-                        String speed = new DecimalFormat("0.0").format(((EntityPoweredVehicle) entity).getKilometersPreHour());
+                        EntityPoweredVehicle vehicle = (EntityPoweredVehicle) entity;
+
+                        String speed = new DecimalFormat("0.0").format(vehicle.getKilometersPreHour());
                         mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
+
+                        DecimalFormat format = new DecimalFormat("0.0##");
+                        String fuel = format.format(vehicle.getCurrentFuel()) + "/" + format.format(vehicle.getFuelCapacity());
+                        mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "Fuel: " + TextFormatting.YELLOW + fuel, 10, 25, Color.WHITE.getRGB());
                     }
                 }
             }
@@ -499,6 +506,25 @@ public class ClientEvents
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
             event.setCanceled(true);
+        }
+
+        if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemJerryCan && Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown())
+        {
+            Entity entity = Minecraft.getMinecraft().objectMouseOver.entityHit;
+            if(entity instanceof EntityPoweredVehicle)
+            {
+                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
+                if(poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
+                {
+                    float fuel = ItemJerryCan.getCurrentFuel(event.getItemStack());
+                    if(fuel > 0F)
+                    {
+                        double offset = Math.sin(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.01;
+                        GlStateManager.translate(0, 0.35 + offset, -0.2);
+                        GlStateManager.rotate(-25F, 1, 0, 0);
+                    }
+                }
+            }
         }
     }
 

@@ -46,6 +46,8 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         this.setMaxTurnAngle(25);
         this.setTurnSensitivity(2);
         this.setSize(3F, 1.6875F);
+        this.setFuelCapacity(75F);
+        this.setFuelConsumption(0.004F);
     }
 
     @Override
@@ -101,7 +103,7 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         }
         wheelRotation -= (90F * wheelSpeed);
 
-        if(this.getControllingPassenger() != null)
+        if(this.hasFuel() && this.getControllingPassenger() != null) //1914 4424 7485 11360
         {
             propellerSpeed += 1F;
             if(propellerSpeed > 120F)

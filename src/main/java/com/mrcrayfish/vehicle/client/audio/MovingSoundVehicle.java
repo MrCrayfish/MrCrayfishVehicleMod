@@ -28,7 +28,7 @@ public class MovingSoundVehicle extends MovingSound
     @Override
     public void update()
     {
-        this.volume = 0.8F;
+        this.volume = vehicle.hasFuel() ? 0.8F : 0.8F * vehicle.getActualSpeed();
         if(!vehicle.isDead && vehicle.getControllingPassenger() != null && vehicle.getControllingPassenger() != Minecraft.getMinecraft().player)
         {
             EntityPlayer localPlayer = Minecraft.getMinecraft().player;
