@@ -6,9 +6,12 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -63,6 +66,15 @@ public class ItemJerryCan extends Item
             }
         }
         return 0F;
+    }
+
+    public static void setCurrentFuel(ItemStack stack, float fuel)
+    {
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if(tagCompound != null)
+        {
+            tagCompound.setFloat("fuel", fuel);
+        }
     }
 
     public float getCapacity(ItemStack stack)

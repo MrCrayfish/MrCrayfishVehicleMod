@@ -141,6 +141,20 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     }
 
     @Override
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    {
+        ItemStack stack = player.getHeldItem(hand);
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        {
+            float fuel = ItemJerryCan.getCurrentFuel(stack);
+            fuel -= this.addFuel(fuel >= 1.0F ? 1.0F : fuel);
+            ItemJerryCan.setCurrentFuel(stack, fuel);
+            return true;
+        }
+        return super.processInitialInteract(player, hand);
+    }
+
+    @Override
     public void onUpdateVehicle()
     {
         prevCurrentSpeed = currentSpeed;
