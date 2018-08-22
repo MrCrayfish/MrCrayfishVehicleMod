@@ -5,9 +5,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -75,5 +77,15 @@ public class ItemJerryCan extends Item
             }
         }
         return this.capacity;
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        tagCompound.setFloat("fuel", this.capacity);
+        ItemStack stack = new ItemStack(this);
+        stack.setTagCompound(tagCompound);
+        items.add(stack);
     }
 }
