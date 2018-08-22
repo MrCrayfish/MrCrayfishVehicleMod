@@ -103,7 +103,7 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         }
         wheelRotation -= (90F * wheelSpeed);
 
-        if(this.getControllingPassenger() != null)
+        if(this.hasFuel() && this.getControllingPassenger() != null) //1914 4424 7485 11360
         {
             propellerSpeed += 1F;
             if(propellerSpeed > 120F)

@@ -104,7 +104,7 @@ public abstract class EntityAirVehicle extends EntityPoweredVehicle
         if(this.getControllingPassenger() != null)
         {
             AccelerationDirection acceleration = getAcceleration();
-            if(acceleration == AccelerationDirection.FORWARD)
+            if(this.hasFuel() && acceleration == AccelerationDirection.FORWARD)
             {
                 if(this.motionY < 0)
                 {
@@ -113,7 +113,7 @@ public abstract class EntityAirVehicle extends EntityPoweredVehicle
 
                 EngineType engineType = this.getEngineType();
                 float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                if(this.currentSpeed < getMaxSpeed())
+                if(this.currentSpeed < this.getActualMaxSpeed())
                 {
                     this.currentSpeed += accelerationSpeed;
                 }
