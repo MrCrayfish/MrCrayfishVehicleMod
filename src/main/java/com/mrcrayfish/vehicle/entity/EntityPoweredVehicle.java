@@ -167,8 +167,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             this.onClientUpdate();
         }
 
+        Entity controllingPassenger = this.getControllingPassenger();
+
         /* If there driver, create particles */
-        if(this.getControllingPassenger() != null)
+        if(controllingPassenger != null)
         {
             this.createParticles();
         }
@@ -234,7 +236,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
         }
 
-        if(this.getControllingPassenger() != null)
+        if(controllingPassenger != null && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative())
         {
             float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
             float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
