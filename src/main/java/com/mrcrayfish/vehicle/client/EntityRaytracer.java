@@ -115,6 +115,9 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 1.0484375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.025, 0));
+        createTranformListForPart(ModItems.TOW_BAR, atvParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
@@ -183,6 +186,9 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.4, -0.15),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
+        createTranformListForPart(ModItems.TOW_BAR, lawnMowerParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 0.6));
         entityRaytracePartsStatic.put(EntityLawnMower.class, lawnMowerParts);
 
         // Mini bike
@@ -236,6 +242,9 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-67.5, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
+        createTranformListForPart(ModItems.TOW_BAR, smartCarParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 1.35));
         entityRaytracePartsStatic.put(EntitySmartCar.class, smartCarParts);
 
         // Speed boat
