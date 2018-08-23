@@ -705,7 +705,10 @@ public class EntityRaytracer
     public static void raytraceEntities(MouseEvent event)
     {
         // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
-        if ((event.getButton() != 1 && (!VehicleConfig.CLIENT.interaction.enabledLeftClick || event.getButton() != 0)) || !event.isButtonstate() || entityRaytraceSuperclass == null)
+        boolean rightClick = Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100 == event.getButton();
+        if ((!rightClick && (!VehicleConfig.CLIENT.interaction.enabledLeftClick
+                || Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode() + 100 != event.getButton()))
+                || !event.isButtonstate() || entityRaytraceSuperclass == null)
         {
             return;
         }
@@ -758,7 +761,7 @@ public class EntityRaytracer
                 // If not bypassed, process the hit only if it is closer to the player's eyes than what MC thinks the player is looking
                 if (bypass || eyeDistance < hit.distanceTo(eyeVec))
                 {
-                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject, event.getButton() == 1))
+                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject, rightClick))
                     {
                         // Cancel click
                         event.setCanceled(true);
