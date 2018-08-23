@@ -383,6 +383,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
+        if(compound.hasKey("currentFuel", Constants.NBT.TAG_FLOAT))
+        {
+            this.setCurrentFuel(compound.getFloat("currentFuel"));
+        }
+        if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_FLOAT))
+        {
+            this.setFuelCapacity(compound.getFloat("fuelCapacity"));
+        }
     }
 
     @Override
@@ -395,6 +403,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
         compound.setFloat("stepHeight", this.stepHeight);
+        compound.setFloat("currentFuel", this.getCurrentFuel());
+        compound.setFloat("fuelCapacity", this.getFuelCapacity());
     }
 
     @Nullable
