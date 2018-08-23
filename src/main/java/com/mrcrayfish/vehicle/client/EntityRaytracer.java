@@ -112,9 +112,9 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.ATV_BODY, atvParts, atvTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.7109375, 0));
         createTranformListForPart(ModItems.ATV_HANDLE_BAR, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.9734375, 0.25),
+                MatrixTransformation.createTranslation(0, 1.0484375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, 0.02, 0));
+                MatrixTransformation.createTranslation(0, -0.025, 0));
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
