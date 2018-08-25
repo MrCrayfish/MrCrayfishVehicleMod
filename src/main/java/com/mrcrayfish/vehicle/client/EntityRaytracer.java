@@ -857,6 +857,7 @@ public class EntityRaytracer
             if (continuousInteractionObject != null)
             {
                 continuousInteraction = result;
+                continuousInteractionTickCounter = 1;
             }
         }
     }
