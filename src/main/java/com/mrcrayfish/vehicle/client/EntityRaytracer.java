@@ -98,14 +98,13 @@ public class EntityRaytracer
     public static final String PART_NAME = "nameRaytrace";
 
     /**
-     * The result of clicking on a continuously interactable raytrace part. Every tick that this is not null,
+     * The result of clicking and holding on a continuously interactable raytrace part. Every tick that this is not null,
      * both the raytrace and the interaction of this part will be performed.
      */
     private static RayTraceResultRotated continuousInteraction;
 
     /**
-     * The result of clicking on a continuously interactable raytrace part. Every tick that this is not null,
-     * both the raytrace and the interaction of this part will be performed.
+     * The object returned by the interaction function of the result of clicking and holding on a continuously interactable raytrace part.
      */
     private static Object continuousInteractionObject;
 
@@ -800,7 +799,7 @@ public class EntityRaytracer
     }
 
     /**
-     * Performs a continuous interaction each tick
+     * Performs a raytrace and interaction each tick that a continuously interactable part is right-clicked and held while looking at
      * 
      * @param event tick event
      */
