@@ -1403,6 +1403,11 @@ public class EntityRaytracer
             this(partStack, null, continuousInteraction);
         }
 
+        public RayTracePart(AxisAlignedBB partBox, @Nullable BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> continuousInteraction)
+        {
+            this(ItemStack.EMPTY, partBox, continuousInteraction);
+        }
+
         public RayTracePart(AxisAlignedBB partBox)
         {
             this(ItemStack.EMPTY, partBox, null);
