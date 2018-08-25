@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
@@ -10,7 +11,6 @@ import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
 import net.minecraft.client.Minecraft;
@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -43,8 +44,8 @@ import java.text.DecimalFormat;
 public class ClientEvents
 {
     private int lastSlot = -1;
-
     private int originalPerspective = -1;
+    private double jerryCanMainHandOffset;
 
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
@@ -500,6 +501,11 @@ public class ClientEvents
     @SubscribeEvent
     public void onRenderHand(RenderSpecificHandEvent event)
     {
+        if (event.getHand() == EnumHand.OFF_HAND && jerryCanMainHandOffset > -1)
+        {
+            GlStateManager.rotate(25F, 1, 0, 0);
+            GlStateManager.translate(0, -0.35 - jerryCanMainHandOffset, 0.2);
+        }
         if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemSprayCan && event.getItemStack().getMetadata() == 0)
         {
             ItemStack stack = event.getItemStack().copy();
@@ -507,23 +513,16 @@ public class ClientEvents
             Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
             event.setCanceled(true);
         }
-
-        if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemJerryCan && Minecraft.getMinecraft().gameSettings.keyBindUseItem.isKeyDown())
+        jerryCanMainHandOffset = -1;
+        RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
+        if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING) && event.getHand() == EntityRaytracer.getContinuousInteractionObject())
         {
-            Entity entity = Minecraft.getMinecraft().objectMouseOver.entityHit;
-            if(entity instanceof EntityPoweredVehicle)
+            double offset = Math.sin(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.01;
+            GlStateManager.translate(0, 0.35 + offset, -0.2);
+            GlStateManager.rotate(-25F, 1, 0, 0);
+            if (event.getHand() == EnumHand.MAIN_HAND)
             {
-                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
-                if(poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
-                {
-                    float fuel = ItemJerryCan.getCurrentFuel(event.getItemStack());
-                    if(fuel > 0F)
-                    {
-                        double offset = Math.sin(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.01;
-                        GlStateManager.translate(0, 0.35 + offset, -0.2);
-                        GlStateManager.rotate(-25F, 1, 0, 0);
-                    }
-                }
+                jerryCanMainHandOffset = offset;
             }
         }
     }

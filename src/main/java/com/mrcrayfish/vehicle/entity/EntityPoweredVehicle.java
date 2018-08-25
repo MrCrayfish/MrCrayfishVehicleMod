@@ -140,8 +140,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         engine = new ItemStack(ModItems.ENGINE);
     }
 
-    @Override
-    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    public boolean fuelVehicle(EntityPlayer player, EnumHand hand)
     {
         ItemStack stack = player.getHeldItem(hand);
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
