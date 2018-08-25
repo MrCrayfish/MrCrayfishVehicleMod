@@ -140,7 +140,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         engine = new ItemStack(ModItems.ENGINE);
     }
 
-    public boolean fuelVehicle(EntityPlayer player, EnumHand hand)
+    public void fuelVehicle(EntityPlayer player, EnumHand hand)
     {
         ItemStack stack = player.getHeldItem(hand);
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
@@ -149,9 +149,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             float rate = 0.1F;
             fuel -= this.addFuel(fuel >= rate ? rate : fuel);
             ItemJerryCan.setCurrentFuel(stack, fuel);
-            return true;
         }
-        return super.processInitialInteract(player, hand);
     }
 
     @Override
