@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 import javax.vecmath.AxisAngle4d;
@@ -140,7 +141,7 @@ public class EntityRaytracer
      * 
      * @return whether or not fueling can continue
      */
-    public static final BiFunction<IEntityRaytraceable, RayTraceResultRotated, EnumHand> FUNCTION_FUELING = (entity, rayTraceResult) ->
+    public static final Function<RayTraceResultRotated, EnumHand> FUNCTION_FUELING = (rayTraceResult) ->
     {
         for (EnumHand hand : EnumHand.values())
         {
@@ -148,6 +149,7 @@ public class EntityRaytracer
             if (!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan
                     && Mouse.isButtonDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100))
             {
+                Entity entity = rayTraceResult.entityHit;
                 if (entity instanceof EntityPoweredVehicle)
                 {
                     EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
@@ -158,7 +160,7 @@ public class EntityRaytracer
                         {
                             if (continuousInteractionTickCounter % 2 == 0)
                             {
-                                PacketHandler.INSTANCE.sendToServer(new MessageFuelVehicle(Minecraft.getMinecraft().player, hand, (Entity) entity));
+                                PacketHandler.INSTANCE.sendToServer(new MessageFuelVehicle(Minecraft.getMinecraft().player, hand, entity));
                             }
                             return hand;
                         }
@@ -476,7 +478,7 @@ public class EntityRaytracer
      * @param transforms part-specific transforms for the given part 
      */
     public static void createTranformListForPart(ItemStack part, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
-            @Nullable BiFunction<IEntityRaytraceable, RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
+            @Nullable Function<RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
     {
         List<MatrixTransformation> transformsAll = Lists.newArrayList();
         transformsAll.addAll(transformsGlobal);
@@ -485,7 +487,7 @@ public class EntityRaytracer
     }
 
     /**
-     * Version of {@link EntityRaytracer#createTranformListForPart(ItemStack, HashMap, List, BiFunction, MatrixTransformation[]) createTranformListForPart} that accepts the part as an item, rather than a stack
+     * Version of {@link EntityRaytracer#createTranformListForPart(ItemStack, HashMap, List, Function, MatrixTransformation[]) createTranformListForPart} that accepts the part as an item, rather than a stack
      * 
      * @param part the rendered item part in a stack
      * @param parts map of all parts to their transforms
@@ -1395,14 +1397,14 @@ public class EntityRaytracer
     {
         private final ItemStack partStack;
         private final AxisAlignedBB partBox;
-        private final BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> continuousInteraction;
+        private final Function<RayTraceResultRotated, R> continuousInteraction;
 
-        public RayTracePart(ItemStack partStack, @Nullable BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> continuousInteraction)
+        public RayTracePart(ItemStack partStack, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this(partStack, null, continuousInteraction);
         }
 
-        public RayTracePart(AxisAlignedBB partBox, @Nullable BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> continuousInteraction)
+        public RayTracePart(AxisAlignedBB partBox, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this(ItemStack.EMPTY, partBox, continuousInteraction);
         }
@@ -1413,7 +1415,7 @@ public class EntityRaytracer
         }
 
         private RayTracePart(ItemStack partHit, @Nullable AxisAlignedBB boxHit,
-                @Nullable BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> continuousInteraction)
+                @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             partStack = partHit;
             partBox = boxHit;
@@ -1431,7 +1433,7 @@ public class EntityRaytracer
             return partBox;
         }
 
-        public BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> getcontinuousInteraction()
+        public Function<RayTraceResultRotated, R> getcontinuousInteraction()
         {
             return continuousInteraction;
         }
@@ -1471,10 +1473,10 @@ public class EntityRaytracer
 
         public Object performContinuousInteraction()
         {
-            return partHit.getcontinuousInteraction() == null ? null : partHit.getcontinuousInteraction().apply(entityHit, this);
+            return partHit.getcontinuousInteraction() == null ? null : partHit.getcontinuousInteraction().apply(this);
         }
 
-        public <R> boolean equalsContinuousInteraction(BiFunction<IEntityRaytraceable, RayTraceResultRotated, R> function)
+        public <R> boolean equalsContinuousInteraction(Function<RayTraceResultRotated, R> function)
         {
             return function.equals(partHit.getcontinuousInteraction());
         }
