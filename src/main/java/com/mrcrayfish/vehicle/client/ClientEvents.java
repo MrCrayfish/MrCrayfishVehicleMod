@@ -26,6 +26,7 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -53,19 +54,22 @@ public class ClientEvents
         {
             if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
             {
-                if(event.isMounting())
+                if(event.getEntityMounting().equals(Minecraft.getMinecraft().player))
                 {
-                    Entity entity = event.getEntityBeingMounted();
-                    if(entity instanceof EntityVehicle)
+                    if(event.isMounting())
                     {
-                        originalPerspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
-                        Minecraft.getMinecraft().gameSettings.thirdPersonView = 1;
+                        Entity entity = event.getEntityBeingMounted();
+                        if(entity instanceof EntityVehicle)
+                        {
+                            originalPerspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
+                            Minecraft.getMinecraft().gameSettings.thirdPersonView = 1;
+                        }
                     }
-                }
-                else if(originalPerspective != -1)
-                {
-                    Minecraft.getMinecraft().gameSettings.thirdPersonView = originalPerspective;
-                    originalPerspective = -1;
+                    else if(originalPerspective != -1)
+                    {
+                        Minecraft.getMinecraft().gameSettings.thirdPersonView = originalPerspective;
+                        originalPerspective = -1;
+                    }
                 }
             }
         }
