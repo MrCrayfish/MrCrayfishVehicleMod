@@ -6,8 +6,8 @@ package com.mrcrayfish.vehicle;
 public class Reference
 {
     public static final String MOD_ID = "vehicle";
-    public static final String MOD_NAME = "Vehicle Mod";
-    public static final String MOD_VERSION = "0.21.0";
+    public static final String MOD_NAME = "MrCrayfish's Vehicle Mod";
+    public static final String MOD_VERSION = "0.22.0";
     public static final String MOD_COMPATIBILITY = "[1.12.2]";
     public static final String MOD_DEPENDS = "required-after:obfuscate@[0.2.5,);after:cfm@[4.1.5,)";
 
