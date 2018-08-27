@@ -12,11 +12,13 @@ import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -41,6 +43,14 @@ public class VehicleMod
         public ItemStack getTabIconItem()
         {
             return new ItemStack(ModItems.ENGINE);
+        }
+
+        @Override
+        public void displayAllRelevantItems(NonNullList<ItemStack> items)
+        {
+            super.displayAllRelevantItems(items);
+            ItemStack stack = FluidUtil.getFilledBucket(new FluidStack(ModFluids.FUELIUM, 1));
+            items.add(stack);
         }
     };
 
