@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -14,6 +15,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -41,11 +44,17 @@ public class VehicleMod
         }
     };
 
+    static
+    {
+        FluidRegistry.enableUniversalBucket();
+    }
+
     @Mod.EventHandler
     public void onPreInit(FMLPreInitializationEvent event)
     {
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
+        ModFluids.register();
         RegistrationHandler.init();
         PacketHandler.init();
         CustomDataSerializers.register();
