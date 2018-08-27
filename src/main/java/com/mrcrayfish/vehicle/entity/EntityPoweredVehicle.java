@@ -146,8 +146,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         ItemStack stack = player.getHeldItem(hand);
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
         {
+            ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
             float fuel = ItemJerryCan.getCurrentFuel(stack);
-            float rate = 0.1F;
+            float rate = jerryCan.getFillRate(stack);
             fuel -= this.addFuel(fuel >= rate ? rate : fuel);
             ItemJerryCan.setCurrentFuel(stack, fuel);
             return true;

@@ -29,14 +29,16 @@ public class ItemJerryCan extends Item
     private final DecimalFormat FUEL_FORMAT = new DecimalFormat("0.#%");
 
     private final float capacity;
+    private final float fillRate;
 
-    public ItemJerryCan(String id, float capacity)
+    public ItemJerryCan(String id, float capacity, float fillRate)
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);
         this.setMaxStackSize(1);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
         this.capacity = capacity;
+        this.fillRate = fillRate;
     }
 
     @Override
@@ -44,13 +46,13 @@ public class ItemJerryCan extends Item
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("item.jerry_can.info");
+            String info = I18n.format(this.getUnlocalizedName() + ".info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
         {
             String currentFuel = TextFormatting.RESET + FUEL_FORMAT.format(getCurrentFuel(stack) / getCapacity(stack));
-            tooltip.add(TextFormatting.AQUA + TextFormatting.BOLD.toString() + I18n.format("item.jerry_can.fuel", currentFuel));
+            tooltip.add(TextFormatting.AQUA + TextFormatting.BOLD.toString() + I18n.format(this.getUnlocalizedName() + ".fuel", currentFuel));
             tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
@@ -89,6 +91,20 @@ public class ItemJerryCan extends Item
             }
         }
         return this.capacity;
+    }
+
+    public float getFillRate(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        {
+            NBTTagCompound tagCompound = stack.getTagCompound();
+            if(tagCompound != null && tagCompound.hasKey("fillRate", Constants.NBT.TAG_FLOAT))
+            {
+                float capacity = tagCompound.getFloat("fillRate");
+                return capacity > 0F ? capacity : this.fillRate;
+            }
+        }
+        return this.fillRate;
     }
 
     @Override

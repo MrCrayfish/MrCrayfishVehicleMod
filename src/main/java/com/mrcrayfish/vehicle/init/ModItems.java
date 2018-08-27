@@ -44,6 +44,7 @@ public class ModItems
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
     public static final Item JERRY_CAN;
+    public static final Item INDUSTRIAL_JERRY_CAN;
 
     static
     {
@@ -79,7 +80,8 @@ public class ModItems
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
-        JERRY_CAN = new ItemJerryCan("jerry_can", 10F);
+        JERRY_CAN = new ItemJerryCan("jerry_can", 10F, 0.1F);
+        INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 25F, 0.15F);
     }
 
     public static void register()
@@ -117,6 +119,7 @@ public class ModItems
         register(ENGINE);
         register(SPRAY_CAN);
         register(JERRY_CAN);
+        register(INDUSTRIAL_JERRY_CAN);
     }
 
     private static void register(Item item)
