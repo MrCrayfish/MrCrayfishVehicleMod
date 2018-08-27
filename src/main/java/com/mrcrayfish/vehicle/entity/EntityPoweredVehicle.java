@@ -168,8 +168,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             this.onClientUpdate();
         }
 
+        Entity controllingPassenger = this.getControllingPassenger();
+
         /* If there driver, create particles */
-        if(this.getControllingPassenger() != null)
+        if(controllingPassenger != null)
         {
             this.createParticles();
         }
@@ -235,7 +237,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
         }
 
-        if(this.getControllingPassenger() != null)
+        if(controllingPassenger != null && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative())
         {
             float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
             float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
@@ -382,6 +384,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
+        if(compound.hasKey("currentFuel", Constants.NBT.TAG_FLOAT))
+        {
+            this.setCurrentFuel(compound.getFloat("currentFuel"));
+        }
+        if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_FLOAT))
+        {
+            this.setFuelCapacity(compound.getFloat("fuelCapacity"));
+        }
     }
 
     @Override
@@ -394,6 +404,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
         compound.setFloat("stepHeight", this.stepHeight);
+        compound.setFloat("currentFuel", this.getCurrentFuel());
+        compound.setFloat("fuelCapacity", this.getFuelCapacity());
     }
 
     @Nullable

@@ -31,10 +31,10 @@ public class VehicleConfig
         @Config.LangKey(Reference.MOD_ID + ".config.client.interaction")
         public Interaction interaction = new Interaction();
 
-        @Config.Name("Show Speedometer")
-        @Config.Comment("If true, displays a speedometer on the HUD when driving a vehicle")
-        @Config.LangKey(Reference.MOD_ID + ".config.client.speedometer")
-        public boolean enabledSpeedometer = true;
+        @Config.Name("Display")
+        @Config.Comment("Configuration for display related options")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.display")
+        public Display display = new Display();
     }
 
     public static class Interaction
@@ -44,6 +44,19 @@ public class VehicleConfig
                 + "This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.")
         @Config.LangKey(Reference.MOD_ID + ".config.client.interaction.left_click")
         public boolean enabledLeftClick = true;
+    }
+
+    public static class Display
+    {
+        @Config.Name("Show Speedometer")
+        @Config.Comment("If true, displays a speedometer on the HUD when driving a vehicle")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.display.speedometer")
+        public boolean enabledSpeedometer = true;
+
+        @Config.Name("Auto Perspective")
+        @Config.Comment("If true, automatically switches to third person when mounting vehicles")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.display.auto_perspective")
+        public boolean autoPerspective = true;
     }
 
     public static class Debug

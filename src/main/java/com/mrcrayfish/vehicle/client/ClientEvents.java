@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
@@ -18,7 +19,6 @@ import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,8 +26,11 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -42,10 +45,56 @@ public class ClientEvents
 {
     private int lastSlot = -1;
 
+    private int originalPerspective = -1;
+
+    @SubscribeEvent
+    public void onEntityMount(EntityMountEvent event)
+    {
+        if(VehicleConfig.CLIENT.display.autoPerspective)
+        {
+            if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            {
+                if(event.getEntityMounting().equals(Minecraft.getMinecraft().player))
+                {
+                    if(event.isMounting())
+                    {
+                        Entity entity = event.getEntityBeingMounted();
+                        if(entity instanceof EntityVehicle)
+                        {
+                            originalPerspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
+                            Minecraft.getMinecraft().gameSettings.thirdPersonView = 1;
+                        }
+                    }
+                    else if(originalPerspective != -1)
+                    {
+                        Minecraft.getMinecraft().gameSettings.thirdPersonView = originalPerspective;
+                        originalPerspective = -1;
+                    }
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onKeyInput(InputEvent.KeyInputEvent event)
+    {
+        if(VehicleConfig.CLIENT.display.autoPerspective)
+        {
+            Entity entity = Minecraft.getMinecraft().player.getRidingEntity();
+            if(entity instanceof EntityVehicle)
+            {
+                if(Minecraft.getMinecraft().gameSettings.keyBindTogglePerspective.isKeyDown())
+                {
+                    originalPerspective = -1;
+                }
+            }
+        }
+    }
+
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(VehicleConfig.CLIENT.enabledSpeedometer && event.phase == TickEvent.Phase.END)
+        if(VehicleConfig.CLIENT.display.enabledSpeedometer && event.phase == TickEvent.Phase.END)
         {
             Minecraft mc = Minecraft.getMinecraft();
             if(mc.inGameHasFocus)
@@ -443,6 +492,11 @@ public class ClientEvents
                     float pitch = 0.85F + 0.15F * ItemSprayCan.getRemainingSprays(player.inventory.getCurrentItem());
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getRecord(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
                 }
+            }
+
+            if(player.getRidingEntity() == null)
+            {
+                originalPerspective = -1;
             }
         }
     }

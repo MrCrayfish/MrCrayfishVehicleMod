@@ -110,11 +110,14 @@ public class ItemJerryCan extends Item
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items)
     {
-        NBTTagCompound tagCompound = new NBTTagCompound();
-        tagCompound.setFloat("fuel", this.capacity);
-        ItemStack stack = new ItemStack(this);
-        stack.setTagCompound(tagCompound);
-        items.add(stack);
+        if(this.isInCreativeTab(tab))
+        {
+            NBTTagCompound tagCompound = new NBTTagCompound();
+            tagCompound.setFloat("fuel", this.capacity);
+            ItemStack stack = new ItemStack(this);
+            stack.setTagCompound(tagCompound);
+            items.add(stack);
+        }
     }
 
     @Override
