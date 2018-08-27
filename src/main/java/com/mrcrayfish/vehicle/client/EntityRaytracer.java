@@ -112,9 +112,12 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.ATV_BODY, atvParts, atvTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.7109375, 0));
         createTranformListForPart(ModItems.ATV_HANDLE_BAR, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.9734375, 0.25),
+                MatrixTransformation.createTranslation(0, 1.0484375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, 0.02, 0));
+                MatrixTransformation.createTranslation(0, -0.025, 0));
+        createTranformListForPart(ModItems.TOW_BAR, atvParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
@@ -183,6 +186,9 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.4, -0.15),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
+        createTranformListForPart(ModItems.TOW_BAR, lawnMowerParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 0.6));
         entityRaytracePartsStatic.put(EntityLawnMower.class, lawnMowerParts);
 
         // Mini bike
@@ -236,6 +242,9 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-67.5, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
+        createTranformListForPart(ModItems.TOW_BAR, smartCarParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 1.35));
         entityRaytracePartsStatic.put(EntitySmartCar.class, smartCarParts);
 
         // Speed boat
@@ -705,7 +714,10 @@ public class EntityRaytracer
     public static void raytraceEntities(MouseEvent event)
     {
         // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
-        if ((event.getButton() != 1 && (!VehicleConfig.CLIENT.interaction.enabledLeftClick || event.getButton() != 0)) || !event.isButtonstate() || entityRaytraceSuperclass == null)
+        boolean rightClick = Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100 == event.getButton();
+        if ((!rightClick && (!VehicleConfig.CLIENT.interaction.enabledLeftClick
+                || Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode() + 100 != event.getButton()))
+                || !event.isButtonstate() || entityRaytraceSuperclass == null)
         {
             return;
         }
@@ -758,7 +770,7 @@ public class EntityRaytracer
                 // If not bypassed, process the hit only if it is closer to the player's eyes than what MC thinks the player is looking
                 if (bypass || eyeDistance < hit.distanceTo(eyeVec))
                 {
-                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject, event.getButton() == 1))
+                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject, rightClick))
                     {
                         // Cancel click
                         event.setCanceled(true);
