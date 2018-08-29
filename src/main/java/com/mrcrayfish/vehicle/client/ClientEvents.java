@@ -47,7 +47,8 @@ public class ClientEvents
     private int originalPerspective = -1;
     private double jerryCanMainHandOffset;
     private int tickCounter;
-    private boolean fuleing, fuleingSoundPlayed;
+    private boolean fuleing;
+    private double offsetPrev, offsetPrevPrev;
 
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
@@ -535,15 +536,12 @@ public class ClientEvents
         if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING) && event.getHand() == EntityRaytracer.getContinuousInteractionObject())
         {
             double offset = Math.sin((tickCounter + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.4) * 0.01;
-            if (offset > 0.0099775 && !fuleingSoundPlayed)
+            if (offsetPrev > offsetPrevPrev && offsetPrev > offset)
             {
                 Minecraft.getMinecraft().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
-                fuleingSoundPlayed = true;
             }
-            else
-            {
-                fuleingSoundPlayed = false;
-            }
+            offsetPrevPrev = offsetPrev;
+            offsetPrev = offset;
             GlStateManager.translate(0, 0.35 + offset, -0.2);
             GlStateManager.rotate(-25F, 1, 0, 0);
             if (event.getHand() == EnumHand.MAIN_HAND)
