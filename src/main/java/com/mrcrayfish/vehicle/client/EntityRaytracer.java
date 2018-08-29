@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -179,10 +180,12 @@ public class EntityRaytracer
          */
 
         // Aluminum boat
+        List<MatrixTransformation> aluminumBoatTransformGlobal = new ArrayList<>();
+        aluminumBoatTransformGlobal.add(MatrixTransformation.createScale(1.1));
+        aluminumBoatTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0.2));
         HashMap<RayTracePart, List<MatrixTransformation>> aluminumBoatParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.ALUMINUM_BOAT_BODY, aluminumBoatParts,
-                MatrixTransformation.createScale(1.1),
-                MatrixTransformation.createTranslation(0, 0.5, 0.2));
+        createTranformListForPart(ModItems.ALUMINUM_BOAT_BODY, aluminumBoatParts, aluminumBoatTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0, 0, -16.25, 3, -18.5, -90, 0.25, aluminumBoatParts, aluminumBoatTransformGlobal);
         entityRaytracePartsStatic.put(EntityAluminumBoat.class, aluminumBoatParts);
 
         // ATV
@@ -213,6 +216,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.3828125, 0, -8.25, 11, -9.3, -90, 0.25, bumperCarParts, bumperCarTransformGlobal);
         entityRaytracePartsStatic.put(EntityBumperCar.class, bumperCarParts);
 
         // Dune buggy
@@ -224,6 +228,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.505, 0));
         createTranformListForPart(ModItems.DUNE_BUGGY_HANDLE_BAR, duneBuggyParts, duneBuggyTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.5, -0.0046875));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0, 0, 1.15, 11, -7.25, 180, 0.25, duneBuggyParts, duneBuggyTransformGlobal);
         entityRaytracePartsStatic.put(EntityDuneBuggy.class, duneBuggyParts);
 
         // Go kart
@@ -235,12 +240,8 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.09, 0.49),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.9));
-        List<MatrixTransformation> goKartEngineTransforms = Lists.newArrayList();
-        goKartEngineTransforms.add(MatrixTransformation.createTranslation(0, -0.34375, 0));
-        createEngineTransforms(0, 7.5, -9, 180, 1.2, goKartEngineTransforms);
-        goKartTransformGlobal.addAll(goKartEngineTransforms);
-        createTranformListForPart(new ItemStack(ModItems.ENGINE), goKartParts, goKartTransformGlobal, FUNCTION_FUELING);
+                MatrixTransformation.createScale(0.9)); 
+        createFuelablePartTransforms(ModItems.ENGINE, 0, -0.34375, 0, 0, 7.5, -9, 180, 1.2, goKartParts, goKartTransformGlobal);
         entityRaytracePartsStatic.put(EntityGoKart.class, goKartParts);
 
         // Jet ski
@@ -270,6 +271,7 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, lawnMowerParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 0.6));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.375, 0, -4.75, 9.5, 3.5, -90, 0.25, lawnMowerParts, lawnMowerTransformGlobal);
         entityRaytracePartsStatic.put(EntityLawnMower.class, lawnMowerParts);
 
         // Mini bike
@@ -281,11 +283,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.5, 0));
         createTranformListForPart(ModItems.MINI_BIKE_HANDLE_BAR, miniBikeParts, miniBikeTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.5, 0));
-        List<MatrixTransformation> miniBikeEngineTransforms = Lists.newArrayList();
-        miniBikeEngineTransforms.add(MatrixTransformation.createTranslation(0, 0.10625, 0));
-        createEngineTransforms(0, 7.25, 3, 180, 1, miniBikeEngineTransforms);
-        miniBikeTransformGlobal.addAll(miniBikeEngineTransforms);
-        createTranformListForPart(new ItemStack(ModItems.ENGINE), miniBikeParts, miniBikeTransformGlobal, FUNCTION_FUELING);
+        createFuelablePartTransforms(ModItems.ENGINE, 0, 0.10625, 0, 0, 7.25, 3, 180, 1, miniBikeParts, miniBikeTransformGlobal);
         entityRaytracePartsStatic.put(EntityMiniBike.class, miniBikeParts);
 
         // Moped
@@ -326,6 +324,7 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, smartCarParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.35));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.38125, 0, -9.25, 15, -12.3, -90, 0.25, smartCarParts, smartCarTransformGlobal);
         entityRaytracePartsStatic.put(EntitySmartCar.class, smartCarParts);
 
         // Speed boat
@@ -338,6 +337,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.65, -0.125),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.2734375, 0, -12.25, 17.25, -19.5, -90, 0.25, speedBoatParts, speedBoatTransformGlobal);
         entityRaytracePartsStatic.put(EntitySpeedBoat.class, speedBoatParts);
 
         // Sports plane
@@ -355,6 +355,7 @@ public class EntityRaytracer
         createTranformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WING, "wingLeft"), sportsPlaneParts, sportsPlaneTransformGlobal,
                 MatrixTransformation.createTranslation(0.875, -0.1875, 0.5),
                 MatrixTransformation.createRotation(-5, 1, 0, 0));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.5, 0, -6.25, 12.25, -1, -90, 0.25, sportsPlaneParts, new ArrayList<>(sportsPlaneTransformGlobal));
         sportsPlaneTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.5, 0));
         sportsPlaneTransformGlobal.add(MatrixTransformation.createScale(0.85));
         createTranformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WHEEL_COVER, "wheelCoverFront"), sportsPlaneParts, sportsPlaneTransformGlobal,
@@ -384,6 +385,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.95));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.53125, 0, -13.25, 12, -7.3, -90, 0.25, golfCartParts, golfCartTransformGlobal);
         entityRaytracePartsStatic.put(EntityGolfCart.class, golfCartParts);
 
         if(Loader.isModLoaded("cfm"))
@@ -449,23 +451,50 @@ public class EntityRaytracer
     }
 
     /**
-     * Creates part-specific transforms for a raytraceable entity's rendered engine. Arguments passed here should be the same as
-     * those passed to {@link RenderPoweredVehicle#setEnginePosition setEnginePosition} by the entity's renderer.
+     * Creates part-specific transforms for a raytraceable entity's rendered part. Arguments passed here should be the same as
+     * those passed to {@link RenderPoweredVehicle#setPartPosition setPartPosition} by the entity's renderer.
      * 
-     * @param x engine's x position
-     * @param y engine's y position
-     * @param z engine's z position
-     * @param rotation engine's rotation yaw
-     * @param scale engine's scale
-     * @param transforms list that engine transforms are added to
+     * @param xPixel part's x position
+     * @param yPixel part's y position
+     * @param zPixel part's z position
+     * @param rotation part's rotation yaw
+     * @param scale part's scale
+     * @param transforms list that part transforms are added to
      */
-    public static void createEngineTransforms(double x, double y, double z, double rotation, double scale, List<MatrixTransformation> transforms)
+    public static void creatPartTransforms(double xPixel, double yPixel, double zPixel, double rotation, double scale, List<MatrixTransformation> transforms)
     {
-        transforms.add(MatrixTransformation.createTranslation(x * 0.0625, y * 0.0625, z * 0.0625));
+        transforms.add(MatrixTransformation.createTranslation(xPixel * 0.0625, yPixel * 0.0625, zPixel * 0.0625));
         transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
         transforms.add(MatrixTransformation.createScale(scale));
         transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
         transforms.add(MatrixTransformation.createRotation(rotation, 0, 1, 0));
+    }
+
+    /**
+     * Creates part-specific transforms for a raytraceable entity's rendered part and adds them the list of transforms
+     * for the given entity. Pixel position, rotation, and scale arguments passed here should be the same as
+     * those passed to {@link RenderPoweredVehicle#setPartPosition setPartPosition} by the entity's renderer.
+     * 
+     * @param part the rendered item part
+     * @param xMeters part's x offset meters
+     * @param yMeters part's y offset meters
+     * @param zMeters part's z offset meters
+     * @param xPixel part's x position in pixels
+     * @param yPixel part's y position in pixels
+     * @param zPixel part's z position in pixels
+     * @param rotation part's rotation yaw
+     * @param scale part's scale
+     * @param parts map of all parts to their transforms
+     * @param transformsGlobal transforms that apply to all parts for this entity
+     */
+    public static void createFuelablePartTransforms(Item part, double xMeters, double yMeters, double zMeters, double xPixel, double yPixel, double zPixel,
+            double rotation, double scale, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    {
+        List<MatrixTransformation> partTransforms = Lists.newArrayList();
+        partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
+        creatPartTransforms(xPixel, yPixel, zPixel, rotation, scale, partTransforms);
+        transformsGlobal.addAll(partTransforms);
+        createTranformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
     }
 
     /**

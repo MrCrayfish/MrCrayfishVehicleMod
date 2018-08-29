@@ -1,13 +1,14 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 
@@ -17,6 +18,8 @@ import javax.annotation.Nullable;
 public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> extends RenderVehicle<T>
 {
     private PartPosition enginePosition = new PartPosition(0, 0, 0, 0, 1.0F);
+    private PartPosition fuelPortBodyPosition = new PartPosition(0, 0, 0, 0, 0.25F);
+    private PartPosition fuelPortLidPosition = new PartPosition(0, 0, 0, 0, 0.25F);
 
     protected RenderPoweredVehicle(RenderManager renderManager)
     {
@@ -35,26 +38,56 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
     {
         if(entity.shouldRenderEngine())
         {
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(enginePosition.x * 0.0625, enginePosition.y * 0.0625, enginePosition.z * 0.0625);
-                GlStateManager.translate(0, -0.5, 0);
-                GlStateManager.scale(enginePosition.scale, enginePosition.scale, enginePosition.scale);
-                GlStateManager.translate(0, 0.5, 0);
-                GlStateManager.rotate(enginePosition.rotation, 0, 1, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.engine, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
+            renderPart(enginePosition, entity.engine);
         }
+
+        if(entity.shouldRenderFuelPort())
+        {
+            RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
+            if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            {
+                renderPart(fuelPortBodyPosition, entity.fuelPortBody);
+                renderPart(fuelPortLidPosition, entity.fuelPortLid);
+            }
+            else
+            {
+                renderPart(fuelPortBodyPosition, entity.fuelPortClosed);
+            }
+        }
+    }
+
+    private void renderPart(PartPosition partPosition, ItemStack part)
+    {
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(partPosition.x * 0.0625, partPosition.y * 0.0625, partPosition.z * 0.0625);
+            GlStateManager.translate(0, -0.5, 0);
+            GlStateManager.scale(partPosition.scale, partPosition.scale, partPosition.scale);
+            GlStateManager.translate(0, 0.5, 0);
+            GlStateManager.rotate(partPosition.rotation, 0, 1, 0);
+            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
+        }
+        GlStateManager.popMatrix();
+    }
+
+    private void setPartPosition(PartPosition partPosition, float x, float y, float z, float rotation, float scale)
+    {
+        partPosition.x = x;
+        partPosition.y = y;
+        partPosition.z = z;
+        partPosition.rotation = rotation;
+        partPosition.scale = scale;
     }
 
     public void setEnginePosition(float x, float y, float z, float rotation, float scale)
     {
-        this.enginePosition.x = x;
-        this.enginePosition.y = y;
-        this.enginePosition.z = z;
-        this.enginePosition.rotation = rotation;
-        this.enginePosition.scale = scale;
+        setPartPosition(enginePosition, x, y, z, rotation, scale);
+    }
+
+    public void setFuelPortPosition(float x, float y, float z, float rotation, float scale)
+    {
+        setPartPosition(fuelPortBodyPosition, x, y, z, rotation, scale);
+        setPartPosition(fuelPortLidPosition, x, y, z, rotation - 110, scale);
     }
 
     private static class PartPosition

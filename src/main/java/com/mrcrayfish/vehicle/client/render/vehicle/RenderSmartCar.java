@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySmartCar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,7 +10,6 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
@@ -26,6 +24,7 @@ public class RenderSmartCar extends RenderLandVehicle<EntitySmartCar>
     {
         super(renderManager);
         this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
+        this.setFuelPortPosition(-9.25F, 15, -12.3F, -90, 0.25F);
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7F, 12F, 1.5F));
         wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 12F, 1.5F));
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, -12F, 1.5F));

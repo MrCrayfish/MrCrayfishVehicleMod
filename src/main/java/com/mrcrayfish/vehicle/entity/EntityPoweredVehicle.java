@@ -30,6 +30,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+
+import java.awt.Color;
 import java.util.List;
 
 /**
@@ -72,6 +74,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     @SideOnly(Side.CLIENT)
     public ItemStack engine;
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortClosed;
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortBody;
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortLid;
 
     protected EntityPoweredVehicle(World worldIn)
     {
@@ -138,6 +146,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public void onClientInit()
     {
         engine = new ItemStack(ModItems.ENGINE);
+        fuelPortClosed = new ItemStack(ModItems.FUEL_PORT_CLOSED);
+        fuelPortBody = new ItemStack(ModItems.FUEL_PORT_BODY);
+        fuelPortLid = new ItemStack(ModItems.FUEL_PORT_LID);
     }
 
     public void fuelVehicle(EntityPlayer player, EnumHand hand)
@@ -531,6 +542,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @SideOnly(Side.CLIENT)
     public boolean shouldRenderEngine()
     {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean shouldRenderFuelPort()
+    {
         return true;
     }
 
@@ -644,6 +661,22 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             {
                 EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
                 engine.setItemDamage(type.ordinal());
+            }
+            if(COLOR.equals(key))
+            {
+                if(!fuelPortClosed.hasTagCompound())
+                {
+                    fuelPortClosed.setTagCompound(new NBTTagCompound());
+                    fuelPortBody.setTagCompound(new NBTTagCompound());
+                    fuelPortLid.setTagCompound(new NBTTagCompound());
+                }
+                Color color = new Color(this.dataManager.get(COLOR));
+                int colorInt = (Math.sqrt(color.getRed() * color.getRed() * 0.241
+                        + color.getGreen() * color.getGreen() * 0.691
+                        + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();
+                fuelPortClosed.getTagCompound().setInteger("color", colorInt);
+                fuelPortBody.getTagCompound().setInteger("color", colorInt);
+                fuelPortLid.getTagCompound().setInteger("color", colorInt);
             }
         }
     }

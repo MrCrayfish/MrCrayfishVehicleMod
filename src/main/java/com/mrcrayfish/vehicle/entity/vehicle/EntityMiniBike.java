@@ -109,4 +109,10 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
     {
         return true;
     }
+
+    @Override
+    public boolean shouldRenderFuelPort()
+    {
+        return false;
+    }
 }
