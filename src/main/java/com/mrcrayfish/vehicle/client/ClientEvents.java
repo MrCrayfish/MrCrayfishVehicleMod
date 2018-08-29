@@ -46,6 +46,8 @@ public class ClientEvents
     private int lastSlot = -1;
     private int originalPerspective = -1;
     private double jerryCanMainHandOffset;
+    private int tickCounter;
+    private boolean fuleing, fuleingSoundPlayed;
 
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
@@ -495,6 +497,21 @@ public class ClientEvents
             {
                 originalPerspective = -1;
             }
+
+            tickCounter++;
+            RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
+            if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            {
+                if (!fuleing)
+                {
+                    tickCounter = 0;
+                    fuleing = true;
+                }
+            }
+            else
+            {
+                fuleing = false;
+            }
         }
     }
 
@@ -517,7 +534,16 @@ public class ClientEvents
         RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
         if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING) && event.getHand() == EntityRaytracer.getContinuousInteractionObject())
         {
-            double offset = Math.sin(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.01;
+            double offset = Math.sin((tickCounter + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.4) * 0.01;
+            if (offset > 0.0099775 && !fuleingSoundPlayed)
+            {
+                Minecraft.getMinecraft().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
+                fuleingSoundPlayed = true;
+            }
+            else
+            {
+                fuleingSoundPlayed = false;
+            }
             GlStateManager.translate(0, 0.35 + offset, -0.2);
             GlStateManager.rotate(-25F, 1, 0, 0);
             if (event.getHand() == EnumHand.MAIN_HAND)

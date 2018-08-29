@@ -48,10 +48,12 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
             {
                 renderPart(fuelPortBodyPosition, entity.fuelPortBody);
                 renderPart(fuelPortLidPosition, entity.fuelPortLid);
+                entity.playFuelPortOpenSound();
             }
             else
             {
                 renderPart(fuelPortBodyPosition, entity.fuelPortClosed);
+                entity.playFuelPortCloseSound();
             }
         }
     }

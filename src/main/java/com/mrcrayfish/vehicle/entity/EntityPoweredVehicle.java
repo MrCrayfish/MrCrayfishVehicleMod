@@ -81,6 +81,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack fuelPortLid;
 
+    private boolean fueling;
+
     protected EntityPoweredVehicle(World worldIn)
     {
         super(worldIn);
@@ -107,6 +109,24 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public SoundEvent getHornRidingSound()
     {
         return ModSounds.HORN_STEREO;
+    }
+
+    public void playFuelPortOpenSound()
+    {
+        if (!fueling)
+        {
+            Minecraft.getMinecraft().player.playSound(ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F);
+            fueling = true;
+        }
+    }
+
+    public void playFuelPortCloseSound()
+    {
+        if (fueling)
+        {
+            Minecraft.getMinecraft().player.playSound(ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F);
+            fueling = false;
+        }
     }
 
     public float getMinEnginePitch()

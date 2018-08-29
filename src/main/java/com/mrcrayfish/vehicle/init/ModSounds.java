@@ -1,18 +1,12 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
-import net.minecraft.block.Block;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
-
-import java.sql.Ref;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -38,6 +32,9 @@ public class ModSounds
     public static final SoundEvent SPORTS_PLANE_ENGINE_MONO;
     public static final SoundEvent SPORTS_PLANE_ENGINE_STEREO;
     public static final SoundEvent BOOST_PAD;
+    public static final SoundEvent LIQUID_GLUG;
+    public static final SoundEvent FUEL_PORT_OPEN;
+    public static final SoundEvent FUEL_PORT_CLOSE;
 
     static
     {
@@ -60,6 +57,9 @@ public class ModSounds
         SPORTS_PLANE_ENGINE_MONO = registerSound("vehicle:sports_plane_engine_mono");
         SPORTS_PLANE_ENGINE_STEREO = registerSound("vehicle:sports_plane_engine_stereo");
         BOOST_PAD = registerSound("vehicle:boost_pad");
+        LIQUID_GLUG = registerSound("vehicle:liquid_glug");
+        FUEL_PORT_OPEN = registerSound("vehicle:fuel_port_open");
+        FUEL_PORT_CLOSE = registerSound("vehicle:fuel_port_close");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -95,6 +95,9 @@ public class ModSounds
             registry.register(SPORTS_PLANE_ENGINE_MONO);
             registry.register(SPORTS_PLANE_ENGINE_STEREO);
             registry.register(BOOST_PAD);
+            registry.register(LIQUID_GLUG);
+            registry.register(FUEL_PORT_OPEN);
+            registry.register(FUEL_PORT_CLOSE);
         }
     }
 }
