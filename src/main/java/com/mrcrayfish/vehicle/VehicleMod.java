@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
@@ -69,7 +70,7 @@ public class VehicleMod
         PacketHandler.init();
         CustomDataSerializers.register();
         HeldVehicleDataHandler.register();
-
+        ModTileEntities.register();
         registerVehicles();
 
         proxy.preInit();

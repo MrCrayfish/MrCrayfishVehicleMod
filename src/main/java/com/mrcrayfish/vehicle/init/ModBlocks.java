@@ -20,6 +20,7 @@ public class ModBlocks
     public static final Block STEEP_BOOST_RAMP;
 
     public static final Block FUELIUM;
+    public static final Block REFINERY;
 
     static
     {
@@ -28,6 +29,7 @@ public class ModBlocks
         BOOST_RAMP = new BlockBoostRamp();
         STEEP_BOOST_RAMP = new BlockSteepBoostRamp();
         FUELIUM = new BlockLiquid("fuelium", ModFluids.FUELIUM, Material.WATER);
+        REFINERY = new BlockRefinery();
     }
 
     public static void register()
@@ -37,6 +39,7 @@ public class ModBlocks
         registerBlock(BOOST_RAMP, new ItemBoostRamp(BOOST_RAMP));
         registerBlock(STEEP_BOOST_RAMP);
         registerBlock(FUELIUM, null);
+        registerBlock(REFINERY);
     }
 
     private static void registerBlock(Block block)
