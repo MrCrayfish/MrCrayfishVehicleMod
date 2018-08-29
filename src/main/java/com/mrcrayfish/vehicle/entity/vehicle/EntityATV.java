@@ -64,12 +64,6 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

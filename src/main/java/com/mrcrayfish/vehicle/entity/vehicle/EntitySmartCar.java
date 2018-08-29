@@ -69,12 +69,6 @@ public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytrace
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public double getMountedYOffset()
     {
         return 2 * 0.0625;

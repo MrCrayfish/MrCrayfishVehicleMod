@@ -153,12 +153,6 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public double getMountedYOffset()
     {
         return 8.5 * 0.0625;

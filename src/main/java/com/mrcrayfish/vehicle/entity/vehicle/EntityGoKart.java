@@ -93,6 +93,12 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
     }
 
     @Override
+    public boolean shouldRenderEngine()
+    {
+        return true;
+    }
+
+    @Override
     public boolean shouldRenderFuelPort()
     {
         return false;

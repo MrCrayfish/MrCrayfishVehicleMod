@@ -52,10 +52,4 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
     {
         return 0.525;
     }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
 }

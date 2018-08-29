@@ -64,12 +64,6 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public SoundEvent getMovingSound()
     {
         return ModSounds.ELECTRIC_ENGINE_MONO;
