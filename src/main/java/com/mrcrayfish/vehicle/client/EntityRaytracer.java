@@ -202,6 +202,7 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, atvParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0.3046875, 0, -3.5, 10, 0.5, -90, 0.25, atvParts, atvTransformGlobal);
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
@@ -255,6 +256,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 1.0734375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0, 0, -5.25, 18.75, 7.25, -90, 0.25, jetSkiParts, jetSkiTransformGlobal);
         entityRaytracePartsStatic.put(EntityJetSki.class, jetSkiParts);
 
         // Lawn mower
@@ -300,6 +302,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, -0.12, 0.785),
                 MatrixTransformation.createRotation(-22.5, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.39375, 0, -3.75, 9, -8, -90, 0.25, mopedParts, mopedTransformGlobal);
         entityRaytracePartsStatic.put(EntityMoped.class, mopedParts);
 
         // Shopping cart

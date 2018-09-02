@@ -17,6 +17,7 @@ public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
     public RenderJetSki(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-5.25F, 18.75F, 7.25F, -90, 0.25F);
     }
 
     @Override
@@ -65,6 +66,7 @@ public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
