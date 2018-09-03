@@ -15,6 +15,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -47,6 +48,81 @@ public class BlockFluidPump extends BlockObject
             defaultState = defaultState.withProperty(CONNECTED_PIPES[facing.getIndex()], false);
         }
         this.setDefaultState(defaultState);
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        double minX = 5 * 0.0625;
+        double minY = 3 * 0.0625;
+        double minZ = 5 * 0.0625;
+        double maxX = 11 * 0.0625;
+        double maxY = 13 * 0.0625;
+        double maxZ = 11 * 0.0625;
+
+        state = this.getActualState(state, source, pos);
+        EnumFacing originalFacing = state.getValue(FACING);
+        switch(originalFacing)
+        {
+            case DOWN:
+                minY = 0.0F;
+                break;
+            case UP:
+                maxY = 1.0F;
+                break;
+            case NORTH:
+                minX = 3 * 0.0625;
+                maxX = 13 * 0.0625;
+                maxZ = 1.0;
+                break;
+            case SOUTH:
+                minX = 3 * 0.0625;
+                maxX = 13 * 0.0625;
+                minZ = 0;
+                break;
+            case WEST:
+                minZ = 3 * 0.0625;
+                maxZ = 13 * 0.0625;
+                maxX = 1.0;
+                break;
+            case EAST:
+                minZ = 3 * 0.0625;
+                maxZ = 13 * 0.0625;
+                minX = 0;
+                break;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]))
+        {
+            minZ = 0.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]))
+        {
+            maxX = 1.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]))
+        {
+            maxZ = 1.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]))
+        {
+            minX = 0.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]))
+        {
+            minY = 0.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]))
+        {
+            maxY = 1.0F;
+        }
+
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
     @Override
