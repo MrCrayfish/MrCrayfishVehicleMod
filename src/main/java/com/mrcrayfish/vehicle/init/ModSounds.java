@@ -35,6 +35,8 @@ public class ModSounds
     public static final SoundEvent LIQUID_GLUG;
     public static final SoundEvent FUEL_PORT_OPEN;
     public static final SoundEvent FUEL_PORT_CLOSE;
+    public static final SoundEvent FUEL_PORT_2_OPEN;
+    public static final SoundEvent FUEL_PORT_2_CLOSE;
 
     static
     {
@@ -60,6 +62,8 @@ public class ModSounds
         LIQUID_GLUG = registerSound("vehicle:liquid_glug");
         FUEL_PORT_OPEN = registerSound("vehicle:fuel_port_open");
         FUEL_PORT_CLOSE = registerSound("vehicle:fuel_port_close");
+        FUEL_PORT_2_OPEN = registerSound("vehicle:fuel_port_2_open");
+        FUEL_PORT_2_CLOSE = registerSound("vehicle:fuel_port_2_close");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
@@ -98,6 +102,8 @@ public class ModSounds
             registry.register(LIQUID_GLUG);
             registry.register(FUEL_PORT_OPEN);
             registry.register(FUEL_PORT_CLOSE);
+            registry.register(FUEL_PORT_2_OPEN);
+            registry.register(FUEL_PORT_2_CLOSE);
         }
     }
 }

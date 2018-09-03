@@ -64,5 +64,11 @@
     },
     "fuel_port_close": {
         "sounds": [ {"name": "vehicle:fuel_port_close"}]
+    },
+    "fuel_port_2_open": {
+        "sounds": [ {"name": "vehicle:fuel_port_2_open"}]
+    },
+    "fuel_port_2_close": {
+        "sounds": [ {"name": "vehicle:fuel_port_2_close"}]
     }
 }
