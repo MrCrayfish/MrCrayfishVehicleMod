@@ -22,6 +22,7 @@ public class ModBlocks
     public static final Block FUELIUM;
     public static final Block REFINERY;
     public static final Block FLUID_PIPE;
+    public static final Block FLUID_PUMP;
 
     static
     {
@@ -32,6 +33,7 @@ public class ModBlocks
         FUELIUM = new BlockLiquid("fuelium", ModFluids.FUELIUM, Material.WATER);
         REFINERY = new BlockRefinery();
         FLUID_PIPE = new BlockFluidPipe();
+        FLUID_PUMP = new BlockFluidPump();
     }
 
     public static void register()
@@ -43,6 +45,7 @@ public class ModBlocks
         registerBlock(FUELIUM, null);
         registerBlock(REFINERY);
         registerBlock(FLUID_PIPE);
+        registerBlock(FLUID_PUMP);
     }
 
     private static void registerBlock(Block block)

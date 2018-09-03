@@ -2,15 +2,19 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockLever;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -20,7 +24,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidPipe extends BlockObject
+public class BlockFluidPump extends BlockObject
 {
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     public static final PropertyBool[] CONNECTED_PIPES;
@@ -34,9 +38,9 @@ public class BlockFluidPipe extends BlockObject
         }
     }
 
-    public BlockFluidPipe()
+    public BlockFluidPump()
     {
-        super(Material.IRON, "fluid_pipe");
+        super(Material.IRON, "fluid_pump");
         IBlockState defaultState = this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH);
         for(EnumFacing facing : EnumFacing.values())
         {
@@ -46,76 +50,9 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        double minX = 5 * 0.0625;
-        double minY = 5 * 0.0625;
-        double minZ = 5 * 0.0625;
-        double maxX = 11 * 0.0625;
-        double maxY = 11 * 0.0625;
-        double maxZ = 11 * 0.0625;
-
-        state = this.getActualState(state, source, pos);
-        EnumFacing originalFacing = state.getValue(FACING);
-        switch(originalFacing)
-        {
-            case DOWN:
-                minY = 0.0F;
-                break;
-            case UP:
-                maxY = 1.0F;
-                break;
-            case NORTH:
-                minZ = 0.0F;
-                break;
-            case SOUTH:
-                maxZ = 1.0F;
-                break;
-            case WEST:
-                minX = 0.0F;
-                break;
-            case EAST:
-                maxX = 1.0F;
-                break;
-        }
-
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]))
-        {
-            minZ = 0.0F;
-        }
-
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]))
-        {
-            maxX = 1.0F;
-        }
-
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]))
-        {
-            maxZ = 1.0F;
-        }
-
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]))
-        {
-            minX = 0.0F;
-        }
-
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]))
-        {
-            minY = 0.0F;
-        }
-
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]))
-        {
-            maxY = 1.0F;
-        }
-
-        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
-    }
-
-    @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
-        EnumFacing originalFacing = state.getValue(FACING);
+        EnumFacing originalFacing = state.getValue(FACING).getOpposite();
         for(EnumFacing facing : EnumFacing.VALUES)
         {
             if(facing == originalFacing)
@@ -123,17 +60,17 @@ public class BlockFluidPipe extends BlockObject
 
             BlockPos adjacentPos = pos.offset(facing);
             IBlockState adjacentState = worldIn.getBlockState(adjacentPos);
-            if(adjacentState.getBlock() == this)
+            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE)
             {
-                EnumFacing adjacentFacing = adjacentState.getValue(FACING);
-                if(adjacentPos.offset(adjacentFacing).equals(pos))
+                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
+            }
+            else if(adjacentState.getBlock() == Blocks.LEVER)
+            {
+                EnumFacing leverFacing = adjacentState.getValue(BlockLever.FACING).getFacing().getOpposite();
+                if(adjacentPos.offset(leverFacing).equals(pos))
                 {
                     state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
                 }
-            }
-            else if(adjacentState.getBlock() == ModBlocks.FLUID_PUMP)
-            {
-                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
             }
         }
         return state;
@@ -143,7 +80,7 @@ public class BlockFluidPipe extends BlockObject
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
-        return state.withProperty(FACING, facing.getOpposite());
+        return state.withProperty(FACING, facing);
     }
 
     @Override
@@ -177,6 +114,12 @@ public class BlockFluidPipe extends BlockObject
     @Override
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntityFluidPipe();
+        return new TileEntityFluidPump();
+    }
+
+    @Override
+    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
+    {
+        return BlockFaceShape.SOLID;
     }
 }
