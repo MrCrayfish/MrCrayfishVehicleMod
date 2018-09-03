@@ -16,7 +16,7 @@ import net.minecraftforge.fluids.capability.TileFluidHandler;
  */
 public class TileEntityFluidPipe extends TileFluidHandler implements ITickable
 {
-    private static final int CAPACITY = 10;
+    private static final int CAPACITY = 500;
 
     public TileEntityFluidPipe()
     {
