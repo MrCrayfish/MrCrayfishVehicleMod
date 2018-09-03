@@ -19,6 +19,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
 
@@ -144,6 +145,14 @@ public class BlockFluidPump extends BlockObject
             {
                 EnumFacing leverFacing = adjacentState.getValue(BlockLever.FACING).getFacing().getOpposite();
                 if(adjacentPos.offset(leverFacing).equals(pos))
+                {
+                    state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
+                }
+            }
+            else
+            {
+                TileEntity tileEntity = worldIn.getTileEntity(adjacentPos);
+                if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
                 {
                     state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
                 }
