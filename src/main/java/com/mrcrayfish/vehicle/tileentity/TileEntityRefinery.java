@@ -406,11 +406,12 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
                 tank.getFluid().amount = tag.getInteger("fueliumLevel");
             }
         }
-
-        inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(tag, inventory);
-
-        if (tag.hasKey("CustomName", 8))
+        if(tag.hasKey("Items", Constants.NBT.TAG_LIST))
+        {
+            inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
+            ItemStackHelper.loadAllItems(tag, inventory);
+        }
+        if (tag.hasKey("CustomName", Constants.NBT.TAG_STRING))
         {
             customName = tag.getString("CustomName");
         }
