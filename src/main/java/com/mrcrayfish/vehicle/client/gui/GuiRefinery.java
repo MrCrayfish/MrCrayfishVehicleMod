@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.gui;
 import com.mrcrayfish.vehicle.common.container.ContainerRefinery;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -89,41 +90,14 @@ public class GuiRefinery extends GuiContainer
         int fueliumProgress = (int) (54 * (tileEntityRefinery.getFueliumProgress() / (double) TileEntityRefinery.FUELIUM_MAX_PROGRESS));
         this.drawTexturedModalRect(startX + 97, startY + 32, 176, 24, fueliumProgress, 10);
 
-        this.drawFluidTank(FluidRegistry.WATER, startX + 8, startY + 29, tileEntityRefinery.getWaterLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59, 16);
-        this.drawFluidTank(ModFluids.FUELIUM, startX + 80, startY + 29, tileEntityRefinery.getEthanolLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59, 16);
-        this.drawFluidTank(ModFluids.FUELIUM, startX + 152, startY + 29, tileEntityRefinery.getFueliumLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59, 16);
+        this.drawFluidTank(FluidRegistry.WATER, startX + 8, startY + 29, tileEntityRefinery.getWaterLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59);
+        this.drawFluidTank(ModFluids.FUELIUM, startX + 80, startY + 29, tileEntityRefinery.getEthanolLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59);
+        this.drawFluidTank(ModFluids.FUELIUM, startX + 152, startY + 29, tileEntityRefinery.getFueliumLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59);
     }
 
-    private void drawFluidTank(Fluid fluid, int x, int y, double level, double height, int width)
+    private void drawFluidTank(Fluid fluid, int x, int y, double level, int height)
     {
-        ResourceLocation resource = fluid.getStill();
-        TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
-        if(sprite != null)
-        {
-            double minU = sprite.getMinU();
-            double maxU = sprite.getMaxU();
-            double minV = sprite.getMinV();
-            double maxV = sprite.getMaxV();
-            double tankLevel = height * level;
-            double offsetY = y + (height - tankLevel);
-
-
-            GlStateManager.enableBlend();
-
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-            Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            buffer.pos(x, offsetY + tankLevel, 0).tex(minU, maxV).endVertex();
-            buffer.pos(x + width, offsetY + tankLevel, 0).tex(maxU, maxV).endVertex();
-            buffer.pos(x + width, offsetY, 0).tex(maxU, minV).endVertex();
-            buffer.pos(x, offsetY, 0).tex(minU, minV).endVertex();
-            tessellator.draw();
-
-            GlStateManager.disableBlend();
-        }
-
+        FluidUtils.drawFluidTankInGUI(fluid, x, y, level, height);
         Minecraft.getMinecraft().getTextureManager().bindTexture(GUI);
         this.drawTexturedModalRect(x, y, 176, 34, 16, 59);
     }

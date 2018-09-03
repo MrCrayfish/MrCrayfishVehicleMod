@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
@@ -18,6 +19,7 @@ import net.minecraftforge.fluids.capability.TileFluidHandler;
 public class TileEntityFluidPump extends TileFluidHandler implements ITickable
 {
     private static final int CAPACITY = 500;
+    private static final int TRANSFER_AMOUNT = 10;
 
     public TileEntityFluidPump()
     {
@@ -38,16 +40,7 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
             IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
             if(handler != null)
             {
-                FluidStack drained = handler.drain(CAPACITY, false);
-                if(drained != null && drained.amount > 0)
-                {
-                    int filled = tank.fill(drained, false);
-                    if(filled > 0)
-                    {
-                        drained = handler.drain(filled, true);
-                        tank.fill(drained, true);
-                    }
-                }
+                FluidUtils.transferFluid(handler, tank, TRANSFER_AMOUNT);
             }
         }
 
@@ -62,16 +55,7 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
                     IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, face);
                     if(handler != null)
                     {
-                        FluidStack drained = tank.drain(10, false);
-                        if(drained != null && drained.amount > 0)
-                        {
-                            int filled = handler.fill(drained, false);
-                            if(filled > 0)
-                            {
-                                drained = tank.drain(filled, true);
-                                handler.fill(drained, true);
-                            }
-                        }
+                        FluidUtils.transferFluid(tank, handler, TRANSFER_AMOUNT);
                     }
                 }
             }
