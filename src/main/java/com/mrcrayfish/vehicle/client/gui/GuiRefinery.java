@@ -4,7 +4,9 @@ import com.mrcrayfish.vehicle.common.container.ContainerRefinery;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -83,12 +85,12 @@ public class GuiRefinery extends GuiContainer
 
         if(tileEntityRefinery.getEthanolMaxProgress() > 0)
         {
-            int ethanolProgress = (int) Math.ceil(54 * (tileEntityRefinery.getEthanolProgress() / (double) tileEntityRefinery.getEthanolMaxProgress()));
-            this.drawTexturedModalRect(startX + 25, startY + 25, 176, 0, ethanolProgress, 24);
+            double ethanolProgress = 54.0 * (tileEntityRefinery.getEthanolProgress() / (double) tileEntityRefinery.getEthanolMaxProgress());
+            RenderUtil.drawTexturedModalRect(startX + 25, startY + 25, 176, 0, ethanolProgress, 24);
         }
 
-        int fueliumProgress = (int) (54 * (tileEntityRefinery.getFueliumProgress() / (double) TileEntityRefinery.FUELIUM_MAX_PROGRESS));
-        this.drawTexturedModalRect(startX + 97, startY + 32, 176, 24, fueliumProgress, 10);
+        double fueliumProgress = 54.0 * (tileEntityRefinery.getFueliumProgress() / (double) TileEntityRefinery.FUELIUM_MAX_PROGRESS);
+        RenderUtil.drawTexturedModalRect(startX + 97, startY + 32, 176, 24, fueliumProgress, 10);
 
         this.drawFluidTank(FluidRegistry.WATER, startX + 8, startY + 29, tileEntityRefinery.getWaterLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59);
         this.drawFluidTank(ModFluids.FUELIUM, startX + 80, startY + 29, tileEntityRefinery.getEthanolLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59);
