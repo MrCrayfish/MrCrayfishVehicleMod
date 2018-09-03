@@ -15,6 +15,8 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Calendar;
 
+import javax.vecmath.Vector3f;
+
 /**
  * Author: MrCrayfish
  */
@@ -28,8 +30,8 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
     public RenderMoped(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.25F, 3F, 180F, 1.0F);
-        this.setFuelPortPosition(-3.75F, 9, -8, -90, 0.25F);
+        this.setFuelPortPosition(-2.75F, 11.4F, -3.4F, -90, 0.2F);
+        this.setFuelPortLidPosition(-2.75F, 11.4F, -1.75F, new Vector3f(0, -90 + 110, 180), 0.2F);
         this.wheels.add(new Wheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, -6.7F, 1.5F));
 
         Calendar calendar = Calendar.getInstance();

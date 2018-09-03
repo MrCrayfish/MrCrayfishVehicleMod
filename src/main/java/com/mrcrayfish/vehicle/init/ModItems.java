@@ -48,6 +48,8 @@ public class ModItems
     public static final Item FUEL_PORT_CLOSED;
     public static final Item FUEL_PORT_BODY;
     public static final Item FUEL_PORT_LID;
+    public static final Item FUEL_PORT_2_CLOSED;
+    public static final Item FUEL_PORT_2_PIPE;
 
     static
     {
@@ -88,6 +90,8 @@ public class ModItems
         FUEL_PORT_CLOSED = new ItemPart("fuel_port_closed").setColored();
         FUEL_PORT_BODY = new ItemPart("fuel_port_body").setColored();
         FUEL_PORT_LID = new ItemPart("fuel_port_lid").setColored();
+        FUEL_PORT_2_CLOSED = new ItemPart("fuel_port_2_closed");
+        FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
     }
 
     public static void register()
@@ -129,6 +133,8 @@ public class ModItems
         register(FUEL_PORT_CLOSED);
         register(FUEL_PORT_BODY);
         register(FUEL_PORT_LID);
+        register(FUEL_PORT_2_CLOSED);
+        register(FUEL_PORT_2_PIPE);
     }
 
     private static void register(Item item)

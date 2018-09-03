@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import javax.vecmath.Vector3f;
+
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
@@ -17,7 +19,8 @@ public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
     public RenderJetSki(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-5.25F, 18.75F, 7.25F, -90, 0.25F);
+        this.setFuelPortPosition(-1.57F, 18.65F, 4.87F, new Vector3f(-135, 0, 0), 0.35F);
+        this.setFuelPortLidPosition(0, 0, 0, new Vector3f(0, 0, 0), 0);
     }
 
     @Override

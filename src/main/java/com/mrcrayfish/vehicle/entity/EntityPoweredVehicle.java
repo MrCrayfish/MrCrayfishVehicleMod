@@ -684,7 +684,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
             if(COLOR.equals(key))
             {
-                if(!fuelPortClosed.hasTagCompound())
+                if(!fuelPortBody.hasTagCompound())
                 {
                     fuelPortClosed.setTagCompound(new NBTTagCompound());
                     fuelPortBody.setTagCompound(new NBTTagCompound());

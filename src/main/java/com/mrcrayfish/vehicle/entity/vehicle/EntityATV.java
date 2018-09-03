@@ -43,6 +43,9 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
         body = new ItemStack(ModItems.ATV_BODY);
         handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
         wheel = new ItemStack(ModItems.WHEEL);
+        fuelPortClosed = new ItemStack(ModItems.FUEL_PORT_2_CLOSED);
+        fuelPortBody = new ItemStack(ModItems.FUEL_PORT_2_PIPE);
+        fuelPortLid = ItemStack.EMPTY;
     }
 
     @Override

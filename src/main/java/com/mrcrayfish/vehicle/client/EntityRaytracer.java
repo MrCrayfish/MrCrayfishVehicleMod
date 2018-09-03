@@ -202,7 +202,7 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, atvParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0.3046875, 0, -3.5, 10, 0.5, -90, 0.25, atvParts, atvTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, 0, 0.3046875, 0, -1.57, 13.05, 5.3, new Vec3d(-90, 0, 0), 0.35, atvParts, atvTransformGlobal);
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
@@ -256,7 +256,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 1.0734375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0, 0, -5.25, 18.75, 7.25, -90, 0.25, jetSkiParts, jetSkiTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, 0, 0, 0, -1.57, 18.65, 4.87, new Vec3d(-135, 0, 0), 0.35, jetSkiParts, jetSkiTransformGlobal);
         entityRaytracePartsStatic.put(EntityJetSki.class, jetSkiParts);
 
         // Lawn mower
@@ -302,7 +302,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, -0.12, 0.785),
                 MatrixTransformation.createRotation(-22.5, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.39375, 0, -3.75, 9, -8, -90, 0.25, mopedParts, mopedTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.39375, 0, -2.75, 11.4, -3.4, -90, 0.2, mopedParts, mopedTransformGlobal);
         entityRaytracePartsStatic.put(EntityMoped.class, mopedParts);
 
         // Shopping cart
@@ -460,17 +460,28 @@ public class EntityRaytracer
      * @param xPixel part's x position
      * @param yPixel part's y position
      * @param zPixel part's z position
-     * @param rotation part's rotation yaw
+     * @param rotation part's rotation vector
      * @param scale part's scale
      * @param transforms list that part transforms are added to
      */
-    public static void creatPartTransforms(double xPixel, double yPixel, double zPixel, double rotation, double scale, List<MatrixTransformation> transforms)
+    public static void creatPartTransforms(double xPixel, double yPixel, double zPixel, Vec3d rotation, double scale, List<MatrixTransformation> transforms)
     {
         transforms.add(MatrixTransformation.createTranslation(xPixel * 0.0625, yPixel * 0.0625, zPixel * 0.0625));
         transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
         transforms.add(MatrixTransformation.createScale(scale));
         transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        transforms.add(MatrixTransformation.createRotation(rotation, 0, 1, 0));
+        if (rotation.x != 0)
+        {
+            transforms.add(MatrixTransformation.createRotation(rotation.x, 1, 0, 0));
+        }
+        if (rotation.y != 0)
+        {
+            transforms.add(MatrixTransformation.createRotation(rotation.y, 0, 1, 0));
+        }
+        if (rotation.z != 0)
+        {
+            transforms.add(MatrixTransformation.createRotation(rotation.z, 0, 0, 1));
+        }
     }
 
     /**
@@ -485,7 +496,32 @@ public class EntityRaytracer
      * @param xPixel part's x position in pixels
      * @param yPixel part's y position in pixels
      * @param zPixel part's z position in pixels
-     * @param rotation part's rotation yaw
+     * @param rotation part's rotation vector
+     * @param scale part's scale
+     * @param parts map of all parts to their transforms
+     * @param transformsGlobal transforms that apply to all parts for this entity
+     */
+    public static void createFuelablePartTransforms(Item part, double xMeters, double yMeters, double zMeters, double xPixel, double yPixel, double zPixel,
+            Vec3d rotation, double scale, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    {
+        List<MatrixTransformation> partTransforms = Lists.newArrayList();
+        partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
+        creatPartTransforms(xPixel, yPixel, zPixel, rotation, scale, partTransforms);
+        transformsGlobal.addAll(partTransforms);
+        createTranformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
+    }
+
+    /**
+     * Version of {@link EntityRaytracer#createFuelablePartTransforms createFuelablePartTransforms} that sets the axis of rotation to Y
+     * 
+     * @param part the rendered item part
+     * @param xMeters part's x offset meters
+     * @param yMeters part's y offset meters
+     * @param zMeters part's z offset meters
+     * @param xPixel part's x position in pixels
+     * @param yPixel part's y position in pixels
+     * @param zPixel part's z position in pixels
+     * @param rotation part's rotation yaw (Y axis)
      * @param scale part's scale
      * @param parts map of all parts to their transforms
      * @param transformsGlobal transforms that apply to all parts for this entity
@@ -495,7 +531,7 @@ public class EntityRaytracer
     {
         List<MatrixTransformation> partTransforms = Lists.newArrayList();
         partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
-        creatPartTransforms(xPixel, yPixel, zPixel, rotation, scale, partTransforms);
+        creatPartTransforms(xPixel, yPixel, zPixel, new Vec3d(0, rotation, 0), scale, partTransforms);
         transformsGlobal.addAll(partTransforms);
         createTranformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
     }

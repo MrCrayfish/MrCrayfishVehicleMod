@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -23,7 +24,8 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
     public RenderATV(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-3.5F, 10, 0.5F, -90, 0.25F);
+        this.setFuelPortPosition(-1.57F, 13.05F, 5.3F, new Vector3f(-90, 0, 0), 0.35F);
+        this.setFuelPortLidPosition(0, 0, 0, new Vector3f(0, 0, 0), 0);
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
         wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F));

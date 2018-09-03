@@ -45,6 +45,9 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
         super.onClientInit();
         body = new ItemStack(ModItems.JET_SKI_BODY);
         handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
+        fuelPortClosed = new ItemStack(ModItems.FUEL_PORT_2_CLOSED);
+        fuelPortBody = new ItemStack(ModItems.FUEL_PORT_2_PIPE);
+        fuelPortLid = ItemStack.EMPTY;
     }
 
     @Override
