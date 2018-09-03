@@ -94,7 +94,7 @@ public class GuiRefinery extends GuiContainer
         this.drawFluidTank(ModFluids.FUELIUM, startX + 152, startY + 29, tileEntityRefinery.getFueliumLevel() / (double) TileEntityRefinery.TANK_CAPACITY, 59, 16);
     }
 
-    private void drawFluidTank(Fluid fluid, int x, int y, double level, int height, int width)
+    private void drawFluidTank(Fluid fluid, int x, int y, double level, double height, int width)
     {
         ResourceLocation resource = fluid.getStill();
         TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
@@ -104,7 +104,7 @@ public class GuiRefinery extends GuiContainer
             double maxU = sprite.getMaxU();
             double minV = sprite.getMinV();
             double maxV = sprite.getMaxV();
-            int tankLevel = (int) Math.ceil(height * level);
+            double tankLevel = height * level;
             double offsetY = y + (height - tankLevel);
 
 
