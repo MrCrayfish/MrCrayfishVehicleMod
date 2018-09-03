@@ -29,6 +29,9 @@ public class TileEntityFluidPipe extends TileFluidHandler implements ITickable
         if(tank.getFluid() == null)
             return;
 
+        if(world.isBlockPowered(pos))
+            return;
+
         IBlockState state = world.getBlockState(pos);
         EnumFacing facing = state.getValue(BlockFluidPipe.FACING);
         TileEntity tileEntity = world.getTileEntity(pos.offset(facing));
