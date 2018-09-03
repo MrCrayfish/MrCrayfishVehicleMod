@@ -38,7 +38,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
-    public static final int TANK_CAPACITY = 1000 * 50;
+    public static final int TANK_CAPACITY = 1000 * 5;
     public static final int ETHANOL_MAX_PROGRESS = 20 * 5;
     public static final int FUELIUM_MAX_PROGRESS = 20 * 2;
     private static final int SLOT_WATER_BUCKET = 0;
