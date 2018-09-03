@@ -73,10 +73,11 @@ public class ItemJerryCan extends Item
     public static void setCurrentFuel(ItemStack stack, float fuel)
     {
         NBTTagCompound tagCompound = stack.getTagCompound();
-        if(tagCompound != null)
+        if(tagCompound == null)
         {
-            tagCompound.setFloat("fuel", fuel);
+            stack.setTagCompound(new NBTTagCompound());
         }
+        stack.getTagCompound().setFloat("fuel", fuel);
     }
 
     public float getCapacity(ItemStack stack)

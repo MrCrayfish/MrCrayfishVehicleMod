@@ -33,6 +33,9 @@ import net.minecraftforge.fml.common.registry.EntityRegistry;
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.MOD_VERSION, acceptedMinecraftVersions = Reference.MOD_COMPATIBILITY, dependencies = Reference.MOD_DEPENDS)
 public class VehicleMod
 {
+    @Mod.Instance
+    public static VehicleMod instance;
+
     @SidedProxy(clientSide = Reference.PROXY_CLIENT, serverSide = Reference.PROXY_SERVER)
     public static Proxy proxy;
 
@@ -79,6 +82,7 @@ public class VehicleMod
     @Mod.EventHandler
     public void onInit(FMLInitializationEvent event)
     {
+        NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         proxy.init();
     }
 

@@ -27,6 +27,8 @@ tile.steep_boost_ramp.name=Steep Boost Ramp
 
 fluid.fuelium=Fuelium
 
+container.fuelium_refinery=Refinery
+
 vehicle.info_help=Hold SHIFT for Info
 vehicle.tile.boost_pad.info=Drive on this Boost Pad to give your vehicle a speed boost!
 vehicle.tile.boost_ramp.info=Drive on this Boost Ramp to give your vehicle a speed boost and send it flying into the air!
