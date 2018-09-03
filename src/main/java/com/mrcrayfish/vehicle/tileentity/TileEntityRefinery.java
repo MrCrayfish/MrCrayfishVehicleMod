@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.block.BlockRefinery;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -12,17 +14,21 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.TileFluidHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -509,5 +515,30 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
         {
             this.setInventorySlotContents(index, ItemStack.EMPTY);
         }
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            IBlockState state = world.getBlockState(pos);
+            if(state.getValue(BlockRefinery.FACING).getOpposite() == facing)
+            {
+                return false;
+            }
+        }
+        return super.hasCapability(capability, facing);
+    }
+
+    @Nullable
+    @Override
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if(!hasCapability(capability, facing))
+        {
+            return null;
+        }
+        return super.getCapability(capability, facing);
     }
 }
