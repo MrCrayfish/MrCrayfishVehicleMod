@@ -9,12 +9,10 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidTankProperties;
 
 import javax.annotation.Nullable;
 
@@ -47,6 +45,73 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        double minX = 5 * 0.0625;
+        double minY = 5 * 0.0625;
+        double minZ = 5 * 0.0625;
+        double maxX = 11 * 0.0625;
+        double maxY = 11 * 0.0625;
+        double maxZ = 11 * 0.0625;
+
+        state = this.getActualState(state, source, pos);
+        EnumFacing originalFacing = state.getValue(FACING);
+        switch(originalFacing)
+        {
+            case DOWN:
+                minY = 0.0F;
+                break;
+            case UP:
+                maxY = 1.0F;
+                break;
+            case NORTH:
+                minZ = 0.0F;
+                break;
+            case SOUTH:
+                maxZ = 1.0F;
+                break;
+            case WEST:
+                minX = 0.0F;
+                break;
+            case EAST:
+                maxX = 1.0F;
+                break;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]))
+        {
+            minZ = 0.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]))
+        {
+            maxX = 1.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]))
+        {
+            maxZ = 1.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]))
+        {
+            minX = 0.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]))
+        {
+            minY = 0.0F;
+        }
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]))
+        {
+            maxY = 1.0F;
+        }
+
+        return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
         EnumFacing originalFacing = state.getValue(FACING);
@@ -66,25 +131,6 @@ public class BlockFluidPipe extends BlockObject
                 }
             }
         }
-        /*EnumFacing facing = originalFacing;
-        for(int i = 0; i < 3; i++)
-        {
-            facing = facing.rotateY();
-            for(int j = 0; j < originalFacing.getHorizontalIndex(); j++)
-            {
-                facing = facing.rotateYCCW();
-            }
-            BlockPos adjacentPos = pos.offset(facing);
-            IBlockState adjacentState = worldIn.getBlockState(adjacentPos);
-            if(adjacentState.getBlock() == this)
-            {
-                EnumFacing adjacentFacing = adjacentState.getValue(FACING);
-                if(adjacentPos.offset(adjacentFacing).equals(pos))
-                {
-                    state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
-                }
-            }
-        }*/
         return state;
     }
 
