@@ -24,6 +24,7 @@ tile.traffic_cone.name=Traffic Cone
 tile.boost_pad.name=Boost Pad
 tile.boost_ramp.name=Boost Ramp
 tile.steep_boost_ramp.name=Steep Boost Ramp
+tile.fluid_pipe.name=Fluid Pipe
 
 fluid.fuelium=Fuelium
 

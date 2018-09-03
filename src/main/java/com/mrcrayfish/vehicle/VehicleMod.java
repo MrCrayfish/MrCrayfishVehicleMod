@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle;
 
+import com.mrcrayfish.vehicle.client.gui.GuiHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
@@ -25,6 +26,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
 /**
