@@ -7,6 +7,8 @@ import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -15,6 +17,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -49,9 +52,20 @@ public class BlockRefinery extends BlockRotatedObject
                         {
                             FluidStack fluidStack = handler.drain(50, true);
                             float currentFuel = ItemJerryCan.getCurrentFuel(stack);
-                            System.out.println(fluidStack.amount);
                             ItemJerryCan.setCurrentFuel(stack, currentFuel + (fluidStack.amount / 1000F));
                         }
+                    }
+                }
+                return true;
+            }
+            else if(stack.getItem() == Items.BUCKET)
+            {
+                if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
+                {
+                    TileEntity tileEntity = worldIn.getTileEntity(pos);
+                    if(tileEntity instanceof TileEntityRefinery)
+                    {
+                        ((TileEntityRefinery) tileEntity).syncFueliumAmountToClients();
                     }
                 }
                 return true;

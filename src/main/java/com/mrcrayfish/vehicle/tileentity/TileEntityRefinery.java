@@ -147,7 +147,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
                     fueliumProgress = 0;
                     tank.fillInternal(new FluidStack(ModFluids.FUELIUM, 20), true);
                     shrinkItem(getOilItemIndex());
-                    sendUpdate(wrap("fueliumLevel", tank.getFluidAmount()));
+                    syncFueliumAmountToClients();
                 }
             }
             else
@@ -461,6 +461,11 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
                 }
             }
         }
+    }
+
+    public void syncFueliumAmountToClients()
+    {
+        sendUpdate(wrap("fueliumLevel", tank.getFluidAmount()));
     }
 
     @Override
