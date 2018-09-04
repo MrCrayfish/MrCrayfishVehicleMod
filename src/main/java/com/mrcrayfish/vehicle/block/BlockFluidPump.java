@@ -170,7 +170,7 @@ public class BlockFluidPump extends BlockObject
                     state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
                 }
             }
-            else
+            else if(adjacentState.getBlock() != this)
             {
                 TileEntity tileEntity = worldIn.getTileEntity(adjacentPos);
                 if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
