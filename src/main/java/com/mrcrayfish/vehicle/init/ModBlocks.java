@@ -21,6 +21,7 @@ public class ModBlocks
 
     public static final Block FUELIUM;
     public static final Block REFINERY;
+    public static final Block GAS_PUMP;
     public static final Block FLUID_PIPE;
     public static final Block FLUID_PUMP;
 
@@ -31,6 +32,7 @@ public class ModBlocks
         BOOST_RAMP = new BlockBoostRamp();
         STEEP_BOOST_RAMP = new BlockSteepBoostRamp();
         FUELIUM = new BlockLiquid("fuelium", ModFluids.FUELIUM, Material.WATER);
+        GAS_PUMP = new BlockGasPump();
         REFINERY = new BlockRefinery();
         FLUID_PIPE = new BlockFluidPipe();
         FLUID_PUMP = new BlockFluidPump();
@@ -43,6 +45,7 @@ public class ModBlocks
         registerBlock(BOOST_RAMP, new ItemBoostRamp(BOOST_RAMP));
         registerBlock(STEEP_BOOST_RAMP);
         registerBlock(FUELIUM, null);
+        registerBlock(GAS_PUMP);
         registerBlock(REFINERY);
         registerBlock(FLUID_PIPE);
         registerBlock(FLUID_PUMP);
