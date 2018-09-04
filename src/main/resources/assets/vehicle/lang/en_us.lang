@@ -27,6 +27,7 @@ tile.steep_boost_ramp.name=Steep Boost Ramp
 tile.gas_pump.name=Gas Pump
 tile.fluid_pipe.name=Fluid Pipe
 tile.fluid_pump.name=Fluid Pump
+tile.fuel_drum.name=Fuel Drum
 
 fluid.fuelium=Fuelium
 
@@ -38,6 +39,7 @@ vehicle.tile.boost_ramp.info=Drive on this Boost Ramp to give your vehicle a spe
 vehicle.tile.traffic_cone.info=Use this cone to block vehicles with it's extra collision height. It can also be used as a hat!
 vehicle.tile.fluid_pipe.info=Use this pipe to transport fluids. The gray line on the pipe indicates the direction of travel. Fluid must be initially pumped in with a Fluid Pump or any other compatible pump for it to work. Pipe can be disabled with a direct redstone signal.
 vehicle.tile.fluid_pump.info=Use this pump to extract fluid from any compatible fluid storage into a pipe or another fluid storage. For the pump to work, it must be directly powered by redstone.
+vehicle.tile.fuel_drum.info=This Fuel Drum can be used to store Fuelium or any other fluid. It is highly explosive, so keep it away from fire.
 
 entity.moped.name=Moped
 
