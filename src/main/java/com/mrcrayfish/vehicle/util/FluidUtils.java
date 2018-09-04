@@ -20,7 +20,7 @@ import org.lwjgl.opengl.GL11;
  */
 public class FluidUtils
 {
-    public static boolean transferFluid(IFluidHandler source, IFluidHandler target, int maxAmount)
+    public static int transferFluid(IFluidHandler source, IFluidHandler target, int maxAmount)
     {
         FluidStack drained = source.drain(maxAmount, false);
         if(drained != null && drained.amount > 0)
@@ -29,11 +29,10 @@ public class FluidUtils
             if(filled > 0)
             {
                 drained = source.drain(filled, true);
-                target.fill(drained, true);
-                return true;
+                return target.fill(drained, true);
             }
         }
-        return false;
+        return 0;
     }
 
     @SideOnly(Side.CLIENT)
