@@ -4,18 +4,17 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
-import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
+import javax.vecmath.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -25,6 +24,8 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
     public RenderATV(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-1.57F, 13.05F, 5.3F, new Vector3f(-90, 0, 0), 0.35F);
+        this.setFuelPortLidPosition(0, 0, 0, new Vector3f(0, 0, 0), 0);
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
         wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F));

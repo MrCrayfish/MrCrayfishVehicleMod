@@ -121,12 +121,6 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

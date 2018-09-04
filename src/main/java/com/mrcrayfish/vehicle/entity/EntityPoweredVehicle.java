@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -30,6 +31,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+
+import java.awt.Color;
 import java.util.List;
 
 /**
@@ -73,6 +76,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @SideOnly(Side.CLIENT)
     public ItemStack engine;
 
+    @SideOnly(Side.CLIENT)
+    public FuelPort fuelPort;
+
+    private boolean fueling;
+
     protected EntityPoweredVehicle(World worldIn)
     {
         super(worldIn);
@@ -99,6 +107,24 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public SoundEvent getHornRidingSound()
     {
         return ModSounds.HORN_STEREO;
+    }
+
+    public void playFuelPortOpenSound()
+    {
+        if (!fueling)
+        {
+            fuelPort.playOpenSound();
+            fueling = true;
+        }
+    }
+
+    public void playFuelPortCloseSound()
+    {
+        if (fueling)
+        {
+            fuelPort.playCloseSound();
+            fueling = false;
+        }
     }
 
     public float getMinEnginePitch()
@@ -138,10 +164,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public void onClientInit()
     {
         engine = new ItemStack(ModItems.ENGINE);
+        fuelPort = FuelPort.LID;
     }
 
-    @Override
-    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    public void fuelVehicle(EntityPlayer player, EnumHand hand)
     {
         ItemStack stack = player.getHeldItem(hand);
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
@@ -150,9 +176,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             float rate = 0.1F;
             fuel -= this.addFuel(fuel >= rate ? rate : fuel);
             ItemJerryCan.setCurrentFuel(stack, fuel);
-            return true;
         }
-        return super.processInitialInteract(player, hand);
     }
 
     @Override
@@ -534,6 +558,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @SideOnly(Side.CLIENT)
     public boolean shouldRenderEngine()
     {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean shouldRenderFuelPort()
+    {
         return true;
     }
 
@@ -648,6 +678,22 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
                 EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
                 engine.setItemDamage(type.ordinal());
             }
+            if(COLOR.equals(key))
+            {
+                if(!fuelPort.body.hasTagCompound())
+                {
+                    fuelPort.closed.setTagCompound(new NBTTagCompound());
+                    fuelPort.body.setTagCompound(new NBTTagCompound());
+                    fuelPort.lid.setTagCompound(new NBTTagCompound());
+                }
+                Color color = new Color(this.dataManager.get(COLOR));
+                int colorInt = (Math.sqrt(color.getRed() * color.getRed() * 0.241
+                        + color.getGreen() * color.getGreen() * 0.691
+                        + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();
+                fuelPort.closed.getTagCompound().setInteger("color", colorInt);
+                fuelPort.body.getTagCompound().setInteger("color", colorInt);
+                fuelPort.lid.getTagCompound().setInteger("color", colorInt);
+            }
         }
     }
 
@@ -707,5 +753,55 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
             return NONE;
         }
+    }
+
+    public enum FuelPort
+    {
+        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
+        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
+
+        private ItemStack closed, body, lid;
+        private SoundEvent soundOpen, soundClose;
+        private float volumeOpen, volumeClose;
+        private float pitchOpen, pitchClose;
+
+        private FuelPort(Item closed, Item body, Item lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
+        {
+            this.closed = new ItemStack(closed);
+            this.body = new ItemStack(body);
+            this.lid = new ItemStack(lid);
+            this.soundOpen = soundOpen;
+            this.volumeOpen = volumeOpen;
+            this.pitchOpen = pitchOpen;
+            this.soundClose = soundClose;
+            this.volumeClose = volumeClose;
+            this.pitchClose = pitchClose;
+        }
+
+        public ItemStack getClosed()
+        {
+            return closed;
+        }
+
+        public ItemStack getBody()
+        {
+            return body;
+        }
+
+        public ItemStack getLid()
+        {
+            return lid;
+        }
+
+        public void playOpenSound()
+        {
+            Minecraft.getMinecraft().player.playSound(soundOpen, volumeOpen, pitchOpen);
+        }
+
+        public void playCloseSound()
+        {
+            Minecraft.getMinecraft().player.playSound(soundClose, volumeClose, pitchClose);
+        }
+
     }
 }

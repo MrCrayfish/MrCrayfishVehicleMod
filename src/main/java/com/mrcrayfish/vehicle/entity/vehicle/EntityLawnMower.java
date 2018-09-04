@@ -117,12 +117,6 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;
