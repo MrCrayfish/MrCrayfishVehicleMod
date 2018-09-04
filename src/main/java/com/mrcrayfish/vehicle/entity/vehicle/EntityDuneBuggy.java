@@ -60,10 +60,4 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
     {
         return 3.25 * 0.0625;
     }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
 }

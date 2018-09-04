@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -11,43 +11,54 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-/**
- * Author: MrCrayfish
- */
-public class MessagePickupVehicle extends MessageVehicleInteract implements IMessageHandler<MessagePickupVehicle, IMessage>
+public class MessageFuelVehicle extends MessageVehicleInteract implements IMessageHandler<MessageFuelVehicle, IMessage>
 {
-    public MessagePickupVehicle() {}
+    private EnumHand hand;
 
-    public MessagePickupVehicle(Entity targetEntity)
+    public MessageFuelVehicle() {}
+
+    public MessageFuelVehicle(EntityPlayer player, EnumHand hand, Entity targetEntity)
     {
         super(targetEntity);
+        this.hand = hand;
+        fuelVehicle(player, hand, targetEntity);
+    }
+
+    private void fuelVehicle(EntityPlayer player, EnumHand hand, Entity targetEntity)
+    {
+        if (targetEntity instanceof EntityPoweredVehicle)
+        {
+            ((EntityPoweredVehicle) targetEntity).fuelVehicle(player, hand);
+        }
     }
 
     @Override
     public void toBytes(ByteBuf buf)
     {
         super.toBytes(buf);
+        buf.writeInt(hand.ordinal());
     }
 
     @Override
     public void fromBytes(ByteBuf buf)
     {
         super.fromBytes(buf);
+        hand = EnumHand.values()[buf.readInt()];
     }
 
     @Override
-    public IMessage onMessage(MessagePickupVehicle message, MessageContext ctx)
+    public IMessage onMessage(MessageFuelVehicle message, MessageContext ctx)
     {
         EntityPlayer player = ctx.getServerHandler().player;
         MinecraftServer server = player.world.getMinecraftServer();
-        if(server != null && player.isSneaking())
+        if(server != null)
         {
             server.addScheduledTask(() ->
             {
                 Entity targetEntity = server.getEntityFromUuid(message.targetEntityID);
                 if (targetEntity != null)
                 {
-                    CommonEvents.pickUpVehicle(player.world, player, EnumHand.MAIN_HAND, targetEntity);
+                    fuelVehicle(player, message.hand, targetEntity);
                 }
             });
         }

@@ -19,6 +19,7 @@ public class RenderBumperCar extends RenderLandVehicle<EntityBumperCar>
     public RenderBumperCar(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-8.25F, 11, -9.3F, -90, 0.25F);
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F));
         wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F));
         wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F));

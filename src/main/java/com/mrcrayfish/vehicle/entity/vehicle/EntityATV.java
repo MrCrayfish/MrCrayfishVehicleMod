@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle.FuelPort;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -43,6 +44,7 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
         body = new ItemStack(ModItems.ATV_BODY);
         handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
         wheel = new ItemStack(ModItems.WHEEL);
+        fuelPort = FuelPort.CAP;
     }
 
     @Override
@@ -61,12 +63,6 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
     public double getMountedYOffset()
     {
         return 9 * 0.0625;
-    }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
     }
 
     @Override

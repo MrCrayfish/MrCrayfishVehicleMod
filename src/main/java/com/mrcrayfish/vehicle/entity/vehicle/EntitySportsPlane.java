@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -60,6 +61,12 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         wheelCover = new ItemStack(ModItems.SPORTS_PLANE_WHEEL_COVER);
         leg = new ItemStack(ModItems.SPORTS_PLANE_LEG);
         propeller = new ItemStack(ModItems.SPORTS_PLANE_PROPELLER);
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return this.getEntityBoundingBox().grow(1.5);
     }
 
     @Override
