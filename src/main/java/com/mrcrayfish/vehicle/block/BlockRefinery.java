@@ -41,22 +41,30 @@ public class BlockRefinery extends BlockRotatedObject
             ItemStack stack = playerIn.getHeldItem(hand);
             if(stack.getItem() instanceof ItemJerryCan)
             {
+                ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
+
+                if(jerryCan.isFull(stack))
+                    return false;
+
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityRefinery)
+                if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
                 {
-                    TileEntityRefinery refinery = (TileEntityRefinery) tileEntity;
-                    if(refinery.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+                    IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+                    if(handler != null)
                     {
-                        IFluidHandler handler = refinery.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                        if(handler != null)
+                        FluidStack fluidStack = handler.drain(50, true);
+                        if(fluidStack != null)
                         {
-                            FluidStack fluidStack = handler.drain(50, true);
-                            float currentFuel = ItemJerryCan.getCurrentFuel(stack);
-                            ItemJerryCan.setCurrentFuel(stack, currentFuel + (fluidStack.amount / 1000F));
+                            int remaining = jerryCan.fill(stack, fluidStack.amount);
+                            if(remaining > 0)
+                            {
+                                fluidStack.amount = remaining;
+                                handler.fill(fluidStack, true);
+                            }
                         }
                     }
                 }
-                return true;
+                return false;
             }
             else if(stack.getItem() == Items.BUCKET)
             {

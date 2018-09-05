@@ -25,10 +25,10 @@ public class ItemJerryCan extends Item
 {
     private final DecimalFormat FUEL_FORMAT = new DecimalFormat("0.#%");
 
-    private final float capacity;
-    private final float fillRate;
+    private final int capacity;
+    private final int fillRate;
 
-    public ItemJerryCan(String id, float capacity, float fillRate)
+    public ItemJerryCan(String id, int capacity, int fillRate)
     {
         this.setUnlocalizedName(id);
         this.setRegistryName(id);
@@ -48,58 +48,78 @@ public class ItemJerryCan extends Item
         }
         else
         {
-            String currentFuel = TextFormatting.RESET + FUEL_FORMAT.format(getCurrentFuel(stack) / getCapacity(stack));
+            String currentFuel = TextFormatting.RESET + FUEL_FORMAT.format(getCurrentFuel(stack) / (float) getCapacity(stack));
             tooltip.add(TextFormatting.AQUA + TextFormatting.BOLD.toString() + I18n.format(this.getUnlocalizedName() + ".fuel", currentFuel));
             tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 
-    public static float getCurrentFuel(ItemStack stack)
+    public int getCurrentFuel(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        if(!stack.isEmpty() && stack.getItem() == this)
         {
             NBTTagCompound tagCompound = stack.getTagCompound();
             if(tagCompound != null)
             {
-                return tagCompound.getFloat("fuel");
+                return tagCompound.getInteger("fuel");
             }
         }
-        return 0F;
+        return 0;
     }
 
-    public static void setCurrentFuel(ItemStack stack, float fuel)
+    public boolean isFull(ItemStack stack)
     {
-        NBTTagCompound tagCompound = stack.getTagCompound();
-        if(tagCompound == null)
-        {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-        stack.getTagCompound().setFloat("fuel", fuel);
+        return getCurrentFuel(stack) == getCapacity(stack);
     }
 
-    public float getCapacity(ItemStack stack)
+    public int fill(ItemStack stack, int fuel)
+    {
+        int capacity = getCapacity(stack);
+        int currentFuel = getCurrentFuel(stack);
+        int newFuel = Math.min(currentFuel + fuel, capacity);
+        NBTTagCompound tagCompound = createTagCompound(stack);
+        tagCompound.setInteger("fuel", newFuel);
+        return Math.max(0, currentFuel + fuel - capacity);
+    }
+
+    public int drain(ItemStack stack, int maxAmount)
+    {
+        int currentFuel = getCurrentFuel(stack);
+        int remainingFuel = Math.max(0, currentFuel - maxAmount);
+        NBTTagCompound tagCompound = createTagCompound(stack);
+        tagCompound.setInteger("fuel", remainingFuel);
+        return currentFuel - remainingFuel;
+    }
+
+    public static void setCurrentFuel(ItemStack stack, int fuel)
+    {
+        NBTTagCompound tagCompound = createTagCompound(stack);
+        tagCompound.setInteger("fuel", fuel);
+    }
+
+    public int getCapacity(ItemStack stack)
     {
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
         {
             NBTTagCompound tagCompound = stack.getTagCompound();
-            if(tagCompound != null && tagCompound.hasKey("capacity", Constants.NBT.TAG_FLOAT))
+            if(tagCompound != null && tagCompound.hasKey("capacity", Constants.NBT.TAG_INT))
             {
-                float capacity = tagCompound.getFloat("capacity");
-                return capacity > 0F ? capacity : this.capacity;
+                int capacity = tagCompound.getInteger("capacity");
+                return capacity > 0 ? capacity : this.capacity;
             }
         }
         return this.capacity;
     }
 
-    public float getFillRate(ItemStack stack)
+    public int getFillRate(ItemStack stack)
     {
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
         {
             NBTTagCompound tagCompound = stack.getTagCompound();
-            if(tagCompound != null && tagCompound.hasKey("fillRate", Constants.NBT.TAG_FLOAT))
+            if(tagCompound != null && tagCompound.hasKey("fillRate", Constants.NBT.TAG_INT))
             {
-                float capacity = tagCompound.getFloat("fillRate");
-                return capacity > 0F ? capacity : this.fillRate;
+                int fillRate = tagCompound.getInteger("fillRate");
+                return fillRate > 0 ? fillRate : this.fillRate;
             }
         }
         return this.fillRate;
@@ -124,7 +144,7 @@ public class ItemJerryCan extends Item
         NBTTagCompound tagCompound = stack.getTagCompound();
         if(tagCompound != null)
         {
-            float fuel = tagCompound.getFloat("fuel");
+            float fuel = tagCompound.getInteger("fuel");
             return fuel < this.capacity;
         }
         return false;
@@ -136,15 +156,26 @@ public class ItemJerryCan extends Item
         NBTTagCompound tagCompound = stack.getTagCompound();
         if(tagCompound != null)
         {
-            float fuel = tagCompound.getFloat("fuel");
-            return 1.0D - (fuel / capacity);
+            float fuel = tagCompound.getInteger("fuel");
+            return 1.0 - (fuel / (double) capacity);
         }
-        return 1.0D;
+        return 1.0;
     }
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
     {
         return slotChanged;
+    }
+
+    public static NBTTagCompound createTagCompound(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = stack.getTagCompound();
+        if(tagCompound == null)
+        {
+            tagCompound = new NBTTagCompound();
+            stack.setTagCompound(tagCompound);
+        }
+        return tagCompound;
     }
 }

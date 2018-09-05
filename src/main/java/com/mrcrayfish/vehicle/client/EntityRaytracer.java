@@ -156,8 +156,8 @@ public class EntityRaytracer
                     EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
                     if (poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
                     {
-                        float fuel = ItemJerryCan.getCurrentFuel(stack);
-                        if (fuel > 0F)
+                        int fuel = ((ItemJerryCan) stack.getItem()).getCurrentFuel(stack);
+                        if (fuel > 0)
                         {
                             if (continuousInteractionTickCounter % 2 == 0)
                             {
