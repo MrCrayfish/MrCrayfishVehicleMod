@@ -70,30 +70,39 @@ public class BlockFluidPump extends BlockFluidPipe
         switch(originalFacing)
         {
             case DOWN:
-                minY = 0.0F;
+                minY = 5 * 0.0625;
+                maxY = 1;
                 break;
             case UP:
-                maxY = 1.0F;
+                minY = 0;
+                maxY = 11 * 0.0625;
                 break;
             case NORTH:
-                minX = 3 * 0.0625;
-                maxX = 13 * 0.0625;
                 maxZ = 1.0;
                 break;
             case SOUTH:
-                minX = 3 * 0.0625;
-                maxX = 13 * 0.0625;
                 minZ = 0;
                 break;
             case WEST:
-                minZ = 3 * 0.0625;
-                maxZ = 13 * 0.0625;
                 maxX = 1.0;
                 break;
             case EAST:
+                minX = 0;
+                break;
+        }
+        switch(originalFacing.getAxis())
+        {
+            case Y:
+                maxX = maxZ = 13 * 0.0625;
+                minX = minZ = 3 * 0.0625;
+                break;
+            case Z:
+                minX = 3 * 0.0625;
+                maxX = 13 * 0.0625;
+                break;
+            case X:
                 minZ = 3 * 0.0625;
                 maxZ = 13 * 0.0625;
-                minX = 0;
                 break;
         }
 
