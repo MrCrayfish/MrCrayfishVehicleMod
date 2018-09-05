@@ -1,11 +1,15 @@
 package com.mrcrayfish.vehicle.common.container;
 
+import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -90,5 +94,76 @@ public class ContainerFluidExtractor extends Container
     public void updateProgressBar(int id, int value)
     {
         this.fluidExtractor.setField(id, value);
+    }
+
+    @Override
+    public ItemStack transferStackInSlot(EntityPlayer playerIn, int index)
+    {
+        ItemStack stack = ItemStack.EMPTY;
+        Slot slot = this.inventorySlots.get(index);
+
+        if(slot != null && slot.getHasStack())
+        {
+            ItemStack slotStack = slot.getStack();
+            stack = slotStack.copy();
+
+            if(index == 0 || index == 1)
+            {
+                if(!this.mergeItemStack(slotStack, 2, 38, true))
+                {
+                    return ItemStack.EMPTY;
+                }
+            }
+            else if(index > 1)
+            {
+                if(FluidExtractorRecipes.getInstance().getRecipeResult(slotStack) != null)
+                {
+                    if(!this.mergeItemStack(slotStack, 1, 2, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(TileEntityFurnace.isItemFuel(slotStack))
+                {
+                    if(!this.mergeItemStack(slotStack, 0, 1, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(index >= 2 && index < 29)
+                {
+                    if(!this.mergeItemStack(slotStack, 29, 38, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(index >= 29 && index < 38 && !this.mergeItemStack(slotStack, 2, 29, false))
+                {
+                    return ItemStack.EMPTY;
+                }
+            }
+            else if(!this.mergeItemStack(slotStack, 2, 38, false))
+            {
+                return ItemStack.EMPTY;
+            }
+
+            if(slotStack.isEmpty())
+            {
+                slot.putStack(ItemStack.EMPTY);
+            }
+            else
+            {
+                slot.onSlotChanged();
+            }
+
+            if(slotStack.getCount() == stack.getCount())
+            {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTake(playerIn, slotStack);
+        }
+
+        return stack;
     }
 }
