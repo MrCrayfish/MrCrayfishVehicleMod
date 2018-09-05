@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
@@ -8,6 +10,7 @@ import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
 import net.minecraft.block.BlockLever;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
@@ -23,10 +26,33 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
  */
 public class BlockFluidPump extends BlockFluidPipe
 {
+    private final AxisAlignedBB[][] boxesHousing = new AxisAlignedBB[][]
+            {{new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 0.1875, 0.8125),  new AxisAlignedBB(0.28125, 0.1875, 0.28125, 0.71875, 0.25, 0.71875)},
+            {new AxisAlignedBB(0.1875, 1, 0.1875, 0.8125, 0.8125, 0.8125),  new AxisAlignedBB(0.28125, 0.8125, 0.28125, 0.71875, 0.75, 0.71875)},
+            {new AxisAlignedBB(0.1875, 0.1875, 0, 0.8125, 0.8125, 0.1875),  new AxisAlignedBB(0.28125, 0.28125, 0.1875, 0.71875, 0.71875, 0.25)},
+            {new AxisAlignedBB(0.1875, 0.1875, 1, 0.8125, 0.8125, 0.8125),  new AxisAlignedBB(0.28125, 0.28125, 0.8125, 0.71875, 0.71875, 0.75)},
+            {new AxisAlignedBB(0, 0.1875, 0.1875, 0.1875, 0.8125, 0.8125),  new AxisAlignedBB(0.1875, 0.28125, 0.28125, 0.25, 0.71875, 0.71875)},
+            {new AxisAlignedBB(1, 0.1875, 0.1875, 0.8125, 0.8125, 0.8125),  new AxisAlignedBB(0.8125, 0.28125, 0.28125, 0.75, 0.71875, 0.71875)}};
 
     public BlockFluidPump()
     {
         super("fluid_pump");
+    }
+
+    @Override
+    protected EnumFacing getCollisionFacing(IBlockState state)
+    {
+        return state.getValue(FACING).getOpposite();
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState)
+    {
+        super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, isActualState);
+        for (AxisAlignedBB box : boxesHousing[getCollisionFacing(isActualState ? state : state.getActualState(world, pos)).getIndex()])
+        {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, box);
+        }
     }
 
     @Override

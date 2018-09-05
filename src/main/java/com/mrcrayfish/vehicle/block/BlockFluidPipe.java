@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.properties.PropertyDirection;
@@ -27,7 +29,11 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -36,11 +42,9 @@ public class BlockFluidPipe extends BlockObject
 {
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     public static final PropertyBool[] CONNECTED_PIPES;
-    public static AxisAlignedBB[] BOXES = new AxisAlignedBB[] {new AxisAlignedBB(0.34375, 0, 0.34375, 0.65625, 0.3125, 0.65625),
-            new AxisAlignedBB(0.34375, 0.6875, 0.34375, 0.65625, 1, 0.65625), new AxisAlignedBB(0.34375, 0.34375, 0, 0.65625, 0.65625, 0.3125),
-            new AxisAlignedBB(0.34375, 0.34375, 0.6875, 0.65625, 0.65625, 1), new AxisAlignedBB(0, 0.34375, 0.34375, 0.3125, 0.65625, 0.65625),
-            new AxisAlignedBB(0.6875, 0.34375, 0.34375, 1, 0.65625, 0.65625), new AxisAlignedBB(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875)};
-    private String name;
+    protected List<AxisAlignedBB> boxes;
+    protected AxisAlignedBB boxCenter;
+    protected String name;
 
     static
     {
@@ -66,6 +70,11 @@ public class BlockFluidPipe extends BlockObject
             defaultState = defaultState.withProperty(CONNECTED_PIPES[facing.getIndex()], false);
         }
         this.setDefaultState(defaultState);
+        boxCenter = new AxisAlignedBB(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875);
+        boxes = Stream.of(new AxisAlignedBB(0.34375, 0, 0.34375, 0.65625, 0.3125, 0.65625), new AxisAlignedBB(0.34375, 0.6875, 0.34375, 0.65625, 1, 0.65625),
+                new AxisAlignedBB(0.34375, 0.34375, 0, 0.65625, 0.65625, 0.3125), new AxisAlignedBB(0.34375, 0.34375, 0.6875, 0.65625, 0.65625, 1),
+                new AxisAlignedBB(0, 0.34375, 0.34375, 0.3125, 0.65625, 0.65625), new AxisAlignedBB(0.6875, 0.34375, 0.34375, 1, 0.65625, 0.65625),
+                boxCenter).collect(Collectors.toList());
     }
 
     @Override
@@ -82,6 +91,11 @@ public class BlockFluidPipe extends BlockObject
         }
     }
 
+    protected EnumFacing getCollisionFacing(IBlockState state)
+    {
+        return state.getValue(FACING);
+    }
+
     @Override
     public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState)
     {
@@ -93,11 +107,14 @@ public class BlockFluidPipe extends BlockObject
         {
             if (state.getValue(CONNECTED_PIPES[i]))
             {
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOXES[i]);
+                addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(i));
             }
         }
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, BOXES[state.getValue(FACING).getIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, BOXES[6]);
+        for (int i = EnumFacing.values().length; i < boxes.size(); i++)
+        {
+            addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(i));
+        }
+        addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(getCollisionFacing(state).getIndex()));
     }
 
     @Override
@@ -118,13 +135,11 @@ public class BlockFluidPipe extends BlockObject
         {
             return null;
         }
-        for (int i = 0; i < BOXES.length + 1; i++)
+        List<AxisAlignedBB> boxes = new ArrayList<>();
+        addCollisionBoxToList(state, world, pos, Block.FULL_BLOCK_AABB.offset(pos), boxes, null, true);
+        for (AxisAlignedBB box : boxes)
         {
-            if (i < EnumFacing.values().length && !state.getValue(CONNECTED_PIPES[i]))
-            {
-                continue;
-            }
-            result = BOXES[i < BOXES.length ? i : state.getValue(FACING).getIndex()].offset(pos).calculateIntercept(eyes, look);
+            result = box.calculateIntercept(eyes, look);
             if (result != null)
             {
                 distanceSq = result.hitVec.squareDistanceTo(eyes);
