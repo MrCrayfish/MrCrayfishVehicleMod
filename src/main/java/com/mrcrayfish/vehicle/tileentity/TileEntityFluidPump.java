@@ -38,15 +38,6 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
 
         IBlockState state = world.getBlockState(pos);
         EnumFacing facing = state.getValue(BlockFluidPump.FACING);
-        TileEntity tileEntity = world.getTileEntity(pos.offset(facing.getOpposite()));
-        if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
-        {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
-            if(handler != null)
-            {
-                FluidUtils.transferFluid(handler, tank, TRANSFER_AMOUNT);
-            }
-        }
 
         // Collect connections
         state = state.getActualState(world, pos);
@@ -55,7 +46,7 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
         {
             if(state.getValue(BlockFluidPump.CONNECTED_PIPES[face.getIndex()]))
             {
-                tileEntity = world.getTileEntity(pos.offset(face));
+                TileEntity tileEntity = world.getTileEntity(pos.offset(face));
                 if(tileEntity != null)
                 {
                     IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, face);
@@ -67,39 +58,43 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
             }
         }
 
-        // Return if no connections, or return and transfer full amount if one connection
-        int count = fluidHandlers.size();
-        if(count <= 1)
+        int outputCount = fluidHandlers.size();
+        if(outputCount == 0)
+            return;
+
+        TileEntity tileEntity = world.getTileEntity(pos.offset(facing.getOpposite()));
+        if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
         {
-            if (count == 1)
+            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+            if(handler != null)
             {
-                FluidUtils.transferFluid(tank, fluidHandlers.get(0), TRANSFER_AMOUNT);
+                FluidUtils.transferFluid(handler, tank, TRANSFER_AMOUNT);
             }
+        }
+
+        // Return and transfer full amount if one connection
+        if (outputCount == 1)
+        {
+            FluidUtils.transferFluid(tank, fluidHandlers.get(0), TRANSFER_AMOUNT);
             return;
         }
 
         // Evenly distribute truncated proportion to all connections
-        int remainder = Math.min(tank.getFluidAmount(), TRANSFER_AMOUNT * count);
-        int amount = remainder / count;
-        int filled;
+        int remainder = Math.min(tank.getFluidAmount(), TRANSFER_AMOUNT * outputCount);
+        int amount = remainder / outputCount;
         if(amount > 0)
         {
-            ListIterator<IFluidHandler> iterator = fluidHandlers.listIterator();
-            while(iterator.hasNext())
-            {
-                if(FluidUtils.transferFluid(tank, iterator.next(), amount) < amount)
-                {
-                    iterator.remove();
-                }
-            }
+            fluidHandlers.removeIf(iFluidHandler -> FluidUtils.transferFluid(tank, iFluidHandler, amount) < amount);
         }
 
         // Randomly distribute to the remaining non-full connections the proportion that would otherwise be lost in the above truncation
-        remainder %= count;
+        remainder %= outputCount;
         if(fluidHandlers.size() == 1)
         {
             FluidUtils.transferFluid(tank, fluidHandlers.get(0), remainder);
         }
+
+        int filled;
         for(int i = 0; i < remainder && !fluidHandlers.isEmpty(); i++)
         {
             int index = world.rand.nextInt(fluidHandlers.size());
