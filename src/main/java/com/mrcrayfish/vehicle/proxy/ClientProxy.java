@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
+import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.RefineryRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
@@ -17,6 +18,7 @@ import com.mrcrayfish.vehicle.init.ModMaterials;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.statemap.StateMap;
@@ -74,6 +76,7 @@ public class ClientProxy implements Proxy
 
         ClientRegistry.registerKeyBinding(KEY_HORN);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new RefineryRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());
 
