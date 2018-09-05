@@ -51,20 +51,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
 
     public TileEntityFluidExtractor()
     {
-        tank = new FluidTank(TANK_CAPACITY)
-        {
-            @Override
-            public boolean canFillFluidType(FluidStack fluid)
-            {
-                return fluid.getFluid() == ModFluids.FUELIUM;
-            }
-
-            @Override
-            public boolean canDrain()
-            {
-                return super.canDrain();
-            }
-        };
+        tank = new FluidTank(TANK_CAPACITY);
         tank.setCanFill(false);
     }
 
