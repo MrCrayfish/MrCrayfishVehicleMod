@@ -30,6 +30,8 @@ tile.fluid_pump.name=Fluid Pump
 tile.fuel_drum.name=Fuel Drum
 
 fluid.fuelium=Fuelium
+fluid.ender_sap=Ender Sap
+fluid.blaze_juice=Blaze Juice
 
 container.fuelium_refinery=Refinery
 
