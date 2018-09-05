@@ -1,75 +1,32 @@
 package com.mrcrayfish.vehicle.block;
 
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
-import net.minecraft.block.Block;
+
 import net.minecraft.block.BlockLever;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-import javax.annotation.Nullable;
-import java.util.List;
-
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidPump extends BlockObject
+public class BlockFluidPump extends BlockFluidPipe
 {
-    public static final PropertyDirection FACING = PropertyDirection.create("facing");
-    public static final PropertyBool[] CONNECTED_PIPES;
-
-    static
-    {
-        CONNECTED_PIPES = new PropertyBool[EnumFacing.values().length];
-        for(EnumFacing facing : EnumFacing.values())
-        {
-            CONNECTED_PIPES[facing.getIndex()] = PropertyBool.create("pipe_" + facing.getName());
-        }
-    }
 
     public BlockFluidPump()
     {
-        super(Material.IRON, "fluid_pump");
-        IBlockState defaultState = this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH);
-        for(EnumFacing facing : EnumFacing.values())
-        {
-            defaultState = defaultState.withProperty(CONNECTED_PIPES[facing.getIndex()], false);
-        }
-        this.setDefaultState(defaultState);
-    }
-
-    @Override
-    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
-    {
-        if(GuiScreen.isShiftKeyDown())
-        {
-            String info = I18n.format("vehicle.tile.fluid_pump.info");
-            tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
-        }
-        else
-        {
-            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
-        }
+        super("fluid_pump");
     }
 
     @Override
@@ -187,33 +144,6 @@ public class BlockFluidPump extends BlockObject
     {
         IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
         return state.withProperty(FACING, facing);
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state)
-    {
-        return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getFront(meta));
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        BlockStateContainer.Builder builder = new BlockStateContainer.Builder(this);
-        builder.add(FACING);
-        builder.add(CONNECTED_PIPES);
-        return builder.build();
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state)
-    {
-        return true;
     }
 
     @Nullable

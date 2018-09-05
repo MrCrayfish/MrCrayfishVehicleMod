@@ -40,6 +40,7 @@ public class BlockFluidPipe extends BlockObject
             new AxisAlignedBB(0.34375, 0.6875, 0.34375, 0.65625, 1, 0.65625), new AxisAlignedBB(0.34375, 0.34375, 0, 0.65625, 0.65625, 0.3125),
             new AxisAlignedBB(0.34375, 0.34375, 0.6875, 0.65625, 0.65625, 1), new AxisAlignedBB(0, 0.34375, 0.34375, 0.3125, 0.65625, 0.65625),
             new AxisAlignedBB(0.6875, 0.34375, 0.34375, 1, 0.65625, 0.65625), new AxisAlignedBB(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875)};
+    private String name;
 
     static
     {
@@ -52,7 +53,13 @@ public class BlockFluidPipe extends BlockObject
 
     public BlockFluidPipe()
     {
-        super(Material.IRON, "fluid_pipe");
+        this("fluid_pipe");
+    }
+
+    public BlockFluidPipe(String name)
+    {
+        super(Material.IRON, name);
+        this.name = name;
         IBlockState defaultState = this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH);
         for(EnumFacing facing : EnumFacing.values())
         {
@@ -66,7 +73,7 @@ public class BlockFluidPipe extends BlockObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("vehicle.tile.fluid_pipe.info");
+            String info = I18n.format("vehicle.tile." + name + ".info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
