@@ -1,21 +1,18 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-
-import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.TileFluidHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -23,7 +20,7 @@ import net.minecraftforge.fluids.capability.TileFluidHandler;
 public class TileEntityFluidPump extends TileFluidHandler implements ITickable
 {
     private static final int CAPACITY = 500;
-    private static final int TRANSFER_AMOUNT = 10;
+    private static final int TRANSFER_AMOUNT = 20;
 
     public TileEntityFluidPump()
     {
