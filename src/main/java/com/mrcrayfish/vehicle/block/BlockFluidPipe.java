@@ -8,15 +8,20 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -31,6 +36,10 @@ public class BlockFluidPipe extends BlockObject
 {
     public static final PropertyDirection FACING = PropertyDirection.create("facing");
     public static final PropertyBool[] CONNECTED_PIPES;
+    public static AxisAlignedBB[] BOXES = new AxisAlignedBB[] {new AxisAlignedBB(0.34375, 0, 0.34375, 0.65625, 0.3125, 0.65625),
+            new AxisAlignedBB(0.34375, 0.6875, 0.34375, 0.65625, 1, 0.65625), new AxisAlignedBB(0.34375, 0.34375, 0, 0.65625, 0.65625, 0.3125),
+            new AxisAlignedBB(0.34375, 0.34375, 0.6875, 0.65625, 0.65625, 1), new AxisAlignedBB(0, 0.34375, 0.34375, 0.3125, 0.65625, 0.65625),
+            new AxisAlignedBB(0.6875, 0.34375, 0.34375, 1, 0.65625, 0.65625), new AxisAlignedBB(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875)};
 
     static
     {
@@ -64,6 +73,63 @@ public class BlockFluidPipe extends BlockObject
         {
             tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState)
+    {
+        if (!isActualState)
+        {
+            state = state.getActualState(world, pos);
+        }
+        for (int i = 0; i < EnumFacing.values().length; i++)
+        {
+            if (state.getValue(CONNECTED_PIPES[i]))
+            {
+                addCollisionBoxToList(pos, entityBox, collidingBoxes, BOXES[i]);
+            }
+        }
+        addCollisionBoxToList(pos, entityBox, collidingBoxes, BOXES[state.getValue(FACING).getIndex()]);
+        addCollisionBoxToList(pos, entityBox, collidingBoxes, BOXES[6]);
+    }
+
+    @Override
+    @Nullable
+    protected RayTraceResult rayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB boundingBox)
+    {
+        double distanceSq;
+        double distanceSqShortest = Double.POSITIVE_INFINITY;
+        RayTraceResult resultClosest = null;
+        RayTraceResult result;
+        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        Vec3d eyes = player.getPositionEyes(1);
+        Vec3d look = eyes.add(player.getLookVec().scale(Minecraft.getMinecraft().playerController.getBlockReachDistance()));
+        World world = Minecraft.getMinecraft().world;
+        IBlockState state = world.getBlockState(pos);
+        state = state.getActualState(world, pos);
+        if (!(state.getBlock() instanceof BlockFluidPipe))
+        {
+            return null;
+        }
+        for (int i = 0; i < BOXES.length + 1; i++)
+        {
+            if (i < EnumFacing.values().length && !state.getValue(CONNECTED_PIPES[i]))
+            {
+                continue;
+            }
+            result = BOXES[i < BOXES.length ? i : state.getValue(FACING).getIndex()].offset(pos).calculateIntercept(eyes, look);
+            if (result != null)
+            {
+                distanceSq = result.hitVec.squareDistanceTo(eyes);
+                if (distanceSq < distanceSqShortest)
+                {
+                    distanceSqShortest = distanceSq;
+                    resultClosest = result;
+                }
+            }
+        }
+        return resultClosest == null ? resultClosest : new RayTraceResult(Type.BLOCK,
+                resultClosest.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), resultClosest.sideHit, pos);
     }
 
     @Override
