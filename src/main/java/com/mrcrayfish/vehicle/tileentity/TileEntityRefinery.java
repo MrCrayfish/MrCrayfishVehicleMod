@@ -417,7 +417,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
             inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
             ItemStackHelper.loadAllItems(tag, inventory);
         }
-        if (tag.hasKey("CustomName", Constants.NBT.TAG_STRING))
+        if(tag.hasKey("CustomName", Constants.NBT.TAG_STRING))
         {
             customName = tag.getString("CustomName");
         }
@@ -436,7 +436,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
 
         ItemStackHelper.saveAllItems(tag, inventory);
 
-        if (this.hasCustomName())
+        if(this.hasCustomName())
         {
             tag.setString("CustomName", customName);
         }
@@ -455,7 +455,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
                 if(entry != null)
                 {
                     NBTTagCompound tagCompound = super.writeToNBT(new NBTTagCompound());
-                    tagCompound.setInteger("fueliumLevel", tank.getFluidAmount());
+                    tagCompound.merge(tag);
                     SPacketUpdateTileEntity packet = new SPacketUpdateTileEntity(pos, 0, tagCompound);
                     entry.sendPacket(packet);
                 }
