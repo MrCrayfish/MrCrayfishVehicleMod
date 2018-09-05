@@ -6,8 +6,6 @@ import com.mrcrayfish.vehicle.item.ItemTrafficCone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.ItemBlock;
-import net.minecraftforge.fluids.BlockFluidClassic;
-import net.minecraftforge.fluids.BlockFluidFinite;
 
 /**
  * Author: MrCrayfish
@@ -38,7 +36,7 @@ public class ModBlocks
         ENDER_SAP = new BlockLiquid("ender_sap", ModFluids.ENDER_SAP, Material.WATER);
         BLAZE_JUICE = new BlockLiquid("blaze_juice", ModFluids.BLAZE_JUICE, Material.WATER);
         GAS_PUMP = new BlockGasPump();
-        REFINERY = new BlockRefinery();
+        REFINERY = new BlockFluidExtractor();
         FLUID_PIPE = new BlockFluidPipe();
         FLUID_PUMP = new BlockFluidPump();
         FUEL_DRUM = new BlockFuelDrum("fuel_drum", 25000);

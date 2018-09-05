@@ -36,9 +36,12 @@ public class FluidUtils
     }
 
     @SideOnly(Side.CLIENT)
-    public static void drawFluidTankInGUI(Fluid fluid, double x, double y, double percent, int height)
+    public static void drawFluidTankInGUI(FluidStack fluid, double x, double y, double percent, int height)
     {
-        ResourceLocation resource = fluid.getStill();
+        if(fluid == null)
+            return;
+
+        ResourceLocation resource = fluid.getFluid().getStill();
         TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
         if(sprite != null)
         {

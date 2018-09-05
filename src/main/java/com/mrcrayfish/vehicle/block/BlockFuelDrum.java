@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
-import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
 import com.mrcrayfish.vehicle.util.Bounds;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
