@@ -13,6 +13,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Author: MrCrayfish
@@ -46,7 +47,14 @@ public class GuiFluidExtractor extends GuiContainer
             FluidStack stack = tileEntityFluidExtractor.getFluidStack();
             if(this.isMouseWithinRegion(startX + 127, startY + 14, 16, 59, mouseX, mouseY))
             {
-                this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GREEN.toString() + tileEntityFluidExtractor.getFluidLevel() + "/" + TileEntityFluidExtractor.TANK_CAPACITY + " mB"), mouseX, mouseY);
+                if(stack.amount > 0)
+                {
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GREEN.toString() + tileEntityFluidExtractor.getFluidLevel() + "/" + TileEntityFluidExtractor.TANK_CAPACITY + " mB"), mouseX, mouseY);
+                }
+                else
+                {
+                    this.drawHoveringText(Collections.singletonList("No Fluid"), mouseX, mouseY);
+                }
             }
         }
     }
