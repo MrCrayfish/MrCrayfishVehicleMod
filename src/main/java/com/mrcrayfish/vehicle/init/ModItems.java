@@ -86,8 +86,8 @@ public class ModItems
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
-        JERRY_CAN = new ItemJerryCan("jerry_can", 10000, 100);
-        INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 25000, 150);
+        JERRY_CAN = new ItemJerryCan("jerry_can", 5000, 100);
+        INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 15000, 150);
 
         FUEL_PORT_CLOSED = new ItemPart("fuel_port_closed").setColored();
         FUEL_PORT_BODY = new ItemPart("fuel_port_body").setColored();
