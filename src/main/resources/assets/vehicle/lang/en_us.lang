@@ -28,6 +28,7 @@ tile.gas_pump.name=Gas Pump
 tile.fluid_pipe.name=Fluid Pipe
 tile.fluid_pump.name=Fluid Pump
 tile.fuel_drum.name=Fuel Drum
+tile.industrial_fuel_drum.name=Industrial Fuel Drum
 
 fluid.fuelium=Fuelium
 fluid.ender_sap=Ender Sap
