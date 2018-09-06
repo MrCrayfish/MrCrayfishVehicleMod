@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
@@ -60,6 +61,7 @@ public class TileEntityFuelDrum extends TileFluidHandler
     @Override
     public void readFromNBT(NBTTagCompound tag)
     {
+        FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
         if(tag.hasKey("capacity", Constants.NBT.TAG_INT))
         {

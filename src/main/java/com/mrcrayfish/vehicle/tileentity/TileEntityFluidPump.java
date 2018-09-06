@@ -3,9 +3,11 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -102,5 +104,12 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
                 fluidHandlers.remove(index);
             }
         }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
+    {
+        FluidUtils.fixEmptyTag(tag);
+        super.readFromNBT(tag);
     }
 }

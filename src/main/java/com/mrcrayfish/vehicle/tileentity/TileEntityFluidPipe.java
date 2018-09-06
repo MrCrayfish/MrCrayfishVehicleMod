@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
@@ -46,5 +47,12 @@ public class TileEntityFluidPipe extends TileFluidHandler implements ITickable
                 FluidUtils.transferFluid(tank, handler, TRANSFER_AMOUNT);
             }
         }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
+    {
+        FluidUtils.fixEmptyTag(tag);
+        super.readFromNBT(tag);
     }
 }

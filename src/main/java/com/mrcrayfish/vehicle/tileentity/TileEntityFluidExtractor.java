@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.block.BlockFluidExtractor;
 import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -271,6 +272,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
     @Override
     public void readFromNBT(NBTTagCompound tag)
     {
+        FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
 
         if(tag.hasKey("extractionProgress", Constants.NBT.TAG_INT))

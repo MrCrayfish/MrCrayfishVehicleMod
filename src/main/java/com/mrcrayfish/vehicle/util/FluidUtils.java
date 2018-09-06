@@ -7,7 +7,9 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -78,5 +80,13 @@ public class FluidUtils
         buffer.pos(x + width, y, 0).tex(maxU, minV).endVertex();
         buffer.pos(x, y, 0).tex(minU, minV).endVertex();
         tessellator.draw();
+    }
+
+    public static void fixEmptyTag(NBTTagCompound tag)
+    {
+        if(tag.hasKey("FluidName", Constants.NBT.TAG_STRING) && tag.hasKey("Amount", Constants.NBT.TAG_INT))
+        {
+            tag.removeTag("Empty");
+        }
     }
 }
