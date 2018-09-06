@@ -28,7 +28,7 @@ public class BlockFluidExtractor extends BlockRotatedObject
 {
     public BlockFluidExtractor()
     {
-        super(Material.ANVIL, "refinery");
+        super(Material.ANVIL, "fluid_extractor");
     }
 
     @Override
