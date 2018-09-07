@@ -25,7 +25,7 @@ public class TileEntityFluidPipe extends TileFluidHandlerSynced implements ITick
     public TileEntityFluidPipe()
     {
         capacity = 500;
-        transferAmount = 10;
+        transferAmount = 20;
         tank = new FluidTank(capacity);
         disabledConnections = new boolean[EnumFacing.values().length];
     }
@@ -106,6 +106,7 @@ public class TileEntityFluidPipe extends TileFluidHandlerSynced implements ITick
     @Override
     public void readFromNBT(NBTTagCompound tag)
     {
+        FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
         byte[] byteArr = tag.getByteArray("disabledConnections");
         for (int i = 0; i < byteArr.length; i++)

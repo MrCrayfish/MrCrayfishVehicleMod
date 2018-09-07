@@ -1,9 +1,8 @@
 package com.mrcrayfish.vehicle.client.gui;
 
-import com.mrcrayfish.vehicle.common.container.ContainerRefinery;
-import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
+import com.mrcrayfish.vehicle.common.container.ContainerFluidExtractor;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -21,9 +20,9 @@ public class GuiHandler implements IGuiHandler
     public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-        if(tileEntity instanceof TileEntityRefinery)
+        if(tileEntity instanceof TileEntityFluidExtractor)
         {
-            return new ContainerRefinery(player.inventory, (TileEntityRefinery) tileEntity);
+            return new ContainerFluidExtractor(player.inventory, (TileEntityFluidExtractor) tileEntity);
         }
         return null;
     }
@@ -33,9 +32,9 @@ public class GuiHandler implements IGuiHandler
     public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
     {
         TileEntity tileEntity = world.getTileEntity(new BlockPos(x, y, z));
-        if(tileEntity instanceof TileEntityRefinery)
+        if(tileEntity instanceof TileEntityFluidExtractor)
         {
-            return new GuiRefinery(player.inventory, (TileEntityRefinery) tileEntity);
+            return new GuiFluidExtractor(player.inventory, (TileEntityFluidExtractor) tileEntity);
         }
         return null;
     }

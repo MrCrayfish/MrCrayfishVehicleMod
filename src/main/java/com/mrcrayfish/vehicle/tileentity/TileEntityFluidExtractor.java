@@ -1,13 +1,14 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.block.BlockRefinery;
+import com.mrcrayfish.vehicle.block.BlockFluidExtractor;
+import com.mrcrayfish.vehicle.crafting.FluidExtract;
+import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
@@ -34,43 +35,24 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityRefinery extends TileFluidHandler implements IInventory, ITickable
+public class TileEntityFluidExtractor extends TileFluidHandler implements IInventory, ITickable
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
     public static final int TANK_CAPACITY = 1000 * 5;
-    public static final int ETHANOL_MAX_PROGRESS = 20 * 5;
-    public static final int FUELIUM_MAX_PROGRESS = 20 * 2;
-    private static final int SLOT_WATER_BUCKET = 0;
-    private static final int SLOT_ETHANOL_SOURCE = 1;
-    private static final int SLOT_ETHANOL_FUEL = 2;
-    private static final int SLOT_OIL_SOURCE = 3;
+    public static final int FLUID_MAX_PROGRESS = 20 * 30;
+    private static final int SLOT_FUEL_SOURCE = 0;
+    private static final int SLOT_FLUID_SOURCE = 1;
 
-    private int remainingEthanolFuel;
-    private int ethanolProgress;
-    private int fueliumProgress;
-    private int waterLevel;
-    private int ethanolLevel;
-    private int ethanolMaxProgess;
+    private int remainingFuel;
+    private int fuelMaxProgress;
+    private int extractionProgress;
 
     private String customName;
 
-    public TileEntityRefinery()
+    public TileEntityFluidExtractor()
     {
-        tank = new FluidTank(TANK_CAPACITY)
-        {
-            @Override
-            public boolean canFillFluidType(FluidStack fluid)
-            {
-                return fluid.getFluid() == ModFluids.FUELIUM;
-            }
-
-            @Override
-            public boolean canDrain()
-            {
-                return super.canDrain();
-            }
-        };
+        tank = new FluidTank(TANK_CAPACITY);
         tank.setCanFill(false);
     }
 
@@ -79,88 +61,61 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
     {
         if(!world.isRemote)
         {
-            ItemStack waterBucket = this.getStackInSlot(SLOT_WATER_BUCKET);
-            if(!waterBucket.isEmpty())
+            ItemStack source = this.getStackInSlot(SLOT_FLUID_SOURCE);
+            ItemStack fuel = this.getStackInSlot(SLOT_FUEL_SOURCE);
+            if(!fuel.isEmpty() && !source.isEmpty() && remainingFuel == 0)
             {
-                if(waterBucket.getItem() == Items.WATER_BUCKET)
-                {
-                    if(waterLevel < TANK_CAPACITY)
-                    {
-                        waterLevel += 1000;
-                        if(waterLevel > TANK_CAPACITY)
-                        {
-                            waterLevel = TANK_CAPACITY;
-                        }
-                        Item containerItem = waterBucket.getItem().getContainerItem();
-                        if(containerItem != null)
-                        {
-                            ItemStack containerStack = new ItemStack(containerItem);
-                            this.setInventorySlotContents(SLOT_WATER_BUCKET, containerStack);
-                        }
-                    }
-                }
+                fuelMaxProgress = TileEntityFurnace.getItemBurnTime(fuel);
+                remainingFuel = fuelMaxProgress;
+                shrinkItem(SLOT_FUEL_SOURCE);
             }
 
-            if(canMakeEthanol())
+            if(!source.isEmpty() && canFillWithFluid(source) && remainingFuel > 0)
             {
-                ItemStack fuel = this.getStackInSlot(SLOT_ETHANOL_FUEL);
-                if((remainingEthanolFuel == 0 || ethanolMaxProgess == 0) && !fuel.isEmpty() && TileEntityFurnace.getItemBurnTime(fuel) > 0)
+                if(extractionProgress++ == FLUID_MAX_PROGRESS)
                 {
-                    ItemStack source = this.getStackInSlot(SLOT_ETHANOL_SOURCE);
-                    if(!source.isEmpty() && TileEntityFurnace.getItemBurnTime(source) > 0)
-                    {
-                        ethanolMaxProgess = TileEntityFurnace.getItemBurnTime(source);
-                        remainingEthanolFuel = TileEntityFurnace.getItemBurnTime(fuel);
-                        shrinkItem(SLOT_ETHANOL_FUEL);
-                    }
-                }
-
-                if(remainingEthanolFuel > 0)
-                {
-                    ethanolProgress++;
-                    waterLevel--;
-                    if(ethanolProgress >= ethanolMaxProgess)
-                    {
-                        ethanolLevel += ethanolMaxProgess / 2;
-                        ethanolProgress = 0;
-                        shrinkItem(SLOT_ETHANOL_SOURCE);
-                    }
+                    FluidExtract extract = FluidExtractorRecipes.getInstance().getRecipeResult(source);
+                    if(extract != null) tank.fillInternal(extract.createStack(), true);
+                    extractionProgress = 0;
+                    shrinkItem(SLOT_FLUID_SOURCE);
+                    sendUpdate(wrap("fluidLevel", tank.getFluidAmount()));
                 }
             }
             else
             {
-                ethanolProgress = 0;
-                ethanolMaxProgess = 0;
+                extractionProgress = 0;
             }
 
-            if(remainingEthanolFuel > 0)
+            if(remainingFuel > 0)
             {
-                remainingEthanolFuel--;
-            }
-
-            if(canMakeFuelium())
-            {
-                fueliumProgress++;
-                ethanolLevel--;
-                if(fueliumProgress == FUELIUM_MAX_PROGRESS)
-                {
-                    fueliumProgress = 0;
-                    tank.fillInternal(new FluidStack(ModFluids.FUELIUM, 20), true);
-                    shrinkItem(getOilItemIndex());
-                    syncFueliumAmountToClients();
-                }
-            }
-            else
-            {
-                fueliumProgress = 0;
+                remainingFuel--;
             }
         }
+    }
+
+    private boolean canFillWithFluid(ItemStack stack)
+    {
+        if(!stack.isEmpty() && tank.getFluidAmount() < tank.getCapacity())
+        {
+            FluidExtract extract = FluidExtractorRecipes.getInstance().getRecipeResult(this.getStackInSlot(SLOT_FLUID_SOURCE));
+            if(extract != null)
+            {
+                return tank.getFluid() == null || extract.getFluid() == tank.getFluid().getFluid();
+            }
+        }
+        return false;
+    }
+
+    @Nullable
+    public FluidStack getFluidStack()
+    {
+        return tank.getFluid();
     }
 
     @Override
     public int getSizeInventory()
     {
-        return 7;
+        return 2;
     }
 
     @Override
@@ -231,17 +186,13 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
     @Override
     public boolean isItemValidForSlot(int index, ItemStack stack)
     {
-        if(index == 0 && stack.getItem() == Items.WATER_BUCKET)
-        {
-            return true;
-        }
-        else if(index == 1 || index == 2)
+        if(index == 0)
         {
             return TileEntityFurnace.getItemBurnTime(stack) > 0;
         }
-        else if(index >= 3 && index <= 6)
+        else if(index == 1)
         {
-            return stack.getItem() == Items.WHEAT_SEEDS;
+            return FluidExtractorRecipes.getInstance().getRecipeResult(stack) != null;
         }
         return false;
     }
@@ -252,19 +203,13 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
         switch(id)
         {
             case 0:
-                return ethanolProgress;
+                return extractionProgress;
             case 1:
-                return fueliumProgress;
+                return remainingFuel;
             case 2:
-                return ethanolLevel;
+                return fuelMaxProgress;
             case 3:
-                return waterLevel;
-            case 4:
-                return remainingEthanolFuel;
-            case 5:
                 return tank.getFluidAmount();
-            case 6:
-                return ethanolMaxProgess;
         }
         return 0;
     }
@@ -275,28 +220,19 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
         switch(id)
         {
             case 0:
-                ethanolProgress = value;
+                extractionProgress = value;
                 break;
             case 1:
-                fueliumProgress = value;
+                remainingFuel = value;
                 break;
             case 2:
-                ethanolLevel = value;
+                fuelMaxProgress = value;
                 break;
             case 3:
-                waterLevel = value;
-                break;
-            case 4:
-                remainingEthanolFuel = value;
-                break;
-            case 5:
                 if(tank.getFluid() != null)
                     tank.getFluid().amount = value;
                 else
                     tank.setFluid(new FluidStack(ModFluids.FUELIUM, value));
-                break;
-            case 6:
-                ethanolMaxProgess = value;
                 break;
         }
     }
@@ -304,7 +240,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
     @Override
     public int getFieldCount()
     {
-        return 7;
+        return 4;
     }
 
     @Override
@@ -313,103 +249,49 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
         inventory.clear();
     }
 
-    private int getOilItemIndex()
-    {
-        for(int i = 0; i < 4; i ++)
-        {
-            ItemStack source = this.getStackInSlot(SLOT_OIL_SOURCE + i);
-            if(!source.isEmpty() && source.getItem() == Items.WHEAT_SEEDS)
-            {
-                return SLOT_OIL_SOURCE + i;
-            }
-        }
-        return -1;
-    }
-
-    private boolean canMakeEthanol()
-    {
-        ItemStack source = this.getStackInSlot(SLOT_ETHANOL_SOURCE);
-        if(!source.isEmpty() && TileEntityFurnace.getItemBurnTime(source) > 0)
-        {
-            return waterLevel >= 100;
-        }
-        return false;
-    }
-
-    private boolean canMakeFuelium()
-    {
-        return ethanolLevel > 0 && getOilItemIndex() != -1 && tank.getFluidAmount() < TANK_CAPACITY;
-    }
-
-    public int getEthanolProgress()
+    public int getExtractionProgress()
     {
         return this.getField(0);
     }
 
-    public int getFueliumProgress()
+    public int getRemainingFuel()
     {
         return this.getField(1);
     }
 
-    public int getEthanolLevel()
+    public int getFuelMaxProgress()
     {
         return this.getField(2);
     }
 
-    public int getWaterLevel()
+    public int getFluidLevel()
     {
         return this.getField(3);
-    }
-
-    public int getRemainingEthanolFuel()
-    {
-        return this.getField(4);
-    }
-
-    public int getFueliumLevel()
-    {
-        return this.getField(5);
-    }
-
-    public int getEthanolMaxProgress()
-    {
-        return this.getField(6);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound tag)
     {
+        FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
 
-        if(tag.hasKey("ethanolProgress", Constants.NBT.TAG_INT))
+        if(tag.hasKey("extractionProgress", Constants.NBT.TAG_INT))
         {
-            ethanolProgress = tag.getInteger("ethanolProgress");
+            extractionProgress = tag.getInteger("extractionProgress");
         }
-        if(tag.hasKey("fueliumProgress", Constants.NBT.TAG_INT))
+        if(tag.hasKey("remainingFuel", Constants.NBT.TAG_INT))
         {
-            fueliumProgress = tag.getInteger("fueliumProgress");
+            remainingFuel = tag.getInteger("remainingFuel");
         }
-        if(tag.hasKey("ethanolLevel", Constants.NBT.TAG_INT))
+        if(tag.hasKey("fuelMaxProgress", Constants.NBT.TAG_INT))
         {
-            ethanolLevel = tag.getInteger("ethanolLevel");
+            fuelMaxProgress = tag.getInteger("fuelMaxProgress");
         }
-        if(tag.hasKey("waterLevel", Constants.NBT.TAG_INT))
-        {
-            waterLevel = tag.getInteger("waterLevel");
-        }
-        if(tag.hasKey("remainingEthanolFuel", Constants.NBT.TAG_INT))
-        {
-            remainingEthanolFuel = tag.getInteger("remainingEthanolFuel");
-        }
-        if(tag.hasKey("ethanolMaxProgess", Constants.NBT.TAG_INT))
-        {
-            ethanolMaxProgess = tag.getInteger("ethanolMaxProgess");
-        }
-        if(tag.hasKey("fueliumLevel", Constants.NBT.TAG_INT))
+        if(tag.hasKey("fluidLevel", Constants.NBT.TAG_INT))
         {
             if(tank.getFluid() != null)
             {
-                tank.getFluid().amount = tag.getInteger("fueliumLevel");
+                tank.getFluid().amount = tag.getInteger("fluidLevel");
             }
         }
         if(tag.hasKey("Items", Constants.NBT.TAG_LIST))
@@ -417,7 +299,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
             inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
             ItemStackHelper.loadAllItems(tag, inventory);
         }
-        if (tag.hasKey("CustomName", Constants.NBT.TAG_STRING))
+        if(tag.hasKey("CustomName", Constants.NBT.TAG_STRING))
         {
             customName = tag.getString("CustomName");
         }
@@ -427,16 +309,13 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
     public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-        tag.setInteger("ethanolProgress", ethanolProgress);
-        tag.setInteger("fueliumProgress", fueliumProgress);
-        tag.setInteger("ethanolLevel", ethanolLevel);
-        tag.setInteger("waterLevel", waterLevel);
-        tag.setInteger("remainingEthanolFuel", remainingEthanolFuel);
-        tag.setInteger("ethanolMaxProgress", ethanolMaxProgess);
+        tag.setInteger("extractionProgress", extractionProgress);
+        tag.setInteger("remainingFuel", remainingFuel);
+        tag.setInteger("fuelMaxProgress", fuelMaxProgress);
 
         ItemStackHelper.saveAllItems(tag, inventory);
 
-        if (this.hasCustomName())
+        if(this.hasCustomName())
         {
             tag.setString("CustomName", customName);
         }
@@ -455,7 +334,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
                 if(entry != null)
                 {
                     NBTTagCompound tagCompound = super.writeToNBT(new NBTTagCompound());
-                    tagCompound.setInteger("fueliumLevel", tank.getFluidAmount());
+                    tagCompound.merge(tag);
                     SPacketUpdateTileEntity packet = new SPacketUpdateTileEntity(pos, 0, tagCompound);
                     entry.sendPacket(packet);
                 }
@@ -463,9 +342,9 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
         }
     }
 
-    public void syncFueliumAmountToClients()
+    public void syncFluidLevelToClients()
     {
-        sendUpdate(wrap("fueliumLevel", tank.getFluidAmount()));
+        sendUpdate(wrap("fluidLevel", tank.getFluidAmount()));
     }
 
     @Override
@@ -490,7 +369,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
     @Override
     public String getName()
     {
-        return this.hasCustomName() ? this.customName : "container.fuelium_refinery";
+        return this.hasCustomName() ? this.customName : "container.fluid_extractor";
     }
 
     @Override
@@ -528,7 +407,7 @@ public class TileEntityRefinery extends TileFluidHandler implements IInventory, 
         if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
             IBlockState state = world.getBlockState(pos);
-            if(state.getValue(BlockRefinery.FACING).getOpposite() == facing)
+            if(state.getValue(BlockFluidExtractor.FACING).getOpposite() == facing)
             {
                 return false;
             }

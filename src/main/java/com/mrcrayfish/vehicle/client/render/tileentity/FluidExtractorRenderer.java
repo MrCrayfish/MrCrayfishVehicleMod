@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
-import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,10 +21,10 @@ import org.lwjgl.opengl.GL11;
 /**
  * Author: MrCrayfish
  */
-public class RefineryRenderer extends TileEntitySpecialRenderer<TileEntityRefinery>
+public class FluidExtractorRenderer extends TileEntitySpecialRenderer<TileEntityFluidExtractor>
 {
     @Override
-    public void render(TileEntityRefinery te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+    public void render(TileEntityFluidExtractor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         super.render(te, x, y, z, partialTicks, destroyStage, alpha);
 
@@ -46,7 +46,7 @@ public class RefineryRenderer extends TileEntitySpecialRenderer<TileEntityRefine
             GlStateManager.translate(0.5, 0.5, 0.5);
             GlStateManager.rotate(facing.getHorizontalIndex() * -90F - 90F, 0, 1, 0);
             GlStateManager.translate(-0.5, -0.5, -0.5);
-            double height = 12.0 * (te.getFueliumLevel() / (double) TileEntityRefinery.TANK_CAPACITY);
+            double height = 12.0 * (te.getFluidLevel() / (double) TileEntityFluidExtractor.TANK_CAPACITY);
             if(height > 0) drawFluid(te, 10 * 0.0625, 2 * 0.0625, 0.01 * 0.0625, 5.99 * 0.0625, height * 0.0625, (16 - 0.02) * 0.0625);
 
             GlStateManager.disableBlend();
@@ -55,9 +55,12 @@ public class RefineryRenderer extends TileEntitySpecialRenderer<TileEntityRefine
         GlStateManager.popMatrix();
     }
 
-    private void drawFluid(TileEntity te, double x, double y, double z, double width, double height, double depth)
+    private void drawFluid(TileEntityFluidExtractor te, double x, double y, double z, double width, double height, double depth)
     {
-        ResourceLocation resource = ModFluids.FUELIUM.getStill();
+        if(te.getFluidStack() == null)
+            return;
+
+        ResourceLocation resource = te.getFluidStack().getFluid().getStill();
         TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
         if(sprite != null)
         {

@@ -24,6 +24,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -60,7 +61,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean launching;
     public int launchingTimer;
     public boolean disableFallDamage;
-    public float fuelConsumption = 0.001F;
+    public float fuelConsumption = 1F;
 
     public int turnAngle;
     public int prevTurnAngle;
@@ -157,7 +158,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         this.dataManager.register(ENGINE_TYPE, 0);
         this.dataManager.register(HORN, false);
         this.dataManager.register(CURRENT_FUEL, 0F);
-        this.dataManager.register(FUEL_CAPACITY, 15F);
+        this.dataManager.register(FUEL_CAPACITY, 15000F);
     }
 
     @Override
@@ -173,10 +174,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
         {
             ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
-            float fuel = ItemJerryCan.getCurrentFuel(stack);
-            float rate = jerryCan.getFillRate(stack);
-            fuel -= this.addFuel(fuel >= rate ? rate : fuel);
-            ItemJerryCan.setCurrentFuel(stack, fuel);
+            int rate = jerryCan.getFillRate(stack);
+            int drained = jerryCan.drain(stack, rate);
+            int remaining = this.addFuel(drained);
+            jerryCan.fill(stack, remaining);
         }
     }
 
@@ -408,13 +409,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
-        if(compound.hasKey("currentFuel", Constants.NBT.TAG_FLOAT))
+        if(compound.hasKey("currentFuel", Constants.NBT.TAG_INT))
         {
-            this.setCurrentFuel(compound.getFloat("currentFuel"));
+            this.setCurrentFuel(compound.getInteger("currentFuel"));
         }
-        if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_FLOAT))
+        if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_INT))
         {
-            this.setFuelCapacity(compound.getFloat("fuelCapacity"));
+            this.setFuelCapacity(compound.getInteger("fuelCapacity"));
         }
     }
 
@@ -654,18 +655,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return fuelConsumption;
     }
 
-    public float addFuel(float fuel)
+    public int addFuel(int fuel)
     {
-        float remaining = 0F;
         float currentFuel = this.getCurrentFuel();
         currentFuel += fuel;
-        if(currentFuel > this.getFuelCapacity())
-        {
-            remaining = currentFuel - this.getFuelCapacity();
-            currentFuel = this.getFuelCapacity();
-        }
+        int remaining = Math.max(0, Math.round(currentFuel - this.getFuelCapacity()));
+        currentFuel = Math.min(currentFuel, this.getFuelCapacity());
         this.setCurrentFuel(currentFuel);
-        return fuel - remaining;
+        return remaining;
     }
 
     @Override

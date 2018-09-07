@@ -1,11 +1,11 @@
 {
     "forge_marker": 1,
     "defaults": {
-        "model": "vehicle:refinery"
+        "model": "vehicle:fluid_extractor"
     },
     "variants": {
         "inventory": {
-            "model": "vehicle:refinery"
+            "model": "vehicle:fluid_extractor"
         },
         "facing": {
             "north": { "y": 0   },

@@ -1,14 +1,12 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
-import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemBucket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
@@ -26,11 +24,11 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockRefinery extends BlockRotatedObject
+public class BlockFluidExtractor extends BlockRotatedObject
 {
-    public BlockRefinery()
+    public BlockFluidExtractor()
     {
-        super(Material.ANVIL, "refinery");
+        super(Material.ANVIL, "fluid_extractor");
     }
 
     @Override
@@ -39,40 +37,21 @@ public class BlockRefinery extends BlockRotatedObject
         if(!worldIn.isRemote)
         {
             ItemStack stack = playerIn.getHeldItem(hand);
-            if(stack.getItem() instanceof ItemJerryCan)
-            {
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityRefinery)
-                {
-                    TileEntityRefinery refinery = (TileEntityRefinery) tileEntity;
-                    if(refinery.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
-                    {
-                        IFluidHandler handler = refinery.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                        if(handler != null)
-                        {
-                            FluidStack fluidStack = handler.drain(50, true);
-                            float currentFuel = ItemJerryCan.getCurrentFuel(stack);
-                            ItemJerryCan.setCurrentFuel(stack, currentFuel + (fluidStack.amount / 1000F));
-                        }
-                    }
-                }
-                return true;
-            }
-            else if(stack.getItem() == Items.BUCKET)
+            if(stack.getItem() == Items.BUCKET)
             {
                 if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
                 {
                     TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if(tileEntity instanceof TileEntityRefinery)
+                    if(tileEntity instanceof TileEntityFluidExtractor)
                     {
-                        ((TileEntityRefinery) tileEntity).syncFueliumAmountToClients();
+                        ((TileEntityFluidExtractor) tileEntity).syncFluidLevelToClients();
                     }
                 }
                 return true;
             }
 
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityRefinery)
+            if(tileEntity instanceof TileEntityFluidExtractor)
             {
                 playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
@@ -90,7 +69,7 @@ public class BlockRefinery extends BlockRotatedObject
     @Override
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntityRefinery();
+        return new TileEntityFluidExtractor();
     }
 
     @Override

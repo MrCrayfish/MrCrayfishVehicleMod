@@ -6,6 +6,7 @@ import java.util.List;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -87,5 +88,12 @@ public class TileEntityFluidPump extends TileEntityFluidPipe
                 fluidHandlers.remove(index);
             }
         }
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound tag)
+    {
+        FluidUtils.fixEmptyTag(tag);
+        super.readFromNBT(tag);
     }
 }

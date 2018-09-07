@@ -9,24 +9,20 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
-import com.mrcrayfish.vehicle.client.render.tileentity.RefineryRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
-import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.init.ModMaterials;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
-import com.mrcrayfish.vehicle.tileentity.TileEntityRefinery;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.statemap.StateMap;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
@@ -75,7 +71,7 @@ public class ClientProxy implements Proxy
         MinecraftForge.EVENT_BUS.register(this);
 
         ClientRegistry.registerKeyBinding(KEY_HORN);
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityRefinery.class, new RefineryRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidExtractor.class, new FluidExtractorRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());

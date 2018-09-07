@@ -55,8 +55,9 @@ public class VehicleMod
         public void displayAllRelevantItems(NonNullList<ItemStack> items)
         {
             super.displayAllRelevantItems(items);
-            ItemStack stack = FluidUtil.getFilledBucket(new FluidStack(ModFluids.FUELIUM, 1));
-            items.add(stack);
+            items.add(FluidUtil.getFilledBucket(new FluidStack(ModFluids.BLAZE_JUICE, 1)));
+            items.add(FluidUtil.getFilledBucket(new FluidStack(ModFluids.ENDER_SAP, 1)));
+            items.add(FluidUtil.getFilledBucket(new FluidStack(ModFluids.FUELIUM, 1)));
         }
     };
 
