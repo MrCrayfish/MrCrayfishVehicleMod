@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 
 import net.minecraft.block.Block;
@@ -10,15 +11,17 @@ import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -27,6 +30,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
 
@@ -96,6 +100,12 @@ public class BlockFluidPipe extends BlockObject
         return state.getValue(FACING);
     }
 
+    protected TileEntityFluidPipe getTileEntity(IBlockAccess world, BlockPos pos)
+    {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        return tileEntity instanceof TileEntityFluidPipe ? (TileEntityFluidPipe) tileEntity : null;
+    }
+
     @Override
     public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState)
     {
@@ -103,9 +113,11 @@ public class BlockFluidPipe extends BlockObject
         {
             state = state.getActualState(world, pos);
         }
+
+        boolean[] disabledConnections = TileEntityFluidPipe.getDisabledConnections(getTileEntity(world, pos));
         for (int i = 0; i < EnumFacing.values().length; i++)
         {
-            if (state.getValue(CONNECTED_PIPES[i]))
+            if (state.getValue(CONNECTED_PIPES[i]) && !disabledConnections[i])
             {
                 addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(i));
             }
@@ -125,9 +137,6 @@ public class BlockFluidPipe extends BlockObject
         double distanceSqShortest = Double.POSITIVE_INFINITY;
         RayTraceResult resultClosest = null;
         RayTraceResult result;
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
-        Vec3d eyes = player.getPositionEyes(1);
-        Vec3d look = eyes.add(player.getLookVec().scale(Minecraft.getMinecraft().playerController.getBlockReachDistance()));
         World world = Minecraft.getMinecraft().world;
         IBlockState state = world.getBlockState(pos);
         state = state.getActualState(world, pos);
@@ -139,10 +148,10 @@ public class BlockFluidPipe extends BlockObject
         addCollisionBoxToList(state, world, pos, Block.FULL_BLOCK_AABB.offset(pos), boxes, null, true);
         for (AxisAlignedBB box : boxes)
         {
-            result = box.calculateIntercept(eyes, look);
+            result = box.calculateIntercept(start, end);
             if (result != null)
             {
-                distanceSq = result.hitVec.squareDistanceTo(eyes);
+                distanceSq = result.hitVec.squareDistanceTo(start);
                 if (distanceSq < distanceSqShortest)
                 {
                     distanceSqShortest = distanceSq;
@@ -188,32 +197,34 @@ public class BlockFluidPipe extends BlockObject
                 break;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]))
+        boolean[] disabledConnections = TileEntityFluidPipe.getDisabledConnections(getTileEntity(source, pos));
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]) && !disabledConnections[EnumFacing.NORTH.getIndex()])
         {
             minZ = 0.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]) && !disabledConnections[EnumFacing.EAST.getIndex()])
         {
             maxX = 1.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]) && !disabledConnections[EnumFacing.SOUTH.getIndex()])
         {
             maxZ = 1.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]) && !disabledConnections[EnumFacing.WEST.getIndex()])
         {
             minX = 0.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]) && !disabledConnections[EnumFacing.DOWN.getIndex()])
         {
             minY = 0.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]) && !disabledConnections[EnumFacing.UP.getIndex()])
         {
             maxY = 1.0F;
         }
@@ -222,27 +233,76 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        TileEntityFluidPipe pipe = getTileEntity(world, pos);
+        if (pipe == null || !(player.getHeldItem(hand).getItem() instanceof ItemWrench))
+        {
+            return false;
+        }
+        state = state.getActualState(world, pos);
+        Vec3d hit = new Vec3d(hitX, hitY, hitZ);
+        boolean wasHit = false;
+        for (int i = 0; i < EnumFacing.values().length + 1; i++)
+        {
+            boolean isCenter = i == EnumFacing.values().length;
+            if ((isCenter || state.getValue(CONNECTED_PIPES[i])) && boxes.get(i).offset(pos).grow(0.001).contains(hit))
+            {
+                if (!isCenter)
+                {
+                    facing = EnumFacing.getFront(i);
+                }
+                else if (!state.getValue(CONNECTED_PIPES[facing.getIndex()]))
+                {
+                    BlockPos adjacentPos = pos.offset(facing);
+                    IBlockState adjacentState = world.getBlockState(adjacentPos);
+                    TileEntity tileEntity = world.getTileEntity(adjacentPos);
+                    Block adjacentBlock = adjacentState.getBlock();
+                    if ((this == ModBlocks.FLUID_PUMP && adjacentBlock == ModBlocks.FLUID_PUMP)
+                            || (this == ModBlocks.FLUID_PIPE && adjacentBlock == ModBlocks.FLUID_PIPE && getCollisionFacing(adjacentState) != facing.getOpposite())
+                            || tileEntity == null || !tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
+                    {
+                        return false;
+                    }
+                }
+                wasHit = world.getBlockState(pos.offset(facing)).getBlock() != Blocks.LEVER;
+                break;
+            }
+        }
+        if (wasHit && getCollisionFacing(state) != facing)
+        {
+            pipe.setConnectionDisabled(facing, !pipe.isConnectionDisabled(facing));
+            world.markBlockRangeForRenderUpdate(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+            world.scheduleUpdate(pos, state.getBlock(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
         EnumFacing originalFacing = state.getValue(FACING);
+        boolean[] disabledConnections = TileEntityFluidPipe.getDisabledConnections(getTileEntity(world, pos));
         for(EnumFacing facing : EnumFacing.VALUES)
         {
             if(facing == originalFacing)
                 continue;
 
             BlockPos adjacentPos = pos.offset(facing);
-            IBlockState adjacentState = worldIn.getBlockState(adjacentPos);
-            if(adjacentState.getBlock() == this)
+            IBlockState adjacentState = world.getBlockState(adjacentPos);
+            boolean enabled = !disabledConnections[facing.getIndex()];
+            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE)
             {
                 EnumFacing adjacentFacing = adjacentState.getValue(FACING);
                 if(adjacentPos.offset(adjacentFacing).equals(pos))
                 {
-                    state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
+                    state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], enabled);
                 }
             }
             else if(adjacentState.getBlock() == ModBlocks.FLUID_PUMP)
             {
-                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
+                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], enabled);
             }
         }
         return state;

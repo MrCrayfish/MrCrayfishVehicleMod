@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
 
 import net.minecraft.block.BlockLever;
@@ -106,32 +107,34 @@ public class BlockFluidPump extends BlockFluidPipe
                 break;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]))
+        boolean[] disabledConnections = TileEntityFluidPipe.getDisabledConnections(getTileEntity(source, pos));
+
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.NORTH.getIndex()]) && !disabledConnections[EnumFacing.NORTH.getIndex()])
         {
             minZ = 0.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.EAST.getIndex()]) && !disabledConnections[EnumFacing.EAST.getIndex()])
         {
             maxX = 1.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.SOUTH.getIndex()]) && !disabledConnections[EnumFacing.SOUTH.getIndex()])
         {
             maxZ = 1.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.WEST.getIndex()]) && !disabledConnections[EnumFacing.WEST.getIndex()])
         {
             minX = 0.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.DOWN.getIndex()]) && !disabledConnections[EnumFacing.DOWN.getIndex()])
         {
             minY = 0.0F;
         }
 
-        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]))
+        if(state.getValue(CONNECTED_PIPES[EnumFacing.UP.getIndex()]) && !disabledConnections[EnumFacing.UP.getIndex()])
         {
             maxY = 1.0F;
         }
@@ -140,19 +143,22 @@ public class BlockFluidPump extends BlockFluidPipe
     }
 
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    public IBlockState getActualState(IBlockState state, IBlockAccess world, BlockPos pos)
     {
         EnumFacing originalFacing = state.getValue(FACING).getOpposite();
+        TileEntityFluidPipe pipe = getTileEntity(world, pos);
+        boolean[] disabledConnections = TileEntityFluidPipe.getDisabledConnections(pipe);
         for(EnumFacing facing : EnumFacing.VALUES)
         {
             if(facing == originalFacing)
                 continue;
 
             BlockPos adjacentPos = pos.offset(facing);
-            IBlockState adjacentState = worldIn.getBlockState(adjacentPos);
+            IBlockState adjacentState = world.getBlockState(adjacentPos);
+            boolean enabled = !disabledConnections[facing.getIndex()];
             if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE)
             {
-                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
+                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], enabled);
             }
             else if(adjacentState.getBlock() == Blocks.LEVER)
             {
@@ -160,15 +166,14 @@ public class BlockFluidPump extends BlockFluidPipe
                 if(adjacentPos.offset(leverFacing).equals(pos))
                 {
                     state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
+                    pipe.setConnectionDisabled(facing, false);
                 }
             }
             else if(adjacentState.getBlock() != this)
             {
-                TileEntity tileEntity = worldIn.getTileEntity(adjacentPos);
-                if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
-                {
-                    state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
-                }
+                TileEntity tileEntity = world.getTileEntity(adjacentPos);
+                state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], enabled && tileEntity != null
+                        && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()));
             }
         }
         return state;

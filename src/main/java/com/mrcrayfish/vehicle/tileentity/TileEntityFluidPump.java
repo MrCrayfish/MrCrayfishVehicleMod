@@ -2,34 +2,20 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
-import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.TileFluidHandler;
 
 /**
  * Author: MrCrayfish
  */
-public class TileEntityFluidPump extends TileFluidHandler implements ITickable
+public class TileEntityFluidPump extends TileEntityFluidPipe
 {
-    private static final int CAPACITY = 500;
-    private static final int TRANSFER_AMOUNT = 10;
-
-    public TileEntityFluidPump()
-    {
-        tank = new FluidTank(CAPACITY);
-    }
-
     @Override
     public void update()
     {
@@ -44,16 +30,12 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
         List<IFluidHandler> fluidHandlers = new ArrayList<>();
         for(EnumFacing face : EnumFacing.VALUES)
         {
-            if(state.getValue(BlockFluidPump.CONNECTED_PIPES[face.getIndex()]))
+            if(!disabledConnections[face.getIndex()] && state.getValue(BlockFluidPump.CONNECTED_PIPES[face.getIndex()]))
             {
-                TileEntity tileEntity = world.getTileEntity(pos.offset(face));
-                if(tileEntity != null)
+                IFluidHandler handler = getConnectedFluidHandler(face);
+                if (handler != null)
                 {
-                    IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, face);
-                    if(handler != null)
-                    {
-                        fluidHandlers.add(handler);
-                    }
+                    fluidHandlers.add(handler);
                 }
             }
         }
@@ -63,24 +45,24 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
             return;
 
         TileEntity tileEntity = world.getTileEntity(pos.offset(facing.getOpposite()));
-        if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
+        if(tileEntity != null)
         {
             IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
             if(handler != null)
             {
-                FluidUtils.transferFluid(handler, tank, TRANSFER_AMOUNT);
+                FluidUtils.transferFluid(handler, tank, transferAmount);
             }
         }
 
         // Return and transfer full amount if one connection
         if (outputCount == 1)
         {
-            FluidUtils.transferFluid(tank, fluidHandlers.get(0), TRANSFER_AMOUNT);
+            FluidUtils.transferFluid(tank, fluidHandlers.get(0), transferAmount);
             return;
         }
 
         // Evenly distribute truncated proportion to all connections
-        int remainder = Math.min(tank.getFluidAmount(), TRANSFER_AMOUNT * outputCount);
+        int remainder = Math.min(tank.getFluidAmount(), transferAmount * outputCount);
         int amount = remainder / outputCount;
         if(amount > 0)
         {
