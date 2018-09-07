@@ -3,12 +3,15 @@ package com.mrcrayfish.vehicle.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -17,10 +20,44 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
  */
 public class TileEntityFluidPump extends TileEntityFluidPipe
 {
+    private PowerMode powerMode;
+
+    public TileEntityFluidPump()
+    {
+        powerMode = PowerMode.RQUIRES_SIGNAL_ON;
+    }
+
+    public enum PowerMode
+    {
+        ALWAYS_ACTIVE("always"),
+        RQUIRES_SIGNAL_ON("on"),
+        REQUIRES_SIGNAL_OFF("off");
+
+        private static final String LANG_KEY_CHAT_PREFIX = Reference.MOD_ID + ".chat.pump.power";
+        private String langKeyChat;
+
+        private PowerMode(String langKeyChat)
+        {
+            this.langKeyChat = langKeyChat;
+        }
+
+        public void notifyPlayerOfChange(EntityPlayer player)
+        {
+            player.sendMessage(new TextComponentTranslation(LANG_KEY_CHAT_PREFIX, new TextComponentTranslation(LANG_KEY_CHAT_PREFIX + "." + langKeyChat)));
+        }
+    }
+
+    public void cyclePowerMode(EntityPlayer player)
+    {
+        powerMode = PowerMode.values()[(powerMode.ordinal() + 1) % PowerMode.values().length];
+        powerMode.notifyPlayerOfChange(player);
+        markDirty();
+    }
+
     @Override
     public void update()
     {
-        if(!world.isBlockPowered(pos))
+        if(powerMode != PowerMode.ALWAYS_ACTIVE && (world.isBlockPowered(pos) != (powerMode == PowerMode.RQUIRES_SIGNAL_ON)))
             return;
 
         IBlockState state = world.getBlockState(pos);
@@ -95,5 +132,14 @@ public class TileEntityFluidPump extends TileEntityFluidPipe
     {
         FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
+        powerMode = PowerMode.values()[tag.getInteger("power_mode")];
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
+    {
+        super.writeToNBT(tag);
+        tag.setInteger("power_mode", powerMode.ordinal());
+        return tag;
     }
 }

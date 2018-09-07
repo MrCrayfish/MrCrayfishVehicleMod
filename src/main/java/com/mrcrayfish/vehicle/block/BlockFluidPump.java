@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
 
@@ -13,11 +14,14 @@ import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -140,6 +144,35 @@ public class BlockFluidPump extends BlockFluidPipe
         }
 
         return new AxisAlignedBB(minX, minY, minZ, maxX, maxY, maxZ);
+    }
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    {
+        if (super.onBlockActivated(world, pos, state, player, hand, facing, hitX, hitY, hitZ))
+        {
+            return true;
+        }
+        TileEntityFluidPipe pipe = getTileEntity(world, pos);
+        if (!(pipe instanceof TileEntityFluidPump) || !(player.getHeldItem(hand).getItem() instanceof ItemWrench))
+        {
+            return false;
+        }
+        state = state.getActualState(world, pos);
+        Vec3d hit = new Vec3d(hitX, hitY, hitZ);
+        for (AxisAlignedBB box : boxesHousing[getCollisionFacing(state).getIndex()])
+        {
+            if (box.offset(pos).grow(0.001).contains(hit))
+            {
+                if (!world.isRemote)
+                {
+                    ((TileEntityFluidPump) pipe).cyclePowerMode(player);
+                    world.scheduleUpdate(pos, state.getBlock(), 0);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

@@ -60,3 +60,8 @@ vehicle.config.client.interaction.left_click=Left-Click Enabled
 vehicle.config.client.interaction.left_click.tooltip=If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.
 vehicle.config.client.speedometer=Show Speedometer
 vehicle.config.client.speedometer.tooltip=If true, displays a speedometer on the HUD when driving a vehicle
+
+vehicle.chat.pump.power=§bPower Mode:§r %s
+vehicle.chat.pump.power.off=requires signal off
+vehicle.chat.pump.power.on=requires signal on
+vehicle.chat.pump.power.always=always active
