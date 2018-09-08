@@ -1,38 +1,61 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
-import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.TileFluidHandler;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class TileEntityFluidPump extends TileFluidHandler implements ITickable
+public class TileEntityFluidPump extends TileEntityFluidPipe
 {
-    private static final int CAPACITY = 500;
-    private static final int TRANSFER_AMOUNT = 20;
+    private PowerMode powerMode;
 
     public TileEntityFluidPump()
     {
-        tank = new FluidTank(CAPACITY);
+        powerMode = PowerMode.RQUIRES_SIGNAL_ON;
+    }
+
+    public enum PowerMode
+    {
+        ALWAYS_ACTIVE("always"),
+        RQUIRES_SIGNAL_ON("on"),
+        REQUIRES_SIGNAL_OFF("off");
+
+        private static final String LANG_KEY_CHAT_PREFIX = Reference.MOD_ID + ".chat.pump.power";
+        private String langKeyChat;
+
+        private PowerMode(String langKeyChat)
+        {
+            this.langKeyChat = langKeyChat;
+        }
+
+        public void notifyPlayerOfChange(EntityPlayer player)
+        {
+            player.sendMessage(new TextComponentTranslation(LANG_KEY_CHAT_PREFIX, new TextComponentTranslation(LANG_KEY_CHAT_PREFIX + "." + langKeyChat)));
+        }
+    }
+
+    public void cyclePowerMode(EntityPlayer player)
+    {
+        powerMode = PowerMode.values()[(powerMode.ordinal() + 1) % PowerMode.values().length];
+        powerMode.notifyPlayerOfChange(player);
+        syncToClient();
     }
 
     @Override
     public void update()
     {
-        if(!world.isBlockPowered(pos))
+        if(powerMode != PowerMode.ALWAYS_ACTIVE && (world.isBlockPowered(pos) != (powerMode == PowerMode.RQUIRES_SIGNAL_ON)))
             return;
 
         IBlockState state = world.getBlockState(pos);
@@ -43,16 +66,12 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
         List<IFluidHandler> fluidHandlers = new ArrayList<>();
         for(EnumFacing face : EnumFacing.VALUES)
         {
-            if(state.getValue(BlockFluidPump.CONNECTED_PIPES[face.getIndex()]))
+            if(!disabledConnections[face.getIndex()] && state.getValue(BlockFluidPump.CONNECTED_PIPES[face.getIndex()]))
             {
-                TileEntity tileEntity = world.getTileEntity(pos.offset(face));
-                if(tileEntity != null)
+                IFluidHandler handler = getConnectedFluidHandler(face);
+                if (handler != null)
                 {
-                    IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, face);
-                    if(handler != null)
-                    {
-                        fluidHandlers.add(handler);
-                    }
+                    fluidHandlers.add(handler);
                 }
             }
         }
@@ -61,25 +80,21 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
         if(outputCount == 0)
             return;
 
-        TileEntity tileEntity = world.getTileEntity(pos.offset(facing.getOpposite()));
-        if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
+        IFluidHandler handler = getConnectedFluidHandler(facing.getOpposite());
+        if (handler != null)
         {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
-            if(handler != null)
-            {
-                FluidUtils.transferFluid(handler, tank, TRANSFER_AMOUNT);
-            }
+            FluidUtils.transferFluid(handler, tank, transferAmount);
         }
 
         // Return and transfer full amount if one connection
         if (outputCount == 1)
         {
-            FluidUtils.transferFluid(tank, fluidHandlers.get(0), TRANSFER_AMOUNT);
+            FluidUtils.transferFluid(tank, fluidHandlers.get(0), transferAmount);
             return;
         }
 
         // Evenly distribute truncated proportion to all connections
-        int remainder = Math.min(tank.getFluidAmount(), TRANSFER_AMOUNT * outputCount);
+        int remainder = Math.min(tank.getFluidAmount(), transferAmount * outputCount);
         int amount = remainder / outputCount;
         if(amount > 0)
         {
@@ -111,5 +126,14 @@ public class TileEntityFluidPump extends TileFluidHandler implements ITickable
     {
         FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
+        powerMode = PowerMode.values()[tag.getInteger("power_mode")];
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
+    {
+        super.writeToNBT(tag);
+        tag.setInteger("power_mode", powerMode.ordinal());
+        return tag;
     }
 }

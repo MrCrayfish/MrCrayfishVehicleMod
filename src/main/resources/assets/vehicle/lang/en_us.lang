@@ -19,6 +19,7 @@ item.jerry_can.fuel=Fuel: %s
 item.industrial_jerry_can.name=Industrial Jerry Can
 item.industrial_jerry_can.info=Use this Industrial Jerry Can to transport and fill vehicles with Fuelium. It can hold the equivalent of 15 buckets of Fuelium.
 item.industrial_jerry_can.fuel=Fuel: %s
+item.wrench.name=Wrench
 
 tile.traffic_cone.name=Traffic Cone
 tile.boost_pad.name=Boost Pad
@@ -60,3 +61,8 @@ vehicle.config.client.interaction.left_click=Left-Click Enabled
 vehicle.config.client.interaction.left_click.tooltip=If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.
 vehicle.config.client.speedometer=Show Speedometer
 vehicle.config.client.speedometer.tooltip=If true, displays a speedometer on the HUD when driving a vehicle
+
+vehicle.chat.pump.power=§bPower Mode:§r %s
+vehicle.chat.pump.power.off=requires signal off
+vehicle.chat.pump.power.on=requires signal on
+vehicle.chat.pump.power.always=always active

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.init;
 import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.item.ItemPart;
+import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.item.Item;
 
@@ -51,6 +52,8 @@ public class ModItems
     public static final Item FUEL_PORT_LID;
     public static final Item FUEL_PORT_2_CLOSED;
     public static final Item FUEL_PORT_2_PIPE;
+    
+    public static final Item WRENCH;
 
     static
     {
@@ -94,6 +97,8 @@ public class ModItems
         FUEL_PORT_LID = new ItemPart("fuel_port_lid").setColored();
         FUEL_PORT_2_CLOSED = new ItemPart("fuel_port_2_closed");
         FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
+
+        WRENCH = new ItemWrench();
     }
 
     public static void register()
@@ -138,6 +143,8 @@ public class ModItems
         register(FUEL_PORT_LID);
         register(FUEL_PORT_2_CLOSED);
         register(FUEL_PORT_2_PIPE);
+
+        register(WRENCH);
     }
 
     private static void register(Item item)

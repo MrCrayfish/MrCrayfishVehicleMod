@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import javax.annotation.Nullable;
+
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
@@ -7,24 +9,56 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
-import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidTank;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.TileFluidHandler;
 
 /**
  * Author: MrCrayfish
  */
-public class TileEntityFluidPipe extends TileFluidHandler implements ITickable
+public class TileEntityFluidPipe extends TileFluidHandlerSynced implements ITickable
 {
-    private static final int CAPACITY = 500;
-    private static final int TRANSFER_AMOUNT = 20;
+    protected int capacity, transferAmount;
+    protected boolean[] disabledConnections;
 
     public TileEntityFluidPipe()
     {
-        tank = new FluidTank(CAPACITY);
+        capacity = 500;
+        transferAmount = 20;
+        tank = new FluidTank(capacity);
+        disabledConnections = new boolean[EnumFacing.values().length];
+    }
+
+    public static boolean[] getDisabledConnections(TileEntityFluidPipe pipe)
+    {
+        return pipe != null ? pipe.getDisabledConnections() : new boolean[EnumFacing.values().length];
+    }
+
+    public boolean[] getDisabledConnections()
+    {
+        return disabledConnections;
+    }
+
+    public boolean isConnectionDisabled(int indexFacing)
+    {
+        return disabledConnections[indexFacing];
+    }
+
+    public boolean isConnectionDisabled(EnumFacing facing)
+    {
+        return disabledConnections[facing.getIndex()];
+    }
+
+    public void setConnectionDisabled(int indexFacing, boolean disabled)
+    {
+        disabledConnections[indexFacing] = disabled;
+        syncToClient();
+    }
+
+    public void setConnectionDisabled(EnumFacing facing, boolean disabled)
+    {
+        setConnectionDisabled(facing.getIndex(), disabled);
     }
 
     @Override
@@ -36,17 +70,37 @@ public class TileEntityFluidPipe extends TileFluidHandler implements ITickable
         if(world.isBlockPowered(pos))
             return;
 
-        IBlockState state = world.getBlockState(pos);
-        EnumFacing facing = state.getValue(BlockFluidPipe.FACING);
-        TileEntity tileEntity = world.getTileEntity(pos.offset(facing));
-        if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing))
+        IFluidHandler handler = getConnectedFluidHandler(world.getBlockState(pos).getValue(BlockFluidPipe.FACING));
+        if (handler != null)
         {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
+            FluidUtils.transferFluid(tank, handler, transferAmount);
+        }
+    }
+
+    @Nullable
+    protected IFluidHandler getConnectedFluidHandler(EnumFacing facing)
+    {
+        BlockPos adjacentPos = pos.offset(facing);
+        TileEntity tileEntity = world.getTileEntity(adjacentPos);
+        if(tileEntity != null)
+        {
+            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite());
             if(handler != null)
             {
-                FluidUtils.transferFluid(tank, handler, TRANSFER_AMOUNT);
+                IBlockState adjacentState = world.getBlockState(adjacentPos);
+                adjacentState = adjacentState.getActualState(world, adjacentPos);
+                if (adjacentState.getBlock() instanceof BlockFluidPipe)
+                {
+                    if (!adjacentState.getValue(BlockFluidPipe.CONNECTED_PIPES[facing.getOpposite().getIndex()])
+                            || (tileEntity instanceof TileEntityFluidPipe && ((TileEntityFluidPipe) tileEntity).isConnectionDisabled(facing.getOpposite())))
+                    {
+                        return null;
+                    }
+                }
+                return handler;
             }
         }
+        return null;
     }
 
     @Override
@@ -54,5 +108,23 @@ public class TileEntityFluidPipe extends TileFluidHandler implements ITickable
     {
         FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
+        byte[] byteArr = tag.getByteArray("disabledConnections");
+        for (int i = 0; i < byteArr.length; i++)
+        {
+            disabledConnections[i] = byteArr[i] == (byte) 1;
+        }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound tag)
+    {
+        super.writeToNBT(tag);
+        byte[] byteArr = new byte[disabledConnections.length];
+        for (int i = 0; i < byteArr.length; i++)
+        {
+            byteArr[i] = (byte) (disabledConnections[i] ? 1 : 0);
+        }
+        tag.setByteArray("disabledConnections", byteArr);
+        return tag;
     }
 }
