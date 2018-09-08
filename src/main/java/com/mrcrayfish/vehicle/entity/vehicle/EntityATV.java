@@ -33,7 +33,7 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
         this.setHeldOffset(new Vec3d(4D, 3.5D, 0D));
         this.setTowBarPosition(new Vec3d(0.0, 0.0, -1.05));
         this.setTrailerOffset(new Vec3d(0D, 0D, -0.55D));
-        this.setFuelCapacity(20F);
+        this.setFuelCapacity(20000F);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
         this.setHeldOffset(new Vec3d(2D, 0D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.025D, -0.25D));
         this.stepHeight = 0.5F;
-        this.setFuelCapacity(5F);
+        this.setFuelCapacity(5000F);
     }
 
     @Override
