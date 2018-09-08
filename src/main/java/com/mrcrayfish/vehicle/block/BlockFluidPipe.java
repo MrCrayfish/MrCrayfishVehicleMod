@@ -34,6 +34,9 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -100,7 +103,7 @@ public class BlockFluidPipe extends BlockObject
         return state.getValue(FACING);
     }
 
-    protected TileEntityFluidPipe getTileEntity(IBlockAccess world, BlockPos pos)
+    public static TileEntityFluidPipe getTileEntity(IBlockAccess world, BlockPos pos)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         return tileEntity instanceof TileEntityFluidPipe ? (TileEntityFluidPipe) tileEntity : null;
@@ -159,8 +162,7 @@ public class BlockFluidPipe extends BlockObject
                 }
             }
         }
-        return resultClosest == null ? resultClosest : new RayTraceResult(Type.BLOCK,
-                resultClosest.hitVec.addVector(pos.getX(), pos.getY(), pos.getZ()), resultClosest.sideHit, pos);
+        return resultClosest == null ? resultClosest : new RayTraceResult(Type.BLOCK, resultClosest.hitVec, resultClosest.sideHit, pos);
     }
 
     @Override
@@ -236,17 +238,32 @@ public class BlockFluidPipe extends BlockObject
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
         TileEntityFluidPipe pipe = getTileEntity(world, pos);
+        Pair<AxisAlignedBB, EnumFacing> hit = getWrenchableBox(world, pos, state, player, hand, facing, hitX, hitY, hitZ, pipe);
+        if (hit != null)
+        {
+            facing = hit.getRight();
+            pipe.setConnectionDisabled(facing, !pipe.isConnectionDisabled(facing));
+            world.markBlockRangeForRenderUpdate(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
+            world.scheduleUpdate(pos, state.getBlock(), 0);
+            return true;
+        }
+        return false;
+    }
+
+    @Nullable
+    public Pair<AxisAlignedBB, EnumFacing> getWrenchableBox(World world, BlockPos pos, IBlockState state, EntityPlayer player,
+            EnumHand hand, EnumFacing facing, double hitX, double hitY, double hitZ, @Nullable TileEntityFluidPipe pipe)
+    {
         if (pipe == null || !(player.getHeldItem(hand).getItem() instanceof ItemWrench))
         {
-            return false;
+            return null;
         }
         state = state.getActualState(world, pos);
         Vec3d hit = new Vec3d(hitX, hitY, hitZ);
-        boolean wasHit = false;
         for (int i = 0; i < EnumFacing.values().length + 1; i++)
         {
             boolean isCenter = i == EnumFacing.values().length;
-            if ((isCenter || state.getValue(CONNECTED_PIPES[i])) && boxes.get(i).offset(pos).grow(0.001).contains(hit))
+            if ((isCenter || state.getValue(CONNECTED_PIPES[i])) && boxes.get(i).grow(0.001).contains(hit))
             {
                 if (!isCenter)
                 {
@@ -262,21 +279,16 @@ public class BlockFluidPipe extends BlockObject
                             || (this == ModBlocks.FLUID_PIPE && adjacentBlock == ModBlocks.FLUID_PIPE && getCollisionFacing(adjacentState) != facing.getOpposite())
                             || tileEntity == null || !tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()))
                     {
-                        return false;
+                        return null;
                     }
                 }
-                wasHit = world.getBlockState(pos.offset(facing)).getBlock() != Blocks.LEVER;
-                break;
+                if (world.getBlockState(pos.offset(facing)).getBlock() != Blocks.LEVER && getCollisionFacing(state) != facing)
+                {
+                    return new ImmutablePair<AxisAlignedBB, EnumFacing>(boxes.get(i).offset(pos), facing);
+                }
             }
         }
-        if (wasHit && getCollisionFacing(state) != facing)
-        {
-            pipe.setConnectionDisabled(facing, !pipe.isConnectionDisabled(facing));
-            world.markBlockRangeForRenderUpdate(pos.getX() - 1, pos.getY() - 1, pos.getZ() - 1, pos.getX() + 1, pos.getY() + 1, pos.getZ() + 1);
-            world.scheduleUpdate(pos, state.getBlock(), 0);
-            return true;
-        }
-        return false;
+        return null;
     }
 
     @Override

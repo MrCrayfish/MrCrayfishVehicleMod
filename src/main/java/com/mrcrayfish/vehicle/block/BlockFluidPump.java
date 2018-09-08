@@ -154,25 +154,42 @@ public class BlockFluidPump extends BlockFluidPipe
             return true;
         }
         TileEntityFluidPipe pipe = getTileEntity(world, pos);
+        AxisAlignedBB housingBox = getHousingBox(world, pos, state, player, hand, hitX, hitY, hitZ, pipe);
+        if (housingBox != null)
+        {
+            if (!world.isRemote)
+            {
+                ((TileEntityFluidPump) pipe).cyclePowerMode(player);
+                world.scheduleUpdate(pos, state.getBlock(), 0);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Nullable
+    public AxisAlignedBB getHousingBox(World world, BlockPos pos, IBlockState state, EntityPlayer player,
+            EnumHand hand, double hitX, double hitY, double hitZ, @Nullable TileEntityFluidPipe pipe)
+    {
         if (!(pipe instanceof TileEntityFluidPump) || !(player.getHeldItem(hand).getItem() instanceof ItemWrench))
         {
-            return false;
+            return null;
         }
         state = state.getActualState(world, pos);
         Vec3d hit = new Vec3d(hitX, hitY, hitZ);
-        for (AxisAlignedBB box : boxesHousing[getCollisionFacing(state).getIndex()])
+        AxisAlignedBB[] boxesHousing = this.boxesHousing[getCollisionFacing(state).getIndex()];
+        for (AxisAlignedBB box : boxesHousing)
         {
-            if (box.offset(pos).grow(0.001).contains(hit))
+            if (box.grow(0.001).contains(hit))
             {
-                if (!world.isRemote)
+                for (AxisAlignedBB box2 : boxesHousing)
                 {
-                    ((TileEntityFluidPump) pipe).cyclePowerMode(player);
-                    world.scheduleUpdate(pos, state.getBlock(), 0);
+                    box = box.union(box2);
                 }
-                return true;
+                return box.offset(pos);
             }
         }
-        return false;
+        return null;
     }
 
     @Override
