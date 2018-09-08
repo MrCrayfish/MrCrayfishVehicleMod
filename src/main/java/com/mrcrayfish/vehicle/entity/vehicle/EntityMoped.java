@@ -83,7 +83,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         this.setTowBarPosition(new Vec3d(0.0, 0.0, -1.0));
         this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.65D));
         this.setFuelCapacity(12000F);
-        this.setFuelConsumption(0.0009F);
+        this.setFuelConsumption(0.9F);
     }
 
     @Override

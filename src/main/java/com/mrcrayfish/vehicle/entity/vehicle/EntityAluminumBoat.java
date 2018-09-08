@@ -30,7 +30,7 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
         this.setSize(2.25F, 0.875F);
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
         this.setFuelCapacity(25000F);
-        this.setFuelConsumption(0.002F);
+        this.setFuelConsumption(2.0F);
     }
 
     @Override

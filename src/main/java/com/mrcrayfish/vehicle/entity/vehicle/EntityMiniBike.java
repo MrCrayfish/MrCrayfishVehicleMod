@@ -32,7 +32,7 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.0625D, -0.5D));
         this.setFuelCapacity(15000F);
-        this.setFuelConsumption(0.0015F);
+        this.setFuelConsumption(1.5F);
     }
 
     @Override
