@@ -155,7 +155,7 @@ public class BlockFluidPump extends BlockFluidPipe
         }
         TileEntityFluidPipe pipe = getTileEntity(world, pos);
         AxisAlignedBB housingBox = getHousingBox(world, pos, state, player, hand, hitX, hitY, hitZ, pipe);
-        if (housingBox != null)
+        if (pipe != null && housingBox != null)
         {
             if (!world.isRemote)
             {
@@ -216,7 +216,10 @@ public class BlockFluidPump extends BlockFluidPipe
                 if(adjacentPos.offset(leverFacing).equals(pos))
                 {
                     state = state.withProperty(CONNECTED_PIPES[facing.getIndex()], true);
-                    pipe.setConnectionDisabled(facing, false);
+                    if (pipe != null)
+                    {
+                        pipe.setConnectionDisabled(facing, false);
+                    }
                 }
             }
             else if(adjacentState.getBlock() != this)

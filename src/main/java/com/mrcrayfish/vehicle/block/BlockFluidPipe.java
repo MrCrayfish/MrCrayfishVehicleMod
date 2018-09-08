@@ -103,6 +103,7 @@ public class BlockFluidPipe extends BlockObject
         return state.getValue(FACING);
     }
 
+    @Nullable
     public static TileEntityFluidPipe getTileEntity(IBlockAccess world, BlockPos pos)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
@@ -239,7 +240,7 @@ public class BlockFluidPipe extends BlockObject
     {
         TileEntityFluidPipe pipe = getTileEntity(world, pos);
         Pair<AxisAlignedBB, EnumFacing> hit = getWrenchableBox(world, pos, state, player, hand, facing, hitX, hitY, hitZ, pipe);
-        if (hit != null)
+        if (pipe != null && hit != null)
         {
             facing = hit.getRight();
             pipe.setConnectionDisabled(facing, !pipe.isConnectionDisabled(facing));
