@@ -620,7 +620,7 @@ public class ClientEvents
             double maxX = box.maxX;
             double maxY = box.maxY;
             double maxZ = box.maxZ;
-            double offset = 0.0625 * 4;
+            double offset = 0.0625 * 4 - 0.0020000000949949026D * 4;
             buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
             minX += offset;
             maxX -= offset;
