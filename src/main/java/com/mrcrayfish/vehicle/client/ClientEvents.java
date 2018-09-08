@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.block.BlockFuelDrum;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
@@ -13,21 +14,30 @@ import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.World;
+import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -38,6 +48,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -563,6 +575,106 @@ public class ClientEvents
             ItemStack stack = event.getItem().copy();
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), stack, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void renderCustomBlockHighlights(DrawBlockHighlightEvent event)
+    {
+        RayTraceResult target = event.getTarget();
+        if (target == null || target.typeOfHit != RayTraceResult.Type.BLOCK)
+        {
+            return;
+        }
+
+        EntityPlayer player = event.getPlayer();
+        World world = player.world;
+        BlockPos pos = target.getBlockPos();
+        if (!world.getWorldBorder().contains(pos))
+        {
+            return;
+        }
+
+        IBlockState state = world.getBlockState(pos);
+        if (state.getBlock() instanceof BlockFuelDrum)
+        {
+            GlStateManager.enableBlend();
+            GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+            GlStateManager.glLineWidth(2.0F);
+            GlStateManager.disableTexture2D();
+            GlStateManager.depthMask(false);
+
+            double dx = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
+            double dy = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
+            double dz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+
+            AxisAlignedBB box = state.getSelectedBoundingBox(world, pos).grow(0.0020000000949949026D).offset(-dx, -dy, -dz);
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
+            float alpha = 0.4F;
+            double minX = box.minX;
+            double minY = box.minY;
+            double minZ = box.minZ;
+            double maxX = box.maxX;
+            double maxY = box.maxY;
+            double maxZ = box.maxZ;
+            double offset = 0.0625 * 4;
+            buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+            minX += offset;
+            maxX -= offset;
+            buffer.pos(minX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, maxY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, maxY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            minX -= offset;
+            maxX += offset;
+            minZ += offset;
+            maxZ -= offset;
+            buffer.pos(minX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, maxY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX + offset, maxY, minZ - offset).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, maxY, minZ).color(0, 0, 0, 0).endVertex();
+            buffer.pos(minX, maxY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, minY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, minY, maxZ).color(0, 0, 0, 0).endVertex();
+            minZ -= offset;
+            maxZ += offset;
+            minX += offset;
+            maxX -= offset;
+            buffer.pos(minX, minY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, maxY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX - offset, maxY, maxZ - offset).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, maxY, maxZ).color(0, 0, 0, 0).endVertex();
+            buffer.pos(maxX, maxY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, minY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(minX, minY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, minY, maxZ).color(0, 0, 0, 0).endVertex();
+            minX -= offset;
+            maxX += offset;
+            minZ += offset;
+            maxZ -= offset;
+            buffer.pos(maxX, minY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, maxY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX - offset, maxY, maxZ + offset).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, maxY, maxZ).color(0, 0, 0, 0).endVertex();
+            buffer.pos(maxX, maxY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, minY, maxZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, minY, minZ).color(0, 0, 0, 0).endVertex();
+            minZ -= offset;
+            maxZ += offset;
+            minX += offset;
+            maxX -= offset;
+            buffer.pos(maxX, minY, minZ).color(0, 0, 0, alpha).endVertex();
+            buffer.pos(maxX, maxY, minZ).color(0, 0, 0, 0).endVertex();
+            buffer.pos(maxX + offset, maxY, minZ + offset).color(0, 0, 0, alpha).endVertex();
+            tessellator.draw();
+            GlStateManager.depthMask(true);
+            GlStateManager.enableTexture2D();
+            GlStateManager.disableBlend();
             event.setCanceled(true);
         }
     }
