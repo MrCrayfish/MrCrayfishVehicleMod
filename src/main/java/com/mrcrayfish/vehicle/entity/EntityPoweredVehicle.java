@@ -24,7 +24,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -78,7 +77,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public ItemStack engine;
 
     @SideOnly(Side.CLIENT)
-    public FuelPort fuelPort;
+    private FuelPort fuelPort;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortClosed;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortBody;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortLid;
 
     private boolean fueling;
 
@@ -165,7 +173,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public void onClientInit()
     {
         engine = new ItemStack(ModItems.ENGINE);
-        fuelPort = FuelPort.LID;
+        setFuelPort(FuelPort.LID);
+    }
+
+    protected void setFuelPort(FuelPort fuelPort)
+    {
+        this.fuelPort = fuelPort;
+        fuelPortClosed = new ItemStack(fuelPort.getClosed());
+        fuelPortBody = new ItemStack(fuelPort.getBody());
+        fuelPortLid = new ItemStack(fuelPort.getLid());
     }
 
     public void fuelVehicle(EntityPlayer player, EnumHand hand)
@@ -678,19 +694,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
             if(COLOR.equals(key))
             {
-                if(!fuelPort.body.hasTagCompound())
+                if(!fuelPortBody.hasTagCompound())
                 {
-                    fuelPort.closed.setTagCompound(new NBTTagCompound());
-                    fuelPort.body.setTagCompound(new NBTTagCompound());
-                    fuelPort.lid.setTagCompound(new NBTTagCompound());
+                    fuelPortClosed.setTagCompound(new NBTTagCompound());
+                    fuelPortBody.setTagCompound(new NBTTagCompound());
+                    fuelPortLid.setTagCompound(new NBTTagCompound());
                 }
                 Color color = new Color(this.dataManager.get(COLOR));
                 int colorInt = (Math.sqrt(color.getRed() * color.getRed() * 0.241
                         + color.getGreen() * color.getGreen() * 0.691
                         + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();
-                fuelPort.closed.getTagCompound().setInteger("color", colorInt);
-                fuelPort.body.getTagCompound().setInteger("color", colorInt);
-                fuelPort.lid.getTagCompound().setInteger("color", colorInt);
+                fuelPortClosed.getTagCompound().setInteger("color", colorInt);
+                fuelPortBody.getTagCompound().setInteger("color", colorInt);
+                fuelPortLid.getTagCompound().setInteger("color", colorInt);
             }
         }
     }
@@ -758,16 +774,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
         CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
 
-        private ItemStack closed, body, lid;
+        private Item closed, body, lid;
         private SoundEvent soundOpen, soundClose;
         private float volumeOpen, volumeClose;
         private float pitchOpen, pitchClose;
 
         private FuelPort(Item closed, Item body, Item lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
         {
-            this.closed = new ItemStack(closed);
-            this.body = new ItemStack(body);
-            this.lid = new ItemStack(lid);
+            this.closed = closed;
+            this.body = body;
+            this.lid = lid;
             this.soundOpen = soundOpen;
             this.volumeOpen = volumeOpen;
             this.pitchOpen = pitchOpen;
@@ -776,17 +792,17 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             this.pitchClose = pitchClose;
         }
 
-        public ItemStack getClosed()
+        public Item getClosed()
         {
             return closed;
         }
 
-        public ItemStack getBody()
+        public Item getBody()
         {
             return body;
         }
 
-        public ItemStack getLid()
+        public Item getLid()
         {
             return lid;
         }
