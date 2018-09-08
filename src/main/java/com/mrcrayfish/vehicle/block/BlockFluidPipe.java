@@ -34,6 +34,8 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
 
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -85,6 +87,7 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
     {
         if(GuiScreen.isShiftKeyDown())
@@ -133,15 +136,14 @@ public class BlockFluidPipe extends BlockObject
         addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(getCollisionFacing(state).getIndex()));
     }
 
-    @Override
     @Nullable
-    protected RayTraceResult rayTrace(BlockPos pos, Vec3d start, Vec3d end, AxisAlignedBB boundingBox)
+    @Override
+    public RayTraceResult collisionRayTrace(IBlockState blockState, World world, BlockPos pos, Vec3d start, Vec3d end)
     {
         double distanceSq;
         double distanceSqShortest = Double.POSITIVE_INFINITY;
         RayTraceResult resultClosest = null;
         RayTraceResult result;
-        World world = Minecraft.getMinecraft().world;
         IBlockState state = world.getBlockState(pos);
         state = state.getActualState(world, pos);
         if (!(state.getBlock() instanceof BlockFluidPipe))
