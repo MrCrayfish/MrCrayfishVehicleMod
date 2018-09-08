@@ -53,7 +53,6 @@ public class TileEntityFluidPipe extends TileFluidHandlerSynced implements ITick
     public void setConnectionDisabled(int indexFacing, boolean disabled)
     {
         disabledConnections[indexFacing] = disabled;
-        markDirty();
         syncToClient();
     }
 

@@ -11,6 +11,7 @@ public class TileFluidHandlerSynced extends TileFluidHandler
 {
     protected void syncToClient()
     {
+        markDirty();
         if(!world.isRemote)
         {
             if(world instanceof WorldServer)

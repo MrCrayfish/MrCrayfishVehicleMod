@@ -51,7 +51,7 @@ public class TileEntityFluidPump extends TileEntityFluidPipe
     {
         powerMode = PowerMode.values()[(powerMode.ordinal() + 1) % PowerMode.values().length];
         powerMode.notifyPlayerOfChange(player);
-        markDirty();
+        syncToClient();
     }
 
     @Override
