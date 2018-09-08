@@ -57,10 +57,10 @@ public class FluidExtractorRenderer extends TileEntitySpecialRenderer<TileEntity
 
     private void drawFluid(TileEntityFluidExtractor te, double x, double y, double z, double width, double height, double depth)
     {
-        if(te.getFluidStack() == null)
+        if(te.getFluidStackTank() == null)
             return;
 
-        ResourceLocation resource = te.getFluidStack().getFluid().getStill();
+        ResourceLocation resource = te.getFluidStackTank().getFluid().getStill();
         TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
         if(sprite != null)
         {

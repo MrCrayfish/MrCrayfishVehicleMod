@@ -1,19 +1,25 @@
 package com.mrcrayfish.vehicle.client.gui;
 
 import com.mrcrayfish.vehicle.common.container.ContainerFluidExtractor;
+import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
@@ -24,6 +30,7 @@ public class GuiFluidExtractor extends GuiContainer
 
     private IInventory playerInventory;
     private TileEntityFluidExtractor tileEntityFluidExtractor;
+    private Map<Fluid, Integer> casheFluidColor = new HashMap<>();
 
     public GuiFluidExtractor(IInventory playerInventory, TileEntityFluidExtractor tileEntityFluidExtractor)
     {
@@ -42,9 +49,9 @@ public class GuiFluidExtractor extends GuiContainer
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
 
-        if(tileEntityFluidExtractor.getFluidStack() != null)
+        if(tileEntityFluidExtractor.getFluidStackTank() != null)
         {
-            FluidStack stack = tileEntityFluidExtractor.getFluidStack();
+            FluidStack stack = tileEntityFluidExtractor.getFluidStackTank();
             if(this.isMouseWithinRegion(startX + 127, startY + 14, 16, 59, mouseX, mouseY))
             {
                 if(stack.amount > 0)
@@ -82,16 +89,64 @@ public class GuiFluidExtractor extends GuiContainer
         if(tileEntityFluidExtractor.getRemainingFuel() > 0)
         {
             int remainingFuel = (int) (14 * (tileEntityFluidExtractor.getRemainingFuel() / (double) tileEntityFluidExtractor.getFuelMaxProgress()));
-            RenderUtil.drawTexturedModalRect(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
+            this.drawTexturedModalRect(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
         if(tileEntityFluidExtractor.getExtractionProgress() > 0)
         {
-            int extractionProgress = (int) (22 * (tileEntityFluidExtractor.getExtractionProgress() / (double) TileEntityFluidExtractor.FLUID_MAX_PROGRESS) + 1);
-            RenderUtil.drawTexturedModalRect(startX + 93, startY + 34, 176, 14, extractionProgress, 16);
+            double extractionPercentage = tileEntityFluidExtractor.getExtractionProgress() / (double) TileEntityFluidExtractor.FLUID_MAX_PROGRESS;
+            int extractionProgress = (int) (22 * extractionPercentage + 1);
+            int left = startX + 93 + 1;
+            int top = startY + 34;
+            int right = left + 23 - 1;
+            int bottom = top + 16;
+            FluidExtract fluidExtract = tileEntityFluidExtractor.getFluidExtractSource();
+            int fluidColor = -1;
+            if(fluidExtract != null)
+            {
+                Integer colorCashed = casheFluidColor.get(fluidExtract.getFluid());
+                if (colorCashed != null )
+                {
+                    fluidColor = colorCashed;
+                }
+                else
+                {
+                    ResourceLocation resource = fluidExtract.getFluid().getStill();
+                    TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
+                    if(sprite != null)
+                    {
+                        long aveRed = 0;
+                        long aveGreen = 0;
+                        long aveBlue = 0;
+                        long pixelCount = 0;
+                        int[][] frameTextureData = sprite.getFrameTextureData(0);
+                        int red, green, blue;
+                        for (int[] column : frameTextureData)
+                        {
+                            pixelCount += column.length;
+                            for (int color : column)
+                            {
+                                red = color >> 16 & 255;
+                                green = color >> 8 & 255;
+                                blue = color & 255;
+                                aveRed += red * red;
+                                aveGreen += green * green;
+                                aveBlue += blue * blue;
+                            }
+                        }
+                        fluidColor = (255 << 24) | (((int) Math.sqrt(aveRed / pixelCount) & 255) << 16)
+                                | (((int) Math.sqrt(aveGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(aveBlue / pixelCount) & 255));
+                    }
+                    casheFluidColor.put(fluidExtract.getFluid(), fluidColor);
+                }
+            }
+            RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor, zLevel);
+            this.drawTexturedModalRect(startX + 93, startY + 34, 176, 14, extractionProgress, 16);
+            int offset = extractionProgress;
+            this.drawTexturedModalRect(startX + 93 + offset, startY + 34, 93 + offset, 34, 23 - offset, 17);
         }
 
-        this.drawFluidTank(tileEntityFluidExtractor.getFluidStack(), startX + 127, startY + 14, tileEntityFluidExtractor.getFluidLevel() / (double) TileEntityFluidExtractor.TANK_CAPACITY, 59);
+        this.drawFluidTank(tileEntityFluidExtractor.getFluidStackTank(), startX + 127, startY + 14, tileEntityFluidExtractor.getFluidLevel() / (double) TileEntityFluidExtractor.TANK_CAPACITY, 59);
     }
 
     private void drawFluidTank(FluidStack fluid, int x, int y, double level, int height)
