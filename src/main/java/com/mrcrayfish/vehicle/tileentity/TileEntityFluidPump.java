@@ -9,10 +9,8 @@ import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
@@ -82,14 +80,10 @@ public class TileEntityFluidPump extends TileEntityFluidPipe
         if(outputCount == 0)
             return;
 
-        TileEntity tileEntity = world.getTileEntity(pos.offset(facing.getOpposite()));
-        if(tileEntity != null)
+        IFluidHandler handler = getConnectedFluidHandler(facing.getOpposite());
+        if (handler != null)
         {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing);
-            if(handler != null)
-            {
-                FluidUtils.transferFluid(handler, tank, transferAmount);
-            }
+            FluidUtils.transferFluid(handler, tank, transferAmount);
         }
 
         // Return and transfer full amount if one connection
