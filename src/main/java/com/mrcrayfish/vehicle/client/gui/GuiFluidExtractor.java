@@ -30,7 +30,7 @@ public class GuiFluidExtractor extends GuiContainer
 
     private IInventory playerInventory;
     private TileEntityFluidExtractor tileEntityFluidExtractor;
-    private Map<Fluid, Integer> casheFluidColor = new HashMap<>();
+    private Map<Fluid, Integer> cacheFluidColor = new HashMap<>();
 
     public GuiFluidExtractor(IInventory playerInventory, TileEntityFluidExtractor tileEntityFluidExtractor)
     {
@@ -104,7 +104,7 @@ public class GuiFluidExtractor extends GuiContainer
             int fluidColor = -1;
             if(fluidExtract != null)
             {
-                Integer colorCashed = casheFluidColor.get(fluidExtract.getFluid());
+                Integer colorCashed = cacheFluidColor.get(fluidExtract.getFluid());
                 if (colorCashed != null )
                 {
                     fluidColor = colorCashed;
@@ -137,7 +137,7 @@ public class GuiFluidExtractor extends GuiContainer
                         fluidColor = (255 << 24) | (((int) Math.sqrt(aveRed / pixelCount) & 255) << 16)
                                 | (((int) Math.sqrt(aveGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(aveBlue / pixelCount) & 255));
                     }
-                    casheFluidColor.put(fluidExtract.getFluid(), fluidColor);
+                    cacheFluidColor.put(fluidExtract.getFluid(), fluidColor);
                 }
             }
             RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor, zLevel);
