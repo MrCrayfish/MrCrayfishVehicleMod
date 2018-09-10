@@ -48,13 +48,13 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
             RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                fuelPortBodyPosition.renderPart(entity.fuelPort.getBody());
-                fuelPortLidPosition.renderPart(entity.fuelPort.getLid());
+                fuelPortBodyPosition.renderPart(entity.fuelPortBody);
+                fuelPortLidPosition.renderPart(entity.fuelPortLid);
                 entity.playFuelPortOpenSound();
             }
             else
             {
-                fuelPortClosedPosition.renderPart(entity.fuelPort.getClosed());
+                fuelPortClosedPosition.renderPart(entity.fuelPortClosed);
                 entity.playFuelPortCloseSound();
             }
         }
