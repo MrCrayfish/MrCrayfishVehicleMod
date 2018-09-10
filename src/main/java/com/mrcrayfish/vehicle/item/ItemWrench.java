@@ -8,8 +8,9 @@ public class ItemWrench extends Item
 {
     public ItemWrench()
     {
-        setUnlocalizedName("wrench");
-        setRegistryName("wrench");
-        setCreativeTab(VehicleMod.CREATIVE_TAB);
+        this.setUnlocalizedName("wrench");
+        this.setRegistryName("wrench");
+        this.setCreativeTab(VehicleMod.CREATIVE_TAB);
+        this.setMaxStackSize(1);
     }
 }
