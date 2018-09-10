@@ -97,7 +97,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
     {
         if(!stack.isEmpty() && tank.getFluidAmount() < tank.getCapacity())
         {
-            FluidExtract extract = FluidExtractorRecipes.getInstance().getRecipeResult(this.getStackInSlot(SLOT_FLUID_SOURCE));
+            FluidExtract extract = getFluidExtractSource();
             if(extract != null)
             {
                 return tank.getFluid() == null || extract.getFluid() == tank.getFluid().getFluid();
@@ -107,9 +107,15 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
     }
 
     @Nullable
-    public FluidStack getFluidStack()
+    public FluidStack getFluidStackTank()
     {
         return tank.getFluid();
+    }
+
+    @Nullable
+    public FluidExtract getFluidExtractSource()
+    {
+        return FluidExtractorRecipes.getInstance().getRecipeResult(this.getStackInSlot(SLOT_FLUID_SOURCE));
     }
 
     @Override
