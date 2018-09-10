@@ -26,8 +26,6 @@ public class FluidExtractorRenderer extends TileEntitySpecialRenderer<TileEntity
     @Override
     public void render(TileEntityFluidExtractor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
-        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
-
         IBlockState state = te.getWorld().getBlockState(te.getPos());
         if(state.getBlock() != ModBlocks.REFINERY)
             return;
