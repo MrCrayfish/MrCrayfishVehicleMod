@@ -30,7 +30,6 @@ public class GuiFluidExtractor extends GuiContainer
 
     private IInventory playerInventory;
     private TileEntityFluidExtractor tileEntityFluidExtractor;
-    private static final Map<Fluid, Integer> CACHE_FLUID_COLOR = new HashMap<>();
 
     public GuiFluidExtractor(IInventory playerInventory, TileEntityFluidExtractor tileEntityFluidExtractor)
     {
@@ -39,11 +38,6 @@ public class GuiFluidExtractor extends GuiContainer
         this.tileEntityFluidExtractor = tileEntityFluidExtractor;
         this.xSize = 176;
         this.ySize = 166;
-    }
-
-    public static void clearCacheFluidColor()
-    {
-        CACHE_FLUID_COLOR.clear();
     }
 
     @Override
@@ -109,41 +103,7 @@ public class GuiFluidExtractor extends GuiContainer
             int fluidColor = -1;
             if(fluidExtract != null)
             {
-                Integer colorCashed = CACHE_FLUID_COLOR.get(fluidExtract.getFluid());
-                if (colorCashed != null )
-                {
-                    fluidColor = colorCashed;
-                }
-                else
-                {
-                    ResourceLocation resource = fluidExtract.getFluid().getStill();
-                    TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
-                    if(sprite != null)
-                    {
-                        long aveRed = 0;
-                        long aveGreen = 0;
-                        long aveBlue = 0;
-                        long pixelCount = 0;
-                        int[][] frameTextureData = sprite.getFrameTextureData(0);
-                        int red, green, blue;
-                        for (int[] column : frameTextureData)
-                        {
-                            pixelCount += column.length;
-                            for (int color : column)
-                            {
-                                red = color >> 16 & 255;
-                                green = color >> 8 & 255;
-                                blue = color & 255;
-                                aveRed += red * red;
-                                aveGreen += green * green;
-                                aveBlue += blue * blue;
-                            }
-                        }
-                        fluidColor = (255 << 24) | (((int) Math.sqrt(aveRed / pixelCount) & 255) << 16)
-                                | (((int) Math.sqrt(aveGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(aveBlue / pixelCount) & 255));
-                    }
-                    CACHE_FLUID_COLOR.put(fluidExtract.getFluid(), fluidColor);
-                }
+                fluidColor = FluidUtils.getAverageFluidColor(fluidExtract.getFluid());
             }
             RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor, zLevel);
             this.drawTexturedModalRect(startX + 93, startY + 34, 176, 14, extractionProgress, 16);

@@ -19,6 +19,7 @@ import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -733,6 +734,6 @@ public class ClientEvents
     @SubscribeEvent
     public void clearCaches(TextureStitchEvent.Post event)
     {
-        GuiFluidExtractor.clearCacheFluidColor();
+        FluidUtils.clearCacheFluidColor();
     }
 }
