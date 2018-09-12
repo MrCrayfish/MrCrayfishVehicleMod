@@ -20,7 +20,7 @@ public class ModBlocks
     public static final Block FUELIUM;
     public static final Block ENDER_SAP;
     public static final Block BLAZE_JUICE;
-    public static final Block REFINERY;
+    public static final Block FLUID_EXTRACTOR;
     public static final Block GAS_PUMP;
     public static final Block FLUID_PIPE;
     public static final Block FLUID_PUMP;
@@ -37,7 +37,7 @@ public class ModBlocks
         ENDER_SAP = new BlockLiquid("ender_sap", ModFluids.ENDER_SAP, Material.WATER);
         BLAZE_JUICE = new BlockLiquid("blaze_juice", ModFluids.BLAZE_JUICE, Material.WATER);
         GAS_PUMP = new BlockGasPump();
-        REFINERY = new BlockFluidExtractor();
+        FLUID_EXTRACTOR = new BlockFluidExtractor();
         FLUID_PIPE = new BlockFluidPipe();
         FLUID_PUMP = new BlockFluidPump();
         FUEL_DRUM = new BlockFuelDrum("fuel_drum", 40000);
@@ -54,7 +54,7 @@ public class ModBlocks
         registerBlock(ENDER_SAP, null);
         registerBlock(BLAZE_JUICE, null);
         registerBlock(GAS_PUMP);
-        registerBlock(REFINERY);
+        registerBlock(FLUID_EXTRACTOR);
         registerBlock(FLUID_PIPE);
         registerBlock(FLUID_PUMP);
         registerBlock(FUEL_DRUM);
