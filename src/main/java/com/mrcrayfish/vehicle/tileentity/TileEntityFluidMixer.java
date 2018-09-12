@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
-import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import net.minecraft.block.state.IBlockState;
@@ -209,16 +208,16 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
     {
         if(!world.isRemote)
         {
-            ItemStack source = this.getStackInSlot(SLOT_INGREDIENT);
             ItemStack fuel = this.getStackInSlot(SLOT_FUEL);
-            if(!fuel.isEmpty() && !source.isEmpty() && source.getItem() == Items.GLOWSTONE_DUST && remainingFuel == 0 && TileEntityFurnace.getItemBurnTime(fuel) > 0)
+            ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
+            if(!fuel.isEmpty() && TileEntityFurnace.getItemBurnTime(fuel) > 0 && !ingredient.isEmpty() && ingredient.getItem() == Items.GLOWSTONE_DUST && canMix() && remainingFuel == 0)
             {
                 fuelMaxProgress = TileEntityFurnace.getItemBurnTime(fuel);
                 remainingFuel = fuelMaxProgress;
                 shrinkItem(SLOT_FUEL);
             }
 
-            if(!source.isEmpty() && canMix() && remainingFuel > 0)
+            if(!ingredient.isEmpty() && canMix() && remainingFuel > 0)
             {
                 if(extractionProgress++ == FLUID_MAX_PROGRESS)
                 {
