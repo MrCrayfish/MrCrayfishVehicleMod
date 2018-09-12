@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client.gui;
 
 import com.mrcrayfish.vehicle.common.container.ContainerFluidMixer;
-import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
@@ -12,7 +11,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Author: MrCrayfish
@@ -31,6 +34,63 @@ public class GuiFluidMixer extends GuiContainer
         this.tileEntityFluidMixer = tileEntityFluidMixer;
         this.xSize = 176;
         this.ySize = 180;
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+
+        if(tileEntityFluidMixer.getBlazeFluidStack() != null)
+        {
+            FluidStack stack = tileEntityFluidMixer.getBlazeFluidStack();
+            if(this.isMouseWithinRegion(startX + 33, startY + 17, 16, 29, mouseX, mouseY))
+            {
+                if(stack.amount > 0)
+                {
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GOLD.toString() + tileEntityFluidMixer.getBlazeLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
+                }
+                else
+                {
+                    this.drawHoveringText(Collections.singletonList("No Fluid"), mouseX, mouseY);
+                }
+            }
+        }
+
+        if(tileEntityFluidMixer.getEnderSapFluidStack() != null)
+        {
+            FluidStack stack = tileEntityFluidMixer.getEnderSapFluidStack();
+            if(this.isMouseWithinRegion(startX + 33, startY + 52, 16, 29, mouseX, mouseY))
+            {
+                if(stack.amount > 0)
+                {
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.DARK_GREEN.toString() + tileEntityFluidMixer.getEnderSapLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
+                }
+                else
+                {
+                    this.drawHoveringText(Collections.singletonList("No Fluid"), mouseX, mouseY);
+                }
+            }
+        }
+
+        if(tileEntityFluidMixer.getFueliumFluidStack() != null)
+        {
+            FluidStack stack = tileEntityFluidMixer.getFueliumFluidStack();
+            if(this.isMouseWithinRegion(startX + 151, startY + 20, 16, 59, mouseX, mouseY))
+            {
+                if(stack.amount > 0)
+                {
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GREEN.toString() + tileEntityFluidMixer.getFueliumLevel() + "/" + 10000 + " mB"), mouseX, mouseY);
+                }
+                else
+                {
+                    this.drawHoveringText(Collections.singletonList("No Fluid"), mouseX, mouseY);
+                }
+            }
+        }
     }
 
     @Override
