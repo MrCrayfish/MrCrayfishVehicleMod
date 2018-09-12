@@ -2,10 +2,10 @@ package com.mrcrayfish.vehicle.common.container;
 
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -13,33 +13,35 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class ContainerFluidExtractor extends Container
+public class ContainerFluidMixer extends Container
 {
     private int extractionProgress;
     private int remainingFuel;
     private int maxFuelProgress;
-    private int fluidLevel;
+    private int blazeLevel;
+    private int enderSapLevel;
+    private int fueliumLevel;
 
-    private TileEntityFluidExtractor fluidExtractor;
+    private TileEntityFluidMixer fluidExtractor;
 
-    public ContainerFluidExtractor(IInventory playerInventory, TileEntityFluidExtractor fluidExtractor)
+    public ContainerFluidMixer(IInventory playerInventory, TileEntityFluidMixer fluidExtractor)
     {
         this.fluidExtractor = fluidExtractor;
 
-        this.addSlotToContainer(new SlotFurnaceFuel(fluidExtractor, 0, 33, 34));
-        this.addSlotToContainer(new Slot(fluidExtractor, 1, 64, 33));
+        this.addSlotToContainer(new SlotFurnaceFuel(fluidExtractor, 0, 9, 50));
+        this.addSlotToContainer(new Slot(fluidExtractor, 1, 103, 41));
 
         for (int x = 0; x < 3; x++)
         {
             for (int y = 0; y < 9; y++)
             {
-                this.addSlotToContainer(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 84 + x * 18));
+                this.addSlotToContainer(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 98 + x * 18));
             }
         }
 
         for (int x = 0; x < 9; x++)
         {
-            this.addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 142));
+            this.addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 156));
         }
     }
 
@@ -74,16 +76,26 @@ public class ContainerFluidExtractor extends Container
             {
                 listener.sendWindowProperty(this, 2, this.fluidExtractor.getField(2));
             }
-            if(this.fluidLevel != this.fluidExtractor.getField(3))
+            if(this.blazeLevel != this.fluidExtractor.getField(3))
             {
                 listener.sendWindowProperty(this, 3, this.fluidExtractor.getField(3));
+            }
+            if(this.enderSapLevel != this.fluidExtractor.getField(4))
+            {
+                listener.sendWindowProperty(this, 4, this.fluidExtractor.getField(4));
+            }
+            if(this.fueliumLevel != this.fluidExtractor.getField(5))
+            {
+                listener.sendWindowProperty(this, 5, this.fluidExtractor.getField(5));
             }
         }
 
         this.extractionProgress = this.fluidExtractor.getField(0);
         this.remainingFuel = this.fluidExtractor.getField(1);
         this.maxFuelProgress = this.fluidExtractor.getField(2);
-        this.fluidLevel = this.fluidExtractor.getField(3);
+        this.blazeLevel = this.fluidExtractor.getField(3);
+        this.enderSapLevel = this.fluidExtractor.getField(4);
+        this.fueliumLevel = this.fluidExtractor.getField(5);
     }
 
     @Override
