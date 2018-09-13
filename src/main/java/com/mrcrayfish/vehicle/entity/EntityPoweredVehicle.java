@@ -425,9 +425,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
-        if(compound.hasKey("currentFuel", Constants.NBT.TAG_INT))
+        if(compound.hasKey("currentFuel", Constants.NBT.TAG_FLOAT))
         {
-            this.setCurrentFuel(compound.getInteger("currentFuel"));
+            this.setCurrentFuel(compound.getFloat("currentFuel"));
         }
         if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_INT))
         {
