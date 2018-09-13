@@ -1,8 +1,12 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
+import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
+import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
+import com.mrcrayfish.vehicle.crafting.FluidMixerRecipes;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -129,8 +133,7 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
         }
         else if(index == 1)
         {
-            //TODO change to new recipe class
-            return FluidExtractorRecipes.getInstance().getRecipeResult(stack) != null;
+            return true;
         }
         return false;
     }
@@ -208,26 +211,43 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
     {
         if(!world.isRemote)
         {
-            ItemStack fuel = this.getStackInSlot(SLOT_FUEL);
             ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
-            if(!fuel.isEmpty() && TileEntityFurnace.getItemBurnTime(fuel) > 0 && !ingredient.isEmpty() && ingredient.getItem() == Items.GLOWSTONE_DUST && canMix() && remainingFuel == 0)
+            if(tankBlaze.getFluid() != null && tankEnderSap.getFluid() != null && !ingredient.isEmpty())
             {
-                fuelMaxProgress = TileEntityFurnace.getItemBurnTime(fuel);
-                remainingFuel = fuelMaxProgress;
-                shrinkItem(SLOT_FUEL);
-            }
-
-            if(!ingredient.isEmpty() && canMix() && remainingFuel > 0)
-            {
-                if(extractionProgress++ == FLUID_MAX_PROGRESS)
+                FluidMixerRecipe recipe = FluidMixerRecipes.getInstance().getRecipe(tankBlaze.getFluid().getFluid(), tankEnderSap.getFluid().getFluid(), ingredient);
+                if(recipe != null && canMix(recipe))
                 {
-                    //TODO create recipe class
-                    //FluidExtract extract = FluidExtractorRecipes.getInstance().getRecipeResult(source);
-                    tankFuelium.fillInternal(new FluidStack(ModFluids.FUELIUM, 20), true);
-                    tankBlaze.drain(10, true);
-                    tankEnderSap.drain(10, true);
+                    ItemStack fuel = this.getStackInSlot(SLOT_FUEL);
+                    if(!fuel.isEmpty() && TileEntityFurnace.getItemBurnTime(fuel) > 0 && remainingFuel == 0)
+                    {
+                        fuelMaxProgress = TileEntityFurnace.getItemBurnTime(fuel);
+                        remainingFuel = fuelMaxProgress;
+                        shrinkItem(SLOT_FUEL);
+                    }
+
+                    if(remainingFuel > 0 && canMix(recipe))
+                    {
+                        if(extractionProgress++ == FLUID_MAX_PROGRESS)
+                        {
+                            FluidExtract extract = FluidMixerRecipes.getInstance().getRecipeResult(recipe);
+                            if(extract != null)
+                            {
+                                tankFuelium.fillInternal(extract.createStack(), true);
+                                tankBlaze.drain(recipe.getFluidAmount(tankBlaze.getFluid().getFluid()), true);
+                                tankEnderSap.drain(recipe.getFluidAmount(tankEnderSap.getFluid().getFluid()), true);
+                                shrinkItem(SLOT_INGREDIENT);
+                            }
+                            extractionProgress = 0;
+                        }
+                    }
+                    else
+                    {
+                        extractionProgress = 0;
+                    }
+                }
+                else
+                {
                     extractionProgress = 0;
-                    shrinkItem(SLOT_INGREDIENT);
                 }
             }
             else
@@ -252,9 +272,15 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
         }
     }
 
-    public boolean canMix()
+    public boolean canMix(FluidMixerRecipe recipe)
     {
-        return tankFuelium.getFluidAmount() < tankFuelium.getCapacity() && tankBlaze.getFluidAmount() >= 10 && tankFuelium.getFluidAmount() >= 10;
+        if(tankBlaze.getFluid() == null || tankEnderSap.getFluid() == null)
+            return false;
+        if(tankBlaze.getFluidAmount() < recipe.getFluidAmount(tankBlaze.getFluid().getFluid()))
+            return false;
+        if(tankEnderSap.getFluidAmount() < recipe.getFluidAmount(tankEnderSap.getFluid().getFluid()))
+            return false;
+        return tankFuelium.getFluidAmount() < tankFuelium.getCapacity();
     }
 
     @Override
@@ -272,15 +298,21 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
         }
         if(tag.hasKey("TankBlaze", Constants.NBT.TAG_COMPOUND))
         {
-            tankBlaze.readFromNBT(tag.getCompoundTag("TankBlaze"));
+            NBTTagCompound tagCompound = tag.getCompoundTag("TankBlaze");
+            FluidUtils.fixEmptyTag(tagCompound);
+            tankBlaze.readFromNBT(tagCompound);
         }
         if(tag.hasKey("TankEnderSap", Constants.NBT.TAG_COMPOUND))
         {
-            tankEnderSap.readFromNBT(tag.getCompoundTag("TankEnderSap"));
+            NBTTagCompound tagCompound = tag.getCompoundTag("TankEnderSap");
+            FluidUtils.fixEmptyTag(tagCompound);
+            tankEnderSap.readFromNBT(tagCompound);
         }
         if(tag.hasKey("TankFuelium", Constants.NBT.TAG_COMPOUND))
         {
-            tankFuelium.readFromNBT(tag.getCompoundTag("TankFuelium"));
+            NBTTagCompound tagCompound = tag.getCompoundTag("TankFuelium");
+            FluidUtils.fixEmptyTag(tagCompound);
+            tankFuelium.readFromNBT(tagCompound);
         }
     }
 
@@ -332,7 +364,28 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
     @Override
     public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
     {
-        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            IBlockState state = world.getBlockState(pos);
+            if(state.getPropertyKeys().contains(BlockRotatedObject.FACING))
+            {
+                EnumFacing blockFacing = state.getValue(BlockRotatedObject.FACING);
+                if(facing == blockFacing.rotateYCCW())
+                {
+                    return true;
+                }
+                if(facing == blockFacing)
+                {
+                    return true;
+                }
+                if(facing == blockFacing.rotateY())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        return super.hasCapability(capability, facing);
     }
 
     @SuppressWarnings("unchecked")
@@ -348,7 +401,6 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
                 EnumFacing blockFacing = state.getValue(BlockRotatedObject.FACING);
                 if(facing == blockFacing.rotateYCCW())
                 {
-
                     return (T) tankBlaze;
                 }
                 if(facing == blockFacing)
@@ -360,7 +412,7 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
                     return (T) tankFuelium;
                 }
             }
-            return (T) tankFuelium;
+            return null;
         }
         return super.getCapability(capability, facing);
     }
