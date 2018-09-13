@@ -281,23 +281,23 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
         FluidUtils.fixEmptyTag(tag);
         super.readFromNBT(tag);
 
-        if(tag.hasKey("extractionProgress", Constants.NBT.TAG_INT))
+        if(tag.hasKey("ExtractionProgress", Constants.NBT.TAG_INT))
         {
-            extractionProgress = tag.getInteger("extractionProgress");
+            extractionProgress = tag.getInteger("ExtractionProgress");
         }
-        if(tag.hasKey("remainingFuel", Constants.NBT.TAG_INT))
+        if(tag.hasKey("RemainingFuel", Constants.NBT.TAG_INT))
         {
-            remainingFuel = tag.getInteger("remainingFuel");
+            remainingFuel = tag.getInteger("RemainingFuel");
         }
-        if(tag.hasKey("fuelMaxProgress", Constants.NBT.TAG_INT))
+        if(tag.hasKey("FuelMaxProgress", Constants.NBT.TAG_INT))
         {
-            fuelMaxProgress = tag.getInteger("fuelMaxProgress");
+            fuelMaxProgress = tag.getInteger("FuelMaxProgress");
         }
-        if(tag.hasKey("fluidLevel", Constants.NBT.TAG_INT))
+        if(tag.hasKey("FluidLevel", Constants.NBT.TAG_INT))
         {
             if(tank.getFluid() != null)
             {
-                tank.getFluid().amount = tag.getInteger("fluidLevel");
+                tank.getFluid().amount = tag.getInteger("FluidLevel");
             }
         }
         if(tag.hasKey("Items", Constants.NBT.TAG_LIST))
@@ -315,9 +315,9 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
     public NBTTagCompound writeToNBT(NBTTagCompound tag)
     {
         super.writeToNBT(tag);
-        tag.setInteger("extractionProgress", extractionProgress);
-        tag.setInteger("remainingFuel", remainingFuel);
-        tag.setInteger("fuelMaxProgress", fuelMaxProgress);
+        tag.setInteger("ExtractionProgress", extractionProgress);
+        tag.setInteger("RemainingFuel", remainingFuel);
+        tag.setInteger("FuelMaxProgress", fuelMaxProgress);
 
         ItemStackHelper.saveAllItems(tag, inventory);
 
@@ -350,7 +350,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
 
     public void syncFluidLevelToClients()
     {
-        sendUpdate(wrap("fluidLevel", tank.getFluidAmount()));
+        sendUpdate(wrap("FluidLevel", tank.getFluidAmount()));
     }
 
     @Override
