@@ -323,6 +323,18 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
             FluidUtils.fixEmptyTag(tagCompound);
             tankFuelium.readFromNBT(tagCompound);
         }
+        if(tag.hasKey("RemainingFuel", Constants.NBT.TAG_INT))
+        {
+            remainingFuel = tag.getInteger("RemainingFuel");
+        }
+        if(tag.hasKey("FuelMaxProgress", Constants.NBT.TAG_INT))
+        {
+            fuelMaxProgress = tag.getInteger("FuelMaxProgress");
+        }
+        if(tag.hasKey("ExtractionProgress", Constants.NBT.TAG_INT))
+        {
+            extractionProgress = tag.getInteger("ExtractionProgress");
+        }
     }
 
     @Override
@@ -349,6 +361,21 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
         tankFuelium.writeToNBT(tagTankFuelium);
         tag.setTag("TankFuelium", tagTankFuelium);
 
+        if(tag.hasKey("RemainingFuel", Constants.NBT.TAG_INT))
+        {
+            remainingFuel = tag.getInteger("RemainingFuel");
+        }
+        if(tag.hasKey("FuelMaxProgress", Constants.NBT.TAG_INT))
+        {
+            fuelMaxProgress = tag.getInteger("FuelMaxProgress");
+        }
+        if(tag.hasKey("ExtractionProgress", Constants.NBT.TAG_INT))
+        {
+            extractionProgress = tag.getInteger("ExtractionProgress");
+        }
+        tag.setInteger("RemainingFuel", remainingFuel);
+        tag.setInteger("FuelMaxProgress", fuelMaxProgress);
+        tag.setInteger("ExtractionProgress", extractionProgress);
         return tag;
     }
 
