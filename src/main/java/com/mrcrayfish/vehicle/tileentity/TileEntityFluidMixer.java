@@ -133,7 +133,16 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
         }
         else if(index == 1)
         {
-            return true;
+            Fluid fluidOne = tankBlaze.getFluid() != null ? tankBlaze.getFluid().getFluid() : null;
+            Fluid fluidTwo = tankEnderSap.getFluid() != null ? tankEnderSap.getFluid().getFluid() : null;
+            if(fluidOne != null && fluidTwo != null)
+            {
+                if(FluidMixerRecipes.getInstance().getRecipe(fluidOne, fluidTwo, stack) != null)
+                {
+                    return true;
+                }
+            }
+            return FluidMixerRecipes.getInstance().isIngredient(stack);
         }
         return false;
     }

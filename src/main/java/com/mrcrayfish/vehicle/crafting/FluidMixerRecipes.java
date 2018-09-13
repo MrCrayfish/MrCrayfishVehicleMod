@@ -38,6 +38,11 @@ public class FluidMixerRecipes
         return optional.orElse(null);
     }
 
+    public boolean isIngredient(ItemStack ingredient)
+    {
+        return mixingMap.keySet().stream().anyMatch(recipe -> FluidMixerRecipe.areItemStacksEqual(recipe.getIngredient(), ingredient));
+    }
+
     @Nullable
     public FluidExtract getRecipeResult(FluidMixerRecipe recipe)
     {

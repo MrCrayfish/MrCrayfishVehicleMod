@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.common.container;
 
-import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
@@ -125,7 +123,7 @@ public class ContainerFluidMixer extends Container
             }
             else if(index > 1)
             {
-                if(FluidExtractorRecipes.getInstance().getRecipeResult(slotStack) != null)
+                if(fluidExtractor.isItemValidForSlot(1, slotStack))
                 {
                     if(!this.mergeItemStack(slotStack, 1, 2, false))
                     {

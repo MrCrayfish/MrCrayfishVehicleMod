@@ -73,7 +73,7 @@ public class FluidMixerRecipe
         return fluids[0].hashCode() + fluids[1].hashCode() + ingredient.getItem().hashCode() + ingredient.getItemDamage();
     }
 
-    private static boolean areItemStacksEqual(ItemStack stack, ItemStack other)
+    public static boolean areItemStacksEqual(ItemStack stack, ItemStack other)
     {
         if (stack.getItem() != other.getItem())
         {
