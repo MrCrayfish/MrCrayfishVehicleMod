@@ -3,11 +3,15 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
@@ -57,6 +61,41 @@ public class BlockFluidExtractor extends BlockRotatedObject
             }
         }
         return true;
+    }
+
+    @Override
+    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+    {
+        if(!world.isRemote && !player.capabilities.isCreativeMode)
+        {
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityFluidExtractor)
+            {
+                TileEntityFluidExtractor fluidExtractor = (TileEntityFluidExtractor) tileEntity;
+                NBTTagCompound tileEntityTag = new NBTTagCompound();
+                tileEntity.writeToNBT(tileEntityTag);
+                tileEntityTag.removeTag("x");
+                tileEntityTag.removeTag("y");
+                tileEntityTag.removeTag("z");
+                tileEntityTag.removeTag("id");
+                tileEntityTag.removeTag("RemainingFuel");
+                tileEntityTag.removeTag("FuelMaxProgress");
+                tileEntityTag.removeTag("ExtractionProgress");
+
+                NBTTagCompound compound = new NBTTagCompound();
+                compound.setTag("BlockEntityTag", tileEntityTag);
+
+                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+                drop.setTagCompound(compound);
+                if(fluidExtractor.hasCustomName())
+                {
+                    drop.setStackDisplayName(fluidExtractor.getName());
+                }
+                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+                return world.setBlockToAir(pos);
+            }
+        }
+        return super.removedByPlayer(state, world, pos, player, willHarvest);
     }
 
     @Override
