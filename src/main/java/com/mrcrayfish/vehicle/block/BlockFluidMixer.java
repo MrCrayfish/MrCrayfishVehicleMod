@@ -33,23 +33,13 @@ public class BlockFluidMixer extends BlockRotatedObject
         if(!worldIn.isRemote)
         {
             ItemStack stack = playerIn.getHeldItem(hand);
-            if(stack.getItem() == Items.BUCKET)
+            if(!FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
             {
-                if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, null))
+                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                if(tileEntity instanceof TileEntityFluidMixer)
                 {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if(tileEntity instanceof TileEntityFluidExtractor)
-                    {
-                        ((TileEntityFluidExtractor) tileEntity).syncFluidLevelToClients();
-                    }
+                    playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
                 }
-                return true;
-            }
-
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityFluidMixer)
-            {
-                playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
         }
         return true;
