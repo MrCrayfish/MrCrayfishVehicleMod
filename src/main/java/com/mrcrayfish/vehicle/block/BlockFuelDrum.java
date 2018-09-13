@@ -39,6 +39,7 @@ public class BlockFuelDrum extends BlockRotatedObject
     {
         super(Material.IRON, id);
         this.capacity = capacity;
+        this.setHardness(1.0F);
     }
 
     @Override

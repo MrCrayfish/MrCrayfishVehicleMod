@@ -33,6 +33,7 @@ public class BlockFluidExtractor extends BlockRotatedObject
     public BlockFluidExtractor()
     {
         super(Material.ANVIL, "fluid_extractor");
+        this.setHardness(1.0F);
     }
 
     @Override

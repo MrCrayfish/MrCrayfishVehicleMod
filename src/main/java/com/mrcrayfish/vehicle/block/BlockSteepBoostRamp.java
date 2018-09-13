@@ -53,6 +53,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     public BlockSteepBoostRamp()
     {
         super(Material.ROCK, "steep_boost_ramp");
+        this.setHardness(1.0F);
     }
 
     @Override

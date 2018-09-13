@@ -24,6 +24,7 @@ public class BlockGasPump extends BlockRotatedObject
     {
         super(Material.ANVIL, "gas_pump");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP, false));
+        this.setHardness(1.0F);
     }
 
     @Override
