@@ -59,6 +59,8 @@ public class GuiFluidExtractor extends GuiContainer
                 }
             }
         }
+
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override

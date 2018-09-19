@@ -91,6 +91,8 @@ public class GuiFluidMixer extends GuiContainer
                 }
             }
         }
+
+        this.renderHoveredToolTip(mouseX, mouseY);
     }
 
     @Override
