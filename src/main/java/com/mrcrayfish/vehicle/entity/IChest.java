@@ -16,4 +16,6 @@ public interface IChest
     boolean hasChest();
 
     void attachChest(ItemStack stack);
+
+    void removeChest();
 }
