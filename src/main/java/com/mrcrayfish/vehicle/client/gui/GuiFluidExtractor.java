@@ -1,9 +1,11 @@
 package com.mrcrayfish.vehicle.client.gui;
 
 import com.mrcrayfish.vehicle.common.container.ContainerFluidExtractor;
+import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -42,9 +44,9 @@ public class GuiFluidExtractor extends GuiContainer
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
 
-        if(tileEntityFluidExtractor.getFluidStack() != null)
+        if(tileEntityFluidExtractor.getFluidStackTank() != null)
         {
-            FluidStack stack = tileEntityFluidExtractor.getFluidStack();
+            FluidStack stack = tileEntityFluidExtractor.getFluidStackTank();
             if(this.isMouseWithinRegion(startX + 127, startY + 14, 16, 59, mouseX, mouseY))
             {
                 if(stack.amount > 0)
@@ -82,16 +84,30 @@ public class GuiFluidExtractor extends GuiContainer
         if(tileEntityFluidExtractor.getRemainingFuel() > 0)
         {
             int remainingFuel = (int) (14 * (tileEntityFluidExtractor.getRemainingFuel() / (double) tileEntityFluidExtractor.getFuelMaxProgress()));
-            RenderUtil.drawTexturedModalRect(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
+            this.drawTexturedModalRect(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
         if(tileEntityFluidExtractor.getExtractionProgress() > 0)
         {
-            int extractionProgress = (int) (22 * (tileEntityFluidExtractor.getExtractionProgress() / (double) TileEntityFluidExtractor.FLUID_MAX_PROGRESS) + 1);
-            RenderUtil.drawTexturedModalRect(startX + 93, startY + 34, 176, 14, extractionProgress, 16);
+            double extractionPercentage = tileEntityFluidExtractor.getExtractionProgress() / (double) TileEntityFluidExtractor.FLUID_MAX_PROGRESS;
+            int extractionProgress = (int) (22 * extractionPercentage + 1);
+            int left = startX + 93 + 1;
+            int top = startY + 34;
+            int right = left + 23 - 1;
+            int bottom = top + 16;
+            FluidExtract fluidExtract = tileEntityFluidExtractor.getFluidExtractSource();
+            int fluidColor = -1;
+            if(fluidExtract != null)
+            {
+                fluidColor = FluidUtils.getAverageFluidColor(fluidExtract.getFluid());
+            }
+            RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor, zLevel);
+            this.drawTexturedModalRect(startX + 93, startY + 34, 176, 14, extractionProgress, 16);
+            int offset = extractionProgress;
+            this.drawTexturedModalRect(startX + 93 + offset, startY + 34, 93 + offset, 34, 23 - offset, 17);
         }
 
-        this.drawFluidTank(tileEntityFluidExtractor.getFluidStack(), startX + 127, startY + 14, tileEntityFluidExtractor.getFluidLevel() / (double) TileEntityFluidExtractor.TANK_CAPACITY, 59);
+        this.drawFluidTank(tileEntityFluidExtractor.getFluidStackTank(), startX + 127, startY + 14, tileEntityFluidExtractor.getFluidLevel() / (double) TileEntityFluidExtractor.TANK_CAPACITY, 59);
     }
 
     private void drawFluidTank(FluidStack fluid, int x, int y, double level, int height)

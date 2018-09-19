@@ -1,38 +1,31 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidExtractor extends BlockRotatedObject
+public class BlockFluidMixer extends BlockRotatedObject
 {
-    public BlockFluidExtractor()
+    public BlockFluidMixer()
     {
-        super(Material.ANVIL, "fluid_extractor");
+        super(Material.ANVIL, "fluid_mixer");
         this.setHardness(1.0F);
     }
 
@@ -41,24 +34,13 @@ public class BlockFluidExtractor extends BlockRotatedObject
     {
         if(!worldIn.isRemote)
         {
-            ItemStack stack = playerIn.getHeldItem(hand);
-            if(stack.getItem() == Items.BUCKET)
+            if(!FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
             {
-                if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
+                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                if(tileEntity instanceof TileEntityFluidMixer)
                 {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if(tileEntity instanceof TileEntityFluidExtractor)
-                    {
-                        ((TileEntityFluidExtractor) tileEntity).syncFluidLevelToClients();
-                    }
+                    playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
                 }
-                return true;
-            }
-
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityFluidExtractor)
-            {
-                playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
             }
         }
         return true;
@@ -70,9 +52,9 @@ public class BlockFluidExtractor extends BlockRotatedObject
         if(!world.isRemote && !player.capabilities.isCreativeMode)
         {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityFluidExtractor)
+            if(tileEntity instanceof TileEntityFluidMixer)
             {
-                TileEntityFluidExtractor fluidExtractor = (TileEntityFluidExtractor) tileEntity;
+                TileEntityFluidMixer tileEntityFluidMixer = (TileEntityFluidMixer) tileEntity;
                 NBTTagCompound tileEntityTag = new NBTTagCompound();
                 tileEntity.writeToNBT(tileEntityTag);
                 tileEntityTag.removeTag("x");
@@ -87,10 +69,11 @@ public class BlockFluidExtractor extends BlockRotatedObject
                 compound.setTag("BlockEntityTag", tileEntityTag);
 
                 ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+                ;
                 drop.setTagCompound(compound);
-                if(fluidExtractor.hasCustomName())
+                if(tileEntityFluidMixer.hasCustomName())
                 {
-                    drop.setStackDisplayName(fluidExtractor.getName());
+                    drop.setStackDisplayName(tileEntityFluidMixer.getName());
                 }
                 world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
                 return world.setBlockToAir(pos);
@@ -109,12 +92,6 @@ public class BlockFluidExtractor extends BlockRotatedObject
     @Override
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntityFluidExtractor();
-    }
-
-    @Override
-    public BlockRenderLayer getBlockLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
+        return new TileEntityFluidMixer();
     }
 }

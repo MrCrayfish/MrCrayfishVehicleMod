@@ -13,7 +13,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
@@ -26,10 +25,8 @@ public class FluidExtractorRenderer extends TileEntitySpecialRenderer<TileEntity
     @Override
     public void render(TileEntityFluidExtractor te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
-        super.render(te, x, y, z, partialTicks, destroyStage, alpha);
-
         IBlockState state = te.getWorld().getBlockState(te.getPos());
-        if(state.getBlock() != ModBlocks.REFINERY)
+        if(state.getBlock() != ModBlocks.FLUID_EXTRACTOR)
             return;
 
         GlStateManager.pushMatrix();
@@ -57,10 +54,10 @@ public class FluidExtractorRenderer extends TileEntitySpecialRenderer<TileEntity
 
     private void drawFluid(TileEntityFluidExtractor te, double x, double y, double z, double width, double height, double depth)
     {
-        if(te.getFluidStack() == null)
+        if(te.getFluidStackTank() == null)
             return;
 
-        ResourceLocation resource = te.getFluidStack().getFluid().getStill();
+        ResourceLocation resource = te.getFluidStackTank().getFluid().getStill();
         TextureAtlasSprite sprite = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(resource.toString());
         if(sprite != null)
         {

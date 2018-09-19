@@ -67,6 +67,7 @@ public class BlockFluidPipe extends BlockObject
     public BlockFluidPipe()
     {
         this("fluid_pipe");
+        this.setHardness(0.5F);
     }
 
     public BlockFluidPipe(String name)

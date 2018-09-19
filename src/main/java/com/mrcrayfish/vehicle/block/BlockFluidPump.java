@@ -42,6 +42,7 @@ public class BlockFluidPump extends BlockFluidPipe
     public BlockFluidPump()
     {
         super("fluid_pump");
+        this.setHardness(0.5F);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.gui;
 
 import com.mrcrayfish.vehicle.common.container.ContainerFluidExtractor;
+import com.mrcrayfish.vehicle.common.container.ContainerFluidMixer;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -24,6 +26,10 @@ public class GuiHandler implements IGuiHandler
         {
             return new ContainerFluidExtractor(player.inventory, (TileEntityFluidExtractor) tileEntity);
         }
+        if(tileEntity instanceof TileEntityFluidMixer)
+        {
+            return new ContainerFluidMixer(player.inventory, (TileEntityFluidMixer) tileEntity);
+        }
         return null;
     }
 
@@ -35,6 +41,10 @@ public class GuiHandler implements IGuiHandler
         if(tileEntity instanceof TileEntityFluidExtractor)
         {
             return new GuiFluidExtractor(player.inventory, (TileEntityFluidExtractor) tileEntity);
+        }
+        if(tileEntity instanceof TileEntityFluidMixer)
+        {
+            return new GuiFluidMixer(player.inventory, (TileEntityFluidMixer) tileEntity);
         }
         return null;
     }

@@ -59,6 +59,7 @@ public class BlockBoostRamp extends BlockRotatedObject
     public BlockBoostRamp()
     {
         super(Material.ROCK, "boost_ramp");
+        this.setHardness(0.8F);
     }
 
     @Override

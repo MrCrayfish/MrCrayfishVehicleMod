@@ -38,6 +38,7 @@ public class BlockBoostPad extends BlockRotatedObject
     {
         super(Material.ROCK, "boost_pad");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(LEFT, false).withProperty(RIGHT, false));
+        this.setHardness(0.6F);
     }
 
     @Override
