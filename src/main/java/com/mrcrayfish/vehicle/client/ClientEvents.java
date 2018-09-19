@@ -54,8 +54,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.awt.*;
+import java.awt.Color;
 import java.text.DecimalFormat;
+import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
@@ -272,12 +273,53 @@ public class ClientEvents
 
         if(ridingEntity instanceof EntityOffRoader)
         {
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-80F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-80F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
-
             EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
+            List<Entity> passengers = vehicle.getPassengers();
+            int index = passengers.indexOf(player);
+            if(index < 2) //Sitting in the front
+            {
+                model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-80F);
+                model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
+                model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-80F);
+                model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+
+                if(index == 1)
+                {
+                    model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-75F);
+                    model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-25F);
+                    model.bipedLeftArm.rotateAngleZ = 0F;
+                }
+            }
+            else
+            {
+                if(index == 3)
+                {
+                    model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
+                    model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
+                    model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
+                    model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+                    model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-75F);
+                    model.bipedRightArm.rotateAngleY = (float) Math.toRadians(110F);
+                    model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(0F);
+                    model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-105F);
+                    model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-20F);
+                    model.bipedLeftArm.rotateAngleZ = 0F;
+                }
+                else
+                {
+                    model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(0F);
+                    model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(0F);
+                    model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(0F);
+                    model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(0F);
+                    model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-10F);
+                    model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(25F);
+                    model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F);
+                    model.bipedLeftArm.rotateAngleZ = 0F;
+                    model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-20F);
+                    model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(20F);
+                }
+            }
+
             if(vehicle.getControllingPassenger() == player)
             {
                 float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();

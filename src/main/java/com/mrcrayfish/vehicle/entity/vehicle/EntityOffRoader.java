@@ -86,23 +86,33 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
                 int index = this.getPassengers().indexOf(passenger);
                 if (index > 0)
                 {
-                    xOffset -= (index / 2) * 0.6875F;
-                    zOffset -= (index % 2) * 0.8F;
+                    xOffset -= (index / 2) * 1.0F;
+                    zOffset -= (index % 2) * 0.8125F;
+                }
+
+                if(index == 2)
+                {
+                    yOffset += 0.625F;
+                }
+                else if(index == 3)
+                {
+                    xOffset -= 0.4375F;
                 }
 
                 Vec3d vec3d = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-(this.rotationYaw - additionalYaw) * 0.017453292F - ((float)Math.PI / 2F));
                 passenger.setPosition(this.posX + vec3d.x, this.posY + (double)yOffset, this.posZ + vec3d.z);
                 passenger.rotationYaw -= deltaYaw;
                 passenger.setRotationYawHead(passenger.rotationYaw);
-                this.applyYawToEntity(passenger, index > 1);
+                this.applyYawToEntity(passenger);
             }
         }
     }
 
-    private void applyYawToEntity(Entity entityToUpdate, boolean isBackSeat)
+    @Override
+    public void applyYawToEntity(Entity entityToUpdate)
     {
-        entityToUpdate.setRenderYawOffset(this.rotationYaw - this.additionalYaw + (isBackSeat ? 180F : 0F));
-        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw + (isBackSeat ? 180F : 0F));
+        entityToUpdate.setRenderYawOffset(this.rotationYaw - this.additionalYaw);
+        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
         float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
         entityToUpdate.prevRotationYaw += f1 - f;
         entityToUpdate.rotationYaw += f1 - f;
@@ -112,8 +122,7 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
     @SideOnly(Side.CLIENT)
     public void applyOrientationToEntity(Entity entityToUpdate)
     {
-        int index = this.getPassengers().indexOf(entityToUpdate);
-        this.applyYawToEntity(entityToUpdate, index > 1);
+        this.applyYawToEntity(entityToUpdate);
     }
 
     @Override
