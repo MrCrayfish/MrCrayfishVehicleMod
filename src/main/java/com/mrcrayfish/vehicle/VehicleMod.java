@@ -4,7 +4,6 @@ import com.mrcrayfish.vehicle.client.gui.GuiHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModFluids;
@@ -14,11 +13,9 @@ import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.common.ForgeModContainer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fluids.*;
 import net.minecraftforge.fml.common.Loader;
@@ -105,6 +102,7 @@ public class VehicleMod
         registerVehicle("moped", EntityMoped.class);
         registerVehicle("sports_plane", EntitySportsPlane.class);
         registerVehicle("golf_cart", EntityGolfCart.class);
+        registerVehicle("off_roader", EntityOffRoader.class);
 
         if(Loader.isModLoaded("cfm"))
         {

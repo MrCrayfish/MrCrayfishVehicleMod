@@ -391,6 +391,20 @@ public class EntityRaytracer
         createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.53125, 0, -13.25, 12, -7.3, -90, 0.25, golfCartParts, golfCartTransformGlobal);
         entityRaytracePartsStatic.put(EntityGolfCart.class, golfCartParts);
 
+        List<MatrixTransformation> offRoaderTransformGlobal = Lists.newArrayList();
+        offRoaderTransformGlobal.add(MatrixTransformation.createTranslation(0, 0, -0.125));
+        offRoaderTransformGlobal.add(MatrixTransformation.createScale(1.4));
+        offRoaderTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.775, 0));
+        HashMap<RayTracePart, List<MatrixTransformation>> offRoaderParts = Maps.newHashMap();
+        createTranformListForPart(ModItems.OFF_ROADER_BODY, offRoaderParts, offRoaderTransformGlobal);
+        createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, offRoaderParts, offRoaderTransformGlobal,
+                MatrixTransformation.createTranslation(-0.3125, 0.35, 0.2),
+                MatrixTransformation.createRotation(-45, 1, 0, 0),
+                MatrixTransformation.createTranslation(0, -0.02, 0),
+                MatrixTransformation.createScale(0.75));
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.49375, 0, -12.25F, 16.0F, -7.3F, -90, 0.25F, offRoaderParts, offRoaderTransformGlobal);
+        entityRaytracePartsStatic.put(EntityOffRoader.class, offRoaderParts);
+
         if(Loader.isModLoaded("cfm"))
         {
             // Bath
