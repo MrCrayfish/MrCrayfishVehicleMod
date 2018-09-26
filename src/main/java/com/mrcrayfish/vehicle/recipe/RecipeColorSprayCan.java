@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.recipe;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.item.IDyeable;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -25,21 +25,21 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
     @Override
     public boolean matches(InventoryCrafting inv, World worldIn)
     {
-        ItemStack sprayCan = ItemStack.EMPTY;
-        List<ItemStack> dyes = Lists.<ItemStack>newArrayList();
+        ItemStack dyeableItem = ItemStack.EMPTY;
+        List<ItemStack> dyes = Lists.newArrayList();
 
         for (int i = 0; i < inv.getSizeInventory(); ++i)
         {
             ItemStack stack = inv.getStackInSlot(i);
             if (!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemSprayCan)
+                if (stack.getItem() instanceof IDyeable)
                 {
-                    if (!sprayCan.isEmpty())
+                    if (!dyeableItem.isEmpty())
                     {
                         return false;
                     }
-                    sprayCan = stack;
+                    dyeableItem = stack;
                 }
                 else
                 {
@@ -52,37 +52,36 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             }
         }
 
-        return !sprayCan.isEmpty() && !dyes.isEmpty();
+        return !dyeableItem.isEmpty() && !dyes.isEmpty();
     }
 
     @Override
     public ItemStack getCraftingResult(InventoryCrafting inv)
     {
-        ItemStack sprayCanStack = ItemStack.EMPTY;
-        ItemSprayCan sprayCan = null;
+        ItemStack dyeableItem = ItemStack.EMPTY;
+        IDyeable dyeable = null;
         int[] combinedValues = new int[3];
         int combinedColor = 0;
         int colorCount = 0;
-
 
         for (int k = 0; k < inv.getSizeInventory(); ++k)
         {
             ItemStack stack = inv.getStackInSlot(k);
             if (!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemSprayCan)
+                if (stack.getItem() instanceof IDyeable)
                 {
-                    sprayCan = (ItemSprayCan) stack.getItem();
-                    if (!sprayCanStack.isEmpty())
+                    dyeable = (IDyeable) stack.getItem();
+                    if (!dyeableItem.isEmpty())
                     {
                         return ItemStack.EMPTY;
                     }
-                    sprayCanStack = stack.copy();
-                    sprayCanStack.setCount(1);
+                    dyeableItem = stack.copy();
+                    dyeableItem.setCount(1);
 
-                    if (sprayCan.hasColor(stack))
+                    if (dyeable.hasColor(stack))
                     {
-                        int color = sprayCan.getColor(sprayCanStack);
+                        int color = dyeable.getColor(dyeableItem);
                         float red = (float)(color >> 16 & 255) / 255.0F;
                         float green = (float)(color >> 8 & 255) / 255.0F;
                         float blue = (float)(color & 255) / 255.0F;
@@ -113,7 +112,7 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             }
         }
 
-        if (sprayCan == null)
+        if (dyeable == null)
         {
             return ItemStack.EMPTY;
         }
@@ -129,8 +128,8 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
             blue = (int)((float)blue * averageColor / maxValue);
             int finalColor = (red << 8) + green;
             finalColor = (finalColor << 8) + blue;
-            sprayCan.setColor(sprayCanStack, finalColor);
-            return sprayCanStack;
+            dyeable.setColor(dyeableItem, finalColor);
+            return dyeableItem;
         }
     }
 

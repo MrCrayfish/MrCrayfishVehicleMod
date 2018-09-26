@@ -1,10 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
-import com.mrcrayfish.vehicle.item.ItemEngine;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
-import com.mrcrayfish.vehicle.item.ItemPart;
-import com.mrcrayfish.vehicle.item.ItemWrench;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.item.*;
 import net.minecraft.item.Item;
 
 /**
@@ -55,6 +51,7 @@ public class ModItems
     public static final Item FUEL_PORT_2_PIPE;
     
     public static final Item WRENCH;
+    public static final Item KEY;
 
     static
     {
@@ -101,6 +98,7 @@ public class ModItems
         FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
 
         WRENCH = new ItemWrench();
+        KEY = new ItemKey();
     }
 
     public static void register()
@@ -148,6 +146,7 @@ public class ModItems
         register(FUEL_PORT_2_PIPE);
 
         register(WRENCH);
+        register(KEY);
     }
 
     private static void register(Item item)
