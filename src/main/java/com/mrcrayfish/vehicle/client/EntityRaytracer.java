@@ -478,7 +478,7 @@ public class EntityRaytracer
      * @param scale part's scale
      * @param transforms list that part transforms are added to
      */
-    public static void creatPartTransforms(double xPixel, double yPixel, double zPixel, Vec3d rotation, double scale, List<MatrixTransformation> transforms)
+    public static void createPartTransforms(double xPixel, double yPixel, double zPixel, Vec3d rotation, double scale, List<MatrixTransformation> transforms)
     {
         transforms.add(MatrixTransformation.createTranslation(xPixel * 0.0625, yPixel * 0.0625, zPixel * 0.0625));
         transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
@@ -520,7 +520,7 @@ public class EntityRaytracer
     {
         List<MatrixTransformation> partTransforms = Lists.newArrayList();
         partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
-        creatPartTransforms(xPixel, yPixel, zPixel, rotation, scale, partTransforms);
+        createPartTransforms(xPixel, yPixel, zPixel, rotation, scale, partTransforms);
         transformsGlobal.addAll(partTransforms);
         createTranformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
     }
@@ -545,7 +545,7 @@ public class EntityRaytracer
     {
         List<MatrixTransformation> partTransforms = Lists.newArrayList();
         partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
-        creatPartTransforms(xPixel, yPixel, zPixel, new Vec3d(0, rotation, 0), scale, partTransforms);
+        createPartTransforms(xPixel, yPixel, zPixel, new Vec3d(0, rotation, 0), scale, partTransforms);
         transformsGlobal.addAll(partTransforms);
         createTranformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
     }
