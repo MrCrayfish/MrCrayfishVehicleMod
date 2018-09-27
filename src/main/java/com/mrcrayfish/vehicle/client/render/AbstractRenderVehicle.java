@@ -23,7 +23,7 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
     public abstract void render(T entity, float partialTicks);
 
-    public void applyPlayerModel(T entity, EntityPlayer player, ModelPlayer model) {};
+    public void applyPlayerModel(T entity, EntityPlayer player, ModelPlayer model, float partialTicks) {};
 
     public void applyPlayerRender(T entity, EntityPlayer player) {};
 

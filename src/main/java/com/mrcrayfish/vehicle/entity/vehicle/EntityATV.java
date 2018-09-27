@@ -63,7 +63,7 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
     @Override
     public double getMountedYOffset()
     {
-        return 9 * 0.0625;
+        return 9.5 * 0.0625;
     }
 
     @Override

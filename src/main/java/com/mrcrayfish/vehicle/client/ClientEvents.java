@@ -7,12 +7,10 @@ import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.block.BlockFuelDrum;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
-import com.mrcrayfish.vehicle.client.gui.GuiFluidExtractor;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
-import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
@@ -28,6 +26,7 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
@@ -269,6 +268,20 @@ public class ClientEvents
             model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
             model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
             return;
+        }
+
+        if(ridingEntity != null && ridingEntity instanceof EntityVehicle)
+        {
+            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            /* Suppressed due to warning however it's safe to say cast won't throw an exception
+             * due to the registration process of vehicle renders */
+            @SuppressWarnings("unchecked")
+            AbstractRenderVehicle<EntityVehicle> render = (AbstractRenderVehicle<EntityVehicle>) VehicleRenderRegistry.getRender(vehicle.getClass());
+            if(render != null)
+            {
+                render.applyPlayerModel(vehicle, player, model, event.getPartialTicks());
+                return;
+            }
         }
 
         if(ridingEntity instanceof EntityOffRoader)
@@ -760,7 +773,7 @@ public class ClientEvents
                 if (hit != null)
                 {
                     boxRenderGlStart();
-                    event.getContext().drawSelectionBoundingBox(hit.getLeft().grow(0.0020000000949949026D).offset(-dx, -dy, -dz), 0, 0, 0, 0.4F);
+                    RenderGlobal.drawSelectionBoundingBox(hit.getLeft().grow(0.0020000000949949026D).offset(-dx, -dy, -dz), 0, 0, 0, 0.4F);
                     boxRenderGlEnd();
                 }
                 else if (state.getBlock() instanceof BlockFluidPump)
@@ -769,7 +782,7 @@ public class ClientEvents
                     if (boxHit != null)
                     {
                         boxRenderGlStart();
-                        event.getContext().drawSelectionBoundingBox(boxHit.grow(0.0020000000949949026D).offset(-dx, -dy, -dz), 0, 0, 0, 0.4F);
+                        RenderGlobal.drawSelectionBoundingBox(boxHit.grow(0.0020000000949949026D).offset(-dx, -dy, -dz), 0, 0, 0, 0.4F);
                         boxRenderGlEnd();
                     }
                 }

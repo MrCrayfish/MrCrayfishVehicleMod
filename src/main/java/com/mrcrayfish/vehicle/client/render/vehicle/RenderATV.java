@@ -4,8 +4,10 @@ import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
@@ -21,6 +23,12 @@ public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
+    }
+
+    @Override
+    protected boolean shouldRenderFuelLid()
+    {
+        return false;
     }
 
     @Override
@@ -47,8 +55,34 @@ public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
     }
 
     @Override
-    protected boolean shouldRenderFuelLid()
+    public void applyPlayerModel(EntityATV entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        return false;
+        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngleNormal = wheelAngle / 45F;
+        float turnRotation = wheelAngleNormal * 12F;
+        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
+        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(15F);
+        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
+        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-15F);
+
+        if(entity.getControllingPassenger() != player)
+        {
+            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
+            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
+            model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(15F);
+            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-20F);
+            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
+            model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(-15F);
+            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
+            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+            return;
+        }
+
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
     }
 }
