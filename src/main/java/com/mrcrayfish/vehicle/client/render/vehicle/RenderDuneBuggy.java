@@ -21,7 +21,7 @@ public class RenderDuneBuggy extends RenderPoweredVehicle<EntityDuneBuggy>
     public RenderDuneBuggy(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(1.15F, 11, -7.25F, 180, 0.25F);
+        this.setFuelPortPosition(1.15F, 11.0F, -7.25F, 180.0F);
     }
 
     @Nullable

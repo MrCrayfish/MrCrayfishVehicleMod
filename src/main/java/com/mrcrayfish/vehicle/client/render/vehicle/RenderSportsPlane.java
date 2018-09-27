@@ -18,7 +18,7 @@ public class RenderSportsPlane extends RenderPoweredVehicle<EntitySportsPlane>
     public RenderSportsPlane(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-6.25F, 4.0F, -1, -90, 0.25F);
+        this.setFuelPortPosition(-6.25F, 4.0F, -1.0F, -90.0F);
     }
 
     @Override

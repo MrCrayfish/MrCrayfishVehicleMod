@@ -35,6 +35,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
+
     private Vec3d heldOffset = Vec3d.ZERO;
     private Vec3d trailerOffset = Vec3d.ZERO;
 

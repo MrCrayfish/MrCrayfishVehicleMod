@@ -19,7 +19,7 @@ public class RenderGolfCart extends RenderLandVehicle<EntityGolfCart>
     public RenderGolfCart(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-13.25F, 12, -7.3F, -90, 0.25F);
+        this.setFuelPortPosition(-13.25F, 15.5F, -7.3F, -90.0F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 4.5F, 16.0F, 1.75F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 4.5F, 16.0F, 1.75F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 4.5F, -12.5F, 1.75F);

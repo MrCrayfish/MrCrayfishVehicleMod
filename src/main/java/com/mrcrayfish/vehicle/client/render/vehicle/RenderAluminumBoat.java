@@ -23,7 +23,7 @@ public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
     public RenderAluminumBoat(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-16.25F, 3, -18.5F, -90, 0.25F);
+        this.setFuelPortPosition(-16.25F, 3.0F, -18.5F, -90.0F);
         this.noWater = (new ModelRenderer(new ModelBase()
         {
             @Override
@@ -60,6 +60,7 @@ public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
+
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();

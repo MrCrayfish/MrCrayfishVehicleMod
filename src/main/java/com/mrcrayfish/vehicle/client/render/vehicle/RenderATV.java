@@ -24,8 +24,7 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
     public RenderATV(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-1.57F, 13.05F, 5.3F, new Vector3f(-90, 0, 0), 0.35F);
-        this.setFuelPortLidPosition(0, 0, 0, new Vector3f(0, 0, 0), 0);
+        this.setFuelPortPosition(-1.57F, 13.05F, 5.3F, -90.0F, 0.0F, 0.0F, 0.35F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
@@ -109,5 +108,11 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
         }
         GlStateManager.popMatrix();
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
+    }
+
+    @Override
+    protected boolean shouldRenderFuelLid()
+    {
+        return false;
     }
 }

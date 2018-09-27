@@ -23,8 +23,8 @@ public class RenderSmartCar extends RenderLandVehicle<EntitySmartCar>
     public RenderSmartCar(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
-        this.setFuelPortPosition(-9.25F, 15, -12.3F, -90, 0.25F);
+        this.setEnginePosition(0.0F, 7.5F, -9.0F, 180F, 1.2F);
+        this.setFuelPortPosition(-9.25F, 15.0F, -12.3F, -90.0F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7F, 12F, 1.5F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 12F, 1.5F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, -12F, 1.5F);
