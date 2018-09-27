@@ -20,10 +20,10 @@ public class RenderOffRoader extends RenderLandVehicle<EntityOffRoader>
     {
         super(renderManager);
         this.setFuelPortPosition(-12.25F, 16.0F, -7.3F, -90, 0.25F);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 1.0F, 14.5F, 2.25F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 1.0F, 14.5F, 2.25F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, 1.0F, -14.5F, 2.25F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, 1.0F, -14.5F, 2.25F));
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 1.0F, 14.5F, 2.25F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 1.0F, 14.5F, 2.25F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, 1.0F, -14.5F, 2.25F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, 1.0F, -14.5F, 2.25F);
     }
 
     @Override

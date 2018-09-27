@@ -20,10 +20,10 @@ public class RenderGolfCart extends RenderLandVehicle<EntityGolfCart>
     {
         super(renderManager);
         this.setFuelPortPosition(-13.25F, 12, -7.3F, -90, 0.25F);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 1.0F, 16.0F, 1.75F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 1.0F, 16.0F, 1.75F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 1.0F, -12.5F, 1.75F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 1.0F, -12.5F, 1.75F));
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 4.5F, 16.0F, 1.75F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 4.5F, 16.0F, 1.75F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 4.5F, -12.5F, 1.75F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 4.5F, -12.5F, 1.75F);
     }
 
     @Override
@@ -78,8 +78,6 @@ public class RenderGolfCart extends RenderLandVehicle<EntityGolfCart>
             }
             GlStateManager.popMatrix();
 
-            // Renders the wheels
-            GlStateManager.translate(0, 3.5F * 0.0625F, 0);
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();

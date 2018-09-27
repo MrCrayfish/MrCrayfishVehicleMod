@@ -26,10 +26,10 @@ public class RenderATV extends RenderLandVehicle<EntityATV>
         super(renderManager);
         this.setFuelPortPosition(-1.57F, 13.05F, 5.3F, new Vector3f(-90, 0, 0), 0.35F);
         this.setFuelPortLidPosition(0, 0, 0, new Vector3f(0, 0, 0), 0);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F));
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
     }
 
     @Nullable
