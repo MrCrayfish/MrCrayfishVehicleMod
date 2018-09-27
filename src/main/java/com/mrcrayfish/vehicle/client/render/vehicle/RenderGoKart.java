@@ -22,11 +22,11 @@ public class RenderGoKart extends RenderLandVehicle<EntityGoKart>
     public RenderGoKart(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F);
+        this.setEnginePosition(0F, 7.7F, -9F, 180F, 1.2F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 0.2F, 13.5F, 1.4F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 0.2F, 13.5F, 1.4F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 0.2F, -8.5F, 1.4F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 0.2F, -8.5F, 1.4F);
     }
 
     @Nullable
@@ -86,7 +86,6 @@ public class RenderGoKart extends RenderLandVehicle<EntityGoKart>
             }
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0, 3.5F * 0.0625F, 0);
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();

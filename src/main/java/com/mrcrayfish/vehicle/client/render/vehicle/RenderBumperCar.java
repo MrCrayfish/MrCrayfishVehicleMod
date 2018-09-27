@@ -20,10 +20,10 @@ public class RenderBumperCar extends RenderLandVehicle<EntityBumperCar>
     {
         super(renderManager);
         this.setFuelPortPosition(-8.25F, 11.0F, -9.3F, -90.0F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7.0F, 0.1F, 8.5F, 0.75F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 0.1F, 8.5F, 0.75F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, 0.1F, -8.5F, 0.75F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7.0F, 0.1F, -8.5F, 0.75F);
     }
 
     @Override
@@ -77,7 +77,6 @@ public class RenderBumperCar extends RenderLandVehicle<EntityBumperCar>
             }
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0, 2.5F * 0.0625F * 0.75F, 0);
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();

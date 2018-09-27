@@ -19,11 +19,11 @@ public class RenderOffRoader extends RenderLandVehicle<EntityOffRoader>
     public RenderOffRoader(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-12.25F, 16.0F, -7.3F, -90.0F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 1.0F, 14.5F, 2.25F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 1.0F, 14.5F, 2.25F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, 1.0F, -14.5F, 2.25F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, 1.0F, -14.5F, 2.25F);
+        this.setFuelPortPosition(-12.25F, 20.5F, -7.3F, -90.0F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 5.5F, 14.5F, 2.25F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 5.5F, 14.5F, 2.25F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, 5.5F, -14.5F, 2.25F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, 5.5F, -14.5F, 2.25F);
     }
 
     @Override
@@ -49,6 +49,7 @@ public class RenderOffRoader extends RenderLandVehicle<EntityOffRoader>
             GlStateManager.scale(1.4, 1.4, 1.4);
 
             this.setupBreakAnimation(entity, partialTicks);
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
 
             double bodyOffset = 0.775;
 
@@ -78,10 +79,6 @@ public class RenderOffRoader extends RenderLandVehicle<EntityOffRoader>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
-
-            // Renders the wheels
-            GlStateManager.translate(0, 4.5F * 0.0625F, 0);
-            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);

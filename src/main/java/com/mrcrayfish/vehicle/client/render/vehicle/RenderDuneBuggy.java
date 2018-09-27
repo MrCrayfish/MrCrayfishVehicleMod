@@ -98,7 +98,6 @@ public class RenderDuneBuggy extends RenderPoweredVehicle<EntityDuneBuggy>
             }
             GlStateManager.popMatrix();
 
-            float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             float rearWheelSpin = entity.prevRearWheelRotation + (entity.rearWheelRotation - entity.prevRearWheelRotation) * partialTicks;
 
             double offsetCenter = 0.35625;
@@ -138,6 +137,7 @@ public class RenderDuneBuggy extends RenderPoweredVehicle<EntityDuneBuggy>
                 GlStateManager.popMatrix();
             }
             GlStateManager.popMatrix();
+
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
