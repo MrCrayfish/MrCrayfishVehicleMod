@@ -49,11 +49,13 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
             GlStateManager.rotate((float) bodyPosition.getRotY(), 1, 0, 0);
             GlStateManager.rotate((float) bodyPosition.getRotZ(), 1, 0, 0);
-            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 
             //Applies the additional yaw which is caused by drifting
             float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
+
+            //Translate the body
+            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 
             //Render the tow bar. Performed before scaling so size is consistent for all vehicles
             if(entity.canTowTrailer())
