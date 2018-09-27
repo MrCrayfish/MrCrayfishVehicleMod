@@ -8,6 +8,8 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
+import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.RenderVehicleLand;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
@@ -44,7 +46,7 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
-        RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, RenderATV::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, manager -> new RenderVehicleLand<>(manager, new RenderATV()));
         RenderingRegistry.registerEntityRenderingHandler(EntityDuneBuggy.class, RenderDuneBuggy::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGoKart.class, RenderGoKart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);

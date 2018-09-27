@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
@@ -35,7 +36,7 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
-
+    private PartPosition bodyPosition;
     private Vec3d heldOffset = Vec3d.ZERO;
     private Vec3d trailerOffset = Vec3d.ZERO;
 
@@ -391,6 +392,15 @@ public abstract class EntityVehicle extends Entity
         return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
     }
 
+    public void setBodyPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
+    {
+        this.bodyPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
+    }
+
+    public PartPosition getBodyPosition()
+    {
+        return bodyPosition;
+    }
 
     public void setHeldOffset(Vec3d heldOffset)
     {

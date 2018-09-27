@@ -82,24 +82,4 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
     {
         return true;
     }
-
-    private void renderPart(@Nullable PartPosition position, ItemStack part)
-    {
-        if(position == null)
-            return;
-
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-            GlStateManager.translate(0, -0.5, 0);
-            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
-            GlStateManager.translate(0, 0.5, 0);
-            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
-    }
-
 }
