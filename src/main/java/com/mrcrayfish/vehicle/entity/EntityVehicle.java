@@ -39,6 +39,8 @@ public abstract class EntityVehicle extends Entity
     private PartPosition bodyPosition;
     private Vec3d heldOffset = Vec3d.ZERO;
     private Vec3d trailerOffset = Vec3d.ZERO;
+    private float axleOffset;
+    private float wheelOffset;
 
     /**
      * ItemStack instances used for rendering
@@ -392,9 +394,9 @@ public abstract class EntityVehicle extends Entity
         return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
     }
 
-    public void setBodyPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
+    public void setBodyPosition(PartPosition bodyPosition)
     {
-        this.bodyPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
+        this.bodyPosition = bodyPosition;
     }
 
     public PartPosition getBodyPosition()
@@ -425,6 +427,26 @@ public abstract class EntityVehicle extends Entity
     public boolean canMountTrailer()
     {
         return true;
+    }
+
+    public void setAxleOffset(float axleOffset)
+    {
+        this.axleOffset = axleOffset;
+    }
+
+    public float getAxleOffset()
+    {
+        return axleOffset;
+    }
+
+    public void setWheelOffset(float wheelOffset)
+    {
+        this.wheelOffset = wheelOffset;
+    }
+
+    public float getWheelOffset()
+    {
+        return wheelOffset;
     }
 
     protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)

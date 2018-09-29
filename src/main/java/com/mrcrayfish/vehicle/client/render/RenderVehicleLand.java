@@ -78,10 +78,10 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             GlStateManager.translate(0, 0.5, 0);
 
             //Translate the vehicle so it's axles are half way into the ground
-            GlStateManager.translate(0, renderVehicle.getAxelOffset() * 0.0625F, 0);
+            GlStateManager.translate(0, entity.getAxleOffset() * 0.0625F, 0);
 
             //Translate the vehicle so it's actually riding on it's wheels
-            GlStateManager.translate(0, renderVehicle.getWheelOffset() * 0.0625F, 0);
+            GlStateManager.translate(0, entity.getWheelOffset() * 0.0625F, 0);
 
             //Render body
             renderVehicle.render(entity, partialTicks);
@@ -91,7 +91,7 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             {
                 //Offset wheels and compensate for axle offset
                 GlStateManager.translate(0, -8 * 0.0625, 0);
-                GlStateManager.translate(0, -renderVehicle.getAxelOffset() * 0.0625F, 0);
+                GlStateManager.translate(0, -entity.getAxleOffset() * 0.0625F, 0);
                 renderVehicle.getWheels().forEach(wheel -> wheel.render(entity, partialTicks));
             }
             GlStateManager.popMatrix();

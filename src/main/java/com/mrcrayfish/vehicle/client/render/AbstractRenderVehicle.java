@@ -15,8 +15,6 @@ import javax.annotation.Nullable;
 @SideOnly(Side.CLIENT)
 public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 {
-    private float axleOffset;
-    private float wheelOffset;
     private PartPosition enginePosition;
     private PartPosition fuelPortPosition;
     private PartPosition fuelPortLidPosition;
@@ -28,29 +26,14 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
     public void applyPlayerRender(T entity, EntityPlayer player, float partialTicks) {};
 
-    public void setAxleOffset(float axelOffset)
-    {
-        this.axleOffset = axelOffset;
-    }
-
-    public float getAxelOffset()
-    {
-        return axleOffset;
-    }
-
-    public void setWheelOffset(float wheelOffset)
-    {
-        this.wheelOffset = wheelOffset;
-    }
-
-    public float getWheelOffset()
-    {
-        return wheelOffset;
-    }
-
     protected void setEnginePosition(float x, float y, float z, float rotation, float scale)
     {
         this.enginePosition = new PartPosition(x, y, z, 0.0F, rotation, 0.0F, scale);
+    }
+
+    public void setFuelPortPosition(PartPosition fuelPortPosition)
+    {
+        this.fuelPortPosition = fuelPortPosition;
     }
 
     protected void setFuelPortPosition(float x, float y, float z, float rotation)
@@ -69,9 +52,9 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
         return true;
     }
 
-    public void setKeyPortPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
+    public void setKeyPortPosition(PartPosition keyPortPosition)
     {
-        this.keyPortPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
+        this.keyPortPosition = keyPortPosition;
     }
 
     @Nullable

@@ -17,6 +17,7 @@ import javax.vecmath.Vector4d;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -189,31 +190,8 @@ public class EntityRaytracer
         entityRaytracePartsStatic.put(EntityAluminumBoat.class, aluminumBoatParts);
 
         // ATV
-        /*List<MatrixTransformation> atvTransformGlobal = Lists.newArrayList();
-        atvTransformGlobal.add(MatrixTransformation.createScale(1.25));
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.03125, 0.2));
-        HashMap<RayTracePart, List<MatrixTransformation>> atvParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.ATV_BODY, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.7109375, 0));
-        createTranformListForPart(ModItems.ATV_HANDLE_BAR, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(0, 1.0484375, 0.25),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.025, 0));
-        createTranformListForPart(ModItems.TOW_BAR, atvParts,
-                MatrixTransformation.createRotation(180, 0, 1, 0),
-                MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, 0, 0.3046875, 0, -1.57, 13.05, 5.3, new Vec3d(-90, 0, 0), 0.35, atvParts, atvTransformGlobal);
-        createTranformListForPart(ModItems.KEY_PORT, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(-5 * 0.0625, 4.5 * 0.0625, 6.5 * 0.0625));*/
-
         List<MatrixTransformation> atvTransformGlobal = Lists.newArrayList();
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 0, 0.25));
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.5, 0));
-        atvTransformGlobal.add(MatrixTransformation.createScale(1.25));
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, -1.5 * 0.0625, 0));
-        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 4.375 * 0.0625, 0));
+        createBodyTransforms(atvTransformGlobal, EntityATV.BODY_POSITION, EntityATV.AXLE_OFFSET, EntityATV.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> atvParts = Maps.newHashMap();
         createTranformListForPart(ModItems.ATV_BODY, atvParts, atvTransformGlobal);
         createTranformListForPart(ModItems.ATV_HANDLE_BAR, atvParts, atvTransformGlobal,
@@ -223,18 +201,8 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, atvParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
-        createTranformListForPart(ModItems.FUEL_PORT_2_CLOSED, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(-1.57 * 0.0625, 6.55 * 0.0625, 5.3 * 0.0625),
-                MatrixTransformation.createTranslation(0, -0.5, 0),
-                MatrixTransformation.createScale(0.35),
-                MatrixTransformation.createTranslation(0, 0.5, 0),
-                MatrixTransformation.createRotation(-90.0, 1, 0, 0));
-        createTranformListForPart(ModItems.KEY_PORT, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(-5 * 0.0625, 4.5 * 0.0625, 6.5 * 0.0625),
-                MatrixTransformation.createTranslation(0, -0.5, 0),
-                MatrixTransformation.createScale(0.5),
-                MatrixTransformation.createTranslation(0, 0.5, 0),
-                MatrixTransformation.createRotation(-45.0, 1, 0, 0));
+        createPartTransforms(ModItems.FUEL_PORT_2_CLOSED, EntityATV.FUEL_PORT_POSITION, atvParts, atvTransformGlobal);
+        createPartTransforms(ModItems.KEY_PORT, EntityATV.KEY_PORT_POSITION, atvParts, atvTransformGlobal);
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car
@@ -497,6 +465,32 @@ public class EntityRaytracer
         nbt.setString(PART_NAME, name);
         partStack.setTagCompound(nbt);
         return partStack;
+    }
+
+    public static void createBodyTransforms(List<MatrixTransformation> transforms, PartPosition partPosition, float axleOffset, float wheelOffset)
+    {
+        transforms.add(MatrixTransformation.createRotation(partPosition.getRotX(), 1, 0, 0));
+        transforms.add(MatrixTransformation.createRotation(partPosition.getRotY(), 0, 1, 0));
+        transforms.add(MatrixTransformation.createRotation(partPosition.getRotZ(), 0, 0, 1));
+        transforms.add(MatrixTransformation.createTranslation(partPosition.getX(), partPosition.getY(), partPosition.getZ()));
+        transforms.add(MatrixTransformation.createScale(partPosition.getScale()));
+        transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
+        transforms.add(MatrixTransformation.createTranslation(0, axleOffset * 0.0625, 0));
+        transforms.add(MatrixTransformation.createTranslation(0, wheelOffset * 0.0625, 0));
+    }
+
+    public static void createPartTransforms(Item part, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    {
+        List<MatrixTransformation> transforms = Lists.newArrayList();
+        transforms.addAll(transformsGlobal);
+        transforms.add(MatrixTransformation.createTranslation(partPosition.getX() * 0.0625, partPosition.getY() * 0.0625, partPosition.getZ() * 0.0625));
+        transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
+        transforms.add(MatrixTransformation.createScale(partPosition.getScale()));
+        transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
+        transforms.add(MatrixTransformation.createRotation(partPosition.getRotX(), 1, 0, 0));
+        transforms.add(MatrixTransformation.createRotation(partPosition.getRotY(), 0, 1, 0));
+        transforms.add(MatrixTransformation.createRotation(partPosition.getRotZ(), 0, 0, 1));
+        createTranformListForPart(part, parts, transforms);
     }
 
     /**

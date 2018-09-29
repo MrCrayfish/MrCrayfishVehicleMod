@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -16,10 +17,8 @@ public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
 {
     public RenderATV()
     {
-        this.setAxleOffset(-1.5F);
-        this.setWheelOffset(4.375F);
-        this.setFuelPortPosition(-1.57F, 6.55F, 5.3F, -90.0F, 0.0F, 0.0F, 0.35F);
-        this.setKeyPortPosition(-5F, 4.5F, 6.5F, -45.0F, 0.0F, 0.0F, 0.5F);
+        this.setFuelPortPosition(EntityATV.FUEL_PORT_POSITION);
+        this.setKeyPortPosition(EntityATV.KEY_PORT_POSITION);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
