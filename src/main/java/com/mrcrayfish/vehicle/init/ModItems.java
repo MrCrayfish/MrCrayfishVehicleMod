@@ -52,6 +52,7 @@ public class ModItems
     
     public static final Item WRENCH;
     public static final Item KEY;
+    public static final Item KEY_PORT;
 
     static
     {
@@ -99,6 +100,7 @@ public class ModItems
 
         WRENCH = new ItemWrench();
         KEY = new ItemKey();
+        KEY_PORT = new ItemPart("key_hole").setColored();
     }
 
     public static void register()
@@ -147,6 +149,7 @@ public class ModItems
 
         register(WRENCH);
         register(KEY);
+        register(KEY_PORT);
     }
 
     private static void register(Item item)

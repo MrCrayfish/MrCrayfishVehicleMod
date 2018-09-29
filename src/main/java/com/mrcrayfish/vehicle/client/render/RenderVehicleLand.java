@@ -47,8 +47,8 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             //Apply vehicle rotations and translations. This is applied to all other parts
             PartPosition bodyPosition = entity.getBodyPosition();
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) bodyPosition.getRotY(), 1, 0, 0);
-            GlStateManager.rotate((float) bodyPosition.getRotZ(), 1, 0, 0);
+            GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
+            GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
 
             //Applies the additional yaw which is caused by drifting
             float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
@@ -121,6 +121,8 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
                     entity.playFuelPortCloseSound();
                 }
             }
+
+            this.renderPart(renderVehicle.getKeyPortPosition(), entity.keyPort);
         }
         GlStateManager.popMatrix();
 

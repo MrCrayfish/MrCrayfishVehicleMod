@@ -189,7 +189,7 @@ public class EntityRaytracer
         entityRaytracePartsStatic.put(EntityAluminumBoat.class, aluminumBoatParts);
 
         // ATV
-        List<MatrixTransformation> atvTransformGlobal = Lists.newArrayList();
+        /*List<MatrixTransformation> atvTransformGlobal = Lists.newArrayList();
         atvTransformGlobal.add(MatrixTransformation.createScale(1.25));
         atvTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.03125, 0.2));
         HashMap<RayTracePart, List<MatrixTransformation>> atvParts = Maps.newHashMap();
@@ -203,6 +203,38 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
         createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, 0, 0.3046875, 0, -1.57, 13.05, 5.3, new Vec3d(-90, 0, 0), 0.35, atvParts, atvTransformGlobal);
+        createTranformListForPart(ModItems.KEY_PORT, atvParts, atvTransformGlobal,
+                MatrixTransformation.createTranslation(-5 * 0.0625, 4.5 * 0.0625, 6.5 * 0.0625));*/
+
+        List<MatrixTransformation> atvTransformGlobal = Lists.newArrayList();
+        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 0, 0.25));
+        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0));
+        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.5, 0));
+        atvTransformGlobal.add(MatrixTransformation.createScale(1.25));
+        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0));
+        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, -1.5 * 0.0625, 0));
+        atvTransformGlobal.add(MatrixTransformation.createTranslation(0, 4.375 * 0.0625, 0));
+        HashMap<RayTracePart, List<MatrixTransformation>> atvParts = Maps.newHashMap();
+        createTranformListForPart(ModItems.ATV_BODY, atvParts, atvTransformGlobal);
+        createTranformListForPart(ModItems.ATV_HANDLE_BAR, atvParts, atvTransformGlobal,
+                MatrixTransformation.createTranslation(0, 0.3375, 0.25),
+                MatrixTransformation.createRotation(-45, 1, 0, 0),
+                MatrixTransformation.createTranslation(0, -0.025, 0));
+        createTranformListForPart(ModItems.TOW_BAR, atvParts,
+                MatrixTransformation.createRotation(180, 0, 1, 0),
+                MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
+        createTranformListForPart(ModItems.FUEL_PORT_2_CLOSED, atvParts, atvTransformGlobal,
+                MatrixTransformation.createTranslation(-1.57 * 0.0625, 6.55 * 0.0625, 5.3 * 0.0625),
+                MatrixTransformation.createTranslation(0, -0.5, 0),
+                MatrixTransformation.createScale(0.35),
+                MatrixTransformation.createTranslation(0, 0.5, 0),
+                MatrixTransformation.createRotation(-90.0, 1, 0, 0));
+        createTranformListForPart(ModItems.KEY_PORT, atvParts, atvTransformGlobal,
+                MatrixTransformation.createTranslation(-5 * 0.0625, 4.5 * 0.0625, 6.5 * 0.0625),
+                MatrixTransformation.createTranslation(0, -0.5, 0),
+                MatrixTransformation.createScale(0.5),
+                MatrixTransformation.createTranslation(0, 0.5, 0),
+                MatrixTransformation.createRotation(-45.0, 1, 0, 0));
         entityRaytracePartsStatic.put(EntityATV.class, atvParts);
 
         // Bumper car

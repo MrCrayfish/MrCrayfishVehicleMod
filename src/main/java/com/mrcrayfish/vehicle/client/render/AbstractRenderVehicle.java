@@ -20,12 +20,13 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
     private PartPosition enginePosition;
     private PartPosition fuelPortPosition;
     private PartPosition fuelPortLidPosition;
+    private PartPosition keyPortPosition;
 
     public abstract void render(T entity, float partialTicks);
 
     public void applyPlayerModel(T entity, EntityPlayer player, ModelPlayer model, float partialTicks) {};
 
-    public void applyPlayerRender(T entity, EntityPlayer player) {};
+    public void applyPlayerRender(T entity, EntityPlayer player, float partialTicks) {};
 
     public void setAxleOffset(float axelOffset)
     {
@@ -68,6 +69,11 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
         return true;
     }
 
+    public void setKeyPortPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
+    {
+        this.keyPortPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
+    }
+
     @Nullable
     public PartPosition getEnginePosition()
     {
@@ -84,5 +90,11 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
     public PartPosition getFuelPortLidPosition()
     {
         return fuelPortLidPosition;
+    }
+
+    @Nullable
+    public PartPosition getKeyPortPosition()
+    {
+        return keyPortPosition;
     }
 }
