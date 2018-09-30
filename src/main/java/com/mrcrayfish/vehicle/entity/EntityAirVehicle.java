@@ -104,7 +104,7 @@ public abstract class EntityAirVehicle extends EntityPoweredVehicle
         if(this.getControllingPassenger() != null)
         {
             AccelerationDirection acceleration = getAcceleration();
-            if(this.hasFuel() && acceleration == AccelerationDirection.FORWARD)
+            if(this.canDrive() && acceleration == AccelerationDirection.FORWARD)
             {
                 if(this.motionY < 0)
                 {

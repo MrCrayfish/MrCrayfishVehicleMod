@@ -3,11 +3,13 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -122,7 +124,19 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
                 }
             }
 
-            this.renderPart(renderVehicle.getKeyPortPosition(), entity.keyPort);
+
+            if(entity.isKeyNeeded())
+            {
+                this.renderPart(renderVehicle.getKeyPortPosition(), entity.keyPort);
+                if(!entity.getKeyStack().isEmpty())
+                {
+                    GlStateManager.pushMatrix();
+                    PartPosition partPosition = new PartPosition(0, 0, 0, 45.0, 0, 0, 0.25);
+                    partPosition.update(renderVehicle.getKeyPortPosition().getX(), renderVehicle.getKeyPortPosition().getY() + 3.5, renderVehicle.getKeyPortPosition().getZ() + 0.25, renderVehicle.getKeyPortPosition().getRotX() + 90.0, 0, 0, 0.15);
+                    this.renderPart(partPosition, new ItemStack(ModItems.KEY));
+                    GlStateManager.popMatrix();
+                }
+            }
         }
         GlStateManager.popMatrix();
 

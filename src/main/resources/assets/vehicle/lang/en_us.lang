@@ -69,3 +69,9 @@ vehicle.chat.pump.power=§bPower Mode:§r %s
 vehicle.chat.pump.power.off=requires signal off
 vehicle.chat.pump.power.on=requires signal on
 vehicle.chat.pump.power.always=always active
+
+vehicle.status.invalid_owner=You are not the owner of this vehicle
+vehicle.status.key_added=Vehicle successfully locked with key
+vehicle.status.key_created=Key successfully bound to vehicle
+vehicle.status.not_lockable=This vehicle cannot be locked
+vehicle.status.key_invalid=This key does not fit this vehicle

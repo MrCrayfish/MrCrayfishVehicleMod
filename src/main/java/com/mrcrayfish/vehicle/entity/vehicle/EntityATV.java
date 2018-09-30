@@ -20,7 +20,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
 {
     public static final float AXLE_OFFSET = -1.5F;
-    public static final float WHEEL_OFFSET = -1.5F;
+    public static final float WHEEL_OFFSET = 4.375F;
     public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.25F, 0.0F, 0.0F, 0.0F, 1.25F);
     public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-1.57F, 6.55F, 5.3F, -90.0F, 0.0F, 0.0F, 0.35F);
     public static final PartPosition KEY_PORT_POSITION = new PartPosition(-5F, 4.5F, 6.5F, -45.0F, 0.0F, 0.0F, 0.5F);

@@ -1,23 +1,18 @@
 package com.mrcrayfish.vehicle.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import javax.annotation.Nullable;
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector4d;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.item.ItemJerryCan;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageFuelVehicle;
+import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
+import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,21 +38,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
-
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.*;
-import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
-import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.network.message.MessageFuelVehicle;
-import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
+import javax.annotation.Nullable;
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix4d;
+import javax.vecmath.Vector3d;
+import javax.vecmath.Vector4d;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Author: Phylogeny
@@ -1615,28 +1608,36 @@ public class EntityRaytracer
         @SideOnly(Side.CLIENT)
         default boolean processHit(RayTraceResultRotated result, boolean rightClick)
         {
+            ItemStack stack = result.getPartHit().getStack();
+            if(!stack.isEmpty())
+            {
+                if(stack.getItem() == ModItems.KEY_PORT)
+                {
+                    PacketHandler.INSTANCE.sendToServer(new MessageInteractKey((Entity) this));
+                    return true;
+                }
+            }
+
             boolean isContinuous = result.partHit.getcontinuousInteraction() != null;
-            if (isContinuous || !(Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this))
+            if(isContinuous || !(Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this))
             {
                 EntityPlayer player = Minecraft.getMinecraft().player;
                 boolean notRiding = player.getRidingEntity() != this;
-                if (!rightClick && notRiding)
+                if(!rightClick && notRiding)
                 {
                     Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
                     return true;
                 }
-                ItemStack stack = result.getPartHit().getStack();
-                if (!stack.isEmpty())
+                if(!stack.isEmpty())
                 {
-                    if (notRiding)
+                    if(notRiding)
                     {
-                        if (player.isSneaking())
+                        if(player.isSneaking())
                         {
                             PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
                             return true;
                         }
-                        if (!isContinuous)
-                            interactWithEntity(this, result);
+                        if(!isContinuous) interactWithEntity(this, result);
                     }
                     return notRiding;
                 }

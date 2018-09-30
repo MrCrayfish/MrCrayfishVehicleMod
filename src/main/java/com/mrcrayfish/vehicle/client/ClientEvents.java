@@ -157,7 +157,23 @@ public class ClientEvents
     @SubscribeEvent
     public void onPreRender(ModelPlayerEvent.Render.Pre event)
     {
+        EntityPlayer player = event.getEntityPlayer();
         Entity ridingEntity = event.getEntityPlayer().getRidingEntity();
+
+        if(ridingEntity != null && ridingEntity instanceof EntityVehicle)
+        {
+            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            /* Suppressed due to warning however it's safe to say cast won't throw an exception
+             * due to the registration process of vehicle renders */
+            @SuppressWarnings("unchecked")
+            AbstractRenderVehicle<EntityVehicle> render = (AbstractRenderVehicle<EntityVehicle>) VehicleRenderRegistry.getRender(vehicle.getClass());
+            if(render != null)
+            {
+                render.applyPlayerRender(vehicle, player, event.getPartialTicks());
+                return;
+            }
+        }
+
         if(ridingEntity instanceof EntityMotorcycle)
         {
             EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
