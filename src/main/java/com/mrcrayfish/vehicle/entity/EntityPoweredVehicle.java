@@ -86,6 +86,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float vehicleMotionZ;
 
     private UUID owner;
+    private PartPosition keyHolePosition;
     private PartPosition keyPosition;
 
     @SideOnly(Side.CLIENT)
@@ -793,7 +794,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public void ejectKey()
     {
-        Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyPosition());
+        Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyHolePosition());
         world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
         this.setKeyStack(ItemStack.EMPTY);
     }
@@ -808,9 +809,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.isFueled() && !this.isKeyNeeded() || !this.getKeyStack().isEmpty();
     }
 
-    public void setKeyPosition(PartPosition keyPosition)
+    public void setKeyHolePosition(PartPosition keyHolePosition)
     {
-        this.keyPosition = keyPosition;
+        this.keyHolePosition = keyHolePosition;
+        this.keyPosition = new PartPosition(keyHolePosition.getX(), keyHolePosition.getY() + 3.5, keyHolePosition.getZ() + 0.25, keyHolePosition.getRotX() + 90, 0, 0, 0.15);
+    }
+
+    public PartPosition getKeyHolePosition()
+    {
+        return keyHolePosition;
     }
 
     public PartPosition getKeyPosition()

@@ -18,7 +18,6 @@ public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
     public RenderATV()
     {
         this.setFuelPortPosition(EntityATV.FUEL_PORT_POSITION);
-        this.setKeyPortPosition(EntityATV.KEY_PORT_POSITION);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);

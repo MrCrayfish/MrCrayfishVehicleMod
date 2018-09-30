@@ -127,14 +127,10 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
 
             if(entity.isKeyNeeded())
             {
-                this.renderPart(renderVehicle.getKeyPortPosition(), entity.keyPort);
+                this.renderPart(entity.getKeyHolePosition(), entity.keyPort);
                 if(!entity.getKeyStack().isEmpty())
                 {
-                    GlStateManager.pushMatrix();
-                    PartPosition partPosition = new PartPosition(0, 0, 0, 45.0, 0, 0, 0.25);
-                    partPosition.update(renderVehicle.getKeyPortPosition().getX(), renderVehicle.getKeyPortPosition().getY() + 3.5, renderVehicle.getKeyPortPosition().getZ() + 0.25, renderVehicle.getKeyPortPosition().getRotX() + 90.0, 0, 0, 0.15);
-                    this.renderPart(partPosition, new ItemStack(ModItems.KEY));
-                    GlStateManager.popMatrix();
+                    this.renderPart(entity.getKeyPosition(), entity.getKeyStack());
                 }
             }
         }

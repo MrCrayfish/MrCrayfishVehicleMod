@@ -18,7 +18,6 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
     private PartPosition enginePosition;
     private PartPosition fuelPortPosition;
     private PartPosition fuelPortLidPosition;
-    private PartPosition keyPortPosition;
 
     public abstract void render(T entity, float partialTicks);
 
@@ -52,11 +51,6 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
         return true;
     }
 
-    public void setKeyPortPosition(PartPosition keyPortPosition)
-    {
-        this.keyPortPosition = keyPortPosition;
-    }
-
     @Nullable
     public PartPosition getEnginePosition()
     {
@@ -73,11 +67,5 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
     public PartPosition getFuelPortLidPosition()
     {
         return fuelPortLidPosition;
-    }
-
-    @Nullable
-    public PartPosition getKeyPortPosition()
-    {
-        return keyPortPosition;
     }
 }
