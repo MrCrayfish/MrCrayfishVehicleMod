@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -11,12 +12,12 @@ import com.mrcrayfish.vehicle.network.message.MessageHorn;
 import com.mrcrayfish.vehicle.network.message.MessageTurn;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.CommonUtils;
-import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -85,6 +86,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float vehicleMotionZ;
 
     private UUID owner;
+    private PartPosition keyPosition;
 
     @SideOnly(Side.CLIENT)
     public ItemStack engine;
@@ -789,6 +791,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.dataManager.get(KEY_STACK);
     }
 
+    public void ejectKey()
+    {
+        Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyPosition());
+        world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
+        this.setKeyStack(ItemStack.EMPTY);
+    }
+
     public boolean isEngineLockable()
     {
         return true;
@@ -797,6 +806,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean canDrive()
     {
         return this.isFueled() && !this.isKeyNeeded() || !this.getKeyStack().isEmpty();
+    }
+
+    public void setKeyPosition(PartPosition keyPosition)
+    {
+        this.keyPosition = keyPosition;
+    }
+
+    public PartPosition getKeyPosition()
+    {
+        return keyPosition;
     }
 
     @Override

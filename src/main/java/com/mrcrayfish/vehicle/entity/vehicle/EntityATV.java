@@ -43,6 +43,7 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
         this.setAxleOffset(AXLE_OFFSET);
         this.setWheelOffset(WHEEL_OFFSET);
         this.setBodyPosition(BODY_POSITION);
+        this.setKeyPosition(KEY_PORT_POSITION);
         this.setHeldOffset(HELD_OFFSET_VEC);
         this.setTowBarPosition(TOW_BAR_VEC);
         this.setTrailerOffset(TRAILER_OFFSET_VEC);

@@ -78,8 +78,7 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
                         }
                         else
                         {
-                            player.world.spawnEntity(new EntityItem(player.world, poweredVehicle.posX, poweredVehicle.posY, poweredVehicle.posZ, poweredVehicle.getKeyStack()));
-                            poweredVehicle.setKeyStack(ItemStack.EMPTY);
+                            poweredVehicle.ejectKey();
                         }
                     }
                 }

@@ -449,6 +449,26 @@ public abstract class EntityVehicle extends Entity
         return wheelOffset;
     }
 
+    /**
+     * Gets the absolute position of a part in the world
+     *
+     * @param position the position definition of the part
+     * @return a Vec3d containing the exact location
+     */
+    protected Vec3d getPartPositionAbsoluteVec(PartPosition position)
+    {
+        Vec3d partVec = new Vec3d(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        partVec = partVec.addVector(0, this.getWheelOffset() * 0.0625, 0);
+        partVec = partVec.addVector(0, this.getAxleOffset() * 0.0625, 0);
+        partVec = partVec.addVector(0, 0.5, 0);
+        partVec = partVec.scale(bodyPosition.getScale());
+        partVec = partVec.addVector(0, -0.5, 0);
+        partVec = partVec.addVector(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+        partVec = partVec.rotateYaw(-this.rotationYaw * 0.017453292F);
+        partVec = partVec.add(this.getPositionVector());
+        return partVec;
+    }
+
     protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
     {
         return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
