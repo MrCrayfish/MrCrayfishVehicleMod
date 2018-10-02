@@ -121,15 +121,4 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
             this.applyYawToEntity(passenger);
         }
     }
-
-    @Override
-    protected void applyYawToEntity(Entity entityToUpdate)
-    {
-        entityToUpdate.setRenderYawOffset(this.rotationYaw - this.additionalYaw);
-        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
-        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-        entityToUpdate.prevRotationYaw += f1 - f;
-        entityToUpdate.rotationYaw += f1 - f;
-        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
-    }
 }

@@ -506,7 +506,7 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity instanceof EntityGoKart || ridingEntity instanceof EntityBumperCar || ridingEntity instanceof EntitySmartCar)
+        if(ridingEntity instanceof EntityBumperCar || ridingEntity instanceof EntitySmartCar)
         {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
