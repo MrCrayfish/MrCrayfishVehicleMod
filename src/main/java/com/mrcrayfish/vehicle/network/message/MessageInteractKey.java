@@ -60,9 +60,23 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
                     EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) targetEntity;
                     if(poweredVehicle.isKeyNeeded())
                     {
+                        ItemStack stack = player.getHeldItemMainhand();
+                        if(!stack.isEmpty() && stack.getItem() == ModItems.WRENCH)
+                        {
+                            if(poweredVehicle.isOwner(player))
+                            {
+                                poweredVehicle.ejectKey();
+                                poweredVehicle.setKeyNeeded(false);
+                                CommonUtils.sendInfoMessage(player, "vehicle.status.key_removed");
+                            }
+                            else
+                            {
+                                CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
+                            }
+                            return;
+                        }
                         if(poweredVehicle.getKeyStack().isEmpty())
                         {
-                            ItemStack stack = player.getHeldItemMainhand();
                             if(!stack.isEmpty() && stack.getItem() == ModItems.KEY)
                             {
                                 if(poweredVehicle.getUniqueID().equals(CommonUtils.getItemTagCompound(stack).getUniqueId("vehicleId")))

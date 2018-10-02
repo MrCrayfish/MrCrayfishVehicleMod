@@ -223,7 +223,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
         ItemStack stack = player.getHeldItem(hand);
-        if(stack.getItem() == ModItems.KEY)
+        if(!world.isRemote && stack.getItem() == ModItems.KEY)
         {
             /* If no owner is set, make the owner the person adding the key. It is used because
              * owner will not be set if the vehicle was summoned through a command */
@@ -241,7 +241,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             if(this.isEngineLockable())
             {
                 NBTTagCompound tag = CommonUtils.getItemTagCompound(stack);
-                if(!tag.hasUniqueId("vehicleId"))
+                if(!tag.hasUniqueId("vehicleId") || this.getUniqueID().equals(tag.getUniqueId("vehicleId")))
                 {
                     tag.setUniqueId("vehicleId", this.getUniqueID());
                     if(!this.isKeyNeeded())
@@ -794,9 +794,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public void ejectKey()
     {
-        Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyHolePosition());
-        world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
-        this.setKeyStack(ItemStack.EMPTY);
+        if(!this.getKeyStack().isEmpty())
+        {
+            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyHolePosition());
+            world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
+            this.setKeyStack(ItemStack.EMPTY);
+        }
     }
 
     public boolean isEngineLockable()
@@ -823,6 +826,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public PartPosition getKeyPosition()
     {
         return keyPosition;
+    }
+
+    public boolean isOwner(EntityPlayer player)
+    {
+        return owner == null || player.getUniqueID().equals(owner);
     }
 
     @Override
