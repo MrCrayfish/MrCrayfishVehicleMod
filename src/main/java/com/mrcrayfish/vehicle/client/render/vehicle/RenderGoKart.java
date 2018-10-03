@@ -1,94 +1,66 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nullable;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderGoKart extends RenderLandVehicle<EntityGoKart>
+public class RenderGoKart extends AbstractRenderPoweredVehicle<EntityGoKart>
 {
-    public RenderGoKart(RenderManager renderManager)
+    public RenderGoKart()
     {
-        super(renderManager);
-        this.setEnginePosition(0F, 7.7F, -9F, 180F, 1.2F);
+        this.setEnginePosition(0F, 2F, -9F, 180F, 1.2F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 0.2F, 13.5F, 1.4F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 0.2F, 13.5F, 1.4F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 0.2F, -8.5F, 1.4F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 0.2F, -8.5F, 1.4F);
     }
 
-    @Nullable
     @Override
-    protected ResourceLocation getEntityTexture(EntityGoKart entity)
+    public void render(EntityGoKart entity, float partialTicks)
     {
-        return null;
+        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+
+        //Render the handles bars
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(0, 0.09, 0.49);
+            GlStateManager.rotate(-45F, 1, 0, 0);
+            GlStateManager.translate(0, -0.02, 0);
+            GlStateManager.scale(0.9, 0.9, 0.9);
+
+            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngleNormal = wheelAngle / 45F;
+            float turnRotation = wheelAngleNormal * 25F;
+            GlStateManager.rotate(turnRotation, 0, 1, 0);
+
+            Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
+        }
+        GlStateManager.popMatrix();
     }
 
     @Override
-    public void doRender(EntityGoKart entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void applyPlayerModel(EntityGoKart entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        RenderHelper.enableStandardItemLighting();
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
 
-        float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
+        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngleNormal = wheelAngle / 45F;
+        float turnRotation = wheelAngleNormal * 6F;
 
-        EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
-        if(entityLivingBase != null)
-        {
-            entityLivingBase.renderYawOffset = currentYaw - additionalYaw;
-            entityLivingBase.prevRenderYawOffset = currentYaw - additionalYaw;
-        }
-
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            GlStateManager.rotate(additionalYaw, 0, 1, 0);
-            GlStateManager.scale(1, 1, 1);
-
-            this.setupBreakAnimation(entity, partialTicks);
-
-            double bodyOffset = 0.5625;
-
-            //Render the body
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, bodyOffset, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-
-            //Render the handles bars
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, bodyOffset + 0.09, 0.49);
-                GlStateManager.rotate(-45F, 1, 0, 0);
-                GlStateManager.translate(0, -0.02, 0);
-                GlStateManager.scale(0.9, 0.9, 0.9);
-
-                float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
-                float wheelAngleNormal = wheelAngle / 45F;
-                float turnRotation = wheelAngleNormal * 25F;
-                GlStateManager.rotate(turnRotation, 0, 1, 0);
-
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-
-            super.doRender(entity, x, y, z, currentYaw, partialTicks);
-        }
-        GlStateManager.popMatrix();
-        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
+        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
+        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
+        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
+        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
     }
 }

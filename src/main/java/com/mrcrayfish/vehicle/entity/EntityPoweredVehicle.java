@@ -86,6 +86,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float vehicleMotionZ;
 
     private UUID owner;
+    private PartPosition enginePosition;
     private PartPosition keyHolePosition;
     private PartPosition keyPosition;
 
@@ -810,6 +811,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean canDrive()
     {
         return this.isFueled() && !this.isKeyNeeded() || !this.getKeyStack().isEmpty();
+    }
+
+    public void setEnginePosition(PartPosition enginePosition)
+    {
+        this.enginePosition = enginePosition;
+    }
+
+    public PartPosition getEnginePosition()
+    {
+        return enginePosition;
     }
 
     public void setKeyHolePosition(PartPosition keyHolePosition)
