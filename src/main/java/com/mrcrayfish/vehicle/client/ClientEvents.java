@@ -55,7 +55,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.awt.Color;
 import java.text.DecimalFormat;
-import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
@@ -69,7 +68,7 @@ public class ClientEvents
     private int originalPerspective = -1;
     private double jerryCanMainHandOffset;
     private int tickCounter;
-    private boolean fuleing;
+    private boolean fueling;
     private double offsetPrev, offsetPrevPrev;
 
     @SubscribeEvent
@@ -485,15 +484,15 @@ public class ClientEvents
             RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                if (!fuleing)
+                if (!fueling)
                 {
                     tickCounter = 0;
-                    fuleing = true;
+                    fueling = true;
                 }
             }
             else
             {
-                fuleing = false;
+                fueling = false;
             }
         }
     }

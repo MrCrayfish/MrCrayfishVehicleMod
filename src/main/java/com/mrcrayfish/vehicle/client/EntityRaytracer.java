@@ -33,7 +33,6 @@ import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -1549,7 +1548,7 @@ public class EntityRaytracer
             return partBox;
         }
 
-        public Function<RayTraceResultRotated, R> getcontinuousInteraction()
+        public Function<RayTraceResultRotated, R> getContinuousInteraction()
         {
             return continuousInteraction;
         }
@@ -1589,12 +1588,12 @@ public class EntityRaytracer
 
         public Object performContinuousInteraction()
         {
-            return partHit.getcontinuousInteraction() == null ? null : partHit.getcontinuousInteraction().apply(this);
+            return partHit.getContinuousInteraction() == null ? null : partHit.getContinuousInteraction().apply(this);
         }
 
         public <R> boolean equalsContinuousInteraction(Function<RayTraceResultRotated, R> function)
         {
-            return function.equals(partHit.getcontinuousInteraction());
+            return function.equals(partHit.getContinuousInteraction());
         }
     }
 
@@ -1632,7 +1631,7 @@ public class EntityRaytracer
                 }
             }
 
-            boolean isContinuous = result.partHit.getcontinuousInteraction() != null;
+            boolean isContinuous = result.partHit.getContinuousInteraction() != null;
             if(isContinuous || !(Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this))
             {
                 EntityPlayer player = Minecraft.getMinecraft().player;
