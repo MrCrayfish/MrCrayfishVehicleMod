@@ -64,7 +64,7 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
                 GlStateManager.rotate(180F, 0, 1, 0);
 
                 Vec3d towBarOffset = entity.getTowBarVec();
-                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z * 0.0625);
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }

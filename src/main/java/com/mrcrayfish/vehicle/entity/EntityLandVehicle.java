@@ -229,7 +229,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
     public void setTowBarPosition(Vec3d towBarVec)
     {
-        this.towBarVec = towBarVec;
+        this.towBarVec = towBarVec.scale(0.0625);
     }
 
     public Vec3d getTowBarVec()
