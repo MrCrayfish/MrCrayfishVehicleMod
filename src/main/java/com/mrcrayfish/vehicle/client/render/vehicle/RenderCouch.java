@@ -4,7 +4,9 @@ import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
@@ -23,5 +25,18 @@ public class RenderCouch extends AbstractRenderPoweredVehicle<EntityCouch>
     public void render(EntityCouch entity, float partialTicks)
     {
         Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+    }
+
+    @Override
+    public void applyPlayerModel(EntityCouch entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    {
+        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
+        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);
+        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
+        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-25F);
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
     }
 }

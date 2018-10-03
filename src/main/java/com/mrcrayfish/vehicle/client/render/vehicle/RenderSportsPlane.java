@@ -4,10 +4,12 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySportsPlane;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
@@ -93,5 +95,27 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
             Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.leg, ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void applyPlayerModel(EntitySportsPlane entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    {
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+    }
+
+    @Override
+    public void applyPlayerRender(EntitySportsPlane entity, EntityPlayer player, float partialTicks)
+    {
+        GlStateManager.translate(0, -8 * 0.0625, 0.5);
+        GlStateManager.translate(0, 0.625, 0);
+        float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
+        float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
+        GlStateManager.rotate(bodyRoll, 0, 0, 1);
+        GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+        GlStateManager.translate(0, -0.625, 0);
+        GlStateManager.translate(0, 8 * 0.0625, -0.5);
     }
 }
