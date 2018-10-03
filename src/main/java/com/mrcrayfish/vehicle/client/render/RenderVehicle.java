@@ -73,4 +73,23 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
         }
         GlStateManager.popMatrix();
     }
+
+    protected void renderKey(@Nullable PartPosition position, ItemStack part)
+    {
+        if(position == null)
+            return;
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+            GlStateManager.translate(0, -0.25, 0);
+            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
+            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
+            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
+            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
+            GlStateManager.translate(0, 0, -0.05);
+            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
+        }
+        GlStateManager.popMatrix();
+    }
 }

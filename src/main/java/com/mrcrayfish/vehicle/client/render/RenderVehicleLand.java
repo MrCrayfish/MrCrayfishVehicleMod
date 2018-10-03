@@ -64,7 +64,7 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
                 GlStateManager.rotate(180F, 0, 1, 0);
 
                 Vec3d towBarOffset = entity.getTowBarVec();
-                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z * 0.0625);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }
@@ -128,7 +128,7 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
                 this.renderPart(entity.getKeyHolePosition(), entity.keyPort);
                 if(!entity.getKeyStack().isEmpty())
                 {
-                    this.renderPart(entity.getKeyPosition(), entity.getKeyStack());
+                    this.renderKey(entity.getKeyPosition(), entity.getKeyStack());
                 }
             }
         }

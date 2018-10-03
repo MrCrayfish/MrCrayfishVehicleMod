@@ -826,7 +826,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public void setKeyHolePosition(PartPosition keyHolePosition)
     {
         this.keyHolePosition = keyHolePosition;
-        this.keyPosition = new PartPosition(keyHolePosition.getX(), keyHolePosition.getY() + 3.5, keyHolePosition.getZ() + 0.25, keyHolePosition.getRotX() + 90, 0, 0, 0.15);
+        this.keyPosition = new PartPosition(keyHolePosition.getX(), keyHolePosition.getY(), keyHolePosition.getZ(), keyHolePosition.getRotX() + 90, 0, 0, 0.15);
     }
 
     public PartPosition getKeyHolePosition()
