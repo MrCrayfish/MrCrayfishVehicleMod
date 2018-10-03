@@ -372,8 +372,7 @@ public class EntityRaytracer
 
         // Golf Cart
         List<MatrixTransformation> golfCartTransformGlobal = Lists.newArrayList();
-        golfCartTransformGlobal.add(MatrixTransformation.createScale(1.15));
-        golfCartTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.75, 0));
+        createBodyTransforms(golfCartTransformGlobal, EntityGolfCart.BODY_POSITION, EntityGolfCart.AXLE_OFFSET, EntityGolfCart.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> golfCartParts = Maps.newHashMap();
         createTranformListForPart(ModItems.GOLF_CART_BODY, golfCartParts, golfCartTransformGlobal);
         createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, golfCartParts, golfCartTransformGlobal,
@@ -381,7 +380,8 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.95));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.53125, 0, -13.25, 12, -7.3, -90, 0.25, golfCartParts, golfCartTransformGlobal);
+        createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntityGolfCart.FUEL_PORT_POSITION, golfCartParts, golfCartTransformGlobal, FUNCTION_FUELING);
+        createPartTransforms(ModItems.KEY_PORT, EntityGolfCart.KEY_PORT_POSITION, golfCartParts, golfCartTransformGlobal);
         entityRaytracePartsStatic.put(EntityGolfCart.class, golfCartParts);
 
         // Off-Roader
