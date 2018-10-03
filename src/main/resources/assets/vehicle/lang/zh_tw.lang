@@ -1,12 +1,52 @@
 itemGroup.tabVehicle=MrCrayfish載具模組
 
 item.small_engine.name=小引擎
+vehicle.engine_tier.wood.name=木等級
+vehicle.engine_tier.stone.name=石等級
+vehicle.engine_tier.iron.name=鐵等級
+vehicle.engine_tier.gold.name=金等級
+vehicle.engine_tier.diamond.name=鑽石等級
+vehicle.engine_info.acceleration=加速度
+vehicle.engine_info.additional_max_speed=額外的最大速度
+vehicle.engine_info.fuel_consumption=燃油消耗
 
 item.spray_can.name=噴霧罐
 item.spray_can.info=使用此噴霧罐以塗裝、改變載具的外觀。\n要為此噴霧罐添加顏色，將此噴霧罐與一種或多種染料在工作台中合成。\n要為此噴霧罐進行補充，將此噴霧罐與一瓶無色噴霧罐在工作台中合成。
 item.spray_can.empty=沒有顏色
+item.jerry_can.name=可攜式油桶（德國桶）
+item.jerry_can.info=使用此可攜式油桶以運載燃油和為車輛填充燃油。它可以容納相當於5桶的燃油。
+item.jerry_can.fuel=燃油：%s
+item.industrial_jerry_can.name=工業用可攜式油桶（德國桶）
+item.industrial_jerry_can.info=使用此工業用可攜式油桶以運載燃油和為車輛填充燃油。它可以容納相當於15桶的燃油。
+item.industrial_jerry_can.fuel=燃油：%s
+item.wrench.name=扳手
 
 tile.traffic_cone.name=交通錐
+tile.boost_pad.name=加速墊
+tile.boost_ramp.name=加速斜坡
+tile.steep_boost_ramp.name=陡峭的加速斜坡
+tile.gas_pump.name=氣體泵
+tile.fluid_extractor.name=流體抽取器
+tile.fluid_mixer.name=流體混合器
+tile.fluid_pipe.name=流體管道
+tile.fluid_pump.name=流體泵
+tile.fuel_drum.name=燃油鼓
+tile.industrial_fuel_drum.name=工業用燃油鼓
+
+fluid.fuelium=燃油
+fluid.ender_sap=終界樹液
+fluid.blaze_juice=Blaze Juice
+
+container.fluid_extractor=Fluid Extractor
+container.fluid_mixer=Fluid Mixer
+
+vehicle.info_help=Hold SHIFT for Info
+vehicle.tile.boost_pad.info=Drive on this Boost Pad to give your vehicle a speed boost!
+vehicle.tile.boost_ramp.info=Drive on this Boost Ramp to give your vehicle a speed boost and send it flying into the air!
+vehicle.tile.traffic_cone.info=Use this cone to block vehicles with it's extra collision height. It can also be used as a hat!
+vehicle.tile.fluid_pipe.info=Use this pipe to transport fluids. The gray line on the pipe indicates the direction of travel. Fluid must be initially pumped in with a Fluid Pump or any other compatible pump for it to work. Pipe can be disabled with a direct redstone signal.
+vehicle.tile.fluid_pump.info=Use this pump to extract fluid from any compatible fluid storage into a pipe or another fluid storage. For the pump to work, it must be directly powered by redstone.
+vehicle.tile.fuel_drum.info=This Fuel Drum can be used to store Fuelium or any other fluid. It is highly explosive, so keep it away from fire.
 
 entity.moped.name=輕便摩托車
 
@@ -21,3 +61,10 @@ vehicle.config.client.interaction=相互影響
 vehicle.config.client.interaction.tooltip=載具相互影響的配置選項
 vehicle.config.client.interaction.left_click=啟用左鍵單擊
 vehicle.config.client.interaction.left_click.tooltip=如果為true，左鍵單擊時，將在附近的載具上執行光線跟踪，而不是右鍵單擊它。這樣可以在點擊任何地方時損壞，而不是僅僅在其邊界框上。
+vehicle.config.client.speedometer=Show Speedometer
+vehicle.config.client.speedometer.tooltip=If true, displays a speedometer on the HUD when driving a vehicle
+
+vehicle.chat.pump.power=§bPower Mode:§r %s
+vehicle.chat.pump.power.off=requires signal off
+vehicle.chat.pump.power.on=requires signal on
+vehicle.chat.pump.power.always=always active
