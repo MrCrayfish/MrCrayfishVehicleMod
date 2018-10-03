@@ -52,5 +52,23 @@
     },
     "sports_plane_engine_stereo": {
         "sounds": [ {"name": "vehicle:sports_plane_engine_stereo"}]
+    },
+    "boost_pad": {
+        "sounds": [ {"name": "vehicle:boost_pad"}]
+    },
+    "liquid_glug": {
+        "sounds": [ {"name": "vehicle:liquid_glug"}]
+    },
+    "fuel_port_open": {
+        "sounds": [ {"name": "vehicle:fuel_port_open"}]
+    },
+    "fuel_port_close": {
+        "sounds": [ {"name": "vehicle:fuel_port_close"}]
+    },
+    "fuel_port_2_open": {
+        "sounds": [ {"name": "vehicle:fuel_port_2_open"}]
+    },
+    "fuel_port_2_close": {
+        "sounds": [ {"name": "vehicle:fuel_port_2_close"}]
     }
 }

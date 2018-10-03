@@ -17,6 +17,7 @@ public class RenderSpeedBoat extends RenderPoweredVehicle<EntitySpeedBoat>
     public RenderSpeedBoat(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-12.25F, 17.25F, -19.5F, -90, 0.25F);
     }
 
     @Override
@@ -65,6 +66,7 @@ public class RenderSpeedBoat extends RenderPoweredVehicle<EntitySpeedBoat>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);

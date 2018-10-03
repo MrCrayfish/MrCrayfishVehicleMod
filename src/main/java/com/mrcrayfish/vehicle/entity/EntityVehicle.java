@@ -1,9 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
-import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.entity.Entity;
@@ -73,6 +71,12 @@ public abstract class EntityVehicle extends Entity
 
     @SideOnly(Side.CLIENT)
     public void onClientInit() {}
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return this.getEntityBoundingBox().grow(1);
+    }
 
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)

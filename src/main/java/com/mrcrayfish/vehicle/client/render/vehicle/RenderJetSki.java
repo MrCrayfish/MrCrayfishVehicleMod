@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import javax.vecmath.Vector3f;
+
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
@@ -17,6 +19,8 @@ public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
     public RenderJetSki(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-1.57F, 18.65F, 4.87F, new Vector3f(-135, 0, 0), 0.35F);
+        this.setFuelPortLidPosition(0, 0, 0, new Vector3f(0, 0, 0), 0);
     }
 
     @Override
@@ -65,6 +69,7 @@ public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);

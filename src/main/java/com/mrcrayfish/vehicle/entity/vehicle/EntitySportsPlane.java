@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -46,6 +47,8 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         this.setMaxTurnAngle(25);
         this.setTurnSensitivity(2);
         this.setSize(3F, 1.6875F);
+        this.setFuelCapacity(75000F);
+        this.setFuelConsumption(4.0F);
     }
 
     @Override
@@ -58,6 +61,12 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         wheelCover = new ItemStack(ModItems.SPORTS_PLANE_WHEEL_COVER);
         leg = new ItemStack(ModItems.SPORTS_PLANE_LEG);
         propeller = new ItemStack(ModItems.SPORTS_PLANE_PROPELLER);
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return this.getEntityBoundingBox().grow(1.5);
     }
 
     @Override
@@ -101,7 +110,7 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         }
         wheelRotation -= (90F * wheelSpeed);
 
-        if(this.getControllingPassenger() != null)
+        if(this.hasFuel() && this.getControllingPassenger() != null) //1914 4424 7485 11360
         {
             propellerSpeed += 1F;
             if(propellerSpeed > 120F)

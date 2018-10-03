@@ -21,6 +21,7 @@ public class RenderDuneBuggy extends RenderPoweredVehicle<EntityDuneBuggy>
     public RenderDuneBuggy(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(1.15F, 11, -7.25F, 180, 0.25F);
     }
 
     @Nullable
@@ -137,6 +138,7 @@ public class RenderDuneBuggy extends RenderPoweredVehicle<EntityDuneBuggy>
                 GlStateManager.popMatrix();
             }
             GlStateManager.popMatrix();
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);

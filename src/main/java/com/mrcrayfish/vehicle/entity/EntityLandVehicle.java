@@ -104,10 +104,23 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void updateVehicleMotion()
     {
+        float currentSpeed = this.currentSpeed;
+
+        if(speedMultiplier > 1.0F)
+        {
+            speedMultiplier = 1.0F;
+        }
+
+        /* Applies the speed multiplier to the current speed */
+        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
+
         float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
         float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
         this.vehicleMotionX = (-currentSpeed * f1);
-        this.motionY -= 0.08D;
+        if(!launching)
+        {
+            this.motionY -= 0.08D;
+        }
         this.vehicleMotionZ = (currentSpeed * f2);
     }
 
@@ -148,6 +161,9 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void createParticles()
     {
+        if(!this.hasFuel())
+            return;
+
         int x = MathHelper.floor(this.posX);
         int y = MathHelper.floor(this.posY - 0.2D);
         int z = MathHelper.floor(this.posZ);

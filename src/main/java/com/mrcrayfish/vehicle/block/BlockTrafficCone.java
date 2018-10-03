@@ -23,6 +23,7 @@ public class BlockTrafficCone extends BlockObject
     public BlockTrafficCone()
     {
         super(Material.CLAY, MapColor.ORANGE_STAINED_HARDENED_CLAY, "traffic_cone");
+        this.setHardness(0.5F);
     }
 
     @Override

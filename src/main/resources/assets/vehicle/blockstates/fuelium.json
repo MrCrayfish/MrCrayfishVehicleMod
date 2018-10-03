@@ -1,0 +1,39 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "forge:fluid",
+        "transform": "forge:default-item",
+        "custom": {
+            "fluid": "fuelium"
+        },
+        "textures": {
+            "all": "vehicle:fluids/fuelium_flow"
+        }
+    },
+    "variants": {
+        "normal": [{
+
+        }],
+        "inventory": [{
+
+        }],
+        "level": {
+            "0": { },
+            "1": { },
+            "2": { },
+            "3": { },
+            "4": { },
+            "5": { },
+            "6": { },
+            "7": { },
+            "8": { },
+            "9": { },
+            "10": { },
+            "11": { },
+            "12": { },
+            "13": { },
+            "14": { },
+            "15": { }
+        }
+    }
+}

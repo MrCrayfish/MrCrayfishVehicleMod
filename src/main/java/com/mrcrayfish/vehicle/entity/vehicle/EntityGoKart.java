@@ -31,6 +31,7 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
         this.setHeldOffset(new Vec3d(3D, 0.5D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.375D));
         this.stepHeight = 0.625F;
+        this.setFuelConsumption(2.0F);
     }
 
     @Override
@@ -89,5 +90,17 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRenderFuelPort()
+    {
+        return false;
     }
 }

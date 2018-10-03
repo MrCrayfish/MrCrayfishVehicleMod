@@ -1,11 +1,14 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.entity.IChest;
+import com.mrcrayfish.vehicle.init.ModItems;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -51,7 +54,15 @@ public class MessageVehicleChest implements IMessage, IMessageHandler<MessageVeh
                 IInventory inventory = ((IChest) targetEntity).getChest();
                 if(inventory != null)
                 {
-                    player.displayGUIChest(inventory);
+                    ItemStack stack = player.inventory.getCurrentItem();
+                    if(stack.getItem() == ModItems.WRENCH)
+                    {
+                        ((IChest) targetEntity).removeChest();
+                    }
+                    else
+                    {
+                        player.displayGUIChest(inventory);
+                    }
                 }
             }
         }

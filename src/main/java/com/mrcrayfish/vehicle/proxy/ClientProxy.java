@@ -7,21 +7,30 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
+import com.mrcrayfish.vehicle.client.model.CustomLoader;
+import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -48,6 +57,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityMoped.class, RenderMoped::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySportsPlane.class, RenderSportsPlane::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityGolfCart.class, RenderGolfCart::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityOffRoader.class, RenderOffRoader::new);
 
         if(Loader.isModLoaded("cfm"))
         {
@@ -59,7 +69,14 @@ public class ClientProxy implements Proxy
 
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
+        MinecraftForge.EVENT_BUS.register(this);
+
         ClientRegistry.registerKeyBinding(KEY_HORN);
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidExtractor.class, new FluidExtractorRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
+
+        ModelLoaderRegistry.registerLoader(new CustomLoader());
+
     }
 
     @Override
@@ -105,5 +122,19 @@ public class ClientProxy implements Proxy
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundHornRiding(player, vehicle));
             }
         });
+    }
+
+    @SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
+    public void onFogDensity(EntityViewRenderEvent.FogDensity event)
+    {
+        /*if(event.getEntity().isInsideOfMaterial(ModMaterials.FUELIUM))
+        {
+            event.setDensity(0.5F);
+        }
+        else
+        {
+            event.setDensity(0.01F);
+        }
+        event.setCanceled(true);*/
     }
 }

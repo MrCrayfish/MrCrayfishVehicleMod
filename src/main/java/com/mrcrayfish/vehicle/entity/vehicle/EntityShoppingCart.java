@@ -28,6 +28,8 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
         this.setTurnSensitivity(15);
         this.setHeldOffset(new Vec3d(4D, 9.25D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.25D));
+        this.setFuelCapacity(0F);
+        this.setFuelConsumption(0F);
     }
 
     @Override
@@ -114,11 +116,5 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     public void dismountRidingEntity()
     {
         super.dismountRidingEntity();
-    }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
     }
 }

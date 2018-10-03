@@ -33,6 +33,7 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
         this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.5625D));
         this.stepHeight = 0.625F;
+        //TODO figure out fuel system
     }
 
     @Override
@@ -60,12 +61,6 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         entity.motionZ += vehicleMotionZ * 2;
         world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.BONK, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
         this.currentSpeed *= 0.25F;
-    }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
     }
 
     @Override

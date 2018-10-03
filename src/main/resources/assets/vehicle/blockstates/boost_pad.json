@@ -1,0 +1,30 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "vehicle:boost_pad"
+    },
+    "variants": {
+        "facing": {
+            "north": { "y": 180 },
+            "east":  { "y": 270 },
+            "south": { "y": 0   },
+            "west":  { "y": 90  }
+        },
+        "left": {
+            "true": {
+                "submodel": "vehicle:boost_pad_left"
+            },
+            "false": {
+                "submodel": "vehicle:boost_pad_trim_left"
+            }
+        },
+        "right": {
+            "true": {
+                "submodel": "vehicle:boost_pad_right"
+            },
+            "false": {
+                "submodel": "vehicle:boost_pad_trim_right"
+            }
+        }
+    }
+}

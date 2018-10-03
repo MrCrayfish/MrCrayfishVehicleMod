@@ -4,7 +4,7 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageHorn;
@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -23,7 +24,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -31,6 +31,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
+
+import java.awt.Color;
 import java.util.List;
 
 /**
@@ -47,10 +49,18 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
     public float speedMultiplier;
+    public boolean boosting;
+    public int boostTimer;
+    public boolean launching;
+    public int launchingTimer;
+    public boolean disableFallDamage;
+    public float fuelConsumption = 1F;
 
     public int turnAngle;
     public int prevTurnAngle;
@@ -65,6 +75,20 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     @SideOnly(Side.CLIENT)
     public ItemStack engine;
+
+    @SideOnly(Side.CLIENT)
+    private FuelPort fuelPort;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortClosed;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortBody;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack fuelPortLid;
+
+    private boolean fueling;
 
     protected EntityPoweredVehicle(World worldIn)
     {
@@ -92,6 +116,24 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public SoundEvent getHornRidingSound()
     {
         return ModSounds.HORN_STEREO;
+    }
+
+    public void playFuelPortOpenSound()
+    {
+        if (!fueling)
+        {
+            fuelPort.playOpenSound();
+            fueling = true;
+        }
+    }
+
+    public void playFuelPortCloseSound()
+    {
+        if (fueling)
+        {
+            fuelPort.playCloseSound();
+            fueling = false;
+        }
     }
 
     public float getMinEnginePitch()
@@ -123,12 +165,36 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.dataManager.register(ENGINE_TYPE, 0);
         this.dataManager.register(HORN, false);
+        this.dataManager.register(CURRENT_FUEL, 0F);
+        this.dataManager.register(FUEL_CAPACITY, 15000F);
     }
 
     @Override
     public void onClientInit()
     {
         engine = new ItemStack(ModItems.ENGINE);
+        setFuelPort(FuelPort.LID);
+    }
+
+    protected void setFuelPort(FuelPort fuelPort)
+    {
+        this.fuelPort = fuelPort;
+        fuelPortClosed = new ItemStack(fuelPort.getClosed());
+        fuelPortBody = new ItemStack(fuelPort.getBody());
+        fuelPortLid = new ItemStack(fuelPort.getLid());
+    }
+
+    public void fuelVehicle(EntityPlayer player, EnumHand hand)
+    {
+        ItemStack stack = player.getHeldItem(hand);
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        {
+            ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
+            int rate = jerryCan.getFillRate(stack);
+            int drained = jerryCan.drain(stack, rate);
+            int remaining = this.addFuel(drained);
+            jerryCan.fill(stack, remaining);
+        }
     }
 
     @Override
@@ -143,8 +209,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             this.onClientUpdate();
         }
 
+        Entity controllingPassenger = this.getControllingPassenger();
+
         /* If there driver, create particles */
-        if(this.getControllingPassenger() != null)
+        if(controllingPassenger != null)
         {
             this.createParticles();
         }
@@ -175,7 +243,27 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             motionY *= 0.98D;
             motionZ *= 0.98;
         }
-        speedMultiplier *= 0.85;
+
+        if(boostTimer > 0)
+        {
+            boostTimer--;
+        }
+        else
+        {
+            boosting = false;
+            speedMultiplier *= 0.85;
+        }
+
+        if(launchingTimer > 0)
+        {
+            //Ensures fall damage is disabled while launching
+            disableFallDamage = true;
+            launchingTimer--;
+        }
+        else
+        {
+            launching = false;
+        }
 
         /* Checks for block collisions */
         this.doBlockCollisions();
@@ -188,6 +276,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             {
                 this.applyEntityCollision(entity);
             }
+        }
+
+        if(controllingPassenger != null && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative())
+        {
+            float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
+            float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
+            float currentFuel = this.getCurrentFuel();
+            currentFuel -= fuelConsumption * normalSpeed;
+            if(currentFuel < 0F) currentFuel = 0F;
+            this.setCurrentFuel(currentFuel);
         }
     }
 
@@ -203,20 +301,27 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         AccelerationDirection acceleration = this.getAcceleration();
         if(this.getControllingPassenger() != null)
         {
-            if(acceleration == AccelerationDirection.FORWARD)
+            if(this.hasFuel())
             {
-                this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+                if(acceleration == AccelerationDirection.FORWARD)
                 {
-                    this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                    this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                    if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+                    {
+                        this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                    }
                 }
-            }
-            else if(acceleration == AccelerationDirection.REVERSE)
-            {
-                this.currentSpeed -= this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                if(this.currentSpeed < -(4.0F + engineType.getAdditionalMaxSpeed() / 2))
+                else if(acceleration == AccelerationDirection.REVERSE)
                 {
-                    this.currentSpeed = -(4.0F + engineType.getAdditionalMaxSpeed() / 2);
+                    this.currentSpeed -= this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                    if(this.currentSpeed < -(4.0F + engineType.getAdditionalMaxSpeed() / 2))
+                    {
+                        this.currentSpeed = -(4.0F + engineType.getAdditionalMaxSpeed() / 2);
+                    }
+                }
+                else
+                {
+                    this.currentSpeed *= 0.9;
                 }
             }
             else
@@ -228,9 +333,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.currentSpeed *= 0.5;
         }
-
-        /* Applies the speed multiplier to the current speed */
-        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
     }
 
     protected void updateTurning()
@@ -254,7 +356,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public void createParticles()
     {
-        if(this.shouldShowEngineSmoke() && this.ticksExisted % 2 == 0)
+        if(this.shouldShowEngineSmoke()&& this.hasFuel() && this.ticksExisted % 2 == 0)
         {
             Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.rotationYaw * 0.017453292F);
             this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ);
@@ -323,6 +425,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
+        if(compound.hasKey("currentFuel", Constants.NBT.TAG_FLOAT))
+        {
+            this.setCurrentFuel(compound.getFloat("currentFuel"));
+        }
+        if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_INT))
+        {
+            this.setFuelCapacity(compound.getInteger("fuelCapacity"));
+        }
     }
 
     @Override
@@ -335,6 +445,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
         compound.setFloat("stepHeight", this.stepHeight);
+        compound.setFloat("currentFuel", this.getCurrentFuel());
+        compound.setFloat("fuelCapacity", this.getFuelCapacity());
     }
 
     @Nullable
@@ -371,6 +483,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.dataManager.get(MAX_SPEED);
     }
 
+    public float getActualMaxSpeed()
+    {
+        return this.dataManager.get(MAX_SPEED) + this.getEngineType().getAdditionalMaxSpeed();
+    }
+
     public void setSpeed(float speed)
     {
         this.dataManager.set(CURRENT_SPEED, speed);
@@ -384,6 +501,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float getNormalSpeed()
     {
         return this.currentSpeed / this.getMaxSpeed();
+    }
+
+    public float getActualSpeed()
+    {
+        return (this.currentSpeed + this.currentSpeed * this.speedMultiplier) / this.getActualMaxSpeed();
     }
 
     public float getAccelerationSpeed()
@@ -454,6 +576,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @SideOnly(Side.CLIENT)
     public boolean shouldRenderEngine()
     {
+        return false;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public boolean shouldRenderFuelPort()
+    {
         return true;
     }
 
@@ -477,6 +605,82 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.dataManager.get(HORN);
     }
 
+    public void setBoosting(boolean boosting)
+    {
+        this.boosting = boosting;
+        this.boostTimer = 10;
+    }
+
+    public boolean isBoosting()
+    {
+        return boosting;
+    }
+
+    public void setLaunching(int hold)
+    {
+        this.launching = true;
+        this.launchingTimer = hold;
+        this.disableFallDamage = true;
+    }
+
+    public boolean isLaunching()
+    {
+        return launching;
+    }
+
+    public boolean hasFuel()
+    {
+        Entity entity = this.getControllingPassenger();
+        if(entity instanceof EntityPlayer)
+        {
+            if(((EntityPlayer) entity).isCreative())
+            {
+                return true;
+            }
+        }
+        return this.getCurrentFuel() > 0F;
+    }
+
+    public void setCurrentFuel(float fuel)
+    {
+        this.dataManager.set(CURRENT_FUEL, fuel);
+    }
+
+    public float getCurrentFuel()
+    {
+        return this.dataManager.get(CURRENT_FUEL);
+    }
+
+    public void setFuelCapacity(float capacity)
+    {
+        this.dataManager.set(FUEL_CAPACITY, capacity);
+    }
+
+    public float getFuelCapacity()
+    {
+        return this.dataManager.get(FUEL_CAPACITY);
+    }
+
+    public void setFuelConsumption(float consumption)
+    {
+        this.fuelConsumption = consumption;
+    }
+
+    public float getFuelConsumption()
+    {
+        return fuelConsumption;
+    }
+
+    public int addFuel(int fuel)
+    {
+        float currentFuel = this.getCurrentFuel();
+        currentFuel += fuel;
+        int remaining = Math.max(0, Math.round(currentFuel - this.getFuelCapacity()));
+        currentFuel = Math.min(currentFuel, this.getFuelCapacity());
+        this.setCurrentFuel(currentFuel);
+        return remaining;
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
@@ -488,6 +692,22 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
                 EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
                 engine.setItemDamage(type.ordinal());
             }
+            if(COLOR.equals(key))
+            {
+                if(!fuelPortBody.hasTagCompound())
+                {
+                    fuelPortClosed.setTagCompound(new NBTTagCompound());
+                    fuelPortBody.setTagCompound(new NBTTagCompound());
+                    fuelPortLid.setTagCompound(new NBTTagCompound());
+                }
+                Color color = new Color(this.dataManager.get(COLOR));
+                int colorInt = (Math.sqrt(color.getRed() * color.getRed() * 0.241
+                        + color.getGreen() * color.getGreen() * 0.691
+                        + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();
+                fuelPortClosed.getTagCompound().setInteger("color", colorInt);
+                fuelPortBody.getTagCompound().setInteger("color", colorInt);
+                fuelPortLid.getTagCompound().setInteger("color", colorInt);
+            }
         }
     }
 
@@ -498,6 +718,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         if(passenger instanceof EntityPlayer && world.isRemote)
         {
             VehicleMod.proxy.playVehicleSound((EntityPlayer) passenger, this);
+        }
+    }
+
+    @Override
+    public void fall(float distance, float damageMultiplier)
+    {
+        if(!disableFallDamage)
+        {
+            super.fall(distance, damageMultiplier);
+        }
+        if(launchingTimer <= 0 && distance > 3)
+        {
+            disableFallDamage = false;
         }
     }
 
@@ -534,5 +767,55 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
             return NONE;
         }
+    }
+
+    public enum FuelPort
+    {
+        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
+        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
+
+        private Item closed, body, lid;
+        private SoundEvent soundOpen, soundClose;
+        private float volumeOpen, volumeClose;
+        private float pitchOpen, pitchClose;
+
+        private FuelPort(Item closed, Item body, Item lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
+        {
+            this.closed = closed;
+            this.body = body;
+            this.lid = lid;
+            this.soundOpen = soundOpen;
+            this.volumeOpen = volumeOpen;
+            this.pitchOpen = pitchOpen;
+            this.soundClose = soundClose;
+            this.volumeClose = volumeClose;
+            this.pitchClose = pitchClose;
+        }
+
+        public Item getClosed()
+        {
+            return closed;
+        }
+
+        public Item getBody()
+        {
+            return body;
+        }
+
+        public Item getLid()
+        {
+            return lid;
+        }
+
+        public void playOpenSound()
+        {
+            Minecraft.getMinecraft().player.playSound(soundOpen, volumeOpen, pitchOpen);
+        }
+
+        public void playCloseSound()
+        {
+            Minecraft.getMinecraft().player.playSound(soundClose, volumeClose, pitchClose);
+        }
+
     }
 }

@@ -23,7 +23,9 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,6 +34,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
@@ -82,6 +85,8 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         this.setHeldOffset(new Vec3d(7D, 2D, 0D));
         this.setTowBarPosition(new Vec3d(0.0, 0.0, -1.0));
         this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.65D));
+        this.setFuelCapacity(12000F);
+        this.setFuelConsumption(0.9F);
     }
 
     @Override
@@ -148,12 +153,6 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     public float getMaxEnginePitch()
     {
         return 1.2F;
-    }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
     }
 
     @Override
@@ -326,6 +325,20 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
                     }
                 }
             }
+        }
+    }
+
+    @Override
+    public void removeChest()
+    {
+        if(this.inventory != null)
+        {
+            Vec3d target = new Vec3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(getPositionVector());
+            InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
+            this.inventory = null;
+            this.setChest(false);
+            world.playSound(null, posX, posY, posZ, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.spawnEntity(new EntityItem(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
     }
 }

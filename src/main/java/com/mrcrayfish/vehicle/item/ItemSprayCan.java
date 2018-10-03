@@ -61,7 +61,7 @@ public class ItemSprayCan extends Item implements SubItems
             {
                 tooltip.add(I18n.format("item.spray_can.empty"));
             }
-            tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.item;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemBlock;
@@ -34,12 +35,12 @@ public class ItemTrafficCone extends ItemBlock
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = "Use this cone to block vehicles with it's extra collision height. It can also be used as a hat!";
+            String info = I18n.format("vehicle.tile.traffic_cone.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
         {
-            tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 }

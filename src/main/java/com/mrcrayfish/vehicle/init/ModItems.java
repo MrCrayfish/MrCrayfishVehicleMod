@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.item.ItemEngine;
+import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.item.ItemPart;
+import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.item.Item;
 
@@ -36,12 +38,23 @@ public class ModItems
     public static final Item SPORTS_PLANE_LEG;
     public static final Item SPORTS_PLANE_PROPELLER;
     public static final Item GOLF_CART_BODY;
+    public static final Item OFF_ROADER_BODY;
 
     public static final Item TRAILER_BODY;
     public static final Item TOW_BAR;
 
     public static final Item ENGINE;
     public static final Item SPRAY_CAN;
+    public static final Item JERRY_CAN;
+    public static final Item INDUSTRIAL_JERRY_CAN;
+
+    public static final Item FUEL_PORT_CLOSED;
+    public static final Item FUEL_PORT_BODY;
+    public static final Item FUEL_PORT_LID;
+    public static final Item FUEL_PORT_2_CLOSED;
+    public static final Item FUEL_PORT_2_PIPE;
+    
+    public static final Item WRENCH;
 
     static
     {
@@ -71,12 +84,23 @@ public class ModItems
         SPORTS_PLANE_LEG = new ItemPart("sports_plane_leg");
         SPORTS_PLANE_PROPELLER = new ItemPart("sports_plane_propeller").setColored();
         GOLF_CART_BODY = new ItemPart("golf_cart_body").setColored();
+        OFF_ROADER_BODY = new ItemPart("off_roader_body").setColored();
 
         TRAILER_BODY = new ItemPart("trailer_body").setColored();
         TOW_BAR = new ItemPart("tow_bar");
 
         ENGINE = new ItemEngine("small_engine");
         SPRAY_CAN = new ItemSprayCan();
+        JERRY_CAN = new ItemJerryCan("jerry_can", 5000, 100);
+        INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 15000, 150);
+
+        FUEL_PORT_CLOSED = new ItemPart("fuel_port_closed").setColored();
+        FUEL_PORT_BODY = new ItemPart("fuel_port_body").setColored();
+        FUEL_PORT_LID = new ItemPart("fuel_port_lid").setColored();
+        FUEL_PORT_2_CLOSED = new ItemPart("fuel_port_2_closed");
+        FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
+
+        WRENCH = new ItemWrench();
     }
 
     public static void register()
@@ -107,12 +131,23 @@ public class ModItems
         register(SPORTS_PLANE_LEG);
         register(SPORTS_PLANE_PROPELLER);
         register(GOLF_CART_BODY);
+        register(OFF_ROADER_BODY);
 
         register(TRAILER_BODY);
         register(TOW_BAR);
 
         register(ENGINE);
         register(SPRAY_CAN);
+        register(JERRY_CAN);
+        register(INDUSTRIAL_JERRY_CAN);
+
+        register(FUEL_PORT_CLOSED);
+        register(FUEL_PORT_BODY);
+        register(FUEL_PORT_LID);
+        register(FUEL_PORT_2_CLOSED);
+        register(FUEL_PORT_2_PIPE);
+
+        register(WRENCH);
     }
 
     private static void register(Item item)

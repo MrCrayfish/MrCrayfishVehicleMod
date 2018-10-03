@@ -18,6 +18,7 @@ public class RenderSportsPlane extends RenderPoweredVehicle<EntitySportsPlane>
     public RenderSportsPlane(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-6.25F, 4.0F, -1, -90, 0.25F);
     }
 
     @Override
@@ -53,6 +54,8 @@ public class RenderSportsPlane extends RenderPoweredVehicle<EntitySportsPlane>
                 GlStateManager.rotate(-bodyRoll, 0, 0, 1);
                 GlStateManager.rotate(-bodyPitch, 1, 0, 0);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+
+                super.doRender(entity, x, y, z, currentYaw, partialTicks);
 
                 GlStateManager.pushMatrix();
                 {
