@@ -34,6 +34,12 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
     }
 
     @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
+
+    @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {

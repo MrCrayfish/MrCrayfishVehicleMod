@@ -117,4 +117,10 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     {
         super.dismountRidingEntity();
     }
+
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
 }

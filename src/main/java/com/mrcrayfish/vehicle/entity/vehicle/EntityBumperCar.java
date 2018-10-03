@@ -92,4 +92,10 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
     {
         return true;
     }
+
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
 }

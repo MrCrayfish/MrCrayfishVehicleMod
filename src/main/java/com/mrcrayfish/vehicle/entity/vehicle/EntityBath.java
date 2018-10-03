@@ -64,4 +64,10 @@ public class EntityBath extends EntityAirVehicle implements IEntityRaytraceable
     {
         return false;
     }
+
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
 }

@@ -110,4 +110,11 @@ public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytrace
     {
         return true;
     }
+
+    //TODO remove and add key support
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
 }
