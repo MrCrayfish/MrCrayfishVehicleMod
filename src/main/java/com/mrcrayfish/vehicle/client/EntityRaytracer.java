@@ -200,9 +200,7 @@ public class EntityRaytracer
 
         // Bumper car
         List<MatrixTransformation> bumperCarTransformGlobal = Lists.newArrayList();
-        bumperCarTransformGlobal.add(MatrixTransformation.createTranslation(0, 0, 0.4));
-        bumperCarTransformGlobal.add(MatrixTransformation.createScale(1.2));
-        bumperCarTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0));
+        createBodyTransforms(bumperCarTransformGlobal, EntityBumperCar.BODY_POSITION, EntityBumperCar.AXLE_OFFSET, EntityBumperCar.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> bumperCarParts = Maps.newHashMap();
         createTranformListForPart(ModItems.BUMPER_CAR_BODY, bumperCarParts, bumperCarTransformGlobal);
         createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, bumperCarParts, bumperCarTransformGlobal,
@@ -210,7 +208,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.3828125, 0, -8.25, 11, -9.3, -90, 0.25, bumperCarParts, bumperCarTransformGlobal);
+        createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntityBumperCar.FUEL_PORT_POSITION, bumperCarParts, bumperCarTransformGlobal, FUNCTION_FUELING);
         entityRaytracePartsStatic.put(EntityBumperCar.class, bumperCarParts);
 
         // Dune buggy
