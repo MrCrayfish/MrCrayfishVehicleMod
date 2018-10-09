@@ -213,14 +213,12 @@ public class EntityRaytracer
 
         // Dune buggy
         List<MatrixTransformation> duneBuggyTransformGlobal = Lists.newArrayList();
-        duneBuggyTransformGlobal.add(MatrixTransformation.createScale(1.3));
-        duneBuggyTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.0, 0.165));
+        createBodyTransforms(duneBuggyTransformGlobal, EntityDuneBuggy.BODY_POSITION, EntityDuneBuggy.AXLE_OFFSET, EntityDuneBuggy.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> duneBuggyParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.DUNE_BUGGY_BODY, duneBuggyParts, duneBuggyTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.505, 0));
+        createTranformListForPart(ModItems.DUNE_BUGGY_BODY, duneBuggyParts, duneBuggyTransformGlobal);
         createTranformListForPart(ModItems.DUNE_BUGGY_HANDLE_BAR, duneBuggyParts, duneBuggyTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.5, -0.0046875));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0, 0, 1.15, 11, -7.25, 180, 0.25, duneBuggyParts, duneBuggyTransformGlobal);
+                MatrixTransformation.createTranslation(0, 0, -0.0046875));
+        createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntityDuneBuggy.FUEL_PORT_POSITION, duneBuggyParts, duneBuggyTransformGlobal, FUNCTION_FUELING);
         entityRaytracePartsStatic.put(EntityDuneBuggy.class, duneBuggyParts);
 
         // Go kart
