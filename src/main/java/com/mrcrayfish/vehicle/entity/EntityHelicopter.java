@@ -98,34 +98,35 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
         TurnDirection turnDirection = this.getTurnDirection();
         if(this.getControllingPassenger() != null)
         {
+            if(!this.isFlying())
+            {
+                currentSpeed *= 0.75;
+                return;
+            }
+
             if(this.canDrive())
             {
                 if(acceleration != AccelerationDirection.NONE || turnDirection != TurnDirection.FORWARD)
                 {
-                    this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                    if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+                    currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                    if(currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
                     {
-                        this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                        currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
                     }
                 }
                 else
                 {
-                    this.currentSpeed *= 0.95;
+                    currentSpeed *= 0.95;
                 }
             }
             else
             {
-                this.currentSpeed *= 0.9;
+                currentSpeed *= 0.9;
             }
         }
         else
         {
-            this.currentSpeed *= 0.5;
-        }
-
-        if(!isFlying())
-        {
-            this.currentSpeed *= 0.75;
+            currentSpeed *= 0.5;
         }
     }
 
