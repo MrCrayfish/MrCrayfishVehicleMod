@@ -2,20 +2,15 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
-import net.minecraft.client.Minecraft;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleAir<T extends EntityAirVehicle & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T>
+public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T>
 {
     private AbstractRenderVehicle<T> renderVehicle;
 

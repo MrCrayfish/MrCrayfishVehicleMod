@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumParticleTypes;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class EntityBath extends EntityAirVehicle implements IEntityRaytraceable
+public class EntityBath extends EntityPlane implements IEntityRaytraceable
 {
     public EntityBath(World worldIn)
     {

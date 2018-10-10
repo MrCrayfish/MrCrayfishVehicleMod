@@ -29,6 +29,7 @@ public class PacketHandler
         registerMessage(MessageAttachTrailer.class, Side.SERVER);
         registerMessage(MessageFuelVehicle.class, Side.SERVER);
         registerMessage(MessageInteractKey.class, Side.SERVER);
+        registerMessage(MessageAltitude.class, Side.SERVER);
     }
 
     private static void registerMessage(Class packet, Side side)

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -10,11 +10,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MessageFlaps implements IMessage, IMessageHandler<MessageFlaps, IMessage>
 {
-	private EntityAirVehicle.FlapDirection flapDirection;
+	private EntityPlane.FlapDirection flapDirection;
 
 	public MessageFlaps() {}
 
-	public MessageFlaps(EntityAirVehicle.FlapDirection flapDirection)
+	public MessageFlaps(EntityPlane.FlapDirection flapDirection)
 	{
 		this.flapDirection = flapDirection;
 	}
@@ -28,7 +28,7 @@ public class MessageFlaps implements IMessage, IMessageHandler<MessageFlaps, IMe
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		this.flapDirection = EntityAirVehicle.FlapDirection.values()[buf.readInt()];
+		this.flapDirection = EntityPlane.FlapDirection.values()[buf.readInt()];
 	}
 
 	@Override
@@ -36,9 +36,9 @@ public class MessageFlaps implements IMessage, IMessageHandler<MessageFlaps, IMe
 	{
 		EntityPlayerMP player = ctx.getServerHandler().player;
 		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityAirVehicle)
+		if(riding instanceof EntityPlane)
 		{
-			((EntityAirVehicle) riding).setFlapDirection(message.flapDirection);
+			((EntityPlane) riding).setFlapDirection(message.flapDirection);
 		}
 		return null;
 	}

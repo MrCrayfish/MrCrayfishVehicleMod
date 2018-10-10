@@ -15,10 +15,10 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityAirVehicle extends EntityPoweredVehicle
+public abstract class EntityPlane extends EntityPoweredVehicle
 {
-    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(EntityAirVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityAirVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(EntityPlane.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityPlane.class, DataSerializers.FLOAT);
 
     private float lift;
 
@@ -30,7 +30,7 @@ public abstract class EntityAirVehicle extends EntityPoweredVehicle
     public float bodyRotationY;
     public float bodyRotationZ;
 
-    protected EntityAirVehicle(World worldIn)
+    protected EntityPlane(World worldIn)
     {
         super(worldIn);
         this.setAccelerationSpeed(0.5F);
