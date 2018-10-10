@@ -1,20 +1,13 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
-import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityOffRoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 
 import java.util.List;
@@ -22,7 +15,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class RenderOffRoader extends AbstractRenderPoweredVehicle<EntityOffRoader>
+public class RenderOffRoader extends AbstractRenderLandVehicle<EntityOffRoader>
 {
     public RenderOffRoader()
     {

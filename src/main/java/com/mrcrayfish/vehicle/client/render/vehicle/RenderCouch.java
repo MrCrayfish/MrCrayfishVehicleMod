@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.Minecraft;
@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderCouch extends AbstractRenderPoweredVehicle<EntityCouch>
+public class RenderCouch extends AbstractRenderLandVehicle<EntityCouch>
 {
     public RenderCouch()
     {

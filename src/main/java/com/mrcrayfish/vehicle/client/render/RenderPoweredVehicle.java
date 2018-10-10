@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> extends RenderVehicle<T>
+public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderVehicle<T>>
 {
     private PartPosition enginePosition;
     private PartPosition fuelPortBodyPosition;
@@ -24,7 +24,7 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
 
     protected RenderPoweredVehicle(RenderManager renderManager)
     {
-        super(renderManager);
+        super(renderManager, null);
     }
 
     @Nullable

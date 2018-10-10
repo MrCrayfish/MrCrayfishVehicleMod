@@ -17,7 +17,7 @@ import java.util.List;
  * Author: MrCrayfish
  */
 @SideOnly(Side.CLIENT)
-public abstract class AbstractRenderPoweredVehicle<T extends EntityPoweredVehicle> extends AbstractRenderVehicle<T>
+public abstract class AbstractRenderLandVehicle<T extends EntityPoweredVehicle> extends AbstractRenderVehicle<T>
 {
     private List<Wheel> wheels = new ArrayList<>();
 

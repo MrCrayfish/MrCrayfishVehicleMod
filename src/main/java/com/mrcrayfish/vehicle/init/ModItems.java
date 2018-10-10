@@ -54,6 +54,10 @@ public class ModItems
     public static final Item KEY;
     public static final Item KEY_PORT;
 
+    //Parts used for rendering
+    public static final Item COUCH_HELICOPTER_ARM;
+    public static final Item COUCH_HELICOPTER_SKID;
+
     static
     {
         WHEEL = new ItemPart("wheel");
@@ -101,6 +105,9 @@ public class ModItems
         WRENCH = new ItemWrench();
         KEY = new ItemKey();
         KEY_PORT = new ItemPart("key_hole").setColored();
+
+        COUCH_HELICOPTER_ARM = new ItemPart("couch_helicopter_arm");
+        COUCH_HELICOPTER_SKID = new ItemPart("couch_helicopter_skid");
     }
 
     public static void register()
@@ -150,6 +157,9 @@ public class ModItems
         register(WRENCH);
         register(KEY);
         register(KEY_PORT);
+
+        register(COUCH_HELICOPTER_ARM);
+        register(COUCH_HELICOPTER_SKID);
     }
 
     private static void register(Item item)

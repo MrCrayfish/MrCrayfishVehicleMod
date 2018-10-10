@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
 import net.minecraft.client.Minecraft;
@@ -12,7 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderGoKart extends AbstractRenderPoweredVehicle<EntityGoKart>
+public class RenderGoKart extends AbstractRenderLandVehicle<EntityGoKart>
 {
     public RenderGoKart()
     {

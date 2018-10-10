@@ -12,9 +12,7 @@ import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
-import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemKey;
@@ -59,7 +57,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntitySmartCar.class, RenderSmartCar::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityLawnMower.class, RenderLawnMower::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMoped.class, RenderMoped::new);
-        registerAirVehicleRenderingHandler(EntitySportsPlane.class, new RenderSportsPlane());
+        registerPlaneRenderingHandler(EntitySportsPlane.class, new RenderSportsPlane());
         registerLandVehicleRenderingHandler(EntityGolfCart.class, new RenderGolfCart());
         registerLandVehicleRenderingHandler(EntityOffRoader.class, new RenderOffRoader());
 
@@ -67,6 +65,7 @@ public class ClientProxy implements Proxy
         {
             registerLandVehicleRenderingHandler(EntityCouch.class, new RenderCouch());
             RenderingRegistry.registerEntityRenderingHandler(EntityBath.class, RenderBath::new);
+            registerHelicopterRenderingHandler(EntitySofacopter.class, new RenderCouchHelicopter());
         }
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTrailer.class, RenderTrailer::new);
@@ -83,15 +82,27 @@ public class ClientProxy implements Proxy
 
     }
 
-    private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRenderingHandler(Class<T> clazz, AbstractRenderPoweredVehicle<T> render)
+    private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRenderingHandler(Class<T> clazz, AbstractRenderLandVehicle<T> render)
     {
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleLand<>(manager, render));
         VehicleRenderRegistry.registerRender(clazz, render);
     }
 
-    private <T extends EntityAirVehicle & EntityRaytracer.IEntityRaytraceable> void registerAirVehicleRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
+    private <T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> void registerPlaneRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleAir<>(manager, render));
+        VehicleRenderRegistry.registerRender(clazz, render);
+    }
+
+    private <T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable> void registerHelicopterRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
+    {
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleHelicopter<>(manager, render));
+        VehicleRenderRegistry.registerRender(clazz, render);
+    }
+
+    private <T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable> void registerVehicleRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
+    {
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicle<>(manager, render));
         VehicleRenderRegistry.registerRender(clazz, render);
     }
 

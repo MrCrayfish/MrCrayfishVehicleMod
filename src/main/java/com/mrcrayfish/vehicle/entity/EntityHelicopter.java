@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAltitude;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -22,8 +23,8 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     private float lift;
 
     private float bladeSpeed;
-    private float bladeRotation;
-    private float prevBladeRotation;
+    public float bladeRotation;
+    public float prevBladeRotation;
 
     public float prevBodyRotationX;
     public float prevBodyRotationY;
@@ -33,9 +34,8 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     public float bodyRotationY;
     public float bodyRotationZ;
 
-    private float travelDirection;
-    private float dirX;
-    private float dirZ;
+    public float dirX;
+    public float dirZ;
 
     protected EntityHelicopter(World worldIn)
     {
@@ -67,9 +67,9 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     public void updateVehicleMotion()
     {
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
-        if(entity != null)
+        if(entity != null && this.isFlying())
         {
-            this.rotationYaw = entity.getRotationYawHead();
+            rotationYaw = rotationYaw + (entity.rotationYaw - rotationYaw) * 0.15F;
         }
 
         float travelDirection = this.getTravelDirection();
@@ -80,12 +80,12 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
             dirX = dirX + (newDirX - dirX) * 0.05F;
             dirZ = dirZ + (newDirZ - dirZ) * 0.05F;
         }
-        this.vehicleMotionX = (-currentSpeed * dirX);
-        this.vehicleMotionZ = (currentSpeed * dirZ);
+        vehicleMotionX = (-currentSpeed * dirX);
+        vehicleMotionZ = (currentSpeed * dirZ);
 
         this.updateLift();
-        this.motionY = this.lift * this.getBladeSpeedNormal();
-        this.motionY -= 0.05 + (1.0 - this.getBladeSpeedNormal()) * 0.45;
+        motionY = lift * this.getBladeSpeedNormal();
+        motionY -= 0.05 + (1.0 - this.getBladeSpeedNormal()) * 0.45;
     }
 
     @Override
@@ -110,7 +110,7 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
                 }
                 else
                 {
-                    this.currentSpeed *= 0.9;
+                    this.currentSpeed *= 0.95;
                 }
             }
             else
@@ -136,15 +136,15 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
 
         if(this.canDrive() && this.getControllingPassenger() != null)
         {
-            bladeSpeed += 1F;
-            if(bladeSpeed > 120F)
+            bladeSpeed += 0.5F;
+            if(bladeSpeed > 60F)
             {
-                bladeSpeed = 120F;
+                bladeSpeed = 60F;
             }
         }
         else
         {
-            bladeSpeed *= 0.75F;
+            bladeSpeed *= 0.98F;
         }
         bladeRotation += bladeSpeed;
     }
@@ -154,18 +154,18 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
         AltitudeChange altitudeChange = this.getAltitudeChange();
         if(altitudeChange == AltitudeChange.POSITIVE)
         {
-            this.lift += 0.05F;
+            lift += 0.05F;
         }
         else if(altitudeChange == AltitudeChange.NEGATIVE)
         {
-            this.lift -= 0.05F;
+            lift -= 0.05F;
         }
         else
         {
-            this.lift *= 0.85F;
+            lift *= 0.85F;
         }
-        this.lift = MathHelper.clamp(this.lift, -1.0F, 0.25F);
-        this.setLift(this.lift);
+        lift = MathHelper.clamp(lift, -0.5F, 0.25F);
+        this.setLift(lift);
     }
 
     private float getTravelDirection()
@@ -197,9 +197,9 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     {
         super.onClientUpdate();
 
-        this.prevBodyRotationX = this.bodyRotationX;
-        this.prevBodyRotationY = this.bodyRotationY;
-        this.prevBodyRotationZ = this.bodyRotationZ;
+        prevBodyRotationX = bodyRotationX;
+        prevBodyRotationY = bodyRotationY;
+        prevBodyRotationZ = bodyRotationZ;
 
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
@@ -217,14 +217,21 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
 
         if(this.isFlying())
         {
-            this.bodyRotationX = (float) -Math.toDegrees(Math.atan2(motionY, currentSpeed / 20F));
-            this.bodyRotationZ = (this.turnAngle / (float) getMaxTurnAngle()) * 20F;
+            bodyRotationX = (dirX * 20F * 35F) * this.getActualSpeed();
+            bodyRotationZ = (dirZ * 20F * 35F) * this.getActualSpeed();
         }
         else
         {
-            this.bodyRotationX *= 0.5F;
-            this.bodyRotationZ *= 0.5F;
+            bodyRotationX *= 0.5F;
+            bodyRotationZ *= 0.5F;
         }
+    }
+
+    @Override
+    public void addPassenger(Entity passenger)
+    {
+        super.addPassenger(passenger);
+        passenger.rotationYaw = rotationYaw;
     }
 
     @Override
@@ -263,7 +270,7 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
 
     public float getBladeSpeedNormal()
     {
-        return bladeSpeed / 120F;
+        return bladeSpeed / 60F;
     }
 
     public enum AltitudeChange

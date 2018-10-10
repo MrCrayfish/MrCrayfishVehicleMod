@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import net.minecraft.client.renderer.entity.RenderManager;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class RenderLandVehicle<T extends EntityLandVehicle> extends RenderPoweredVehicle<T>
+public class RenderLandVehicle<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> extends RenderPoweredVehicle<T>
 {
     private List<Wheel> wheels = new ArrayList<>();
 

@@ -10,14 +10,11 @@ import net.minecraft.client.renderer.entity.RenderManager;
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T>
+public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderVehicle<T>>
 {
-    private AbstractRenderVehicle<T> renderVehicle;
-
     public RenderVehicleAir(RenderManager renderManager, AbstractRenderVehicle<T> renderVehicle)
     {
-        super(renderManager);
-        this.renderVehicle = renderVehicle;
+        super(renderManager, renderVehicle);
     }
 
     public AbstractRenderVehicle<T> getRenderVehicle()

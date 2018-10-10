@@ -1,30 +1,18 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
-import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.ResourceLocation;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderDuneBuggy extends AbstractRenderPoweredVehicle<EntityDuneBuggy>
+public class RenderDuneBuggy extends AbstractRenderLandVehicle<EntityDuneBuggy>
 {
     public RenderDuneBuggy()
     {

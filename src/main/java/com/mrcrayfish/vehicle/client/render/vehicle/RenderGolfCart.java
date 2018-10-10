@@ -1,26 +1,18 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderPoweredVehicle;
-import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityGolfCart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderGolfCart extends AbstractRenderPoweredVehicle<EntityGolfCart>
+public class RenderGolfCart extends AbstractRenderLandVehicle<EntityGolfCart>
 {
     public RenderGolfCart()
     {

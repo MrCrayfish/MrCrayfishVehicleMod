@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,9 +14,9 @@ import net.minecraft.util.math.Vec3d;
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderLandVehicle<T>>
+public class RenderVehicleHelicopter<T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderVehicle<T>>
 {
-    public RenderVehicleLand(RenderManager renderManager, AbstractRenderLandVehicle<T> renderVehicle)
+    public RenderVehicleHelicopter(RenderManager renderManager, AbstractRenderVehicle<T> renderVehicle)
     {
         super(renderManager, renderVehicle);
         this.renderVehicle = renderVehicle;
@@ -31,6 +32,8 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
 
             //Translate and rotate using parameters
             GlStateManager.translate(x, y, z);
+            GlStateManager.rotate(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks, 0, 0, 1);
+            GlStateManager.rotate(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks, 1, 0, 0);
             GlStateManager.rotate(-entityYaw, 0, 1, 0);
 
             //Applies the break animation
@@ -43,24 +46,8 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
             GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
 
-            //Applies the additional yaw which is caused by drifting
-            float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
-            GlStateManager.rotate(additionalYaw, 0, 1, 0);
-
             //Translate the body
             GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-
-            //Render the tow bar. Performed before scaling so size is consistent for all vehicles
-            if(entity.canTowTrailer())
-            {
-                GlStateManager.pushMatrix();
-                GlStateManager.rotate(180F, 0, 1, 0);
-
-                Vec3d towBarOffset = entity.getTowBarVec();
-                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
-                GlStateManager.popMatrix();
-            }
 
             //Translate the vehicle to match how it is shown in the model creator
             GlStateManager.translate(0, 0.5, 0);
@@ -78,16 +65,6 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
 
             //Render body
             renderVehicle.render(entity, partialTicks);
-
-            //Render vehicle wheels
-            GlStateManager.pushMatrix();
-            {
-                //Offset wheels and compensate for axle offset
-                GlStateManager.translate(0, -8 * 0.0625, 0);
-                GlStateManager.translate(0, -entity.getAxleOffset() * 0.0625F, 0);
-                renderVehicle.getWheels().forEach(wheel -> wheel.render(entity, partialTicks));
-            }
-            GlStateManager.popMatrix();
 
             //Render the engine if the vehicle has explicitly stated it should
             if(entity.shouldRenderEngine())
