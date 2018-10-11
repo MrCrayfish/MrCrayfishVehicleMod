@@ -1641,7 +1641,7 @@ public class EntityRaytracer
                 {
                     if(notRiding)
                     {
-                        if(player.isSneaking())
+                        if(player.isSneaking() && !player.isSpectator())
                         {
                             PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
                             return true;
