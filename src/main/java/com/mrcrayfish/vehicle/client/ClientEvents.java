@@ -147,7 +147,7 @@ public class ClientEvents
     public void onFovUpdate(FOVUpdateEvent event)
     {
         Entity ridingEntity = Minecraft.getMinecraft().player.getRidingEntity();
-        if(ridingEntity instanceof EntityPlane)
+        if(ridingEntity instanceof EntityPlane || ridingEntity instanceof EntityHelicopter)
         {
             event.setNewfov(1.0F);
         }
