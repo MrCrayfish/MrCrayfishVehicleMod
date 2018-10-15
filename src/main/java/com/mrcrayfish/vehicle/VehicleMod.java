@@ -108,6 +108,7 @@ public class VehicleMod
         {
             registerVehicle("couch", EntityCouch.class);
             registerVehicle("bath", EntityBath.class);
+            registerVehicle("sofacopter", EntitySofacopter.class);
         }
 
         registerVehicle("trailer", EntityTrailer.class);

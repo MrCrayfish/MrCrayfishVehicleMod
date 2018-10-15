@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -18,6 +19,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer.IEntityRaytraceable
 {
+    public static final float AXLE_OFFSET = -0.5F;
+    public static final float WHEEL_OFFSET = 4.45F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.15F);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-13.25F, 3.5F, -7.3F, 0.0F, -90.0F, 0.0F, 0.25F);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-8.5F, 2.75F, 8.5F, -67.5F, 0.0F, 0.0F, 0.5F);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(1.5D, 2.5D, 0.0D);
+
     /**
      * ItemStack instances used for rendering
      */
@@ -28,6 +36,11 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
     {
         super(worldIn);
         this.setSize(2F, 1F);
+        this.setAxleOffset(AXLE_OFFSET);
+        this.setWheelOffset(WHEEL_OFFSET);
+        this.setBodyPosition(BODY_POSITION);
+        this.setKeyHolePosition(KEY_PORT_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
         //TODO figure out electric vehicles
     }
 

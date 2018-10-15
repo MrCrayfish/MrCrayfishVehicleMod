@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -18,6 +19,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytraceable
 {
+    public static final float AXLE_OFFSET = -1.5F;
+    public static final float WHEEL_OFFSET = 1.5F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.4F, 0.0F, 0.0F, 0.0F, 1.2F);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-8.25F, 6.0F, -9.3F, 0.0F, -90.0F, 0.0F, 0.25F);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(6D, 0D, 0D);
+    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0D, -0.03125D, -0.5625D);
+
     /**
      * ItemStack instances used for rendering
      */
@@ -30,9 +38,13 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         this.setMaxSpeed(10);
         this.setSize(1.5F, 1.0F);
         this.setTurnSensitivity(20);
-        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
-        this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.5625D));
+        this.setAxleOffset(AXLE_OFFSET);
+        this.setWheelOffset(WHEEL_OFFSET);
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTrailerOffset(TRAILER_OFFSET_VEC);
+        this.setBodyPosition(BODY_POSITION);
         this.stepHeight = 0.625F;
+
         //TODO figure out fuel system
     }
 
@@ -91,5 +103,11 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
     }
 }

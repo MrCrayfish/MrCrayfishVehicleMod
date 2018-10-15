@@ -30,9 +30,8 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
     public RenderMoped(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-2.75F, 11.4F, -3.4F, -90, 0.2F);
-        this.setFuelPortLidPosition(-2.75F, 11.4F, -1.75F, new Vector3f(0, -90 + 110, 180), 0.2F);
-        this.wheels.add(new Wheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, -6.7F, 1.5F));
+        this.setFuelPortPosition(-2.75F, 13.1F, -3.4F, 0.0F, -90.0F, 0.0F, 0.2F);
+        this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, 1.7F, -6.7F, 1.5F);
 
         Calendar calendar = Calendar.getInstance();
         this.isChristmas = calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DAY_OF_MONTH) >= 24 && calendar.get(Calendar.DAY_OF_MONTH) <= 26;
@@ -65,13 +64,6 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
             GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -20F, 0, 0, 1);
 
             this.setupBreakAnimation(entity, partialTicks);
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, 1.7 * 0.0625, 0);
-                super.doRender(entity, x, y, z, currentYaw, partialTicks);
-            }
-            GlStateManager.popMatrix();
 
             //Render body
             GlStateManager.pushMatrix();
@@ -131,6 +123,8 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
                 GlStateManager.popMatrix();
             }
             GlStateManager.popMatrix();
+
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
 
             if(entity.hasChest())
             {

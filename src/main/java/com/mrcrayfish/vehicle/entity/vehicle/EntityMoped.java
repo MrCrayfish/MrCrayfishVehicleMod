@@ -341,4 +341,11 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
             world.spawnEntity(new EntityItem(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
     }
+
+    //TODO remove and add key support
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
 }

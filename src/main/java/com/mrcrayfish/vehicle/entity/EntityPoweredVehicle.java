@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -10,47 +11,58 @@ import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageHorn;
 import com.mrcrayfish.vehicle.network.message.MessageTurn;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
+import net.minecraft.network.play.server.SPacketChat;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-
-import java.awt.Color;
+import java.awt.*;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
  */
 public abstract class EntityPoweredVehicle extends EntityVehicle
 {
-    private static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.ITEM_STACK);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -73,8 +85,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public float vehicleMotionY;
     public float vehicleMotionZ;
 
+    private UUID owner;
+    private PartPosition enginePosition;
+    private PartPosition keyHolePosition;
+    private PartPosition keyPosition;
+
     @SideOnly(Side.CLIENT)
     public ItemStack engine;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack keyPort;
 
     @SideOnly(Side.CLIENT)
     private FuelPort fuelPort;
@@ -101,6 +121,25 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     {
         this(worldIn);
         this.setPosition(posX, posY, posZ);
+    }
+
+    @Override
+    public void entityInit()
+    {
+        super.entityInit();
+        this.dataManager.register(CURRENT_SPEED, 0F);
+        this.dataManager.register(MAX_SPEED, 10F);
+        this.dataManager.register(ACCELERATION_SPEED, 0.5F);
+        this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
+        this.dataManager.register(TURN_SENSITIVITY, 10);
+        this.dataManager.register(MAX_TURN_ANGLE, 45);
+        this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
+        this.dataManager.register(ENGINE_TYPE, 0);
+        this.dataManager.register(HORN, false);
+        this.dataManager.register(CURRENT_FUEL, 0F);
+        this.dataManager.register(FUEL_CAPACITY, 15000F);
+        this.dataManager.register(NEEDS_KEY, false);
+        this.dataManager.register(KEY_STACK, ItemStack.EMPTY);
     }
 
     public abstract SoundEvent getMovingSound();
@@ -153,26 +192,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     }
 
     @Override
-    public void entityInit()
-    {
-        super.entityInit();
-        this.dataManager.register(CURRENT_SPEED, 0F);
-        this.dataManager.register(MAX_SPEED, 10F);
-        this.dataManager.register(ACCELERATION_SPEED, 0.5F);
-        this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
-        this.dataManager.register(TURN_SENSITIVITY, 10);
-        this.dataManager.register(MAX_TURN_ANGLE, 45);
-        this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
-        this.dataManager.register(ENGINE_TYPE, 0);
-        this.dataManager.register(HORN, false);
-        this.dataManager.register(CURRENT_FUEL, 0F);
-        this.dataManager.register(FUEL_CAPACITY, 15000F);
-    }
-
-    @Override
     public void onClientInit()
     {
         engine = new ItemStack(ModItems.ENGINE);
+        keyPort = new ItemStack(ModItems.KEY_PORT);
         setFuelPort(FuelPort.LID);
     }
 
@@ -194,6 +217,60 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             int drained = jerryCan.drain(stack, rate);
             int remaining = this.addFuel(drained);
             jerryCan.fill(stack, remaining);
+        }
+    }
+
+    @Override
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    {
+        ItemStack stack = player.getHeldItem(hand);
+        if(!world.isRemote && stack.getItem() == ModItems.KEY)
+        {
+            /* If no owner is set, make the owner the person adding the key. It is used because
+             * owner will not be set if the vehicle was summoned through a command */
+            if(this.owner == null)
+            {
+                this.owner = player.getUniqueID();
+            }
+
+            if(!this.owner.equals(player.getUniqueID()))
+            {
+                CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
+                return false;
+            }
+
+            if(this.isEngineLockable())
+            {
+                NBTTagCompound tag = CommonUtils.getItemTagCompound(stack);
+                if(!tag.hasUniqueId("vehicleId") || this.getUniqueID().equals(tag.getUniqueId("vehicleId")))
+                {
+                    tag.setUniqueId("vehicleId", this.getUniqueID());
+                    if(!this.isKeyNeeded())
+                    {
+                        this.setKeyNeeded(true);
+                        CommonUtils.sendInfoMessage(player, "vehicle.status.key_added");
+                    }
+                    else
+                    {
+                        CommonUtils.sendInfoMessage(player, "vehicle.status.key_created");
+                    }
+                    return true;
+                }
+            }
+            else
+            {
+                CommonUtils.sendInfoMessage(player, "vehicle.status.not_lockable");
+                return false;
+            }
+        }
+        return super.processInitialInteract(player, hand);
+    }
+
+    private static void sendInfoMessage(EntityPlayer player, String message)
+    {
+        if(player instanceof EntityPlayerMP)
+        {
+            ((EntityPlayerMP) player).connection.sendPacket(new SPacketChat(new TextComponentTranslation(message), ChatType.GAME_INFO));
         }
     }
 
@@ -301,7 +378,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         AccelerationDirection acceleration = this.getAcceleration();
         if(this.getControllingPassenger() != null)
         {
-            if(this.hasFuel())
+            if(this.canDrive())
             {
                 if(acceleration == AccelerationDirection.FORWARD)
                 {
@@ -356,7 +433,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public void createParticles()
     {
-        if(this.shouldShowEngineSmoke()&& this.hasFuel() && this.ticksExisted % 2 == 0)
+        if(this.shouldShowEngineSmoke()&& this.canDrive() && this.ticksExisted % 2 == 0)
         {
             Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.rotationYaw * 0.017453292F);
             this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ);
@@ -401,6 +478,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     protected void readEntityFromNBT(NBTTagCompound compound)
     {
         super.readEntityFromNBT(compound);
+        if(compound.hasKey("owner", Constants.NBT.TAG_COMPOUND))
+        {
+            this.owner = NBTUtil.getUUIDFromTag(compound.getCompoundTag("owner"));
+        }
         if(compound.hasKey("engineType", Constants.NBT.TAG_INT))
         {
             this.setEngineType(EngineType.getType(compound.getInteger("engineType")));
@@ -433,12 +514,21 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.setFuelCapacity(compound.getInteger("fuelCapacity"));
         }
+        if(compound.hasKey("keyNeeded", Constants.NBT.TAG_BYTE))
+        {
+            this.setKeyNeeded(compound.getBoolean("keyNeeded"));
+        }
+        this.setKeyStack(CommonUtils.readItemStackFromTag(compound, "keyStack"));
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         super.writeEntityToNBT(compound);
+        if(owner != null)
+        {
+            compound.setTag("owner", NBTUtil.createUUIDTag(owner));
+        }
         compound.setInteger("engineType", this.getEngineType().ordinal());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
@@ -447,6 +537,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         compound.setFloat("stepHeight", this.stepHeight);
         compound.setFloat("currentFuel", this.getCurrentFuel());
         compound.setFloat("fuelCapacity", this.getFuelCapacity());
+        compound.setBoolean("keyNeeded", this.isKeyNeeded());
+        CommonUtils.writeItemStackToTag(compound, "keyStack", this.getKeyStack());
     }
 
     @Nullable
@@ -628,7 +720,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return launching;
     }
 
-    public boolean hasFuel()
+    public boolean isFueled()
     {
         Entity entity = this.getControllingPassenger();
         if(entity instanceof EntityPlayer)
@@ -681,6 +773,77 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return remaining;
     }
 
+    public void setKeyNeeded(boolean needsKey)
+    {
+        this.dataManager.set(NEEDS_KEY, needsKey);
+    }
+
+    public boolean isKeyNeeded()
+    {
+        return this.dataManager.get(NEEDS_KEY);
+    }
+
+    public void setKeyStack(ItemStack stack)
+    {
+        this.dataManager.set(KEY_STACK, stack);
+    }
+
+    public ItemStack getKeyStack()
+    {
+        return this.dataManager.get(KEY_STACK);
+    }
+
+    public void ejectKey()
+    {
+        if(!this.getKeyStack().isEmpty())
+        {
+            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyHolePosition());
+            world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
+            this.setKeyStack(ItemStack.EMPTY);
+        }
+    }
+
+    public boolean isEngineLockable()
+    {
+        return true;
+    }
+
+    public boolean canDrive()
+    {
+        return this.isFueled() && !this.isKeyNeeded() || !this.getKeyStack().isEmpty();
+    }
+
+    public void setEnginePosition(PartPosition enginePosition)
+    {
+        this.enginePosition = enginePosition;
+    }
+
+    public PartPosition getEnginePosition()
+    {
+        return enginePosition;
+    }
+
+    public void setKeyHolePosition(PartPosition keyHolePosition)
+    {
+        this.keyHolePosition = keyHolePosition;
+        this.keyPosition = new PartPosition(keyHolePosition.getX(), keyHolePosition.getY(), keyHolePosition.getZ(), keyHolePosition.getRotX() + 90, 0, 0, 0.15);
+    }
+
+    public PartPosition getKeyHolePosition()
+    {
+        return keyHolePosition;
+    }
+
+    public PartPosition getKeyPosition()
+    {
+        return keyPosition;
+    }
+
+    public boolean isOwner(EntityPlayer player)
+    {
+        return owner == null || player.getUniqueID().equals(owner);
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
@@ -707,6 +870,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
                 fuelPortClosed.getTagCompound().setInteger("color", colorInt);
                 fuelPortBody.getTagCompound().setInteger("color", colorInt);
                 fuelPortLid.getTagCompound().setInteger("color", colorInt);
+                CommonUtils.getItemTagCompound(keyPort).setInteger("color", colorInt);
             }
         }
     }

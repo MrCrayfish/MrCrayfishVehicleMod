@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class ItemSprayCan extends Item implements SubItems
+public class ItemSprayCan extends Item implements SubItems, IDyeable
 {
     public static final int MAX_SPRAYS = 5;
 
@@ -82,18 +82,21 @@ public class ItemSprayCan extends Item implements SubItems
         return tagCompound;
     }
 
+    @Override
     public boolean hasColor(ItemStack stack)
     {
         NBTTagCompound tagCompound = createTagCompound(stack);
         return tagCompound.hasKey("color", Constants.NBT.TAG_INT);
     }
 
+    @Override
     public int getColor(ItemStack stack)
     {
         NBTTagCompound tagCompound = createTagCompound(stack);
         return tagCompound.getInteger("color");
     }
 
+    @Override
     public void setColor(ItemStack stack, int color)
     {
         NBTTagCompound tagCompound = createTagCompound(stack);

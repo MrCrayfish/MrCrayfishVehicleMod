@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import net.minecraft.client.Minecraft;
@@ -13,11 +14,11 @@ import net.minecraft.entity.EntityLivingBase;
 /**
  * Author: MrCrayfish
  */
-public class RenderTrailer extends RenderVehicle<EntityTrailer>
+public class RenderTrailer extends RenderVehicle<EntityTrailer, AbstractRenderVehicle<EntityTrailer>>
 {
     public RenderTrailer(RenderManager renderManager)
     {
-        super(renderManager);
+        super(renderManager, null);
     }
 
     @Override

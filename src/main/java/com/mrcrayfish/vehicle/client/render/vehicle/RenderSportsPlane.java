@@ -1,109 +1,73 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySportsPlane;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderSportsPlane extends RenderPoweredVehicle<EntitySportsPlane>
+public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
 {
-    public RenderSportsPlane(RenderManager renderManager)
+    public RenderSportsPlane()
     {
-        super(renderManager);
-        this.setFuelPortPosition(-6.25F, 4.0F, -1, -90, 0.25F);
+        this.setFuelPortPosition(EntitySportsPlane.FUEL_PORT_POSITION);
     }
 
     @Override
-    public void doRender(EntitySportsPlane entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void render(EntitySportsPlane entity, float partialTicks)
     {
-        RenderHelper.enableStandardItemLighting();
-
-        EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
-        if(entityLivingBase != null)
-        {
-            entityLivingBase.renderYawOffset = currentYaw;
-            entityLivingBase.prevRenderYawOffset = currentYaw;
-        }
+        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
 
         GlStateManager.pushMatrix();
         {
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            GlStateManager.translate(0, 11 * 0.0625, -0.5);
-            GlStateManager.scale(1.8, 1.8, 1.8);
-
-            this.setupBreakAnimation(entity, partialTicks);
-
-            double bodyLevelToGround = 0.5;
-
-            float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
-            float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-
-            //Render the body
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, bodyLevelToGround, 0);
-                GlStateManager.rotate(-bodyRoll, 0, 0, 1);
-                GlStateManager.rotate(-bodyPitch, 1, 0, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
-
-                super.doRender(entity, x, y, z, currentYaw, partialTicks);
-
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.translate(0, -3 * 0.0625, 8 * 0.0625);
-                    GlStateManager.translate(8 * 0.0625, 0, 0);
-                    GlStateManager.translate(6 * 0.0625, 0, 0);
-                    GlStateManager.rotate(-5F, 1, 0, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wing, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.translate(0, -3 * 0.0625, 8 * 0.0625);
-                    GlStateManager.rotate(180F, 0, 0, 1);
-                    GlStateManager.translate(8 * 0.0625, 0.0625, 0);
-                    GlStateManager.translate(6 * 0.0625, 0, 0);
-                    GlStateManager.rotate(5F, 1, 0, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wing, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                {
-                    GlStateManager.translate(0, -bodyLevelToGround, 0);
-                    GlStateManager.scale(0.85, 0.85, 0.85);
-                    renderWheel(entity, 0F, -3 * 0.0625F, 24 * 0.0625F, 0.8F, 0F, partialTicks);
-                    renderWheel(entity, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 0.8F, 100F, partialTicks);
-                    renderWheel(entity, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 0.8F, -100F, partialTicks);
-                }
-                GlStateManager.popMatrix();
-
-                GlStateManager.pushMatrix();
-                {
-                    float propellerRotation = entity.prevPropellerRotation + (entity.propellerRotation - entity.prevPropellerRotation) * partialTicks;
-                    GlStateManager.translate(0, -1.5 * 0.0625, 22.2 * 0.0625);
-                    GlStateManager.rotate(propellerRotation, 0, 0, 1);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.propeller, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
+            GlStateManager.translate(0, -3 * 0.0625, 8 * 0.0625);
+            GlStateManager.translate(8 * 0.0625, 0, 0);
+            GlStateManager.translate(6 * 0.0625, 0, 0);
+            GlStateManager.rotate(-5F, 1, 0, 0);
+            Minecraft.getMinecraft().getRenderItem().renderItem(entity.wing, ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
-        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(0, -3 * 0.0625, 8 * 0.0625);
+            GlStateManager.rotate(180F, 0, 0, 1);
+            GlStateManager.translate(8 * 0.0625, 0.0625, 0);
+            GlStateManager.translate(6 * 0.0625, 0, 0);
+            GlStateManager.rotate(5F, 1, 0, 0);
+            Minecraft.getMinecraft().getRenderItem().renderItem(entity.wing, ItemCameraTransforms.TransformType.NONE);
+        }
+        GlStateManager.popMatrix();
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(0, -0.5, 0);
+            GlStateManager.scale(0.85, 0.85, 0.85);
+            renderWheel(entity, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks);
+            renderWheel(entity, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks);
+            renderWheel(entity, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks);
+        }
+        GlStateManager.popMatrix();
+
+        GlStateManager.pushMatrix();
+        {
+            float propellerRotation = entity.prevPropellerRotation + (entity.propellerRotation - entity.prevPropellerRotation) * partialTicks;
+            GlStateManager.translate(0, -1.5 * 0.0625, 22.2 * 0.0625);
+            GlStateManager.rotate(propellerRotation, 0, 0, 1);
+            Minecraft.getMinecraft().getRenderItem().renderItem(entity.propeller, ItemCameraTransforms.TransformType.NONE);
+        }
+        GlStateManager.popMatrix();
     }
 
-    public void renderWheel(EntitySportsPlane vehicle, float offsetX, float offsetY, float offsetZ, float wheelScale, float legRotation, float partialTicks)
+    private void renderWheel(EntitySportsPlane vehicle, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
@@ -120,7 +84,7 @@ public class RenderSportsPlane extends RenderPoweredVehicle<EntitySportsPlane>
                         float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
                         GlStateManager.rotate(-wheelRotation, 1, 0, 0);
                     }
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
+                    GlStateManager.scale(0.8F, 0.8F, 0.8F);
                     Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
@@ -131,5 +95,27 @@ public class RenderSportsPlane extends RenderPoweredVehicle<EntitySportsPlane>
             Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.leg, ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void applyPlayerModel(EntitySportsPlane entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    {
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+    }
+
+    @Override
+    public void applyPlayerRender(EntitySportsPlane entity, EntityPlayer player, float partialTicks)
+    {
+        GlStateManager.translate(0, -8 * 0.0625, 0.5);
+        GlStateManager.translate(0, 0.625, 0);
+        float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
+        float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
+        GlStateManager.rotate(bodyRoll, 0, 0, 1);
+        GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+        GlStateManager.translate(0, -0.625, 0);
+        GlStateManager.translate(0, 8 * 0.0625, -0.5);
     }
 }

@@ -1,10 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
-import com.mrcrayfish.vehicle.item.ItemEngine;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
-import com.mrcrayfish.vehicle.item.ItemPart;
-import com.mrcrayfish.vehicle.item.ItemWrench;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.item.*;
 import net.minecraft.item.Item;
 
 /**
@@ -55,6 +51,12 @@ public class ModItems
     public static final Item FUEL_PORT_2_PIPE;
     
     public static final Item WRENCH;
+    public static final Item KEY;
+    public static final Item KEY_PORT;
+
+    //Parts used for rendering
+    public static final Item COUCH_HELICOPTER_ARM;
+    public static final Item COUCH_HELICOPTER_SKID;
 
     static
     {
@@ -101,6 +103,11 @@ public class ModItems
         FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
 
         WRENCH = new ItemWrench();
+        KEY = new ItemKey();
+        KEY_PORT = new ItemPart("key_hole").setColored();
+
+        COUCH_HELICOPTER_ARM = new ItemPart("couch_helicopter_arm");
+        COUCH_HELICOPTER_SKID = new ItemPart("couch_helicopter_skid");
     }
 
     public static void register()
@@ -148,6 +155,11 @@ public class ModItems
         register(FUEL_PORT_2_PIPE);
 
         register(WRENCH);
+        register(KEY);
+        register(KEY_PORT);
+
+        register(COUCH_HELICOPTER_ARM);
+        register(COUCH_HELICOPTER_SKID);
     }
 
     private static void register(Item item)

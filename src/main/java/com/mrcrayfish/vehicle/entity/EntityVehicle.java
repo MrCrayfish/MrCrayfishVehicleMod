@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
@@ -35,8 +36,11 @@ public abstract class EntityVehicle extends Entity
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
 
+    private PartPosition bodyPosition;
     private Vec3d heldOffset = Vec3d.ZERO;
     private Vec3d trailerOffset = Vec3d.ZERO;
+    private float axleOffset;
+    private float wheelOffset;
 
     /**
      * ItemStack instances used for rendering
@@ -390,6 +394,15 @@ public abstract class EntityVehicle extends Entity
         return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
     }
 
+    public void setBodyPosition(PartPosition bodyPosition)
+    {
+        this.bodyPosition = bodyPosition;
+    }
+
+    public PartPosition getBodyPosition()
+    {
+        return bodyPosition;
+    }
 
     public void setHeldOffset(Vec3d heldOffset)
     {
@@ -414,6 +427,46 @@ public abstract class EntityVehicle extends Entity
     public boolean canMountTrailer()
     {
         return true;
+    }
+
+    public void setAxleOffset(float axleOffset)
+    {
+        this.axleOffset = axleOffset;
+    }
+
+    public float getAxleOffset()
+    {
+        return axleOffset;
+    }
+
+    public void setWheelOffset(float wheelOffset)
+    {
+        this.wheelOffset = wheelOffset;
+    }
+
+    public float getWheelOffset()
+    {
+        return wheelOffset;
+    }
+
+    /**
+     * Gets the absolute position of a part in the world
+     *
+     * @param position the position definition of the part
+     * @return a Vec3d containing the exact location
+     */
+    protected Vec3d getPartPositionAbsoluteVec(PartPosition position)
+    {
+        Vec3d partVec = new Vec3d(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        partVec = partVec.addVector(0, this.getWheelOffset() * 0.0625, 0);
+        partVec = partVec.addVector(0, this.getAxleOffset() * 0.0625, 0);
+        partVec = partVec.addVector(0, 0.5, 0);
+        partVec = partVec.scale(bodyPosition.getScale());
+        partVec = partVec.addVector(0, -0.5, 0);
+        partVec = partVec.addVector(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+        partVec = partVec.rotateYaw(-this.rotationYaw * 0.017453292F);
+        partVec = partVec.add(this.getPositionVector());
+        return partVec;
     }
 
     protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)

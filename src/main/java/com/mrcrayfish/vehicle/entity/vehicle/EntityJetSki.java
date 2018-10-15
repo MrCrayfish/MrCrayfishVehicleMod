@@ -142,4 +142,11 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
     {
         return true;
     }
+
+    //TODO remove and add key support
+    @Override
+    public boolean isEngineLockable()
+    {
+        return false;
+    }
 }

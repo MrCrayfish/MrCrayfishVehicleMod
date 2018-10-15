@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -11,21 +12,19 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import javax.annotation.Nullable;
-import javax.vecmath.Vector3f;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> extends RenderVehicle<T>
+public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderVehicle<T>>
 {
-    private PartPosition enginePosition = new PartPosition(1.0F);
-    private PartPosition fuelPortBodyPosition = new PartPosition(0.25F);
-    private PartPosition fuelPortLidPosition = new PartPosition(0.25F);
-    private PartPosition fuelPortClosedPosition = new PartPosition(0.25F);
+    private PartPosition enginePosition;
+    private PartPosition fuelPortBodyPosition;
+    private PartPosition fuelPortLidPosition;
 
     protected RenderPoweredVehicle(RenderManager renderManager)
     {
-        super(renderManager);
+        super(renderManager, null);
     }
 
     @Nullable
@@ -40,7 +39,7 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
     {
         if(entity.shouldRenderEngine())
         {
-            enginePosition.renderPart(entity.engine);
+            this.renderPart(enginePosition, entity.engine);
         }
 
         if(entity.shouldRenderFuelPort())
@@ -48,88 +47,39 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle> exten
             RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                fuelPortBodyPosition.renderPart(entity.fuelPortBody);
-                fuelPortLidPosition.renderPart(entity.fuelPortLid);
+                this.renderPart(fuelPortBodyPosition, entity.fuelPortBody);
+                if(this.shouldRenderFuelLid())
+                {
+                    this.renderPart(fuelPortLidPosition, entity.fuelPortLid);
+                }
                 entity.playFuelPortOpenSound();
             }
             else
             {
-                fuelPortClosedPosition.renderPart(entity.fuelPortClosed);
+                this.renderPart(fuelPortBodyPosition, entity.fuelPortClosed);
                 entity.playFuelPortCloseSound();
             }
         }
     }
 
-    private void setPartPosition(PartPosition partPosition, float x, float y, float z, Vector3f rotation, float scale)
-    {
-        partPosition.x = x;
-        partPosition.y = y;
-        partPosition.z = z;
-        partPosition.rotation = rotation;
-        partPosition.scale = scale;
-    }
-
     public void setEnginePosition(float x, float y, float z, float rotation, float scale)
     {
-        setPartPosition(enginePosition, x, y, z, new Vector3f(0, rotation, 0), scale);
+        this.enginePosition = new PartPosition(x, y, z, 0.0F, rotation, 0.0F, scale);
     }
 
-    public void setFuelPortPosition(float x, float y, float z, float rotation, float scale)
+    public void setFuelPortPosition(float x, float y, float z, float rotation)
     {
-        setFuelPortPosition(x, y, z, new Vector3f(0, rotation, 0), scale);
+        this.setFuelPortPosition(x, y, z, 0.0F, rotation, 0.0F, 0.25F);
     }
 
-    public void setFuelPortPosition(float x, float y, float z, Vector3f rotation, float scale)
+    public void setFuelPortPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
     {
-        setPartPosition(fuelPortClosedPosition, x, y, z, rotation, scale);
-        setPartPosition(fuelPortBodyPosition, x, y, z, rotation, scale);
-        setPartPosition(fuelPortLidPosition, x, y, z, new Vector3f(rotation.x, rotation.y - 110, rotation.z), scale);
+        this.fuelPortBodyPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
+        this.fuelPortLidPosition = new PartPosition(x, y, z, rotX, rotY - 110.0F, rotZ, scale);
     }
 
-    public void setFuelPortClosedPosition(float x, float y, float z, Vector3f rotation, float scale)
+    protected boolean shouldRenderFuelLid()
     {
-        setPartPosition(fuelPortClosedPosition, x, y, z, rotation, scale);
-    }
-
-    public void setFuelPortLidPosition(float x, float y, float z, Vector3f rotation, float scale)
-    {
-        setPartPosition(fuelPortLidPosition, x, y, z, rotation, scale);
-    }
-
-    private static class PartPosition
-    {
-        private float x, y, z;
-        private Vector3f rotation;
-        private float scale;
-
-        public PartPosition(float scale)
-        {
-            this(0, 0, 0, new Vector3f(0, 0, 0), scale);
-        }
-
-        public PartPosition(float x, float y, float z, Vector3f rotation, float scale)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.rotation = rotation;
-            this.scale = scale;
-        }
-
-        public void renderPart(ItemStack part)
-        {
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(x * 0.0625, y * 0.0625, z * 0.0625);
-                GlStateManager.translate(0, -0.5, 0);
-                GlStateManager.scale(scale, scale, scale);
-                GlStateManager.translate(0, 0.5, 0);
-                GlStateManager.rotate(rotation.x, 1, 0, 0);
-                GlStateManager.rotate(rotation.y, 0, 1, 0);
-                GlStateManager.rotate(rotation.z, 0, 0, 1);
-                Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-        }
+        return true;
     }
 }

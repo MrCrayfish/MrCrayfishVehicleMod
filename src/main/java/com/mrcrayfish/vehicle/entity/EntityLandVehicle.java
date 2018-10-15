@@ -161,7 +161,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void createParticles()
     {
-        if(!this.hasFuel())
+        if(!this.canDrive())
             return;
 
         int x = MathHelper.floor(this.posX);
@@ -206,6 +206,17 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         }
     }
 
+    @Override
+    protected void applyYawToEntity(Entity entityToUpdate)
+    {
+        entityToUpdate.setRenderYawOffset(this.rotationYaw - this.additionalYaw);
+        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
+        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
+        entityToUpdate.prevRotationYaw += f1 - f;
+        entityToUpdate.rotationYaw += f1 - f;
+        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
+    }
+
     public void setDrifting(boolean drifting)
     {
         this.dataManager.set(DRIFTING, drifting);
@@ -218,7 +229,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
     public void setTowBarPosition(Vec3d towBarVec)
     {
-        this.towBarVec = towBarVec;
+        this.towBarVec = towBarVec.scale(0.0625);
     }
 
     public Vec3d getTowBarVec()

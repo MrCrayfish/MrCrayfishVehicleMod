@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.entity.EntityAirVehicle;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 
@@ -17,8 +18,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytraceable
+public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceable
 {
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 11 * 0.0625F, -8 * 0.0625F, 0.0F, 0.0F, 0.0F, 1.8F);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-6.25F, 4.0F, -1.0F, 0.0F, -90.0F, 0.0F, 0.25F);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0.0F, 3.75F, 12.5F, -67.5F, 0.0F, 0.0F, 0.5F);
+
     public float wheelSpeed;
     public float wheelRotation;
     public float prevWheelRotation;
@@ -49,6 +54,8 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         this.setSize(3F, 1.6875F);
         this.setFuelCapacity(75000F);
         this.setFuelConsumption(4.0F);
+        this.setBodyPosition(BODY_POSITION);
+        this.setKeyHolePosition(KEY_PORT_POSITION);
     }
 
     @Override
@@ -110,7 +117,7 @@ public class EntitySportsPlane extends EntityAirVehicle implements IEntityRaytra
         }
         wheelRotation -= (90F * wheelSpeed);
 
-        if(this.hasFuel() && this.getControllingPassenger() != null) //1914 4424 7485 11360
+        if(this.canDrive() && this.getControllingPassenger() != null)
         {
             propellerSpeed += 1F;
             if(propellerSpeed > 120F)

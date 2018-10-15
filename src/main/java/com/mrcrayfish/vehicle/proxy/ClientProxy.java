@@ -8,12 +8,14 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
+import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
+import com.mrcrayfish.vehicle.item.ItemKey;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
@@ -43,26 +45,27 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
-        RenderingRegistry.registerEntityRenderingHandler(EntityATV.class, RenderATV::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityDuneBuggy.class, RenderDuneBuggy::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityGoKart.class, RenderGoKart::new);
+        registerLandVehicleRenderingHandler(EntityATV.class, new RenderATV());
+        registerLandVehicleRenderingHandler(EntityDuneBuggy.class, new RenderDuneBuggy());
+        registerLandVehicleRenderingHandler(EntityGoKart.class, new RenderGoKart());
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityBumperCar.class, RenderBumperCar::new);
+        registerLandVehicleRenderingHandler(EntityBumperCar.class, new RenderBumperCar());
         RenderingRegistry.registerEntityRenderingHandler(EntityJetSki.class, RenderJetSki::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySpeedBoat.class, RenderSpeedBoat::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAluminumBoat.class, RenderAluminumBoat::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySmartCar.class, RenderSmartCar::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityLawnMower.class, RenderLawnMower::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityMoped.class, RenderMoped::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntitySportsPlane.class, RenderSportsPlane::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityGolfCart.class, RenderGolfCart::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityOffRoader.class, RenderOffRoader::new);
+        registerPlaneRenderingHandler(EntitySportsPlane.class, new RenderSportsPlane());
+        registerLandVehicleRenderingHandler(EntityGolfCart.class, new RenderGolfCart());
+        registerLandVehicleRenderingHandler(EntityOffRoader.class, new RenderOffRoader());
 
         if(Loader.isModLoaded("cfm"))
         {
-            RenderingRegistry.registerEntityRenderingHandler(EntityCouch.class, RenderCouch::new);
+            registerLandVehicleRenderingHandler(EntityCouch.class, new RenderCouch());
             RenderingRegistry.registerEntityRenderingHandler(EntityBath.class, RenderBath::new);
+            registerHelicopterRenderingHandler(EntitySofacopter.class, new RenderCouchHelicopter());
         }
 
         RenderingRegistry.registerEntityRenderingHandler(EntityTrailer.class, RenderTrailer::new);
@@ -79,6 +82,30 @@ public class ClientProxy implements Proxy
 
     }
 
+    private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRenderingHandler(Class<T> clazz, AbstractRenderLandVehicle<T> render)
+    {
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleLand<>(manager, render));
+        VehicleRenderRegistry.registerRender(clazz, render);
+    }
+
+    private <T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> void registerPlaneRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
+    {
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleAir<>(manager, render));
+        VehicleRenderRegistry.registerRender(clazz, render);
+    }
+
+    private <T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable> void registerHelicopterRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
+    {
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleHelicopter<>(manager, render));
+        VehicleRenderRegistry.registerRender(clazz, render);
+    }
+
+    private <T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable> void registerVehicleRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
+    {
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicle<>(manager, render));
+        VehicleRenderRegistry.registerRender(clazz, render);
+    }
+
     @Override
     public void init()
     {
@@ -92,7 +119,7 @@ public class ClientProxy implements Proxy
         };
         RegistrationHandler.Items.getItems().forEach(item ->
         {
-            if(item instanceof ItemSprayCan || (item instanceof ItemPart && ((ItemPart) item).isColored()))
+            if(item instanceof ItemSprayCan || item instanceof ItemKey || (item instanceof ItemPart && ((ItemPart) item).isColored()))
             {
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
             }

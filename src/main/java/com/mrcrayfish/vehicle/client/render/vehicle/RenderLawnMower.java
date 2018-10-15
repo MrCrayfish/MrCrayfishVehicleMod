@@ -23,12 +23,12 @@ public class RenderLawnMower extends RenderLandVehicle<EntityLawnMower>
     public RenderLawnMower(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
-        this.setFuelPortPosition(-4.75F, 9.5F, 3.5F, -90, 0.25F);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 13.5F, 1.15F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 13.5F, 1.15F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 0.6F, -10.7F, 1.55F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 0.6F, -10.7F, 1.55F));
+        this.setEnginePosition(0F, 10.5F, -9F, 180F, 1.2F);
+        this.setFuelPortPosition(-4.75F, 12.5F, 3.5F, -90.0F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 3.0F, 13.5F, 1.15F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 3.0F, 13.5F, 1.15F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 3.6F, -10.7F, 1.55F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 3.6F, -10.7F, 1.55F);
     }
 
     @Nullable
@@ -101,7 +101,6 @@ public class RenderLawnMower extends RenderLandVehicle<EntityLawnMower>
             }
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0, 3.0F * 0.0625F, 0);
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
