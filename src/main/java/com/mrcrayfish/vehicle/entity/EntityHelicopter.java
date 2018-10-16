@@ -244,6 +244,12 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
         return 0;
     }
 
+    /*
+     * Overridden to prevent players from taking fall damage when landing a plane
+     */
+    @Override
+    public void fall(float distance, float damageMultiplier) {}
+
     public void setAltitudeChange(AltitudeChange altitudeChange)
     {
         this.dataManager.set(ALTITUDE_CHANGE, altitudeChange.ordinal());
