@@ -410,6 +410,17 @@ public class EntityRaytracer
                     MatrixTransformation.createRotation(90, 0, 1, 0),
                     MatrixTransformation.createTranslation(0, 0.7109375, 0));
             entityRaytracePartsStatic.put(EntityCouch.class, couchParts);
+
+            // Sofacopter
+            List<MatrixTransformation> sofacopterTransformGlobal = Lists.newArrayList();
+            createBodyTransforms(sofacopterTransformGlobal, EntitySofacopter.BODY_POSITION, 0, 0);
+            HashMap<RayTracePart, List<MatrixTransformation>> sofacopterParts = Maps.newHashMap();
+            createTranformListForPart(Item.getByNameOrId("cfm:couch"), sofacopterParts, sofacopterTransformGlobal,
+                    MatrixTransformation.createRotation(90, 0, 1, 0));
+            createTranformListForPart(ModItems.COUCH_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
+                    MatrixTransformation.createTranslation(0, 8 * 0.0625, 0.0));
+            createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySofacopter.FUEL_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal, FUNCTION_FUELING);
+            entityRaytracePartsStatic.put(EntitySofacopter.class, sofacopterParts);
         }
 
         List<MatrixTransformation> trailerTransformGlobal = Lists.newArrayList();

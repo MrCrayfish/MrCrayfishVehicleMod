@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySofacopter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -13,10 +14,14 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderCouchHelicopter extends AbstractRenderVehicle<EntitySofacopter>
 {
+    public RenderCouchHelicopter()
+    {
+        this.setFuelPortPosition(EntitySofacopter.FUEL_PORT_POSITION);
+    }
+
     @Override
     public void render(EntitySofacopter entity, float partialTicks)
     {
-
         GlStateManager.pushMatrix();
         GlStateManager.rotate(90F, 0, 1, 0);
         Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
