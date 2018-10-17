@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
+import net.minecraft.block.BlockHorizontal;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.BlockFaceShape;
@@ -16,7 +18,7 @@ import net.minecraft.world.World;
  */
 public abstract class BlockRotatedObject extends BlockObject
 {
-    public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+    public static final PropertyDirection FACING = BlockHorizontal.FACING;
 
     public BlockRotatedObject(Material material, String id)
     {
