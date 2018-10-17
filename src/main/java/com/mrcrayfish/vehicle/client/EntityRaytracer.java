@@ -420,6 +420,7 @@ public class EntityRaytracer
             createTranformListForPart(ModItems.COUCH_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
                     MatrixTransformation.createTranslation(0, 8 * 0.0625, 0.0));
             createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySofacopter.FUEL_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal, FUNCTION_FUELING);
+            createPartTransforms(ModItems.KEY_PORT, EntitySofacopter.KEY_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal);
             entityRaytracePartsStatic.put(EntitySofacopter.class, sofacopterParts);
         }
 

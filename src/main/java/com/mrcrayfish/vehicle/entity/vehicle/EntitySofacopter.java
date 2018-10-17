@@ -18,6 +18,7 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
 {
     public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.0625F, 0.0F, 0.0F, 0.0F, 1.0F);
     public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2.0F, 1.75F, 8.25F, 0.0F, 0.0F, 0.0F, 0.45F);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-9.25F, 8.0F, 5.0, 0.0, 0.0, 0.0, 0.8F);
 
     @SideOnly(Side.CLIENT)
     public ItemStack arm;
@@ -33,8 +34,10 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
         super(worldIn);
         this.setSize(1.0F, 1.0F);
         this.setBodyPosition(BODY_POSITION);
+        this.setKeyHolePosition(KEY_PORT_POSITION);
         this.setFuelCapacity(40000F);
         this.setFuelConsumption(2.0F);
+
         this.dataManager.set(COLOR, 11546150);
     }
 
