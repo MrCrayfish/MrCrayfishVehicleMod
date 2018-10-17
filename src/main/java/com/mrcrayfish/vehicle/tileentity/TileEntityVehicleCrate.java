@@ -2,11 +2,13 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.Constants;
@@ -95,6 +97,7 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                 if(timer == 150)
                 {
                     VehicleMod.proxy.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, pos, 1.0F, 1.0F);
+                    world.spawnParticle(EnumParticleTypes.EXPLOSION_HUGE, false, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 0, 0, 0);
                 }
             }
             if(!world.isRemote && timer > 250)
