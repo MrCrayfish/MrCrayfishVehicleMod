@@ -26,6 +26,12 @@ public abstract class BlockRotatedObject extends BlockObject
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
     }
 
+    public BlockRotatedObject(Material material, MapColor color, String id)
+    {
+        super(material, color, id);
+        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+    }
+
     @Override
     public boolean isOpaqueCube(IBlockState state)
     {

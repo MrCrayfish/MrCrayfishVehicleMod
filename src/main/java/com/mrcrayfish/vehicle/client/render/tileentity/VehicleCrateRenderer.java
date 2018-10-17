@@ -1,9 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
+import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -27,9 +30,19 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
     @Override
     public void render(TileEntityVehicleCrate te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
+        IBlockState state = te.getWorld().getBlockState(te.getPos());
+        if(state.getBlock() != ModBlocks.VEHICLE_CRATE)
+            return;
+
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(x, y, z);
+
+            EnumFacing facing = state.getValue(BlockRotatedObject.FACING);
+            GlStateManager.translate(0.5, 0.5, 0.5);
+            GlStateManager.rotate(facing.getHorizontalIndex() * -90F + 180F, 0, 1, 0);
+            GlStateManager.translate(-0.5, -0.5, -0.5);
+
             RenderHelper.enableStandardItemLighting();
             GlStateManager.disableLighting();
 

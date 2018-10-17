@@ -34,28 +34,14 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class BlockVehicleCrate extends Block
+public class BlockVehicleCrate extends BlockRotatedObject
 {
     public BlockVehicleCrate()
     {
-        super(Material.IRON, MapColor.SILVER);
-        this.setUnlocalizedName("vehicle_crate");
-        this.setRegistryName("vehicle_crate");
+        super(Material.IRON, MapColor.SILVER, "vehicle_crate");
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
-    }
-
-    @Override
-    public boolean isOpaqueCube(IBlockState state)
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isFullCube(IBlockState state)
-    {
-        return false;
     }
 
     @Override
@@ -105,12 +91,6 @@ public class BlockVehicleCrate extends Block
     public EnumBlockRenderType getRenderType(IBlockState state)
     {
         return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
-    }
-
-    @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
-    {
-        return BlockFaceShape.UNDEFINED;
     }
 
     @Override

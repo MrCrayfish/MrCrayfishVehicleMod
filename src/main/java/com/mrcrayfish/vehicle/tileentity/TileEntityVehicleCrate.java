@@ -1,14 +1,17 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.ResourceLocation;
@@ -106,6 +109,9 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
             }
             if(!world.isRemote && timer > 250)
             {
+                IBlockState state = world.getBlockState(pos);
+                EnumFacing facing = state.getValue(BlockVehicleCrate.FACING);
+
                 Entity entity = EntityList.createEntityByIDFromName(entityId, world);
                 if(entity != null)
                 {
@@ -113,10 +119,10 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                     {
                         ((EntityPoweredVehicle) entity).setOwner(opener);
                     }
-                    entity.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
+                    entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing.getHorizontalIndex() * 90F + 180F, 0F);
                     world.spawnEntity(entity);
-                    world.setBlockToAir(pos);
                 }
+                world.setBlockToAir(pos);
             }
         }
     }
