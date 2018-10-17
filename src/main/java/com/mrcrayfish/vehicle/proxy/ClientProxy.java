@@ -163,9 +163,9 @@ public class ClientProxy implements Proxy
     }
 
     @Override
-    public void playSound(SoundEvent soundEvent, BlockPos pos)
+    public void playSound(SoundEvent soundEvent, BlockPos pos, float volume, float pitch)
     {
-        ISound sound = new PositionedSoundRecord(soundEvent, SoundCategory.BLOCKS, 1.0F, 0.25F, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
+        ISound sound = new PositionedSoundRecord(soundEvent, SoundCategory.BLOCKS, volume, pitch, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
         Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getSoundHandler().playSound(sound));
     }
 

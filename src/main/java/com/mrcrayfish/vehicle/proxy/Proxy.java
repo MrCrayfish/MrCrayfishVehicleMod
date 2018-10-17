@@ -16,5 +16,5 @@ public interface Proxy
 
     void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle);
 
-    default void playSound(SoundEvent sound, BlockPos pos) {};
+    default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {};
 }

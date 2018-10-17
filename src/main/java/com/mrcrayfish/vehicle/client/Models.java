@@ -14,7 +14,7 @@ import net.minecraftforge.client.model.ModelLoader;
  */
 public enum Models
 {
-    VEHICLE_CRATE("vehicle_crate");
+    VEHICLE_CRATE("vehicle_crate_panel");
 
     /**
      * An arbitrary item in your mod to register isolated models as variants of

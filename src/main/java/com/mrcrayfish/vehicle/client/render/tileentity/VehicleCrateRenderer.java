@@ -35,6 +35,14 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
 
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
+            GlStateManager.pushMatrix();
+
+            if(te.isOpened() && te.getTimer() > 150)
+            {
+                double progress = Math.min(1.0F, Math.max(0, (te.getTimer() - 150 + 5 * partialTicks)) / 50.0);
+                GlStateManager.translate(0, (-4 * 0.0625) * progress, 0);
+            }
+
             //Sides panels
             for(int i = 0; i < 4; i++)
             {
@@ -80,6 +88,8 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
             Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
 
+            GlStateManager.popMatrix();
+
             if(te.getEntity() != null && te.isOpened())
             {
                 GlStateManager.enableLighting();
@@ -93,6 +103,8 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
                     GlStateManager.translate(0, Math.sin(Math.PI * progress) * 5, 0);
                     GlStateManager.rotate((float) (720F * progress), 0, 1, 0);
                 }
+
+                GlStateManager.translate(0, (2 * 0.0625F) * (1.0F - progress), 0);
 
                 GlStateManager.scale(scale, scale, scale);
                 te.getEntity().setLocationAndAngles(x, y, z, 0.0F, 0.0F);
