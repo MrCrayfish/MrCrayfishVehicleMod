@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
+import com.mrcrayfish.vehicle.util.Bounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -15,12 +16,14 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
@@ -36,12 +39,43 @@ import java.util.List;
  */
 public class BlockVehicleCrate extends BlockRotatedObject
 {
+    private static final AxisAlignedBB PANEL = new Bounds(0, 0, 0, 16, 2, 16).toAABB();
+
     public BlockVehicleCrate()
     {
         super(Material.IRON, MapColor.SILVER, "vehicle_crate");
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        TileEntity tileEntity = source.getTileEntity(pos);
+        if(tileEntity instanceof TileEntityVehicleCrate)
+        {
+            if(((TileEntityVehicleCrate) tileEntity).isOpened())
+            {
+                return PANEL;
+            }
+        }
+        return FULL_BLOCK_AABB;
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof TileEntityVehicleCrate)
+        {
+            if(((TileEntityVehicleCrate) tileEntity).isOpened())
+            {
+                Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, PANEL);
+                return;
+            }
+        }
+        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, FULL_BLOCK_AABB);
     }
 
     @Override
