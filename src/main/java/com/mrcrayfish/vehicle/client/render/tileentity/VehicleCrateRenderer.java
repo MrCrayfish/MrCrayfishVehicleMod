@@ -43,9 +43,6 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
             GlStateManager.rotate(facing.getHorizontalIndex() * -90F + 180F, 0, 1, 0);
             GlStateManager.translate(-0.5, -0.5, -0.5);
 
-            RenderHelper.enableStandardItemLighting();
-            GlStateManager.disableLighting();
-
             this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
 
             GlStateManager.pushMatrix();
