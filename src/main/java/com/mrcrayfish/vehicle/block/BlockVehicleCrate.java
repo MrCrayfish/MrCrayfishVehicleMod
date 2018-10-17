@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
@@ -48,7 +49,7 @@ public class BlockVehicleCrate extends Block
     @Override
     public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if(!worldIn.isRemote && facing == EnumFacing.UP)
+        if(!worldIn.isRemote && facing == EnumFacing.UP && playerIn.getHeldItem(hand).getItem() == ModItems.WRENCH)
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if(tileEntity instanceof TileEntityVehicleCrate)
