@@ -65,10 +65,26 @@ public class BlockVehicleCrate extends Block
             TileEntity tileEntity = worldIn.getTileEntity(pos);
             if(tileEntity instanceof TileEntityVehicleCrate)
             {
-                ((TileEntityVehicleCrate) tileEntity).open();
+                ((TileEntityVehicleCrate) tileEntity).open(playerIn.getUniqueID());
             }
         }
         return true;
+    }
+
+    @Override
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    {
+        if(!worldIn.isRemote)
+        {
+            if(placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode)
+            {
+                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                if(tileEntity instanceof TileEntityVehicleCrate)
+                {
+                    ((TileEntityVehicleCrate) tileEntity).open(placer.getUniqueID());
+                }
+            }
+        }
     }
 
     @Override

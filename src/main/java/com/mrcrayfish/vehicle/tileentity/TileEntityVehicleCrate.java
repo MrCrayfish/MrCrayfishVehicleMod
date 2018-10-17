@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * Author: MrCrayfish
@@ -28,6 +30,7 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
     private ResourceLocation entityId;
     private boolean opened = false;
     private int timer;
+    private UUID opener;
 
     @SideOnly(Side.CLIENT)
     private Entity entity;
@@ -43,11 +46,12 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         return entityId;
     }
 
-    public void open()
+    public void open(UUID opener)
     {
         if(this.entityId != null)
         {
             this.opened = true;
+            this.opener = opener;
             this.syncToClient();
         }
     }
@@ -105,6 +109,10 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                 Entity entity = EntityList.createEntityByIDFromName(entityId, world);
                 if(entity != null)
                 {
+                    if(opener != null && entity instanceof EntityPoweredVehicle)
+                    {
+                        ((EntityPoweredVehicle) entity).setOwner(opener);
+                    }
                     entity.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
                     world.spawnEntity(entity);
                     world.setBlockToAir(pos);
@@ -120,6 +128,10 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         {
             compound.setString("vehicle", entityId.toString());
         }
+        if(opener != null)
+        {
+            compound.setUniqueId("opener", opener);
+        }
         compound.setBoolean("opened", opened);
         return super.writeToNBT(compound);
     }
@@ -131,6 +143,10 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         if(compound.hasKey("vehicle", Constants.NBT.TAG_STRING))
         {
             entityId = new ResourceLocation(compound.getString("vehicle"));
+        }
+        if(compound.hasKey("opener", Constants.NBT.TAG_STRING))
+        {
+            opener = compound.getUniqueId("opener");
         }
         if(compound.hasKey("opened", Constants.NBT.TAG_BYTE))
         {
