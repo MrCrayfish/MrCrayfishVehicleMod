@@ -14,12 +14,15 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Random;
 
 /**
  * Author: MrCrayfish
  */
 public class TileEntityVehicleCrate extends TileEntitySynced implements ITickable
 {
+    private static final Random RAND = new Random();
+
     private ResourceLocation entityId;
     private boolean opened = false;
     private int timer;
@@ -73,6 +76,7 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
             {
                 if(entityId != null && entity == null)
                 {
+                    VehicleMod.proxy.playSound(SoundEvents.ENTITY_ITEM_BREAK, pos, 1.0F, 0.5F);
                     entity = EntityList.createEntityByIDFromName(entityId, world);
                     if(entity != null)
                     {
@@ -85,11 +89,12 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                 }
                 if(timer == 90 || timer == 110 || timer == 130 || timer == 150)
                 {
-                    VehicleMod.proxy.playSound(SoundEvents.BLOCK_METAL_FALL, pos);
+                    float pitch = (float) (0.9F + 0.2F * RAND.nextDouble());
+                    VehicleMod.proxy.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND, pos, 1.0F, pitch);
                 }
                 if(timer == 150)
                 {
-                    VehicleMod.proxy.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, pos);
+                    VehicleMod.proxy.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, pos, 1.0F, 1.0F);
                 }
             }
             if(!world.isRemote && timer > 250)
