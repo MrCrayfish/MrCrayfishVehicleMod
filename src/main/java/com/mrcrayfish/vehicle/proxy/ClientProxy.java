@@ -25,9 +25,12 @@ import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -157,6 +160,13 @@ public class ClientProxy implements Proxy
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundHornRiding(player, vehicle));
             }
         });
+    }
+
+    @Override
+    public void playSound(SoundEvent soundEvent, BlockPos pos)
+    {
+        ISound sound = new PositionedSoundRecord(soundEvent, SoundCategory.BLOCKS, 1.0F, 0.25F, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getSoundHandler().playSound(sound));
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)

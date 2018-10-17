@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ITickable;
@@ -67,16 +69,27 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         if(opened)
         {
             timer += 5;
-            if(world.isRemote && entityId != null && entity == null)
+            if(world.isRemote)
             {
-                entity = EntityList.createEntityByIDFromName(entityId, world);
-                if(entity != null)
+                if(entityId != null && entity == null)
                 {
-                    List<EntityDataManager.DataEntry<?>> entryList = entity.getDataManager().getAll();
-                    if(entryList != null)
+                    entity = EntityList.createEntityByIDFromName(entityId, world);
+                    if(entity != null)
                     {
-                        entryList.forEach(dataEntry -> entity.notifyDataManagerChange(dataEntry.getKey()));
+                        List<EntityDataManager.DataEntry<?>> entryList = entity.getDataManager().getAll();
+                        if(entryList != null)
+                        {
+                            entryList.forEach(dataEntry -> entity.notifyDataManagerChange(dataEntry.getKey()));
+                        }
                     }
+                }
+                if(timer == 90 || timer == 110 || timer == 130 || timer == 150)
+                {
+                    VehicleMod.proxy.playSound(SoundEvents.BLOCK_METAL_FALL, pos);
+                }
+                if(timer == 150)
+                {
+                    VehicleMod.proxy.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, pos);
                 }
             }
             if(!world.isRemote && timer > 250)
