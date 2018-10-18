@@ -730,12 +730,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public boolean requiresFuel()
     {
-        return VehicleConfig.SERVER.fuelEnabled || this.dataManager.get(REQUIRES_FUEL);
+        return VehicleConfig.SERVER.fuelEnabled && this.dataManager.get(REQUIRES_FUEL);
     }
 
     public void setRequiresFuel(boolean requiresFuel)
     {
-        this.dataManager.set(REQUIRES_FUEL, VehicleConfig.SERVER.fuelEnabled || requiresFuel);
+        this.dataManager.set(REQUIRES_FUEL, VehicleConfig.SERVER.fuelEnabled && requiresFuel);
     }
 
     public boolean isFueled()
