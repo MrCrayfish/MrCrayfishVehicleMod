@@ -134,7 +134,7 @@ public class CommonEvents
 
     public static boolean pickUpVehicle(World world, EntityPlayer player, EnumHand hand, Entity targetEntity)
     {
-        if (hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking())
+        if(hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && !player.isSpectator())
         {
             if(player.getDataManager().get(HELD_VEHICLE).hasNoTags())
             {
@@ -209,8 +209,7 @@ public class CommonEvents
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
     {
-        if(event.getHand() == EnumHand.OFF_HAND)
-            return;
+        if(event.getHand() == EnumHand.OFF_HAND) return;
 
         EntityPlayer player = event.getEntityPlayer();
         World world = event.getWorld();
@@ -232,7 +231,7 @@ public class CommonEvents
                     if(entity != null && entity instanceof EntityVehicle)
                     {
                         MinecraftServer server = world.getMinecraftServer();
-                        if (server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
+                        if(server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
                         {
                             server.addScheduledTask(() ->
                             {
@@ -272,8 +271,7 @@ public class CommonEvents
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if(event.getHand() == EnumHand.OFF_HAND)
-            return;
+        if(event.getHand() == EnumHand.OFF_HAND) return;
 
         World world = event.getWorld();
         if(world.isRemote)
@@ -321,25 +319,30 @@ public class CommonEvents
         if(entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
-            NBTTagCompound tagCompound = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
-            if(!tagCompound.hasNoTags())
-            {
-                NBTTagCompound blankTag = new NBTTagCompound();
-                HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                if(heldVehicle != null)
-                {
-                    heldVehicle.setVehicleTag(blankTag);
-                }
-                player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
+            this.dropVehicle(player);
+        }
+    }
 
-                Entity vehicle = EntityList.createEntityFromNBT(tagCompound, player.world);
-                if(vehicle != null && vehicle instanceof EntityPoweredVehicle)
-                {
-                    float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                    Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
-                    vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
-                    player.world.spawnEntity(vehicle);
-                }
+    private void dropVehicle(EntityPlayer player)
+    {
+        NBTTagCompound tagCompound = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
+        if(!tagCompound.hasNoTags())
+        {
+            NBTTagCompound blankTag = new NBTTagCompound();
+            HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+            if(heldVehicle != null)
+            {
+                heldVehicle.setVehicleTag(blankTag);
+            }
+            player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
+
+            Entity vehicle = EntityList.createEntityFromNBT(tagCompound, player.world);
+            if(vehicle != null && vehicle instanceof EntityPoweredVehicle)
+            {
+                float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
+                player.world.spawnEntity(vehicle);
             }
         }
     }
@@ -363,6 +366,10 @@ public class CommonEvents
                     }
                     player.getDataManager().set(TRAILER, -1);
                 }
+            }
+            if(!world.isRemote && player.isSpectator())
+            {
+                this.dropVehicle(player);
             }
         }
     }
