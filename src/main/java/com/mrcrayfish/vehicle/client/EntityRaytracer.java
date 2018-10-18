@@ -148,7 +148,7 @@ public class EntityRaytracer
                 if (entity instanceof EntityPoweredVehicle)
                 {
                     EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
-                    if (poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
+                    if (poweredVehicle.requiresFuel() && poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
                     {
                         int fuel = ((ItemJerryCan) stack.getItem()).getCurrentFuel(stack);
                         if (fuel > 0)
