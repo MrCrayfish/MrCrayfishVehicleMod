@@ -73,7 +73,7 @@ public class RenderVehicleHelicopter<T extends EntityHelicopter & EntityRaytrace
             }
 
             //Render the fuel port of the vehicle
-            if(entity.shouldRenderFuelPort())
+            if(entity.shouldRenderFuelPort() && entity.requiresFuel())
             {
                 EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
                 if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))

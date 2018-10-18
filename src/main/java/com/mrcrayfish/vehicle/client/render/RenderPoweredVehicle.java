@@ -42,7 +42,7 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle & Enti
             this.renderPart(enginePosition, entity.engine);
         }
 
-        if(entity.shouldRenderFuelPort())
+        if(entity.shouldRenderFuelPort() && entity.requiresFuel())
         {
             RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))

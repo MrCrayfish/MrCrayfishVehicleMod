@@ -96,7 +96,7 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             }
 
             //Render the fuel port of the vehicle
-            if(entity.shouldRenderFuelPort())
+            if(entity.shouldRenderFuelPort() && entity.requiresFuel())
             {
                 EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
                 if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))

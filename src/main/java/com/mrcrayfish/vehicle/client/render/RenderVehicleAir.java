@@ -77,7 +77,7 @@ public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRay
             }
 
             //Render the fuel port of the vehicle
-            if(entity.shouldRenderFuelPort())
+            if(entity.shouldRenderFuelPort() && entity.requiresFuel())
             {
                 EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
                 if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
