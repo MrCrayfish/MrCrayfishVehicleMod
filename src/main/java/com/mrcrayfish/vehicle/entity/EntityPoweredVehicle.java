@@ -867,6 +867,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return owner == null || player.getUniqueID().equals(owner);
     }
 
+    public void setOwner(UUID owner)
+    {
+        this.owner = owner;
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {

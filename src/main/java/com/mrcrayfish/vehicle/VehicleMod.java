@@ -116,6 +116,6 @@ public class VehicleMod
 
     private void registerVehicle(String id, Class<? extends EntityVehicle> clazz)
     {
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, id, nextEntityId++, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, Reference.MOD_ID + "." + id, nextEntityId++, this, 64, 1, true);
     }
 }

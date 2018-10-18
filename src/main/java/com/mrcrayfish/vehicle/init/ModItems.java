@@ -55,6 +55,7 @@ public class ModItems
     public static final Item KEY_PORT;
 
     //Parts used for rendering
+    public static final Item MODELS;
     public static final Item COUCH_HELICOPTER_ARM;
     public static final Item COUCH_HELICOPTER_SKID;
 
@@ -108,6 +109,7 @@ public class ModItems
 
         COUCH_HELICOPTER_ARM = new ItemPart("couch_helicopter_arm");
         COUCH_HELICOPTER_SKID = new ItemPart("couch_helicopter_skid");
+        MODELS = new ItemModels();
     }
 
     public static void register()
@@ -158,6 +160,7 @@ public class ModItems
         register(KEY);
         register(KEY_PORT);
 
+        register(MODELS);
         register(COUCH_HELICOPTER_ARM);
         register(COUCH_HELICOPTER_SKID);
     }
