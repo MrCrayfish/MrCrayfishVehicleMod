@@ -21,9 +21,9 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
 {
     public static final float AXLE_OFFSET = -1.5F;
     public static final float WHEEL_OFFSET = 4.375F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.25F, 0.0F, 0.0F, 0.0F, 1.25F);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-1.57F, 6.55F, 5.3F, -90.0F, 0.0F, 0.0F, 0.35F);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-5F, 4.5F, 6.5F, -45.0F, 0.0F, 0.0F, 0.5F);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.25, 0, 0, 0, 1.25);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-1.57, 6.55, 5.3, -90, 0, 0, 0.35);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-5, 4.5, 6.5, -45, 0, 0, 0.5);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(4.0D, 3.5D, 0.0D);
     private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -20.8D);
     private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0D, 0.0D, -0.55D); //TODO may be able to get rid of this

@@ -19,7 +19,7 @@ public class RenderJetSki extends RenderPoweredVehicle<EntityJetSki>
     public RenderJetSki(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-1.57F, 18.65F, 4.87F, -135.0F, 0.0F, 0.0F, 0.35F);
+        this.setFuelPortPosition(-1.57, 18.65, 4.87, -135, 0, 0, 0.35);
     }
 
     @Override

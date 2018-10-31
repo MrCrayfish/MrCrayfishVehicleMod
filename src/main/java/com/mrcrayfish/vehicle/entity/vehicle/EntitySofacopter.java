@@ -16,9 +16,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySofacopter extends EntityHelicopter implements EntityRaytracer.IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.0625F, 0.0F, 0.0F, 0.0F, 1.0F);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2.0F, 1.75F, 8.25F, 0.0F, 0.0F, 0.0F, 0.45F);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-9.25F, 8.0F, 5.0, 0.0, 0.0, 0.0, 0.8F);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.0625, 0, 0, 0, 1);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2, 1.75, 8.25, 0, 0, 0, 0.45);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8);
 
     @SideOnly(Side.CLIENT)
     public ItemStack arm;

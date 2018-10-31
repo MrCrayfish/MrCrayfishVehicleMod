@@ -20,9 +20,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 11 * 0.0625F, -8 * 0.0625F, 0.0F, 0.0F, 0.0F, 1.8F);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-6.25F, 4.0F, -1.0F, 0.0F, -90.0F, 0.0F, 0.25F);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0.0F, 3.75F, 12.5F, -67.5F, 0.0F, 0.0F, 0.5F);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-6.25, 4, -1, 0, -90, 0, 0.25);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5);
 
     public float wheelSpeed;
     public float wheelRotation;

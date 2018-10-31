@@ -23,7 +23,7 @@ public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
     public RenderAluminumBoat(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-16.25F, 3.0F, -18.5F, -90.0F);
+        this.setFuelPortPosition(-16.25, 3, -18.5, -90);
         this.noWater = (new ModelRenderer(new ModelBase()
         {
             @Override

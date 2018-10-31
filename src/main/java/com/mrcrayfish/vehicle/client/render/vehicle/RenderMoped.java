@@ -30,7 +30,7 @@ public class RenderMoped extends RenderLandVehicle<EntityMoped>
     public RenderMoped(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-2.75F, 13.1F, -3.4F, 0.0F, -90.0F, 0.0F, 0.2F);
+        this.setFuelPortPosition(-2.75, 13.1, -3.4, 0, -90, 0, 0.2);
         this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, 1.7F, -6.7F, 1.5F);
 
         Calendar calendar = Calendar.getInstance();
