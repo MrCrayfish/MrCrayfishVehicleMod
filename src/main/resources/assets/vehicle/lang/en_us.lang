@@ -34,6 +34,7 @@ tile.fluid_pump.name=Fluid Pump
 tile.fuel_drum.name=Fuel Drum
 tile.industrial_fuel_drum.name=Industrial Fuel Drum
 tile.vehicle_crate.name=Vehicle Crate
+tile.workstation.name=Workstation
 
 fluid.fuelium=Fuelium
 fluid.ender_sap=Ender Sap
