@@ -121,6 +121,7 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                         ((EntityPoweredVehicle) entity).setOwner(opener);
                     }
                     entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing.getHorizontalIndex() * 90F + 180F, 0F);
+                    entity.setRotationYawHead(facing.getHorizontalIndex() * 90F + 180F);
                     world.spawnEntity(entity);
                 }
                 world.setBlockToAir(pos);
