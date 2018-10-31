@@ -32,7 +32,8 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
     public void setFuelPortPosition(PartPosition fuelPortPosition)
     {
-        this.fuelPortPosition = fuelPortPosition;
+        this.setFuelPortPosition(fuelPortPosition.getX(), fuelPortPosition.getY(), fuelPortPosition.getZ(),
+                fuelPortPosition.getRotX(), fuelPortPosition.getRotY(), fuelPortPosition.getRotZ(), fuelPortPosition.getScale());
     }
 
     protected void setFuelPortPosition(double x, double y, double z, double rotation)
