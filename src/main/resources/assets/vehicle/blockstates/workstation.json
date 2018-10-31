@@ -10,68 +10,68 @@
         "facing=north": [
             {
                 "model": "vehicle:workstation",
-                "weight": 6,
+                "weight": 8,
                 "y": 0
             },
             {
                 "model": "vehicle:workstation_paper",
-                "weight": 1,
+                "weight": 2,
                 "y": 0
             },
             {
                 "model": "vehicle:workstation_coffee",
-                "weight": 1,
+                "weight": 2,
                 "y": 0
             }
         ],
         "facing=east": [
             {
                 "model": "vehicle:workstation",
-                "weight": 6,
+                "weight": 8,
                 "y": 90
             },
             {
                 "model": "vehicle:workstation_paper",
-                "weight": 1,
+                "weight": 2,
                 "y": 90
             },
             {
                 "model": "vehicle:workstation_coffee",
-                "weight": 1,
+                "weight": 2,
                 "y": 90
             }
         ],
         "facing=south": [
             {
                 "model": "vehicle:workstation",
-                "weight": 6,
+                "weight": 8,
                 "y": 180
             },
             {
                 "model": "vehicle:workstation_paper",
-                "weight": 1,
+                "weight": 2,
                 "y": 180
             },
             {
                 "model": "vehicle:workstation_coffee",
-                "weight": 1,
+                "weight": 2,
                 "y": 180
             }
         ],
         "facing=west": [
             {
                 "model": "vehicle:workstation",
-                "weight": 6,
+                "weight": 8,
                 "y": 270
             },
             {
                 "model": "vehicle:workstation_paper",
-                "weight": 1,
+                "weight": 2,
                 "y": 270
             },
             {
                 "model": "vehicle:workstation_coffee",
-                "weight": 1,
+                "weight": 2,
                 "y": 270
             }
         ]

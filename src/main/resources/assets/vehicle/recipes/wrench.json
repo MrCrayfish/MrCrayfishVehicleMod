@@ -1,0 +1,24 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IDI",
+        " I ",
+        " C "
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "D": {
+            "item": "minecraft:dye",
+            "data": 1
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 7
+        }
+    },
+    "result": {
+        "item": "vehicle:wrench"
+    }
+}

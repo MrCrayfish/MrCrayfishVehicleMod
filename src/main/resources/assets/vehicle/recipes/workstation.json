@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "TTT",
+        "SWS",
+        "SCS"
+    ],
+    "key": {
+        "T": {
+            "item": "minecraft:concrete",
+            "data": 8
+        },
+        "S": {
+            "item": "minecraft:concrete",
+            "data": 14
+        },
+        "W": {
+            "item": "minecraft:crafting_table"
+        },
+        "C": {
+            "item": "minecraft:chest"
+        }
+    },
+    "result": {
+        "item": "vehicle:workstation"
+    }
+}

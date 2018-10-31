@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "BUB",
+        "III"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "B": {
+            "item": "minecraft:iron_block"
+        },
+        "U": {
+            "item": "minecraft:bucket"
+        }
+    },
+    "result": {
+        "item": "vehicle:fuel_drum"
+    }
+}
