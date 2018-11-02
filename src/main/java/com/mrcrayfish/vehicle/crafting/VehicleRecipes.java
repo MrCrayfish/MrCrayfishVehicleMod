@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.common;
+package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -40,16 +40,17 @@ public class VehicleRecipes
         /* ATV */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 64));
-        builder.addMaterial(new ItemStack(ModItems.ATV_HANDLE_BAR, 1));
+        builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 4));
+        builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 6));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
-        builder.addMaterial(new ItemStack(ModItems.TOW_BAR, 1));
         mapBuilder.put(EntityATV.class, builder.build());
 
         /* Bumper Car */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
-        builder.addMaterial(new ItemStack(ModItems.GO_KART_STEERING_WHEEL, 1));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 8));
         mapBuilder.put(EntityBumperCar.class, builder.build());
 
         /* Dune Buggy */
@@ -63,30 +64,28 @@ public class VehicleRecipes
         /* Go Kart */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
-        builder.addMaterial(new ItemStack(ModItems.GO_KART_STEERING_WHEEL, 1));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         mapBuilder.put(EntityGoKart.class, builder.build());
 
         /* Golf Cart */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 128));
+        builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 4));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 0));
-        builder.addMaterial(new ItemStack(ModItems.GO_KART_STEERING_WHEEL, 1));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 12));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         mapBuilder.put(EntityGolfCart.class, builder.build());
 
         /* Jet Ski */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 80));
-        builder.addMaterial(new ItemStack(ModItems.ATV_HANDLE_BAR, 1));
         mapBuilder.put(EntityJetSki.class, builder.build());
 
         /* Lawn Mower */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 64));
-        builder.addMaterial(new ItemStack(ModItems.GO_KART_STEERING_WHEEL, 1));
+        builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
-        builder.addMaterial(new ItemStack(ModItems.TOW_BAR, 1));
         mapBuilder.put(EntityLawnMower.class, builder.build());
 
         /* Mini Bike */
@@ -99,6 +98,7 @@ public class VehicleRecipes
         /* Moped */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
+        builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 2));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         mapBuilder.put(EntityMoped.class, builder.build());
@@ -107,35 +107,40 @@ public class VehicleRecipes
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 150));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 15));
-        builder.addMaterial(new ItemStack(ModItems.GO_KART_STEERING_WHEEL, 1));
+        builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 6));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 12));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         mapBuilder.put(EntityOffRoader.class, builder.build());
 
         /* Shopping Cart */
         builder = new Builder();
-        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 16));
+        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 8));
+        builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 4));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
+        builder.addMaterial(new ItemStack(Items.DYE, 2, EnumDyeColor.RED.getDyeDamage()));
         mapBuilder.put(EntityShoppingCart.class, builder.build());
 
         /* Smart Car */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 80));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 15));
+        builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 6));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 8));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
-        builder.addMaterial(new ItemStack(ModItems.TOW_BAR, 1));
         mapBuilder.put(EntitySmartCar.class, builder.build());
 
         /* Speed Boat */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 80));
+        builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 15));
         builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 4));
-        builder.addMaterial(new ItemStack(ModItems.GO_KART_STEERING_WHEEL, 1));
         mapBuilder.put(EntitySpeedBoat.class, builder.build());
 
         /* Sports Plane */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 180));
         builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 16));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 18));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 3));
         mapBuilder.put(EntitySportsPlane.class, builder.build());
 
@@ -164,7 +169,7 @@ public class VehicleRecipes
             builder = new Builder();
             builder.addMaterial(new ItemStack(Item.getByNameOrId("cfm:couch"), 1, 14));
             builder.addMaterial(new ItemStack(Item.getByNameOrId("cfm:ceiling_fan")));
-            builder.addMaterial(new ItemStack(Items.IRON_INGOT, 8));
+            builder.addMaterial(new ItemStack(Items.IRON_INGOT, 16));
             mapBuilder.put(EntitySofacopter.class, builder.build());
         }
 

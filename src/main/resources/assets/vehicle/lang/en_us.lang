@@ -23,6 +23,8 @@ item.wrench.name=Wrench
 item.key.name=Key
 item.wheel.name=Wheel
 item.tow_bar.name=Tow Bar
+item.go_kart_steering_wheel.name=Steering Wheel
+item.handle_bar.name=Handle Bars
 
 tile.traffic_cone.name=Traffic Cone
 tile.boost_pad.name=Boost Pad
