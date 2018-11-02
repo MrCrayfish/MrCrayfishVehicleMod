@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.item.*;
 import net.minecraft.item.Item;
 
@@ -61,7 +62,7 @@ public class ModItems
 
     static
     {
-        WHEEL = new ItemPart("wheel");
+        WHEEL = new ItemPart("wheel").setCreativeTab(VehicleMod.CREATIVE_TAB);
         ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
         DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body").setColored();
@@ -114,6 +115,7 @@ public class ModItems
 
     public static void register()
     {
+        register(ENGINE);
         register(WHEEL);
         register(ATV_BODY);
         register(ATV_HANDLE_BAR);
@@ -145,7 +147,6 @@ public class ModItems
         register(TRAILER_BODY);
         register(TOW_BAR);
 
-        register(ENGINE);
         register(SPRAY_CAN);
         register(JERRY_CAN);
         register(INDUSTRIAL_JERRY_CAN);
