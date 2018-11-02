@@ -77,7 +77,7 @@ public class GuiWorkstation extends GuiContainer
     private static final ResourceLocation GUI = new ResourceLocation("vehicle:textures/gui/workstation.png");
 
     private MaterialItem[] materials;
-    private int currentVehicle = 0;
+    private static int currentVehicle = 0;
     private EntityVehicle[] cachedVehicle;
     private IInventory playerInventory;
     private TileEntityWorkstation workstation;
@@ -105,6 +105,7 @@ public class GuiWorkstation extends GuiContainer
         this.buttonList.add(new GuiButton(1, startX, startY + 40, 20, 20, "<"));
         this.buttonList.add(new GuiButton(2, startX + 156, startY + 40, 20, 20, ">"));
         this.buttonList.add(btnCraft = new GuiButton(3, startX, startY, 50, 20, "Craft"));
+        this.btnCraft.enabled = false;
     }
 
     @Override
@@ -196,7 +197,7 @@ public class GuiWorkstation extends GuiContainer
             materials[i] = new MaterialItem(recipe.getMaterials().get(i));
         }
 
-        this.currentVehicle = index;
+        currentVehicle = index;
     }
 
     @Override
