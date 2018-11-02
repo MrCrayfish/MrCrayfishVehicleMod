@@ -15,8 +15,6 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.Calendar;
 
-import javax.vecmath.Vector3f;
-
 /**
  * Author: MrCrayfish
  */

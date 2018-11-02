@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.gui;
 
 import com.mrcrayfish.vehicle.common.container.ContainerFluidMixer;
 import com.mrcrayfish.vehicle.init.ModFluids;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;

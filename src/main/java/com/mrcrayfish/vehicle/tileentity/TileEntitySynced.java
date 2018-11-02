@@ -6,7 +6,6 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fluids.capability.TileFluidHandler;
 
 public class TileEntitySynced extends TileEntity
 {

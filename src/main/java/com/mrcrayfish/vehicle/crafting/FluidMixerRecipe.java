@@ -3,8 +3,6 @@ package com.mrcrayfish.vehicle.crafting;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.Fluid;
 
-import java.util.Arrays;
-
 /**
  * Author: MrCrayfish
  */

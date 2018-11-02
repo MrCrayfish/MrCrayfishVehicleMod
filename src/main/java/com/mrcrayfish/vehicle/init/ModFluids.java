@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.init;
 
-import java.awt.Color;
-
 import com.mrcrayfish.vehicle.Reference;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;

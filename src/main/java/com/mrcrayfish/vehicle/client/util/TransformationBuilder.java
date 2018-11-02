@@ -1,12 +1,9 @@
 package com.mrcrayfish.vehicle.client.util;
 
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix4f;
+import net.minecraftforge.common.model.TRSRTransformation;
+
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
-
-import net.minecraftforge.client.model.ForgeBlockStateV1;
-import net.minecraftforge.common.model.TRSRTransformation;
 
 public class TransformationBuilder 
 {

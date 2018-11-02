@@ -8,7 +8,6 @@ import net.minecraftforge.fluids.Fluid;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 /**

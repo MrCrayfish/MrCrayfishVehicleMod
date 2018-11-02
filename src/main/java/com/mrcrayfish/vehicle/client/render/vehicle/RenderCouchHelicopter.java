@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySofacopter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;

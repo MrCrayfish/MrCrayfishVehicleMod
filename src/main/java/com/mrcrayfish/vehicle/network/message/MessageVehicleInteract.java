@@ -1,11 +1,11 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import java.util.UUID;
-
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+
+import java.util.UUID;
 
 public class MessageVehicleInteract implements IMessage
 {

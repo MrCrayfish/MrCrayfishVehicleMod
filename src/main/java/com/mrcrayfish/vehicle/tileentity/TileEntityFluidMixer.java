@@ -2,14 +2,12 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.crafting.FluidExtract;
-import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipes;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;

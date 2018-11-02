@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.item;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EngineType;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
