@@ -58,20 +58,20 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle & Enti
         }
     }
 
-    public void setEnginePosition(float x, float y, float z, float rotation, float scale)
+    public void setEnginePosition(double x, double y, double z, double rotation, double scale)
     {
-        this.enginePosition = new PartPosition(x, y, z, 0.0F, rotation, 0.0F, scale);
+        this.enginePosition = new PartPosition(x, y, z, 0, rotation, 0, scale);
     }
 
-    public void setFuelPortPosition(float x, float y, float z, float rotation)
+    public void setFuelPortPosition(double x, double y, double z, double rotation)
     {
-        this.setFuelPortPosition(x, y, z, 0.0F, rotation, 0.0F, 0.25F);
+        this.setFuelPortPosition(x, y, z, 0, rotation, 0, 0.25);
     }
 
-    public void setFuelPortPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
+    public void setFuelPortPosition(double x, double y, double z, double rotX, double rotY, double rotZ, double scale)
     {
         this.fuelPortBodyPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
-        this.fuelPortLidPosition = new PartPosition(x, y, z, rotX, rotY - 110.0F, rotZ, scale);
+        this.fuelPortLidPosition = new PartPosition(x, y, z, rotX, rotY - 110, rotZ, scale);
     }
 
     protected boolean shouldRenderFuelLid()

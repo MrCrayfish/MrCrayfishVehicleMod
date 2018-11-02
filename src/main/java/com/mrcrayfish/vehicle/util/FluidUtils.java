@@ -67,7 +67,7 @@ public class FluidUtils
                         aveBlue += blue * blue;
                     }
                 }
-                fluidColor = (255 << 24) | (((int) Math.sqrt(aveRed / pixelCount) & 255) << 16)
+                fluidColor = (((int) Math.sqrt(aveRed / pixelCount) & 255) << 16)
                         | (((int) Math.sqrt(aveGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(aveBlue / pixelCount) & 255));
             }
             CACHE_FLUID_COLOR.put(fluid, fluidColor);

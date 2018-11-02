@@ -25,25 +25,26 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
     public void applyPlayerRender(T entity, EntityPlayer player, float partialTicks) {};
 
-    protected void setEnginePosition(float x, float y, float z, float rotation, float scale)
+    protected void setEnginePosition(double x, double y, double z, double rotation, double scale)
     {
-        this.enginePosition = new PartPosition(x, y, z, 0.0F, rotation, 0.0F, scale);
+        this.enginePosition = new PartPosition(x, y, z, 0, rotation, 0, scale);
     }
 
     public void setFuelPortPosition(PartPosition fuelPortPosition)
     {
-        this.fuelPortPosition = fuelPortPosition;
+        this.setFuelPortPosition(fuelPortPosition.getX(), fuelPortPosition.getY(), fuelPortPosition.getZ(),
+                fuelPortPosition.getRotX(), fuelPortPosition.getRotY(), fuelPortPosition.getRotZ(), fuelPortPosition.getScale());
     }
 
-    protected void setFuelPortPosition(float x, float y, float z, float rotation)
+    protected void setFuelPortPosition(double x, double y, double z, double rotation)
     {
-        this.setFuelPortPosition(x, y, z, 0.0F, rotation, 0.0F, 0.25F);
+        this.setFuelPortPosition(x, y, z, 0, rotation, 0, 0.25);
     }
 
-    protected void setFuelPortPosition(float x, float y, float z, float rotX, float rotY, float rotZ, float scale)
+    protected void setFuelPortPosition(double x, double y, double z, double rotX, double rotY, double rotZ, double scale)
     {
         this.fuelPortPosition = new PartPosition(x, y, z, rotX, rotY, rotZ, scale);
-        this.fuelPortLidPosition = new PartPosition(x, y, z, rotX, rotY - 110.0F, rotZ, scale);
+        this.fuelPortLidPosition = new PartPosition(x, y, z, rotX, rotY - 110, rotZ, scale);
     }
 
     protected boolean shouldRenderFuelLid()

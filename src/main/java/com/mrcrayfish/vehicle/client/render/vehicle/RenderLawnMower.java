@@ -23,8 +23,8 @@ public class RenderLawnMower extends RenderLandVehicle<EntityLawnMower>
     public RenderLawnMower(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 10.5F, -9F, 180F, 1.2F);
-        this.setFuelPortPosition(-4.75F, 12.5F, 3.5F, -90.0F);
+        this.setEnginePosition(0, 10.5, -9, 180, 1.2);
+        this.setFuelPortPosition(-4.75, 12.5, 3.5, -90);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 3.0F, 13.5F, 1.15F);
         this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 3.0F, 13.5F, 1.15F);
         this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 3.6F, -10.7F, 1.55F);
