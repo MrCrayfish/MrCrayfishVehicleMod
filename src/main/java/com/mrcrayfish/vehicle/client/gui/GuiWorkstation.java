@@ -267,7 +267,7 @@ public class GuiWorkstation extends GuiContainer
                 String name = materials[i].stack.getDisplayName();
                 if(fontRenderer.getStringWidth(name) > 58)
                 {
-                    name = fontRenderer.trimStringToWidth(materials[i].stack.getDisplayName(), 50) + "...";
+                    name = fontRenderer.trimStringToWidth(materials[i].stack.getDisplayName(), 50).trim() + "...";
                 }
                 fontRenderer.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6, Color.WHITE.getRGB());
 
