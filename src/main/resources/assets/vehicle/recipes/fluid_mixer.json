@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "III",
+        "HBH",
+        "IRI"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "H": {
+            "item": "minecraft:hopper"
+        },
+        "B": {
+            "item": "minecraft:brewing_stand"
+        },
+        "R": {
+            "item": "minecraft:redstone_block"
+        }
+    },
+    "result": {
+        "item": "vehicle:fluid_mixer"
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CII"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 7
+        }
+    },
+    "result": {
+        "item": "vehicle:key"
+    }
+}

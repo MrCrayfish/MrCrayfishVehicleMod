@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "P ",
+        "CP"
+    ],
+    "key": {
+        "P": {
+            "item": "vehicle:boost_pad"
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 7
+        }
+    },
+    "result": {
+        "item": "vehicle:boost_ramp",
+        "count": 2
+    }
+}

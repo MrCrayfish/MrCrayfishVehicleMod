@@ -9,7 +9,6 @@ import com.mrcrayfish.vehicle.util.Bounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -176,5 +175,16 @@ public class BlockVehicleCrate extends BlockRotatedObject
                 }
             }
         });
+    }
+
+    public static ItemStack create(ResourceLocation entityId)
+    {
+        NBTTagCompound blockEntityTag = new NBTTagCompound();
+        blockEntityTag.setString("vehicle", entityId.toString());
+        NBTTagCompound itemTag = new NBTTagCompound();
+        itemTag.setTag("BlockEntityTag", blockEntityTag);
+        ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);
+        stack.setTagCompound(itemTag);
+        return stack;
     }
 }

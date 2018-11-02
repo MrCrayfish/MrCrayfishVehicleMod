@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-
 import net.minecraft.item.Item;
 
 public class ItemWrench extends Item

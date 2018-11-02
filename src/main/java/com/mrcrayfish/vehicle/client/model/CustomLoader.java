@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.model;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableMap.Builder;
-
 import com.mrcrayfish.vehicle.Reference;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;

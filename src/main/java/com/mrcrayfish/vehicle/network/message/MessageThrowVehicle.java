@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import io.netty.buffer.ByteBuf;

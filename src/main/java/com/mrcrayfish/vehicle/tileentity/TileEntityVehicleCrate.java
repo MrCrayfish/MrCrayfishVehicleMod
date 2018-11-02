@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -121,6 +120,7 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                         ((EntityPoweredVehicle) entity).setOwner(opener);
                     }
                     entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing.getHorizontalIndex() * 90F + 180F, 0F);
+                    entity.setRotationYawHead(facing.getHorizontalIndex() * 90F + 180F);
                     world.spawnEntity(entity);
                 }
                 world.setBlockToAir(pos);

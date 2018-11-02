@@ -3,13 +3,9 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * Author: MrCrayfish

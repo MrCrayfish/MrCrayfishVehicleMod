@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -29,15 +28,15 @@ public class ContainerFluidExtractor extends Container
         this.addSlotToContainer(new SlotFurnaceFuel(fluidExtractor, 0, 33, 34));
         this.addSlotToContainer(new Slot(fluidExtractor, 1, 64, 33));
 
-        for (int x = 0; x < 3; x++)
+        for(int x = 0; x < 3; x++)
         {
-            for (int y = 0; y < 9; y++)
+            for(int y = 0; y < 9; y++)
             {
                 this.addSlotToContainer(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 84 + x * 18));
             }
         }
 
-        for (int x = 0; x < 9; x++)
+        for(int x = 0; x < 9; x++)
         {
             this.addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 142));
         }

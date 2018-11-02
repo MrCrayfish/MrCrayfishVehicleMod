@@ -16,7 +16,6 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
-
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -52,12 +51,11 @@ import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.awt.Color;
-import java.text.DecimalFormat;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
+import java.text.DecimalFormat;
 
 /**
  * Author: MrCrayfish

@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import javax.vecmath.Vector3f;
-
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
