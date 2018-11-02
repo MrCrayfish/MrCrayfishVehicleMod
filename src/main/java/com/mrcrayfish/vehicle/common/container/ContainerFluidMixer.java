@@ -29,15 +29,15 @@ public class ContainerFluidMixer extends Container
         this.addSlotToContainer(new SlotFurnaceFuel(fluidExtractor, 0, 9, 50));
         this.addSlotToContainer(new Slot(fluidExtractor, 1, 103, 41));
 
-        for (int x = 0; x < 3; x++)
+        for(int x = 0; x < 3; x++)
         {
-            for (int y = 0; y < 9; y++)
+            for(int y = 0; y < 9; y++)
             {
                 this.addSlotToContainer(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 98 + x * 18));
             }
         }
 
-        for (int x = 0; x < 9; x++)
+        for(int x = 0; x < 9; x++)
         {
             this.addSlotToContainer(new Slot(playerInventory, x, 8 + x * 18, 156));
         }
