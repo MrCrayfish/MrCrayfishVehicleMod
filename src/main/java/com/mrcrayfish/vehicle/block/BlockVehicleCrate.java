@@ -177,4 +177,15 @@ public class BlockVehicleCrate extends BlockRotatedObject
             }
         });
     }
+
+    public static ItemStack create(ResourceLocation entityId)
+    {
+        NBTTagCompound blockEntityTag = new NBTTagCompound();
+        blockEntityTag.setString("vehicle", entityId.toString());
+        NBTTagCompound itemTag = new NBTTagCompound();
+        itemTag.setTag("BlockEntityTag", blockEntityTag);
+        ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);
+        stack.setTagCompound(itemTag);
+        return stack;
+    }
 }

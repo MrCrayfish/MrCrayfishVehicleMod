@@ -7,6 +7,8 @@ import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageCraftVehicle;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
@@ -24,6 +26,10 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.registry.EntityEntry;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.awt.*;
 import java.io.IOException;
@@ -74,12 +80,14 @@ public class GuiWorkstation extends GuiContainer
     private int currentVehicle = 0;
     private EntityVehicle[] cachedVehicle;
     private IInventory playerInventory;
+    private TileEntityWorkstation workstation;
     private GuiButton btnCraft;
 
     public GuiWorkstation(IInventory playerInventory, TileEntityWorkstation workstation)
     {
         super(new ContainerWorkstation(playerInventory, workstation));
         this.playerInventory = playerInventory;
+        this.workstation = workstation;
         this.xSize = 289;
         this.ySize = 202;
         this.materials = new MaterialItem[10];
@@ -145,6 +153,19 @@ public class GuiWorkstation extends GuiContainer
                 this.loadVehicle(currentVehicle - 1);
             }
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        }
+        else if(button.id == 3)
+        {
+            EntityEntry entry = EntityRegistry.getEntry(cachedVehicle[currentVehicle].getClass());
+            if(entry != null)
+            {
+                ResourceLocation registryName = entry.getRegistryName();
+                if(registryName != null)
+                {
+                    IMessage message = new MessageCraftVehicle(registryName.toString(), workstation.getPos());
+                    PacketHandler.INSTANCE.sendToServer(message);
+                }
+            }
         }
     }
 

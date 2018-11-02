@@ -67,7 +67,7 @@ public class ModBlocks
         registerBlock(FUEL_DRUM);
         registerBlock(INDUSTRIAL_FUEL_DRUM);
         registerBlock(WORKSTATION);
-        registerBlock(VEHICLE_CRATE);
+        registerBlock(VEHICLE_CRATE, (ItemBlock) new ItemBlock(VEHICLE_CRATE).setMaxStackSize(1));
     }
 
     private static void registerBlock(Block block)

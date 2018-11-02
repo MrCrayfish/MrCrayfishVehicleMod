@@ -5,13 +5,18 @@ import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
+import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -19,11 +24,11 @@ import java.util.*;
  */
 public class VehicleRecipes
 {
-    public static final ImmutableMap<Class<? extends EntityVehicle>, VehicleRecipe> RECIPES;
+    public static final ImmutableMap<Class<? extends Entity>, VehicleRecipe> RECIPES;
 
     static
     {
-        ImmutableMap.Builder<Class<? extends EntityVehicle>, VehicleRecipe> mapBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<Class<? extends Entity>, VehicleRecipe> mapBuilder = ImmutableMap.builder();
 
         Builder builder;
 
@@ -166,7 +171,8 @@ public class VehicleRecipes
         RECIPES = mapBuilder.build();
     }
 
-    public static VehicleRecipe getRecipe(Class<? extends EntityVehicle> clazz)
+    @Nullable
+    public static VehicleRecipe getRecipe(Class<? extends Entity> clazz)
     {
         return RECIPES.get(clazz);
     }
