@@ -216,9 +216,11 @@ public class GuiWorkstation extends GuiContainer
         this.drawTexturedModalRect(startX + 186 + 57, startY, 179, 54, 26, 208);
         this.drawTexturedModalRect(startX + 186 + 57 + 26, startY, 236, 54, 20, 208);
 
+        fontRenderer.drawString(cachedVehicle[currentVehicle].getName(), startX + 55, startY + 6, Color.WHITE.getRGB());
+
         GlStateManager.pushMatrix();
         {
-            GlStateManager.translate(startX + 88, startY + 85, 100);
+            GlStateManager.translate(startX + 88, startY + 90, 100);
             GlStateManager.scale(30, -30, 30);
             GlStateManager.rotate(5F, 1, 0, 0);
             GlStateManager.rotate(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks(), 0, 1, 0);
@@ -265,7 +267,7 @@ public class GuiWorkstation extends GuiContainer
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 String name = materials[i].stack.getDisplayName();
-                if(fontRenderer.getStringWidth(name) > 58)
+                if(fontRenderer.getStringWidth(name) > 55)
                 {
                     name = fontRenderer.trimStringToWidth(materials[i].stack.getDisplayName(), 50).trim() + "...";
                 }
