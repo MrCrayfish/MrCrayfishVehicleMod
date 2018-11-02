@@ -17,7 +17,7 @@ public class RenderSpeedBoat extends RenderPoweredVehicle<EntitySpeedBoat>
     public RenderSpeedBoat(RenderManager renderManager)
     {
         super(renderManager);
-        this.setFuelPortPosition(-12.25F, 17.25F, -19.5F, -90.0F);
+        this.setFuelPortPosition(-12.25, 17.25, -19.5, -90);
     }
 
     @Override
