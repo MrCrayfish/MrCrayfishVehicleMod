@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.gui;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.vehicle.common.VehicleRecipes;
+import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -29,7 +29,6 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.awt.*;
 import java.io.IOException;
@@ -47,6 +46,7 @@ public class GuiWorkstation extends GuiContainer
     static
     {
         ImmutableMap.Builder<Class<? extends EntityVehicle>, PartPosition> builder = ImmutableMap.builder();
+        builder.put(EntityAluminumBoat.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
         builder.put(EntityATV.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
         builder.put(EntityBumperCar.class, new PartPosition(0.0F, 0.0F, -0.4F, 0.0F, 0.0F, 0.0F, 1.5F));
         builder.put(EntityDuneBuggy.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.75F));
