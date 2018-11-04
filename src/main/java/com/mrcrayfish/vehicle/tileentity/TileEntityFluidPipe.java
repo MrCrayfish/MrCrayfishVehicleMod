@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import javax.annotation.Nullable;
-
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +11,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish

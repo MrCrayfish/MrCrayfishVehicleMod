@@ -1,8 +1,5 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
@@ -12,6 +9,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: MrCrayfish

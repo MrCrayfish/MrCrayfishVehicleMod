@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
@@ -59,6 +60,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     protected static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
@@ -136,6 +138,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.dataManager.register(ENGINE_TYPE, 0);
         this.dataManager.register(HORN, false);
+        this.dataManager.register(REQUIRES_FUEL, VehicleConfig.SERVER.fuelEnabled);
         this.dataManager.register(CURRENT_FUEL, 0F);
         this.dataManager.register(FUEL_CAPACITY, 15000F);
         this.dataManager.register(NEEDS_KEY, false);
@@ -355,7 +358,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             }
         }
 
-        if(controllingPassenger != null && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative())
+        if(this.requiresFuel() && controllingPassenger != null && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative())
         {
             float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
             float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
@@ -506,6 +509,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.stepHeight = compound.getFloat("stepHeight");
         }
+        if(compound.hasKey("requiresFuel", Constants.NBT.TAG_BYTE))
+        {
+            this.setRequiresFuel(compound.getBoolean("requiresFuel"));
+        }
         if(compound.hasKey("currentFuel", Constants.NBT.TAG_FLOAT))
         {
             this.setCurrentFuel(compound.getFloat("currentFuel"));
@@ -535,6 +542,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
         compound.setInteger("maxTurnAngle", this.getMaxTurnAngle());
         compound.setFloat("stepHeight", this.stepHeight);
+        compound.setBoolean("requiresFuel", this.requiresFuel());
         compound.setFloat("currentFuel", this.getCurrentFuel());
         compound.setFloat("fuelCapacity", this.getFuelCapacity());
         compound.setBoolean("keyNeeded", this.isKeyNeeded());
@@ -720,8 +728,21 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return launching;
     }
 
+    public boolean requiresFuel()
+    {
+        return VehicleConfig.SERVER.fuelEnabled && this.dataManager.get(REQUIRES_FUEL);
+    }
+
+    public void setRequiresFuel(boolean requiresFuel)
+    {
+        this.dataManager.set(REQUIRES_FUEL, VehicleConfig.SERVER.fuelEnabled && requiresFuel);
+    }
+
     public boolean isFueled()
     {
+        if(!this.requiresFuel())
+            return true;
+
         Entity entity = this.getControllingPassenger();
         if(entity instanceof EntityPlayer)
         {
@@ -765,6 +786,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public int addFuel(int fuel)
     {
+        if(!this.requiresFuel())
+            return fuel;
         float currentFuel = this.getCurrentFuel();
         currentFuel += fuel;
         int remaining = Math.max(0, Math.round(currentFuel - this.getFuelCapacity()));
@@ -842,6 +865,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean isOwner(EntityPlayer player)
     {
         return owner == null || player.getUniqueID().equals(owner);
+    }
+
+    public void setOwner(UUID owner)
+    {
+        this.owner = owner;
     }
 
     @Override

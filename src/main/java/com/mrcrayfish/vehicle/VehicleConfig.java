@@ -19,6 +19,19 @@ public class VehicleConfig
     @Config.LangKey(Reference.MOD_ID + ".config.client")
     public static final Client CLIENT = new Client();
 
+    @Config.Name("Server")
+    @Config.Comment("Server-only configs")
+    @Config.LangKey(Reference.MOD_ID + ".config.server")
+    public static final Server SERVER = new Server();
+
+    public static class Server
+    {
+        @Config.Name("Fuel Enabled")
+        @Config.Comment("If true, vehicles will require fuel for them to be driven.")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.fuel_enabled")
+        public boolean fuelEnabled = true;
+    }
+
     public static class Client
     {
         @Config.Name("Debug")

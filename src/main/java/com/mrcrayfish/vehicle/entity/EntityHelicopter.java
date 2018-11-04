@@ -84,8 +84,15 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
         vehicleMotionZ = (currentSpeed * dirZ);
 
         this.updateLift();
-        motionY = lift * this.getBladeSpeedNormal();
-        motionY -= 0.05 + (1.0 - this.getBladeSpeedNormal()) * 0.45;
+        if(this.isFueled())
+        {
+            motionY = lift * this.getBladeSpeedNormal();
+            motionY -= 0.05 + (1.0 - this.getBladeSpeedNormal()) * 0.45;
+        }
+        else
+        {
+            motionY -= (0.08D - 0.08D * this.getBladeSpeedNormal());
+        }
     }
 
     @Override
@@ -243,6 +250,12 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     {
         return 0;
     }
+
+    /*
+     * Overridden to prevent players from taking fall damage when landing a plane
+     */
+    @Override
+    public void fall(float distance, float damageMultiplier) {}
 
     public void setAltitudeChange(AltitudeChange altitudeChange)
     {

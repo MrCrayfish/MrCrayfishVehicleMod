@@ -17,7 +17,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -116,6 +118,6 @@ public class VehicleMod
 
     private void registerVehicle(String id, Class<? extends EntityVehicle> clazz)
     {
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, id, nextEntityId++, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, Reference.MOD_ID + "." + id, nextEntityId++, this, 64, 1, true);
     }
 }

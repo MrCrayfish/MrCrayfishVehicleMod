@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;

@@ -19,7 +19,7 @@ public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
     public RenderMiniBike(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0.0F, 8.95F, 3F, 180F, 1.0F);
+        this.setEnginePosition(0, 8.95, 3, 180, 1);
         this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, 1.7F, -6.7F, 1.65F);
     }
 

@@ -37,6 +37,7 @@ public class ModSounds
     public static final SoundEvent FUEL_PORT_CLOSE;
     public static final SoundEvent FUEL_PORT_2_OPEN;
     public static final SoundEvent FUEL_PORT_2_CLOSE;
+    public static final SoundEvent VEHICLE_CRATE_PANEL_LAND;
 
     static
     {
@@ -64,6 +65,7 @@ public class ModSounds
         FUEL_PORT_CLOSE = registerSound("vehicle:fuel_port_close");
         FUEL_PORT_2_OPEN = registerSound("vehicle:fuel_port_2_open");
         FUEL_PORT_2_CLOSE = registerSound("vehicle:fuel_port_2_close");
+        VEHICLE_CRATE_PANEL_LAND = registerSound("vehicle:vehicle_crate_panel_land");
     }
 
     private static SoundEvent registerSound(String soundNameIn)

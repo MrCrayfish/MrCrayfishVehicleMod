@@ -70,5 +70,8 @@
     },
     "fuel_port_2_close": {
         "sounds": [ {"name": "vehicle:fuel_port_2_close"}]
+    },
+    "vehicle_crate_panel_land": {
+        "sounds": [ {"name": "vehicle:vehicle_crate_panel_land"}]
     }
 }

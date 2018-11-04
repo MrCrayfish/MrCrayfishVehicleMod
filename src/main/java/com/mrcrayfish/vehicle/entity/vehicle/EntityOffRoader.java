@@ -21,9 +21,9 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
 {
     public static final float AXLE_OFFSET = -1.0F;
     public static final float WHEEL_OFFSET = 5.4F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, -0.125F, 0.0F, 0.0F, 0.0F, 1.4F);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-12.25F, 8.5F, -7.3F, 0.0F, -90.0F, 0.0F, 0.25F);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0F, 7.0F, 6.2F, -67.5F, 0.0F, 0.0F, 0.5F);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, -0.125, 0, 0, 0, 1.4);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(0.0D, 3.5D, 0.0D);
 
     /**

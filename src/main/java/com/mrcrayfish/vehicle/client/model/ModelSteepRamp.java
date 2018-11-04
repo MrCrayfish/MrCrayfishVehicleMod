@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client.model;
 
 import com.google.common.collect.ImmutableSet;
-import com.mrcrayfish.vehicle.client.model.baked.BakedModelRamp;
 import com.mrcrayfish.vehicle.client.model.baked.BakedModelSteepRamp;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;

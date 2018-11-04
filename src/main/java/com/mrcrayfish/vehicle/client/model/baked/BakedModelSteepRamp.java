@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.model.baked;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.block.BlockBoostRamp;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.block.BlockSteepBoostRamp;
 import com.mrcrayfish.vehicle.client.util.BakedQuadBuilder;

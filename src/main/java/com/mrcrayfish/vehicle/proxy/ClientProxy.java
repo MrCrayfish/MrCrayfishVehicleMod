@@ -3,27 +3,36 @@ package com.mrcrayfish.vehicle.proxy;
 import com.mrcrayfish.vehicle.client.ClientEvents;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
+import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.*;
-import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemKey;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
+import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
@@ -77,9 +86,11 @@ public class ClientProxy implements Proxy
         ClientRegistry.registerKeyBinding(KEY_HORN);
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidExtractor.class, new FluidExtractorRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVehicleCrate.class, new VehicleCrateRenderer());
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());
 
+        Models.registerModels(ModItems.MODELS);
     }
 
     private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRenderingHandler(Class<T> clazz, AbstractRenderLandVehicle<T> render)
@@ -149,6 +160,13 @@ public class ClientProxy implements Proxy
                 Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundHornRiding(player, vehicle));
             }
         });
+    }
+
+    @Override
+    public void playSound(SoundEvent soundEvent, BlockPos pos, float volume, float pitch)
+    {
+        ISound sound = new PositionedSoundRecord(soundEvent, SoundCategory.BLOCKS, volume, pitch, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
+        Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().getSoundHandler().playSound(sound));
     }
 
     @SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)

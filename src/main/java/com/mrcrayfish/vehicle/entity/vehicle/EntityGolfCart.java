@@ -21,9 +21,9 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
 {
     public static final float AXLE_OFFSET = -0.5F;
     public static final float WHEEL_OFFSET = 4.45F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.15F);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-13.25F, 3.5F, -7.3F, 0.0F, -90.0F, 0.0F, 0.25F);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-8.5F, 2.75F, 8.5F, -67.5F, 0.0F, 0.0F, 0.5F);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0, 0, 0, 0, 1.15);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-13.25, 3.5, -7.3, 0, -90, 0, 0.25);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-8.5, 2.75, 8.5, -67.5, 0, 0, 0.5);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(1.5D, 2.5D, 0.0D);
 
     /**

@@ -3,13 +3,9 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.util.math.Vec3d;
 
 /**
  * Author: MrCrayfish
@@ -73,7 +69,7 @@ public class RenderVehicleHelicopter<T extends EntityHelicopter & EntityRaytrace
             }
 
             //Render the fuel port of the vehicle
-            if(entity.shouldRenderFuelPort())
+            if(entity.shouldRenderFuelPort() && entity.requiresFuel())
             {
                 EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
                 if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))

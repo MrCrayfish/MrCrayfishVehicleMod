@@ -1,0 +1,79 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "model": "vehicle:workstation"
+    },
+    "variants": {
+        "inventory": {
+            "model": "vehicle:workstation"
+        },
+        "facing=north": [
+            {
+                "model": "vehicle:workstation",
+                "weight": 8,
+                "y": 0
+            },
+            {
+                "model": "vehicle:workstation_paper",
+                "weight": 2,
+                "y": 0
+            },
+            {
+                "model": "vehicle:workstation_coffee",
+                "weight": 2,
+                "y": 0
+            }
+        ],
+        "facing=east": [
+            {
+                "model": "vehicle:workstation",
+                "weight": 8,
+                "y": 90
+            },
+            {
+                "model": "vehicle:workstation_paper",
+                "weight": 2,
+                "y": 90
+            },
+            {
+                "model": "vehicle:workstation_coffee",
+                "weight": 2,
+                "y": 90
+            }
+        ],
+        "facing=south": [
+            {
+                "model": "vehicle:workstation",
+                "weight": 8,
+                "y": 180
+            },
+            {
+                "model": "vehicle:workstation_paper",
+                "weight": 2,
+                "y": 180
+            },
+            {
+                "model": "vehicle:workstation_coffee",
+                "weight": 2,
+                "y": 180
+            }
+        ],
+        "facing=west": [
+            {
+                "model": "vehicle:workstation",
+                "weight": 8,
+                "y": 270
+            },
+            {
+                "model": "vehicle:workstation_paper",
+                "weight": 2,
+                "y": 270
+            },
+            {
+                "model": "vehicle:workstation_coffee",
+                "weight": 2,
+                "y": 270
+            }
+        ]
+    }
+}

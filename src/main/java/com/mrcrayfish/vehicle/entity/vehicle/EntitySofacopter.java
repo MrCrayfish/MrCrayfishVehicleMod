@@ -15,7 +15,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySofacopter extends EntityHelicopter implements EntityRaytracer.IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0F, 0.0F, 0.0625F, 0.0F, 0.0F, 0.0F, 1.0F);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.0625, 0, 0, 0, 1);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2, 1.75, 8.25, 0, 0, 0, 0.45);
+    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8);
 
     @SideOnly(Side.CLIENT)
     public ItemStack arm;
@@ -31,6 +33,11 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
         super(worldIn);
         this.setSize(1.0F, 1.0F);
         this.setBodyPosition(BODY_POSITION);
+        this.setKeyHolePosition(KEY_PORT_POSITION);
+        this.setFuelCapacity(40000F);
+        this.setFuelConsumption(2.0F);
+
+        this.dataManager.set(COLOR, 11546150);
     }
 
     @Override
@@ -47,5 +54,11 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
     public double getMountedYOffset()
     {
         return 0.3125;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return false;
     }
 }

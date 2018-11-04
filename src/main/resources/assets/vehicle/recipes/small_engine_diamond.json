@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " U ",
+        "UEU",
+        " U "
+    ],
+    "key": {
+        "E": {
+            "item": "vehicle:small_engine",
+            "data": 3
+        },
+        "U": {
+            "item": "minecraft:diamond"
+        }
+    },
+    "result": {
+        "item": "vehicle:small_engine",
+        "data": 4
+    }
+}
