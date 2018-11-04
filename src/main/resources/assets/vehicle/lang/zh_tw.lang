@@ -1,5 +1,10 @@
 itemGroup.tabVehicle=MrCrayfish載具模組
 
+# Old
+entity.moped.name=輕便摩托車
+vehicle.config.client.speedometer=顯示車輛速度儀
+vehicle.config.client.speedometer.tooltip=如果為true，在駕駛車輛時會顯示車輛速度儀
+
 item.small_engine.name=小引擎
 vehicle.engine_tier.wood.name=木等級
 vehicle.engine_tier.stone.name=石等級
@@ -21,6 +26,10 @@ item.industrial_jerry_can.info=使用此工業用可攜式油桶以運載燃油�
 item.industrial_jerry_can.fuel=燃油：%s
 item.wrench.name=扳手
 item.key.name=鑰匙
+item.wheel.name=輪子
+item.tow_bar.name=牽引桿／拖桿
+item.go_kart_steering_wheel.name=方向盤
+item.handle_bar.name=車把／載具手把
 
 tile.traffic_cone.name=交通錐
 tile.boost_pad.name=加速墊
@@ -33,6 +42,8 @@ tile.fluid_pipe.name=流體管道
 tile.fluid_pump.name=流體泵
 tile.fuel_drum.name=燃油鼓
 tile.industrial_fuel_drum.name=工業用燃油鼓
+tile.vehicle_crate.name=載具箱
+tile.workstation.name=工作站
 
 fluid.fuelium=燃油
 fluid.ender_sap=終界樹液
@@ -48,12 +59,31 @@ vehicle.tile.traffic_cone.info=使用此交通錐可以以它的額外碰撞高�
 vehicle.tile.fluid_pipe.info=使用此管道輸送流體。管道上的灰色線表示行進方向。首先必須使用流體泵或任何其他兼容的泵將流體泵入以使其工作。可以直接使用紅石信號禁用管道。
 vehicle.tile.fluid_pump.info=使用此泵將任何兼容的流體存儲器中的流體抽取到管道或其他流體存儲器中。它必須有紅石信號才會工作。
 vehicle.tile.fuel_drum.info=該燃油鼓可用於儲存燃油或任何其他流體。它具有很強的爆炸性，因此請遠離火源。
+vehicle.tile.vehicle_crate.info=包含%s的箱子。要打開箱子，只需要用扳手右鍵點擊箱子的頂部。
 
-entity.moped.name=輕便摩托車
+entity.vehicle.lawn_mower.name=割草機
+entity.vehicle.mini_bike.name=迷你單車
+entity.vehicle.shopping_cart.name=購物車
+entity.vehicle.speed_boat.name=快艇
+entity.vehicle.bath.name=浴缸
+entity.vehicle.bumper_car.name=碰碰車
+entity.vehicle.aluminum_boat.name=鋁船
+entity.vehicle.dune_buggy.name=沙灘車
+entity.vehicle.sofacopter.name=沙發直升機
+entity.vehicle.smart_car.name=智能車
+entity.vehicle.couch.name=長沙發
+entity.vehicle.moped.name=輕便摩托車
+entity.vehicle.off_roader.name=越野車
+entity.vehicle.sports_plane.name=運動飛機
+entity.vehicle.golf_cart.name=高爾夫車
+entity.vehicle.go_kart.name=卡丁車
+entity.vehicle.jet_ski.name=水上摩托車
+entity.vehicle.trailer.name=拖車
+entity.vehicle.atv.name=全地形車（越野型沙灘車）
 
 vehicle.config.title=MrCrayfish載具模組配置
 vehicle.config.client=用戶端
-vehicle.config.client.tooltip=僅用戶端配置
+vehicle.config.client.tooltip=適用於用戶端的配置
 vehicle.config.client.debug=調試
 vehicle.config.client.debug.tooltip=用於調試載具
 vehicle.config.client.debug.render_outlines=渲染載具輪廓
@@ -62,8 +92,17 @@ vehicle.config.client.interaction=相互影響
 vehicle.config.client.interaction.tooltip=載具相互影響的配置選項
 vehicle.config.client.interaction.left_click=啟用左鍵點擊
 vehicle.config.client.interaction.left_click.tooltip=如果為true，左鍵點擊時將在附近的載具上執行光線跟踪，而不是只限於右鍵點擊它。這樣可以在點擊任何地方時損壞，而不是僅僅在其邊界框上。
-vehicle.config.client.speedometer=顯示車輛速度儀
-vehicle.config.client.speedometer.tooltip=如果為true，在駕駛車輛時會顯示車輛速度儀
+vehicle.config.client.display=顯示
+vehicle.config.client.display.tooltip=配置HUD元素
+vehicle.config.client.display.speedometer=顯示車輛速度儀
+vehicle.config.client.display.speedometer.tooltip=如果為true，在駕駛載具時會顯示車輛速度儀
+vehicle.config.client.display.auto_perspective=自動變更視角
+vehicle.config.client.display.auto_perspective.tooltip=如果為true，乘坐載具時視角會自動變更至第三者視角
+
+vehicle.config.server=伺服器
+vehicle.config.server.tooltip=適用於伺服器的配置
+vehicle.config.server.fuel_enabled=啟用燃油
+vehicle.config.server.fuel_enabled.tooltip=如果為true，載具需要燃油才能駕駛。
 
 vehicle.chat.pump.power=§b信號模式：§r%s
 vehicle.chat.pump.power.off=需要信號關閉
