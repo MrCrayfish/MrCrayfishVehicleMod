@@ -3,7 +3,7 @@ itemGroup.tabVehicle=MrCrayfish載具模組
 # Old
 entity.moped.name=輕便摩托車
 vehicle.config.client.speedometer=顯示車輛速度儀
-vehicle.config.client.speedometer.tooltip=如果為true，在駕駛車輛時會顯示車輛速度儀
+vehicle.config.client.speedometer.tooltip=如果為true，在駕駛載具時會顯示車輛速度儀
 
 item.small_engine.name=小引擎
 vehicle.engine_tier.wood.name=木等級
