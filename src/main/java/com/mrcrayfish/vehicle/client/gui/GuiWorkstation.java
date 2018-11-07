@@ -108,8 +108,8 @@ public class GuiWorkstation extends GuiContainer
         super.initGui();
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
-        this.buttonList.add(new GuiButton(1, startX, startY + 40, 20, 20, "<"));
-        this.buttonList.add(new GuiButton(2, startX + 156, startY + 40, 20, 20, ">"));
+        this.buttonList.add(new GuiButton(1, startX, startY, 15, 20, "<"));
+        this.buttonList.add(new GuiButton(2, startX + 161, startY, 15, 20, ">"));
         this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Craft"));
         this.btnCraft.enabled = false;
     }
