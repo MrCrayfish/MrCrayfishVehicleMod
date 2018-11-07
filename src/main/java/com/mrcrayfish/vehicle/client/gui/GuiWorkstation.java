@@ -20,8 +20,11 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
@@ -115,7 +118,7 @@ public class GuiWorkstation extends GuiContainer
         this.buttonList.add(new GuiButton(2, startX + 161, startY, 15, 20, ">"));
         this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Craft"));
         this.btnCraft.enabled = false;
-        this.checkBoxMaterials = new GuiCheckBox(186, 50, "Show Remaining");
+        this.checkBoxMaterials = new GuiCheckBox(186, 51, "Show Remaining");
         this.checkBoxMaterials.setToggled(GuiWorkstation.showRemaining);
         this.loadVehicle(currentVehicle);
     }
@@ -154,6 +157,23 @@ public class GuiWorkstation extends GuiContainer
         else if(vehicleScale < 30)
         {
             vehicleScale = Math.min(30, vehicleScale + 6);
+        }
+
+        if(!workstation.getStackInSlot(0).isEmpty())
+        {
+            ItemStack stack = workstation.getStackInSlot(0);
+            if(stack.getItem() == Items.DYE)
+            {
+                cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[15 - stack.getMetadata()]);
+            }
+            else
+            {
+                cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
+            }
+        }
+        else
+        {
+            cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
         }
     }
 
@@ -264,9 +284,14 @@ public class GuiWorkstation extends GuiContainer
         this.mc.getTextureManager().bindTexture(GUI);
         this.drawTexturedModalRect(startX, startY + 80, 0, 134, 176, 122);
         this.drawTexturedModalRect(startX + 180, startY, 176, 54, 6, 208);
-        this.drawTexturedModalRect(startX + 186, startY, 179, 54, 57, 208);
-        this.drawTexturedModalRect(startX + 186 + 57, startY, 179, 54, 26, 208);
+        this.drawTexturedModalRect(startX + 186, startY, 182, 54, 57, 208);
+        this.drawTexturedModalRect(startX + 186 + 57, startY, 200, 54, 26, 208);
         this.drawTexturedModalRect(startX + 186 + 57 + 26, startY, 236, 54, 20, 208);
+
+        if(workstation.getStackInSlot(0).isEmpty())
+        {
+            this.drawTexturedModalRect(startX + 187, startY + 30, 80, 0, 16, 16);
+        }
 
         this.checkBoxMaterials.draw(mc, guiLeft, guiTop);
 

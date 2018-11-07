@@ -4,11 +4,14 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -86,9 +89,21 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                 {
                                     InventoryUtil.removeItemStack(player, stack);
                                 }
+
+                                /* Gets the color based on the dye */
+                                int color = EntityVehicle.DYE_TO_COLOR[0];
+                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
+                                if(dyeStack.getItem() instanceof ItemDye)
+                                {
+                                    color = EntityVehicle.DYE_TO_COLOR[15 - dyeStack.getMetadata()];
+                                    tileEntityWorkstation.getInventory().set(0, ItemStack.EMPTY);
+                                }
+
+                                int finalColor = color;
                                 FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
                                 {
-                                    ItemStack stack = BlockVehicleCrate.create(entityId);
+                                    ItemStack stack = BlockVehicleCrate.create(entityId, finalColor);
                                     world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
                                 });
                             }
