@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.gui;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
@@ -78,10 +79,15 @@ public class GuiWorkstation extends GuiContainer
 
     private MaterialItem[] materials;
     private static int currentVehicle = 0;
+    private static int prevCurrentVehicle = 0;
     private EntityVehicle[] cachedVehicle;
     private IInventory playerInventory;
     private TileEntityWorkstation workstation;
     private GuiButton btnCraft;
+
+    private boolean transitioning;
+    private int vehicleScale = 30;
+    private int prevVehicleScale = 30;
 
     public GuiWorkstation(IInventory playerInventory, TileEntityWorkstation workstation)
     {
@@ -126,6 +132,23 @@ public class GuiWorkstation extends GuiContainer
             }
         }
         btnCraft.enabled = allEnabled;
+
+        prevVehicleScale = vehicleScale;
+        if(transitioning)
+        {
+            if(vehicleScale > 0)
+            {
+                vehicleScale = Math.max(0, vehicleScale - 6);
+            }
+            else
+            {
+                transitioning = false;
+            }
+        }
+        else if(vehicleScale < 30)
+        {
+            vehicleScale = Math.min(30, vehicleScale + 6);
+        }
     }
 
     @Override
@@ -172,6 +195,8 @@ public class GuiWorkstation extends GuiContainer
 
     private void loadVehicle(int index)
     {
+        prevCurrentVehicle = currentVehicle;
+
         try
         {
             if(cachedVehicle[index] == null)
@@ -198,11 +223,19 @@ public class GuiWorkstation extends GuiContainer
         }
 
         currentVehicle = index;
+
+        if(VehicleConfig.CLIENT.display.workstationAnimation && prevCurrentVehicle != currentVehicle)
+        {
+            transitioning = true;
+        }
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
+        /* Fixes partial ticks to use percentage from 0 to 1 */
+        partialTicks = Minecraft.getMinecraft().getRenderPartialTicks();
+
         this.drawDefaultBackground();
 
         int startX = (this.width - this.xSize) / 2;
@@ -216,17 +249,21 @@ public class GuiWorkstation extends GuiContainer
         this.drawTexturedModalRect(startX + 186, startY, 179, 54, 57, 208);
         this.drawTexturedModalRect(startX + 186 + 57, startY, 179, 54, 26, 208);
         this.drawTexturedModalRect(startX + 186 + 57 + 26, startY, 236, 54, 20, 208);
-        
+
         this.drawCenteredString(fontRenderer, cachedVehicle[currentVehicle].getName(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(startX + 88, startY + 90, 100);
-            GlStateManager.scale(30, -30, 30);
-            GlStateManager.rotate(5F, 1, 0, 0);
-            GlStateManager.rotate(Minecraft.getMinecraft().player.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks(), 0, 1, 0);
 
-            Class<? extends EntityVehicle> clazz = cachedVehicle[currentVehicle].getClass();
+            float scale = prevVehicleScale + (vehicleScale - prevVehicleScale) * partialTicks;
+            GlStateManager.scale(scale, -scale, scale);
+
+            GlStateManager.rotate(5F, 1, 0, 0);
+            GlStateManager.rotate(Minecraft.getMinecraft().player.ticksExisted + partialTicks, 0, 1, 0);
+
+            int vehicleIndex = transitioning ? prevCurrentVehicle : currentVehicle;
+            Class<? extends EntityVehicle>  clazz = cachedVehicle[vehicleIndex].getClass();
             PartPosition position = DISPLAY_PROPERTIES.get(clazz);
             if(position != null)
             {
@@ -237,9 +274,8 @@ public class GuiWorkstation extends GuiContainer
                 GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
                 GlStateManager.translate(position.getX(), position.getY(), position.getZ());
             }
-
             Render<EntityVehicle> render = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(clazz);
-            render.doRender(cachedVehicle[currentVehicle], 0F, 0F, 0F, 0F, 0F);
+            render.doRender(cachedVehicle[vehicleIndex], 0F, 0F, 0F, 0F, 0F);
         }
         GlStateManager.popMatrix();
 

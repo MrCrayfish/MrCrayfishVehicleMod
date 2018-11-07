@@ -70,6 +70,11 @@ public class VehicleConfig
         @Config.Comment("If true, automatically switches to third person when mounting vehicles")
         @Config.LangKey(Reference.MOD_ID + ".config.client.display.auto_perspective")
         public boolean autoPerspective = true;
+
+        @Config.Name("Workstation Animation")
+        @Config.Comment("If true, an animation is performed while cycling vehicles in the workstation")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.display.workstation_animation")
+        public boolean workstationAnimation = true;
     }
 
     public static class Debug
