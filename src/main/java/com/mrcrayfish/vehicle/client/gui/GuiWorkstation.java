@@ -90,7 +90,7 @@ public class GuiWorkstation extends GuiContainer
         this.workstation = workstation;
         this.xSize = 289;
         this.ySize = 202;
-        this.materials = new MaterialItem[10];
+        this.materials = new MaterialItem[7];
         Arrays.fill(materials, MaterialItem.EMPTY);
         this.cachedVehicle = new EntityVehicle[VEHICLES.size()];
         this.loadVehicle(currentVehicle);
@@ -104,7 +104,7 @@ public class GuiWorkstation extends GuiContainer
         int startY = (this.height - this.ySize) / 2;
         this.buttonList.add(new GuiButton(1, startX, startY + 40, 20, 20, "<"));
         this.buttonList.add(new GuiButton(2, startX + 156, startY + 40, 20, 20, ">"));
-        this.buttonList.add(btnCraft = new GuiButton(3, startX, startY, 50, 20, "Craft"));
+        this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Craft"));
         this.btnCraft.enabled = false;
     }
 
@@ -216,8 +216,8 @@ public class GuiWorkstation extends GuiContainer
         this.drawTexturedModalRect(startX + 186, startY, 179, 54, 57, 208);
         this.drawTexturedModalRect(startX + 186 + 57, startY, 179, 54, 26, 208);
         this.drawTexturedModalRect(startX + 186 + 57 + 26, startY, 236, 54, 20, 208);
-
-        fontRenderer.drawString(cachedVehicle[currentVehicle].getName(), startX + 55, startY + 6, Color.WHITE.getRGB());
+        
+        this.drawCenteredString(fontRenderer, cachedVehicle[currentVehicle].getName(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         GlStateManager.pushMatrix();
         {
@@ -252,18 +252,18 @@ public class GuiWorkstation extends GuiContainer
             if(stack.isEmpty())
             {
                 RenderHelper.disableStandardItemLighting();
-                this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6, 0, 19, 80, 19);
+                this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6 + 57, 0, 19, 80, 19);
             }
             else
             {
                 RenderHelper.disableStandardItemLighting();
                 if(materials[i].isEnabled())
                 {
-                    this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6, 0, 0, 80, 19);
+                    this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6 + 57, 0, 0, 80, 19);
                 }
                 else
                 {
-                    this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6, 0, 38, 80, 19);
+                    this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6 + 57, 0, 38, 80, 19);
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -272,11 +272,11 @@ public class GuiWorkstation extends GuiContainer
                 {
                     name = fontRenderer.trimStringToWidth(materials[i].stack.getDisplayName(), 50).trim() + "...";
                 }
-                fontRenderer.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6, Color.WHITE.getRGB());
+                fontRenderer.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
 
                 RenderHelper.enableGUIStandardItemLighting();
-                Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(materials[i].stack, startX + 186 + 2, startY + i * 19 + 6 + 1);
-                Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(fontRenderer, materials[i].stack, startX + 186 + 2, startY + i * 19 + 6 + 1, null);
+                Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(materials[i].stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
+                Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(fontRenderer, materials[i].stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
             }
         }
     }
