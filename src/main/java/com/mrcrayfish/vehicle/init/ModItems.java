@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
  */
 public class ModItems
 {
+    public static final Item PANEL;
     public static final Item WHEEL;
     public static final Item ATV_BODY;
     public static final Item ATV_HANDLE_BAR;
@@ -62,6 +63,7 @@ public class ModItems
 
     static
     {
+        PANEL = new ItemPart("panel").setCreativeTab(VehicleMod.CREATIVE_TAB);
         WHEEL = new ItemPart("wheel").setCreativeTab(VehicleMod.CREATIVE_TAB);
         ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
@@ -116,6 +118,7 @@ public class ModItems
     public static void register()
     {
         register(ENGINE);
+        register(PANEL);
         register(WHEEL);
         register(ATV_BODY);
         register(ATV_HANDLE_BAR);

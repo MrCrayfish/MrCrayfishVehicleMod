@@ -21,6 +21,7 @@ item.industrial_jerry_can.info=Use this Industrial Jerry Can to transport and fi
 item.industrial_jerry_can.fuel=Fuel: %s
 item.wrench.name=Wrench
 item.key.name=Key
+item.panel.name=Panel
 item.wheel.name=Wheel
 item.tow_bar.name=Tow Bar
 item.go_kart_steering_wheel.name=Steering Wheel
