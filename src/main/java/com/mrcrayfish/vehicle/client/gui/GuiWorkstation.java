@@ -24,6 +24,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.Loader;
@@ -31,10 +32,12 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -77,13 +80,15 @@ public class GuiWorkstation extends GuiContainer
 
     private static final ResourceLocation GUI = new ResourceLocation("vehicle:textures/gui/workstation.png");
 
-    private MaterialItem[] materials;
+    private List<MaterialItem> materials;
     private static int currentVehicle = 0;
     private static int prevCurrentVehicle = 0;
+    private static boolean showRemaining = false;
     private EntityVehicle[] cachedVehicle;
     private IInventory playerInventory;
     private TileEntityWorkstation workstation;
     private GuiButton btnCraft;
+    private GuiCheckBox checkBoxMaterials;
 
     private boolean transitioning;
     private int vehicleScale = 30;
@@ -96,10 +101,8 @@ public class GuiWorkstation extends GuiContainer
         this.workstation = workstation;
         this.xSize = 289;
         this.ySize = 202;
-        this.materials = new MaterialItem[7];
-        Arrays.fill(materials, MaterialItem.EMPTY);
+        this.materials = new ArrayList<>();
         this.cachedVehicle = new EntityVehicle[VEHICLES.size()];
-        this.loadVehicle(currentVehicle);
     }
 
     @Override
@@ -112,6 +115,9 @@ public class GuiWorkstation extends GuiContainer
         this.buttonList.add(new GuiButton(2, startX + 161, startY, 15, 20, ">"));
         this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Craft"));
         this.btnCraft.enabled = false;
+        this.checkBoxMaterials = new GuiCheckBox(186, 50, "Show Remaining");
+        this.checkBoxMaterials.setToggled(GuiWorkstation.showRemaining);
+        this.loadVehicle(currentVehicle);
     }
 
     @Override
@@ -149,6 +155,16 @@ public class GuiWorkstation extends GuiContainer
         {
             vehicleScale = Math.min(30, vehicleScale + 6);
         }
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException
+    {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+        this.checkBoxMaterials.handleClick(startX, startY, mouseX, mouseY, mouseButton);
+        GuiWorkstation.showRemaining = this.checkBoxMaterials.isToggled();
     }
 
     @Override
@@ -215,11 +231,13 @@ public class GuiWorkstation extends GuiContainer
             e.printStackTrace();
         }
 
-        Arrays.fill(materials, MaterialItem.EMPTY);
+        materials.clear();
         VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(cachedVehicle[index].getClass());
         for(int i = 0; i < recipe.getMaterials().size(); i++)
         {
-            materials[i] = new MaterialItem(recipe.getMaterials().get(i));
+            MaterialItem item = new MaterialItem(recipe.getMaterials().get(i));
+            item.update();
+            materials.add(item);
         }
 
         currentVehicle = index;
@@ -250,6 +268,8 @@ public class GuiWorkstation extends GuiContainer
         this.drawTexturedModalRect(startX + 186 + 57, startY, 179, 54, 26, 208);
         this.drawTexturedModalRect(startX + 186 + 57 + 26, startY, 236, 54, 20, 208);
 
+        this.checkBoxMaterials.draw(mc, guiLeft, guiTop);
+
         this.drawCenteredString(fontRenderer, cachedVehicle[currentVehicle].getName(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         GlStateManager.pushMatrix();
@@ -279,12 +299,14 @@ public class GuiWorkstation extends GuiContainer
         }
         GlStateManager.popMatrix();
 
-        for(int i = 0; i < materials.length; i++)
+        List<MaterialItem> materials = this.getMaterials();
+        for(int i = 0; i < materials.size(); i++)
         {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.getTextureManager().bindTexture(GUI);
 
-            ItemStack stack = materials[i].stack;
+            MaterialItem materialItem = materials.get(i);
+            ItemStack stack = materialItem.stack;
             if(stack.isEmpty())
             {
                 RenderHelper.disableStandardItemLighting();
@@ -293,7 +315,7 @@ public class GuiWorkstation extends GuiContainer
             else
             {
                 RenderHelper.disableStandardItemLighting();
-                if(materials[i].isEnabled())
+                if(materialItem.isEnabled())
                 {
                     this.drawTexturedModalRect(startX + 186, startY + i * 19 + 6 + 57, 0, 0, 80, 19);
                 }
@@ -303,18 +325,37 @@ public class GuiWorkstation extends GuiContainer
                 }
 
                 GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-                String name = materials[i].stack.getDisplayName();
+                String name = stack.getDisplayName();
                 if(fontRenderer.getStringWidth(name) > 55)
                 {
-                    name = fontRenderer.trimStringToWidth(materials[i].stack.getDisplayName(), 50).trim() + "...";
+                    name = fontRenderer.trimStringToWidth(stack.getDisplayName(), 50).trim() + "...";
                 }
                 fontRenderer.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
 
                 RenderHelper.enableGUIStandardItemLighting();
-                Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(materials[i].stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
-                Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(fontRenderer, materials[i].stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
+                Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
+
+                if(checkBoxMaterials.isToggled())
+                {
+                    int count = InventoryUtil.getItemStackAmount(Minecraft.getMinecraft().player, stack);
+                    stack = stack.copy();
+                    stack.setCount(stack.getCount() - count);
+                }
+
+                Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(fontRenderer, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
             }
         }
+    }
+
+    private List<MaterialItem> getMaterials()
+    {
+        List<MaterialItem> materials = NonNullList.withSize(7, new MaterialItem(ItemStack.EMPTY));
+        List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : !materialItem.stack.isEmpty()).collect(Collectors.toList());
+        for(int i = 0; i < filteredMaterials.size() && i < materials.size(); i++)
+        {
+            materials.set(i, filteredMaterials.get(i));
+        }
+        return materials;
     }
 
     @Override
