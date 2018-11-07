@@ -269,6 +269,16 @@ public class GuiWorkstation extends GuiContainer
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+        
+        //TODO add hover tool tip to material list
+        //this.renderToolTip(this.hoveredSlot.getStack(), p_191948_1_, p_191948_2_);
+    }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         /* Fixes partial ticks to use percentage from 0 to 1 */
