@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -85,8 +86,11 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                 {
                                     InventoryUtil.removeItemStack(player, stack);
                                 }
-                                ItemStack stack = BlockVehicleCrate.create(entityId);
-                                world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
+                                FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+                                {
+                                    ItemStack stack = BlockVehicleCrate.create(entityId);
+                                    world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
+                                });
                             }
                         }
                     }

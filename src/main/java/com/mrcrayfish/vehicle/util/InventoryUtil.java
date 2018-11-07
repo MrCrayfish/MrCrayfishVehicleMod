@@ -137,6 +137,20 @@ public class InventoryUtil
         return false;
     }
 
+    public static int getItemStackAmount(EntityPlayer player, ItemStack find)
+    {
+        int count = 0;
+        for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+        {
+            ItemStack stack = player.inventory.getStackInSlot(i);
+            if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
+            {
+                count += stack.getCount();
+            }
+        }
+        return count;
+    }
+
     public static boolean hasItemStack(EntityPlayer player, ItemStack find)
     {
         int count = 0;
