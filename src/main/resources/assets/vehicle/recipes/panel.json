@@ -15,6 +15,7 @@
         }
     },
     "result": {
-        "item": "vehicle:panel"
+        "item": "vehicle:panel",
+        "count": 8
     }
 }
