@@ -1099,8 +1099,23 @@ public class EntityRaytracer
             {
                 Vec3d hit = forwardVec;
                 RayTraceResult lookObjectMC = Minecraft.getMinecraft().objectMouseOver;
-                // If the hit entity is a raytraceable entity, process the hit regardless of what MC thinks the player is looking at
+                // If the hit entity is a raytraceable entity, and if the player's eyes are inside what MC
+                // thinks the player is looking at, then process the hit regardless of what MC thinks
                 boolean bypass = entityRaytracePartsStatic.keySet().contains(lookObject.entityHit.getClass());
+                if (bypass && lookObjectMC != null && lookObjectMC.typeOfHit != Type.MISS)
+                {
+                    AxisAlignedBB boxMC;
+                    if (lookObjectMC.typeOfHit == Type.ENTITY)
+                    {
+                        boxMC = lookObjectMC.entityHit.getEntityBoundingBox();
+                    }
+                    else
+                    {
+                        boxMC = lookObject.entityHit.world.getBlockState(lookObjectMC.getBlockPos()).getBoundingBox(lookObject.entityHit.world, lookObjectMC.getBlockPos());
+                    }
+                    bypass = boxMC != null && boxMC.contains(eyeVec);
+                }
+
                 if (!bypass && lookObjectMC != null && lookObjectMC.typeOfHit != Type.MISS)
                 {
                     // Set hit to what MC thinks the player is looking at if the player is not looking at the hit entity
