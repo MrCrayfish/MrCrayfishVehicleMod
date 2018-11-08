@@ -135,7 +135,6 @@ public class ClientProxy implements Proxy
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
             }
         });
-        EntityRaytracer.init();
     }
 
     @Override

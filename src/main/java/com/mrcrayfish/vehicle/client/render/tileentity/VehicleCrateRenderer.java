@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
@@ -20,6 +21,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 
 import java.util.List;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Author: MrCrayfish
@@ -105,7 +108,10 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
                 GlStateManager.translate(0.5F, 0.0F, 0.5F);
 
                 double progress = Math.min(1.0F, Math.max(0, (te.getTimer() - 150 + 5 * partialTicks)) / 100.0);
-                double scale = 0.25 + 0.75 * progress;
+                Pair<Float, Float> scaleAndOffset = EntityRaytracer.getCrateScaleAndOffset(te.getEntity().getClass());
+                float scaleStart = scaleAndOffset.getLeft();
+                double scale = scaleStart + (1 - scaleStart) * progress;
+                GlStateManager.translate(0, 0, scaleAndOffset.getRight() * (1 - progress) * scale);
 
                 if(te.getTimer() >= 150)
                 {

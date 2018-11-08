@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -39,6 +40,9 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -61,6 +65,11 @@ import java.util.function.Function;
 public class EntityRaytracer
 {
     /**
+     * Whether or not this class has been initialized
+     */
+    private static boolean initialized;
+
+    /**
      * Maps raytraceable entities to maps, which map rendered model item parts to matrix transformations that correspond to the static GL operation 
      * performed on them during rendering
      */
@@ -80,6 +89,12 @@ public class EntityRaytracer
      * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise dynamic versions of the faces of their BakedQuads
      */
     private static final Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTrianglesDynamic = Maps.newHashMap();
+
+    /**
+     * Scales and offsets for rendering the entities in crates
+     */
+    private static final Map<Class<? extends Entity>, Pair<Float, Float>> entityCrateScalesAndOffsets = new HashMap<>();
+    private static final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<Float, Float>(0.25F, 0.0F);
 
     /**
      * Nearest common superclass shared by all raytraceable entity classes
@@ -655,6 +670,7 @@ public class EntityRaytracer
      */
     public static void init()
     {
+        Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTrianglesAll = new HashMap<>();
         // Create dynamic triangles for raytraceable entities
         for (Entry<Class<? extends Entity>, Map<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>>> entry : entityRaytracePartsDynamic.entrySet())
         {
@@ -666,6 +682,7 @@ public class EntityRaytracer
             }
             entityRaytraceTrianglesDynamic.put((Class<? extends IEntityRaytraceable>) entry.getKey(), partTriangles);
         }
+        entityRaytraceTrianglesAll.putAll(new HashMap<>(entityRaytraceTrianglesDynamic));
         // Create static triangles for raytraceable entities
         for (Entry<Class<? extends Entity>, Map<RayTracePart, List<MatrixTransformation>>> entry : entityRaytracePartsStatic.entrySet())
         {
@@ -685,14 +702,23 @@ public class EntityRaytracer
 
                 partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part.getStack()), matrix)));
             }
-            entityRaytraceTrianglesStatic.put((Class<? extends IEntityRaytraceable>) entry.getKey(), partTriangles);
+            Class<? extends IEntityRaytraceable> entityRaytraceable = (Class<? extends IEntityRaytraceable>) entry.getKey();
+            entityRaytraceTrianglesStatic.put(entityRaytraceable, partTriangles);
+            HashMap partTrianglesCopy = new HashMap<>(partTriangles);
+            Map<RayTracePart, TriangleRayTraceList> partTrianglesAll = entityRaytraceTrianglesAll.get(entityRaytraceable);
+            if (partTrianglesAll != null)
+            {
+                partTrianglesCopy.putAll(partTrianglesAll);
+            }
+            entityRaytraceTrianglesAll.put(entityRaytraceable, partTrianglesCopy);
         }
+
         List<Class<? extends Entity>> entityRaytraceClasses = Lists.newArrayList();
         entityRaytraceClasses.addAll(entityRaytracePartsStatic.keySet());
         entityRaytraceClasses.addAll(entityRaytracePartsDynamic.keySet());
-        // Find nearest common superclass
         for (Class<? extends Entity> raytraceClass : entityRaytraceClasses)
         {
+            // Find nearest common superclass
             if (entityRaytraceSuperclass != null)
             {
                 Class<?> nearestSuperclass = raytraceClass;
@@ -710,7 +736,49 @@ public class EntityRaytracer
             {
                 entityRaytraceSuperclass = raytraceClass;
             }
+
+            // Calculate scale and offset for rendering the entity in a crate
+            float min = 0;
+            float max = 0;
+            float[] data;
+            float x, y, z;
+            Entity entity = EntityList.newEntity(raytraceClass, Minecraft.getMinecraft().world);
+            for (Entry<RayTracePart, TriangleRayTraceList> entry : entityRaytraceTrianglesAll.get(raytraceClass).entrySet())
+            {
+                for (TriangleRayTrace triangle : entity == null ? entry.getValue().getTriangles() : entry.getValue().getTriangles(entry.getKey(), entity))
+                {
+                    data = triangle.getData();
+                    for (int i = 0; i < data.length; i += 3)
+                    {
+                        x = data[i];
+                        y = data[i + 1];
+                        z = data[i + 2];
+                        if (x < min) min = x;
+                        if (y < min) min = y;
+                        if (z < min) min = z;
+                        if (x > max) max = x;
+                        if (y > max) max = y;
+                        if (z > max) max = z;
+                    }
+                }
+            }
+            float range = max - min;
+            entityCrateScalesAndOffsets.put(raytraceClass, new ImmutablePair<Float, Float>(1 / (range * 1.5F), -(min + range * 0.5F)));
         }
+        initialized = true;
+    }
+
+    /**
+     * Gets entity's scale and offset for rendering in a crate
+     * 
+     * @param raytraceClass class of entity
+     * 
+     * @return pair of scale and offset
+     */
+    public static Pair<Float, Float> getCrateScaleAndOffset(Class<? extends Entity> raytraceClass)
+    {
+        Pair<Float, Float> scaleAndOffset = entityCrateScalesAndOffsets.get(raytraceClass);
+        return scaleAndOffset == null ? SCALE_AND_OFFSET_DEFAULT : scaleAndOffset;
     }
 
     /**
@@ -930,6 +998,10 @@ public class EntityRaytracer
     @SubscribeEvent
     public static void raytraceEntitiesContinuously(ClientTickEvent event)
     {
+        if (!initialized && Minecraft.getMinecraft().world != null)
+        {
+            EntityRaytracer.init();
+        }
         if (continuousInteraction == null || event.phase != Phase.START || Minecraft.getMinecraft().player == null)
         {
             return;
@@ -1404,6 +1476,14 @@ public class EntityRaytracer
                 return triangles;
             }
             return this.triangles;
+        }
+
+        /**
+         * Gets list of triangles directly
+         */
+        public List<TriangleRayTrace> getTriangles()
+        {
+            return triangles;
         }
     }
 
