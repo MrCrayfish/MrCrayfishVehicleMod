@@ -90,7 +90,7 @@ public class RenderVehicleLand<T extends EntityLandVehicle & EntityRaytracer.IEn
             GlStateManager.popMatrix();
 
             //Render the engine if the vehicle has explicitly stated it should
-            if(entity.shouldRenderEngine())
+            if(entity.shouldRenderEngine() && entity.hasEngine())
             {
                 this.renderPart(renderVehicle.getEnginePosition(), entity.engine);
             }
