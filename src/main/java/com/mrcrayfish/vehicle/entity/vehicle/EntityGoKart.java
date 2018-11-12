@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -69,6 +70,12 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
+    }
+
+    @Override
     public float getMinEnginePitch()
     {
         return 0.8F;
@@ -117,7 +124,7 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
     }
 
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

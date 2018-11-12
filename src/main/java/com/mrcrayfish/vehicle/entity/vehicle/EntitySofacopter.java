@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.item.Item;
@@ -54,6 +55,12 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
     public double getMountedYOffset()
     {
         return 0.3125;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.ELECTRIC_MOTOR;
     }
 
     @Override

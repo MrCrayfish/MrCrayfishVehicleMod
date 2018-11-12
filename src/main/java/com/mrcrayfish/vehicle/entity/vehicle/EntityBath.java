@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -60,13 +61,19 @@ public class EntityBath extends EntityPlane implements IEntityRaytraceable
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.NONE;
+    }
+
+    @Override
     public boolean canBeColored()
     {
         return false;
     }
 
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

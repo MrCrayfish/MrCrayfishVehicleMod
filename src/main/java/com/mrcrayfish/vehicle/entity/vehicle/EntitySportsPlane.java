@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -147,6 +148,12 @@ public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceabl
     public double getMountedYOffset()
     {
         return 12 * 0.0625;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.LARGE_MOTOR;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -89,6 +90,12 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
+    }
+
+    @Override
     public float getMinEnginePitch()
     {
         return 1.2F;
@@ -145,7 +152,7 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
 
     //TODO remove and add key support
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

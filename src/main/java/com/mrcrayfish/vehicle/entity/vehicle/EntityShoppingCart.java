@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
@@ -113,13 +114,13 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     }
 
     @Override
-    public void dismountRidingEntity()
+    public EngineType getEngineType()
     {
-        super.dismountRidingEntity();
+        return EngineType.NONE;
     }
 
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

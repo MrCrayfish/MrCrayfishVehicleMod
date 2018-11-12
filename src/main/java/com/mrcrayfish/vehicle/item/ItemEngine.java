@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -35,14 +36,14 @@ public class ItemEngine extends ItemPart implements SubItems
     @SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
-        EngineType type = EngineType.getType(stack.getMetadata());
-        String tierName = I18n.format("vehicle.engine_tier." + type.getTierName() + ".name");
-        tooltip.add(type.getTierColor() + TextFormatting.BOLD.toString() + tierName);
+        EngineTier tier = EngineTier.getType(stack.getMetadata());
+        String tierName = I18n.format("vehicle.engine_tier." + tier.getTierName() + ".name");
+        tooltip.add(tier.getTierColor() + TextFormatting.BOLD.toString() + tierName);
         if(GuiScreen.isShiftKeyDown())
         {
-            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.acceleration") + ": " + TextFormatting.RESET + type.getAccelerationMultiplier() + "x");
-            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.additional_max_speed") + ": " + TextFormatting.RESET + (type.getAdditionalMaxSpeed() * 3.6) + "kph");
-            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.fuel_consumption") + ": " + TextFormatting.RESET + type.getFuelConsumption() + "pt");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.acceleration") + ": " + TextFormatting.RESET + tier.getAccelerationMultiplier() + "x");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.additional_max_speed") + ": " + TextFormatting.RESET + (tier.getAdditionalMaxSpeed() * 3.6) + "kph");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.fuel_consumption") + ": " + TextFormatting.RESET + tier.getFuelConsumption() + "pt");
         }
         else
         {
@@ -54,9 +55,9 @@ public class ItemEngine extends ItemPart implements SubItems
     public NonNullList<ResourceLocation> getModels()
     {
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
-        for(EngineType type : EngineType.values())
+        for(EngineTier tier : EngineTier.values())
         {
-            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + type.toString().toLowerCase()));
+            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + tier.toString().toLowerCase()));
         }
         return modelLocations;
     }
@@ -66,9 +67,9 @@ public class ItemEngine extends ItemPart implements SubItems
     {
         if(this.isInCreativeTab(tab))
         {
-            for(EngineType type : EngineType.values())
+            for(EngineTier tier : EngineTier.values())
             {
-                items.add(new ItemStack(this, 1, type.ordinal()));
+                items.add(new ItemStack(this, 1, tier.ordinal()));
             }
         }
     }
