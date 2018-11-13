@@ -15,6 +15,7 @@ public enum EngineType
 
     public static EngineType getType(ItemStack stack)
     {
+
         return getType(stack.getItemDamage());
     }
 

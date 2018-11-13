@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.common.container;
 
+import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -29,6 +30,21 @@ public class ContainerWorkstation extends Container
             public boolean isItemValid(ItemStack stack)
             {
                 return stack.getItem() == Items.DYE;
+            }
+
+            @Override
+            public int getSlotStackLimit()
+            {
+                return 1;
+            }
+        });
+
+        this.addSlotToContainer(new Slot(tileEntityWorkstation, 1, 207, 30)
+        {
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return stack.getItem() instanceof ItemEngine;
             }
 
             @Override

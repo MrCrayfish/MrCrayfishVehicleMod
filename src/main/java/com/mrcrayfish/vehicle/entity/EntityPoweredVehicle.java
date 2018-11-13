@@ -59,7 +59,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     protected static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> HAS_ENGINE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Integer> ENGINE_TIER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    public static final DataParameter<Integer> ENGINE_TIER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
@@ -896,11 +896,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         if(world.isRemote)
         {
             //TODO update vehicle engine
-            /*if(ENGINE_TYPE.equals(key))
+            if(ENGINE_TIER.equals(key))
             {
-                EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
-                engine.setItemDamage(type.ordinal());
-            }*/
+                EngineTier tier = EngineTier.getType(this.dataManager.get(ENGINE_TIER));
+                engine.setItemDamage(tier.ordinal());
+            }
             if(COLOR.equals(key))
             {
                 if(!fuelPortBody.hasTagCompound())

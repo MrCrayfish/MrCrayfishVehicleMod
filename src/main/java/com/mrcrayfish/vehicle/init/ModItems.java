@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.item.*;
 import net.minecraft.item.Item;
 
@@ -95,7 +96,7 @@ public class ModItems
         TRAILER_BODY = new ItemPart("trailer_body").setColored();
         TOW_BAR = new ItemPart("tow_bar");
 
-        ENGINE = new ItemEngine("small_engine");
+        ENGINE = new ItemEngine("small_engine", EngineType.SMALL_MOTOR);
         SPRAY_CAN = new ItemSprayCan();
         JERRY_CAN = new ItemJerryCan("jerry_can", 5000, 100);
         INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 15000, 150);

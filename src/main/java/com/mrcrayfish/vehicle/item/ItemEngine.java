@@ -24,12 +24,20 @@ import java.util.List;
  */
 public class ItemEngine extends ItemPart implements SubItems
 {
-    public ItemEngine(String id)
+    private EngineType engineType;
+
+    public ItemEngine(String id, EngineType engineType)
     {
         super(id);
+        this.engineType = engineType;
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
+    }
+
+    public EngineType getEngineType()
+    {
+        return engineType;
     }
 
     @Override
