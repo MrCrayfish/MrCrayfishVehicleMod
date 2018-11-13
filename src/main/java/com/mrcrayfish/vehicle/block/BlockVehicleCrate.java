@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
@@ -177,11 +178,12 @@ public class BlockVehicleCrate extends BlockRotatedObject
         });
     }
 
-    public static ItemStack create(ResourceLocation entityId, int color)
+    public static ItemStack create(ResourceLocation entityId, int color, EngineTier engineTier)
     {
         NBTTagCompound blockEntityTag = new NBTTagCompound();
         blockEntityTag.setString("vehicle", entityId.toString());
         blockEntityTag.setInteger("color", color);
+        blockEntityTag.setInteger("engineTier", engineTier.ordinal());
         NBTTagCompound itemTag = new NBTTagCompound();
         itemTag.setTag("BlockEntityTag", blockEntityTag);
         ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);
