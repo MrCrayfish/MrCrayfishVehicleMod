@@ -50,6 +50,25 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
+    public boolean canPlaceBlockAt(World world, BlockPos pos)
+    {
+        return super.canPlaceBlockAt(world, pos) && canOpen(world, pos);
+    }
+
+    private boolean canOpen(World world, BlockPos pos)
+    {
+        BlockPos pos2;
+        for (EnumFacing side : EnumFacing.HORIZONTALS)
+        {
+            pos2 = pos.offset(side);
+            if (!world.getCollisionBoxes(null, Block.FULL_BLOCK_AABB.offset(pos2)).isEmpty()
+                    || !world.getBlockState(pos2.down()).isSideSolid(world, pos2.down(), EnumFacing.UP))
+                return false;
+        }
+        return true;
+    }
+
+    @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         TileEntity tileEntity = source.getTileEntity(pos);
@@ -84,7 +103,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
         if(!worldIn.isRemote && facing == EnumFacing.UP && playerIn.getHeldItem(hand).getItem() == ModItems.WRENCH)
         {
             TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityVehicleCrate)
+            if(tileEntity instanceof TileEntityVehicleCrate && canOpen(worldIn, pos))
             {
                 ((TileEntityVehicleCrate) tileEntity).open(playerIn.getUniqueID());
             }
@@ -100,7 +119,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
             if(placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode)
             {
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityVehicleCrate)
+                if(tileEntity instanceof TileEntityVehicleCrate && canOpen(worldIn, pos))
                 {
                     ((TileEntityVehicleCrate) tileEntity).open(placer.getUniqueID());
                 }
