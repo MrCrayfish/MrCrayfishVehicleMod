@@ -133,10 +133,14 @@ public class GuiWorkstation extends GuiContainer
 
         validEngine = true;
 
-        boolean canCraft = true;
         for(MaterialItem material : materials)
         {
             material.update();
+        }
+
+        boolean canCraft = true;
+        for(MaterialItem material : materials)
+        {
             if(!material.isEnabled())
             {
                 canCraft = false;
@@ -473,7 +477,7 @@ public class GuiWorkstation extends GuiContainer
         {
             if(!stack.isEmpty())
             {
-                enabled = InventoryUtil.hasItemAndAmount(Minecraft.getMinecraft().player, stack.getItem(), stack.getCount());
+                enabled = InventoryUtil.hasItemStack(Minecraft.getMinecraft().player, stack);
             }
         }
 

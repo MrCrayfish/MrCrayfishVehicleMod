@@ -140,9 +140,8 @@ public class InventoryUtil
     public static int getItemStackAmount(EntityPlayer player, ItemStack find)
     {
         int count = 0;
-        for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+        for(ItemStack stack : player.inventory.mainInventory)
         {
-            ItemStack stack = player.inventory.getStackInSlot(i);
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
             {
                 count += stack.getCount();
@@ -190,15 +189,15 @@ public class InventoryUtil
 
     private static boolean areItemStacksEqualIgnoreCount(ItemStack source, ItemStack target)
     {
-        if (source.getItem() != target.getItem())
+        if(source.getItem() != target.getItem())
         {
             return false;
         }
-        else if (source.getItemDamage() != target.getItemDamage())
+        else if(source.getItemDamage() != target.getItemDamage())
         {
             return false;
         }
-        else if (source.getTagCompound() == null && target.getTagCompound() != null)
+        else if(source.getTagCompound() == null && target.getTagCompound() != null)
         {
             return false;
         }
