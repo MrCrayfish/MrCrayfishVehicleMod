@@ -763,7 +763,7 @@ public class EntityRaytracer
                 }
             }
             float range = max - min;
-            entityCrateScalesAndOffsets.put(raytraceClass, new ImmutablePair<Float, Float>(1 / (range * 1.5F), -(min + range * 0.5F)));
+            entityCrateScalesAndOffsets.put(raytraceClass, new ImmutablePair<>(1 / (range * 1.25F), -(min + range * 0.5F)));
         }
         initialized = true;
     }
