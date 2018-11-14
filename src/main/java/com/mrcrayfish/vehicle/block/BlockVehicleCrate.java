@@ -52,7 +52,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos)
     {
-        return super.canPlaceBlockAt(world, pos) && canOpen(world, pos);
+        return super.canPlaceBlockAt(world, pos) && isBelowBlockTopSolid(world, pos) && canOpen(world, pos);
     }
 
     private boolean canOpen(World world, BlockPos pos)
@@ -61,11 +61,15 @@ public class BlockVehicleCrate extends BlockRotatedObject
         for (EnumFacing side : EnumFacing.HORIZONTALS)
         {
             pos2 = pos.offset(side);
-            if (!world.getCollisionBoxes(null, Block.FULL_BLOCK_AABB.offset(pos2)).isEmpty()
-                    || !world.getBlockState(pos2.down()).isSideSolid(world, pos2.down(), EnumFacing.UP))
+            if (!world.getCollisionBoxes(null, Block.FULL_BLOCK_AABB.offset(pos2)).isEmpty() || !isBelowBlockTopSolid(world, pos2))
                 return false;
         }
         return true;
+    }
+
+    private boolean isBelowBlockTopSolid(World world, BlockPos pos)
+    {
+        return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP);
     }
 
     @Override
