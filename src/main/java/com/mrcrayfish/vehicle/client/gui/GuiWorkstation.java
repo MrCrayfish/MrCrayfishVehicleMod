@@ -190,21 +190,24 @@ public class GuiWorkstation extends GuiContainer
             vehicleScale = Math.min(30, vehicleScale + 6);
         }
 
-        if(!workstation.getStackInSlot(0).isEmpty())
+        if(cachedVehicle[currentVehicle].canBeColored())
         {
-            ItemStack stack = workstation.getStackInSlot(0);
-            if(stack.getItem() == Items.DYE)
+            if(!workstation.getStackInSlot(0).isEmpty())
             {
-                cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[15 - stack.getMetadata()]);
+                ItemStack stack = workstation.getStackInSlot(0);
+                if(stack.getItem() == Items.DYE)
+                {
+                    cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[15 - stack.getMetadata()]);
+                }
+                else
+                {
+                    cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
+                }
             }
             else
             {
                 cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
             }
-        }
-        else
-        {
-            cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
         }
     }
 
