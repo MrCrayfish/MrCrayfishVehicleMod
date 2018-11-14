@@ -89,20 +89,27 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                 }
                             }
 
+                            EntityVehicle vehicle = null;
                             EngineType engineType = EngineType.NONE;
                             try
                             {
                                 Constructor<? extends Entity> constructor = clazz.getDeclaredConstructor(World.class);
                                 Entity entity = constructor.newInstance(world);
+                                if(entity instanceof EntityVehicle)
+                                {
+                                    vehicle = (EntityVehicle) entity;
+                                }
                                 if(entity instanceof EntityPoweredVehicle)
                                 {
                                     EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) entity;
+                                    engineType = entityPoweredVehicle.getEngineType();
+
                                     TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
                                     ItemStack engine = tileEntityWorkstation.getStackInSlot(1);
                                     if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
                                     {
-                                        engineType = ((ItemEngine) engine.getItem()).getEngineType();
-                                        if(entityPoweredVehicle.getEngineType() != engineType && engineType != EngineType.NONE)
+                                        EngineType engineType2 = ((ItemEngine) engine.getItem()).getEngineType();
+                                        if(entityPoweredVehicle.getEngineType() != EngineType.NONE && entityPoweredVehicle.getEngineType() != engineType2)
                                         {
                                             return null;
                                         }
@@ -119,6 +126,11 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                 return null;
                             }
 
+                            if(vehicle == null)
+                            {
+                                return null;
+                            }
+
                             for(ItemStack stack : recipe.getMaterials())
                             {
                                 InventoryUtil.removeItemStack(player, stack);
@@ -126,17 +138,21 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
 
                             /* Gets the color based on the dye */
                             int color = EntityVehicle.DYE_TO_COLOR[0];
-                            TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
-                            ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
-                            if(dyeStack.getItem() instanceof ItemDye)
+                            if(vehicle.canBeColored())
                             {
-                                color = EntityVehicle.DYE_TO_COLOR[15 - dyeStack.getMetadata()];
-                                tileEntityWorkstation.getInventory().set(0, ItemStack.EMPTY);
+                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
+                                if(dyeStack.getItem() instanceof ItemDye)
+                                {
+                                    color = EntityVehicle.DYE_TO_COLOR[15 - dyeStack.getMetadata()];
+                                    tileEntityWorkstation.getInventory().set(0, ItemStack.EMPTY);
+                                }
                             }
 
                             EngineTier engineTier = EngineTier.WOOD;
                             if(engineType != EngineType.NONE)
                             {
+                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
                                 ItemStack engine = tileEntityWorkstation.getInventory().get(1);
                                 if(engine.getItem() instanceof ItemEngine)
                                 {
