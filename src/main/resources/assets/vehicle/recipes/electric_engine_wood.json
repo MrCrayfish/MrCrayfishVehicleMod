@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "IIW",
+        "RDI",
+        "IIW"
+    ],
+    "key": {
+        "R": {
+            "item": "minecraft:redstone_block"
+        },
+        "W": {
+            "item": "minecraft:planks",
+            "data": 0
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "D": {
+            "item": "minecraft:redstone"
+        }
+    },
+    "result": {
+        "item": "vehicle:electric_engine",
+        "data": 0
+    }
+}

@@ -11,6 +11,7 @@ vehicle.engine_info.fuel_consumption=Fuel Consumption
 
 item.small_engine.name=Small Engine
 item.large_engine.name=Large Engine
+item.electric_engine.name=Electric Engine
 item.spray_can.name=Spray Can
 item.spray_can.info=Use this spray can to paint vehicles. To add a color to the spray can, combine it with one or more dyes in a crafting table. You can also refill spray cans by placing them with a non-colored spray can in a crafting table.
 item.spray_can.empty=No Color

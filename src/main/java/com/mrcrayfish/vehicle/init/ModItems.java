@@ -44,6 +44,7 @@ public class ModItems
 
     public static final Item SMALL_ENGINE;
     public static final Item LARGE_ENGINE;
+    public static final Item ELECTRIC_ENGINE;
     public static final Item SPRAY_CAN;
     public static final Item JERRY_CAN;
     public static final Item INDUSTRIAL_JERRY_CAN;
@@ -99,6 +100,7 @@ public class ModItems
 
         SMALL_ENGINE = new ItemEngine("small_engine", EngineType.SMALL_MOTOR);
         LARGE_ENGINE = new ItemEngine("large_engine", EngineType.LARGE_MOTOR);
+        ELECTRIC_ENGINE = new ItemEngine("electric_engine", EngineType.ELECTRIC_MOTOR);
         SPRAY_CAN = new ItemSprayCan();
         JERRY_CAN = new ItemJerryCan("jerry_can", 5000, 100);
         INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 15000, 150);
@@ -122,6 +124,7 @@ public class ModItems
     {
         register(SMALL_ENGINE);
         register(LARGE_ENGINE);
+        register(ELECTRIC_ENGINE);
         register(PANEL);
         register(WHEEL);
         register(ATV_BODY);
