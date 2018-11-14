@@ -147,28 +147,31 @@ public class GuiWorkstation extends GuiContainer
         if(cachedVehicle[currentVehicle] instanceof EntityPoweredVehicle)
         {
             EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) cachedVehicle[currentVehicle];
-            ItemStack engine = workstation.getStackInSlot(1);
-            if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
+            if(entityPoweredVehicle.getEngineType() != EngineType.NONE)
             {
-                EngineType engineType = ((ItemEngine) engine.getItem()).getEngineType();
-                if(entityPoweredVehicle.getEngineType() != engineType)
+                ItemStack engine = workstation.getStackInSlot(1);
+                if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
+                {
+                    EngineType engineType = ((ItemEngine) engine.getItem()).getEngineType();
+                    if(entityPoweredVehicle.getEngineType() != engineType)
+                    {
+                        canCraft = false;
+                        validEngine = false;
+                        entityPoweredVehicle.setEngine(false);
+                    }
+                    else
+                    {
+                        entityPoweredVehicle.setEngineTier(EngineTier.getType(engine.getItemDamage()));
+                        entityPoweredVehicle.setEngine(true);
+                        entityPoweredVehicle.notifyDataManagerChange(EntityPoweredVehicle.ENGINE_TIER);
+                    }
+                }
+                else
                 {
                     canCraft = false;
                     validEngine = false;
                     entityPoweredVehicle.setEngine(false);
                 }
-                else
-                {
-                    entityPoweredVehicle.setEngineTier(EngineTier.getType(engine.getItemDamage()));
-                    entityPoweredVehicle.setEngine(true);
-                    entityPoweredVehicle.notifyDataManagerChange(EntityPoweredVehicle.ENGINE_TIER);
-                }
-            }
-            else
-            {
-                canCraft = false;
-                validEngine = false;
-                entityPoweredVehicle.setEngine(false);
             }
         }
         btnCraft.enabled = canCraft;
