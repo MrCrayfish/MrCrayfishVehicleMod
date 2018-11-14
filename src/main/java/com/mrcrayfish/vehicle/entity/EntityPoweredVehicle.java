@@ -199,7 +199,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @Override
     public void onClientInit()
     {
-        engine = new ItemStack(ModItems.ENGINE);
+        engine = new ItemStack(ModItems.SMALL_ENGINE);
         keyPort = new ItemStack(ModItems.KEY_PORT);
         setFuelPort(FuelPort.LID);
     }

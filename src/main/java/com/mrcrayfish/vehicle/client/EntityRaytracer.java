@@ -231,7 +231,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
-        createPartTransforms(ModItems.ENGINE, EntityGoKart.ENGINE_POSITION, goKartParts, goKartTransformGlobal, FUNCTION_FUELING);
+        createPartTransforms(ModItems.SMALL_ENGINE, EntityGoKart.ENGINE_POSITION, goKartParts, goKartTransformGlobal, FUNCTION_FUELING);
         entityRaytracePartsStatic.put(EntityGoKart.class, goKartParts);
 
         // Jet ski
@@ -274,7 +274,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, 0.5, 0));
         createTranformListForPart(ModItems.MINI_BIKE_HANDLE_BAR, miniBikeParts, miniBikeTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.5, 0));
-        createFuelablePartTransforms(ModItems.ENGINE, 0, 0.10625, 0, 0, 7.25, 3, 180, 1, miniBikeParts, miniBikeTransformGlobal);
+        createFuelablePartTransforms(ModItems.SMALL_ENGINE, 0, 0.10625, 0, 0, 7.25, 3, 180, 1, miniBikeParts, miniBikeTransformGlobal);
         entityRaytracePartsStatic.put(EntityMiniBike.class, miniBikeParts);
 
         // Moped
