@@ -1,5 +1,8 @@
 {
     "forge_marker": 1,
+	"defaults": {
+        "model": "vehicle:vehicle_crate"
+    },
     "variants": {
         "facing": {
             "north": {},
