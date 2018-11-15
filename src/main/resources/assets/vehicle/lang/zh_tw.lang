@@ -1,11 +1,5 @@
 itemGroup.tabVehicle=MrCrayfish載具模組
 
-# Old
-entity.moped.name=輕便摩托車
-vehicle.config.client.speedometer=顯示車輛速度儀
-vehicle.config.client.speedometer.tooltip=如果為true，在駕駛載具時會顯示車輛速度儀
-
-item.small_engine.name=小引擎
 vehicle.engine_tier.wood.name=木等級
 vehicle.engine_tier.stone.name=石等級
 vehicle.engine_tier.iron.name=鐵等級
@@ -15,6 +9,9 @@ vehicle.engine_info.acceleration=加速度
 vehicle.engine_info.additional_max_speed=額外的最大速度
 vehicle.engine_info.fuel_consumption=燃油消耗
 
+item.small_engine.name=小型引擎
+item.large_engine.name=大型引擎
+item.electric_engine.name=電動引擎
 item.spray_can.name=噴霧罐
 item.spray_can.info=使用此噴霧罐以塗裝、改變載具的外觀。要為此噴霧罐添加顏色，將此噴霧罐與一種或多種染料在工作台中合成。要為此噴霧罐進行補充，將此噴霧罐與一瓶無色噴霧罐在工作台中合成。
 item.spray_can.empty=沒有顏色
@@ -26,6 +23,7 @@ item.industrial_jerry_can.info=使用此工業用可攜式油桶以運載燃油�
 item.industrial_jerry_can.fuel=燃油：%s
 item.wrench.name=扳手
 item.key.name=鑰匙
+item.panel.name=面板
 item.wheel.name=輪子
 item.tow_bar.name=牽引桿／拖桿
 item.go_kart_steering_wheel.name=方向盤
@@ -98,6 +96,8 @@ vehicle.config.client.display.speedometer=顯示車輛速度儀
 vehicle.config.client.display.speedometer.tooltip=如果為true，在駕駛載具時會顯示車輛速度儀
 vehicle.config.client.display.auto_perspective=自動變更視角
 vehicle.config.client.display.auto_perspective.tooltip=如果為true，乘坐載具時視角會自動變更至第三者視角
+vehicle.config.client.display.workstation_animation=工作站動畫
+vehicle.config.client.display.workstation_animation.tooltip=如果為true，在工作站瀏覽載具時會顯示動畫
 
 vehicle.config.server=伺服器
 vehicle.config.server.tooltip=適用於伺服器的配置
