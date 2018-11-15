@@ -58,7 +58,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     protected static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    protected static final DataParameter<Integer> ENGINE_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Boolean> HAS_ENGINE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    public static final DataParameter<Integer> ENGINE_TIER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Boolean> HORN = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
@@ -136,7 +137,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         this.dataManager.register(TURN_SENSITIVITY, 10);
         this.dataManager.register(MAX_TURN_ANGLE, 45);
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
-        this.dataManager.register(ENGINE_TYPE, 0);
+        this.dataManager.register(HAS_ENGINE, false);
+        this.dataManager.register(ENGINE_TIER, 0);
         this.dataManager.register(HORN, false);
         this.dataManager.register(REQUIRES_FUEL, VehicleConfig.SERVER.fuelEnabled);
         this.dataManager.register(CURRENT_FUEL, 0F);
@@ -197,7 +199,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     @Override
     public void onClientInit()
     {
-        engine = new ItemStack(ModItems.ENGINE);
+        engine = new ItemStack(ModItems.SMALL_ENGINE);
         keyPort = new ItemStack(ModItems.KEY_PORT);
         setFuelPort(FuelPort.LID);
     }
@@ -242,7 +244,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
                 return false;
             }
 
-            if(this.isEngineLockable())
+            if(this.isLockable())
             {
                 NBTTagCompound tag = CommonUtils.getItemTagCompound(stack);
                 if(!tag.hasUniqueId("vehicleId") || this.getUniqueID().equals(tag.getUniqueId("vehicleId")))
@@ -373,11 +375,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public abstract void updateVehicleMotion();
 
+    public abstract EngineType getEngineType();
+
     protected void updateSpeed()
     {
         currentSpeed = this.getSpeed();
 
-        EngineType engineType = this.getEngineType();
+        EngineTier engineTier = this.getEngineTier();
         AccelerationDirection acceleration = this.getAcceleration();
         if(this.getControllingPassenger() != null)
         {
@@ -385,18 +389,18 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
             {
                 if(acceleration == AccelerationDirection.FORWARD)
                 {
-                    this.currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                    if(this.currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+                    this.currentSpeed += this.getAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                    if(this.currentSpeed > this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed())
                     {
-                        this.currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                        this.currentSpeed = this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed();
                     }
                 }
                 else if(acceleration == AccelerationDirection.REVERSE)
                 {
-                    this.currentSpeed -= this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                    if(this.currentSpeed < -(4.0F + engineType.getAdditionalMaxSpeed() / 2))
+                    this.currentSpeed -= this.getAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                    if(this.currentSpeed < -(4.0F + engineTier.getAdditionalMaxSpeed() / 2))
                     {
-                        this.currentSpeed = -(4.0F + engineType.getAdditionalMaxSpeed() / 2);
+                        this.currentSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2);
                     }
                 }
                 else
@@ -485,9 +489,18 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             this.owner = NBTUtil.getUUIDFromTag(compound.getCompoundTag("owner"));
         }
-        if(compound.hasKey("engineType", Constants.NBT.TAG_INT))
+        if(compound.hasKey("hasEngine", Constants.NBT.TAG_BYTE))
         {
-            this.setEngineType(EngineType.getType(compound.getInteger("engineType")));
+            this.setEngine(compound.getBoolean("hasEngine"));
+        }
+        if(compound.hasKey("engineType", Constants.NBT.TAG_INT)) //TODO: Remove after release
+        {
+            this.setEngine(true);
+            this.setEngineTier(EngineTier.getType(compound.getInteger("engineTier")));
+        }
+        if(compound.hasKey("engineTier", Constants.NBT.TAG_INT))
+        {
+            this.setEngineTier(EngineTier.getType(compound.getInteger("engineTier")));
         }
         if(compound.hasKey("maxSpeed", Constants.NBT.TAG_FLOAT))
         {
@@ -536,7 +549,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             compound.setTag("owner", NBTUtil.createUUIDTag(owner));
         }
-        compound.setInteger("engineType", this.getEngineType().ordinal());
+        compound.setBoolean("hasEngine", this.hasEngine());
+        compound.setInteger("engineTier", this.getEngineTier().ordinal());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
@@ -585,7 +599,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public float getActualMaxSpeed()
     {
-        return this.dataManager.get(MAX_SPEED) + this.getEngineType().getAdditionalMaxSpeed();
+        return this.dataManager.get(MAX_SPEED) + this.getEngineTier().getAdditionalMaxSpeed();
     }
 
     public void setSpeed(float speed)
@@ -663,14 +677,24 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return this.dataManager.get(MAX_TURN_ANGLE);
     }
 
-    public void setEngineType(EngineType engineType)
+    public boolean hasEngine()
     {
-        this.dataManager.set(ENGINE_TYPE, engineType.ordinal());
+        return this.dataManager.get(HAS_ENGINE);
     }
 
-    public EngineType getEngineType()
+    public void setEngine(boolean hasEngine)
     {
-        return EngineType.getType(this.dataManager.get(ENGINE_TYPE));
+        this.dataManager.set(HAS_ENGINE, hasEngine);
+    }
+
+    public void setEngineTier(EngineTier engineTier)
+    {
+        this.dataManager.set(ENGINE_TIER, engineTier.ordinal());
+    }
+
+    public EngineTier getEngineTier()
+    {
+        return EngineTier.getType(this.dataManager.get(ENGINE_TIER));
     }
 
     @SideOnly(Side.CLIENT)
@@ -740,18 +764,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
 
     public boolean isFueled()
     {
-        if(!this.requiresFuel())
-            return true;
-
-        Entity entity = this.getControllingPassenger();
-        if(entity instanceof EntityPlayer)
-        {
-            if(((EntityPlayer) entity).isCreative())
-            {
-                return true;
-            }
-        }
-        return this.getCurrentFuel() > 0F;
+        return !this.requiresFuel() || this.isControllingPassengerCreative() || this.getCurrentFuel() > 0F;
     }
 
     public void setCurrentFuel(float fuel)
@@ -826,14 +839,18 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         }
     }
 
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return true;
     }
 
     public boolean canDrive()
     {
-        return this.isFueled() && !this.isKeyNeeded() || !this.getKeyStack().isEmpty();
+        if(!this.hasEngine() || !this.isFueled())
+        {
+            return false;
+        }
+        return this.isControllingPassengerCreative() || (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
     }
 
     public void setEnginePosition(PartPosition enginePosition)
@@ -878,10 +895,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         super.notifyDataManagerChange(key);
         if(world.isRemote)
         {
-            if(ENGINE_TYPE.equals(key))
+            //TODO update vehicle engine
+            if(ENGINE_TIER.equals(key))
             {
-                EngineType type = EngineType.getType(this.dataManager.get(ENGINE_TYPE));
-                engine.setItemDamage(type.ordinal());
+                EngineTier tier = EngineTier.getType(this.dataManager.get(ENGINE_TIER));
+                engine.setItemDamage(tier.ordinal());
             }
             if(COLOR.equals(key))
             {
@@ -924,6 +942,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             disableFallDamage = false;
         }
+    }
+
+    public boolean isControllingPassengerCreative()
+    {
+        Entity entity = this.getControllingPassenger();
+        if(entity instanceof EntityPlayer)
+        {
+            if(((EntityPlayer) entity).isCreative())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public enum TurnDirection
@@ -971,7 +1002,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         private float volumeOpen, volumeClose;
         private float pitchOpen, pitchClose;
 
-        private FuelPort(Item closed, Item body, Item lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
+        FuelPort(Item closed, Item body, Item lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
         {
             this.closed = closed;
             this.body = body;

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.item.*;
 import net.minecraft.item.Item;
 
@@ -9,6 +10,7 @@ import net.minecraft.item.Item;
  */
 public class ModItems
 {
+    public static final Item PANEL;
     public static final Item WHEEL;
     public static final Item ATV_BODY;
     public static final Item ATV_HANDLE_BAR;
@@ -40,7 +42,9 @@ public class ModItems
     public static final Item TRAILER_BODY;
     public static final Item TOW_BAR;
 
-    public static final Item ENGINE;
+    public static final Item SMALL_ENGINE;
+    public static final Item LARGE_ENGINE;
+    public static final Item ELECTRIC_ENGINE;
     public static final Item SPRAY_CAN;
     public static final Item JERRY_CAN;
     public static final Item INDUSTRIAL_JERRY_CAN;
@@ -62,6 +66,7 @@ public class ModItems
 
     static
     {
+        PANEL = new ItemPart("panel").setCreativeTab(VehicleMod.CREATIVE_TAB);
         WHEEL = new ItemPart("wheel").setCreativeTab(VehicleMod.CREATIVE_TAB);
         ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
@@ -93,7 +98,9 @@ public class ModItems
         TRAILER_BODY = new ItemPart("trailer_body").setColored();
         TOW_BAR = new ItemPart("tow_bar");
 
-        ENGINE = new ItemEngine("small_engine");
+        SMALL_ENGINE = new ItemEngine("small_engine", EngineType.SMALL_MOTOR);
+        LARGE_ENGINE = new ItemEngine("large_engine", EngineType.LARGE_MOTOR);
+        ELECTRIC_ENGINE = new ItemEngine("electric_engine", EngineType.ELECTRIC_MOTOR);
         SPRAY_CAN = new ItemSprayCan();
         JERRY_CAN = new ItemJerryCan("jerry_can", 5000, 100);
         INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 15000, 150);
@@ -115,7 +122,10 @@ public class ModItems
 
     public static void register()
     {
-        register(ENGINE);
+        register(SMALL_ENGINE);
+        register(LARGE_ENGINE);
+        register(ELECTRIC_ENGINE);
+        register(PANEL);
         register(WHEEL);
         register(ATV_BODY);
         register(ATV_HANDLE_BAR);

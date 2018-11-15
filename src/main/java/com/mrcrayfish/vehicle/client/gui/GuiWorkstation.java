@@ -6,8 +6,12 @@ import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.entity.EngineTier;
+import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageCraftVehicle;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
@@ -16,10 +20,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -32,11 +38,11 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -89,7 +95,7 @@ public class GuiWorkstation extends GuiContainer
     private TileEntityWorkstation workstation;
     private GuiButton btnCraft;
     private GuiCheckBox checkBoxMaterials;
-
+    private boolean validEngine;
     private boolean transitioning;
     private int vehicleScale = 30;
     private int prevVehicleScale = 30;
@@ -115,7 +121,7 @@ public class GuiWorkstation extends GuiContainer
         this.buttonList.add(new GuiButton(2, startX + 161, startY, 15, 20, ">"));
         this.buttonList.add(btnCraft = new GuiButton(3, startX + 186, startY + 6, 97, 20, "Craft"));
         this.btnCraft.enabled = false;
-        this.checkBoxMaterials = new GuiCheckBox(186, 50, "Show Remaining");
+        this.checkBoxMaterials = new GuiCheckBox(186, 51, "Show Remaining");
         this.checkBoxMaterials.setToggled(GuiWorkstation.showRemaining);
         this.loadVehicle(currentVehicle);
     }
@@ -124,20 +130,55 @@ public class GuiWorkstation extends GuiContainer
     public void updateScreen()
     {
         super.updateScreen();
+
+        validEngine = true;
+
         for(MaterialItem material : materials)
         {
             material.update();
         }
-        boolean allEnabled = true;
+
+        boolean canCraft = true;
         for(MaterialItem material : materials)
         {
             if(!material.isEnabled())
             {
-                allEnabled = false;
+                canCraft = false;
                 break;
             }
         }
-        btnCraft.enabled = allEnabled;
+
+        if(cachedVehicle[currentVehicle] instanceof EntityPoweredVehicle)
+        {
+            EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) cachedVehicle[currentVehicle];
+            if(entityPoweredVehicle.getEngineType() != EngineType.NONE)
+            {
+                ItemStack engine = workstation.getStackInSlot(1);
+                if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
+                {
+                    EngineType engineType = ((ItemEngine) engine.getItem()).getEngineType();
+                    if(entityPoweredVehicle.getEngineType() != engineType)
+                    {
+                        canCraft = false;
+                        validEngine = false;
+                        entityPoweredVehicle.setEngine(false);
+                    }
+                    else
+                    {
+                        entityPoweredVehicle.setEngineTier(EngineTier.getType(engine.getItemDamage()));
+                        entityPoweredVehicle.setEngine(true);
+                        entityPoweredVehicle.notifyDataManagerChange(EntityPoweredVehicle.ENGINE_TIER);
+                    }
+                }
+                else
+                {
+                    canCraft = false;
+                    validEngine = false;
+                    entityPoweredVehicle.setEngine(false);
+                }
+            }
+        }
+        btnCraft.enabled = canCraft;
 
         prevVehicleScale = vehicleScale;
         if(transitioning)
@@ -154,6 +195,26 @@ public class GuiWorkstation extends GuiContainer
         else if(vehicleScale < 30)
         {
             vehicleScale = Math.min(30, vehicleScale + 6);
+        }
+
+        if(cachedVehicle[currentVehicle].canBeColored())
+        {
+            if(!workstation.getStackInSlot(0).isEmpty())
+            {
+                ItemStack stack = workstation.getStackInSlot(0);
+                if(stack.getItem() == Items.DYE)
+                {
+                    cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[15 - stack.getMetadata()]);
+                }
+                else
+                {
+                    cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
+                }
+            }
+            else
+            {
+                cachedVehicle[currentVehicle].setColor(EntityVehicle.DYE_TO_COLOR[0]);
+            }
         }
     }
 
@@ -249,6 +310,16 @@ public class GuiWorkstation extends GuiContainer
     }
 
     @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+        
+        //TODO add hover tool tip to material list
+        //this.renderToolTip(this.hoveredSlot.getStack(), p_191948_1_, p_191948_2_);
+    }
+
+    @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
         /* Fixes partial ticks to use percentage from 0 to 1 */
@@ -264,9 +335,28 @@ public class GuiWorkstation extends GuiContainer
         this.mc.getTextureManager().bindTexture(GUI);
         this.drawTexturedModalRect(startX, startY + 80, 0, 134, 176, 122);
         this.drawTexturedModalRect(startX + 180, startY, 176, 54, 6, 208);
-        this.drawTexturedModalRect(startX + 186, startY, 179, 54, 57, 208);
-        this.drawTexturedModalRect(startX + 186 + 57, startY, 179, 54, 26, 208);
-        this.drawTexturedModalRect(startX + 186 + 57 + 26, startY, 236, 54, 20, 208);
+        this.drawTexturedModalRect(startX + 186, startY, 182, 54, 57, 208);
+        this.drawTexturedModalRect(startX + 186 + 57, startY, 220, 54, 23, 208);
+        this.drawTexturedModalRect(startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
+        this.drawTexturedModalRect(startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
+
+        if(workstation.getStackInSlot(0).isEmpty())
+        {
+            this.drawTexturedModalRect(startX + 187, startY + 30, 80, 0, 16, 16);
+        }
+
+        if(!validEngine)
+        {
+            this.drawTexturedModalRect(startX + 206, startY + 29, 80, 16, 18, 18);
+            if(workstation.getStackInSlot(1).isEmpty())
+            {
+                this.drawTexturedModalRect(startX + 207, startY + 30, 112, 0, 16, 16);
+            }
+        }
+        else if(workstation.getStackInSlot(1).isEmpty())
+        {
+            this.drawTexturedModalRect(startX + 207, startY + 30, 96, 0, 16, 16);
+        }
 
         this.checkBoxMaterials.draw(mc, guiLeft, guiTop);
 
@@ -387,7 +477,7 @@ public class GuiWorkstation extends GuiContainer
         {
             if(!stack.isEmpty())
             {
-                enabled = InventoryUtil.hasItemAndAmount(Minecraft.getMinecraft().player, stack.getItem(), stack.getCount());
+                enabled = InventoryUtil.hasItemStack(Minecraft.getMinecraft().player, stack);
             }
         }
 

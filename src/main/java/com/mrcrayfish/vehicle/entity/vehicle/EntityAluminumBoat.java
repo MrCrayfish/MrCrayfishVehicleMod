@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -34,7 +35,7 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
     }
 
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }
@@ -85,6 +86,12 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
     public SoundEvent getRidingSound()
     {
         return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
     }
 
     @Override
@@ -149,4 +156,6 @@ public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytr
     {
         return false;
     }
+
+
 }

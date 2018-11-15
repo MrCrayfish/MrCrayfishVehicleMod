@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " U ",
+        "UEU",
+        " U "
+    ],
+    "key": {
+        "E": {
+            "item": "vehicle:electric_engine",
+            "data": 1
+        },
+        "U": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "vehicle:electric_engine",
+        "data": 2
+    }
+}

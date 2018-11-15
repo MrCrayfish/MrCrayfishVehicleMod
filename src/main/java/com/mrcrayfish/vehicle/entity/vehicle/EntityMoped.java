@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTracePart;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.TriangleRayTraceList;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -142,6 +143,12 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     public SoundEvent getRidingSound()
     {
         return ModSounds.MOPED_ENGINE_STEREO;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
     }
 
     @Override
@@ -345,7 +352,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 
     //TODO remove and add key support
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

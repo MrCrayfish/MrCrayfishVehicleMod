@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -120,6 +121,12 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
+    }
+
+    @Override
     public boolean canBeColored()
     {
         return true;
@@ -133,7 +140,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
 
     //TODO remove and add key support
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

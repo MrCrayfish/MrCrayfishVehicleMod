@@ -2,7 +2,9 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -31,6 +33,8 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
     private static final Random RAND = new Random();
 
     private ResourceLocation entityId;
+    private int color = EntityVehicle.DYE_TO_COLOR[0];
+    private EngineTier engineTier = EngineTier.WOOD;
     private boolean opened = false;
     private int timer;
     private UUID opener;
@@ -85,15 +89,28 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
             {
                 if(entityId != null && entity == null)
                 {
-                    VehicleMod.proxy.playSound(SoundEvents.ENTITY_ITEM_BREAK, pos, 1.0F, 0.5F);
                     entity = EntityList.createEntityByIDFromName(entityId, world);
                     if(entity != null)
                     {
+                        VehicleMod.proxy.playSound(SoundEvents.ENTITY_ITEM_BREAK, pos, 1.0F, 0.5F);
                         List<EntityDataManager.DataEntry<?>> entryList = entity.getDataManager().getAll();
                         if(entryList != null)
                         {
                             entryList.forEach(dataEntry -> entity.notifyDataManagerChange(dataEntry.getKey()));
                         }
+                        if(entity instanceof EntityVehicle)
+                        {
+                            ((EntityVehicle) entity).setColor(color);
+                        }
+                        if(entity instanceof EntityPoweredVehicle)
+                        {
+                            ((EntityPoweredVehicle) entity).setEngine(true);
+                            ((EntityPoweredVehicle) entity).setEngineTier(engineTier);
+                        }
+                    }
+                    else
+                    {
+                        entityId = null;
                     }
                 }
                 if(timer == 90 || timer == 110 || timer == 130 || timer == 150)
@@ -117,7 +134,11 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                 {
                     if(opener != null && entity instanceof EntityPoweredVehicle)
                     {
-                        ((EntityPoweredVehicle) entity).setOwner(opener);
+                        EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
+                        poweredVehicle.setOwner(opener);
+                        poweredVehicle.setColor(color);
+                        poweredVehicle.setEngine(true);
+                        poweredVehicle.setEngineTier(engineTier);
                     }
                     entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing.getHorizontalIndex() * 90F + 180F, 0F);
                     entity.setRotationYawHead(facing.getHorizontalIndex() * 90F + 180F);
@@ -139,6 +160,8 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         {
             compound.setUniqueId("opener", opener);
         }
+        compound.setInteger("color", color);
+        compound.setInteger("engineTier", engineTier.ordinal());
         compound.setBoolean("opened", opened);
         return super.writeToNBT(compound);
     }
@@ -150,6 +173,14 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         if(compound.hasKey("vehicle", Constants.NBT.TAG_STRING))
         {
             entityId = new ResourceLocation(compound.getString("vehicle"));
+        }
+        if(compound.hasKey("color", Constants.NBT.TAG_INT))
+        {
+            color = compound.getInteger("color");
+        }
+        if(compound.hasKey("engineTier", Constants.NBT.TAG_INT))
+        {
+            engineTier = EngineTier.getType(compound.getInteger("engineTier"));
         }
         if(compound.hasKey("opener", Constants.NBT.TAG_STRING))
         {

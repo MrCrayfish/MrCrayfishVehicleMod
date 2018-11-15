@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -75,6 +76,12 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
+    }
+
+    @Override
     public float getMinEnginePitch()
     {
         return 0.5F;
@@ -123,7 +130,7 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
     }
 
     @Override
-    public boolean isEngineLockable()
+    public boolean isLockable()
     {
         return false;
     }

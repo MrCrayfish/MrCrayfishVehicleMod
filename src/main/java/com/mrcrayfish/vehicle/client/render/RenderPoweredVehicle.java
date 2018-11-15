@@ -33,7 +33,7 @@ public abstract class RenderPoweredVehicle<T extends EntityPoweredVehicle & Enti
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        if(entity.shouldRenderEngine())
+        if(entity.shouldRenderEngine() && entity.hasEngine())
         {
             this.renderPart(enginePosition, entity.engine);
         }

@@ -111,8 +111,8 @@ public abstract class EntityPlane extends EntityPoweredVehicle
                     this.motionY *= 0.95;
                 }
 
-                EngineType engineType = this.getEngineType();
-                float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineType.getAccelerationMultiplier();
+                EngineTier engineTier = this.getEngineTier();
+                float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                 if(this.currentSpeed < this.getActualMaxSpeed())
                 {
                     this.currentSpeed += accelerationSpeed;

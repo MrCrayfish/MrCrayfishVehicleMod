@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -63,7 +64,13 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
     }
 
     @Override
-    public boolean isEngineLockable()
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
+    }
+
+    @Override
+    public boolean isLockable()
     {
         return false;
     }

@@ -71,7 +71,7 @@ public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRay
             renderVehicle.render(entity, partialTicks);
 
             //Render the engine if the vehicle has explicitly stated it should
-            if(entity.shouldRenderEngine())
+            if(entity.shouldRenderEngine() && entity.hasEngine())
             {
                 this.renderPart(renderVehicle.getEnginePosition(), entity.engine);
             }

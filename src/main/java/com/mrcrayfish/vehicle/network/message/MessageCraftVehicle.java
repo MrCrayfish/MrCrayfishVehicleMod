@@ -4,11 +4,18 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.entity.EngineTier;
+import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.item.ItemEngine;
+import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +27,9 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * Author: MrCrayfish
@@ -71,27 +81,93 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                         VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(clazz);
                         if(recipe != null)
                         {
-                            boolean canCraft = true;
                             for(ItemStack stack : recipe.getMaterials())
                             {
                                 if(!InventoryUtil.hasItemStack(player, stack))
                                 {
-                                    canCraft = false;
-                                    break;
+                                    return null;
                                 }
                             }
-                            if(canCraft)
+
+                            EntityVehicle vehicle = null;
+                            EngineType engineType = EngineType.NONE;
+                            try
                             {
-                                for(ItemStack stack : recipe.getMaterials())
+                                Constructor<? extends Entity> constructor = clazz.getDeclaredConstructor(World.class);
+                                Entity entity = constructor.newInstance(world);
+                                if(entity instanceof EntityVehicle)
                                 {
-                                    InventoryUtil.removeItemStack(player, stack);
+                                    vehicle = (EntityVehicle) entity;
                                 }
-                                FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+                                if(entity instanceof EntityPoweredVehicle)
                                 {
-                                    ItemStack stack = BlockVehicleCrate.create(entityId);
-                                    world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
-                                });
+                                    EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) entity;
+                                    engineType = entityPoweredVehicle.getEngineType();
+
+                                    TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                    ItemStack engine = tileEntityWorkstation.getStackInSlot(1);
+                                    if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
+                                    {
+                                        EngineType engineType2 = ((ItemEngine) engine.getItem()).getEngineType();
+                                        if(entityPoweredVehicle.getEngineType() != EngineType.NONE && entityPoweredVehicle.getEngineType() != engineType2)
+                                        {
+                                            return null;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return null;
+                                    }
+                                }
                             }
+                            catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
+                            {
+                                e.printStackTrace();
+                                return null;
+                            }
+
+                            if(vehicle == null)
+                            {
+                                return null;
+                            }
+
+                            for(ItemStack stack : recipe.getMaterials())
+                            {
+                                InventoryUtil.removeItemStack(player, stack);
+                            }
+
+                            /* Gets the color based on the dye */
+                            int color = EntityVehicle.DYE_TO_COLOR[0];
+                            if(vehicle.canBeColored())
+                            {
+                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
+                                if(dyeStack.getItem() instanceof ItemDye)
+                                {
+                                    color = EntityVehicle.DYE_TO_COLOR[15 - dyeStack.getMetadata()];
+                                    tileEntityWorkstation.getInventory().set(0, ItemStack.EMPTY);
+                                }
+                            }
+
+                            EngineTier engineTier = EngineTier.WOOD;
+                            if(engineType != EngineType.NONE)
+                            {
+                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                ItemStack engine = tileEntityWorkstation.getInventory().get(1);
+                                if(engine.getItem() instanceof ItemEngine)
+                                {
+                                    engineTier = EngineTier.getType(engine.getMetadata());
+                                    tileEntityWorkstation.getInventory().set(1, ItemStack.EMPTY);
+                                }
+                            }
+
+                            final int finalColor = color;
+                            final EngineTier finalEngineTier = engineTier;
+                            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
+                            {
+                                ItemStack stack = BlockVehicleCrate.create(entityId, finalColor, finalEngineTier);
+                                world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
+                            });
                         }
                     }
                 }

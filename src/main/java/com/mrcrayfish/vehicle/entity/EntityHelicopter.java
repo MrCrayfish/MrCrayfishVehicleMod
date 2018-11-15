@@ -100,7 +100,7 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     {
         currentSpeed = this.getSpeed();
 
-        EngineType engineType = this.getEngineType();
+        EngineTier engineTier = this.getEngineTier();
         AccelerationDirection acceleration = this.getAcceleration();
         TurnDirection turnDirection = this.getTurnDirection();
         if(this.getControllingPassenger() != null)
@@ -115,10 +115,10 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
             {
                 if(acceleration != AccelerationDirection.NONE || turnDirection != TurnDirection.FORWARD)
                 {
-                    currentSpeed += this.getAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                    if(currentSpeed > this.getMaxSpeed() + engineType.getAdditionalMaxSpeed())
+                    currentSpeed += this.getAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                    if(currentSpeed > this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed())
                     {
-                        currentSpeed = this.getMaxSpeed() + engineType.getAdditionalMaxSpeed();
+                        currentSpeed = this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed();
                     }
                 }
                 else

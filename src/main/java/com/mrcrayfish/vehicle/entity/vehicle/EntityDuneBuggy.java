@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -57,13 +58,13 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ATV_ENGINE_MONO;
+        return ModSounds.ELECTRIC_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ATV_ENGINE_STEREO;
+        return ModSounds.ELECTRIC_ENGINE_STEREO;
     }
 
     @Override
@@ -73,7 +74,13 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
     }
 
     @Override
-    public boolean isEngineLockable()
+    public EngineType getEngineType()
+    {
+        return EngineType.ELECTRIC_MOTOR;
+    }
+
+    @Override
+    public boolean isLockable()
     {
         return false;
     }
