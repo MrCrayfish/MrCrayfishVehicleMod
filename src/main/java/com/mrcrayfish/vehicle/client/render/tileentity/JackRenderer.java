@@ -52,7 +52,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
 
             GlStateManager.pushMatrix();
             {
-                float scale = 0.75F;
+                float scale = 1.0F;
                 GlStateManager.translate(0.5, 0, 0.5);
                 GlStateManager.scale(scale, scale, scale);
                 GlStateManager.translate(-0.5, 0, -0.5);
