@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "WRW",
+        "PFP",
+        "BBB"
+    ],
+    "key": {
+        "R": {
+            "item": "minecraft:redstone_block"
+        },
+        "W": {
+            "item": "minecraft:planks",
+            "data": 0
+        },
+        "P": {
+            "item": "minecraft:piston"
+        },
+        "F": {
+            "item": "minecraft:furnace"
+        },
+        "B": {
+            "item": "minecraft:iron_block"
+        }
+    },
+    "result": {
+        "item": "vehicle:large_engine",
+        "data": 0
+    }
+}

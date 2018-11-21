@@ -1,0 +1,28 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "WLW",
+        "IPI",
+        "WLW"
+    ],
+    "key": {
+        "W": {
+            "item": "minecraft:wool",
+            "data": 15
+        },
+        "L": {
+            "item": "minecraft:leather"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "P": {
+            "item": "minecraft:fish",
+            "data": 3
+        }
+    },
+    "result": {
+        "item": "vehicle:wheel",
+        "count": 4
+    }
+}

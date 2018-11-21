@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -15,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityMiniBike extends EntityMotorcycle
+public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytraceable
 {
     /**
      * ItemStack instances used for rendering
@@ -29,12 +31,16 @@ public class EntityMiniBike extends EntityMotorcycle
         this.setMaxSpeed(18F);
         this.setTurnSensitivity(12);
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, -0.0625D, -0.5D));
+        this.setFuelCapacity(15000F);
+        this.setFuelConsumption(1.5F);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.MINI_BIKE_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         handleBar = new ItemStack(ModItems.MINI_BIKE_HANDLE_BAR);
@@ -67,6 +73,12 @@ public class EntityMiniBike extends EntityMotorcycle
     public SoundEvent getRidingSound()
     {
         return ModSounds.GO_KART_ENGINE_STEREO;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
     }
 
     @Override
@@ -103,5 +115,23 @@ public class EntityMiniBike extends EntityMotorcycle
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRenderFuelPort()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isLockable()
+    {
+        return false;
     }
 }

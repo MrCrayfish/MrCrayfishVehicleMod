@@ -1,0 +1,33 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "RWR",
+        "PFP",
+        "IBI"
+    ],
+    "key": {
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "W": {
+            "item": "minecraft:planks",
+            "data": 0
+        },
+        "P": {
+            "item": "minecraft:piston"
+        },
+        "F": {
+            "item": "minecraft:furnace"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "B": {
+            "item": "minecraft:iron_block"
+        }
+    },
+    "result": {
+        "item": "vehicle:small_engine",
+        "data": 0
+    }
+}

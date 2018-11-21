@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
@@ -18,8 +19,8 @@ public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
     public RenderMiniBike(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.25F, 3F, 180F, 1.0F);
-        this.wheels.add(new Wheel(Wheel.Side.NONE, Wheel.Position.REAR, 0F, -6.7F, 1.65F));
+        this.setEnginePosition(0, 8.95, 3, 180, 1);
+        this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, 1.7F, -6.7F, 1.65F);
     }
 
     @Override
@@ -49,13 +50,6 @@ public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
             GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -20F, 0, 0, 1);
 
             this.setupBreakAnimation(entity, partialTicks);
-
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, 1.7 * 0.0625, 0);
-                super.doRender(entity, x, y, z, currentYaw, partialTicks);
-            }
-            GlStateManager.popMatrix();
 
             //Render the body
             GlStateManager.pushMatrix();
@@ -97,7 +91,10 @@ public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
                 GlStateManager.popMatrix();
             }
             GlStateManager.popMatrix();
+
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

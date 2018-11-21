@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBath;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,7 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 /**
  * Author: MrCrayfish
  */
-public class RenderBath extends RenderVehicle<EntityBath>
+public class RenderBath extends RenderPoweredVehicle<EntityBath>
 {
     public RenderBath(RenderManager renderManager)
     {
@@ -56,5 +57,6 @@ public class RenderBath extends RenderVehicle<EntityBath>
             GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

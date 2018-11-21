@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderShoppingCart extends RenderVehicle<EntityShoppingCart>
+public class RenderShoppingCart extends RenderPoweredVehicle<EntityShoppingCart>
 {
     public RenderShoppingCart(RenderManager renderManager)
     {
@@ -73,10 +74,6 @@ public class RenderShoppingCart extends RenderVehicle<EntityShoppingCart>
                 GlStateManager.translate(0, 0.5, 0.5);
                 float wheelAngleNormal = wheelAngle / 45F;
                 float turnRotation = wheelAngleNormal * 15F;
-
-
-                //TODO change to entity itemstack instance
-                //Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
 
                 GlStateManager.pushMatrix();
                 {
@@ -156,6 +153,6 @@ public class RenderShoppingCart extends RenderVehicle<EntityShoppingCart>
         GlStateManager.popMatrix();
 
         //RenderHelper.disableStandardItemLighting();
-
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

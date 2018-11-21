@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.block.Block;
@@ -8,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -16,13 +19,15 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityLandVehicle extends EntityVehicle
+public abstract class EntityLandVehicle extends EntityPoweredVehicle
 {
-    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
 
     public float drifting;
     public float additionalYaw;
@@ -32,6 +37,12 @@ public abstract class EntityLandVehicle extends EntityVehicle
     public float prevFrontWheelRotation;
     public float rearWheelRotation;
     public float prevRearWheelRotation;
+
+    private EntityTrailer trailer = null;
+    private Vec3d towBarVec = Vec3d.ZERO;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack towBar;
 
     public EntityLandVehicle(World worldIn)
     {
@@ -46,6 +57,13 @@ public abstract class EntityLandVehicle extends EntityVehicle
     }
 
     @Override
+    public void onClientInit()
+    {
+        super.onClientInit();
+        towBar = new ItemStack(ModItems.TOW_BAR);
+    }
+
+    @Override
     public void updateVehicle()
     {
         prevAdditionalYaw = additionalYaw;
@@ -54,6 +72,17 @@ public abstract class EntityLandVehicle extends EntityVehicle
 
         this.updateDrifting();
         this.updateWheels();
+    }
+
+    @Override
+    public void onUpdateVehicle()
+    {
+        super.onUpdateVehicle();
+
+        if(trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
+        {
+            trailer = null;
+        }
     }
 
     @Override
@@ -75,10 +104,23 @@ public abstract class EntityLandVehicle extends EntityVehicle
     @Override
     public void updateVehicleMotion()
     {
+        float currentSpeed = this.currentSpeed;
+
+        if(speedMultiplier > 1.0F)
+        {
+            speedMultiplier = 1.0F;
+        }
+
+        /* Applies the speed multiplier to the current speed */
+        currentSpeed = currentSpeed + (currentSpeed * speedMultiplier);
+
         float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
         float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
         this.vehicleMotionX = (-currentSpeed * f1);
-        this.motionY -= 0.08D;
+        if(!launching)
+        {
+            this.motionY -= 0.08D;
+        }
         this.vehicleMotionZ = (currentSpeed * f2);
     }
 
@@ -119,6 +161,9 @@ public abstract class EntityLandVehicle extends EntityVehicle
     @Override
     public void createParticles()
     {
+        if(!this.canDrive())
+            return;
+
         int x = MathHelper.floor(this.posX);
         int y = MathHelper.floor(this.posY - 0.2D);
         int z = MathHelper.floor(this.posZ);
@@ -161,6 +206,17 @@ public abstract class EntityLandVehicle extends EntityVehicle
         }
     }
 
+    @Override
+    protected void applyYawToEntity(Entity entityToUpdate)
+    {
+        entityToUpdate.setRenderYawOffset(this.rotationYaw - this.additionalYaw);
+        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw);
+        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
+        entityToUpdate.prevRotationYaw += f1 - f;
+        entityToUpdate.rotationYaw += f1 - f;
+        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
+    }
+
     public void setDrifting(boolean drifting)
     {
         this.dataManager.set(DRIFTING, drifting);
@@ -169,5 +225,31 @@ public abstract class EntityLandVehicle extends EntityVehicle
     public boolean isDrifting()
     {
         return this.dataManager.get(DRIFTING);
+    }
+
+    public void setTowBarPosition(Vec3d towBarVec)
+    {
+        this.towBarVec = towBarVec.scale(0.0625);
+    }
+
+    public Vec3d getTowBarVec()
+    {
+        return towBarVec;
+    }
+
+    public boolean canTowTrailer()
+    {
+        return false;
+    }
+
+    public void setTrailer(EntityTrailer trailer)
+    {
+        this.trailer = trailer;
+        trailer.setPullingEntity(this);
+    }
+
+    public EntityTrailer getTrailer()
+    {
+        return trailer;
     }
 }

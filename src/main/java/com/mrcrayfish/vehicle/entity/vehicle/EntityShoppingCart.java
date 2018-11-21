@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,7 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityShoppingCart extends EntityLandVehicle
+public class EntityShoppingCart extends EntityLandVehicle implements IEntityRaytraceable
 {
     private EntityPlayer pusher;
 
@@ -26,12 +28,16 @@ public class EntityShoppingCart extends EntityLandVehicle
         this.setMaxTurnAngle(90);
         this.setTurnSensitivity(15);
         this.setHeldOffset(new Vec3d(4D, 9.25D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.25D));
+        this.setFuelCapacity(0F);
+        this.setFuelConsumption(0F);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SHOPPING_CART_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
     }
@@ -108,13 +114,13 @@ public class EntityShoppingCart extends EntityLandVehicle
     }
 
     @Override
-    public void dismountRidingEntity()
+    public EngineType getEngineType()
     {
-        super.dismountRidingEntity();
+        return EngineType.NONE;
     }
 
     @Override
-    public boolean shouldRenderEngine()
+    public boolean isLockable()
     {
         return false;
     }

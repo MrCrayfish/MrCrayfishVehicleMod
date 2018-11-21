@@ -1,28 +1,36 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
+public class RenderVehicle<T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends Render<T>
 {
-    private PartPosition enginePosition = new PartPosition(0, 0, 0, 0, 1.0F);
+    protected R renderVehicle;
 
-    protected RenderVehicle(RenderManager renderManager)
+    public RenderVehicle(RenderManager renderManager, R renderVehicle)
     {
         super(renderManager);
+        this.renderVehicle = renderVehicle;
+    }
+
+    public R getRenderVehicle()
+    {
+        return renderVehicle;
     }
 
     @Nullable
@@ -35,19 +43,48 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
     @Override
     public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
-        if(entity.shouldRenderEngine())
+        GlStateManager.pushMatrix();
         {
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(enginePosition.x * 0.0625, enginePosition.y * 0.0625, enginePosition.z * 0.0625);
-                GlStateManager.translate(0, -0.5, 0);
-                GlStateManager.scale(enginePosition.scale, enginePosition.scale, enginePosition.scale);
-                GlStateManager.translate(0, 0.5, 0);
-                GlStateManager.rotate(enginePosition.rotation, 0, 1, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.engine, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
+            //Enable the standard item lighting so vehicles render correctly
+            RenderHelper.enableStandardItemLighting();
+
+            //Translate and rotate using parameters
+            GlStateManager.translate(x, y, z);
+            GlStateManager.rotate(-entityYaw, 0, 1, 0);
+
+            //Applies the break animation
+            this.setupBreakAnimation(entity, partialTicks);
+
+            //TODO make vehicle translate to height of axels for better positioning
+            //Apply vehicle rotations and translations. This is applied to all other parts
+            PartPosition bodyPosition = entity.getBodyPosition();
+            GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
+            GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
+            GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
+
+            //Translate the body
+            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+
+            //Translate the vehicle to match how it is shown in the model creator
+            GlStateManager.translate(0, 0.5, 0);
+
+            //Apply vehicle scale
+            GlStateManager.translate(0, -0.5, 0);
+            GlStateManager.scale(bodyPosition.getScale(), bodyPosition.getScale(), bodyPosition.getScale());
+            GlStateManager.translate(0, 0.5, 0);
+
+            //Translate the vehicle so it's axles are half way into the ground
+            GlStateManager.translate(0, entity.getAxleOffset() * 0.0625F, 0);
+
+            //Translate the vehicle so it's actually riding on it's wheels
+            GlStateManager.translate(0, entity.getWheelOffset() * 0.0625F, 0);
+
+            //Render body
+            renderVehicle.render(entity, partialTicks);
         }
+        GlStateManager.popMatrix();
+
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, entityYaw);
     }
 
     public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
@@ -66,28 +103,48 @@ public abstract class RenderVehicle<T extends EntityVehicle> extends Render<T>
         }
     }
 
-    public void setEnginePosition(float x, float y, float z, float rotation, float scale)
+    /**
+     * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
+     * will be cancelled if the PartPosition parameter is null.
+     *
+     * @param position the render definitions to apply to the part
+     * @param part the part to render onto the vehicle
+     */
+    protected void renderPart(@Nullable PartPosition position, ItemStack part)
     {
-        this.enginePosition.x = x;
-        this.enginePosition.y = y;
-        this.enginePosition.z = z;
-        this.enginePosition.rotation = rotation;
-        this.enginePosition.scale = scale;
+        if(position == null)
+            return;
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+            GlStateManager.translate(0, -0.5, 0);
+            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
+            GlStateManager.translate(0, 0.5, 0);
+            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
+            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
+            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
+            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
+        }
+        GlStateManager.popMatrix();
     }
 
-    private static class PartPosition
+    protected void renderKey(@Nullable PartPosition position, ItemStack part)
     {
-        private float x, y, z;
-        private float rotation;
-        private float scale;
+        if(position == null)
+            return;
 
-        public PartPosition(float x, float y, float z, float rotation, float scale)
+        GlStateManager.pushMatrix();
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.rotation = rotation;
-            this.scale = scale;
+            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+            GlStateManager.translate(0, -0.25, 0);
+            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
+            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
+            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
+            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
+            GlStateManager.translate(0, 0, -0.05);
+            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
         }
+        GlStateManager.popMatrix();
     }
 }

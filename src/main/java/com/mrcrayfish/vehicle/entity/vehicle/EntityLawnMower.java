@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -9,7 +11,6 @@ import net.minecraft.block.BlockTallGrass;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -23,27 +24,34 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityLawnMower extends EntityLandVehicle
+public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytraceable
 {
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(12.0, -1.5, 0.0);
+    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0, 0.0, -0.6);
+    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0, -0.01, -1.0);
+
     /**
      * ItemStack instances used for rendering
      */
     @SideOnly(Side.CLIENT)
     public ItemStack steeringWheel;
 
-    //TODO make it so vehicle base can set properties
     public EntityLawnMower(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(8);
         this.setSize(1.2F, 1.0F);
-        this.setHeldOffset(new Vec3d(4D, 3.5D, 0D));
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTowBarPosition(TOW_BAR_VEC);
+        this.setTrailerOffset(TRAILER_OFFSET_VEC);
+        this.setFuelCapacity(5000F);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.LAWN_MOWER_BODY);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
         wheel = new ItemStack(ModItems.WHEEL);
@@ -113,14 +121,27 @@ public class EntityLawnMower extends EntityLandVehicle
     }
 
     @Override
-    public boolean shouldRenderEngine()
+    public EngineType getEngineType()
     {
-        return false;
+        return EngineType.SMALL_MOTOR;
     }
 
     @Override
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    public boolean canTowTrailer()
+    {
+        return true;
+    }
+
+    //TODO remove and add key support
+    @Override
+    public boolean isLockable()
+    {
+        return false;
     }
 }

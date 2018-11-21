@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -13,7 +15,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntitySmartCar extends EntityLandVehicle
+public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytraceable
 {
     /**
      * ItemStack instances used for rendering
@@ -28,13 +30,16 @@ public class EntitySmartCar extends EntityLandVehicle
         this.setTurnSensitivity(12);
         this.setSize(1.85F, 1.15F);
         this.setHeldOffset(new Vec3d(3D, 1D, 0D));
+        this.setTowBarPosition(new Vec3d(0D, 0D, -1.35D));
         this.stepHeight = 1F;
+        //TODO figure out electric vehicles
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SMART_CAR_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
@@ -53,6 +58,12 @@ public class EntitySmartCar extends EntityLandVehicle
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.ELECTRIC_MOTOR;
+    }
+
+    @Override
     public float getMinEnginePitch()
     {
         return 0.8F;
@@ -65,12 +76,6 @@ public class EntitySmartCar extends EntityLandVehicle
     }
 
     @Override
-    public boolean shouldRenderEngine()
-    {
-        return false;
-    }
-
-    @Override
     public double getMountedYOffset()
     {
         return 2 * 0.0625;
@@ -80,5 +85,24 @@ public class EntitySmartCar extends EntityLandVehicle
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    public boolean canTowTrailer()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
+
+    //TODO remove and add key support
+    @Override
+    public boolean isLockable()
+    {
+        return false;
     }
 }

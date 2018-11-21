@@ -8,7 +8,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -16,10 +15,10 @@ import net.minecraftforge.common.util.Constants;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityAirVehicle extends EntityVehicle
+public abstract class EntityPlane extends EntityPoweredVehicle
 {
-    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(EntityAirVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityAirVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(EntityPlane.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityPlane.class, DataSerializers.FLOAT);
 
     private float lift;
 
@@ -31,7 +30,7 @@ public abstract class EntityAirVehicle extends EntityVehicle
     public float bodyRotationY;
     public float bodyRotationZ;
 
-    protected EntityAirVehicle(World worldIn)
+    protected EntityPlane(World worldIn)
     {
         super(worldIn);
         this.setAccelerationSpeed(0.5F);
@@ -105,16 +104,16 @@ public abstract class EntityAirVehicle extends EntityVehicle
         if(this.getControllingPassenger() != null)
         {
             AccelerationDirection acceleration = getAcceleration();
-            if(acceleration == AccelerationDirection.FORWARD)
+            if(this.canDrive() && acceleration == AccelerationDirection.FORWARD)
             {
                 if(this.motionY < 0)
                 {
                     this.motionY *= 0.95;
                 }
 
-                EngineType engineType = this.getEngineType();
-                float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineType.getAccelerationMultiplier();
-                if(this.currentSpeed < getMaxSpeed())
+                EngineTier engineTier = this.getEngineTier();
+                float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                if(this.currentSpeed < this.getActualMaxSpeed())
                 {
                     this.currentSpeed += accelerationSpeed;
                 }
@@ -253,6 +252,12 @@ public abstract class EntityAirVehicle extends EntityVehicle
     {
         return super.getAccelerationSpeed();
     }
+
+    /*
+     * Overridden to prevent players from taking fall damage when landing a plane
+     */
+    @Override
+    public void fall(float distance, float damageMultiplier) {}
 
     public enum FlapDirection
     {

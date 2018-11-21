@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -14,8 +16,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityDuneBuggy extends EntityLandVehicle
+public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytraceable
 {
+    public static final float AXLE_OFFSET = -2.3F;
+    public static final float WHEEL_OFFSET = 2.5F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.225, 0, 0, 0, 1.3);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(1.15, 3, -7.25, 0, 180, 0, 0.25);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(2.0D, 0.0D, 0.0D);
+    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0D, -0.025D, -0.25D);
+
     /**
      * ItemStack instances used for rendering
      */
@@ -27,14 +36,20 @@ public class EntityDuneBuggy extends EntityLandVehicle
         super(worldIn);
         this.setMaxSpeed(10);
         this.setSize(0.75F, 0.75F);
-        this.setHeldOffset(new Vec3d(2D, 0D, 0D));
+        this.setAxleOffset(AXLE_OFFSET);
+        this.setWheelOffset(WHEEL_OFFSET);
+        this.setBodyPosition(BODY_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTrailerOffset(TRAILER_OFFSET_VEC);
         this.stepHeight = 0.5F;
+        this.setFuelCapacity(5000F);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
         handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
         wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
@@ -43,13 +58,13 @@ public class EntityDuneBuggy extends EntityLandVehicle
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ATV_ENGINE_MONO;
+        return ModSounds.ELECTRIC_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ATV_ENGINE_STEREO;
+        return ModSounds.ELECTRIC_ENGINE_STEREO;
     }
 
     @Override
@@ -59,7 +74,13 @@ public class EntityDuneBuggy extends EntityLandVehicle
     }
 
     @Override
-    public boolean shouldRenderEngine()
+    public EngineType getEngineType()
+    {
+        return EngineType.ELECTRIC_MOTOR;
+    }
+
+    @Override
+    public boolean isLockable()
     {
         return false;
     }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySpeedBoat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -12,11 +12,12 @@ import net.minecraft.client.renderer.entity.RenderManager;
 /**
  * Author: MrCrayfish
  */
-public class RenderSpeedBoat extends RenderVehicle<EntitySpeedBoat>
+public class RenderSpeedBoat extends RenderPoweredVehicle<EntitySpeedBoat>
 {
     public RenderSpeedBoat(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-12.25, 17.25, -19.5, -90);
     }
 
     @Override
@@ -65,7 +66,10 @@ public class RenderSpeedBoat extends RenderVehicle<EntitySpeedBoat>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
+
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

@@ -1,17 +1,13 @@
 package com.mrcrayfish.vehicle.recipe;
 
-import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
-
-import java.util.List;
 
 /**
  * Author: MrCrayfish

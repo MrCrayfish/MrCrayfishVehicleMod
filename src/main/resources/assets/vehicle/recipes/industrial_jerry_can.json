@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "DHD",
+        "I I",
+        "CIC"
+    ],
+    "key": {
+        "I": {
+            "item": "minecraft:iron_ingot"
+        },
+        "C": {
+            "item": "minecraft:iron_block"
+        },
+        "D": {
+            "item": "minecraft:dye",
+            "data": 2
+        },
+        "H": {
+            "item": "minecraft:hopper"
+        }
+    },
+    "result": {
+        "item": "vehicle:industrial_jerry_can"
+    }
+}

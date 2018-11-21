@@ -1,5 +1,8 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -13,8 +16,15 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityGoKart extends EntityLandVehicle
+public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceable
 {
+    public static final float AXLE_OFFSET = -2.5F;
+    public static final float WHEEL_OFFSET = 3.15F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0, 0, 0, 0, 1);
+    public static final PartPosition ENGINE_POSITION = new PartPosition(0, 2, -9, 0, 180, 0, 1.2);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(3.0D, 0.5D, 0.0D);
+    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0D, -0.03125D, -0.375D);
+
     /**
      * ItemStack instances used for rendering
      */
@@ -27,14 +37,21 @@ public class EntityGoKart extends EntityLandVehicle
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(12);
         this.setSize(1.5F, 0.5F);
-        this.setHeldOffset(new Vec3d(3D, 0.5D, 0D));
+        this.setAxleOffset(AXLE_OFFSET);
+        this.setWheelOffset(WHEEL_OFFSET);
+        this.setBodyPosition(BODY_POSITION);
+        this.setEnginePosition(ENGINE_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTrailerOffset(TRAILER_OFFSET_VEC);
         this.stepHeight = 0.625F;
+        this.setFuelConsumption(2.0F);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.GO_KART_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
         steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
@@ -50,6 +67,12 @@ public class EntityGoKart extends EntityLandVehicle
     public SoundEvent getRidingSound()
     {
         return ModSounds.GO_KART_ENGINE_STEREO;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
     }
 
     @Override
@@ -86,5 +109,23 @@ public class EntityGoKart extends EntityLandVehicle
     public boolean canBeColored()
     {
         return true;
+    }
+
+    @Override
+    public boolean shouldRenderEngine()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean shouldRenderFuelPort()
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isLockable()
+    {
+        return false;
     }
 }

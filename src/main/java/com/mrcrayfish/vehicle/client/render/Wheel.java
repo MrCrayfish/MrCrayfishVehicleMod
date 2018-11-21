@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -49,7 +48,7 @@ public class Wheel
     {
         GlStateManager.pushMatrix();
         {
-            GlStateManager.translate((offsetX / 16F) * side.offset, offsetY / 16F, offsetZ / 16F);
+            GlStateManager.translate((offsetX * 0.0625) * side.offset, offsetY * 0.0625, offsetZ * 0.0625);
             GlStateManager.pushMatrix();
             {
                 if(position == Position.FRONT)
@@ -61,7 +60,7 @@ public class Wheel
                 {
                     GlStateManager.rotate(-getWheelRotation(vehicle, partialTicks), 1, 0, 0);
                 }
-                GlStateManager.translate((((width * scale) / 2) / 16F) * side.offset, 0, 0);
+                GlStateManager.translate((((width * scale) / 2) * 0.0625) * side.offset, 0, 0);
                 GlStateManager.scale(scale, scale, scale);
                 if(side == Side.RIGHT)
                 {

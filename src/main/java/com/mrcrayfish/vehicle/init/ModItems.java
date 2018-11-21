@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.init;
 
-import com.mrcrayfish.vehicle.item.ItemEngine;
-import com.mrcrayfish.vehicle.item.ItemPart;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.item.*;
 import net.minecraft.item.Item;
 
 /**
@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
  */
 public class ModItems
 {
+    public static final Item PANEL;
     public static final Item WHEEL;
     public static final Item ATV_BODY;
     public static final Item ATV_HANDLE_BAR;
@@ -35,13 +36,38 @@ public class ModItems
     public static final Item SPORTS_PLANE_WHEEL_COVER;
     public static final Item SPORTS_PLANE_LEG;
     public static final Item SPORTS_PLANE_PROPELLER;
+    public static final Item GOLF_CART_BODY;
+    public static final Item OFF_ROADER_BODY;
 
-    public static final Item ENGINE;
+    public static final Item TRAILER_BODY;
+    public static final Item TOW_BAR;
+
+    public static final Item SMALL_ENGINE;
+    public static final Item LARGE_ENGINE;
+    public static final Item ELECTRIC_ENGINE;
     public static final Item SPRAY_CAN;
+    public static final Item JERRY_CAN;
+    public static final Item INDUSTRIAL_JERRY_CAN;
+
+    public static final Item FUEL_PORT_CLOSED;
+    public static final Item FUEL_PORT_BODY;
+    public static final Item FUEL_PORT_LID;
+    public static final Item FUEL_PORT_2_CLOSED;
+    public static final Item FUEL_PORT_2_PIPE;
+    
+    public static final Item WRENCH;
+    public static final Item KEY;
+    public static final Item KEY_PORT;
+
+    //Parts used for rendering
+    public static final Item MODELS;
+    public static final Item COUCH_HELICOPTER_ARM;
+    public static final Item COUCH_HELICOPTER_SKID;
 
     static
     {
-        WHEEL = new ItemPart("wheel");
+        PANEL = new ItemPart("panel").setCreativeTab(VehicleMod.CREATIVE_TAB);
+        WHEEL = new ItemPart("wheel").setCreativeTab(VehicleMod.CREATIVE_TAB);
         ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
         DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body").setColored();
@@ -66,13 +92,40 @@ public class ModItems
         SPORTS_PLANE_WHEEL_COVER = new ItemPart("sports_plane_wheel_cover").setColored();
         SPORTS_PLANE_LEG = new ItemPart("sports_plane_leg");
         SPORTS_PLANE_PROPELLER = new ItemPart("sports_plane_propeller").setColored();
+        GOLF_CART_BODY = new ItemPart("golf_cart_body").setColored();
+        OFF_ROADER_BODY = new ItemPart("off_roader_body").setColored();
 
-        ENGINE = new ItemEngine("small_engine");
+        TRAILER_BODY = new ItemPart("trailer_body").setColored();
+        TOW_BAR = new ItemPart("tow_bar");
+
+        SMALL_ENGINE = new ItemEngine("small_engine", EngineType.SMALL_MOTOR);
+        LARGE_ENGINE = new ItemEngine("large_engine", EngineType.LARGE_MOTOR);
+        ELECTRIC_ENGINE = new ItemEngine("electric_engine", EngineType.ELECTRIC_MOTOR);
         SPRAY_CAN = new ItemSprayCan();
+        JERRY_CAN = new ItemJerryCan("jerry_can", 5000, 100);
+        INDUSTRIAL_JERRY_CAN = new ItemJerryCan("industrial_jerry_can", 15000, 150);
+
+        FUEL_PORT_CLOSED = new ItemPart("fuel_port_closed").setColored();
+        FUEL_PORT_BODY = new ItemPart("fuel_port_body").setColored();
+        FUEL_PORT_LID = new ItemPart("fuel_port_lid").setColored();
+        FUEL_PORT_2_CLOSED = new ItemPart("fuel_port_2_closed");
+        FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
+
+        WRENCH = new ItemWrench();
+        KEY = new ItemKey();
+        KEY_PORT = new ItemPart("key_hole").setColored();
+
+        COUCH_HELICOPTER_ARM = new ItemPart("couch_helicopter_arm");
+        COUCH_HELICOPTER_SKID = new ItemPart("couch_helicopter_skid");
+        MODELS = new ItemModels();
     }
 
     public static void register()
     {
+        register(SMALL_ENGINE);
+        register(LARGE_ENGINE);
+        register(ELECTRIC_ENGINE);
+        register(PANEL);
         register(WHEEL);
         register(ATV_BODY);
         register(ATV_HANDLE_BAR);
@@ -98,9 +151,29 @@ public class ModItems
         register(SPORTS_PLANE_WHEEL_COVER);
         register(SPORTS_PLANE_LEG);
         register(SPORTS_PLANE_PROPELLER);
+        register(GOLF_CART_BODY);
+        register(OFF_ROADER_BODY);
 
-        register(ENGINE);
+        register(TRAILER_BODY);
+        register(TOW_BAR);
+
         register(SPRAY_CAN);
+        register(JERRY_CAN);
+        register(INDUSTRIAL_JERRY_CAN);
+
+        register(FUEL_PORT_CLOSED);
+        register(FUEL_PORT_BODY);
+        register(FUEL_PORT_LID);
+        register(FUEL_PORT_2_CLOSED);
+        register(FUEL_PORT_2_PIPE);
+
+        register(WRENCH);
+        register(KEY);
+        register(KEY_PORT);
+
+        register(MODELS);
+        register(COUCH_HELICOPTER_ARM);
+        register(COUCH_HELICOPTER_SKID);
     }
 
     private static void register(Item item)

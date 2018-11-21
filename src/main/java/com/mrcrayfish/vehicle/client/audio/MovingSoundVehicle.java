@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.audio;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.MovingSound;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,9 +14,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class MovingSoundVehicle extends MovingSound
 {
-    private final EntityVehicle vehicle;
+    private final EntityPoweredVehicle vehicle;
 
-    public MovingSoundVehicle(EntityVehicle vehicle)
+    public MovingSoundVehicle(EntityPoweredVehicle vehicle)
     {
         super(vehicle.getMovingSound(), SoundCategory.NEUTRAL);
         this.vehicle = vehicle;
@@ -28,14 +28,14 @@ public class MovingSoundVehicle extends MovingSound
     @Override
     public void update()
     {
-        this.volume = 0.8F;
+        this.volume = vehicle.canDrive() ? 0.8F : 0.8F * vehicle.getActualSpeed();
         if(!vehicle.isDead && vehicle.getControllingPassenger() != null && vehicle.getControllingPassenger() != Minecraft.getMinecraft().player)
         {
             EntityPlayer localPlayer = Minecraft.getMinecraft().player;
             this.xPosF = (float) (vehicle.posX + (localPlayer.posX - vehicle.posX) * 0.65);
             this.yPosF = (float) (vehicle.posY + (localPlayer.posY - vehicle.posY) * 0.65);
             this.zPosF = (float) (vehicle.posZ + (localPlayer.posZ - vehicle.posZ) * 0.65);
-            this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getNormalSpeed());
+            this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getActualSpeed());
         }
         else
         {

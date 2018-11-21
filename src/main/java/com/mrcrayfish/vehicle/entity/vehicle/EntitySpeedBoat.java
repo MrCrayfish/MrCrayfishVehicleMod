@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -14,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntitySpeedBoat extends EntitySeaVehicle
+public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytraceable
 {
     public float prevLeanAngle;
     public float leanAngle;
@@ -32,12 +34,16 @@ public class EntitySpeedBoat extends EntitySeaVehicle
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
         this.setHeldOffset(new Vec3d(6D, -0.5D, 0D));
+        this.setTrailerOffset(new Vec3d(0D, -0.09375D, -0.75D));
+        this.setFuelCapacity(25000F);
+        this.setFuelConsumption(3.0F);
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.SPEED_BOAT_BODY);
         handleBar = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
@@ -83,6 +89,12 @@ public class EntitySpeedBoat extends EntitySeaVehicle
     }
 
     @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.LARGE_MOTOR;
+    }
+
+    @Override
     public float getMinEnginePitch()
     {
         return 1.0F;
@@ -104,5 +116,12 @@ public class EntitySpeedBoat extends EntitySeaVehicle
     public boolean canBeColored()
     {
         return true;
+    }
+
+    //TODO remove and add key support
+    @Override
+    public boolean isLockable()
+    {
+        return false;
     }
 }

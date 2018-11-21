@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -15,7 +17,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntityAluminumBoat extends EntitySeaVehicle
+public class EntityAluminumBoat extends EntitySeaVehicle implements IEntityRaytraceable
 {
     public float prevLeanAngle;
     public float leanAngle;
@@ -28,12 +30,21 @@ public class EntityAluminumBoat extends EntitySeaVehicle
         this.setMaxTurnAngle(20);
         this.setSize(2.25F, 0.875F);
         this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setFuelCapacity(25000F);
+        this.setFuelConsumption(2.0F);
+    }
+
+    @Override
+    public boolean isLockable()
+    {
+        return false;
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.ALUMINUM_BOAT_BODY);
     }
 
@@ -75,6 +86,12 @@ public class EntityAluminumBoat extends EntitySeaVehicle
     public SoundEvent getRidingSound()
     {
         return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+    }
+
+    @Override
+    public EngineType getEngineType()
+    {
+        return EngineType.SMALL_MOTOR;
     }
 
     @Override
@@ -133,4 +150,12 @@ public class EntityAluminumBoat extends EntitySeaVehicle
     {
         return true;
     }
+
+    @Override
+    public boolean canMountTrailer()
+    {
+        return false;
+    }
+
+
 }

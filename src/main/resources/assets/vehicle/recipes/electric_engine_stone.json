@@ -1,0 +1,22 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " U ",
+        "UEU",
+        " U "
+    ],
+    "key": {
+        "E": {
+            "item": "vehicle:electric_engine",
+            "data": 0
+        },
+        "U": {
+            "item": "minecraft:stone",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "vehicle:electric_engine",
+        "data": 1
+    }
+}

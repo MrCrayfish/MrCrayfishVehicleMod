@@ -1,0 +1,31 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "GCG",
+        "BRB",
+        "III"
+    ],
+    "key": {
+        "G": {
+            "item": "minecraft:concrete",
+            "data": 5
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 15
+        },
+        "B": {
+            "item": "minecraft:blaze_powder"
+        },
+        "R": {
+            "item": "minecraft:golden_rail"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "vehicle:boost_pad",
+        "count": 4
+    }
+}

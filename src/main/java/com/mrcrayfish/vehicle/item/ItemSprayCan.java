@@ -10,7 +10,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -21,7 +22,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class ItemSprayCan extends Item implements SubItems
+public class ItemSprayCan extends Item implements SubItems, IDyeable
 {
     public static final int MAX_SPRAYS = 5;
 
@@ -61,7 +62,7 @@ public class ItemSprayCan extends Item implements SubItems
             {
                 tooltip.add(I18n.format("item.spray_can.empty"));
             }
-            tooltip.add(TextFormatting.YELLOW + "Hold SHIFT for Info");
+            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }
     }
 
@@ -82,18 +83,21 @@ public class ItemSprayCan extends Item implements SubItems
         return tagCompound;
     }
 
+    @Override
     public boolean hasColor(ItemStack stack)
     {
         NBTTagCompound tagCompound = createTagCompound(stack);
         return tagCompound.hasKey("color", Constants.NBT.TAG_INT);
     }
 
+    @Override
     public int getColor(ItemStack stack)
     {
         NBTTagCompound tagCompound = createTagCompound(stack);
         return tagCompound.getInteger("color");
     }
 
+    @Override
     public void setColor(ItemStack stack, int color)
     {
         NBTTagCompound tagCompound = createTagCompound(stack);

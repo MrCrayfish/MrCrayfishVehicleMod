@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityAluminumBoat;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -16,13 +16,14 @@ import net.minecraft.entity.Entity;
 /**
  * Author: MrCrayfish
  */
-public class RenderAluminumBoat extends RenderVehicle<EntityAluminumBoat>
+public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
 {
     public ModelRenderer noWater;
 
     public RenderAluminumBoat(RenderManager renderManager)
     {
         super(renderManager);
+        this.setFuelPortPosition(-16.25, 3, -18.5, -90);
         this.noWater = (new ModelRenderer(new ModelBase()
         {
             @Override
@@ -59,8 +60,11 @@ public class RenderAluminumBoat extends RenderVehicle<EntityAluminumBoat>
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
+
+            super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 
     @Override

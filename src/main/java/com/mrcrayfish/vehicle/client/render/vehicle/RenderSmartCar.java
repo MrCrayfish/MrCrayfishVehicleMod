@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySmartCar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,8 +10,8 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
@@ -23,11 +23,12 @@ public class RenderSmartCar extends RenderLandVehicle<EntitySmartCar>
     public RenderSmartCar(RenderManager renderManager)
     {
         super(renderManager);
-        this.setEnginePosition(0F, 7.5F, -9F, 180F, 1.2F);
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7F, 12F, 1.5F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 12F, 1.5F));
-        wheels.add(new Wheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, -12F, 1.5F));
-        wheels.add(new Wheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7F, -12F, 1.5F));
+        this.setEnginePosition(0, 7.5, -12.5, 180, 1.2);
+        this.setFuelPortPosition(-9.25, 18.5, -12.3, -90);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7F, 3.5F, 12F, 1.5F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 3.5F, 12F, 1.5F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, 3.5F, -12F, 1.5F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7F, 3.5F, -12F, 1.5F);
     }
 
     @Nullable
@@ -56,6 +57,19 @@ public class RenderSmartCar extends RenderLandVehicle<EntitySmartCar>
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);
+
+            //TODO clean this up
+            if(entity.canTowTrailer())
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.rotate(180F, 0, 1, 0);
+
+                Vec3d towBarOffset = entity.getTowBarVec();
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
+            }
+
             GlStateManager.translate(0, 0, 0.2);
             GlStateManager.scale(1.25, 1.25, 1.25);
 
@@ -84,14 +98,13 @@ public class RenderSmartCar extends RenderLandVehicle<EntitySmartCar>
                 float turnRotation = wheelAngleNormal * 25F;
                 GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-                //TODO change to entity itemstack instance
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
             }
             GlStateManager.popMatrix();
 
-            GlStateManager.translate(0, 3.5F * 0.0625F, 0);
             super.doRender(entity, x, y, z, currentYaw, partialTicks);
         }
         GlStateManager.popMatrix();
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
     }
 }

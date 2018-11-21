@@ -1,0 +1,21 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "NNN",
+        "CCC",
+        "NNN"
+    ],
+    "key": {
+        "N": {
+            "item": "minecraft:iron_nugget"
+        },
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 0
+        }
+    },
+    "result": {
+        "item": "vehicle:panel",
+        "count": 8
+    }
+}

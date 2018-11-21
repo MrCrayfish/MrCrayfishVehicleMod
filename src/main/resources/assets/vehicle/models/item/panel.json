@@ -1,0 +1,28 @@
+{
+    "parent": "minecraft:block/pressure_plate_up",
+    "textures": {
+        "texture": "minecraft:blocks/concrete_white"
+    },
+    "display": {
+        "thirdperson_righthand": {
+            "rotation": [ 75, 45, 0 ],
+            "translation": [ 0, 2.5, 2],
+            "scale": [ 0.375, 0.375, 0.375 ]
+        },
+        "firstperson_righthand": {
+            "rotation": [ 0, 45, 0 ],
+            "translation": [ 0, 4.2, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        },
+        "firstperson_lefthand": {
+            "rotation": [ 0, 225, 0 ],
+            "translation": [ 0, 4.2, 0 ],
+            "scale": [ 0.40, 0.40, 0.40 ]
+        },
+        "gui": {
+            "rotation": [ 55, 200, 0 ],
+            "translation": [ 0, 3, 0],
+            "scale":[ 0.75, 0.75, 0.75 ]
+        }
+    }
+}
