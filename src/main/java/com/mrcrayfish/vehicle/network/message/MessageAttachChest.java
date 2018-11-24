@@ -11,6 +11,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -44,26 +45,29 @@ public class MessageAttachChest implements IMessage, IMessageHandler<MessageAtta
     @Override
     public IMessage onMessage(MessageAttachChest message, MessageContext ctx)
     {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        World world = player.world;
-        Entity targetEntity = world.getEntityByID(message.entityId);
-        if(targetEntity != null && targetEntity instanceof IChest)
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
-            if(player.getDistance(targetEntity) < reachDistance)
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            World world = player.world;
+            Entity targetEntity = world.getEntityByID(message.entityId);
+            if(targetEntity != null && targetEntity instanceof IChest)
             {
-                IChest chest = (IChest) targetEntity;
-                if(!chest.hasChest())
+                float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+                if(player.getDistance(targetEntity) < reachDistance)
                 {
-                    ItemStack stack = player.inventory.getCurrentItem();
-                    if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+                    IChest chest = (IChest) targetEntity;
+                    if(!chest.hasChest())
                     {
-                        chest.attachChest(stack);
-                        world.playSound(null, targetEntity.posX, targetEntity.posY, targetEntity.posZ, SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        ItemStack stack = player.inventory.getCurrentItem();
+                        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+                        {
+                            chest.attachChest(stack);
+                            world.playSound(null, targetEntity.posX, targetEntity.posY, targetEntity.posZ, SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        }
                     }
                 }
             }
-        }
+        });
         return null;
     }
 }
