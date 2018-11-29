@@ -3,12 +3,14 @@ package com.mrcrayfish.vehicle.common;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
+import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
+import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -19,7 +21,9 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
@@ -215,6 +219,49 @@ public class CommonEvents
         World world = event.getWorld();
         if(!world.isRemote)
         {
+            if(event.getFace() == EnumFacing.UP)
+            {
+                if(!player.getDataManager().get(HELD_VEHICLE).hasNoTags())
+                {
+                    BlockPos pos = event.getPos();
+                    TileEntity tileEntity = event.getWorld().getTileEntity(pos);
+                    if(tileEntity instanceof TileEntityJack)
+                    {
+                        TileEntityJack jack = (TileEntityJack) tileEntity;
+                        if(jack.getJack() == null)
+                        {
+                            NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
+                            Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
+                            if(entity != null && entity instanceof EntityVehicle)
+                            {
+                                NBTTagCompound tag = new NBTTagCompound();
+                                player.getDataManager().set(HELD_VEHICLE, tag);
+
+                                //Updates the player capability
+                                HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
+                                if(heldVehicle != null)
+                                {
+                                    heldVehicle.setVehicleTag(tag);
+                                }
+
+                                entity.rotationYaw = (player.getRotationYawHead() + 90F) % 360.0F;
+                                jack.setVehicle((EntityVehicle) entity);
+                                if(jack.getJack() != null)
+                                {
+                                    EntityJack entityJack = jack.getJack();
+                                    entityJack.updateRidden();
+                                    entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
+                                }
+                                world.spawnEntity(entity);
+                                world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            }
+                        }
+                        event.setCanceled(true);
+                        return;
+                    }
+                }
+            }
+
             if(player.isSneaking())
             {
                 if(!player.getDataManager().get(HELD_VEHICLE).hasNoTags())

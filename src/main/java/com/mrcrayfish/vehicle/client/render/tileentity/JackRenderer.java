@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
+import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import net.minecraft.block.state.IBlockState;
@@ -69,11 +70,9 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
 
             GlStateManager.pushMatrix();
             {
-                GlStateManager.translate(0, -0.5, 0);
-                GlStateManager.translate(0, 0.5 * 0.75F, 0);
-                float v = (float) (Math.sin(Animation.getWorldTime(te.getWorld(), partialTicks)) / 2F + 0.5F);
-                float height = 1.0F - 3 * 0.0625F - (0.5F * 0.75F);
-                GlStateManager.translate(0, height * v, 0);
+                GlStateManager.translate(0, -2 * 0.0625, 0);
+                float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / 10F;
+                GlStateManager.translate(0, 0.5 * progress, 0);
 
                 //Render the head
                 IBakedModel model = rendererDispatcher.getBlockModelShapes().getModelForState(ModBlocks.JACK_HEAD.getDefaultState());
