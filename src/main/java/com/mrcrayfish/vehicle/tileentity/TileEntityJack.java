@@ -14,6 +14,8 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -108,7 +110,6 @@ public class TileEntityJack extends TileEntity implements ITickable
         {
             AxisAlignedBB boundingBox = state.getBoundingBox(world, this.pos).offset(this.pos);
             List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(jack, boundingBox);
-            System.out.println(list.size());
             if(!list.isEmpty())
             {
                 for(Entity entity : list)
@@ -122,5 +123,17 @@ public class TileEntityJack extends TileEntity implements ITickable
                 }
             }
         }
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+        return INFINITE_EXTENT_AABB;
+    }
+
+    @SideOnly(Side.CLIENT)
+    public double getMaxRenderDistanceSquared()
+    {
+        return 65536.0D;
     }
 }
