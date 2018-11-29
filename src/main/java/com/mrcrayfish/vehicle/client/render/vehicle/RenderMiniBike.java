@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.RenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -26,6 +27,9 @@ public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
     @Override
     public void doRender(EntityMiniBike entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
+        if(entity.isDead)
+            return;
+
         RenderHelper.enableStandardItemLighting();
 
         float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
@@ -39,6 +43,9 @@ public class RenderMiniBike extends RenderLandVehicle<EntityMiniBike>
 
         GlStateManager.pushMatrix();
         {
+            if(entity.getRidingEntity() instanceof EntityJack)
+                GlStateManager.translate(0, -1000, 0);
+
             GlStateManager.translate(x, y, z);
             GlStateManager.rotate(-currentYaw, 0, 1, 0);
             GlStateManager.rotate(additionalYaw, 0, 1, 0);

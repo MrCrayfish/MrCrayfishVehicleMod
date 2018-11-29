@@ -42,20 +42,14 @@ public class TileEntityJack extends TileEntity implements ITickable
 
         if(world.isRemote && jack == null)
         {
-            List<EntityJack> jacks = world.getEntitiesWithinAABB(EntityJack.class, new AxisAlignedBB(pos).grow(100));
+            List<EntityJack> jacks = world.getEntitiesWithinAABB(EntityJack.class, new AxisAlignedBB(pos));
             if(jacks.size() > 0)
             {
                 jack = jacks.get(0);
-                if(jack.getPassengers().size() > 0)
-                {
-                    Entity entity = jack.getPassengers().get(0);
-                    jack.updateRidden();
-                    entity.setLocationAndAngles(entity.posX, entity.posY, entity.posZ, entity.rotationYaw, entity.rotationPitch);
-                }
             }
         }
 
-        if(jack != null && jack.isDead)
+        if(jack != null && (jack.getPassengers().isEmpty() || jack.isDead))
         {
             jack = null;
         }

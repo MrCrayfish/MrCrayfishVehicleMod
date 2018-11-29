@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mrcrayfish.vehicle.entity.EntityJack;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import net.minecraft.block.state.IBlockState;
@@ -10,7 +11,9 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.IBlockAccess;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.animation.Animation;
@@ -81,6 +84,30 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                 rendererDispatcher.getBlockModelRenderer().renderModel(te.getWorld(), model, state, pos, buffer, false);
                 buffer.setTranslation(0, 0, 0);
                 tessellator.draw();
+            }
+            GlStateManager.popMatrix();
+
+            GlStateManager.pushMatrix();
+            {
+                Entity jack = te.getJack();
+                if(jack != null && jack.getPassengers().size() > 0)
+                {
+                    Entity passenger = jack.getPassengers().get(0);
+                    if(passenger instanceof EntityVehicle)
+                    {
+                        GlStateManager.translate(0.5, 0.5, 0.5);
+                        GlStateManager.translate(0, -2 * 0.0625, 0);
+                        float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / 10F;
+                        GlStateManager.translate(0, 0.5 * progress, 0);
+
+                        EntityVehicle vehicle = (EntityVehicle) passenger;
+                        Vec3d heldOffset = vehicle.getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
+                        GlStateManager.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
+
+                        GlStateManager.translate(0, 1000, 0);
+                        Minecraft.getMinecraft().getRenderManager().renderEntity(passenger, 0, 0, 0, passenger.rotationYaw, partialTicks, false);
+                    }
+                }
             }
             GlStateManager.popMatrix();
 

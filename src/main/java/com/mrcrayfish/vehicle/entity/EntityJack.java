@@ -45,12 +45,9 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
     {
         super.onEntityUpdate();
 
-        if(!world.isRemote && ticksExisted % 10 == 0)
+        if(!world.isRemote && this.getPassengers().size() == 0)
         {
-            if(this.getPassengers().size() == 0 || world.getBlockState(new BlockPos(initialX, initialY, initialZ)).getBlock() != ModBlocks.JACK)
-            {
-                this.setDead();
-            }
+            this.setDead();
         }
 
         if(isDead)
@@ -78,9 +75,6 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         {
             TileEntityJack tileEntityJack = (TileEntityJack) tileEntity;
             this.setPosition(initialX, initialY + 0.5 * (tileEntityJack.liftProgress / 10.0), initialZ);
-            this.updateBlocked = true;
-            this.updateRidden();
-            this.updateBlocked = false;
         }
     }
 
