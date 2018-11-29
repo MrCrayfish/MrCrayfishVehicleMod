@@ -987,7 +987,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         {
             EntityPlayerMP entityPlayerMP = (EntityPlayerMP) player;
             entityPlayerMP.getNextWindowId();
-            entityPlayerMP.openContainer = new ContainerVehicle(this, entityPlayerMP);
+            entityPlayerMP.openContainer = new ContainerVehicle(this.getVehicleInventory(), this, entityPlayerMP);
             entityPlayerMP.openContainer.windowId = entityPlayerMP.currentWindowId;
             entityPlayerMP.openContainer.addListener(entityPlayerMP);
             PacketHandler.INSTANCE.sendTo(new MessageVehicleWindow(player.openContainer.windowId, this.getEntityId()), entityPlayerMP);

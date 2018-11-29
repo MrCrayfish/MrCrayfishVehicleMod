@@ -16,14 +16,14 @@ public class ContainerVehicle extends Container
     private final IInventory vehicleInventory;
     private final EntityPoweredVehicle vehicle;
 
-    public ContainerVehicle(EntityPoweredVehicle vehicle, EntityPlayer player)
+    public ContainerVehicle(IInventory vehicleInventory, EntityPoweredVehicle vehicle, EntityPlayer player)
     {
-        this.vehicleInventory = vehicle.getVehicleInventory();
+        this.vehicleInventory = vehicleInventory;
         this.vehicle = vehicle;
 
-        vehicleInventory.openInventory(player);
+        this.vehicleInventory.openInventory(player);
 
-        this.addSlotToContainer(new Slot(vehicleInventory, 0, 8, 18)
+        this.addSlotToContainer(new Slot(ContainerVehicle.this.vehicleInventory, 0, 8, 17)
         {
             public boolean isItemValid(ItemStack stack)
             {
@@ -55,6 +55,11 @@ public class ContainerVehicle extends Container
         {
             this.addSlotToContainer(new Slot(player.inventory, i, 8 + i * 18, 160));
         }
+    }
+
+    public IInventory getVehicleInventory()
+    {
+        return vehicleInventory;
     }
 
     @Override

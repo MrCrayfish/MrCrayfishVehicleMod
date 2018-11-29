@@ -23,11 +23,11 @@ public class GuiEditVehicle extends GuiContainer
     private final IInventory vehicleInventory;
     private final EntityPoweredVehicle vehicle;
 
-    public GuiEditVehicle(EntityPoweredVehicle vehicle, EntityPlayer player)
+    public GuiEditVehicle(IInventory vehicleInventory, EntityPoweredVehicle vehicle, EntityPlayer player)
     {
-        super(new ContainerVehicle(vehicle, player));
+        super(new ContainerVehicle(vehicleInventory, vehicle, player));
         this.playerInventory = player.inventory;
-        this.vehicleInventory = vehicle.getVehicleInventory();
+        this.vehicleInventory = vehicleInventory;
         this.vehicle = vehicle;
         this.ySize = 184;
     }
@@ -40,6 +40,11 @@ public class GuiEditVehicle extends GuiContainer
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
+
+        if(vehicleInventory.getStackInSlot(0).isEmpty())
+        {
+            this.drawTexturedModalRect(i + 8, j + 17, 176, 0, 16, 16);
+        }
     }
 
     @Override

@@ -53,7 +53,7 @@ public class MessageVehicleWindow implements IMessage, IMessageHandler<MessageVe
             if(entity instanceof EntityPoweredVehicle)
             {
                 EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditVehicle(poweredVehicle, player));
+                Minecraft.getMinecraft().displayGuiScreen(new GuiEditVehicle(poweredVehicle.getVehicleInventory(), poweredVehicle, player));
                 player.openContainer.windowId = message.windowId;
             }
         });
