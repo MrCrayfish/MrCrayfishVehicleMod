@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import javafx.scene.chart.Axis;
+import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -18,7 +19,7 @@ import javax.annotation.Nullable;
  */
 public class BlockJack extends BlockObject
 {
-    private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0, 0, 0, 1, 0.5, 1);
+    private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0, 0, 0, 1, 0.5625, 1);
 
     public BlockJack()
     {
@@ -28,6 +29,13 @@ public class BlockJack extends BlockObject
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
+        TileEntity tileEntity = source.getTileEntity(pos);
+        if(tileEntity instanceof TileEntityJack)
+        {
+            TileEntityJack tileEntityJack = (TileEntityJack) tileEntity;
+            float progress = tileEntityJack.liftProgress / (float) TileEntityJack.MAX_LIFT_PROGRESS;
+            return BOUNDING_BOX.expand(0, 0.5 * progress, 0);
+        }
         return BOUNDING_BOX;
     }
 

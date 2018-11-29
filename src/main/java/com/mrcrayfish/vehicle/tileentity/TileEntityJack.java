@@ -1,10 +1,16 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.block.BlockJack;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.block.BlockShulkerBox;
+import net.minecraft.block.material.EnumPushReaction;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -85,11 +91,36 @@ public class TileEntityJack extends TileEntity implements ITickable
             if(liftProgress < MAX_LIFT_PROGRESS)
             {
                 liftProgress++;
+                this.moveCollidedEntities();
             }
         }
         else if(liftProgress > 0)
         {
             liftProgress--;
+            this.moveCollidedEntities();
+        }
+    }
+
+    private void moveCollidedEntities()
+    {
+        IBlockState state = this.world.getBlockState(this.getPos());
+        if(state.getBlock() instanceof BlockJack)
+        {
+            AxisAlignedBB boundingBox = state.getBoundingBox(world, this.pos).offset(this.pos);
+            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(jack, boundingBox);
+            System.out.println(list.size());
+            if(!list.isEmpty())
+            {
+                for(Entity entity : list)
+                {
+                    if(entity.getPushReaction() != EnumPushReaction.IGNORE)
+                    {
+                        AxisAlignedBB entityBoundingBox = entity.getEntityBoundingBox();
+                        double posY = boundingBox.maxY - entityBoundingBox.minY;
+                        entity.move(MoverType.PISTON, 0.0, posY, 0.0);
+                    }
+                }
+            }
         }
     }
 }
