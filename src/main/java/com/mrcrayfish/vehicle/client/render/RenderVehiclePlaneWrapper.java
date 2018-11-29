@@ -2,42 +2,37 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderVehicle<T>>
+public class RenderVehiclePlaneWrapper<T extends EntityPlane & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
-    public RenderVehicleAir(RenderManager renderManager, AbstractRenderVehicle<T> renderVehicle)
+    public RenderVehiclePlaneWrapper(R renderVehicle)
     {
-        super(renderManager, renderVehicle);
+        super(renderVehicle);
     }
 
-    public AbstractRenderVehicle<T> getRenderVehicle()
+    public void render(T entity, float partialTicks)
     {
-        return renderVehicle;
-    }
+        if(entity.isDead)
+            return;
 
-    @Override
-    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
-    {
         GlStateManager.pushMatrix();
         {
             //Enable the standard item lighting so vehicles render correctly
             RenderHelper.enableStandardItemLighting();
 
-            //Translate and rotate using parameters
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(-entityYaw, 0, 1, 0);
-
-            //Applies the break animation
-            this.setupBreakAnimation(entity, partialTicks);
-
-            //TODO make vehicle translate to height of axels for better positioning
             //Apply vehicle rotations and translations. This is applied to all other parts
             PartPosition bodyPosition = entity.getBodyPosition();
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
@@ -107,7 +102,5 @@ public class RenderVehicleAir<T extends EntityPlane & EntityRaytracer.IEntityRay
             }
         }
         GlStateManager.popMatrix();
-
-        EntityRaytracer.renderRaytraceElements(entity, x, y, z, entityYaw);
     }
 }

@@ -33,7 +33,6 @@ public class RenderVehicleLandWrapper<T extends EntityLandVehicle & EntityRaytra
             //Enable the standard item lighting so vehicles render correctly
             RenderHelper.enableStandardItemLighting();
 
-            //TODO make vehicle translate to height of axels for better positioning
             //Apply vehicle rotations and translations. This is applied to all other parts
             PartPosition bodyPosition = entity.getBodyPosition();
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
@@ -121,51 +120,6 @@ public class RenderVehicleLandWrapper<T extends EntityLandVehicle & EntityRaytra
                     this.renderKey(entity.getKeyPosition(), entity.getKeyStack());
                 }
             }
-        }
-        GlStateManager.popMatrix();
-    }
-
-    /**
-     * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
-     * will be cancelled if the PartPosition parameter is null.
-     *
-     * @param position the render definitions to apply to the part
-     * @param part the part to render onto the vehicle
-     */
-    protected void renderPart(@Nullable PartPosition position, ItemStack part)
-    {
-        if(position == null)
-            return;
-
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-            GlStateManager.translate(0, -0.5, 0);
-            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
-            GlStateManager.translate(0, 0.5, 0);
-            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
-    }
-
-    protected void renderKey(@Nullable PartPosition position, ItemStack part)
-    {
-        if(position == null)
-            return;
-
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-            GlStateManager.translate(0, -0.25, 0);
-            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
-            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
-            GlStateManager.translate(0, 0, -0.05);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
     }

@@ -99,8 +99,9 @@ public class ClientProxy implements Proxy
 
     private <T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> void registerPlaneRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
-        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderVehicleAir<>(manager, render));
-        VehicleRenderRegistry.registerRender(clazz, render);
+        RenderVehiclePlaneWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderVehiclePlaneWrapper<>(render);
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
+        VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
     private <T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable> void registerHelicopterRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
