@@ -78,7 +78,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, -2 * 0.0625, 0);
-                float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / 10F;
+                float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) TileEntityJack.MAX_LIFT_PROGRESS;
                 GlStateManager.translate(0, 0.5 * progress, 0);
 
                 //Render the head
@@ -101,7 +101,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                     {
                         GlStateManager.translate(0.5, 0.5, 0.5);
                         GlStateManager.translate(0, -1 * 0.0625, 0);
-                        float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / 10F;
+                        float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) TileEntityJack.MAX_LIFT_PROGRESS;
                         GlStateManager.translate(0, 0.5 * progress, 0);
 
                         EntityVehicle vehicle = (EntityVehicle) passenger;

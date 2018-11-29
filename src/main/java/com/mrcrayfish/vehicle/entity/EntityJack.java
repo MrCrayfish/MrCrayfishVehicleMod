@@ -74,7 +74,7 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         if(tileEntity instanceof TileEntityJack)
         {
             TileEntityJack tileEntityJack = (TileEntityJack) tileEntity;
-            this.setPosition(initialX, initialY + 0.5 * (tileEntityJack.liftProgress / 10.0), initialZ);
+            this.setPosition(initialX, initialY + 0.5 * (tileEntityJack.liftProgress / (double) TileEntityJack.MAX_LIFT_PROGRESS), initialZ);
         }
     }
 
