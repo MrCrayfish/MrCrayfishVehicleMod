@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle;
 
+import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.client.gui.GuiHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
@@ -122,5 +123,6 @@ public class VehicleMod
     private void registerVehicle(String id, Class<? extends EntityVehicle> clazz)
     {
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, Reference.MOD_ID + "." + id, nextEntityId++, this, 64, 1, true);
+        BlockVehicleCrate.registerVehicle(id);
     }
 }
