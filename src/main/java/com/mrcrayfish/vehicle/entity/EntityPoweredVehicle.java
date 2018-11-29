@@ -2,15 +2,18 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
 import com.mrcrayfish.vehicle.network.message.MessageHorn;
 import com.mrcrayfish.vehicle.network.message.MessageTurn;
+import com.mrcrayfish.vehicle.network.message.MessageVehicleWindow;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.block.Block;
@@ -21,6 +24,10 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,7 +56,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityPoweredVehicle extends EntityVehicle
+public abstract class EntityPoweredVehicle extends EntityVehicle implements IInventoryChangedListener
 {
     protected static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
@@ -92,6 +99,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     private PartPosition enginePosition;
     private PartPosition keyHolePosition;
     private PartPosition keyPosition;
+
+    private InventoryBasic vehicleInventory;
 
     @SideOnly(Side.CLIENT)
     public ItemStack engine;
@@ -229,43 +238,58 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
         ItemStack stack = player.getHeldItem(hand);
-        if(!world.isRemote && stack.getItem() == ModItems.KEY)
+        if(!world.isRemote)
         {
-            /* If no owner is set, make the owner the person adding the key. It is used because
-             * owner will not be set if the vehicle was summoned through a command */
-            if(this.owner == null)
+            if(stack.getItem() == ModItems.KEY)
             {
-                this.owner = player.getUniqueID();
-            }
-
-            if(!this.owner.equals(player.getUniqueID()))
-            {
-                CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
-                return false;
-            }
-
-            if(this.isLockable())
-            {
-                NBTTagCompound tag = CommonUtils.getItemTagCompound(stack);
-                if(!tag.hasUniqueId("vehicleId") || this.getUniqueID().equals(tag.getUniqueId("vehicleId")))
+                /* If no owner is set, make the owner the person adding the key. It is used because
+                 * owner will not be set if the vehicle was summoned through a command */
+                if(this.owner == null)
                 {
-                    tag.setUniqueId("vehicleId", this.getUniqueID());
-                    if(!this.isKeyNeeded())
+                    this.owner = player.getUniqueID();
+                }
+
+                if(!this.owner.equals(player.getUniqueID()))
+                {
+                    CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
+                    return false;
+                }
+
+                if(this.isLockable())
+                {
+                    NBTTagCompound tag = CommonUtils.getItemTagCompound(stack);
+                    if(!tag.hasUniqueId("vehicleId") || this.getUniqueID().equals(tag.getUniqueId("vehicleId")))
                     {
-                        this.setKeyNeeded(true);
-                        CommonUtils.sendInfoMessage(player, "vehicle.status.key_added");
+                        tag.setUniqueId("vehicleId", this.getUniqueID());
+                        if(!this.isKeyNeeded())
+                        {
+                            this.setKeyNeeded(true);
+                            CommonUtils.sendInfoMessage(player, "vehicle.status.key_added");
+                        }
+                        else
+                        {
+                            CommonUtils.sendInfoMessage(player, "vehicle.status.key_created");
+                        }
+                        return true;
                     }
-                    else
-                    {
-                        CommonUtils.sendInfoMessage(player, "vehicle.status.key_created");
-                    }
-                    return true;
+                }
+                else
+                {
+                    CommonUtils.sendInfoMessage(player, "vehicle.status.not_lockable");
+                    return false;
                 }
             }
-            else
+            else if(stack.getItem() == ModItems.WRENCH)
             {
-                CommonUtils.sendInfoMessage(player, "vehicle.status.not_lockable");
-                return false;
+                if(player.getUniqueID().equals(owner))
+                {
+                    this.openInventory(player);
+                }
+                else
+                {
+                    CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
+                }
+                return true;
             }
         }
         return super.processInitialInteract(player, hand);
@@ -957,6 +981,101 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         return false;
     }
 
+    private void openInventory(EntityPlayer player)
+    {
+        if(player instanceof EntityPlayerMP)
+        {
+            EntityPlayerMP entityPlayerMP = (EntityPlayerMP) player;
+            entityPlayerMP.getNextWindowId();
+            entityPlayerMP.openContainer = new ContainerVehicle(this, entityPlayerMP);
+            entityPlayerMP.openContainer.windowId = entityPlayerMP.currentWindowId;
+            entityPlayerMP.openContainer.addListener(entityPlayerMP);
+            PacketHandler.INSTANCE.sendTo(new MessageVehicleWindow(player.openContainer.windowId, this.getEntityId()), entityPlayerMP);
+        }
+    }
+
+    public InventoryBasic getVehicleInventory()
+    {
+        this.initVehicleInventory();
+        return this.vehicleInventory;
+    }
+
+    protected void initVehicleInventory()
+    {
+        InventoryBasic vehicleInventory = this.vehicleInventory;
+        this.vehicleInventory = new InventoryBasic(this.getName(), false, 1);
+
+        if(vehicleInventory != null)
+        {
+            vehicleInventory.removeInventoryChangeListener(this);
+            int size = Math.min(vehicleInventory.getSizeInventory(), this.vehicleInventory.getSizeInventory());
+            for(int i = 0; i < size; i++)
+            {
+                ItemStack stack = vehicleInventory.getStackInSlot(i);
+                if(!stack.isEmpty())
+                {
+                    this.vehicleInventory.setInventorySlotContents(i, stack.copy());
+                }
+            }
+        }
+
+        if(this.hasEngine())
+        {
+            ItemStack engine = ItemStack.EMPTY;
+            switch(this.getEngineType())
+            {
+                case SMALL_MOTOR:
+                    engine = new ItemStack(ModItems.SMALL_ENGINE, 1, this.getEngineTier().ordinal());
+                    break;
+                case LARGE_MOTOR:
+                    engine = new ItemStack(ModItems.LARGE_ENGINE, 1, this.getEngineTier().ordinal());
+                    break;
+                case ELECTRIC_MOTOR:
+                    engine = new ItemStack(ModItems.ELECTRIC_ENGINE, 1, this.getEngineTier().ordinal());
+                    break;
+                default:
+                    break;
+            }
+            if(!engine.isEmpty())
+            {
+                this.vehicleInventory.setInventorySlotContents(0, engine);
+            }
+        }
+
+        this.vehicleInventory.addInventoryChangeListener(this);
+    }
+
+    private void updateSlots()
+    {
+        if (!this.world.isRemote)
+        {
+            ItemStack stack = this.vehicleInventory.getStackInSlot(0);
+            if(stack.getItem() instanceof ItemEngine)
+            {
+                ItemEngine engine = (ItemEngine) stack.getItem();
+                if(engine.getEngineType() == this.getEngineType())
+                {
+                    this.setEngine(true);
+                    this.setEngineTier(EngineTier.getType(stack.getMetadata()));
+                }
+                else
+                {
+                    this.setEngine(false);
+                }
+            }
+            else
+            {
+                this.setEngine(false);
+            }
+        }
+    }
+
+    @Override
+    public void onInventoryChanged(IInventory inventory)
+    {
+        this.updateSlots();
+    }
+
     public enum TurnDirection
     {
         LEFT(1), FORWARD(0), RIGHT(-1);
@@ -1039,6 +1158,5 @@ public abstract class EntityPoweredVehicle extends EntityVehicle
         {
             Minecraft.getMinecraft().player.playSound(soundClose, volumeClose, pitchClose);
         }
-
     }
 }
