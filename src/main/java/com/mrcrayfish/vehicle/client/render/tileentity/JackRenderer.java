@@ -1,5 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
+import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModBlocks;
@@ -26,6 +29,7 @@ import org.lwjgl.opengl.GL11;
 public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
 {
     @Override
+    @SuppressWarnings("unchecked")
     public void render(TileEntityJack te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
     {
         GlStateManager.pushMatrix();
@@ -93,19 +97,23 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                 if(jack != null && jack.getPassengers().size() > 0)
                 {
                     Entity passenger = jack.getPassengers().get(0);
-                    if(passenger instanceof EntityVehicle)
+                    if(passenger instanceof EntityVehicle && !passenger.isDead)
                     {
                         GlStateManager.translate(0.5, 0.5, 0.5);
-                        GlStateManager.translate(0, -2 * 0.0625, 0);
+                        GlStateManager.translate(0, -1 * 0.0625, 0);
                         float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / 10F;
                         GlStateManager.translate(0, 0.5 * progress, 0);
 
                         EntityVehicle vehicle = (EntityVehicle) passenger;
                         Vec3d heldOffset = vehicle.getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
                         GlStateManager.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
+                        GlStateManager.rotate(-passenger.rotationYaw, 0, 1, 0);
 
-                        GlStateManager.translate(0, 1000, 0);
-                        Minecraft.getMinecraft().getRenderManager().renderEntity(passenger, 0, 0, 0, passenger.rotationYaw, partialTicks, false);
+                        RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper(vehicle.getClass());
+                        if(wrapper != null)
+                        {
+                            wrapper.render(vehicle, partialTicks);
+                        }
                     }
                 }
             }
