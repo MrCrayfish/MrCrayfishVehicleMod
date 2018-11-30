@@ -8,13 +8,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -105,10 +108,30 @@ public class RegistrationHandler
         }
     }
 
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+    public static class Sounds
+    {
+        private static final List<SoundEvent> SOUNDS = new ArrayList<>();
+
+        public static void register(SoundEvent sound)
+        {
+            SOUNDS.add(sound);
+        }
+
+        @SubscribeEvent
+        public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
+        {
+            IForgeRegistry<SoundEvent> registry = event.getRegistry();
+            SOUNDS.forEach(registry::register);
+            SOUNDS.clear();
+        }
+    }
+
     public static void init()
     {
         ModItems.register();
         ModBlocks.register();
         ModRecipes.register();
+        ModSounds.register();
     }
 }

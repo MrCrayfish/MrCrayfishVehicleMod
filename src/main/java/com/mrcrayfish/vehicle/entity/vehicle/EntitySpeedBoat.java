@@ -79,13 +79,13 @@ public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytrace
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO;
+        return ModSounds.speedBoatEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+        return ModSounds.speedBoatEngineStereo;
     }
 
     @Override

@@ -136,13 +136,13 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.MOPED_ENGINE_MONO;
+        return ModSounds.mopedEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.MOPED_ENGINE_STEREO;
+        return ModSounds.mopedEngineStereo;
     }
 
     @Override

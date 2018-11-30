@@ -80,13 +80,13 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO;
+        return ModSounds.speedBoatEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+        return ModSounds.speedBoatEngineStereo;
     }
 
     @Override

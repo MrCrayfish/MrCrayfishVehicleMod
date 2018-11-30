@@ -72,20 +72,20 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
     {
         entity.motionX += vehicleMotionX * 2;
         entity.motionZ += vehicleMotionZ * 2;
-        world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.BONK, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
+        world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.bonk, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
         this.currentSpeed *= 0.25F;
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO;
+        return ModSounds.electricEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_STEREO;
+        return ModSounds.electricEngineStereo;
     }
 
     @Override

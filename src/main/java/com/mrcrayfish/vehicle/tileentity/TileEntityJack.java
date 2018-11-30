@@ -4,13 +4,11 @@ import com.mrcrayfish.vehicle.block.BlockJack;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import net.minecraft.block.BlockShulkerBox;
 import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -72,19 +70,19 @@ public class TileEntityJack extends TileEntity implements ITickable
             {
                 if(!activated)
                 {
-                    world.playSound(null, pos, ModSounds.JACK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, ModSounds.jackUp, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     activated = true;
                 }
             }
             else if(activated)
             {
-                world.playSound(null, pos, ModSounds.JACK_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, ModSounds.jackDown, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 activated = false;
             }
         }
         else if(activated)
         {
-            world.playSound(null, pos, ModSounds.JACK_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, pos, ModSounds.jackDown, SoundCategory.BLOCKS, 1.0F, 1.0F);
             activated = false;
         }
 

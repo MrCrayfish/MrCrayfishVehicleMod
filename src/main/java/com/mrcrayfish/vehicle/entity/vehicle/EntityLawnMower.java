@@ -105,13 +105,13 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ATV_ENGINE_MONO;
+        return ModSounds.atvEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ATV_ENGINE_STEREO;
+        return ModSounds.atvEngineStereo;
     }
 
     @Override

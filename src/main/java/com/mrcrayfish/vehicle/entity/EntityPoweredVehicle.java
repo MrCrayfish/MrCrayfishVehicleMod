@@ -24,7 +24,6 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
@@ -163,12 +162,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     //TODO ability to change with nbt
     public SoundEvent getHornSound()
     {
-        return ModSounds.HORN_MONO;
+        return ModSounds.hornMono;
     }
 
     public SoundEvent getHornRidingSound()
     {
-        return ModSounds.HORN_STEREO;
+        return ModSounds.hornStereo;
     }
 
     public void playFuelPortOpenSound()
@@ -1113,8 +1112,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public enum FuelPort
     {
-        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
-        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
+        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.fuelPortOpen, 0.25F, 0.6F, ModSounds.fuelPortClose, 0.12F, 0.6F),
+        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.fuelPort2Open, 0.4F, 0.6F, ModSounds.fuelPort2Close, 0.3F, 0.6F);
 
         private Item closed, body, lid;
         private SoundEvent soundOpen, soundClose;

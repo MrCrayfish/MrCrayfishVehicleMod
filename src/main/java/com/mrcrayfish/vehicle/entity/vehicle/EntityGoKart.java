@@ -60,13 +60,13 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO;
+        return ModSounds.goKartEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO;
+        return ModSounds.goKartEngineStereo;
     }
 
     @Override
