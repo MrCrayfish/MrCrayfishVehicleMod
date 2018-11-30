@@ -5,6 +5,8 @@ import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
+
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,13 +24,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class EntityVehicle extends Entity
+public abstract class EntityVehicle extends Entity implements IEntityAdditionalSpawnData
 {
     public static final int[] DYE_TO_COLOR = new int[] {16383998, 16351261, 13061821, 3847130, 16701501, 8439583, 15961002, 4673362, 10329495, 1481884, 8991416, 3949738, 8606770, 6192150, 11546150, 1908001};
 
@@ -285,7 +288,7 @@ public abstract class EntityVehicle extends Entity
     @Override
     protected boolean canBeRidden(Entity entityIn)
     {
-        return true;
+        return !(this.getRidingEntity() instanceof EntityJack) && entityIn instanceof EntityPlayer;
     }
 
     @Override
@@ -472,5 +475,17 @@ public abstract class EntityVehicle extends Entity
     protected static AxisAlignedBB createScaledBoundingBox(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
     {
         return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer)
+    {
+        buffer.writeFloat(rotationYaw);
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf buffer)
+    {
+        rotationYaw = prevRotationYaw = buffer.readFloat();
     }
 }

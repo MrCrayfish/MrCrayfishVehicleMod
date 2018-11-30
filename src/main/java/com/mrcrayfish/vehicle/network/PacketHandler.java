@@ -10,9 +10,11 @@ public class PacketHandler
     public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
     private static int messageId = 0;
 
-    private static enum Side
+    private enum Side
     {
-        CLIENT, SERVER, BOTH;
+        CLIENT,
+        SERVER,
+        BOTH;
     }
 
     public static void init()
@@ -31,16 +33,17 @@ public class PacketHandler
         registerMessage(MessageInteractKey.class, Side.SERVER);
         registerMessage(MessageAltitude.class, Side.SERVER);
         registerMessage(MessageCraftVehicle.class, Side.SERVER);
+        registerMessage(MessageVehicleWindow.class, Side.CLIENT);
     }
 
     private static void registerMessage(Class packet, Side side)
     {
-        if (side != Side.CLIENT)
+        if(side != Side.CLIENT)
         {
             registerMessage(packet, net.minecraftforge.fml.relauncher.Side.SERVER);
         }
 
-        if (side != Side.SERVER)
+        if(side != Side.SERVER)
         {
             registerMessage(packet, net.minecraftforge.fml.relauncher.Side.CLIENT);
         }

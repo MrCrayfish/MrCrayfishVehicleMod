@@ -19,5 +19,6 @@ public class ModTileEntities
         GameRegistry.registerTileEntity(TileEntityFluidMixer.class, new ResourceLocation(Reference.MOD_ID, "fluid_mixer"));
         GameRegistry.registerTileEntity(TileEntityVehicleCrate.class, new ResourceLocation(Reference.MOD_ID, "vehicle_crate"));
         GameRegistry.registerTileEntity(TileEntityWorkstation.class, new ResourceLocation(Reference.MOD_ID, "workstation"));
+        GameRegistry.registerTileEntity(TileEntityJack.class, new ResourceLocation(Reference.MOD_ID, "jack"));
     }
 }

@@ -32,6 +32,8 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -39,6 +41,8 @@ import java.util.List;
  */
 public class BlockVehicleCrate extends BlockRotatedObject
 {
+    private static final List<ResourceLocation> REGISTERED_CRATES = new ArrayList<>();
+
     private static final AxisAlignedBB PANEL = new Bounds(0, 0, 0, 16, 2, 16).toAABB();
 
     public BlockVehicleCrate()
@@ -157,24 +161,16 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items)
     {
-        ForgeRegistries.ENTITIES.getValuesCollection().forEach(entityEntry ->
+        Collections.sort(REGISTERED_CRATES);
+        REGISTERED_CRATES.forEach(resourceLocation ->
         {
-            ResourceLocation name = entityEntry.getRegistryName();
-            if(name != null)
-            {
-                if(name.getResourceDomain().equals(Reference.MOD_ID))
-                {
-                    NBTTagCompound blockEntityTag = new NBTTagCompound();
-                    blockEntityTag.setString("vehicle", name.toString());
-
-                    NBTTagCompound itemTag = new NBTTagCompound();
-                    itemTag.setTag("BlockEntityTag", blockEntityTag);
-
-                    ItemStack stack = new ItemStack(this);
-                    stack.setTagCompound(itemTag);
-                    items.add(stack);
-                }
-            }
+            NBTTagCompound blockEntityTag = new NBTTagCompound();
+            blockEntityTag.setString("vehicle", resourceLocation.toString());
+            NBTTagCompound itemTag = new NBTTagCompound();
+            itemTag.setTag("BlockEntityTag", blockEntityTag);
+            ItemStack stack = new ItemStack(this);
+            stack.setTagCompound(itemTag);
+            items.add(stack);
         });
     }
 
@@ -189,5 +185,14 @@ public class BlockVehicleCrate extends BlockRotatedObject
         ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);
         stack.setTagCompound(itemTag);
         return stack;
+    }
+
+    public static void registerVehicle(String id)
+    {
+        ResourceLocation resource = new ResourceLocation(Reference.MOD_ID, id);
+        if(!REGISTERED_CRATES.contains(resource))
+        {
+            REGISTERED_CRATES.add(resource);
+        }
     }
 }

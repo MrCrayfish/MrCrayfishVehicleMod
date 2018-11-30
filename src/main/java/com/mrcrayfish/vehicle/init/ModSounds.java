@@ -8,6 +8,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.registries.IForgeRegistry;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Author: MrCrayfish
  */
@@ -38,6 +41,8 @@ public class ModSounds
     public static final SoundEvent FUEL_PORT_2_OPEN;
     public static final SoundEvent FUEL_PORT_2_CLOSE;
     public static final SoundEvent VEHICLE_CRATE_PANEL_LAND;
+    public static final SoundEvent JACK_UP;
+    public static final SoundEvent JACK_DOWN;
 
     static
     {
@@ -66,46 +71,34 @@ public class ModSounds
         FUEL_PORT_2_OPEN = registerSound("vehicle:fuel_port_2_open");
         FUEL_PORT_2_CLOSE = registerSound("vehicle:fuel_port_2_close");
         VEHICLE_CRATE_PANEL_LAND = registerSound("vehicle:vehicle_crate_panel_land");
+        JACK_UP = registerSound("vehicle:jack_up");
+        JACK_DOWN = registerSound("vehicle:jack_down");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
     {
         ResourceLocation resource = new ResourceLocation(soundNameIn);
         SoundEvent sound = new SoundEvent(resource).setRegistryName(soundNameIn);
+        RegistrationHandler.add(sound);
         return sound;
     }
 
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class RegistrationHandler
     {
+        private static List<SoundEvent> sounds = new ArrayList<>();
+
+        private static void add(SoundEvent sound)
+        {
+            sounds.add(sound);
+        }
+
         @SubscribeEvent
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
             IForgeRegistry<SoundEvent> registry = event.getRegistry();
-            registry.register(HORN_MONO);
-            registry.register(HORN_STEREO);
-            registry.register(ATV_ENGINE_MONO);
-            registry.register(ATV_ENGINE_STEREO);
-            registry.register(GO_KART_ENGINE_MONO);
-            registry.register(GO_KART_ENGINE_STEREO);
-            registry.register(ELECTRIC_ENGINE_MONO);
-            registry.register(ELECTRIC_ENGINE_STEREO);
-            registry.register(BONK);
-            registry.register(PICK_UP_VEHICLE);
-            registry.register(SPEED_BOAT_ENGINE_MONO);
-            registry.register(SPEED_BOAT_ENGINE_STEREO);
-            registry.register(SPRAY_CAN_SPRAY);
-            registry.register(SPRAY_CAN_SHAKE);
-            registry.register(MOPED_ENGINE_MONO);
-            registry.register(MOPED_ENGINE_STEREO);
-            registry.register(SPORTS_PLANE_ENGINE_MONO);
-            registry.register(SPORTS_PLANE_ENGINE_STEREO);
-            registry.register(BOOST_PAD);
-            registry.register(LIQUID_GLUG);
-            registry.register(FUEL_PORT_OPEN);
-            registry.register(FUEL_PORT_CLOSE);
-            registry.register(FUEL_PORT_2_OPEN);
-            registry.register(FUEL_PORT_2_CLOSE);
+            sounds.forEach(registry::register);
+            sounds.clear();
         }
     }
 }

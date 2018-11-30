@@ -2,6 +2,9 @@ package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.block.*;
 import com.mrcrayfish.vehicle.item.ItemBoostRamp;
+import com.mrcrayfish.vehicle.block.BlockJack;
+import com.mrcrayfish.vehicle.block.BlockObject;
+import com.mrcrayfish.vehicle.block.BlockTrafficCone;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -29,6 +32,8 @@ public class ModBlocks
     public static final Block INDUSTRIAL_FUEL_DRUM;
     public static final Block WORKSTATION;
     public static final Block VEHICLE_CRATE;
+    public static final Block JACK;
+    public static final Block JACK_HEAD;
 
     static
     {
@@ -48,6 +53,8 @@ public class ModBlocks
         INDUSTRIAL_FUEL_DRUM = new BlockFuelDrum("industrial_fuel_drum", 75000);
         WORKSTATION = new BlockWorkstation();
         VEHICLE_CRATE = new BlockVehicleCrate();
+        JACK = new BlockJack();
+        JACK_HEAD = new BlockObject(Material.WOOD, "jack_head");
     }
 
     public static void register()
@@ -68,6 +75,8 @@ public class ModBlocks
         registerBlock(INDUSTRIAL_FUEL_DRUM);
         registerBlock(WORKSTATION);
         registerBlock(VEHICLE_CRATE, (ItemBlock) new ItemBlock(VEHICLE_CRATE).setMaxStackSize(1));
+        registerBlock(JACK);
+        registerBlock(JACK_HEAD, null);
     }
 
     private static void registerBlock(Block block)

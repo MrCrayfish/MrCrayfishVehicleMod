@@ -73,5 +73,11 @@
     },
     "vehicle_crate_panel_land": {
         "sounds": [ {"name": "vehicle:vehicle_crate_panel_land"}]
+    },
+    "jack_up": {
+        "sounds": [ {"name": "vehicle:jack_up"}]
+    },
+    "jack_down": {
+        "sounds": [ {"name": "vehicle:jack_down"}]
     }
 }

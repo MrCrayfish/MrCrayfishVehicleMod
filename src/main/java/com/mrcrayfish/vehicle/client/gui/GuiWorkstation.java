@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
 public class GuiWorkstation extends GuiContainer
 {
     private static final ImmutableList<Class<? extends EntityVehicle>> VEHICLES;
-    private static final ImmutableMap<Class<? extends EntityVehicle>, PartPosition> DISPLAY_PROPERTIES;
+    public static final ImmutableMap<Class<? extends EntityVehicle>, PartPosition> DISPLAY_PROPERTIES;
 
     static
     {
