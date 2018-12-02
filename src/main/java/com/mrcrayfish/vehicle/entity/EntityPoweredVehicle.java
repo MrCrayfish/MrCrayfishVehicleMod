@@ -918,7 +918,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         super.notifyDataManagerChange(key);
         if(world.isRemote)
         {
-            //TODO update vehicle engine
             if(ENGINE_TIER.equals(key))
             {
                 EngineTier tier = EngineTier.getType(this.dataManager.get(ENGINE_TIER));
@@ -926,19 +925,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             }
             if(COLOR.equals(key))
             {
-                if(!fuelPortBody.hasTagCompound())
-                {
-                    fuelPortClosed.setTagCompound(new NBTTagCompound());
-                    fuelPortBody.setTagCompound(new NBTTagCompound());
-                    fuelPortLid.setTagCompound(new NBTTagCompound());
-                }
                 Color color = new Color(this.dataManager.get(COLOR));
                 int colorInt = (Math.sqrt(color.getRed() * color.getRed() * 0.241
                         + color.getGreen() * color.getGreen() * 0.691
                         + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();
-                fuelPortClosed.getTagCompound().setInteger("color", colorInt);
-                fuelPortBody.getTagCompound().setInteger("color", colorInt);
-                fuelPortLid.getTagCompound().setInteger("color", colorInt);
+                CommonUtils.getItemTagCompound(fuelPortClosed).setInteger("color", colorInt);
+                CommonUtils.getItemTagCompound(fuelPortBody).setInteger("color", colorInt);
+                CommonUtils.getItemTagCompound(fuelPortLid).setInteger("color", colorInt);
                 CommonUtils.getItemTagCompound(keyPort).setInteger("color", colorInt);
             }
         }

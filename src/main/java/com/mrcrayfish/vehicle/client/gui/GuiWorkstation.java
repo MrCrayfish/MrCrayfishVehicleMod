@@ -16,11 +16,11 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageCraftVehicle;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
+import com.mrcrayfish.vehicle.util.MouseHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -87,6 +87,7 @@ public class GuiWorkstation extends GuiContainer
     private static final ResourceLocation GUI = new ResourceLocation("vehicle:textures/gui/workstation.png");
 
     private List<MaterialItem> materials;
+    private List<MaterialItem> filteredMaterials;
     private static int currentVehicle = 0;
     private static int prevCurrentVehicle = 0;
     private static boolean showRemaining = false;
@@ -314,9 +315,22 @@ public class GuiWorkstation extends GuiContainer
     {
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-        
-        //TODO add hover tool tip to material list
-        //this.renderToolTip(this.hoveredSlot.getStack(), p_191948_1_, p_191948_2_);
+
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+        for(int i = 0; i < filteredMaterials.size(); i++)
+        {
+            int itemX = startX + 186;
+            int itemY = startY + i * 19 + 6 + 57;
+            if(MouseHelper.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19))
+            {
+                MaterialItem materialItem = filteredMaterials.get(i);
+                if(!materialItem.getStack().isEmpty())
+                {
+                    this.renderToolTip(materialItem.getStack(), mouseX, mouseY);
+                }
+            }
+        }
     }
 
     @Override
@@ -389,13 +403,13 @@ public class GuiWorkstation extends GuiContainer
         }
         GlStateManager.popMatrix();
 
-        List<MaterialItem> materials = this.getMaterials();
-        for(int i = 0; i < materials.size(); i++)
+        filteredMaterials = this.getMaterials();
+        for(int i = 0; i < filteredMaterials.size(); i++)
         {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             this.mc.getTextureManager().bindTexture(GUI);
 
-            MaterialItem materialItem = materials.get(i);
+            MaterialItem materialItem = filteredMaterials.get(i);
             ItemStack stack = materialItem.stack;
             if(stack.isEmpty())
             {
