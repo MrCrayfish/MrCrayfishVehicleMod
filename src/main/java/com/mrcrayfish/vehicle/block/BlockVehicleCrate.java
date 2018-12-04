@@ -13,6 +13,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.particle.ParticleDigging;
+import net.minecraft.client.particle.ParticleDigging.Factory;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -30,6 +32,8 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -51,6 +55,29 @@ public class BlockVehicleCrate extends BlockRotatedObject
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
+    }
+
+    @Override
+    public boolean canPlaceBlockAt(World world, BlockPos pos)
+    {
+        return super.canPlaceBlockAt(world, pos) && isBelowBlockTopSolid(world, pos) && canOpen(world, pos);
+    }
+
+    private boolean canOpen(World world, BlockPos pos)
+    {
+        BlockPos pos2;
+        for (EnumFacing side : EnumFacing.HORIZONTALS)
+        {
+            pos2 = pos.offset(side);
+            if (!world.getCollisionBoxes(null, Block.FULL_BLOCK_AABB.offset(pos2)).isEmpty() || !isBelowBlockTopSolid(world, pos2))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean isBelowBlockTopSolid(World world, BlockPos pos)
+    {
+        return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP);
     }
 
     @Override
@@ -83,31 +110,47 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-        if(!worldIn.isRemote && facing == EnumFacing.UP && playerIn.getHeldItem(hand).getItem() == ModItems.WRENCH)
-        {
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityVehicleCrate)
-            {
-                ((TileEntityVehicleCrate) tileEntity).open(playerIn.getUniqueID());
-            }
-        }
+        if(facing == EnumFacing.UP && playerIn.getHeldItem(hand).getItem() == ModItems.WRENCH)
+            openCrate(world, pos, state, playerIn);
+
         return true;
     }
 
     @Override
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
-        if(!worldIn.isRemote)
+        if(placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode)
+            openCrate(worldIn, pos, state, placer);
+    }
+
+    private void openCrate(World world, BlockPos pos, IBlockState state, EntityLivingBase placer)
+    {
+        TileEntity tileEntity = world.getTileEntity(pos);
+        if(tileEntity instanceof TileEntityVehicleCrate && canOpen(world, pos))
         {
-            if(placer instanceof EntityPlayer && ((EntityPlayer) placer).capabilities.isCreativeMode)
+            if (world.isRemote)
+                spawnCrateOpeningparticles(world, pos, state);
+            else
+                ((TileEntityVehicleCrate) tileEntity).open(placer.getUniqueID());
+        }
+    }
+
+    @SideOnly(Side.CLIENT)
+    private void spawnCrateOpeningparticles(World world, BlockPos pos, IBlockState state)
+    {
+        double y = 0.875;
+        double x, z;
+        Factory factory = new ParticleDigging.Factory();
+        for (int j = 0; j < 4; ++j)
+        {
+            for (int l = 0; l < 4; ++l)
             {
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityVehicleCrate)
-                {
-                    ((TileEntityVehicleCrate) tileEntity).open(placer.getUniqueID());
-                }
+                x = (j + 0.5D) / 4.0D;
+                z = (l + 0.5D) / 4.0D;
+                Minecraft.getMinecraft().effectRenderer.addEffect(((ParticleDigging) factory
+                        .createParticle(0, world, pos.getX() + x, pos.getY() + y, pos.getZ() + z, x - 0.5D, y - 0.5D, z - 0.5D, Block.getStateId(state))).setBlockPos(pos));
             }
         }
     }
