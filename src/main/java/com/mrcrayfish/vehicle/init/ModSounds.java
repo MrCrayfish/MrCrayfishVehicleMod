@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
+import com.mrcrayfish.vehicle.Reference;
+
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
@@ -38,37 +40,38 @@ public class ModSounds
 
     public static void register()
     {
-        hornMono = registerSound("vehicle:horn_mono");
-        hornStereo = registerSound("vehicle:horn_stereo");
-        atvEngineMono = registerSound("vehicle:atv_engine_mono");
-        atvEngineStereo = registerSound("vehicle:atv_engine_stereo");
-        goKartEngineMono = registerSound("vehicle:go_kart_engine_mono");
-        goKartEngineStereo = registerSound("vehicle:go_kart_engine_stereo");
-        electricEngineMono = registerSound("vehicle:electric_engine_mono");
-        electricEngineStereo = registerSound("vehicle:electric_engine_stereo");
-        bonk = registerSound("vehicle:bonk");
-        pickUpVehicle = registerSound("vehicle:pick_up_vehicle");
-        speedBoatEngineMono = registerSound("vehicle:speed_boat_engine_mono");
-        speedBoatEngineStereo = registerSound("vehicle:speed_boat_engine_stereo");
-        sprayCanSpray = registerSound("vehicle:spray_can_spray");
-        sprayCanShake = registerSound("vehicle:spray_can_shake");
-        mopedEngineMono = registerSound("vehicle:moped_engine_mono");
-        mopedEngineStereo = registerSound("vehicle:moped_engine_stereo");
-        sportsPlaneEngineMono = registerSound("vehicle:sports_plane_engine_mono");
-        sportsPlaneEngineStereo = registerSound("vehicle:sports_plane_engine_stereo");
-        boostPad = registerSound("vehicle:boost_pad");
-        liquidGlug = registerSound("vehicle:liquid_glug");
-        fuelPortOpen = registerSound("vehicle:fuel_port_open");
-        fuelPortClose = registerSound("vehicle:fuel_port_close");
-        fuelPort2Open = registerSound("vehicle:fuel_port_2_open");
-        fuelPort2Close = registerSound("vehicle:fuel_port_2_close");
-        vehicleCratePanelLand = registerSound("vehicle:vehicle_crate_panel_land");
-        jackUp = registerSound("vehicle:jack_up");
-        jackDown = registerSound("vehicle:jack_down");
+        hornMono = registerSound("horn_mono");
+        hornStereo = registerSound("horn_stereo");
+        atvEngineMono = registerSound("atv_engine_mono");
+        atvEngineStereo = registerSound("atv_engine_stereo");
+        goKartEngineMono = registerSound("go_kart_engine_mono");
+        goKartEngineStereo = registerSound("go_kart_engine_stereo");
+        electricEngineMono = registerSound("electric_engine_mono");
+        electricEngineStereo = registerSound("electric_engine_stereo");
+        bonk = registerSound("bonk");
+        pickUpVehicle = registerSound("pick_up_vehicle");
+        speedBoatEngineMono = registerSound("speed_boat_engine_mono");
+        speedBoatEngineStereo = registerSound("speed_boat_engine_stereo");
+        sprayCanSpray = registerSound("spray_can_spray");
+        sprayCanShake = registerSound("spray_can_shake");
+        mopedEngineMono = registerSound("moped_engine_mono");
+        mopedEngineStereo = registerSound("moped_engine_stereo");
+        sportsPlaneEngineMono = registerSound("sports_plane_engine_mono");
+        sportsPlaneEngineStereo = registerSound("sports_plane_engine_stereo");
+        boostPad = registerSound("boost_pad");
+        liquidGlug = registerSound("liquid_glug");
+        fuelPortOpen = registerSound("fuel_port_open");
+        fuelPortClose = registerSound("fuel_port_close");
+        fuelPort2Open = registerSound("fuel_port_2_open");
+        fuelPort2Close = registerSound("fuel_port_2_close");
+        vehicleCratePanelLand = registerSound("vehicle_crate_panel_land");
+        jackUp = registerSound("jack_up");
+        jackDown = registerSound("jack_down");
     }
 
     private static SoundEvent registerSound(String soundNameIn)
     {
+        soundNameIn = Reference.MOD_ID + ":" + soundNameIn;
         ResourceLocation resource = new ResourceLocation(soundNameIn);
         SoundEvent sound = new SoundEvent(resource).setRegistryName(soundNameIn);
         RegistrationHandler.Sounds.register(sound);
