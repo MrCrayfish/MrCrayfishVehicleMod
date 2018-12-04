@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -37,19 +38,19 @@ public class MessagePickupVehicle extends MessageVehicleInteract implements IMes
     @Override
     public IMessage onMessage(MessagePickupVehicle message, MessageContext ctx)
     {
-        EntityPlayer player = ctx.getServerHandler().player;
-        MinecraftServer server = player.world.getMinecraftServer();
-        if(server != null && player.isSneaking())
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            server.addScheduledTask(() ->
+            EntityPlayer player = ctx.getServerHandler().player;
+            MinecraftServer server = player.world.getMinecraftServer();
+            if(server != null && player.isSneaking())
             {
                 Entity targetEntity = server.getEntityFromUuid(message.targetEntityID);
                 if (targetEntity != null)
                 {
                     CommonEvents.pickUpVehicle(player.world, player, EnumHand.MAIN_HAND, targetEntity);
                 }
-            });
-        }
+            }
+        });
         return null;
     }
 }

@@ -64,115 +64,115 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
     @Override
     public IMessage onMessage(MessageCraftVehicle message, MessageContext ctx)
     {
-        EntityPlayer player = ctx.getServerHandler().player;
-        World world = player.world;
-        if(player.openContainer instanceof ContainerWorkstation)
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            ContainerWorkstation workstation = (ContainerWorkstation) player.openContainer;
-            if(workstation.getPos().equals(message.pos))
+            EntityPlayer player = ctx.getServerHandler().player;
+            World world = player.world;
+            if(player.openContainer instanceof ContainerWorkstation)
             {
-                ResourceLocation entityId = new ResourceLocation(message.vehicleId);
-                if(entityId.getResourceDomain().equals(Reference.MOD_ID))
+                ContainerWorkstation workstation = (ContainerWorkstation) player.openContainer;
+                if(workstation.getPos().equals(message.pos))
                 {
-                    EntityEntry entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(message.vehicleId));
-                    if(entry != null)
+                    ResourceLocation entityId = new ResourceLocation(message.vehicleId);
+                    if(entityId.getResourceDomain().equals(Reference.MOD_ID))
                     {
-                        Class<? extends Entity> clazz = entry.getEntityClass();
-                        VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(clazz);
-                        if(recipe != null)
+                        EntityEntry entry = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(message.vehicleId));
+                        if(entry != null)
                         {
-                            for(ItemStack stack : recipe.getMaterials())
+                            Class<? extends Entity> clazz = entry.getEntityClass();
+                            VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(clazz);
+                            if(recipe != null)
                             {
-                                if(!InventoryUtil.hasItemStack(player, stack))
+                                for(ItemStack stack : recipe.getMaterials())
                                 {
-                                    return null;
-                                }
-                            }
-
-                            EntityVehicle vehicle = null;
-                            EngineType engineType = EngineType.NONE;
-                            try
-                            {
-                                Constructor<? extends Entity> constructor = clazz.getDeclaredConstructor(World.class);
-                                Entity entity = constructor.newInstance(world);
-                                if(entity instanceof EntityVehicle)
-                                {
-                                    vehicle = (EntityVehicle) entity;
-                                }
-                                if(entity instanceof EntityPoweredVehicle)
-                                {
-                                    EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) entity;
-                                    engineType = entityPoweredVehicle.getEngineType();
-
-                                    TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
-                                    ItemStack engine = tileEntityWorkstation.getStackInSlot(1);
-                                    if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
+                                    if(!InventoryUtil.hasItemStack(player, stack))
                                     {
-                                        EngineType engineType2 = ((ItemEngine) engine.getItem()).getEngineType();
-                                        if(entityPoweredVehicle.getEngineType() != EngineType.NONE && entityPoweredVehicle.getEngineType() != engineType2)
+                                        return;
+                                    }
+                                }
+
+                                EntityVehicle vehicle = null;
+                                EngineType engineType = EngineType.NONE;
+                                try
+                                {
+                                    Constructor<? extends Entity> constructor = clazz.getDeclaredConstructor(World.class);
+                                    Entity entity = constructor.newInstance(world);
+                                    if(entity instanceof EntityVehicle)
+                                    {
+                                        vehicle = (EntityVehicle) entity;
+                                    }
+                                    if(entity instanceof EntityPoweredVehicle)
+                                    {
+                                        EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) entity;
+                                        engineType = entityPoweredVehicle.getEngineType();
+
+                                        TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                        ItemStack engine = tileEntityWorkstation.getStackInSlot(1);
+                                        if(!engine.isEmpty() && engine.getItem() instanceof ItemEngine)
                                         {
-                                            return null;
+                                            EngineType engineType2 = ((ItemEngine) engine.getItem()).getEngineType();
+                                            if(entityPoweredVehicle.getEngineType() != EngineType.NONE && entityPoweredVehicle.getEngineType() != engineType2)
+                                            {
+                                                return;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return;
                                         }
                                     }
-                                    else
+                                }
+                                catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
+                                {
+                                    e.printStackTrace();
+                                    return;
+                                }
+
+                                if(vehicle == null)
+                                {
+                                    return;
+                                }
+
+                                for(ItemStack stack : recipe.getMaterials())
+                                {
+                                    InventoryUtil.removeItemStack(player, stack);
+                                }
+
+                                /* Gets the color based on the dye */
+                                int color = EntityVehicle.DYE_TO_COLOR[0];
+                                if(vehicle.canBeColored())
+                                {
+                                    TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                    ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
+                                    if(dyeStack.getItem() instanceof ItemDye)
                                     {
-                                        return null;
+                                        color = EntityVehicle.DYE_TO_COLOR[15 - dyeStack.getMetadata()];
+                                        tileEntityWorkstation.getInventory().set(0, ItemStack.EMPTY);
                                     }
                                 }
-                            }
-                            catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
-                            {
-                                e.printStackTrace();
-                                return null;
-                            }
 
-                            if(vehicle == null)
-                            {
-                                return null;
-                            }
-
-                            for(ItemStack stack : recipe.getMaterials())
-                            {
-                                InventoryUtil.removeItemStack(player, stack);
-                            }
-
-                            /* Gets the color based on the dye */
-                            int color = EntityVehicle.DYE_TO_COLOR[0];
-                            if(vehicle.canBeColored())
-                            {
-                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
-                                ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
-                                if(dyeStack.getItem() instanceof ItemDye)
+                                EngineTier engineTier = EngineTier.WOOD;
+                                if(engineType != EngineType.NONE)
                                 {
-                                    color = EntityVehicle.DYE_TO_COLOR[15 - dyeStack.getMetadata()];
-                                    tileEntityWorkstation.getInventory().set(0, ItemStack.EMPTY);
+                                    TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+                                    ItemStack engine = tileEntityWorkstation.getInventory().get(1);
+                                    if(engine.getItem() instanceof ItemEngine)
+                                    {
+                                        engineTier = EngineTier.getType(engine.getMetadata());
+                                        tileEntityWorkstation.getInventory().set(1, ItemStack.EMPTY);
+                                    }
                                 }
-                            }
 
-                            EngineTier engineTier = EngineTier.WOOD;
-                            if(engineType != EngineType.NONE)
-                            {
-                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
-                                ItemStack engine = tileEntityWorkstation.getInventory().get(1);
-                                if(engine.getItem() instanceof ItemEngine)
-                                {
-                                    engineTier = EngineTier.getType(engine.getMetadata());
-                                    tileEntityWorkstation.getInventory().set(1, ItemStack.EMPTY);
-                                }
-                            }
-
-                            final int finalColor = color;
-                            final EngineTier finalEngineTier = engineTier;
-                            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(() ->
-                            {
+                                final int finalColor = color;
+                                final EngineTier finalEngineTier = engineTier;
                                 ItemStack stack = BlockVehicleCrate.create(entityId, finalColor, finalEngineTier);
                                 world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
-                            });
+                            }
                         }
                     }
                 }
             }
-        }
+        });
         return null;
     }
 }

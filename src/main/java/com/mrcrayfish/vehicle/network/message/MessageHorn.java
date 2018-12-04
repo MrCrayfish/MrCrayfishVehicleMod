@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -34,12 +34,14 @@ public class MessageHorn implements IMessage, IMessageHandler<MessageHorn, IMess
 	@Override
 	public IMessage onMessage(MessageHorn message, MessageContext ctx)
 	{
-		EntityPlayerMP player = ctx.getServerHandler().player;
-		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityPoweredVehicle)
-		{
-			((EntityPoweredVehicle) riding).setHorn(message.horn);
-		}
+	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        {
+            Entity riding = ctx.getServerHandler().player.getRidingEntity();
+            if(riding instanceof EntityPoweredVehicle)
+            {
+                ((EntityPoweredVehicle) riding).setHorn(message.horn);
+            }
+        });
 		return null;
 	}
 }

@@ -5,8 +5,8 @@ import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -44,22 +44,24 @@ public class MessageAttachTrailer implements IMessage, IMessageHandler<MessageAt
     @Override
     public IMessage onMessage(MessageAttachTrailer message, MessageContext ctx)
     {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        World world = player.world;
-        Entity trailerEntity = world.getEntityByID(message.trailerId);
-        if(trailerEntity instanceof EntityTrailer)
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            EntityTrailer trailer = (EntityTrailer) trailerEntity;
-            Entity entity = world.getEntityByID(message.entityId);
-            if(entity != null)
+            World world = ctx.getServerHandler().player.world;
+            Entity trailerEntity = world.getEntityByID(message.trailerId);
+            if(trailerEntity instanceof EntityTrailer)
             {
-                trailer.setPullingEntity(entity);
-                if(entity instanceof EntityPlayer)
+                EntityTrailer trailer = (EntityTrailer) trailerEntity;
+                Entity entity = world.getEntityByID(message.entityId);
+                if(entity != null)
                 {
-                    entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
+                    trailer.setPullingEntity(entity);
+                    if(entity instanceof EntityPlayer)
+                    {
+                        entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
+                    }
                 }
             }
-        }
+        });
         return null;
     }
 }

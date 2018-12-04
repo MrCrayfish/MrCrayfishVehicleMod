@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -34,12 +34,14 @@ public class MessageDrift implements IMessage, IMessageHandler<MessageDrift, IMe
 	@Override
 	public IMessage onMessage(MessageDrift message, MessageContext ctx)
 	{
-		EntityPlayerMP player = ctx.getServerHandler().player;
-		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityLandVehicle)
-		{
-			((EntityLandVehicle) riding).setDrifting(message.drifting);
-		}
+	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        {
+            Entity riding = ctx.getServerHandler().player.getRidingEntity();
+            if(riding instanceof EntityLandVehicle)
+            {
+                ((EntityLandVehicle) riding).setDrifting(message.drifting);
+            }
+        });
 		return null;
 	}
 }

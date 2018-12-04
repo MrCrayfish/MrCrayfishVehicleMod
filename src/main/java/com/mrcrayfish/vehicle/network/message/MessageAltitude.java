@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -34,12 +34,14 @@ public class MessageAltitude implements IMessage, IMessageHandler<MessageAltitud
 	@Override
 	public IMessage onMessage(MessageAltitude message, MessageContext ctx)
 	{
-		EntityPlayerMP player = ctx.getServerHandler().player;
-		Entity riding = player.getRidingEntity();
-		if(riding instanceof EntityHelicopter)
-		{
-			((EntityHelicopter) riding).setAltitudeChange(message.altitudeChange);
-		}
+	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        {
+            Entity riding = ctx.getServerHandler().player.getRidingEntity();
+            if(riding instanceof EntityHelicopter)
+            {
+                ((EntityHelicopter) riding).setAltitudeChange(message.altitudeChange);
+            }
+        });
 		return null;
 	}
 }
