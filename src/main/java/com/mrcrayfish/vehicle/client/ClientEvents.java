@@ -12,11 +12,14 @@ import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+
+import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -41,6 +44,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -683,5 +687,18 @@ public class ClientEvents
     public void clearCaches(TextureStitchEvent.Post event)
     {
         FluidUtils.clearCacheFluidColor();
+    }
+
+    @SubscribeEvent
+    public void setLiquidFogDensity(EntityViewRenderEvent.FogDensity event)
+    {
+        Block block = event.getState().getBlock();
+        boolean isSap = block == ModBlocks.ENDER_SAP;
+        if (isSap || block == ModBlocks.FUELIUM || block == ModBlocks.BLAZE_JUICE)
+        {
+            GlStateManager.setFog(GlStateManager.FogMode.EXP);
+            event.setDensity(isSap ? 1 : 0.2F);
+            event.setCanceled(true);
+        }
     }
 }

@@ -41,9 +41,9 @@ public class ModBlocks
         BOOST_PAD = new BlockBoostPad();
         BOOST_RAMP = new BlockBoostRamp();
         STEEP_BOOST_RAMP = new BlockSteepBoostRamp();
-        FUELIUM = new BlockLiquid("fuelium", ModFluids.FUELIUM, Material.WATER);
-        ENDER_SAP = new BlockLiquid("ender_sap", ModFluids.ENDER_SAP, Material.WATER);
-        BLAZE_JUICE = new BlockLiquid("blaze_juice", ModFluids.BLAZE_JUICE, Material.WATER);
+        FUELIUM = new BlockLiquid("fuelium", ModFluids.FUELIUM, Material.WATER, 148, 242, 45);
+        ENDER_SAP = new BlockLiquid("ender_sap", ModFluids.ENDER_SAP, Material.WATER, 10, 93, 80);
+        BLAZE_JUICE = new BlockLiquid("blaze_juice", ModFluids.BLAZE_JUICE, Material.WATER, 254, 198, 0);
         GAS_PUMP = new BlockGasPump();
         FLUID_EXTRACTOR = new BlockFluidExtractor();
         FLUID_MIXER = new BlockFluidMixer();
