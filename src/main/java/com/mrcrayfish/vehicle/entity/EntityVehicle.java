@@ -288,7 +288,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     @Override
     protected boolean canBeRidden(Entity entityIn)
     {
-        return !(this.getRidingEntity() instanceof EntityJack) && entityIn instanceof EntityPlayer;
+        return true;
     }
 
     @Override

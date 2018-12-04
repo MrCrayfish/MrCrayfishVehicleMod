@@ -192,6 +192,8 @@ public class CommonEvents
                     world.spawnEntity(vehicle);
                     world.playSound(null, player.posX, player.posY, player.posZ, SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     vehicle.startRiding(targetEntity);
+
+                    return true;
                 }
             }
         }
