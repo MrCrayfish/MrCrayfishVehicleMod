@@ -10,11 +10,13 @@ import net.minecraft.util.math.BlockPos;
  */
 public interface Proxy
 {
-    void preInit();
+    default void preInit() {}
 
     default void init() {}
 
-    void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle);
+    default void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle) {}
+
+    default void openVehicleEditWindow(int entityId, int windowId) {}
 
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {};
 }

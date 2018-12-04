@@ -1,10 +1,10 @@
 package com.mrcrayfish.vehicle.network.message;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.gui.GuiEditVehicle;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.inventory.LocalBlockIntercommunication;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
@@ -45,18 +45,7 @@ public class MessageVehicleWindow implements IMessage, IMessageHandler<MessageVe
     @Override
     public IMessage onMessage(MessageVehicleWindow message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().addScheduledTask(() ->
-        {
-            EntityPlayer player = Minecraft.getMinecraft().player;
-            World world = player.getEntityWorld();
-            Entity entity = world.getEntityByID(message.entityId);
-            if(entity instanceof EntityPoweredVehicle)
-            {
-                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
-                Minecraft.getMinecraft().displayGuiScreen(new GuiEditVehicle(poweredVehicle.getVehicleInventory(), poweredVehicle, player));
-                player.openContainer.windowId = message.windowId;
-            }
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> VehicleMod.proxy.openVehicleEditWindow(message.entityId, message.windowId));
         return null;
     }
 }

@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
+import com.mrcrayfish.vehicle.client.gui.GuiEditVehicle;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
@@ -31,10 +32,12 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
@@ -187,5 +190,19 @@ public class ClientProxy implements Proxy
             event.setDensity(0.01F);
         }
         event.setCanceled(true);*/
+    }
+
+    @Override
+    public void openVehicleEditWindow(int entityId, int windowId)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        World world = player.getEntityWorld();
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof EntityPoweredVehicle)
+        {
+            EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
+            Minecraft.getMinecraft().displayGuiScreen(new GuiEditVehicle(poweredVehicle.getVehicleInventory(), poweredVehicle, player));
+            player.openContainer.windowId = windowId;
+        }
     }
 }
