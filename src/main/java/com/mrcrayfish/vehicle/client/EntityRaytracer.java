@@ -265,9 +265,7 @@ public class EntityRaytracer
 
         // Lawn mower
         List<MatrixTransformation> lawnMowerTransformGlobal = Lists.newArrayList();
-        lawnMowerTransformGlobal.add(MatrixTransformation.createTranslation(0, 0, 0.65));
-        lawnMowerTransformGlobal.add(MatrixTransformation.createScale(1.25));
-        lawnMowerTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5625, 0));
+        createBodyTransforms(lawnMowerTransformGlobal, EntityLawnMower.BODY_POSITION, EntityLawnMower.AXLE_OFFSET, EntityLawnMower.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> lawnMowerParts = Maps.newHashMap();
         createTranformListForPart(ModItems.LAWN_MOWER_BODY, lawnMowerParts, lawnMowerTransformGlobal);
         createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, lawnMowerParts, lawnMowerTransformGlobal,
@@ -277,7 +275,7 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, lawnMowerParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 0.6));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.375, 0, -4.75, 9.5, 3.5, -90, 0.25, lawnMowerParts, lawnMowerTransformGlobal);
+        createPartTransforms(ModItems.FUEL_PORT_2_CLOSED, EntityLawnMower.FUEL_PORT_POSITION, lawnMowerParts, lawnMowerTransformGlobal, FUNCTION_FUELING);
         entityRaytracePartsStatic.put(EntityLawnMower.class, lawnMowerParts);
 
         // Mini bike

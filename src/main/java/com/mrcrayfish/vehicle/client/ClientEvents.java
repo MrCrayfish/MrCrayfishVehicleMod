@@ -323,23 +323,6 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity instanceof EntityLawnMower)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 6F;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
-            return;
-        }
-
         if(ridingEntity instanceof EntityAluminumBoat)
         {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
