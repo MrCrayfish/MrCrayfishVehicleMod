@@ -239,15 +239,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         ItemStack stack = player.getHeldItem(hand);
         if(!world.isRemote)
         {
+            /* If no owner is set, make the owner the person adding the key. It is used because
+             * owner will not be set if the vehicle was summoned through a command */
+            if(this.owner == null)
+            {
+                this.owner = player.getUniqueID();
+            }
+
             if(stack.getItem() == ModItems.KEY)
             {
-                /* If no owner is set, make the owner the person adding the key. It is used because
-                 * owner will not be set if the vehicle was summoned through a command */
-                if(this.owner == null)
-                {
-                    this.owner = player.getUniqueID();
-                }
-
                 if(!this.owner.equals(player.getUniqueID()))
                 {
                     CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
