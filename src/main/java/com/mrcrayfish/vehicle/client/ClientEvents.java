@@ -697,7 +697,7 @@ public class ClientEvents
         if (isSap || block == ModBlocks.FUELIUM || block == ModBlocks.BLAZE_JUICE)
         {
             GlStateManager.setFog(GlStateManager.FogMode.EXP);
-            event.setDensity(isSap ? 1 : 0.2F);
+            event.setDensity(isSap ? 1 : 0.5F);
             event.setCanceled(true);
         }
     }
