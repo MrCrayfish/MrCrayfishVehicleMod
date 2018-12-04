@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -42,29 +43,32 @@ public class MessageVehicleChest implements IMessage, IMessageHandler<MessageVeh
     @Override
     public IMessage onMessage(MessageVehicleChest message, MessageContext ctx)
     {
-        EntityPlayerMP player = ctx.getServerHandler().player;
-        World world = player.world;
-        Entity targetEntity = world.getEntityByID(message.entityId);
-        if(targetEntity != null && targetEntity instanceof IChest)
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
-            if(player.getDistance(targetEntity) < reachDistance)
+            EntityPlayerMP player = ctx.getServerHandler().player;
+            World world = player.world;
+            Entity targetEntity = world.getEntityByID(message.entityId);
+            if(targetEntity != null && targetEntity instanceof IChest)
             {
-                IInventory inventory = ((IChest) targetEntity).getChest();
-                if(inventory != null)
+                float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
+                if(player.getDistance(targetEntity) < reachDistance)
                 {
-                    ItemStack stack = player.inventory.getCurrentItem();
-                    if(stack.getItem() == ModItems.WRENCH)
+                    IInventory inventory = ((IChest) targetEntity).getChest();
+                    if(inventory != null)
                     {
-                        ((IChest) targetEntity).removeChest();
-                    }
-                    else
-                    {
-                        player.displayGUIChest(inventory);
+                        ItemStack stack = player.inventory.getCurrentItem();
+                        if(stack.getItem() == ModItems.WRENCH)
+                        {
+                            ((IChest) targetEntity).removeChest();
+                        }
+                        else
+                        {
+                            player.displayGUIChest(inventory);
+                        }
                     }
                 }
             }
-        }
+        });
         return null;
     }
 }

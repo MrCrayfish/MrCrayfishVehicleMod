@@ -9,6 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
@@ -47,11 +48,11 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
     @Override
     public IMessage onMessage(MessageInteractKey message, MessageContext ctx)
     {
-        EntityPlayer player = ctx.getServerHandler().player;
-        MinecraftServer server = player.world.getMinecraftServer();
-        if(server != null)
+        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
-            server.addScheduledTask(() ->
+            EntityPlayer player = ctx.getServerHandler().player;
+            MinecraftServer server = player.world.getMinecraftServer();
+            if(server != null)
             {
                 Entity targetEntity = server.getEntityFromUuid(message.targetEntity);
                 if(targetEntity != null && targetEntity instanceof EntityPoweredVehicle)
@@ -95,8 +96,8 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
                         }
                     }
                 }
-            });
-        }
+            }
+        });
         return null;
     }
 }
