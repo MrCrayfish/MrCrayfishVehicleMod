@@ -72,6 +72,11 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
     }
 
     /**
+     *
+     */
+    public void applyPreRotations(T entity, float partialTicks) {}
+
+    /**
      * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
      * will be cancelled if the PartPosition parameter is null.
      *

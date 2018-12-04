@@ -278,7 +278,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                     return false;
                 }
             }
-            else if(stack.getItem() == ModItems.WRENCH)
+            else if(stack.getItem() == ModItems.WRENCH && this.getRidingEntity() instanceof EntityJack)
             {
                 if(player.getUniqueID().equals(owner))
                 {

@@ -3,39 +3,30 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.RenderManager;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleHelicopter<T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable> extends RenderVehicle<T, AbstractRenderVehicle<T>>
+public class RenderVehicleHelicopterWrapper<T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
-    public RenderVehicleHelicopter(RenderManager renderManager, AbstractRenderVehicle<T> renderVehicle)
+    public RenderVehicleHelicopterWrapper(R renderVehicle)
     {
-        super(renderManager, renderVehicle);
-        this.renderVehicle = renderVehicle;
+        super(renderVehicle);
     }
 
-    @Override
-    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
+    public void render(T entity, float partialTicks)
     {
+        if(entity.isDead)
+            return;
+
         GlStateManager.pushMatrix();
         {
             //Enable the standard item lighting so vehicles render correctly
             RenderHelper.enableStandardItemLighting();
 
-            //Translate and rotate using parameters
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks, 0, 0, 1);
-            GlStateManager.rotate(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks, 1, 0, 0);
-            GlStateManager.rotate(-entityYaw, 0, 1, 0);
-
-            //Applies the break animation
-            this.setupBreakAnimation(entity, partialTicks);
-
-            //TODO make vehicle translate to height of axels for better positioning
             //Apply vehicle rotations and translations. This is applied to all other parts
             PartPosition bodyPosition = entity.getBodyPosition();
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
@@ -88,7 +79,6 @@ public class RenderVehicleHelicopter<T extends EntityHelicopter & EntityRaytrace
                 }
             }
 
-
             if(entity.isKeyNeeded())
             {
                 this.renderPart(entity.getKeyHolePosition(), entity.keyPort);
@@ -99,7 +89,12 @@ public class RenderVehicleHelicopter<T extends EntityHelicopter & EntityRaytrace
             }
         }
         GlStateManager.popMatrix();
+    }
 
-        EntityRaytracer.renderRaytraceElements(entity, x, y, z, entityYaw);
+    @Override
+    public void applyPreRotations(T entity, float partialTicks)
+    {
+        GlStateManager.rotate(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks, 0, 0, 1);
+        GlStateManager.rotate(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks, 1, 0, 0);
     }
 }

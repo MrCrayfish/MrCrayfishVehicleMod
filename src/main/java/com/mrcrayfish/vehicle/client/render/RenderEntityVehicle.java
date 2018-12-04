@@ -51,6 +51,7 @@ public class RenderEntityVehicle<T extends EntityVehicle & EntityRaytracer.IEnti
 
             //Translate and rotate using parameters
             GlStateManager.translate(x, y, z);
+            wrapper.applyPreRotations(entity, partialTicks);
             GlStateManager.rotate(-entityYaw, 0, 1, 0);
 
             //Applies the break animation
