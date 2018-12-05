@@ -127,15 +127,6 @@ public class CommonEvents
         }
     }
 
-    @SubscribeEvent
-    public void onPlayerInteract(PlayerInteractEvent.EntityInteract event)
-    {
-        if(attachVehicleToTrailer(event.getWorld(), event.getEntityPlayer(), event.getTarget()))
-        {
-            event.setCanceled(true);
-        }
-    }
-
     public static boolean pickUpVehicle(World world, EntityPlayer player, EnumHand hand, Entity targetEntity)
     {
         if(hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && !player.isSpectator())
@@ -195,18 +186,6 @@ public class CommonEvents
 
                     return true;
                 }
-            }
-        }
-        return false;
-    }
-
-    public static boolean attachVehicleToTrailer(World world, EntityPlayer player, Entity entity)
-    {
-        if(!world.isRemote && player.isSneaking() && !player.getDataManager().get(HELD_VEHICLE).hasNoTags())
-        {
-            if(entity instanceof EntityTrailer && entity.getPassengers().size() == 0)
-            {
-
             }
         }
         return false;

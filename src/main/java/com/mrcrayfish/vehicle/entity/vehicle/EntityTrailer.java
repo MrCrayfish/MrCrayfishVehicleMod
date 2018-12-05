@@ -162,17 +162,19 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
         return passenger instanceof EntityVehicle && this.getPassengers().size() == 0;
     }
 
-    public void setPullingEntity(Entity pullingEntity)
+    public boolean setPullingEntity(Entity pullingEntity)
     {
-        if(pullingEntity instanceof EntityPlayer || (pullingEntity instanceof EntityLandVehicle && ((EntityLandVehicle) pullingEntity).canTowTrailer()))
+        if(pullingEntity instanceof EntityPlayer || (pullingEntity instanceof EntityLandVehicle && pullingEntity.getRidingEntity() == null && ((EntityLandVehicle) pullingEntity).canTowTrailer()))
         {
             this.pullingEntity = pullingEntity;
             this.dataManager.set(PULLING_ENTITY, pullingEntity.getEntityId());
+            return true;
         }
         else
         {
             this.pullingEntity = null;
             this.dataManager.set(PULLING_ENTITY, -1);
+            return false;
         }
     }
 

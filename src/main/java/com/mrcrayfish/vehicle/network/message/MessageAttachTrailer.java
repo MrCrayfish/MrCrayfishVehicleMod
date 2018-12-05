@@ -52,13 +52,10 @@ public class MessageAttachTrailer implements IMessage, IMessageHandler<MessageAt
             {
                 EntityTrailer trailer = (EntityTrailer) trailerEntity;
                 Entity entity = world.getEntityByID(message.entityId);
-                if(entity != null)
+                if(entity instanceof EntityPlayer)
                 {
                     trailer.setPullingEntity(entity);
-                    if(entity instanceof EntityPlayer)
-                    {
-                        entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
-                    }
+                    entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
                 }
             }
         });

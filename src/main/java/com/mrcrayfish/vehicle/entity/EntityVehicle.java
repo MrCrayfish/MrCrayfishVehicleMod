@@ -96,7 +96,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                 if(trailerId != -1)
                 {
                     EntityLandVehicle landVehicle = (EntityLandVehicle) this;
-                    if(landVehicle.canTowTrailer() && landVehicle.getTrailer() == null)
+                    if(landVehicle.getRidingEntity() == null && landVehicle.canTowTrailer() && landVehicle.getTrailer() == null)
                     {
                         Entity entity = world.getEntityByID(trailerId);
                         if(entity instanceof EntityTrailer)
