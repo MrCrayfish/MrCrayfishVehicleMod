@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
 import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
+import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,15 +16,15 @@ import net.minecraft.entity.EntityLivingBase;
 /**
  * Author: MrCrayfish
  */
-public class RenderTrailer extends RenderVehicle<EntityTrailer, AbstractRenderVehicle<EntityTrailer>>
+public class RenderVehicleTrailer extends RenderVehicle<EntityVehicleTrailer, AbstractRenderVehicle<EntityVehicleTrailer>>
 {
-    public RenderTrailer(RenderManager renderManager)
+    public RenderVehicleTrailer(RenderManager renderManager)
     {
         super(renderManager, null);
     }
 
     @Override
-    public void doRender(EntityTrailer entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityVehicleTrailer entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 
