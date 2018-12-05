@@ -13,9 +13,15 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,6 +38,8 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
+
+    private static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(EntityTrailer.class, DataSerializers.VARINT);
 
     static
     {
@@ -53,6 +61,13 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     }
 
     @Override
+    protected void entityInit()
+    {
+        super.entityInit();
+        this.dataManager.register(PULLING_ENTITY, -1);
+    }
+
+    @Override
     public void onClientInit()
     {
         body = new ItemStack(ModItems.TRAILER_BODY);
@@ -60,7 +75,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     }
 
     @Override
-    protected void onUpdateVehicle()
+    public void onUpdateVehicle()
     {
         prevWheelRotation = wheelRotation;
 
@@ -77,16 +92,33 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
             {
                 EntityLandVehicle landVehicle = (EntityLandVehicle) pullingEntity;
                 Vec3d towBarVec = landVehicle.getTowBarVec();
-                towBarVec = new Vec3d(towBarVec.x, 0, towBarVec.z);
+                towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + 0.225);
                 towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-landVehicle.rotationYaw + landVehicle.additionalYaw)));
             }
-            this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.posZ, towBar.x - this.posX)) - 90F;
+
+            this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.posZ, towBar.x - this.posX) - Math.toRadians(90F));
+            double deltaRot = (double) (this.prevRotationYaw - this.rotationYaw);
+            if (deltaRot < -180.0D)
+            {
+                this.prevRotationYaw += 360.0F;
+            }
+            else if (deltaRot >= 180.0D)
+            {
+                this.prevRotationYaw -= 360.0F;
+            }
+
             Vec3d vec = new Vec3d(0, 0, -25 * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
             this.setPosition(vec.x, vec.y, vec.z);
+            this.motionX = vec.x - this.posX;
+            this.motionY = towBar.y - this.posY;
+            this.motionZ = vec.z - this.posZ;
+            this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
         }
         else if(!world.isRemote)
         {
-            this.motionY -= 0.08D;
+            this.motionX *= 0.75;
+            this.motionY -= 0.08;
+            this.motionZ *= 0.75;
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
         }
 
@@ -119,6 +151,7 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
         {
             Vec3d offset = ((EntityVehicle) passenger).getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
             passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset() + offset.y, this.posZ + offset.z);
+            passenger.prevRotationYaw = this.prevRotationYaw;
             passenger.rotationYaw = this.rotationYaw;
         }
     }
@@ -131,9 +164,19 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
 
     public void setPullingEntity(Entity pullingEntity)
     {
-        this.pullingEntity = pullingEntity;
+        if(pullingEntity instanceof EntityPlayer || (pullingEntity instanceof EntityLandVehicle && ((EntityLandVehicle) pullingEntity).canTowTrailer()))
+        {
+            this.pullingEntity = pullingEntity;
+            this.dataManager.set(PULLING_ENTITY, pullingEntity.getEntityId());
+        }
+        else
+        {
+            this.pullingEntity = null;
+            this.dataManager.set(PULLING_ENTITY, -1);
+        }
     }
 
+    @Nullable
     public Entity getPullingEntity()
     {
         return pullingEntity;
@@ -187,5 +230,34 @@ public class EntityTrailer extends EntityVehicle implements EntityRaytracer.IEnt
     public boolean canMountTrailer()
     {
         return false;
+    }
+
+    @Override
+    public void notifyDataManagerChange(DataParameter<?> key)
+    {
+        super.notifyDataManagerChange(key);
+        if(world.isRemote)
+        {
+            if(PULLING_ENTITY.equals(key))
+            {
+                int entityId = this.dataManager.get(PULLING_ENTITY);
+                if(entityId != -1)
+                {
+                    Entity entity = world.getEntityByID(this.dataManager.get(PULLING_ENTITY));
+                    if(entity instanceof EntityPlayer || (entity instanceof EntityLandVehicle && ((EntityLandVehicle) entity).canTowTrailer()))
+                    {
+                        pullingEntity = entity;
+                    }
+                    else
+                    {
+                        pullingEntity = null;
+                    }
+                }
+                else
+                {
+                    pullingEntity = null;
+                }
+            }
+        }
     }
 }

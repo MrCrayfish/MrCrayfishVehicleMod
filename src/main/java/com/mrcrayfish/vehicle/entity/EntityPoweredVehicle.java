@@ -333,7 +333,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
         /* Updates the vehicle motion and applies it on top of the normal motion */
         this.updateVehicleMotion();
-        move(MoverType.SELF, motionX + vehicleMotionX, motionY + vehicleMotionY, motionZ + vehicleMotionZ);
+
+        this.setRotation(this.rotationYaw, this.rotationPitch);
+        double deltaRot = (double) (this.prevRotationYaw - this.rotationYaw);
+        if (deltaRot < -180.0D)
+        {
+            this.prevRotationYaw += 360.0F;
+        }
+        else if (deltaRot >= 180.0D)
+        {
+            this.prevRotationYaw -= 360.0F;
+        }
+
+        this.move(MoverType.SELF, motionX + vehicleMotionX, motionY + vehicleMotionY, motionZ + vehicleMotionZ);
 
         /* Reduces the motion and speed multiplier */
         if(this.onGround)

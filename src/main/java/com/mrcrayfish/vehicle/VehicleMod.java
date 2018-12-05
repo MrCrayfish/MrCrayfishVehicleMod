@@ -117,12 +117,12 @@ public class VehicleMod
 
         registerVehicle("trailer", EntityTrailer.class);
 
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "jack"), EntityJack.class, Reference.MOD_ID + "." + "jack", nextEntityId++, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "jack"), EntityJack.class, Reference.MOD_ID + "." + "jack", nextEntityId++, this, 256, 1, true);
     }
 
     private void registerVehicle(String id, Class<? extends EntityVehicle> clazz)
     {
-        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, Reference.MOD_ID + "." + id, nextEntityId++, this, 64, 1, true);
+        EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, id), clazz, Reference.MOD_ID + "." + id, nextEntityId++, this, 256, 1, true);
         BlockVehicleCrate.registerVehicle(id);
     }
 }

@@ -10,6 +10,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -28,6 +29,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class EntityLandVehicle extends EntityPoweredVehicle
 {
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
 
     public float drifting;
     public float additionalYaw;
@@ -54,6 +56,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     {
         super.entityInit();
         this.dataManager.register(DRIFTING, false);
+        this.dataManager.register(TRAILER, -1);
     }
 
     @Override
@@ -82,6 +85,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         if(trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
         {
             trailer = null;
+            dataManager.set(TRAILER, -1);
         }
     }
 
@@ -246,10 +250,40 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     {
         this.trailer = trailer;
         trailer.setPullingEntity(this);
+        this.dataManager.set(TRAILER, trailer.getEntityId());
     }
 
     public EntityTrailer getTrailer()
     {
         return trailer;
+    }
+
+    @Override
+    public void notifyDataManagerChange(DataParameter<?> key)
+    {
+        super.notifyDataManagerChange(key);
+        if(world.isRemote)
+        {
+            if(TRAILER.equals(key))
+            {
+                int entityId = this.dataManager.get(TRAILER);
+                if(entityId != -1)
+                {
+                    Entity entity = world.getEntityByID(this.dataManager.get(TRAILER));
+                    if(entity instanceof EntityTrailer)
+                    {
+                        trailer = (EntityTrailer) entity;
+                    }
+                    else
+                    {
+                        trailer = null;
+                    }
+                }
+                else
+                {
+                    trailer = null;
+                }
+            }
+        }
     }
 }

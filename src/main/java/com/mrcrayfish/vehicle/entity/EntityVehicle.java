@@ -207,7 +207,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     protected abstract void onUpdateVehicle();
 
-
     @Override
     public boolean attackEntityFrom(DamageSource source, float amount)
     {
