@@ -424,7 +424,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 if(acceleration == AccelerationDirection.FORWARD)
                 {
-                    this.currentSpeed += this.getAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                    this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                     if(this.currentSpeed > this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed())
                     {
                         this.currentSpeed = this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed();
@@ -432,7 +432,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 }
                 else if(acceleration == AccelerationDirection.REVERSE)
                 {
-                    this.currentSpeed -= this.getAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                    this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                     if(this.currentSpeed < -(4.0F + engineTier.getAdditionalMaxSpeed() / 2))
                     {
                         this.currentSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2);
@@ -657,14 +657,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return (this.currentSpeed + this.currentSpeed * this.speedMultiplier) / this.getActualMaxSpeed();
     }
 
+    public void setAccelerationSpeed(float speed)
+    {
+        this.dataManager.set(ACCELERATION_SPEED, speed);
+    }
+
     public float getAccelerationSpeed()
     {
         return this.dataManager.get(ACCELERATION_SPEED);
     }
 
-    public void setAccelerationSpeed(float speed)
+    protected float getModifiedAccelerationSpeed()
     {
-        this.dataManager.set(ACCELERATION_SPEED, speed);
+        return this.dataManager.get(ACCELERATION_SPEED);
     }
 
     public double getKilometersPreHour()

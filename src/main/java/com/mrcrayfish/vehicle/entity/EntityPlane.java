@@ -248,11 +248,6 @@ public abstract class EntityPlane extends EntityPoweredVehicle
         return !this.onGround;
     }
 
-    protected float getModifiedAccelerationSpeed()
-    {
-        return super.getAccelerationSpeed();
-    }
-
     /*
      * Overridden to prevent players from taking fall damage when landing a plane
      */

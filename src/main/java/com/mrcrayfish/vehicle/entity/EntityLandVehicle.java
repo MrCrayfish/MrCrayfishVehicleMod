@@ -286,4 +286,21 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
             }
         }
     }
+
+    @Override
+    protected float getModifiedAccelerationSpeed()
+    {
+        if(trailer != null)
+        {
+            if(trailer.getPassengers().size() > 0)
+            {
+                return super.getModifiedAccelerationSpeed() * 0.5F;
+            }
+            else
+            {
+                return super.getModifiedAccelerationSpeed() * 0.8F;
+            }
+        }
+        return super.getModifiedAccelerationSpeed();
+    }
 }

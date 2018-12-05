@@ -165,7 +165,7 @@ public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceabl
     @Override
     protected float getModifiedAccelerationSpeed()
     {
-        return super.getAccelerationSpeed() * (propellerSpeed / 120F);
+        return super.getModifiedAccelerationSpeed() * (propellerSpeed / 120F);
     }
 
     @Override
