@@ -11,11 +11,13 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Calendar;
 
@@ -83,9 +85,12 @@ public class RenderChestTrailer extends RenderVehicle<EntityChestTrailer, Abstra
                 {
                     this.bindTexture(TEXTURE_NORMAL);
                 }
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
                 MOPED_CHEST.renderAll();
             }
             GlStateManager.popMatrix();
+
+            RenderHelper.enableStandardItemLighting();
 
             renderWheel(entity, -11.5F * 0.0625F, 0.3F, 0.0F, 2.0F, partialTicks);
             renderWheel(entity, 11.5F * 0.0625F, 0.3F, 0.0F, 2.0F, partialTicks);
