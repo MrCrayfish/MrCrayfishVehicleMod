@@ -13,10 +13,11 @@ import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
-import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.*;
+import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -26,8 +27,8 @@ import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
-import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
+import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -84,6 +85,7 @@ public class ClientProxy implements Proxy
         }
 
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicleTrailer.class, RenderVehicleTrailer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityChestTrailer.class, RenderChestTrailer::new);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
 
@@ -142,7 +144,7 @@ public class ClientProxy implements Proxy
         };
         RegistrationHandler.Items.getItems().forEach(item ->
         {
-            if(item instanceof ItemSprayCan || item instanceof ItemKey || (item instanceof ItemPart && ((ItemPart) item).isColored()))
+            if(item instanceof ItemSprayCan || item instanceof ItemKey || (item instanceof ItemPart && ((ItemPart) item).isColored()) || item == ModItems.MODELS)
             {
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
             }

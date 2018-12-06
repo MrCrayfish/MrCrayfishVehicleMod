@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -444,6 +445,13 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TRAILER_BODY, trailerParts, trailerTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.8, 0));
         entityRaytracePartsStatic.put(EntityVehicleTrailer.class, trailerParts);
+
+        List<MatrixTransformation> trailerChestTransformGlobal = Lists.newArrayList();
+        trailerChestTransformGlobal.add(MatrixTransformation.createScale(1.1));
+        HashMap<RayTracePart, List<MatrixTransformation>> trailerChestParts = Maps.newHashMap();
+        createTranformListForPart(ModItems.TRAILER_BODY, trailerChestParts, trailerChestTransformGlobal,
+                MatrixTransformation.createTranslation(0, 0.8, 0));
+        entityRaytracePartsStatic.put(EntityChestTrailer.class, trailerChestParts);
 
         //For a dynamic raytrace, all GL operation performed be accounted for
         /* Map<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>> aluminumBoatPartsDynamic = Maps.<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>>newHashMap();

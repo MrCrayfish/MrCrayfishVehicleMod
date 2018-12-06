@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.entity.vehicle;
+package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -82,7 +82,7 @@ public abstract class EntityTrailer extends EntityVehicle
         {
             EntityLandVehicle landVehicle = (EntityLandVehicle) pullingEntity;
             Vec3d towBarVec = landVehicle.getTowBarVec();
-            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + landVehicle.getBodyPosition().getZ() - 0.025);
+            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + landVehicle.getBodyPosition().getZ());
             towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-landVehicle.rotationYaw + landVehicle.additionalYaw)));
         }
 
@@ -97,7 +97,7 @@ public abstract class EntityTrailer extends EntityVehicle
             this.prevRotationYaw -= 360.0F;
         }
 
-        Vec3d vec = new Vec3d(0, 0, -25 * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
+        Vec3d vec = new Vec3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
         this.setPosition(vec.x, vec.y, vec.z);
         this.motionX = vec.x - this.posX;
         this.motionY = towBar.y - this.posY;
@@ -179,4 +179,6 @@ public abstract class EntityTrailer extends EntityVehicle
             }
         }
     }
+
+    public abstract double getHitchOffset();
 }

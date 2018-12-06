@@ -2,15 +2,14 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,7 +23,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable
+public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
@@ -37,46 +36,28 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
         }
     }
 
-    public EntityVehicleTrailer(World worldIn)
+    public EntityChestTrailer(World worldIn)
     {
         super(worldIn);
-        this.setHeldOffset(new Vec3d(0D, 3D, 0D));
     }
 
     @Override
-    public double getMountedYOffset()
+    public void onClientInit()
     {
-        return 8 * 0.0625;
+        super.onClientInit();
+        body = new ItemStack(ModItems.MODELS);
+    }
+
+    @Override
+    public double getHitchOffset()
+    {
+        return -16.0 * 1.1;
     }
 
     @Override
     public boolean canBeColored()
     {
         return true;
-    }
-
-    @Override
-    protected boolean canBeRidden(Entity entityIn)
-    {
-        return true;
-    }
-
-    @Override
-    public void updatePassenger(Entity passenger)
-    {
-        if(passenger instanceof EntityVehicle)
-        {
-            Vec3d offset = ((EntityVehicle) passenger).getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-            passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset() + offset.y, this.posZ + offset.z);
-            passenger.prevRotationYaw = this.prevRotationYaw;
-            passenger.rotationYaw = this.rotationYaw;
-        }
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return passenger instanceof EntityVehicle && this.getPassengers().size() == 0;
     }
 
     @Override
@@ -109,11 +90,5 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
             return true;
         }
         return EntityRaytracer.IEntityRaytraceable.super.processHit(result, rightClick);
-    }
-
-    @Override
-    public double getHitchOffset()
-    {
-        return -25.0;
     }
 }
