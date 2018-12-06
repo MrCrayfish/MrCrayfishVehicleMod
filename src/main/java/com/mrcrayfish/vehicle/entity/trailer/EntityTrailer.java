@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -7,10 +8,12 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -61,6 +64,17 @@ public abstract class EntityTrailer extends EntityVehicle
         prevWheelRotation = wheelRotation;
 
         this.motionY -= 0.08;
+
+        if(this.pullingEntity != null && !world.isRemote)
+        {
+            if(this.pullingEntity.getDistance(this) > VehicleConfig.SERVER.trailerDetachThreshold)
+            {
+                world.playSound(null, pullingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                this.pullingEntity = null;
+                return;
+            }
+        }
+
         if(this.pullingEntity != null)
         {
             if(this.pullingEntity.isDead || (this.pullingEntity instanceof EntityVehicle && ((EntityVehicle) this.pullingEntity).getTrailer() != this))
@@ -113,7 +127,7 @@ public abstract class EntityTrailer extends EntityVehicle
             this.prevRotationYaw -= 360.0F;
         }
 
-        Vec3d vec = new Vec3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
+        Vec3d vec = new Vec3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar);
         this.motionX = vec.x - this.posX;
         this.motionZ = vec.z - this.posZ;
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);

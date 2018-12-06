@@ -30,6 +30,11 @@ public class VehicleConfig
         @Config.Comment("If true, vehicles will require fuel for them to be driven.")
         @Config.LangKey(Reference.MOD_ID + ".config.server.fuel_enabled")
         public boolean fuelEnabled = true;
+
+        @Config.Name("Trailer Detach Distance")
+        @Config.Comment("The distance threshold before the trailer detaches from a vehicle")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_detach_threshold")
+        public double trailerDetachThreshold = 6.0;
     }
 
     public static class Client
