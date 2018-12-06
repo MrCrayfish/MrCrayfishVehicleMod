@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
@@ -88,10 +88,10 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
                     BlockPos pos = new BlockPos(x, axisAligned.minY, z);
                     IBlockState state = world.getBlockState(pos);
 
-                    EntityChestTrailer trailer = null;
-                    if(getTrailer() instanceof EntityChestTrailer)
+                    EntityStorageTrailer trailer = null;
+                    if(getTrailer() instanceof EntityStorageTrailer)
                     {
-                        trailer = (EntityChestTrailer) getTrailer();
+                        trailer = (EntityStorageTrailer) getTrailer();
                     }
 
                     if(state.getBlock() instanceof BlockBush)

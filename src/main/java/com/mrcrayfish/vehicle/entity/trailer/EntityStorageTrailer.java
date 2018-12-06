@@ -37,7 +37,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IChest, StorageInventoryWrapper
+public class EntityStorageTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IChest, StorageInventoryWrapper
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
     private static final EntityRaytracer.RayTracePart CHEST_BOX = new EntityRaytracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
@@ -54,7 +54,7 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
 
     private StorageInventory inventory;
 
-    public EntityChestTrailer(World worldIn)
+    public EntityStorageTrailer(World worldIn)
     {
         super(worldIn);
         this.initInventory();

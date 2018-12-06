@@ -17,7 +17,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.entity.*;
-import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -85,7 +85,7 @@ public class ClientProxy implements Proxy
         }
 
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicleTrailer.class, RenderVehicleTrailer::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityChestTrailer.class, RenderChestTrailer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityStorageTrailer.class, RenderChestTrailer::new);
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
 

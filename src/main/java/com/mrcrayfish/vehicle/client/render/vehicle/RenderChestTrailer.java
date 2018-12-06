@@ -4,27 +4,24 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.RenderVehicle;
-import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
-import org.lwjgl.opengl.GL11;
 
 import java.util.Calendar;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderChestTrailer extends RenderVehicle<EntityChestTrailer, AbstractRenderVehicle<EntityChestTrailer>>
+public class RenderChestTrailer extends RenderVehicle<EntityStorageTrailer, AbstractRenderVehicle<EntityStorageTrailer>>
 {
     private static final ModelChest MOPED_CHEST = new ModelChest();
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
@@ -39,7 +36,7 @@ public class RenderChestTrailer extends RenderVehicle<EntityChestTrailer, Abstra
     }
 
     @Override
-    public void doRender(EntityChestTrailer entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void doRender(EntityStorageTrailer entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         RenderHelper.enableStandardItemLighting();
 

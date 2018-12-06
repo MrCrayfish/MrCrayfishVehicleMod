@@ -10,8 +10,7 @@ import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.item.ItemEngine;
@@ -75,7 +74,7 @@ public class GuiWorkstation extends GuiContainer
         builder.put(EntitySpeedBoat.class, new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F));
         builder.put(EntitySportsPlane.class, new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
         builder.put(EntityVehicleTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(EntityChestTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
+        builder.put(EntityStorageTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
 
         if(Loader.isModLoaded("cfm"))
         {
