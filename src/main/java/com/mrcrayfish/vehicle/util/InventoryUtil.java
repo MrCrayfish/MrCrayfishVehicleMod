@@ -74,9 +74,9 @@ public class InventoryUtil
 
     public static void spawnItemStack(World worldIn, double x, double y, double z, ItemStack stack)
     {
-        float offsetX = RANDOM.nextFloat() * 0.25F + 0.1F;
-        float offsetY = RANDOM.nextFloat() * 0.8F + 0.1F;
-        float offsetZ = RANDOM.nextFloat() * 0.25F + 0.1F;
+        float offsetX = -0.25F + RANDOM.nextFloat() * 0.5F;
+        float offsetY = RANDOM.nextFloat() * 0.8F;
+        float offsetZ = -0.25F + RANDOM.nextFloat() * 0.5F;
 
         while(!stack.isEmpty())
         {

@@ -11,6 +11,8 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
@@ -23,11 +25,14 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import java.util.Random;
+
 /**
  * Author: MrCrayfish
  */
 public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytraceable
 {
+    private static final Random RANDOM = new Random();
     public static final float AXLE_OFFSET = -2.0F;
     public static final float WHEEL_OFFSET = 2.85F;
     public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.65, 0, 0, 0, 1.25);
@@ -99,23 +104,9 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
                         NonNullList<ItemStack> drops = NonNullList.create();
                         state.getBlock().getDrops(drops, world, pos, state, 3);
 
-                        if(trailer != null && trailer.getChest() != null)
+                        for(ItemStack stack : drops)
                         {
-                            StorageInventory storage = trailer.getChest();
-                            for(ItemStack stack : drops)
-                            {
-                                if(storage.addItemStack(stack) && !stack.isEmpty())
-                                {
-                                    InventoryUtil.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            for(ItemStack stack : drops)
-                            {
-                                InventoryUtil.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
-                            }
+                            this.addItemToStorage(trailer, stack);
                         }
 
                         world.setBlockToAir(pos);
@@ -124,6 +115,45 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
                     }
                 }
             }
+        }
+    }
+
+    private void addItemToStorage(EntityStorageTrailer storageTrailer, ItemStack stack)
+    {
+        if(stack.isEmpty())
+            return;
+
+        if(storageTrailer != null && storageTrailer.getChest() != null)
+        {
+            StorageInventory storage = storageTrailer.getChest();
+            storage.addItemStack(stack);
+            if(!stack.isEmpty())
+            {
+                if(storageTrailer.getTrailer() instanceof EntityStorageTrailer)
+                {
+                    this.addItemToStorage((EntityStorageTrailer) storageTrailer.getTrailer(), stack);
+                }
+                else
+                {
+                    spawnItemStack(world, stack, storageTrailer);
+                }
+            }
+        }
+        else
+        {
+            spawnItemStack(world, stack, this);
+        }
+    }
+
+    private static void spawnItemStack(World worldIn, ItemStack stack, Entity entity)
+    {
+        while(!stack.isEmpty())
+        {
+            EntityItem entityItem = new EntityItem(worldIn, entity.prevPosX, entity.prevPosY + 0.25, entity.prevPosZ, stack.splitStack(RANDOM.nextInt(21) + 10));
+            entityItem.motionX = -entity.motionX / 4.0;
+            entityItem.motionY = RANDOM.nextGaussian() * 0.05000000074505806D + 0.20000000298023224D;
+            entityItem.motionZ = -entity.motionZ / 4.0;
+            worldIn.spawnEntity(entityItem);
         }
     }
 
