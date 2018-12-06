@@ -2,7 +2,7 @@
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
         "0": "blocks/anvil_base",
-        "1": "blocks/concrete_red",
+        "1": "blocks/concrete_white",
         "2": "blocks/concrete_silver"
     },
     "elements": [
@@ -190,8 +190,8 @@
         },
         {
             "name": "wheel_cover_1",
-            "from": [ -5.00, 6.00, 5.10 ], 
-            "to": [ -1.00, 7.00, 11.10 ], 
+            "from": [ -5.00, 6.00, 5.00 ],
+            "to": [ -1.00, 7.00, 11.00 ],
             "faces": {
                 "north": { "texture": "#0", "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
                 "east": { "texture": "#0", "uv": [ 0.00, 0.00, 6.00, 1.00 ] },
