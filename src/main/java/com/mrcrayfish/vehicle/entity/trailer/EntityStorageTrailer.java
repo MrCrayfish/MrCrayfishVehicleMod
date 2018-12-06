@@ -114,15 +114,18 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     @Override
     public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
     {
-        if(result.getPartHit() == CONNECTION_BOX && rightClick)
+        if(rightClick)
         {
-            PacketHandler.INSTANCE.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getMinecraft().player.getEntityId()));
-            return true;
-        }
-        else if(result.getPartHit() == CHEST_BOX)
-        {
-            PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
-            return true;
+            if(result.getPartHit() == CONNECTION_BOX)
+            {
+                PacketHandler.INSTANCE.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getMinecraft().player.getEntityId()));
+                return true;
+            }
+            else if(result.getPartHit() == CHEST_BOX)
+            {
+                PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
+                return true;
+            }
         }
         return EntityRaytracer.IEntityRaytraceable.super.processHit(result, rightClick);
     }
