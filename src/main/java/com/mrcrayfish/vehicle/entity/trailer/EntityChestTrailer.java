@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
 import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -16,6 +17,8 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -34,7 +37,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IChest
+public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IChest, StorageInventoryWrapper
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
     private static final EntityRaytracer.RayTracePart CHEST_BOX = new EntityRaytracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
@@ -54,6 +57,7 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
     public EntityChestTrailer(World worldIn)
     {
         super(worldIn);
+        this.initInventory();
     }
 
     @Override
@@ -171,7 +175,6 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
     @Override
     public StorageInventory getChest()
     {
-        this.initInventory();
         return inventory;
     }
 
@@ -186,4 +189,10 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
 
     @Override
     public void removeChest() {}
+
+    @Override
+    public StorageInventory getInventory()
+    {
+        return this.getChest();
+    }
 }
