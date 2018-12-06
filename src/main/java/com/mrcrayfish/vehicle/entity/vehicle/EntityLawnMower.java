@@ -135,24 +135,25 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
                 }
                 else
                 {
-                    spawnItemStack(world, stack, storageTrailer);
+                    spawnItemStack(world, stack);
                 }
             }
         }
         else
         {
-            spawnItemStack(world, stack, this);
+            spawnItemStack(world, stack);
         }
     }
 
-    private static void spawnItemStack(World worldIn, ItemStack stack, Entity entity)
+    private void spawnItemStack(World worldIn, ItemStack stack)
     {
         while(!stack.isEmpty())
         {
-            EntityItem entityItem = new EntityItem(worldIn, entity.prevPosX, entity.prevPosY + 0.25, entity.prevPosZ, stack.splitStack(RANDOM.nextInt(21) + 10));
-            entityItem.motionX = -entity.motionX / 4.0;
+            EntityItem entityItem = new EntityItem(worldIn, prevPosX, prevPosY, prevPosZ, stack.splitStack(RANDOM.nextInt(21) + 10));
+            entityItem.setPickupDelay(20);
+            entityItem.motionX = -this.motionX / 4.0;
             entityItem.motionY = RANDOM.nextGaussian() * 0.05000000074505806D + 0.20000000298023224D;
-            entityItem.motionZ = -entity.motionZ / 4.0;
+            entityItem.motionZ = -this.motionZ / 4.0;
             worldIn.spawnEntity(entityItem);
         }
     }
