@@ -2,7 +2,9 @@ package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.Entity;
@@ -154,12 +156,19 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(ModItems.PANEL, 32));
         mapBuilder.put(EntitySportsPlane.class, builder.build());
 
-        /* Trailer */
+        /* Vehicle Trailer */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 48));
         builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 2));
-        mapBuilder.put(EntityTrailer.class, builder.build());
+        mapBuilder.put(EntityVehicleTrailer.class, builder.build());
+
+        builder = new Builder();
+        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
+        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
+        builder.addMaterial(new ItemStack(ModItems.PANEL, 2));
+        builder.addMaterial(new ItemStack(Blocks.CHEST));
+        mapBuilder.put(EntityChestTrailer.class, builder.build());
 
         if(Loader.isModLoaded("cfm"))
         {
