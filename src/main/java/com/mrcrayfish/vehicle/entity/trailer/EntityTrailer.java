@@ -38,7 +38,7 @@ public abstract class EntityTrailer extends EntityVehicle
     public EntityTrailer(World worldIn)
     {
         super(worldIn);
-        this.setSize(1.0F, 1.0F);
+        this.setSize(1.5F, 1.5F);
         this.stepHeight = 1.0F;
         this.setBodyPosition(BODY_POSITION);
     }
