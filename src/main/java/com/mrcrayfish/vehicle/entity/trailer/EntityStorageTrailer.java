@@ -24,6 +24,7 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -43,6 +44,8 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     private static final EntityRaytracer.RayTracePart CHEST_BOX = new EntityRaytracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
+    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -20.8D);
+
     static
     {
         if(FMLCommonHandler.instance().getSide().isClient())
@@ -58,6 +61,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     {
         super(worldIn);
         this.initInventory();
+        this.setTowBarPosition(new Vec3d(0.0D, 0.0D, -12.0D));
     }
 
     @Override
@@ -194,5 +198,11 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     public StorageInventory getInventory()
     {
         return this.getChest();
+    }
+
+    @Override
+    public boolean canTowTrailer()
+    {
+        return true;
     }
 }

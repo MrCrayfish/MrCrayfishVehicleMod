@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.Vec3d;
 
 import java.util.Calendar;
 
@@ -45,6 +46,22 @@ public class RenderChestTrailer extends RenderVehicle<EntityStorageTrailer, Abst
         {
             entityLivingBase.renderYawOffset = currentYaw;
             entityLivingBase.prevRenderYawOffset = currentYaw;
+        }
+
+        //Render the tow bar. Performed before scaling so size is consistent for all vehicles
+        if(entity.canTowTrailer())
+        {
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.translate(x, y, z);
+                GlStateManager.rotate(-currentYaw, 0, 1, 0);
+                GlStateManager.rotate(180F, 0, 1, 0);
+
+                Vec3d towBarOffset = entity.getTowBarVec();
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
+            }
+            GlStateManager.popMatrix();
         }
 
         GlStateManager.pushMatrix();

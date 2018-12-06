@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
@@ -38,18 +39,26 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     private PartPosition bodyPosition;
     private Vec3d heldOffset = Vec3d.ZERO;
     private Vec3d trailerOffset = Vec3d.ZERO;
+
     private float axleOffset;
     private float wheelOffset;
+
+    protected EntityTrailer trailer = null;
+    private Vec3d towBarVec = Vec3d.ZERO;
 
     /**
      * ItemStack instances used for rendering
      */
     @SideOnly(Side.CLIENT)
     public ItemStack body, wheel;
+
+    @SideOnly(Side.CLIENT)
+    public ItemStack towBar;
 
     protected int lerpSteps;
     protected double lerpX;
@@ -69,6 +78,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         this.dataManager.register(TIME_SINCE_HIT, 0);
         this.dataManager.register(DAMAGE_TAKEN, 0F);
         this.dataManager.register(COLOR, 16383998);
+        this.dataManager.register(TRAILER, -1);
 
         if(this.world.isRemote)
         {
@@ -77,7 +87,10 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     }
 
     @SideOnly(Side.CLIENT)
-    public void onClientInit() {}
+    public void onClientInit()
+    {
+        towBar = new ItemStack(ModItems.TOW_BAR);
+    }
 
     @Override
     public AxisAlignedBB getRenderBoundingBox()
@@ -90,24 +103,20 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     {
         if(!world.isRemote && !player.isSneaking())
         {
-            if(this instanceof EntityLandVehicle)
+            int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
+            if(trailerId != -1)
             {
-                int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
-                if(trailerId != -1)
+                if(this.getRidingEntity() == null && this.canTowTrailer() && this.getTrailer() == null)
                 {
-                    EntityLandVehicle landVehicle = (EntityLandVehicle) this;
-                    if(landVehicle.getRidingEntity() == null && landVehicle.canTowTrailer() && landVehicle.getTrailer() == null)
+                    Entity entity = world.getEntityByID(trailerId);
+                    if(entity instanceof EntityTrailer)
                     {
-                        Entity entity = world.getEntityByID(trailerId);
-                        if(entity instanceof EntityTrailer)
-                        {
-                            EntityTrailer trailer = (EntityTrailer) entity;
-                            landVehicle.setTrailer(trailer);
-                            player.getDataManager().set(CommonEvents.TRAILER, -1);
-                        }
+                        EntityTrailer trailer = (EntityTrailer) entity;
+                        this.setTrailer(trailer);
+                        player.getDataManager().set(CommonEvents.TRAILER, -1);
                     }
-                    return true;
                 }
+                return true;
             }
 
             ItemStack heldItem = player.getHeldItem(hand);
@@ -180,6 +189,26 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                 }
                 body.getTagCompound().setInteger("color", this.dataManager.get(COLOR));
             }
+            else if(TRAILER.equals(key))
+            {
+                int entityId = this.dataManager.get(TRAILER);
+                if(entityId != -1)
+                {
+                    Entity entity = world.getEntityByID(this.dataManager.get(TRAILER));
+                    if(entity instanceof EntityTrailer)
+                    {
+                        trailer = (EntityTrailer) entity;
+                    }
+                    else
+                    {
+                        trailer = null;
+                    }
+                }
+                else
+                {
+                    trailer = null;
+                }
+            }
         }
     }
 
@@ -199,6 +228,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         prevPosX = posX;
         prevPosY = posY;
         prevPosZ = posZ;
+
+        if(trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
+        {
+            trailer = null;
+            dataManager.set(TRAILER, -1);
+        }
 
         super.onUpdate();
         this.tickLerp();
@@ -486,5 +521,32 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public void readSpawnData(ByteBuf buffer)
     {
         rotationYaw = prevRotationYaw = buffer.readFloat();
+    }
+
+    public void setTowBarPosition(Vec3d towBarVec)
+    {
+        this.towBarVec = towBarVec.scale(0.0625);
+    }
+
+    public Vec3d getTowBarVec()
+    {
+        return towBarVec;
+    }
+
+    public boolean canTowTrailer()
+    {
+        return false;
+    }
+
+    public void setTrailer(EntityTrailer trailer)
+    {
+        this.trailer = trailer;
+        trailer.setPullingEntity(this);
+        this.dataManager.set(TRAILER, trailer.getEntityId());
+    }
+
+    public EntityTrailer getTrailer()
+    {
+        return trailer;
     }
 }

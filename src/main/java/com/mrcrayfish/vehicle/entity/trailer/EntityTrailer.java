@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -24,6 +25,8 @@ public abstract class EntityTrailer extends EntityVehicle
 {
     private static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(EntityTrailer.class, DataSerializers.VARINT);
 
+    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+
     private Entity pullingEntity;
 
     public float wheelRotation;
@@ -34,6 +37,7 @@ public abstract class EntityTrailer extends EntityVehicle
         super(worldIn);
         this.setSize(1.0F, 1.0F);
         this.stepHeight = 1.0F;
+        this.setBodyPosition(BODY_POSITION);
     }
 
     @Override
@@ -46,6 +50,7 @@ public abstract class EntityTrailer extends EntityVehicle
     @Override
     public void onClientInit()
     {
+        super.onClientInit();
         body = new ItemStack(ModItems.TRAILER_BODY);
         wheel = new ItemStack(ModItems.WHEEL);
     }
@@ -58,7 +63,7 @@ public abstract class EntityTrailer extends EntityVehicle
         this.motionY -= 0.08;
         if(this.pullingEntity != null)
         {
-            if(this.pullingEntity.isDead || (this.pullingEntity instanceof EntityLandVehicle && ((EntityLandVehicle) this.pullingEntity).getTrailer() != this))
+            if(this.pullingEntity.isDead || (this.pullingEntity instanceof EntityVehicle && ((EntityVehicle) this.pullingEntity).getTrailer() != this))
             {
                 this.pullingEntity = null;
                 return;
@@ -81,12 +86,20 @@ public abstract class EntityTrailer extends EntityVehicle
     private void updatePullingMotion()
     {
         Vec3d towBar = pullingEntity.getPositionVector();
-        if(pullingEntity instanceof EntityLandVehicle)
+        if(pullingEntity instanceof EntityVehicle)
         {
-            EntityLandVehicle landVehicle = (EntityLandVehicle) pullingEntity;
-            Vec3d towBarVec = landVehicle.getTowBarVec();
-            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + landVehicle.getBodyPosition().getZ());
-            towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-landVehicle.rotationYaw + landVehicle.additionalYaw)));
+            EntityVehicle vehicle = (EntityVehicle) pullingEntity;
+            Vec3d towBarVec = vehicle.getTowBarVec();
+            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + vehicle.getBodyPosition().getZ());
+            if(vehicle instanceof EntityLandVehicle)
+            {
+                EntityLandVehicle landVehicle = (EntityLandVehicle) vehicle;
+                towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw + landVehicle.additionalYaw)));
+            }
+            else
+            {
+                towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)));
+            }
         }
 
         this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.posZ, towBar.x - this.posX) - Math.toRadians(90F));
@@ -114,7 +127,7 @@ public abstract class EntityTrailer extends EntityVehicle
 
     public boolean setPullingEntity(Entity pullingEntity)
     {
-        if(pullingEntity instanceof EntityPlayer || (pullingEntity instanceof EntityLandVehicle && pullingEntity.getRidingEntity() == null && ((EntityLandVehicle) pullingEntity).canTowTrailer()))
+        if(pullingEntity instanceof EntityPlayer || (pullingEntity instanceof EntityVehicle && pullingEntity.getRidingEntity() == null && ((EntityVehicle) pullingEntity).canTowTrailer()))
         {
             this.pullingEntity = pullingEntity;
             this.dataManager.set(PULLING_ENTITY, pullingEntity.getEntityId());
@@ -164,7 +177,7 @@ public abstract class EntityTrailer extends EntityVehicle
                 if(entityId != -1)
                 {
                     Entity entity = world.getEntityByID(this.dataManager.get(PULLING_ENTITY));
-                    if(entity instanceof EntityPlayer || (entity instanceof EntityLandVehicle && ((EntityLandVehicle) entity).canTowTrailer()))
+                    if(entity instanceof EntityPlayer || (entity instanceof EntityVehicle && ((EntityVehicle) entity).canTowTrailer()))
                     {
                         pullingEntity = entity;
                     }

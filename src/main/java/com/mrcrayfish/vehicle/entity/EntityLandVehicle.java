@@ -28,7 +28,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public abstract class EntityLandVehicle extends EntityPoweredVehicle
 {
     private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
 
     public float drifting;
     public float additionalYaw;
@@ -38,12 +37,6 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public float prevFrontWheelRotation;
     public float rearWheelRotation;
     public float prevRearWheelRotation;
-
-    private EntityTrailer trailer = null;
-    private Vec3d towBarVec = Vec3d.ZERO;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack towBar;
 
     public EntityLandVehicle(World worldIn)
     {
@@ -55,14 +48,6 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     {
         super.entityInit();
         this.dataManager.register(DRIFTING, false);
-        this.dataManager.register(TRAILER, -1);
-    }
-
-    @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        towBar = new ItemStack(ModItems.TOW_BAR);
     }
 
     @Override
@@ -74,18 +59,6 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
         this.updateDrifting();
         this.updateWheels();
-    }
-
-    @Override
-    public void onUpdateVehicle()
-    {
-        super.onUpdateVehicle();
-
-        if(trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
-        {
-            trailer = null;
-            dataManager.set(TRAILER, -1);
-        }
     }
 
     @Override
@@ -228,62 +201,6 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public boolean isDrifting()
     {
         return this.dataManager.get(DRIFTING);
-    }
-
-    public void setTowBarPosition(Vec3d towBarVec)
-    {
-        this.towBarVec = towBarVec.scale(0.0625);
-    }
-
-    public Vec3d getTowBarVec()
-    {
-        return towBarVec;
-    }
-
-    public boolean canTowTrailer()
-    {
-        return false;
-    }
-
-    public void setTrailer(EntityTrailer trailer)
-    {
-        this.trailer = trailer;
-        trailer.setPullingEntity(this);
-        this.dataManager.set(TRAILER, trailer.getEntityId());
-    }
-
-    public EntityTrailer getTrailer()
-    {
-        return trailer;
-    }
-
-    @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(TRAILER.equals(key))
-            {
-                int entityId = this.dataManager.get(TRAILER);
-                if(entityId != -1)
-                {
-                    Entity entity = world.getEntityByID(this.dataManager.get(TRAILER));
-                    if(entity instanceof EntityTrailer)
-                    {
-                        trailer = (EntityTrailer) entity;
-                    }
-                    else
-                    {
-                        trailer = null;
-                    }
-                }
-                else
-                {
-                    trailer = null;
-                }
-            }
-        }
     }
 
     @Override

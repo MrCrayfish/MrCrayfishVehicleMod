@@ -207,6 +207,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     @Override
     public void onClientInit()
     {
+        super.onClientInit();
         engine = new ItemStack(ModItems.SMALL_ENGINE);
         keyPort = new ItemStack(ModItems.KEY_PORT);
         setFuelPort(FuelPort.LID);
