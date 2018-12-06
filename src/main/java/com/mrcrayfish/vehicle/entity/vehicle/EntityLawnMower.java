@@ -2,16 +2,17 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.trailer.EntityChestTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockDoublePlant;
-import net.minecraft.block.BlockTallGrass;
-import net.minecraft.block.SoundType;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
+import net.minecraft.block.*;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -86,25 +87,40 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
                 {
                     BlockPos pos = new BlockPos(x, axisAligned.minY, z);
                     IBlockState state = world.getBlockState(pos);
-                    if(state.getBlock() instanceof BlockTallGrass)
+
+                    EntityChestTrailer trailer = null;
+                    if(getTrailer() instanceof EntityChestTrailer)
                     {
-                        BlockTallGrass.EnumType type = state.getValue(BlockTallGrass.TYPE);
-                        if(type == BlockTallGrass.EnumType.GRASS || type == BlockTallGrass.EnumType.FERN)
-                        {
-                            world.setBlockToAir(pos);
-                            world.playSound(null, pos, SoundType.PLANT.getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            world.playEvent(2001, pos, Block.getStateId(state));
-                        }
+                        trailer = (EntityChestTrailer) getTrailer();
                     }
-                    else if(state.getBlock() instanceof BlockDoublePlant)
+
+                    if(state.getBlock() instanceof BlockBush)
                     {
-                        BlockDoublePlant.EnumPlantType type = state.getValue(BlockDoublePlant.VARIANT);
-                        if(type == BlockDoublePlant.EnumPlantType.GRASS || type == BlockDoublePlant.EnumPlantType.FERN)
+                        NonNullList<ItemStack> drops = NonNullList.create();
+                        state.getBlock().getDrops(drops, world, pos, state, 3);
+
+                        if(trailer != null && trailer.getChest() != null)
                         {
-                            world.setBlockToAir(pos);
-                            world.playSound(null, pos, SoundType.PLANT.getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            world.playEvent(2001, pos, Block.getStateId(state));
+                            StorageInventory storage = trailer.getChest();
+                            for(ItemStack stack : drops)
+                            {
+                                if(storage.addItemStack(stack) && !stack.isEmpty())
+                                {
+                                    InventoryUtil.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
+                                }
+                            }
                         }
+                        else
+                        {
+                            for(ItemStack stack : drops)
+                            {
+                                InventoryUtil.spawnItemStack(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, stack);
+                            }
+                        }
+
+                        world.setBlockToAir(pos);
+                        world.playSound(null, pos, state.getBlock().getSoundType(state, world, pos, this).getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playEvent(2001, pos, Block.getStateId(state));
                     }
                 }
             }

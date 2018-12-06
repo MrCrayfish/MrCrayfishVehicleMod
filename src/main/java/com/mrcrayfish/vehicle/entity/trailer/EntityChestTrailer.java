@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.entity.trailer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -15,7 +16,6 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +49,7 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
         }
     }
 
-    private InventoryBasic inventory;
+    private StorageInventory inventory;
 
     public EntityChestTrailer(World worldIn)
     {
@@ -144,7 +143,7 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
     private void initInventory()
     {
         InventoryBasic original = inventory;
-        inventory = new InventoryBasic(this.getName(), false, 27);
+        inventory = new StorageInventory(this.getName(), false, 27);
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
@@ -170,7 +169,7 @@ public class EntityChestTrailer extends EntityTrailer implements EntityRaytracer
 
     @Nullable
     @Override
-    public IInventory getChest()
+    public StorageInventory getChest()
     {
         this.initInventory();
         return inventory;
