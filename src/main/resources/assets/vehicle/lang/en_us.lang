@@ -77,8 +77,9 @@ entity.vehicle.sports_plane.name=Sports Plane
 entity.vehicle.golf_cart.name=Golf Cart
 entity.vehicle.go_kart.name=Go Kart
 entity.vehicle.jet_ski.name=Jet Ski
-entity.vehicle.trailer.name=Trailer
+entity.vehicle.trailer.name=Vehicle Trailer
 entity.vehicle.atv.name=ATV
+entity.vehicle.trailer_chest.name=Storage Trailer
 
 vehicle.config.title=MrCrayfish's Vehicle Mod Config
 vehicle.config.client=Client
