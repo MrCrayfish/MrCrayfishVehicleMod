@@ -670,6 +670,7 @@ public class ClientEvents
     public void clearCaches(TextureStitchEvent.Post event)
     {
         FluidUtils.clearCacheFluidColor();
+        EntityRaytracer.clearDataForReregistration();
     }
 
     @SubscribeEvent
