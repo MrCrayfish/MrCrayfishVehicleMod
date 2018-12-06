@@ -32,6 +32,8 @@ public abstract class EntityTrailer extends EntityVehicle
     public EntityTrailer(World worldIn)
     {
         super(worldIn);
+        this.setSize(1.0F, 1.0F);
+        this.stepHeight = 1.0F;
     }
 
     @Override
@@ -53,6 +55,7 @@ public abstract class EntityTrailer extends EntityVehicle
     {
         prevWheelRotation = wheelRotation;
 
+        this.motionY -= 0.08;
         if(this.pullingEntity != null)
         {
             if(this.pullingEntity.isDead || (this.pullingEntity instanceof EntityLandVehicle && ((EntityLandVehicle) this.pullingEntity).getTrailer() != this))
@@ -60,22 +63,22 @@ public abstract class EntityTrailer extends EntityVehicle
                 this.pullingEntity = null;
                 return;
             }
-
             this.updatePullingMotion();
         }
         else if(!world.isRemote)
         {
             this.motionX *= 0.75;
-            this.motionY -= 0.08;
             this.motionZ *= 0.75;
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
         }
+
+        this.doBlockCollisions();
 
         float speed = (float) (Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posY - this.prevPosY, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20);
         wheelRotation -= 90F * (speed / 10F);
     }
 
-    public void updatePullingMotion()
+    private void updatePullingMotion()
     {
         Vec3d towBar = pullingEntity.getPositionVector();
         if(pullingEntity instanceof EntityLandVehicle)
@@ -98,9 +101,7 @@ public abstract class EntityTrailer extends EntityVehicle
         }
 
         Vec3d vec = new Vec3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar); //TOWING POS
-        this.setPosition(vec.x, vec.y, vec.z);
         this.motionX = vec.x - this.posX;
-        this.motionY = towBar.y - this.posY;
         this.motionZ = vec.z - this.posZ;
         this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
     }
