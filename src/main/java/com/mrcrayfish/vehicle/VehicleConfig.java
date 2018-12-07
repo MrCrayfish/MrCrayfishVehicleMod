@@ -88,6 +88,11 @@ public class VehicleConfig
         @Config.Comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.")
         @Config.LangKey(Reference.MOD_ID + ".config.client.debug.render_outlines")
         public boolean renderOutlines = false;
+
+        @Config.Name("Reload Raytracer Each Tick")
+        @Config.Comment("If true, the raytracer will be reloaded each tick.")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload")
+        public boolean reloadRaytracerEachTick = false;
     }
 
     @SubscribeEvent
