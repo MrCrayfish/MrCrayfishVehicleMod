@@ -17,7 +17,6 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.item.ItemWrench;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
-import com.mrcrayfish.vehicle.util.FluidUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
@@ -47,7 +46,6 @@ import net.minecraftforge.client.event.DrawBlockHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -664,13 +662,6 @@ public class ClientEvents
         GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
         GlStateManager.disableBlend();
-    }
-
-    @SubscribeEvent
-    public void clearCaches(TextureStitchEvent.Post event)
-    {
-        FluidUtils.clearCacheFluidColor();
-        EntityRaytracer.clearDataForReregistration();
     }
 
     @SubscribeEvent

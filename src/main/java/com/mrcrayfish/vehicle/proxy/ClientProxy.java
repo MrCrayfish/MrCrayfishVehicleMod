@@ -29,10 +29,13 @@ import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
+import com.mrcrayfish.vehicle.util.FluidUtils;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.color.IItemColor;
+import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -148,6 +151,11 @@ public class ClientProxy implements Proxy
             {
                 Minecraft.getMinecraft().getItemColors().registerItemColorHandler(color, item);
             }
+        });
+        ((IReloadableResourceManager) Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager ->
+        {
+            FluidUtils.clearCacheFluidColor();
+            EntityRaytracer.clearDataForReregistration();
         });
     }
 
