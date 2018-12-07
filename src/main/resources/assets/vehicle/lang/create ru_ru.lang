@@ -1,0 +1,118 @@
+itemGroup.tabVehicle=MrCrayfish's Vehicle Mod
+
+vehicle.engine_tier.wood.name=Деревянный тип
+vehicle.engine_tier.stone.name=Каменный тип
+vehicle.engine_tier.iron.name=Железный тип
+vehicle.engine_tier.gold.name=Золотой тип
+vehicle.engine_tier.diamond.name=Алмазный тип
+vehicle.engine_info.acceleration=Скорость разгона
+vehicle.engine_info.additional_max_speed=Доп. максимальная скорость
+vehicle.engine_info.fuel_consumption=Расход топлива
+
+item.small_engine.name=Малый двигатель
+item.large_engine.name=Большой двигатель
+item.electric_engine.name=Электрический двигатель
+item.spray_can.name=Баллончик
+item.spray_can.info=Используйте Баллончик, чтобы покрасить свой транспорт. Чтобы добавить краску, смешайте его с нужным красителем в меню верстака. Вы также можете пополнить баллончик краской, объединив его с неокрашенным баллончиком в верстаке.
+item.spray_can.empty=Нет краски
+item.jerry_can.name=Канистра
+item.jerry_can.info=Используйте Канистру, чтобы переносить топливо и заправлять им свой транспорт. Канистра может вмещать до 5 вёдер топлива.
+item.jerry_can.fuel=Топливо: %s
+item.industrial_jerry_can.name=Промышленная канистра
+item.industrial_jerry_can.info=Используйте Промышленную канистру, чтобы переносить топливо и заправлять им свой транспорт. Промышленная канистра может вмещать до 15 вёдер топлива.
+item.industrial_jerry_can.fuel=Топливо: %s
+item.wrench.name=Гаечный ключ
+item.key.name=Ключ
+item.panel.name=Панель
+item.wheel.name=Колесо
+item.tow_bar.name=Фаркоп
+item.go_kart_steering_wheel.name=Руль
+item.handle_bar.name=Велосипедный руль
+
+tile.traffic_cone.name=Дорожный конус
+tile.boost_pad.name=Панель ускорения
+tile.boost_ramp.name=Рампа
+tile.steep_boost_ramp.name=Крутая рампа
+tile.gas_pump.name=Топливная колонка
+tile.fluid_extractor.name=Экстрактор
+tile.fluid_mixer.name=Смеситель
+tile.fluid_pipe.name=Жидкостная труба
+tile.fluid_pump.name=Гидронасос
+tile.fuel_drum.name=Топливный бак
+tile.industrial_fuel_drum.name=Промышленный топливный бак
+tile.vehicle_crate.name=Транспортный контейнер
+tile.workstation.name=Рабочий стол
+tile.jack.name=Домкрат
+
+fluid.fuelium=Топливо
+fluid.ender_sap=Смола Края
+fluid.blaze_juice=Огненный сок
+
+container.fluid_extractor=Экстрактор
+container.fluid_mixer=Смеситель
+
+vehicle.info_help=Нажмите SHIFT для Информации
+vehicle.tile.boost_pad.info=Проедьтесь по Панели ускорения, чтобы ускорить свой транспорт!
+vehicle.tile.boost_ramp.info=Проедьтесь по Рампе, чтобы ускорить свой транспорт и с ветерком полетать в воздухе!
+vehicle.tile.traffic_cone.info=Используйте этот конус, чтобы блокировать транспорт. Также, его можно надеть на голову!
+vehicle.tile.fluid_pipe.info=Используйте Трубу для транспортировки жидкостей. Серая линия на трубе указывает её направление. Жидкость должна закачиваться Гидронасосом или другим совместимым с данной трубой насосом. Трубу можно дезактивировать при помощи провода красной пыли.
+vehicle.tile.fluid_pump.info=Используйте Гидронасос, чтобы извлечь жидкость из любой совместимой с данным насосом ёмкости, и направить её в трубу или другую ёмкость. Для работы Гидронасоса необходим сигнал красной пыли.
+vehicle.tile.fuel_drum.info=Топливный бак можно использовать для хранения топлива или другой жидкости. Храните его подальше от огня, ведь он крайне взрывоопасен.
+vehicle.tile.vehicle_crate.info=Контейнер содержит %s. Чтобы открыть контейнер, просто нажмите по нему ПКМ, держа в руке гаечный ключ.
+
+entity.vehicle.lawn_mower.name=Газонокосилка
+entity.vehicle.mini_bike.name=Скутер
+entity.vehicle.shopping_cart.name=Тележка
+entity.vehicle.speed_boat.name=Катер
+entity.vehicle.bath.name=Ванна
+entity.vehicle.bumper_car.name=Бамперная машина
+entity.vehicle.aluminum_boat.name=Алюминиевая лодка
+entity.vehicle.dune_buggy.name=Багги
+entity.vehicle.sofacopter.name=Креслолёт
+entity.vehicle.smart_car.name=Смарт-кар
+entity.vehicle.couch.name=Кресло
+entity.vehicle.moped.name=Мопед
+entity.vehicle.off_roader.name=Внедорожник
+entity.vehicle.sports_plane.name=Спортивный самолёт
+entity.vehicle.golf_cart.name=Машина для гольфа
+entity.vehicle.go_kart.name=Карт
+entity.vehicle.jet_ski.name=Водный мотоцикл
+entity.vehicle.trailer.name=Трейлер
+entity.vehicle.atv.name=Мотовездеход
+
+vehicle.config.title=MrCrayfish's Vehicle Mod: Конфигурация
+vehicle.config.client=Клиент
+vehicle.config.client.tooltip=Конфигурация для клиента.
+vehicle.config.client.debug=Отладка
+vehicle.config.client.debug.tooltip=Опции конфигурации для отладки транспорта
+vehicle.config.client.debug.render_outlines=Отрисовка транспорта
+vehicle.config.client.debug.render_outlines.tooltip=Если значение установлено на true, будут отрисовываться все элементы модели транспорта. Данная функция полезна во время отладки интеракции.
+vehicle.config.client.interaction=Интеракция
+vehicle.config.client.interaction.tooltip=Опции конфигурации для интеракции с транспортом
+vehicle.config.client.interaction.left_click=ЛКМ включено
+vehicle.config.client.interaction.left_click.tooltip=Если значение установлено на true, трассировка лучей будет выполнена у близлежащего транспорта при нажатии ЛКМ, вместо простого нажатия ПКМ. С этой функцией транспорт будет повреждаться/ломаться, если по нему нажимать ЛКМ. 
+vehicle.config.client.display=Дисплей
+vehicle.config.client.display.tooltip=Конфигурация элементов интерфейса
+vehicle.config.client.display.speedometer=Показывать спидометр
+vehicle.config.client.display.speedometer.tooltip=Если значение установлено на true, спидометр отображается в интерфейсе при вождении транспорта.
+vehicle.config.client.display.auto_perspective=Перспектива транспорта
+vehicle.config.client.display.auto_perspective.tooltip=Если значение установлено на true, при вождении транспорта вид становится от третьего лица.
+vehicle.config.client.display.workstation_animation=Анимация рабочего стола
+vehicle.config.client.display.workstation_animation.tooltip=Если значение установлено на true, при переключении в меню рабочего стола будет проигрываться анимация.
+
+vehicle.config.server=Сервер
+vehicle.config.server.tooltip=Конфигурация для сервера.
+vehicle.config.server.fuel_enabled=Потребность в топливе
+vehicle.config.server.fuel_enabled.tooltip=Если значение установлено на true, транспорт будет нуждаться в топливе, чтобы ездить.
+
+vehicle.chat.pump.power=§bРежим питания:§r %s
+vehicle.chat.pump.power.off=требует отключения сигнала
+vehicle.chat.pump.power.on=требует включения сигнала
+vehicle.chat.pump.power.always=всегда активен
+
+vehicle.status.invalid_owner=Вы не являетесь владельцем этого транспорта
+vehicle.status.key_added=Данный транспорт успешно заблокирован
+vehicle.status.key_created=Ключ успешно привязан к этому транспорту
+vehicle.status.not_lockable=Данный транспорт нельзя разблокировать
+vehicle.status.key_invalid=Данный ключ не подходит к этому транспорту
+vehicle.status.key_removed=Транспорт уже разблокирован
