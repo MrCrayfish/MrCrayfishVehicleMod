@@ -29,6 +29,10 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+import java.util.UUID;
+
 /**
  * Author: MrCrayfish
  */
@@ -48,8 +52,10 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     private float axleOffset;
     private float wheelOffset;
 
+    protected UUID trailerId;
     protected EntityTrailer trailer = null;
     private Vec3d towBarVec = Vec3d.ZERO;
+    private int searchDelay = 20;
 
     /**
      * ItemStack instances used for rendering
@@ -167,12 +173,23 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             }
             compound.removeTag("color");
         }
+
+        if(compound.hasUniqueId("trailer"))
+        {
+            this.trailerId = compound.getUniqueId("trailer");
+        }
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         compound.setIntArray("color", this.getColorRGB());
+
+        //TODO make it save the entity
+        if(trailerId != null)
+        {
+            compound.setUniqueId("trailer", trailerId);
+        }
     }
 
     @Override
@@ -197,16 +214,19 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                     Entity entity = world.getEntityByID(this.dataManager.get(TRAILER));
                     if(entity instanceof EntityTrailer)
                     {
-                        trailer = (EntityTrailer) entity;
+                        this.trailer = (EntityTrailer) entity;
+                        this.trailerId = trailer.getUniqueID();
                     }
                     else
                     {
-                        trailer = null;
+                        this.trailer = null;
+                        this.trailerId = null;
                     }
                 }
                 else
                 {
-                    trailer = null;
+                    this.trailer = null;
+                    this.trailerId = null;
                 }
             }
         }
@@ -229,15 +249,41 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         prevPosY = posY;
         prevPosZ = posZ;
 
-        if(trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
+        if(this.searchDelay <= 0)
         {
-            trailer = null;
-            dataManager.set(TRAILER, -1);
+            this.findTrailer();
+        }
+        else
+        {
+            this.searchDelay--;
+        }
+
+        if(!this.world.isRemote && trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
+        {
+            this.setTrailer(null);
         }
 
         super.onUpdate();
         this.tickLerp();
         this.onUpdateVehicle();
+    }
+
+    private void findTrailer()
+    {
+        if(!world.isRemote && trailerId != null && trailer == null)
+        {
+            Optional<Entity> optional = world.getLoadedEntityList().stream().filter(e -> e.getUniqueID().equals(trailerId)).findFirst();
+            if(optional.isPresent())
+            {
+                Entity entity = optional.get();
+                if(entity instanceof EntityTrailer)
+                {
+                    this.setTrailer((EntityTrailer) entity);
+                    return;
+                }
+            }
+            trailerId = null;
+        }
     }
 
     protected abstract void onUpdateVehicle();
@@ -540,11 +586,32 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     public void setTrailer(EntityTrailer trailer)
     {
-        this.trailer = trailer;
-        trailer.setPullingEntity(this);
-        this.dataManager.set(TRAILER, trailer.getEntityId());
+        if(trailer != null)
+        {
+            this.trailer = trailer;
+            this.trailerId = trailer.getUniqueID();
+            trailer.setPullingEntity(this);
+            this.dataManager.set(TRAILER, trailer.getEntityId());
+        }
+        else
+        {
+            if(this.trailer != null && this.trailer.getPullingEntity() == this)
+            {
+                this.trailer.setPullingEntity(null);
+            }
+            this.trailer = null;
+            this.trailerId = null;
+            this.dataManager.set(TRAILER, -1);
+        }
     }
 
+    @Nullable
+    public UUID getTrailerId()
+    {
+        return trailerId;
+    }
+
+    @Nullable
     public EntityTrailer getTrailer()
     {
         return trailer;
