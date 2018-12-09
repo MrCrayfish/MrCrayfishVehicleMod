@@ -1,0 +1,27 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "CPC",
+        "CEC",
+        "III"
+    ],
+    "key": {
+        "C": {
+            "item": "minecraft:concrete",
+            "data": 14
+        },
+        "E": {
+            "item": "vehicle:electric_engine",
+            "data": 0
+        },
+        "P": {
+            "item": "minecraft:piston"
+        },
+        "I": {
+            "item": "minecraft:iron_ingot"
+        }
+    },
+    "result": {
+        "item": "vehicle:jack"
+    }
+}
