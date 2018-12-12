@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
  */
 public abstract class EntityTrailer extends EntityVehicle
 {
-    private static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(EntityTrailer.class, DataSerializers.VARINT);
+    public static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(EntityTrailer.class, DataSerializers.VARINT);
 
     public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
 

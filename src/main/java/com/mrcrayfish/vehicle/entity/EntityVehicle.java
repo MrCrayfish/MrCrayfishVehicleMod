@@ -251,7 +251,19 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
         if(this.searchDelay <= 0)
         {
-            this.findTrailer();
+            if(trailer != null)
+            {
+                /* Updates periodically to ensure the client knows the vehicle/trailer connection.
+                 * There is often problems on loading worlds that it doesn't sync correctly, so this
+                 * is the fix. */
+                this.dataManager.setDirty(TRAILER);
+                this.trailer.getDataManager().setDirty(EntityTrailer.PULLING_ENTITY);
+                this.searchDelay = 100;
+            }
+            else
+            {
+                this.findTrailer();
+            }
         }
         else
         {
