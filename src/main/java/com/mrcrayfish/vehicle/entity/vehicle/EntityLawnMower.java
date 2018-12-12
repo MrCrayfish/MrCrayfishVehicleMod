@@ -90,7 +90,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
             {
                 for(int z = minZ; z < maxZ; z++)
                 {
-                    BlockPos pos = new BlockPos(x, axisAligned.minY, z);
+                    BlockPos pos = new BlockPos(x, axisAligned.minY + 0.5, z);
                     IBlockState state = world.getBlockState(pos);
 
                     EntityStorageTrailer trailer = null;
