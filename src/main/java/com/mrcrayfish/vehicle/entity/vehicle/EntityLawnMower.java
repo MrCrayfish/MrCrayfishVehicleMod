@@ -77,7 +77,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     {
         super.updateVehicle();
 
-        if(this.getControllingPassenger() != null)
+        if(!world.isRemote && this.getControllingPassenger() != null)
         {
             AxisAlignedBB axisAligned = this.getEntityBoundingBox();
             Vec3d lookVec = this.getLookVec().scale(0.5);
