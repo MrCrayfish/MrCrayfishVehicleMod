@@ -110,6 +110,8 @@ vehicle.config.server.fuel_enabled=Fuel Enabled
 vehicle.config.server.fuel_enabled.tooltip=If true, vehicles will require fuel for them to be driven.
 vehicle.config.server.trailer_detach_threshold=Trailed Detach Threshold
 vehicle.config.server.trailer_detach_threshold.tooltip=The distance before the trailer detaches from a vehicle
+vehicle.config.server.trailer_sync_cooldown=Trailer Sync Cooldown
+vehicle.config.server.trailer_sync_cooldown.tooltip=The amount of ticks to wait before syncing data to clients about the trailer connection. This is important for smooth trailer movement on client side.
 
 vehicle.chat.pump.power=§bPower Mode:§r %s
 vehicle.chat.pump.power.off=requires signal off

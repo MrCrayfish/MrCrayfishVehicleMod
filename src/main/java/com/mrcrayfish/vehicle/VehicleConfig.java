@@ -35,6 +35,11 @@ public class VehicleConfig
         @Config.Comment("The distance threshold before the trailer detaches from a vehicle")
         @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_detach_threshold")
         public double trailerDetachThreshold = 6.0;
+
+        @Config.Name("Trailer Sync Cooldown")
+        @Config.Comment("The amount of ticks to wait before syncing data to clients about the trailer connection. This is important for smooth trailer movement on client side.")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_sync_cooldown")
+        public int trailerSyncCooldown = 100;
     }
 
     public static class Client

@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
@@ -258,7 +259,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                  * is the fix. */
                 this.dataManager.setDirty(TRAILER);
                 this.trailer.getDataManager().setDirty(EntityTrailer.PULLING_ENTITY);
-                this.searchDelay = 100;
+                this.searchDelay = VehicleConfig.SERVER.trailerSyncCooldown;
             }
             else
             {
