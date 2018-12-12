@@ -694,6 +694,8 @@ public class EntityRaytracer
      */
     public static void init()
     {
+        clearDataForReregistration();
+
         // Create triangles for raytraceable entities
         registerEntitiesDynamic();
         registerEntitiesStatic();
@@ -1032,14 +1034,15 @@ public class EntityRaytracer
     @SubscribeEvent
     public static void raytraceEntitiesContinuously(ClientTickEvent event)
     {
-        if (!initialized && Minecraft.getMinecraft().world != null)
-        {
-            init();
-        }
-        if (continuousInteraction == null || event.phase != Phase.START || Minecraft.getMinecraft().player == null)
-        {
+        if (event.phase != Phase.START)
             return;
-        }
+
+        if ((!initialized || VehicleConfig.CLIENT.debug.reloadRaytracerEachTick) && Minecraft.getMinecraft().world != null)
+            init();
+
+        if (continuousInteraction == null || Minecraft.getMinecraft().player == null)
+            return;
+
         RayTraceResultRotated result = raytraceEntities(continuousInteraction.isRightClick());
         if (result == null || result.entityHit != continuousInteraction.entityHit || result.getPartHit() != continuousInteraction.getPartHit())
         {
