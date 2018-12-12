@@ -79,7 +79,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
 
         if(!world.isRemote && this.getControllingPassenger() != null)
         {
-            AxisAlignedBB axisAligned = this.getEntityBoundingBox();
+            AxisAlignedBB axisAligned = this.getEntityBoundingBox().grow(0.25);
             Vec3d lookVec = this.getLookVec().scale(0.5);
             int minX = MathHelper.floor(axisAligned.minX + lookVec.x);
             int maxX = MathHelper.ceil(axisAligned.maxX + lookVec.x);
