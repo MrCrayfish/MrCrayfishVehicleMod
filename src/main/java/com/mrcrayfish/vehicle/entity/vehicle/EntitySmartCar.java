@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -17,6 +18,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytraceable
 {
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0, 0, 0, 0, 1.0);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(3.0D, 1.0D, 0.0D);
+    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -21.00D);
+
     /**
      * ItemStack instances used for rendering
      */
@@ -29,10 +34,10 @@ public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytrace
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(12);
         this.setSize(1.85F, 1.15F);
-        this.setHeldOffset(new Vec3d(3D, 1D, 0D));
-        this.setTowBarPosition(new Vec3d(0D, 0D, -1.35D));
+        this.setBodyPosition(BODY_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTowBarPosition(TOW_BAR_VEC);
         this.stepHeight = 1F;
-        //TODO figure out electric vehicles
     }
 
     @Override
