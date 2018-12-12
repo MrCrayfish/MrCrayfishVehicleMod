@@ -5,8 +5,10 @@ import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
@@ -16,13 +18,17 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -60,6 +66,17 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
         this.setSize(1.5F, 1.5F);
     }
 
+    public boolean canBeColored()
+    {
+        return true;
+    }
+
+    @Override
+    protected boolean canFitPassenger(Entity passenger)
+    {
+        return false;
+    }
+
     @Override
     public void onClientInit()
     {
@@ -68,14 +85,25 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     }
 
     @Override
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    {
+        ItemStack heldItem = player.getHeldItem(hand);
+        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan))
+        {
+            player.displayGUIChest(inventory);
+        }
+        return super.processInitialInteract(player, hand);
+    }
+
+    @Override
     public void onUpdateVehicle()
     {
         super.onUpdateVehicle();
 
         Vec3d lookVec = this.getLookVec();
-        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(90F)).scale(0.75));
+        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(90F)).scale(0.85));
         this.plantSeed(Vec3d.ZERO);
-        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(-90F)).scale(0.75));
+        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(-90F)).scale(0.85));
     }
 
     private void plantSeed(Vec3d vec)
@@ -246,11 +274,6 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
             if(result.getPartHit() == CONNECTION_BOX)
             {
                 PacketHandler.INSTANCE.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getMinecraft().player.getEntityId()));
-                return true;
-            }
-            else
-            {
-                PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
                 return true;
             }
         }
