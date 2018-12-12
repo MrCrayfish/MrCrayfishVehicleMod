@@ -16,12 +16,15 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.item.ItemWrench;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -30,6 +33,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -47,6 +51,7 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -150,7 +155,7 @@ public class ClientEvents
     public void onFovUpdate(FOVUpdateEvent event)
     {
         Entity ridingEntity = Minecraft.getMinecraft().player.getRidingEntity();
-        if(ridingEntity instanceof EntityPlane || ridingEntity instanceof EntityHelicopter)
+        if(ridingEntity instanceof EntityVehicle)
         {
             event.setNewfov(1.0F);
         }
@@ -674,6 +679,23 @@ public class ClientEvents
             GlStateManager.setFog(GlStateManager.FogMode.EXP);
             event.setDensity(isSap ? 1 : 0.5F);
             event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onJump(InputEvent.KeyInputEvent event)
+    {
+        if(GuiScreen.isCtrlKeyDown())
+        {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
+            {
+                EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+                if(vehicle.canTowTrailer())
+                {
+                    PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                }
+            }
         }
     }
 }

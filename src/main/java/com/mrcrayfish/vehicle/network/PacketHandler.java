@@ -34,6 +34,7 @@ public class PacketHandler
         registerMessage(MessageAltitude.class, Side.SERVER);
         registerMessage(MessageCraftVehicle.class, Side.SERVER);
         registerMessage(MessageVehicleWindow.class, Side.CLIENT);
+        registerMessage(MessageHitchTrailer.class, Side.SERVER);
     }
 
     private static void registerMessage(Class packet, Side side)
