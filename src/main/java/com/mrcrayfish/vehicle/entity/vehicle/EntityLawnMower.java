@@ -102,7 +102,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
                     if(state.getBlock() instanceof BlockBush)
                     {
                         NonNullList<ItemStack> drops = NonNullList.create();
-                        state.getBlock().getDrops(drops, world, pos, state, 3);
+                        state.getBlock().getDrops(drops, world, pos, state, 1);
 
                         for(ItemStack stack : drops)
                         {
