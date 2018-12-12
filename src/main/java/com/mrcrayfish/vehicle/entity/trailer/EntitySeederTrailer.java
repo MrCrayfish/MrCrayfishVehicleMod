@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
+import net.minecraft.block.BlockFarmland;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -19,8 +20,11 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -61,6 +65,74 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     {
         super.onClientInit();
         body = new ItemStack(ModItems.MODELS);
+    }
+
+    @Override
+    public void onUpdateVehicle()
+    {
+        super.onUpdateVehicle();
+
+        Vec3d lookVec = this.getLookVec();
+        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(90F)).scale(0.75));
+        this.plantSeed(Vec3d.ZERO);
+        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(-90F)).scale(0.75));
+    }
+
+    private void plantSeed(Vec3d vec)
+    {
+        BlockPos pos = new BlockPos(prevPosX + vec.x, prevPosY + 0.25, prevPosZ + vec.z);
+        if(world.isAirBlock(pos) && world.getBlockState(pos.down()).getBlock() instanceof BlockFarmland)
+        {
+            ItemStack seed = this.getSeed();
+            if(seed.isEmpty() && this.getPullingEntity() instanceof EntityStorageTrailer)
+            {
+                seed = this.getSeedFromStorage((EntityStorageTrailer) this.getPullingEntity());
+            }
+            if(!seed.isEmpty() && seed.getItem() instanceof net.minecraftforge.common.IPlantable)
+            {
+                net.minecraftforge.common.IPlantable plantable = (net.minecraftforge.common.IPlantable) seed.getItem();
+                world.setBlockState(pos, plantable.getPlant(world, pos));
+                seed.shrink(1);
+            }
+        }
+    }
+
+    private ItemStack getSeed()
+    {
+        for(int i = 0; i < inventory.getSizeInventory(); i++)
+        {
+            ItemStack stack = inventory.getStackInSlot(i);
+            if(!stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable)
+            {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    private ItemStack getSeedFromStorage(EntityStorageTrailer storageTrailer)
+    {
+        if(storageTrailer == null)
+            return ItemStack.EMPTY;
+
+        if(storageTrailer.getChest() != null)
+        {
+            StorageInventory storage = storageTrailer.getChest();
+            for(int i = 0; i < storage.getSizeInventory(); i++)
+            {
+                ItemStack stack = storage.getStackInSlot(i);
+                if(!stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable)
+                {
+                    return stack;
+                }
+            }
+
+            if(storageTrailer.getPullingEntity() instanceof EntityStorageTrailer)
+            {
+                return this.getSeedFromStorage((EntityStorageTrailer) storageTrailer.getPullingEntity());
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -124,10 +196,14 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     }
 
     @Override
-    public void attachChest(ItemStack stack) {}
+    public void attachChest(ItemStack stack)
+    {
+    }
 
     @Override
-    public void removeChest() {}
+    public void removeChest()
+    {
+    }
 
     @Override
     public StorageInventory getInventory()
@@ -159,7 +235,7 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     @SideOnly(Side.CLIENT)
     public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
     {
-        RenderGlobal.drawSelectionBoundingBox(CONNECTION_BOX.getBox(), 0, 1, 0, 0.4F);
+        RenderGlobal.drawSelectionBoundingBox(createScaledBoundingBox(-7 * 0.0625, 6.25 * 0.0625, 6 * 0.0625, 7 * 0.0625, 8.25 * 0.0625F, 17 * 0.0625, 1.1), 0, 1, 0, 0.4F);
     }
 
     @Override
