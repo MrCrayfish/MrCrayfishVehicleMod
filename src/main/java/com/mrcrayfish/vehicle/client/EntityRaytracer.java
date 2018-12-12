@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
@@ -462,6 +463,9 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TRAILER_BODY, trailerStorageParts, trailerStorageTransformGlobal,
                 MatrixTransformation.createTranslation(0, 0.8, 0));
         registerEntityStatic(EntityStorageTrailer.class, trailerStorageParts);
+
+        // Seeder Trailer
+        registerEntityStatic(EntitySeederTrailer.class, trailerStorageParts);
     }
 
     /**

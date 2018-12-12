@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
@@ -168,6 +169,12 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(ModItems.PANEL, 2));
         builder.addMaterial(new ItemStack(Blocks.CHEST));
         mapBuilder.put(EntityStorageTrailer.class, builder.build());
+
+        builder = new Builder();
+        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
+        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
+        builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
+        mapBuilder.put(EntitySeederTrailer.class, builder.build());
 
         if(Loader.isModLoaded("cfm"))
         {
