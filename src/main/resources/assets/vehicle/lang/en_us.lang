@@ -80,6 +80,7 @@ entity.vehicle.jet_ski.name=Jet Ski
 entity.vehicle.trailer.name=Vehicle Trailer
 entity.vehicle.atv.name=ATV
 entity.vehicle.storage_trailer.name=Storage Trailer
+entity.vehicle.seeder_trailer.name=Seeder
 
 vehicle.config.title=MrCrayfish's Vehicle Mod Config
 vehicle.config.client=Client
