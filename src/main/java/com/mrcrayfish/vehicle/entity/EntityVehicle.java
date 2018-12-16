@@ -25,6 +25,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
@@ -250,25 +251,28 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         prevPosY = posY;
         prevPosZ = posZ;
 
-        if(this.searchDelay <= 0)
+        if(!world.isRemote)
         {
-            if(trailer != null)
+            if(this.searchDelay <= 0)
             {
+                if(trailer != null)
+                {
                 /* Updates periodically to ensure the client knows the vehicle/trailer connection.
                  * There is often problems on loading worlds that it doesn't sync correctly, so this
                  * is the fix. */
-                this.dataManager.setDirty(TRAILER);
-                this.trailer.getDataManager().setDirty(EntityTrailer.PULLING_ENTITY);
-                this.searchDelay = VehicleConfig.SERVER.trailerSyncCooldown;
+                    this.dataManager.setDirty(TRAILER);
+                    this.trailer.getDataManager().setDirty(EntityTrailer.PULLING_ENTITY);
+                    this.searchDelay = VehicleConfig.SERVER.trailerSyncCooldown;
+                }
+                else
+                {
+                    this.findTrailer();
+                }
             }
             else
             {
-                this.findTrailer();
+                this.searchDelay--;
             }
-        }
-        else
-        {
-            this.searchDelay--;
         }
 
         if(!this.world.isRemote && trailer != null && (trailer.isDead || trailer.getPullingEntity() != this))
@@ -285,15 +289,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     {
         if(!world.isRemote && trailerId != null && trailer == null)
         {
-            Optional<Entity> optional = world.getLoadedEntityList().stream().filter(e -> e.getUniqueID().equals(trailerId)).findFirst();
-            if(optional.isPresent())
+            WorldServer server = (WorldServer) world;
+            Entity entity = server.getEntityFromUuid(trailerId);
+            if(entity instanceof EntityTrailer)
             {
-                Entity entity = optional.get();
-                if(entity instanceof EntityTrailer)
-                {
-                    this.setTrailer((EntityTrailer) entity);
-                    return;
-                }
+                this.setTrailer((EntityTrailer) entity);
+                return;
             }
             trailerId = null;
         }
