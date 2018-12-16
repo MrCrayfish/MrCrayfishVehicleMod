@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 /**
  * Author: MrCrayfish
@@ -57,6 +58,12 @@ public class BlockFluidExtractor extends BlockRotatedObject
             }
         }
         return true;
+    }
+
+    @Override
+    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    {
+        return Items.AIR;
     }
 
     @Override
