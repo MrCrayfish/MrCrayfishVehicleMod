@@ -29,6 +29,11 @@ public class FluidMixerRecipes
         mixingMap.put(new FluidMixerRecipe(ModFluids.BLAZE_JUICE, 20, ModFluids.ENDER_SAP, 20, new ItemStack(Items.GLOWSTONE_DUST)), new FluidExtract(ModFluids.FUELIUM, 40));
     }
 
+    public HashMap<FluidMixerRecipe, FluidExtract> getMixingMap()
+    {
+        return mixingMap;
+    }
+
     @Nullable
     public FluidMixerRecipe getRecipe(Fluid fluidOne, Fluid fluidTwo, ItemStack ingredient)
     {

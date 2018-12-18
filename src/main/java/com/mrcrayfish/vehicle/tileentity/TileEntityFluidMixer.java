@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipes;
+import com.mrcrayfish.vehicle.fluid.FluidTankMixerInput;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
@@ -37,8 +38,8 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
-    private FluidTank tankBlaze = new FluidTank(Fluid.BUCKET_VOLUME * 5);
-    private FluidTank tankEnderSap = new FluidTank(Fluid.BUCKET_VOLUME * 5);
+    private FluidTank tankBlaze = new FluidTankMixerInput(Fluid.BUCKET_VOLUME * 5);
+    private FluidTank tankEnderSap = new FluidTankMixerInput(Fluid.BUCKET_VOLUME * 5);
     private FluidTank tankFuelium = new FluidTank(Fluid.BUCKET_VOLUME * 10);
 
     public static final int FLUID_MAX_PROGRESS = 20 * 5;
@@ -50,6 +51,11 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
     private int extractionProgress;
 
     private String customName;
+
+    public TileEntityFluidMixer()
+    {
+        tankFuelium.setCanFill(false);
+    }
 
     @Override
     public int getSizeInventory()

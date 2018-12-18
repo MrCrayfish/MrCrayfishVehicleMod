@@ -90,4 +90,16 @@ public class FluidMixerRecipe
             return (stack.getTagCompound() == null || stack.getTagCompound().equals(other.getTagCompound()));
         }
     }
+
+    public boolean requiresFluid(Fluid fluid)
+    {
+        for(Fluid f : fluids)
+        {
+            if(f.equals(fluid))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
