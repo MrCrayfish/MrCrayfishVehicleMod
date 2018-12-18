@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
@@ -466,6 +467,7 @@ public class EntityRaytracer
 
         // Seeder Trailer
         registerEntityStatic(EntitySeederTrailer.class, trailerStorageParts);
+        registerEntityStatic(EntityFertilizerTrailer.class, trailerStorageParts);
     }
 
     /**
