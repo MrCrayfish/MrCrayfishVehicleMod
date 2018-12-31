@@ -42,6 +42,7 @@ tile.fuel_drum.name=燃油鼓
 tile.industrial_fuel_drum.name=工業用燃油鼓
 tile.vehicle_crate.name=載具箱
 tile.workstation.name=工作站
+tile.jack.name=千斤頂
 
 fluid.fuelium=燃油
 fluid.ender_sap=終界樹液
@@ -78,6 +79,9 @@ entity.vehicle.go_kart.name=卡丁車
 entity.vehicle.jet_ski.name=水上摩托車
 entity.vehicle.trailer.name=拖車
 entity.vehicle.atv.name=全地形車（越野型沙灘車）
+entity.vehicle.storage_trailer.name=存儲拖車
+entity.vehicle.seeder_trailer.name=播種機拖車
+entity.vehicle.fertilizer_trailer.name=肥料拖車
 
 vehicle.config.title=MrCrayfish載具模組配置
 vehicle.config.client=用戶端
@@ -86,6 +90,8 @@ vehicle.config.client.debug=調試
 vehicle.config.client.debug.tooltip=用於調試載具
 vehicle.config.client.debug.render_outlines=渲染載具輪廓
 vehicle.config.client.debug.render_outlines.tooltip=如果為true，則渲染載具模型上所有元素的輪廓。用於調試交互。
+vehicle.config.client.debug.raytracer.continuous_reload=於每個遊戲刻重新加載光線追踪
+vehicle.config.client.debug.raytracer.continuous_reload.tooltip=如果為true，則光線追踪會於每個遊戲刻重新加載。
 vehicle.config.client.interaction=相互影響
 vehicle.config.client.interaction.tooltip=載具相互影響的配置選項
 vehicle.config.client.interaction.left_click=啟用左鍵點擊
@@ -103,6 +109,10 @@ vehicle.config.server=伺服器
 vehicle.config.server.tooltip=適用於伺服器的配置
 vehicle.config.server.fuel_enabled=啟用燃油
 vehicle.config.server.fuel_enabled.tooltip=如果為true，載具需要燃油才能駕駛。
+vehicle.config.server.trailer_detach_threshold=牽引（拖車）分離閾值
+vehicle.config.server.trailer_detach_threshold.tooltip=拖車與載具分離前的距離
+vehicle.config.server.trailer_sync_cooldown=牽引（拖車）同步冷卻
+vehicle.config.server.trailer_sync_cooldown.tooltip=在向客戶端同步有關牽引（拖車）連接的數據之前要等待的遊戲刻時間。這對於客戶端的平滑拖車移動非常重要。
 
 vehicle.chat.pump.power=§b信號模式：§r%s
 vehicle.chat.pump.power.off=需要信號關閉
