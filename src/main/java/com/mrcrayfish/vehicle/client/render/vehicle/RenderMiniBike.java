@@ -12,9 +12,9 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderMiniBikeNew extends AbstractRenderLandVehicle<EntityMiniBike>
+public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
 {
-    public RenderMiniBikeNew()
+    public RenderMiniBike()
     {
         this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.65F);
     }
