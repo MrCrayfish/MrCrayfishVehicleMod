@@ -353,16 +353,6 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity instanceof EntityMiniBike)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 8F;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
-        }
-
         if(ridingEntity instanceof EntityShoppingCart)
         {
             model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-70F);

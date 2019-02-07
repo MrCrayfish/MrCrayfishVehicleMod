@@ -70,7 +70,7 @@ public class ClientProxy implements Proxy
         registerLandVehicleRender(EntityDuneBuggy.class, new RenderDuneBuggy());
         registerLandVehicleRender(EntityGoKart.class, new RenderGoKart());
         RenderingRegistry.registerEntityRenderingHandler(EntityShoppingCart.class, RenderShoppingCart::new);
-        RenderingRegistry.registerEntityRenderingHandler(EntityMiniBike.class, RenderMiniBike::new);
+        registerMotorcycleRenderingHandler(EntityMiniBike.class, new RenderMiniBikeNew());
         registerLandVehicleRender(EntityBumperCar.class, new RenderBumperCar());
         RenderingRegistry.registerEntityRenderingHandler(EntityJetSki.class, RenderJetSki::new);
         RenderingRegistry.registerEntityRenderingHandler(EntitySpeedBoat.class, RenderSpeedBoat::new);
@@ -110,6 +110,13 @@ public class ClientProxy implements Proxy
         Models.registerModels(ModItems.MODELS);
     }
 
+    private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRender(Class<T> clazz, AbstractRenderLandVehicle<T> render)
+    {
+        RenderVehicleLandWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderVehicleLandWrapper<>(render);
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
+        VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
+    }
+
     private <T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> void registerPlaneRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
         RenderVehiclePlaneWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderVehiclePlaneWrapper<>(render);
@@ -124,6 +131,13 @@ public class ClientProxy implements Proxy
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
+    private <T extends EntityMotorcycle & EntityRaytracer.IEntityRaytraceable> void registerMotorcycleRenderingHandler(Class<T> clazz, AbstractRenderLandVehicle<T> render)
+    {
+        RenderVehicleMotorcycleWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderVehicleMotorcycleWrapper<>(render);
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
+        VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
+    }
+
     private <T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable> void registerVehicleRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
         RenderVehicleWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderVehicleWrapper<>(render);
@@ -131,12 +145,6 @@ public class ClientProxy implements Proxy
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
-    private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRender(Class<T> clazz, AbstractRenderLandVehicle<T> render)
-    {
-        RenderVehicleLandWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderVehicleLandWrapper<>(render);
-        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
-        VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
-    }
 
     @Override
     public void init()
