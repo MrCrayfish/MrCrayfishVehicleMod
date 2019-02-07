@@ -18,9 +18,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0, 0, 0, 0, 1.0);
+    public static final float AXLE_OFFSET = -1.7F;
+    public static final float WHEEL_OFFSET = 3.5F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.2, 0, 0, 0, 1.25);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-9.25, 8.7, -12.3, 0, -90, 0, 0.25);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(3.0D, 1.0D, 0.0D);
-    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -21.00D);
+    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -21.0D);
 
     /**
      * ItemStack instances used for rendering
@@ -34,6 +37,8 @@ public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytrace
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(12);
         this.setSize(1.85F, 1.15F);
+        this.setAxleOffset(AXLE_OFFSET);
+        this.setWheelOffset(WHEEL_OFFSET);
         this.setBodyPosition(BODY_POSITION);
         this.setHeldOffset(HELD_OFFSET_VEC);
         this.setTowBarPosition(TOW_BAR_VEC);
