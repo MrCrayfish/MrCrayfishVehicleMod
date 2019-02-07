@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTracePart;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.TriangleRayTraceList;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
 import com.mrcrayfish.vehicle.entity.IChest;
@@ -58,6 +59,13 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     private static final RayTracePart TRAY_BOX = new RayTracePart(createScaledBoundingBox(-4 * 0.0625, 8 * 0.0625 + 0.1, -4.5 * 0.0625, 4 * 0.0625, 9F * 0.0625F + 0.1, -12.5 * 0.0625, 1.2));
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
+    public static final float AXLE_OFFSET = -1.0F;
+    public static final float WHEEL_OFFSET = 3.5F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.15, 0, 0, 0, 1.2);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2.75, 4.2, -3.4, 0, -90, 0, 0.2);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(7.0D, 2.0D, 0.0D);
+    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0D, -0.03125D, -0.65D);
+
     static
     {
         if(FMLCommonHandler.instance().getSide().isClient())
@@ -84,9 +92,11 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         this.setMaxSpeed(12F);
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
-        this.setHeldOffset(new Vec3d(7D, 2D, 0D));
-        this.setTowBarPosition(new Vec3d(0.0, 0.0, -1.0));
-        this.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.65D));
+        this.setAxleOffset(AXLE_OFFSET);
+        this.setWheelOffset(WHEEL_OFFSET);
+        this.setBodyPosition(BODY_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTrailerOffset(TRAILER_OFFSET_VEC);
         this.setFuelCapacity(12000F);
         this.setFuelConsumption(0.9F);
     }
