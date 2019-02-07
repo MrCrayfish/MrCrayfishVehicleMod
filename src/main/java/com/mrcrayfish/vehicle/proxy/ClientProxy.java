@@ -85,7 +85,7 @@ public class ClientProxy implements Proxy
         if(Loader.isModLoaded("cfm"))
         {
             registerLandVehicleRender(EntityCouch.class, new RenderCouch());
-            RenderingRegistry.registerEntityRenderingHandler(EntityBath.class, RenderBath::new);
+            registerPlaneRenderingHandler(EntityBath.class, new RenderBath());
             registerHelicopterRenderingHandler(EntitySofacopter.class, new RenderCouchHelicopter());
         }
 

@@ -227,19 +227,6 @@ public class ClientEvents
             GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
             GlStateManager.translate(0, -(offset + ridingEntity.getEyeHeight()) - 0.25, 0);
         }
-
-        if(ridingEntity instanceof EntityBath)
-        {
-            EntityBath vehicle = (EntityBath) ridingEntity;
-            GlStateManager.translate(0, 0, 0.25);
-            GlStateManager.translate(0, 0.625, 0);
-            float bodyPitch = vehicle.prevBodyRotationX + (vehicle.bodyRotationX - vehicle.prevBodyRotationX) * event.getPartialTicks();
-            float bodyRoll = vehicle.prevBodyRotationZ + (vehicle.bodyRotationZ - vehicle.prevBodyRotationZ) * event.getPartialTicks();
-            GlStateManager.rotate(bodyRoll, 0, 0, 1);
-            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
-            GlStateManager.translate(0, -0.625, 0);
-            GlStateManager.translate(0, 0, -0.25);
-        }
     }
 
     @SubscribeEvent
@@ -310,19 +297,6 @@ public class ClientEvents
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-55F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-55F);
 
-            return;
-        }
-
-        if(ridingEntity instanceof EntityBath)
-        {
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-80F);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
             return;
         }
 
