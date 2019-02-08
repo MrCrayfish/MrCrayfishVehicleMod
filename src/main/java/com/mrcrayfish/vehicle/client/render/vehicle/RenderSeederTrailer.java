@@ -93,56 +93,34 @@ public class RenderSeederTrailer extends RenderVehicle<EntitySeederTrailer, Abst
                     ItemStack stack = inventory.getStackInSlot(i);
                     if(!stack.isEmpty())
                     {
-                        /*GlStateManager.pushMatrix();
-                        {
-                            GlStateManager.scale(0.25, 0.25, 0.25);
-                            GlStateManager.translate(-0.75 * (i % 9) + 3 + i * 0.001, 2.5 + i * 0.001, 0.65 * (i / 9) - 0.65 + i * 0.001);
-                            GlStateManager.rotate(90F, 1, 0, 0);
-                            GlStateManager.scale(1.45, 1.45, 1.45);
-                            GlStateManager.rotate(90F * i, 0, 0, 1);
-
-                            double yOffset = Math.cos(Math.PI * (-1.0 + 2.0 * ((i % 9) / 8.0))) * 0.1;
-                            int count = Math.max(1, stack.getCount() / 4);
-                            for(int j = 0; j < count; j++)
-                            {
-                                GlStateManager.pushMatrix();
-                                {
-                                    GlStateManager.translate(-0.1 * (j % 2), 0.1 * (j % 2), -0.0625 * j - yOffset * (j / 8.0));
-                                    GlStateManager.rotate(47F * j, 0, 0, 1);
-                                    Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.NONE);
-                                }
-                                GlStateManager.popMatrix();
-                            }
-                        }
-                        GlStateManager.popMatrix();*/
-
                         GlStateManager.pushMatrix();
                         {
-                            GlStateManager.scale(0.25, 0.25, 0.25);
-                            GlStateManager.translate(-3.15, 2.4, -1);
+                            GlStateManager.translate(-10.5 * 0.0625, 10 * 0.0625, -2 * 0.0625);
+                            GlStateManager.scale(0.45, 0.45, 0.45);
 
-                            int count = Math.max(1, stack.getCount() / 2);
+                            int count = Math.max(1, stack.getCount() / 16);
+                            int width = 4;
+                            int maxLayerCount = 8;
                             for(int j = 0; j < count; j++)
                             {
                                 GlStateManager.pushMatrix();
                                 {
-                                    int layerIndex = index % 32;
-                                    double yOffset = Math.sin(Math.PI * (((layerIndex + 0.5) % 8.0) / 8.0)) * 0.2;
+                                    int layerIndex = index % maxLayerCount;
+                                    //double yOffset = Math.sin(Math.PI * (((layerIndex + 0.5) % (double) width) / (double) width)) * 0.1;
                                     //GlStateManager.translate(0, yOffset * ((double) layer / inventory.getSizeInventory()), 0);
                                     GlStateManager.translate(0, layer * 0.05, 0);
-                                    GlStateManager.translate((layerIndex % 8) * 0.85, 0, (layerIndex / 8) * 0.65);
-                                    GlStateManager.translate(0.4 * (layer % 2), 0, 0);
+                                    GlStateManager.translate((layerIndex % width) * 0.75, 0, (layerIndex / width) * 0.5);
+                                    GlStateManager.translate(0.7 * (layer % 2), 0, 0);
                                     GlStateManager.rotate(90F, 1, 0, 0);
-                                    GlStateManager.rotate(2F, 2, 0, 0);
                                     GlStateManager.rotate(47F * index, 0, 0, 1);
+                                    GlStateManager.rotate(2F * layerIndex, 1, 0, 0);
                                     GlStateManager.translate(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                                    //GlStateManager.rotate(1F * ((layerIndex + 1) % 8.0F / 8.0F), 1, 0, 0);
                                     Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.NONE);
                                 }
                                 GlStateManager.popMatrix();
                                 index++;
                             }
-                            if(index % 32 == 0)
+                            if(index % maxLayerCount == 0)
                             {
                                 layer++;
                             }
