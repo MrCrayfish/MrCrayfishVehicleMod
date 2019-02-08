@@ -16,9 +16,9 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleLandWrapper<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderLandVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderLandVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
-    public RenderVehicleLandWrapper(R renderVehicle)
+    public RenderLandVehicleWrapper(R renderVehicle)
     {
         super(renderVehicle);
     }

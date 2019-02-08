@@ -2,17 +2,23 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityHelicopter;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleHelicopterWrapper<T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderPlaneWrapper<T extends EntityPlane & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
-    public RenderVehicleHelicopterWrapper(R renderVehicle)
+    public RenderPlaneWrapper(R renderVehicle)
     {
         super(renderVehicle);
     }
@@ -50,6 +56,12 @@ public class RenderVehicleHelicopterWrapper<T extends EntityHelicopter & EntityR
             //Translate the vehicle so it's actually riding on it's wheels
             GlStateManager.translate(0, entity.getWheelOffset() * 0.0625F, 0);
 
+            float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
+            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+
+            float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
+            GlStateManager.rotate(-bodyRoll, 0, 0, 1);
+
             //Render body
             renderVehicle.render(entity, partialTicks);
 
@@ -79,6 +91,7 @@ public class RenderVehicleHelicopterWrapper<T extends EntityHelicopter & EntityR
                 }
             }
 
+
             if(entity.isKeyNeeded())
             {
                 this.renderPart(entity.getKeyHolePosition(), entity.keyPort);
@@ -89,12 +102,5 @@ public class RenderVehicleHelicopterWrapper<T extends EntityHelicopter & EntityR
             }
         }
         GlStateManager.popMatrix();
-    }
-
-    @Override
-    public void applyPreRotations(T entity, float partialTicks)
-    {
-        GlStateManager.rotate(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks, 0, 0, 1);
-        GlStateManager.rotate(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks, 1, 0, 0);
     }
 }

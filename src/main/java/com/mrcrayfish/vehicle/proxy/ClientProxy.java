@@ -16,7 +16,6 @@ import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
-import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
@@ -115,28 +114,28 @@ public class ClientProxy implements Proxy
 
     private <T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable> void registerLandVehicleRender(Class<T> clazz, AbstractRenderLandVehicle<T> render)
     {
-        RenderVehicleLandWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderVehicleLandWrapper<>(render);
+        RenderLandVehicleWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderLandVehicleWrapper<>(render);
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
     private <T extends EntityPlane & EntityRaytracer.IEntityRaytraceable> void registerPlaneRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
-        RenderVehiclePlaneWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderVehiclePlaneWrapper<>(render);
+        RenderPlaneWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderPlaneWrapper<>(render);
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
     private <T extends EntityHelicopter & EntityRaytracer.IEntityRaytraceable> void registerHelicopterRenderingHandler(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
-        RenderVehicleHelicopterWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderVehicleHelicopterWrapper<>(render);
+        RenderHelicopterWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderHelicopterWrapper<>(render);
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
     private <T extends EntityMotorcycle & EntityRaytracer.IEntityRaytraceable> void registerMotorcycleRenderingHandler(Class<T> clazz, AbstractRenderLandVehicle<T> render)
     {
-        RenderVehicleMotorcycleWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderVehicleMotorcycleWrapper<>(render);
+        RenderMotorcycleWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderMotorcycleWrapper<>(render);
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
