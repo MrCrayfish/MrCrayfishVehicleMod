@@ -40,6 +40,11 @@ public class VehicleConfig
         @Config.Comment("The amount of ticks to wait before syncing data to clients about the trailer connection. This is important for smooth trailer movement on client side.")
         @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_sync_cooldown")
         public int trailerSyncCooldown = 100;
+
+        @Config.Name("Trailer Inventory Sync Cooldown")
+        @Config.Comment("The amount of ticks to wait before syncing trailer inventory to tracking clients. This is used to render items in the trailer.")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_inventory_sync_cooldown")
+        public int trailerInventorySyncCooldown = 20;
     }
 
     public static class Client

@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
@@ -9,6 +11,7 @@ import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
+import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
@@ -23,9 +26,11 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,7 +49,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     private static final EntityRaytracer.RayTracePart CHEST_BOX = new EntityRaytracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
-    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -20.8D);
+    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -12.0D);
 
     static
     {
@@ -61,7 +66,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     {
         super(worldIn);
         this.initInventory();
-        this.setTowBarPosition(new Vec3d(0.0D, 0.0D, -12.0D));
+        this.setTowBarPosition(TOW_BAR_VEC);
     }
 
     @Override

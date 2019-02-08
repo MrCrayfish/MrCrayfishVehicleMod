@@ -16,6 +16,8 @@ import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
@@ -41,6 +43,7 @@ import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -227,6 +230,18 @@ public class ClientProxy implements Proxy
             EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
             Minecraft.getMinecraft().displayGuiScreen(new GuiEditVehicle(poweredVehicle.getVehicleInventory(), poweredVehicle, player));
             player.openContainer.windowId = windowId;
+        }
+    }
+
+    @Override
+    public void syncStorageInventory(int entityId, NBTTagCompound tagCompound)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof StorageInventoryWrapper)
+        {
+            StorageInventoryWrapper wrapper = (StorageInventoryWrapper) entity;
+            wrapper.getInventory().readFromNBT(tagCompound);
         }
     }
 }

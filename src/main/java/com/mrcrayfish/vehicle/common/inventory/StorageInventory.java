@@ -1,11 +1,15 @@
 package com.mrcrayfish.vehicle.common.inventory;
 
+import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.ReportedException;
+import net.minecraftforge.common.util.Constants;
 
 /**
  * Author: MrCrayfish
@@ -152,6 +156,43 @@ public class StorageInventory extends InventoryBasic
             itemstack.grow(j);
             itemstack.setAnimationsToGo(5);
             return i;
+        }
+    }
+
+    public NBTTagCompound writeToNBT()
+    {
+        NBTTagCompound tagCompound = new NBTTagCompound();
+        NBTTagList tagList = new NBTTagList();
+        for(int i = 0; i < this.getSizeInventory(); i++)
+        {
+            ItemStack stack = this.getStackInSlot(i);
+            if(!stack.isEmpty())
+            {
+                NBTTagCompound slotTag = new NBTTagCompound();
+                slotTag.setByte("Slot", (byte) i);
+                stack.writeToNBT(slotTag);
+                tagList.appendTag(slotTag);
+            }
+        }
+        tagCompound.setTag("inventory", tagList);
+        return tagCompound;
+    }
+
+    public void readFromNBT(NBTTagCompound tagCompound)
+    {
+        if(tagCompound.hasKey("inventory", Constants.NBT.TAG_LIST))
+        {
+            this.clear();
+            NBTTagList tagList = tagCompound.getTagList("inventory", Constants.NBT.TAG_COMPOUND);
+            for(int i = 0; i < tagList.tagCount(); i++)
+            {
+                NBTTagCompound slotTag = tagList.getCompoundTagAt(i);
+                byte slot = slotTag.getByte("Slot");
+                if(slot >= 0 && slot < this.getSizeInventory())
+                {
+                    this.setInventorySlotContents(slot, new ItemStack(slotTag));
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.proxy;
 
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 
@@ -17,6 +18,8 @@ public interface Proxy
     default void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle) {}
 
     default void openVehicleEditWindow(int entityId, int windowId) {}
+
+    default void syncStorageInventory(int entityId, NBTTagCompound tagCompound) {}
 
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {};
 }
