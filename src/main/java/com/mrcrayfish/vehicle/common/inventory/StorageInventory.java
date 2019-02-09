@@ -1,14 +1,29 @@
 package com.mrcrayfish.vehicle.common.inventory;
 
-import com.mrcrayfish.vehicle.util.InventoryUtil;
+import com.mrcrayfish.vehicle.common.container.ContainerStorage;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageStorageWindow;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.play.server.SPacketChat;
+import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.ReportedException;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.world.ILockableContainer;
+import net.minecraft.world.storage.loot.ILootContainer;
 import net.minecraftforge.common.util.Constants;
 
 /**
@@ -16,9 +31,12 @@ import net.minecraftforge.common.util.Constants;
  */
 public class StorageInventory extends InventoryBasic
 {
-    public StorageInventory(String title, boolean customName, int slotCount)
+    private StorageInventoryWrapper wrapper;
+
+    public StorageInventory(String title, boolean customName, int slotCount, StorageInventoryWrapper wrapper)
     {
         super(title, customName, slotCount);
+        this.wrapper = wrapper;
     }
 
     public boolean addItemStack(final ItemStack stack)
@@ -192,6 +210,59 @@ public class StorageInventory extends InventoryBasic
                 {
                     this.setInventorySlotContents(slot, new ItemStack(slotTag));
                 }
+            }
+        }
+    }
+
+    @Override
+    public boolean isUsableByPlayer(EntityPlayer player)
+    {
+        if(wrapper instanceof Entity)
+        {
+            Entity entity = (Entity) wrapper;
+            return player.getDistanceSq(entity) <= 8.0D;
+        }
+        return true;
+    }
+
+    public boolean isStorageItem(ItemStack stack)
+    {
+        return wrapper.isStorageItem(stack);
+    }
+
+    public void openGui(EntityPlayerMP player, Entity entity)
+    {
+        if(entity instanceof StorageInventoryWrapper)
+        {
+            if(this instanceof ILootContainer && player.isSpectator())
+            {
+                player.sendStatusMessage((new TextComponentTranslation("container.spectatorCantOpen", new Object[0])).setStyle((new Style()).setColor(TextFormatting.RED)), true);
+            }
+            else
+            {
+                if(player.openContainer != player.inventoryContainer)
+                {
+                    player.closeScreen();
+                }
+
+                if(this instanceof ILockableContainer)
+                {
+                    ILockableContainer lockableContainer = (ILockableContainer) this;
+
+                    if(lockableContainer.isLocked() && !player.canOpen(lockableContainer.getLockCode()) && !player.isSpectator())
+                    {
+                        player.connection.sendPacket(new SPacketChat(new TextComponentTranslation("container.isLocked", this.getDisplayName()), ChatType.GAME_INFO));
+                        player.connection.sendPacket(new SPacketSoundEffect(SoundEvents.BLOCK_CHEST_LOCKED, SoundCategory.BLOCKS, player.posX, player.posY, player.posZ, 1.0F, 1.0F));
+                        return;
+                    }
+                }
+
+                player.getNextWindowId();
+                PacketHandler.INSTANCE.sendTo(new MessageStorageWindow(player.currentWindowId, entity.getEntityId()), player);
+                player.openContainer = new ContainerStorage(player.inventory, this, player);
+                player.openContainer.windowId = player.currentWindowId;
+                player.openContainer.addListener(player);
+                net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.player.PlayerContainerEvent.Open(player, player.openContainer));
             }
         }
     }

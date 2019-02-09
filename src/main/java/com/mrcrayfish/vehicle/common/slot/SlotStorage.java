@@ -1,0 +1,26 @@
+package com.mrcrayfish.vehicle.common.slot;
+
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
+
+/**
+ * Author: MrCrayfish
+ */
+public class SlotStorage extends Slot
+{
+    private StorageInventory storageInventory;
+
+    public SlotStorage(StorageInventory storageInventory, int index, int xPosition, int yPosition)
+    {
+        super(storageInventory, index, xPosition, yPosition);
+        this.storageInventory = storageInventory;
+    }
+
+    @Override
+    public boolean isItemValid(ItemStack stack)
+    {
+        return storageInventory.isStorageItem(stack);
+    }
+}

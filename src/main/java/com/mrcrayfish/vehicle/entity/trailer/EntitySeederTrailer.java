@@ -91,9 +91,9 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
         ItemStack heldItem = player.getHeldItem(hand);
-        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan))
+        if((heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan)) && player instanceof EntityPlayerMP)
         {
-            player.displayGUIChest(inventory);
+            inventory.openGui((EntityPlayerMP) player, this);
         }
         return super.processInitialInteract(player, hand);
     }
@@ -202,7 +202,7 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     private void initInventory()
     {
         InventoryBasic original = inventory;
-        inventory = new StorageInventory(this.getName(), false, 27);
+        inventory = new StorageInventory(this.getName(), false, 27, this);
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
@@ -296,8 +296,8 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     }
 
     @Override
-    public void closeInventory(EntityPlayer player)
+    public boolean isStorageItem(ItemStack stack)
     {
-        System.out.println("Closed Inventory");
+        return !stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable;
     }
 }

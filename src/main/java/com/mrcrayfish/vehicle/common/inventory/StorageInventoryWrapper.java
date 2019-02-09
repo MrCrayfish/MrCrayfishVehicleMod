@@ -130,4 +130,9 @@ public interface StorageInventoryWrapper extends ISidedInventory
     {
         getInventory().clear();
     }
+
+    default boolean isStorageItem(ItemStack stack)
+    {
+        return true;
+    }
 }

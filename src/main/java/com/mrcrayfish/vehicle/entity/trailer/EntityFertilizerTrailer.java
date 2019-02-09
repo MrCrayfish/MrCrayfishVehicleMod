@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.EnumDyeColor;
@@ -87,9 +88,9 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
         ItemStack heldItem = player.getHeldItem(hand);
-        if(heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan))
+        if((heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan)) && player instanceof EntityPlayerMP)
         {
-            player.displayGUIChest(inventory);
+            inventory.openGui((EntityPlayerMP) player, this);
         }
         return super.processInitialInteract(player, hand);
     }
@@ -213,7 +214,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     private void initInventory()
     {
         InventoryBasic original = inventory;
-        inventory = new StorageInventory(this.getName(), false, 27);
+        inventory = new StorageInventory(this.getName(), false, 27, this);
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
@@ -304,5 +305,19 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
             }
         }
         return EntityRaytracer.IEntityRaytraceable.super.processHit(result, rightClick);
+    }
+
+    @Override
+    public boolean isStorageItem(ItemStack stack)
+    {
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemDye)
+        {
+            EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getMetadata());
+            if(dyeColor == EnumDyeColor.WHITE)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

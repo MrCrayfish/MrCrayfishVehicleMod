@@ -36,6 +36,8 @@ public class PacketHandler
         registerMessage(MessageVehicleWindow.class, Side.CLIENT);
         registerMessage(MessageHitchTrailer.class, Side.SERVER);
         registerMessage(MessageSyncInventory.class, Side.CLIENT);
+        registerMessage(MessageOpenStorage.class, Side.SERVER);
+        registerMessage(MessageStorageWindow.class, Side.CLIENT);
     }
 
     private static void registerMessage(Class packet, Side side)

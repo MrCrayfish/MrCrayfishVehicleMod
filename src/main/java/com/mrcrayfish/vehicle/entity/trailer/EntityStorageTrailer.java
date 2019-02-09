@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.entity.IChest;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
+import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
 import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
@@ -128,7 +129,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
             }
             else if(result.getPartHit() == CHEST_BOX)
             {
-                PacketHandler.INSTANCE.sendToServer(new MessageVehicleChest(this.getEntityId()));
+                PacketHandler.INSTANCE.sendToServer(new MessageOpenStorage(this.getEntityId()));
                 return true;
             }
         }
@@ -159,7 +160,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     private void initInventory()
     {
         InventoryBasic original = inventory;
-        inventory = new StorageInventory(this.getName(), false, 27);
+        inventory = new StorageInventory(this.getName(), false, 27, this);
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
