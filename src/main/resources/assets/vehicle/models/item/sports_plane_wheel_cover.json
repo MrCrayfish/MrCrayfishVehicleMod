@@ -1,111 +1,68 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "blocks/concrete_white"
-    },
-    "display": {
-        "gui": {
-            "rotation": [ 30, 225, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.625, 0.625, 0.625 ]
-        },
-        "ground": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 3, 0 ],
-            "scale": [ 0.25, 0.25, 0.25 ]
-        },
-        "fixed": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.5, 0.5, 0.5 ]
-        },
-        "thirdperson_righthand": {
-            "rotation": [ 75, 45, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.375, 0.375, 0.375 ]
-        },
-        "thirdperson_lefthand": {
-            "rotation": [ 75, 255, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.375, 0.375, 0.375 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 45, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.4, 0.4, 0.4 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 225, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.4, 0.4, 0.4 ]
-        }
+        "particle": "minecraft:blocks/concrete_red",
+        "base": "minecraft:blocks/concrete_white"
     },
     "elements": [
         {
-            "name": "wheel_cover_1",
-            "from": [ 6.00, 5.00, 4.30 ], 
-            "to": [ 10.00, 7.00, 10.30 ], 
+            "from": [ 6, 5, 4.3 ], 
+            "to": [ 10, 7, 10.3 ], 
             "faces": {
-                "north": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 2.00 ] },
-                "east": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 6.00, 2.00 ] },
-                "south": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 2.00 ] },
-                "west": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 6.00, 2.00 ] },
-                "up": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 6.00 ] },
-                "down": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 6.00 ] }
+                "north": { "texture": "#base", "uv": [ 0, 0, 4, 2 ], "tintindex": 0 },
+                "east": { "texture": "#base", "uv": [ 0, 0, 6, 2 ], "tintindex": 0 },
+                "south": { "texture": "#base", "uv": [ 0, 0, 4, 2 ], "tintindex": 0 },
+                "west": { "texture": "#base", "uv": [ 0, 0, 6, 2 ], "tintindex": 0 },
+                "up": { "texture": "#base", "uv": [ 0, 0, 4, 6 ], "tintindex": 0 },
+                "down": { "texture": "#base", "uv": [ 0, 0, 4, 6 ], "tintindex": 0 }
             }
         },
         {
-            "name": "wheel_cover_2",
-            "from": [ 6.00, 7.00, 6.70 ], 
-            "to": [ 10.00, 8.00, 9.30 ], 
+            "from": [ 6, 7, 6.7 ], 
+            "to": [ 10, 8, 9.3 ], 
             "faces": {
-                "north": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
-                "east": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 2.60, 1.00 ] },
-                "south": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
-                "west": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 2.60, 1.00 ] },
-                "up": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 2.60 ] },
-                "down": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 2.60 ] }
+                "north": { "texture": "#base", "uv": [ 0, 0, 4, 1 ], "tintindex": 0 },
+                "east": { "texture": "#base", "uv": [ 0, 0, 2.6, 1 ], "tintindex": 0 },
+                "south": { "texture": "#base", "uv": [ 0, 0, 4, 1 ], "tintindex": 0 },
+                "west": { "texture": "#base", "uv": [ 0, 0, 2.6, 1 ], "tintindex": 0 },
+                "up": { "texture": "#base", "uv": [ 0, 0, 4, 2.6 ], "tintindex": 0 }
             }
         },
         {
-            "name": "wheel_cover_3",
-            "from": [ 6.00, 6.00, 3.00 ], 
-            "to": [ 10.00, 7.00, 6.90 ], 
+            "from": [ 6, 6, 3 ], 
+            "to": [ 10, 7, 6.9 ], 
             "rotation": { "origin": [ 8.0, 7.0, 4.300000004470348 ], "axis": "x", "angle": -22.5 },
             "faces": {
-                "north": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
-                "east": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 3.90, 1.00 ] },
-                "south": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
-                "west": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 3.90, 1.00 ] },
-                "up": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 3.90 ] },
-                "down": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 3.90 ] }
+                "north": { "texture": "#base", "uv": [ 0, 0, 4, 1 ], "tintindex": 0 },
+                "east": { "texture": "#base", "uv": [ 0, 0, 3.9, 1 ], "tintindex": 0 },
+                "south": { "texture": "#base", "uv": [ 0, 0, 4, 1 ], "tintindex": 0 },
+                "west": { "texture": "#base", "uv": [ 0, 0, 3.9, 1 ], "tintindex": 0 },
+                "up": { "texture": "#base", "uv": [ 0, 0, 4, 3.9 ], "tintindex": 0 },
+                "down": { "texture": "#base", "uv": [ 0, 0, 4, 3.9 ], "tintindex": 0 }
             }
         },
         {
-            "name": "wheel_cover_4",
-            "from": [ 6.00, 6.00, 8.90 ], 
-            "to": [ 10.00, 7.00, 10.30 ], 
+            "from": [ 6, 6, 8.9 ], 
+            "to": [ 10, 7, 10.3 ], 
             "rotation": { "origin": [ 8.0, 7.0, 10.30000001937151 ], "axis": "x", "angle": 45.0 },
             "faces": {
-                "north": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
-                "east": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 1.40, 1.00 ] },
-                "south": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.00 ] },
-                "west": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 1.40, 1.00 ] },
-                "up": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.40 ] },
-                "down": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.40 ] }
+                "north": { "texture": "#base", "uv": [ 0, 0, 4, 1 ], "tintindex": 0 },
+                "east": { "texture": "#base", "uv": [ 0, 0, 1.4, 1 ], "tintindex": 0 },
+                "south": { "texture": "#base", "uv": [ 0, 0, 4, 1 ], "tintindex": 0 },
+                "west": { "texture": "#base", "uv": [ 0, 0, 1.4, 1 ], "tintindex": 0 },
+                "up": { "texture": "#base", "uv": [ 0, 0, 4, 1.4 ], "tintindex": 0 },
+                "down": { "texture": "#base", "uv": [ 0, 0, 4, 1.4 ], "tintindex": 0 }
             }
         },
         {
-            "name": "wheel_cover_5",
-            "from": [ 6.00, 5.00, 3.10 ], 
-            "to": [ 10.00, 6.50, 4.30 ], 
+            "from": [ 6, 5, 3.1 ], 
+            "to": [ 10, 6.5, 4.3 ], 
             "faces": {
-                "north": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.50 ] },
-                "east": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 1.20, 1.50 ] },
-                "south": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.50 ] },
-                "west": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 1.20, 1.50 ] },
-                "up": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.20 ] },
-                "down": { "texture": "#0", "tintindex": 0, "uv": [ 0.00, 0.00, 4.00, 1.20 ] }
+                "north": { "texture": "#base", "uv": [ 0, 0, 4, 1.5 ], "tintindex": 0 },
+                "east": { "texture": "#base", "uv": [ 0, 0, 1.2, 1.5 ], "tintindex": 0 },
+                "west": { "texture": "#base", "uv": [ 0, 0, 1.2, 1.5 ], "tintindex": 0 },
+                "up": { "texture": "#base", "uv": [ 0, 0, 4, 1.2 ], "tintindex": 0 },
+                "down": { "texture": "#base", "uv": [ 0, 0, 4, 1.2 ], "tintindex": 0 }
             }
         }
     ]
