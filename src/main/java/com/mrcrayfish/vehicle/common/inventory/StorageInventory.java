@@ -31,9 +31,9 @@ import net.minecraftforge.common.util.Constants;
  */
 public class StorageInventory extends InventoryBasic
 {
-    private StorageInventoryWrapper wrapper;
+    private IStorage wrapper;
 
-    public StorageInventory(String title, boolean customName, int slotCount, StorageInventoryWrapper wrapper)
+    public StorageInventory(String title, boolean customName, int slotCount, IStorage wrapper)
     {
         super(title, customName, slotCount);
         this.wrapper = wrapper;
@@ -232,7 +232,7 @@ public class StorageInventory extends InventoryBasic
 
     public void openGui(EntityPlayerMP player, Entity entity)
     {
-        if(entity instanceof StorageInventoryWrapper)
+        if(entity instanceof IStorage)
         {
             if(this instanceof ILootContainer && player.isSpectator())
             {

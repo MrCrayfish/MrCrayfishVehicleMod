@@ -26,7 +26,6 @@ public class PacketHandler
         registerMessage(MessageThrowVehicle.class, Side.SERVER);
         registerMessage(MessagePickupVehicle.class, Side.SERVER);
         registerMessage(MessageFlaps.class, Side.SERVER);
-        registerMessage(MessageVehicleChest.class, Side.SERVER);
         registerMessage(MessageAttachChest.class, Side.SERVER);
         registerMessage(MessageAttachTrailer.class, Side.SERVER);
         registerMessage(MessageFuelVehicle.class, Side.SERVER);

@@ -2,18 +2,13 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import com.mrcrayfish.vehicle.VehicleConfig;
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
-import com.mrcrayfish.vehicle.entity.IChest;
+import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
-import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
-import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,17 +16,13 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.client.CPacketCustomPayload;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -44,7 +35,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class EntityStorageTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IChest, StorageInventoryWrapper
+public class EntityStorageTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IStorage
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
     private static final EntityRaytracer.RayTracePart CHEST_BOX = new EntityRaytracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
@@ -184,29 +175,10 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
         }
     }
 
-    @Nullable
-    @Override
-    public StorageInventory getChest()
-    {
-        return inventory;
-    }
-
-    @Override
-    public boolean hasChest()
-    {
-        return true;
-    }
-
-    @Override
-    public void attachChest(ItemStack stack) {}
-
-    @Override
-    public void removeChest() {}
-
     @Override
     public StorageInventory getInventory()
     {
-        return this.getChest();
+        return inventory;
     }
 
     @Override

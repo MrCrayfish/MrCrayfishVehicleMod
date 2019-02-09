@@ -5,15 +5,12 @@ import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.IChest;
+import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
-import com.mrcrayfish.vehicle.network.message.MessageVehicleChest;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.BlockFarmland;
 import net.minecraft.client.Minecraft;
@@ -24,10 +21,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemSeeds;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumHand;
@@ -46,7 +41,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class EntitySeederTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IChest, StorageInventoryWrapper
+public class EntitySeederTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IStorage
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
@@ -158,9 +153,9 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
         if(storageTrailer == null)
             return ItemStack.EMPTY;
 
-        if(storageTrailer.getChest() != null)
+        if(storageTrailer.getInventory() != null)
         {
-            StorageInventory storage = storageTrailer.getChest();
+            StorageInventory storage = storageTrailer.getInventory();
             for(int i = 0; i < storage.getSizeInventory(); i++)
             {
                 ItemStack stack = storage.getStackInSlot(i);
@@ -227,31 +222,9 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     }
 
     @Override
-    public StorageInventory getChest()
-    {
-        return inventory;
-    }
-
-    @Override
-    public boolean hasChest()
-    {
-        return true;
-    }
-
-    @Override
-    public void attachChest(ItemStack stack)
-    {
-    }
-
-    @Override
-    public void removeChest()
-    {
-    }
-
-    @Override
     public StorageInventory getInventory()
     {
-        return this.getChest();
+        return inventory;
     }
 
     @Override

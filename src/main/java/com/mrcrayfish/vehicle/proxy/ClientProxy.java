@@ -16,7 +16,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
-import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
+import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
@@ -236,9 +236,9 @@ public class ClientProxy implements Proxy
     {
         World world = Minecraft.getMinecraft().world;
         Entity entity = world.getEntityByID(entityId);
-        if(entity instanceof StorageInventoryWrapper)
+        if(entity instanceof IStorage)
         {
-            StorageInventoryWrapper wrapper = (StorageInventoryWrapper) entity;
+            IStorage wrapper = (IStorage) entity;
             wrapper.getInventory().readFromNBT(tagCompound);
         }
     }

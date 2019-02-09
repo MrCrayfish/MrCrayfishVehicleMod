@@ -1,15 +1,12 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.client.gui.GuiStorage;
-import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
-import com.mrcrayfish.vehicle.entity.IChest;
+import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
+import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.init.ModItems;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
@@ -51,12 +48,31 @@ public class MessageOpenStorage implements IMessage, IMessageHandler<MessageOpen
             EntityPlayerMP player = ctx.getServerHandler().player;
             World world = player.world;
             Entity targetEntity = world.getEntityByID(message.entityId);
-            if(targetEntity != null && targetEntity instanceof StorageInventoryWrapper)
+            if(targetEntity != null && targetEntity instanceof IStorage)
             {
                 float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
                 if(player.getDistance(targetEntity) < reachDistance)
                 {
-                    ((StorageInventoryWrapper) targetEntity).getInventory().openGui(player, targetEntity);
+                    if(targetEntity instanceof IAttachableChest)
+                    {
+                        IAttachableChest attachableChest = (IAttachableChest) targetEntity;
+                        if(attachableChest.hasChest())
+                        {
+                            ItemStack stack = player.inventory.getCurrentItem();
+                            if(stack.getItem() == ModItems.WRENCH)
+                            {
+                                ((IAttachableChest) targetEntity).removeChest();
+                            }
+                            else
+                            {
+                                attachableChest.getInventory().openGui(player, targetEntity);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        ((IStorage) targetEntity).getInventory().openGui(player, targetEntity);
+                    }
                 }
             }
         });

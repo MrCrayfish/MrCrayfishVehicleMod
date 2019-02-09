@@ -26,7 +26,7 @@ public class RenderSeederTrailer extends AbstractRenderVehicle<EntitySeederTrail
         this.renderWheel(entity, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
-        StorageInventory inventory = entity.getChest();
+        StorageInventory inventory = entity.getInventory();
         if(inventory != null)
         {
             int layer = 0;

@@ -123,9 +123,9 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
         if(stack.isEmpty())
             return;
 
-        if(storageTrailer != null && storageTrailer.getChest() != null)
+        if(storageTrailer != null && storageTrailer.getInventory() != null)
         {
-            StorageInventory storage = storageTrailer.getChest();
+            StorageInventory storage = storageTrailer.getInventory();
             storage.addItemStack(stack);
             if(!stack.isEmpty())
             {

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.client.gui.GuiStorage;
-import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
+import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -46,10 +46,10 @@ public class MessageStorageWindow implements IMessage, IMessageHandler<MessageSt
         Minecraft.getMinecraft().addScheduledTask(() ->
         {
             Entity entity = Minecraft.getMinecraft().world.getEntityByID(message.entityId);
-            if(entity instanceof StorageInventoryWrapper)
+            if(entity instanceof IStorage)
             {
                 EntityPlayer player = Minecraft.getMinecraft().player;
-                StorageInventoryWrapper wrapper = (StorageInventoryWrapper) entity;
+                IStorage wrapper = (IStorage) entity;
                 Minecraft.getMinecraft().displayGuiScreen(new GuiStorage(player.inventory, wrapper.getInventory()));
                 player.openContainer.windowId = message.windowId;
             }

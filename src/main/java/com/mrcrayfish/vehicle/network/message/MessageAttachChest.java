@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.IChest;
+import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
@@ -50,18 +50,18 @@ public class MessageAttachChest implements IMessage, IMessageHandler<MessageAtta
             EntityPlayerMP player = ctx.getServerHandler().player;
             World world = player.world;
             Entity targetEntity = world.getEntityByID(message.entityId);
-            if(targetEntity != null && targetEntity instanceof IChest)
+            if(targetEntity != null && targetEntity instanceof IAttachableChest)
             {
                 float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
                 if(player.getDistance(targetEntity) < reachDistance)
                 {
-                    IChest chest = (IChest) targetEntity;
-                    if(!chest.hasChest())
+                    IAttachableChest attachableChest = (IAttachableChest) targetEntity;
+                    if(!attachableChest.hasChest())
                     {
                         ItemStack stack = player.inventory.getCurrentItem();
                         if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
                         {
-                            chest.attachChest(stack);
+                            attachableChest.attachChest(stack);
                             world.playSound(null, targetEntity.posX, targetEntity.posY, targetEntity.posZ, SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                         }
                     }

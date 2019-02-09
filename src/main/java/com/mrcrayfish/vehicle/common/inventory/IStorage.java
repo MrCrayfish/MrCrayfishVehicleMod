@@ -8,7 +8,7 @@ import net.minecraft.util.EnumFacing;
 /**
  * Author: MrCrayfish
  */
-public interface StorageInventoryWrapper extends ISidedInventory
+public interface IStorage extends ISidedInventory
 {
     StorageInventory getInventory();
 
