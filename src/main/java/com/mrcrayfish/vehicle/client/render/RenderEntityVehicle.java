@@ -65,7 +65,7 @@ public class RenderEntityVehicle<T extends EntityVehicle & EntityRaytracer.IEnti
         EntityRaytracer.renderRaytraceElements(entity, x, y, z, entityYaw);
     }
 
-    public void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
+    private void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
     {
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         float damageTaken = vehicle.getDamageTaken() - partialTicks;

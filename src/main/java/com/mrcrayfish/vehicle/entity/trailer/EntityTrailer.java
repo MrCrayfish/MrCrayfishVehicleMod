@@ -28,7 +28,7 @@ public abstract class EntityTrailer extends EntityVehicle
 {
     public static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(EntityTrailer.class, DataSerializers.VARINT);
 
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1);
 
     private Entity pullingEntity;
 
