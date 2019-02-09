@@ -43,20 +43,20 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
                 {
                     GlStateManager.pushMatrix();
                     {
-                        GlStateManager.translate(-10.5 * 0.0625, -3 * 0.0625, -2 * 0.0625);
+                        GlStateManager.translate(-5.5 * 0.0625, -3 * 0.0625, -3 * 0.0625);
                         GlStateManager.scale(0.45, 0.45, 0.45);
 
-                        int count = Math.max(1, stack.getCount() / 16);
-                        int width = 4;
-                        int maxLayerCount = 8;
+                        int count = Math.max(1, stack.getCount() / 32);
+                        int width = 3;
+                        int maxLayerCount = 6;
                         for(int j = 0; j < count; j++)
                         {
                             GlStateManager.pushMatrix();
                             {
                                 int layerIndex = index % maxLayerCount;
-                                GlStateManager.translate(0, layer * 0.05, 0);
-                                GlStateManager.translate((layerIndex % width) * 0.75, 0, (layerIndex / width) * 0.5);
-                                GlStateManager.translate(0.7 * (layer % 2), 0, 0);
+                                GlStateManager.translate(0, layer * 0.1 + j * 0.0625, 0);
+                                GlStateManager.translate((layerIndex % width) * 0.5, 0, (layerIndex / width) * 0.75);
+                                GlStateManager.translate(0.5 * (layer % 2), 0, 0);
                                 GlStateManager.rotate(90F, 1, 0, 0);
                                 GlStateManager.rotate(47F * index, 0, 0, 1);
                                 GlStateManager.rotate(2F * layerIndex, 1, 0, 0);

@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventoryWrapper;
@@ -10,6 +11,7 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
+import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.IGrowable;
 import net.minecraft.block.state.IBlockState;
@@ -56,6 +58,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
         }
     }
 
+    private int inventoryTimer;
     private StorageInventory inventory;
     private BlockPos[] lastPos = new BlockPos[3];
 
@@ -93,6 +96,18 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
             inventory.openGui((EntityPlayerMP) player, this);
         }
         return super.processInitialInteract(player, hand);
+    }
+
+    @Override
+    public void onEntityUpdate()
+    {
+        super.onEntityUpdate();
+
+        if(!world.isRemote && inventoryTimer++ == VehicleConfig.SERVER.trailerInventorySyncCooldown)
+        {
+            inventoryTimer = 0;
+            PacketHandler.INSTANCE.sendToAllTracking(new MessageSyncInventory(this.getEntityId(), inventory), this);
+        }
     }
 
     @Override
