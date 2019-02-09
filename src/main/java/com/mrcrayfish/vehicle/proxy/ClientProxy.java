@@ -94,7 +94,7 @@ public class ClientProxy implements Proxy
         RenderingRegistry.registerEntityRenderingHandler(EntityVehicleTrailer.class, RenderVehicleTrailer::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityStorageTrailer.class, RenderChestTrailer::new);
         registerVehicleRender(EntitySeederTrailer.class, new RenderSeederTrailer());
-        RenderingRegistry.registerEntityRenderingHandler(EntityFertilizerTrailer.class, RenderFertilizerTrailer::new);
+        registerVehicleRender(EntityFertilizerTrailer.class, new RenderFertilizerTrailer());
 
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
 
