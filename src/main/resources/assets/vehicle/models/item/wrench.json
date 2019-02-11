@@ -1,7 +1,6 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "minecraft:blocks/concrete_red",
         "handle_guard": "minecraft:blocks/concrete_gray",
         "metal_tip": "minecraft:blocks/iron_block",
         "metal_base": "minecraft:blocks/concrete_red",

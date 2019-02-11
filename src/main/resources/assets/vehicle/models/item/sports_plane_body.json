@@ -1,7 +1,6 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "minecraft:blocks/concrete_red",
         "seat": "minecraft:blocks/wool_colored_black",
         "glass": "minecraft:blocks/glass",
         "detail": "minecraft:blocks/anvil_base",
