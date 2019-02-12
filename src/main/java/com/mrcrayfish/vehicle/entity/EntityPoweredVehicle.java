@@ -142,7 +142,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(MAX_SPEED, 10F);
         this.dataManager.register(ACCELERATION_SPEED, 0.5F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
-        this.dataManager.register(TURN_SENSITIVITY, 10);
+        this.dataManager.register(TURN_SENSITIVITY, 6);
         this.dataManager.register(MAX_TURN_ANGLE, 45);
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.dataManager.register(HAS_ENGINE, false);
