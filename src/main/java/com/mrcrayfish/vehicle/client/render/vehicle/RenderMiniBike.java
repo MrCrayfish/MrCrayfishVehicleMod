@@ -17,6 +17,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
     public RenderMiniBike()
     {
         this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.65F);
+        this.setEnginePosition(0, 1, 2.5, 180F, 1.0);
     }
 
     @Override
