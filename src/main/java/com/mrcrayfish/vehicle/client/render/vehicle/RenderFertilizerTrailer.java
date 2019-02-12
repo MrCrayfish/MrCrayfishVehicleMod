@@ -58,10 +58,10 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
                             }
                             GlStateManager.popMatrix();
                             index++;
-                        }
-                        if(index % maxLayerCount == 0)
-                        {
-                            layer++;
+                            if(index % maxLayerCount == 0)
+                            {
+                                layer++;
+                            }
                         }
                     }
                     GlStateManager.popMatrix();

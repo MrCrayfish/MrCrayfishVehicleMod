@@ -62,10 +62,10 @@ public class RenderSeederTrailer extends AbstractRenderVehicle<EntitySeederTrail
                             }
                             GlStateManager.popMatrix();
                             index++;
-                        }
-                        if(index % maxLayerCount == 0)
-                        {
-                            layer++;
+                            if(index % maxLayerCount == 0)
+                            {
+                                layer++;
+                            }
                         }
                     }
                     GlStateManager.popMatrix();
