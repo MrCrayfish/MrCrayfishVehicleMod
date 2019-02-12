@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -88,7 +89,7 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
             //Render the engine if the vehicle has explicitly stated it should
             if(entity.shouldRenderEngine() && entity.hasEngine())
             {
-                this.renderPart(renderVehicle.getEnginePosition(), entity.engine);
+                this.renderEngine(entity, renderVehicle.getEnginePosition(), entity.engine);
             }
 
             //Render the fuel port of the vehicle

@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -73,6 +74,8 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
 
     /**
      *
+     * @param entity
+     * @param partialTicks
      */
     public void applyPreRotations(T entity, float partialTicks) {}
 
@@ -119,5 +122,23 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
             Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
+    }
+
+
+    /**
+     * Renders the engine (ItemStack) on the vehicle using the specified PartPosition. It adds a
+     * subtle shake to the render to simulate it being powered.
+     *
+     * @param position the render definitions to apply to the part
+     * @param part the part to render onto the vehicle
+     */
+    protected void renderEngine(EntityPoweredVehicle entity, @Nullable PartPosition position, ItemStack part)
+    {
+        if(entity.isFueled() && entity.getControllingPassenger() != null)
+        {
+            GlStateManager.rotate(0.5F * (entity.ticksExisted % 2), 1, 0, 1);
+            GlStateManager.rotate(-0.5F * (entity.ticksExisted % 2), 0, 1, 0);
+        }
+        this.renderPart(position, part);
     }
 }
