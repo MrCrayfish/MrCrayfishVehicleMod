@@ -10,11 +10,14 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 /**
  * Author: MrCrayfish
@@ -27,6 +30,7 @@ public class GuiEditVehicle extends GuiContainer
     private final IInventory vehicleInventory;
     private final EntityPoweredVehicle vehicle;
 
+    private boolean showHelp = true;
     private int windowZoom = 10;
     private int windowX, windowY;
     private float windowRotationX, windowRotationY;
@@ -98,6 +102,13 @@ public class GuiEditVehicle extends GuiContainer
             GlStateManager.popMatrix();
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
         }
+
+        if(showHelp)
+        {
+            GlStateManager.translate(0, 0, 1000);
+            GlStateManager.scale(0.5, 0.5, 0.5);
+            this.fontRenderer.drawString(I18n.format("container.edit_vehicle.window_help"), 56, 38, Color.WHITE.getRGB());
+        }
     }
 
     @Override
@@ -127,6 +138,7 @@ public class GuiEditVehicle extends GuiContainer
                 mouseGrabbedButton = Mouse.isButtonDown(1) ? 1 : 0;
                 mouseClickedX = mouseX;
                 mouseClickedY = mouseY;
+                showHelp = false;
             }
         }
 
