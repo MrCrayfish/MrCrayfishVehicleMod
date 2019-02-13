@@ -5,12 +5,16 @@ import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.util.MouseHelper;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -22,6 +26,13 @@ public class GuiEditVehicle extends GuiContainer
     private final IInventory playerInventory;
     private final IInventory vehicleInventory;
     private final EntityPoweredVehicle vehicle;
+
+    private int windowZoom = 10;
+    private int windowX, windowY;
+    private float windowRotationX, windowRotationY;
+    private boolean mouseGrabbed;
+    private int mouseGrabbedButton;
+    private int mouseClickedX, mouseClickedY;
 
     public GuiEditVehicle(IInventory vehicleInventory, EntityPoweredVehicle vehicle, EntityPlayer player)
     {
@@ -57,11 +68,20 @@ public class GuiEditVehicle extends GuiContainer
         RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper(vehicle.getClass());
         if(wrapper != null)
         {
+            int i = (this.width - this.xSize) / 2;
+            int j = (this.height - this.ySize) / 2;
+            GL11.glEnable(GL11.GL_SCISSOR_TEST);
+            RenderUtil.scissor(i + 26, j + 17, 142, 70);
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(96, 78, 100);
+                GlStateManager.translate(windowX + (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
+                GlStateManager.translate(0, windowY + (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
                 GlStateManager.rotate(-10F, 1, 0, 0);
-                GlStateManager.rotate(-(vehicle.ticksExisted + Minecraft.getMinecraft().getRenderPartialTicks()) / 2F, 0, 1, 0);
+                GlStateManager.rotate(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0), 1, 0, 0);
+                GlStateManager.rotate(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0), 0, 1, 0);
+                GlStateManager.rotate(135F, 0, 1, 0);
+                GlStateManager.scale(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
                 GlStateManager.scale(-22, -22, -22);
                 PartPosition position = GuiWorkstation.DISPLAY_PROPERTIES.get(vehicle.getClass());
                 if(position != null)
@@ -76,6 +96,7 @@ public class GuiEditVehicle extends GuiContainer
                 wrapper.render(vehicle, Minecraft.getMinecraft().getRenderPartialTicks());
             }
             GlStateManager.popMatrix();
+            GL11.glDisable(GL11.GL_SCISSOR_TEST);
         }
     }
 
@@ -85,5 +106,44 @@ public class GuiEditVehicle extends GuiContainer
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
+
+        int i = (this.width - this.xSize) / 2;
+        int j = (this.height - this.ySize) / 2;
+        if(MouseHelper.isMouseWithin(mouseX, mouseY, i + 26, j + 17, 142, 70))
+        {
+            int mouseWheelDelta = Mouse.getDWheel();
+            if(mouseWheelDelta < 0 && windowZoom > 0)
+            {
+                windowZoom--;
+            }
+            else if(mouseWheelDelta > 0)
+            {
+                windowZoom++;
+            }
+
+            if(!mouseGrabbed && (Mouse.isButtonDown(0) || Mouse.isButtonDown(1)))
+            {
+                mouseGrabbed = true;
+                mouseGrabbedButton = Mouse.isButtonDown(1) ? 1 : 0;
+                mouseClickedX = mouseX;
+                mouseClickedY = mouseY;
+            }
+        }
+
+        if(mouseGrabbed)
+        {
+            if(mouseGrabbedButton == 0 && !Mouse.isButtonDown(0))
+            {
+                mouseGrabbed = false;
+                windowX += (mouseX - mouseClickedX);
+                windowY += (mouseY - mouseClickedY);
+            }
+            else if(mouseGrabbedButton == 1 && !Mouse.isButtonDown(1))
+            {
+                mouseGrabbed = false;
+                windowRotationX += (mouseX - mouseClickedX);
+                windowRotationY -= (mouseY - mouseClickedY);
+            }
+        }
     }
 }
