@@ -139,6 +139,8 @@ public class CommonEvents
                     String id = getEntityString(targetEntity);
                     if(id != null)
                     {
+                        ((EntityVehicle) targetEntity).setTrailer(null);
+
                         tagCompound.setString("id", id);
                         targetEntity.writeToNBT(tagCompound);
                         player.getDataManager().set(HELD_VEHICLE, tagCompound);
