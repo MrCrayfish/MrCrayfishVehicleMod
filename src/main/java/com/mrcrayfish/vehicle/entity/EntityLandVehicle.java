@@ -27,7 +27,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public abstract class EntityLandVehicle extends EntityPoweredVehicle
 {
-    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.createKey(EntityLandVehicle.class, DataSerializers.BOOLEAN);
 
     public float drifting;
     public float additionalYaw;

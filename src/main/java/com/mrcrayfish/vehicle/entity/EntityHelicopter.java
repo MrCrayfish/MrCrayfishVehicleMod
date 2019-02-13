@@ -17,8 +17,8 @@ import net.minecraft.world.World;
  */
 public abstract class EntityHelicopter extends EntityPoweredVehicle
 {
-    private static final DataParameter<Integer> ALTITUDE_CHANGE = EntityDataManager.createKey(EntityPlane.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityPlane.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> ALTITUDE_CHANGE = EntityDataManager.createKey(EntityHelicopter.class, DataSerializers.VARINT);
+    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityHelicopter.class, DataSerializers.FLOAT);
 
     private float lift;
 

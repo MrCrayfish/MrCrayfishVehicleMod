@@ -17,6 +17,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public abstract class EntityPlane extends EntityPoweredVehicle
 {
+    //TODO Create own data parameter system if problems continue to occur
     private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(EntityPlane.class, DataSerializers.VARINT);
     private static final DataParameter<Float> LIFT = EntityDataManager.createKey(EntityPlane.class, DataSerializers.FLOAT);
 
