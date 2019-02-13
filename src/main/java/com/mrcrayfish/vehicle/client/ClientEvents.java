@@ -181,17 +181,6 @@ public class ClientEvents
             }
         }
 
-        if(ridingEntity instanceof EntityMotorcycle)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            double offset = vehicle.getMountedYOffset() * 3 - 3 * 0.0625;
-            GlStateManager.translate(0, offset, 0);
-            float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
-            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * event.getPartialTicks()) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 20F, 0, 0, 1);
-            GlStateManager.translate(0, -offset, 0);
-        }
-
         if(ridingEntity instanceof EntityJetSki)
         {
             EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
@@ -281,25 +270,6 @@ public class ClientEvents
             }
         }
 
-        if(ridingEntity instanceof EntityMoped)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 6F;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-75F - turnRotation);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(7F);
-            model.bipedRightArm.offsetZ -= 0.05 * wheelAngleNormal;
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-75F + turnRotation);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-7F);
-            model.bipedLeftArm.offsetZ -= 0.05 * -wheelAngleNormal;
-
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-55F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-55F);
-
-            return;
-        }
-
         if(ridingEntity instanceof EntityAluminumBoat)
         {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
@@ -327,24 +297,6 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity instanceof EntitySmartCar)
-        {
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
-
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 6F;
-
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-80F - turnRotation);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F + turnRotation);
-
-            return;
-        }
-
         if(ridingEntity instanceof EntityPoweredVehicle)
         {
             EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
@@ -367,13 +319,6 @@ public class ClientEvents
                     model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
                     model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
                 }
-
-            }
-            else if(ridingEntity instanceof EntityDuneBuggy)
-            {
-                float turnRotation = wheelAngleNormal * 8F;
-                model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-50F - turnRotation);
-                model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-50F + turnRotation);
             }
 
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);

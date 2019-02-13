@@ -2,10 +2,13 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySmartCar;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
@@ -43,5 +46,21 @@ public class RenderSmartCar extends AbstractRenderLandVehicle<EntitySmartCar>
             Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
+    }
+
+    @Override
+    public void applyPlayerModel(EntitySmartCar entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    {
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+
+        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngleNormal = wheelAngle / 45F;
+        float turnRotation = wheelAngleNormal * 6F;
+
+        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-80F - turnRotation);
+        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F + turnRotation);
     }
 }
