@@ -69,7 +69,16 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && this.isFlying())
         {
-            rotationYaw = rotationYaw + (entity.rotationYaw - rotationYaw) * 0.15F;
+            float deltaYaw = entity.getRotationYawHead() % 360.0F - rotationYaw;
+            while(deltaYaw < -180.0F)
+            {
+                deltaYaw += 360.0F;
+            }
+            while(deltaYaw >= 180.0F)
+            {
+                deltaYaw -= 360.0F;
+            }
+            this.rotationYaw = rotationYaw + deltaYaw * 0.15F;
         }
 
         float travelDirection = this.getTravelDirection();
@@ -240,6 +249,15 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     {
         super.addPassenger(passenger);
         passenger.rotationYaw = rotationYaw;
+    }
+
+    @Override
+    public void updatePassenger(Entity passenger)
+    {
+        if(this.isPassenger(passenger))
+        {
+            passenger.setPosition(this.posX, this.posY + this.getMountedYOffset() + passenger.getYOffset(), this.posZ);
+        }
     }
 
     @Override
