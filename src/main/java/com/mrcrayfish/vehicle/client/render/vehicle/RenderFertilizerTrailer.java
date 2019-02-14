@@ -19,7 +19,7 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
     @Override
     public void render(EntityFertilizerTrailer entity, float partialTicks)
     {
-        RenderUtil.renderItemModel(entity.body, Models.FERTILIZER_TRAILER.getModel(), ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body, Models.FERTILIZER_TRAILER.getModel());
 
         this.renderWheel(entity, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);

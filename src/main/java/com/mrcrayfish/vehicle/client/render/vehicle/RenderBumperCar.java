@@ -27,7 +27,7 @@ public class RenderBumperCar extends AbstractRenderLandVehicle<EntityBumperCar>
     public void render(EntityBumperCar entity, float partialTicks)
     {
         //Render body
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

@@ -23,7 +23,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
     @Override
     public void render(EntityMiniBike entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();
@@ -40,7 +40,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
             GlStateManager.rotate(22.5F, 1, 0, 0);
             GlStateManager.translate(0, 0, -10.5 * 0.0625);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
+            renderDamagedPart(entity, entity.handleBar);
 
             GlStateManager.pushMatrix();
             {

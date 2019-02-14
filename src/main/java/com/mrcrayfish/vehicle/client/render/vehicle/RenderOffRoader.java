@@ -29,7 +29,7 @@ public class RenderOffRoader extends AbstractRenderLandVehicle<EntityOffRoader>
     @Override
     public void render(EntityOffRoader entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

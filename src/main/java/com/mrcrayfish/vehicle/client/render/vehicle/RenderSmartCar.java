@@ -28,7 +28,7 @@ public class RenderSmartCar extends AbstractRenderLandVehicle<EntitySmartCar>
     @Override
     public void render(EntitySmartCar entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

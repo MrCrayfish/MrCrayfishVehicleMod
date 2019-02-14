@@ -26,7 +26,7 @@ public class RenderGoKart extends AbstractRenderLandVehicle<EntityGoKart>
     @Override
     public void render(EntityGoKart entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

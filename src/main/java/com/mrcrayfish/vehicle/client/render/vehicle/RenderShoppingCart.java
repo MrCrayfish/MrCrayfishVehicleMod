@@ -24,7 +24,7 @@ public class RenderShoppingCart extends AbstractRenderLandVehicle<EntityShopping
     @Override
     public void render(EntityShoppingCart entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
     }
 
     @Override

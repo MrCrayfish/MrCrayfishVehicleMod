@@ -21,7 +21,7 @@ public class RenderSeederTrailer extends AbstractRenderVehicle<EntitySeederTrail
     public void render(EntitySeederTrailer entity, float partialTicks)
     {
         //Render the body
-        RenderUtil.renderItemModel(entity.body, Models.SEEDER_TRAILER.getModel(), ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body, Models.SEEDER_TRAILER.getModel());
 
         this.renderWheel(entity, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);

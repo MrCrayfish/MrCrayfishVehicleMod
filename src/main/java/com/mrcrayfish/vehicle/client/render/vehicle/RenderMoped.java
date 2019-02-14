@@ -37,7 +37,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     @Override
     public void render(EntityMoped entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         GlStateManager.pushMatrix();
         {
@@ -57,7 +57,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
             {
                 GlStateManager.translate(0, 0.835, 0.525);
                 GlStateManager.scale(0.8, 0.8, 0.8);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
+                renderDamagedPart(entity, entity.handleBar);
             }
             GlStateManager.popMatrix();
 

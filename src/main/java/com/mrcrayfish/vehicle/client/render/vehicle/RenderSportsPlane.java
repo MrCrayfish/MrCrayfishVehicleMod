@@ -21,7 +21,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
     @Override
     public void render(EntitySportsPlane entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         GlStateManager.pushMatrix();
         {
@@ -29,7 +29,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
             GlStateManager.translate(8 * 0.0625, 0, 0);
             GlStateManager.translate(6 * 0.0625, 0, 0);
             GlStateManager.rotate(-5F, 1, 0, 0);
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.wing, ItemCameraTransforms.TransformType.NONE);
+            renderDamagedPart(entity, entity.wing);
         }
         GlStateManager.popMatrix();
 
@@ -40,7 +40,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
             GlStateManager.translate(8 * 0.0625, 0.0625, 0);
             GlStateManager.translate(6 * 0.0625, 0, 0);
             GlStateManager.rotate(5F, 1, 0, 0);
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.wing, ItemCameraTransforms.TransformType.NONE);
+            renderDamagedPart(entity, entity.wing);
         }
         GlStateManager.popMatrix();
 
@@ -69,7 +69,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(offsetX, offsetY, offsetZ);
-            Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheelCover, ItemCameraTransforms.TransformType.NONE);
+            renderDamagedPart(vehicle, vehicle.wheelCover);
 
             GlStateManager.pushMatrix();
             {
@@ -89,7 +89,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
             GlStateManager.popMatrix();
 
             GlStateManager.rotate(legRotation, 0, 1, 0);
-            Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.leg, ItemCameraTransforms.TransformType.NONE);
+            renderDamagedPart(vehicle, vehicle.leg);
         }
         GlStateManager.popMatrix();
     }

@@ -17,7 +17,7 @@ public class RenderBath extends AbstractRenderVehicle<EntityBath>
     public void render(EntityBath entity, float partialTicks)
     {
         GlStateManager.rotate(90F, 0, 1, 0);
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
     }
 
     @Override

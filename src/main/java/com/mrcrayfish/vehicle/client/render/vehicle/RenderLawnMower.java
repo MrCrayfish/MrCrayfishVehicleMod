@@ -26,7 +26,7 @@ public class RenderLawnMower extends AbstractRenderLandVehicle<EntityLawnMower>
     public void render(EntityLawnMower entity, float partialTicks)
     {
         //Body
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

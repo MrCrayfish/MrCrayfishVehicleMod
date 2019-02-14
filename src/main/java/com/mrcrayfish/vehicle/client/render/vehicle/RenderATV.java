@@ -33,7 +33,7 @@ public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
     public void render(EntityATV entity, float partialTicks)
     {
         //Body
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        renderDamagedPart(entity, entity.body);
 
         //Handle Bars
         GlStateManager.pushMatrix();
