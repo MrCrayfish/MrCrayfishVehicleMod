@@ -23,7 +23,7 @@ public class BlockJack extends BlockObject
 
     public BlockJack()
     {
-        super(Material.ROCK, "jack");
+        super(Material.PISTON, "jack");
     }
 
     @Override
