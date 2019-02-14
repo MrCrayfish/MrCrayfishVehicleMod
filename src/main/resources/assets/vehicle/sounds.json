@@ -82,5 +82,8 @@
     },
     "vehicle_impact": {
         "sounds": [ {"name": "vehicle:vehicle_impact"}]
+    },
+    "vehicle_destroyed": {
+        "sounds": [ {"name": "vehicle:vehicle_destroyed"}]
     }
 }

@@ -304,6 +304,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     @Override
     protected void onVehicleDestroyed(EntityLivingBase entity)
     {
+        super.onVehicleDestroyed(entity);
         if(this.hasChest() && inventory != null)
         {
             InventoryHelper.dropInventoryItems(world, this, inventory);

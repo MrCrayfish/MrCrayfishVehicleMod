@@ -365,6 +365,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     protected void onVehicleDestroyed(EntityLivingBase entity)
     {
+        world.playSound(null, posX, posY, posZ, ModSounds.vehicleDestroyed, SoundCategory.AMBIENT, 1.0F, 0.5F);
+
         if(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)
             return;
 

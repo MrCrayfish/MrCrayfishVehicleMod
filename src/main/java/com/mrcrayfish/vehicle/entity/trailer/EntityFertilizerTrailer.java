@@ -246,6 +246,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     @Override
     protected void onVehicleDestroyed(EntityLivingBase entity)
     {
+        super.onVehicleDestroyed(entity);
         if(inventory != null)
         {
             InventoryHelper.dropInventoryItems(world, this, inventory);

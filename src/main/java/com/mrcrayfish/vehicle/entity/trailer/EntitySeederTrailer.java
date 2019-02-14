@@ -215,6 +215,7 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     @Override
     protected void onVehicleDestroyed(EntityLivingBase entity)
     {
+        super.onVehicleDestroyed(entity);
         if(inventory != null)
         {
             InventoryHelper.dropInventoryItems(world, this, inventory);
