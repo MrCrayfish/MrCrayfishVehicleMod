@@ -68,16 +68,9 @@ public class RenderEntityVehicle<T extends EntityVehicle & EntityRaytracer.IEnti
     private void setupBreakAnimation(EntityVehicle vehicle, float partialTicks)
     {
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
-        float damageTaken = vehicle.getDamageTaken() - partialTicks;
-
-        if (damageTaken < 0.0F)
+        if(timeSinceHit > 0.0F)
         {
-            damageTaken = 0.0F;
-        }
-
-        if (timeSinceHit > 0.0F)
-        {
-            GlStateManager.rotate(MathHelper.sin(timeSinceHit) * timeSinceHit * damageTaken / 10.0F, 0, 0, 1);
+            GlStateManager.rotate(MathHelper.sin(timeSinceHit) * timeSinceHit, 0, 0, 1);
         }
     }
 }

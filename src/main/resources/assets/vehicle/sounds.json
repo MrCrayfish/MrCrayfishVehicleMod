@@ -79,5 +79,8 @@
     },
     "jack_down": {
         "sounds": [ {"name": "vehicle:jack_down"}]
+    },
+    "vehicle_impact": {
+        "sounds": [ {"name": "vehicle:vehicle_impact"}]
     }
 }

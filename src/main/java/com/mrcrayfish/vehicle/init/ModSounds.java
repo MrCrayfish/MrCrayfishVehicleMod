@@ -37,6 +37,7 @@ public class ModSounds
     public static SoundEvent vehicleCratePanelLand;
     public static SoundEvent jackUp;
     public static SoundEvent jackDown;
+    public static SoundEvent vehicleImpact;
 
     public static void register()
     {
@@ -67,6 +68,7 @@ public class ModSounds
         vehicleCratePanelLand = registerSound("vehicle_crate_panel_land");
         jackUp = registerSound("jack_up");
         jackDown = registerSound("jack_down");
+        vehicleImpact = registerSound("vehicle_impact");
     }
 
     private static SoundEvent registerSound(String soundNameIn)

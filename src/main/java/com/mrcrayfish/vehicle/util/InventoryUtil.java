@@ -81,9 +81,9 @@ public class InventoryUtil
         while(!stack.isEmpty())
         {
             EntityItem entity = new EntityItem(worldIn, x + (double) offsetX, y + (double) offsetY, z + (double) offsetZ, stack.splitStack(RANDOM.nextInt(21) + 10));
-            entity.motionX = RANDOM.nextGaussian() * 0.05000000074505806D;
-            entity.motionY = RANDOM.nextGaussian() * 0.05000000074505806D + 0.20000000298023224D;
-            entity.motionZ = RANDOM.nextGaussian() * 0.05000000074505806D;
+            entity.motionX = RANDOM.nextGaussian() * 0.05D;
+            entity.motionY = RANDOM.nextGaussian() * 0.05D + 0.2D;
+            entity.motionZ = RANDOM.nextGaussian() * 0.05D;
             worldIn.spawnEntity(entity);
         }
     }
@@ -94,7 +94,7 @@ public class InventoryUtil
         for(int i = 0; i < player.inventory.getSizeInventory(); i++)
         {
             ItemStack stack = player.inventory.getStackInSlot(i);
-            if(stack != null && stack.getItem() == item)
+            if(!stack.isEmpty() && stack.getItem() == item)
             {
                 amount += stack.getCount();
             }
@@ -122,7 +122,7 @@ public class InventoryUtil
             for(int i = 0; i < player.inventory.getSizeInventory(); i++)
             {
                 ItemStack stack = player.inventory.getStackInSlot(i);
-                if(stack != null && stack.getItem() == item)
+                if(!stack.isEmpty() && stack.getItem() == item)
                 {
                     if(amount - stack.getCount() < 0)
                     {

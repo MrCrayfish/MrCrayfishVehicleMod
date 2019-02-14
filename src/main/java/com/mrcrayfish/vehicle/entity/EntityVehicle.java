@@ -3,15 +3,18 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
+import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
@@ -32,7 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -44,7 +47,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> MAX_HEALTH = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
     private PartPosition bodyPosition;
@@ -84,7 +88,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     protected void entityInit()
     {
         this.dataManager.register(TIME_SINCE_HIT, 0);
-        this.dataManager.register(DAMAGE_TAKEN, 0F);
+        this.dataManager.register(MAX_HEALTH, 100F);
+        this.dataManager.register(HEALTH, 100F);
         this.dataManager.register(COLOR, 16383998);
         this.dataManager.register(TRAILER, -1);
 
@@ -175,7 +180,14 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             }
             compound.removeTag("color");
         }
-
+        if(compound.hasKey("maxHealth", Constants.NBT.TAG_FLOAT))
+        {
+            this.setMaxHealth(compound.getFloat("maxHealth"));
+        }
+        if(compound.hasKey("health", Constants.NBT.TAG_FLOAT))
+        {
+            this.setHealth(compound.getFloat("health"));
+        }
         if(compound.hasUniqueId("trailer"))
         {
             this.trailerId = compound.getUniqueId("trailer");
@@ -186,6 +198,8 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     protected void writeEntityToNBT(NBTTagCompound compound)
     {
         compound.setIntArray("color", this.getColorRGB());
+        compound.setFloat("maxHealth", this.getMaxHealth());
+        compound.setFloat("health", this.getHealth());
 
         //TODO make it save the entity
         if(trailerId != null)
@@ -240,11 +254,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         if(this.getTimeSinceHit() > 0)
         {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
-        }
-
-        if(this.getDamageTaken() > 0.0F)
-        {
-            this.setDamageTaken(this.getDamageTaken() - 1.0F);
         }
 
         prevPosX = posX;
@@ -319,13 +328,15 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             else
             {
                 this.setTimeSinceHit(10);
-                this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
+                this.setHealth(this.getHealth() - amount);
 
                 boolean isCreativeMode = trueSource instanceof EntityPlayer && ((EntityPlayer) trueSource).capabilities.isCreativeMode;
-                if(isCreativeMode || this.getDamageTaken() > 40.0F)
+                if(isCreativeMode || this.getHealth() < 0.0F)
                 {
                     if(!isCreativeMode && this.world.getGameRules().getBoolean("doEntityDrops"))
                     {
+                        //TODO drop items from crafting with random chance of the count of the stack being decreased.
+                        //Divide the stacks by 8 and use Random#nextInt to decide how much it takes off
                         //this.dropItemWithOffset(this.getItemBoat(), 1, 0.0F);
                     }
                     this.onVehicleDestroyed((EntityLivingBase) trueSource);
@@ -341,7 +352,36 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         }
     }
 
-    protected void onVehicleDestroyed(EntityLivingBase entity) {}
+    @Override
+    public void fall(float distance, float damageMultiplier)
+    {
+        if(distance >= 4F)
+        {
+            float damage = distance / 4F;
+            this.attackEntityFrom(DamageSource.FALL, damage);
+            world.playSound(null, posX, posY, posZ, ModSounds.vehicleImpact, SoundCategory.AMBIENT, 1.0F, 1.0F);
+        }
+    }
+
+    protected void onVehicleDestroyed(EntityLivingBase entity)
+    {
+        if(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)
+            return;
+
+        VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getClass());
+        if(recipe != null)
+        {
+            List<ItemStack> materials = recipe.getMaterials();
+            for(ItemStack stack : materials)
+            {
+                ItemStack copy = stack.copy();
+                int shrink = copy.getCount() / 4;
+                if(shrink > 0)
+                    copy.shrink(rand.nextInt(shrink));
+                InventoryUtil.spawnItemStack(world, posX, posY, posZ, copy);
+            }
+        }
+    }
 
     /**
      * Smooths the rendering on servers
@@ -422,6 +462,9 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         this.applyYawToEntity(entityToUpdate);
     }
 
+    @Override
+    public void addVelocity(double x, double y, double z) {}
+
     /**
      * Sets the time to count down from since the last time entity was hit.
      */
@@ -439,26 +482,42 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     }
 
     /**
-     * Sets the damage taken from the last hit.
+     * Sets the max health of the vehicle.
      */
-    public void setDamageTaken(float damageTaken)
+    public void setMaxHealth(float maxHealth)
     {
-        this.dataManager.set(DAMAGE_TAKEN, damageTaken);
+        this.dataManager.set(MAX_HEALTH, maxHealth);
     }
 
     /**
-     * Gets the damage taken from the last hit.
+     * Gets the max health of the vehicle.
      */
-    public float getDamageTaken()
+    public float getMaxHealth()
     {
-        return this.dataManager.get(DAMAGE_TAKEN);
+        return this.dataManager.get(MAX_HEALTH);
     }
 
+    /**
+     * Sets the current health of the vehicle.
+     */
+    public void setHealth(float health)
+    {
+        this.dataManager.set(HEALTH, health);
+    }
+
+    /**
+     * Gets the current health of the vehicle.
+     */
+    public float getHealth()
+    {
+        return this.dataManager.get(HEALTH);
+    }
+
+    //TODO look into this and why its here. May have to send vanilla event to client
     @SideOnly(Side.CLIENT)
     public void performHurtAnimation()
     {
         this.setTimeSinceHit(10);
-        this.setDamageTaken(this.getDamageTaken() * 11.0F);
     }
 
     public boolean canBeColored()
