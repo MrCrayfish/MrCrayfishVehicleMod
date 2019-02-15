@@ -281,6 +281,7 @@ public class CommonEvents
                                 Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
                                 entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+                                entity.fallDistance = 0.0F;
 
                                 //Plays place sound
                                 world.spawnEntity(entity);
