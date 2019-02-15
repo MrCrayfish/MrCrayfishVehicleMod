@@ -1,7 +1,7 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "I I",
+        "III",
         " I ",
         " C "
     ],
@@ -15,6 +15,6 @@
         }
     },
     "result": {
-        "item": "vehicle:wrench"
+        "item": "vehicle:hammer"
     }
 }
