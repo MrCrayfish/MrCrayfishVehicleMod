@@ -105,9 +105,11 @@ public class GuiEditVehicle extends GuiContainer
 
         if(showHelp)
         {
+            GlStateManager.pushMatrix();
             GlStateManager.translate(0, 0, 1000);
             GlStateManager.scale(0.5, 0.5, 0.5);
             this.fontRenderer.drawString(I18n.format("container.edit_vehicle.window_help"), 56, 38, Color.WHITE.getRGB());
+            GlStateManager.popMatrix();
         }
     }
 
