@@ -13,9 +13,10 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
-import com.mrcrayfish.vehicle.item.ItemWrench;
+import com.mrcrayfish.vehicle.item.ItemVehicleTool;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
@@ -33,7 +34,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -51,7 +51,6 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.RenderSpecificHandEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
@@ -519,7 +518,7 @@ public class ClientEvents
             RayTraceResult objectMouseOver = Minecraft.getMinecraft().objectMouseOver;
             for (EnumHand hand : EnumHand.values())
             {
-                if (!(player.getHeldItem(hand).getItem() instanceof ItemWrench))
+                if (!(player.getHeldItem(hand).getItem() == ModItems.WRENCH))
                 {
                     continue;
                 }

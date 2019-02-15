@@ -3,12 +3,12 @@ package com.mrcrayfish.vehicle.item;
 import com.mrcrayfish.vehicle.VehicleMod;
 import net.minecraft.item.Item;
 
-public class ItemWrench extends Item
+public class ItemVehicleTool extends Item
 {
-    public ItemWrench()
+    public ItemVehicleTool(String id)
     {
-        this.setUnlocalizedName("wrench");
-        this.setRegistryName("wrench");
+        this.setUnlocalizedName(id);
+        this.setRegistryName(id);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
         this.setMaxStackSize(1);
     }

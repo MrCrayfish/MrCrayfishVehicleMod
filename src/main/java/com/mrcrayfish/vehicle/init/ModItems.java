@@ -56,6 +56,7 @@ public class ModItems
     public static final Item FUEL_PORT_2_PIPE;
     
     public static final Item WRENCH;
+    public static final Item HAMMER;
     public static final Item KEY;
     public static final Item KEY_PORT;
 
@@ -111,7 +112,8 @@ public class ModItems
         FUEL_PORT_2_CLOSED = new ItemPart("fuel_port_2_closed");
         FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
 
-        WRENCH = new ItemWrench();
+        WRENCH = new ItemVehicleTool("wrench");
+        HAMMER = new ItemVehicleTool("hammer");
         KEY = new ItemKey();
         KEY_PORT = new ItemPart("key_hole").setColored();
 
@@ -168,6 +170,7 @@ public class ModItems
         register(FUEL_PORT_2_PIPE);
 
         register(WRENCH);
+        register(HAMMER);
         register(KEY);
         register(KEY_PORT);
 

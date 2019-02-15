@@ -28,6 +28,7 @@ item.wheel.name=Wheel
 item.tow_bar.name=Tow Bar
 item.go_kart_steering_wheel.name=Steering Wheel
 item.handle_bar.name=Handle Bars
+item.hammer.name=Hammer
 
 tile.traffic_cone.name=Traffic Cone
 tile.boost_pad.name=Boost Pad

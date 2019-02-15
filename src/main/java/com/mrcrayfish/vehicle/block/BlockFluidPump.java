@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.item.ItemWrench;
+import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.item.ItemVehicleTool;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
 import net.minecraft.block.BlockLever;
@@ -170,7 +171,7 @@ public class BlockFluidPump extends BlockFluidPipe
     public AxisAlignedBB getHousingBox(World world, BlockPos pos, IBlockState state, EntityPlayer player,
             EnumHand hand, double hitX, double hitY, double hitZ, @Nullable TileEntityFluidPipe pipe)
     {
-        if (!(pipe instanceof TileEntityFluidPump) || !(player.getHeldItem(hand).getItem() instanceof ItemWrench))
+        if (!(pipe instanceof TileEntityFluidPump) || !(player.getHeldItem(hand).getItem() == ModItems.WRENCH))
         {
             return null;
         }
