@@ -395,7 +395,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     {
         if(distance >= 4F)
         {
-            float damage = distance / 4F;
+            float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
             world.playSound(null, posX, posY, posZ, ModSounds.vehicleImpact, SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
