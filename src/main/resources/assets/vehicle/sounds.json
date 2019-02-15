@@ -85,5 +85,8 @@
     },
     "vehicle_destroyed": {
         "sounds": [ {"name": "vehicle:vehicle_destroyed"}]
+    },
+    "vehicle_thud": {
+        "sounds": [ {"name": "vehicle:vehicle_thud"}]
     }
 }

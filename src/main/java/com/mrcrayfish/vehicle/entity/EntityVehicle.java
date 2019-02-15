@@ -9,21 +9,22 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSourceIndirect;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.network.play.client.CPacketAnimation;
+import net.minecraft.network.play.server.SPacketAnimation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -133,7 +134,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             }
 
             ItemStack heldItem = player.getHeldItem(hand);
-            if(!heldItem.isEmpty() && heldItem.getItem() instanceof ItemSprayCan)
+            if(heldItem.getItem() == ModItems.SPRAY_CAN)
             {
                 if(canBeColored())
                 {
@@ -150,6 +151,43 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                         }
                     }
                 }
+            }
+            else if(heldItem.getItem() == ModItems.HAMMER && this.getRidingEntity() instanceof EntityJack)
+            {
+                if(this.getHealth() < this.getMaxHealth())
+                {
+                    this.setHealth(this.getHealth() + 5F);
+                    System.out.println(this.getHealth());
+                    world.playSound(null, posX, posY, posZ, ModSounds.vehicleThud, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
+                    player.swingArm(hand);
+                    if(player instanceof EntityPlayerMP)
+                    {
+                        ((EntityPlayerMP) player).connection.sendPacket(new SPacketAnimation(player, hand == EnumHand.MAIN_HAND ? 0 : 3));
+                    }
+                    if(this.getHealth() == this.getMaxHealth())
+                    {
+                        if(world instanceof WorldServer)
+                        {
+                            for(int i = 0; i < 30; i++)
+                            {
+                                double width = this.width * 2;
+                                double height = this.height * 1.5;
+
+                                Vec3d heldOffset = this.heldOffset.rotateYaw((float) Math.toRadians(-this.rotationYaw));
+                                double x = posX + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
+                                double y = posY + height * rand.nextFloat();
+                                double z = posZ + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
+
+                                double d0 = rand.nextGaussian() * 0.02D;
+                                double d1 = rand.nextGaussian() * 0.02D;
+                                double d2 = rand.nextGaussian() * 0.02D;
+                                ((WorldServer) world).spawnParticle(EnumParticleTypes.VILLAGER_HAPPY, x, y, z, 1, d0, d1, d2, 1.0);
+                            }
+                        }
+                        world.playSound(null, posX, posY, posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
+                    }
+                }
+                return true;
             }
             else if(this.canBeRidden(player))
             {
@@ -509,7 +547,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
      */
     public void setHealth(float health)
     {
-        this.dataManager.set(HEALTH, health);
+        this.dataManager.set(HEALTH, Math.min(this.getMaxHealth(), health));
     }
 
     /**
