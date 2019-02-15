@@ -109,10 +109,10 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
             if(renderDamage)
             {
-                int stage = 10 - (int) Math.ceil(10.0F * (vehicle.getHealth() / vehicle.getMaxHealth()));
+                int stage = vehicle.getDestroyedStage();
                 if(stage <= 0)
                     return;
-                Minecraft.getMinecraft().getTextureManager().bindTexture(DESTROY_STAGES[stage]);
+                Minecraft.getMinecraft().getTextureManager().bindTexture(DESTROY_STAGES[stage - 1]);
                 GlStateManager.matrixMode(GL11.GL_TEXTURE);
                 GlStateManager.pushMatrix();
                 GlStateManager.translate(0.0625F, 0.0625F, 0.0625F);

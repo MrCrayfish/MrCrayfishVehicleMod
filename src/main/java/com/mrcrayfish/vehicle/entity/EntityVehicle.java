@@ -385,6 +385,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         }
     }
 
+    public int getDestroyedStage()
+    {
+        return 10 - (int) Math.ceil(10.0F * (this.getHealth() / this.getMaxHealth()));
+    }
+
     /**
      * Smooths the rendering on servers
      */

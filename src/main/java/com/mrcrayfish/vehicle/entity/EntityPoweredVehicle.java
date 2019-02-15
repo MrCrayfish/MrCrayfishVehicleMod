@@ -887,11 +887,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public boolean canDrive()
     {
-        if(!this.hasEngine() || !this.isFueled())
-        {
-            return false;
-        }
-        return this.isControllingPassengerCreative() || (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
+        return !(!this.hasEngine() || !this.isFueled() || this.getDestroyedStage() >= 9) && (this.isControllingPassengerCreative() || (!this.isKeyNeeded() || !this.getKeyStack().isEmpty()));
     }
 
     public void setEnginePosition(PartPosition enginePosition)
