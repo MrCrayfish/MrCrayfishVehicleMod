@@ -373,12 +373,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                 boolean isCreativeMode = trueSource instanceof EntityPlayer && ((EntityPlayer) trueSource).capabilities.isCreativeMode;
                 if(isCreativeMode || this.getHealth() < 0.0F)
                 {
-                    if(!isCreativeMode && this.world.getGameRules().getBoolean("doEntityDrops"))
-                    {
-                        //TODO drop items from crafting with random chance of the count of the stack being decreased.
-                        //Divide the stacks by 8 and use Random#nextInt to decide how much it takes off
-                        //this.dropItemWithOffset(this.getItemBoat(), 1, 0.0F);
-                    }
                     this.onVehicleDestroyed((EntityLivingBase) trueSource);
                     this.setDead();
                 }
@@ -407,20 +401,21 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     {
         world.playSound(null, posX, posY, posZ, ModSounds.vehicleDestroyed, SoundCategory.AMBIENT, 1.0F, 0.5F);
 
-        if(entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode)
-            return;
-
-        VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getClass());
-        if(recipe != null)
+        boolean isCreativeMode = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode;
+        if(!isCreativeMode && this.world.getGameRules().getBoolean("doEntityDrops"))
         {
-            List<ItemStack> materials = recipe.getMaterials();
-            for(ItemStack stack : materials)
+            VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getClass());
+            if(recipe != null)
             {
-                ItemStack copy = stack.copy();
-                int shrink = copy.getCount() / 4;
-                if(shrink > 0)
-                    copy.shrink(rand.nextInt(shrink));
-                InventoryUtil.spawnItemStack(world, posX, posY, posZ, copy);
+                List<ItemStack> materials = recipe.getMaterials();
+                for(ItemStack stack : materials)
+                {
+                    ItemStack copy = stack.copy();
+                    int shrink = copy.getCount() / 4;
+                    if(shrink > 0)
+                        copy.shrink(rand.nextInt(shrink));
+                    InventoryUtil.spawnItemStack(world, posX, posY, posZ, copy);
+                }
             }
         }
     }
