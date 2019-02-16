@@ -102,7 +102,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     {
         super.onEntityUpdate();
 
-        if(!world.isRemote && inventoryTimer++ == VehicleConfig.SERVER.trailerInventorySyncCooldown)
+        if(!world.isRemote && VehicleConfig.SERVER.trailerInventorySyncCooldown > 0 && inventoryTimer++ == VehicleConfig.SERVER.trailerInventorySyncCooldown)
         {
             inventoryTimer = 0;
             PacketHandler.INSTANCE.sendToAllTracking(new MessageSyncInventory(this.getEntityId(), inventory), this);

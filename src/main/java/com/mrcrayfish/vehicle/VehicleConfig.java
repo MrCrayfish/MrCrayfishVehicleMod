@@ -42,7 +42,7 @@ public class VehicleConfig
         public int trailerSyncCooldown = 100;
 
         @Config.Name("Trailer Inventory Sync Cooldown")
-        @Config.Comment("The amount of ticks to wait before syncing trailer inventory to tracking clients. This is used to render items in the trailer.")
+        @Config.Comment("The amount of ticks to wait before syncing trailer inventory to tracking clients. If the value is set to 0 or less, the inventory will not sync and will save on network usage.")
         @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_inventory_sync_cooldown")
         public int trailerInventorySyncCooldown = 20;
     }
