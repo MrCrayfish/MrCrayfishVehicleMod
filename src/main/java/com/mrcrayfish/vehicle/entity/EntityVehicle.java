@@ -167,7 +167,9 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                     {
                         if(world instanceof WorldServer)
                         {
-                            for(int i = 0; i < 30; i++)
+                            //TODO send as single packet instead of multiple
+                            int count = (int) (50 * (this.width * this.height));
+                            for(int i = 0; i < count; i++)
                             {
                                 double width = this.width * 2;
                                 double height = this.height * 1.5;
