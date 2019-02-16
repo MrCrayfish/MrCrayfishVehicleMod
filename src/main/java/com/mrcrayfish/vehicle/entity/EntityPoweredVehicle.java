@@ -16,6 +16,7 @@ import com.mrcrayfish.vehicle.network.message.MessageTurn;
 import com.mrcrayfish.vehicle.network.message.MessageVehicleWindow;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.CommonUtils;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -738,6 +739,23 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return EngineTier.getType(this.dataManager.get(ENGINE_TIER));
     }
 
+    public ItemStack getEngineStack()
+    {
+        if(this.hasEngine())
+        {
+            switch(this.getEngineType())
+            {
+                case SMALL_MOTOR:
+                    return new ItemStack(ModItems.SMALL_ENGINE, 1, this.getEngineTier().ordinal());
+                case LARGE_MOTOR:
+                    return new ItemStack(ModItems.LARGE_ENGINE, 1, this.getEngineTier().ordinal());
+                case ELECTRIC_MOTOR:
+                    return new ItemStack(ModItems.ELECTRIC_ENGINE, 1, this.getEngineTier().ordinal());
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
     @SideOnly(Side.CLIENT)
     public boolean shouldRenderEngine()
     {
@@ -1025,27 +1043,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             }
         }
 
-        if(this.hasEngine())
+        ItemStack engine = this.getEngineStack();
+        if(!engine.isEmpty())
         {
-            ItemStack engine = ItemStack.EMPTY;
-            switch(this.getEngineType())
-            {
-                case SMALL_MOTOR:
-                    engine = new ItemStack(ModItems.SMALL_ENGINE, 1, this.getEngineTier().ordinal());
-                    break;
-                case LARGE_MOTOR:
-                    engine = new ItemStack(ModItems.LARGE_ENGINE, 1, this.getEngineTier().ordinal());
-                    break;
-                case ELECTRIC_MOTOR:
-                    engine = new ItemStack(ModItems.ELECTRIC_ENGINE, 1, this.getEngineTier().ordinal());
-                    break;
-                default:
-                    break;
-            }
-            if(!engine.isEmpty())
-            {
-                this.vehicleInventory.setInventorySlotContents(0, engine);
-            }
+            this.vehicleInventory.setInventorySlotContents(0, engine);
         }
 
         this.vehicleInventory.addInventoryChangeListener(this);
@@ -1080,6 +1081,30 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public void onInventoryChanged(IInventory inventory)
     {
         this.updateSlots();
+    }
+
+    @Override
+    protected void onVehicleDestroyed(EntityLivingBase entity)
+    {
+        super.onVehicleDestroyed(entity);
+        boolean isCreativeMode = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode;
+        if(!isCreativeMode && this.world.getGameRules().getBoolean("doEntityDrops"))
+        {
+            // Spawns the engine if the vehicle has one
+            ItemStack engine = this.getEngineStack();
+            if(!engine.isEmpty())
+            {
+                InventoryUtil.spawnItemStack(world, posX, posY, posZ, engine);
+            }
+
+            // Spawns the key and removes the associated vehicle uuid
+            ItemStack key = this.getKeyStack().copy();
+            if(!key.isEmpty())
+            {
+                CommonUtils.getItemTagCompound(key).removeTag("vehicleId");
+                InventoryUtil.spawnItemStack(world, posX, posY, posZ, key);
+            }
+        }
     }
 
     public enum TurnDirection
