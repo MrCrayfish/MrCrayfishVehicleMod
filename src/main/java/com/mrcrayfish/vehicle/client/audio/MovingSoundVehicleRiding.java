@@ -27,8 +27,6 @@ public class MovingSoundVehicleRiding extends MovingSound
         this.repeat = true;
         this.repeatDelay = 0;
         this.volume = 0.001F;
-
-        System.out.println(vehicle.getRidingSound().getSoundName());
     }
 
     @Override
