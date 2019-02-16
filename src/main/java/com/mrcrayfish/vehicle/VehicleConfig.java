@@ -31,6 +31,11 @@ public class VehicleConfig
         @Config.LangKey(Reference.MOD_ID + ".config.server.fuel_enabled")
         public boolean fuelEnabled = true;
 
+        @Config.Name("Vehicle Damage")
+        @Config.Comment("If true, vehicles will take damage.")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.vehicle_damage")
+        public boolean vehicleDamage = true;
+
         @Config.Name("Trailer Detach Distance")
         @Config.Comment("The distance threshold before the trailer detaches from a vehicle")
         @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_detach_threshold")

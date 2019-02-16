@@ -365,9 +365,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             }
             else
             {
-                this.setTimeSinceHit(10);
-                this.setHealth(this.getHealth() - amount);
-
+                if(VehicleConfig.SERVER.vehicleDamage)
+                {
+                    this.setTimeSinceHit(10);
+                    this.setHealth(this.getHealth() - amount);
+                }
                 boolean isCreativeMode = trueSource instanceof EntityPlayer && ((EntityPlayer) trueSource).capabilities.isCreativeMode;
                 if(isCreativeMode || this.getHealth() < 0.0F)
                 {
@@ -393,7 +395,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     @Override
     public void fall(float distance, float damageMultiplier)
     {
-        if(distance >= 4F)
+        if(VehicleConfig.SERVER.vehicleDamage && distance >= 4F)
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
