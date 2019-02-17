@@ -35,7 +35,7 @@ public class RenderLawnMower extends AbstractRenderLandVehicle<EntityLawnMower>
             GlStateManager.rotate(-45F, 1, 0, 0);
             GlStateManager.scale(0.9, 0.9, 0.9);
 
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
@@ -48,7 +48,7 @@ public class RenderLawnMower extends AbstractRenderLandVehicle<EntityLawnMower>
     @Override
     public void applyPlayerModel(EntityLawnMower entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);

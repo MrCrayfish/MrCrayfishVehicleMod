@@ -32,7 +32,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
             GlStateManager.rotate(-22.5F, 1, 0, 0);
 
             float wheelScale = 1.65F;
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
 
@@ -62,7 +62,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
     @Override
     public void applyPlayerModel(EntityMiniBike entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 8F;
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);

@@ -39,7 +39,7 @@ public class RenderGolfCart extends AbstractRenderLandVehicle<EntityGolfCart>
             GlStateManager.scale(0.95, 0.95, 0.95);
 
             // Rotates the steering wheel based on the wheel angle
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
@@ -59,7 +59,7 @@ public class RenderGolfCart extends AbstractRenderLandVehicle<EntityGolfCart>
 
         if(entity.getControllingPassenger() == player)
         {
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
             model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);

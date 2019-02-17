@@ -100,6 +100,38 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         this.vehicleMotionZ = (currentSpeed * f2);
     }
 
+    @Override
+    protected void updateTurning()
+    {
+        TurnDirection direction = this.getTurnDirection();
+        if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
+        {
+            float amount = direction.dir * getTurnSensitivity();
+            this.turnAngle += this.isDrifting() ? amount * 0.75 : amount;
+            if(Math.abs(this.turnAngle) > getMaxTurnAngle())
+            {
+                this.turnAngle = getMaxTurnAngle() * direction.dir;
+            }
+        }
+        else if(this.isDrifting())
+        {
+            this.turnAngle *= 0.85;
+        }
+        else
+        {
+            this.turnAngle *= 0.75;
+        }
+
+        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
+        this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
+
+        if(world.isRemote)
+        {
+            this.targetWheelAngle = this.isDrifting() ? -35F * (this.turnAngle / (float) this.getMaxTurnAngle()) * this.getNormalSpeed() : this.wheelAngle;
+            this.renderWheelAngle = this.renderWheelAngle + (this.targetWheelAngle - this.renderWheelAngle) * (this.isDrifting() ? 0.35F : 0.5F);
+        }
+    }
+
     private void updateDrifting()
     {
         TurnDirection turnDirection = this.getTurnDirection();
@@ -108,15 +140,15 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
             AccelerationDirection acceleration = this.getAcceleration();
             if(acceleration == AccelerationDirection.FORWARD)
             {
-                this.currentSpeed *= 0.95F;
+                this.currentSpeed *= 0.975F;
             }
-            this.drifting = Math.min(1.0F, this.drifting + (1.0F / 8.0F));
+            this.drifting = Math.min(1.0F, this.drifting + 0.05F);
         }
         else
         {
             this.drifting *= 0.85F;
         }
-        this.additionalYaw = 35F * (turnAngle / 45F) * drifting;
+        this.additionalYaw = 25F * drifting * (turnAngle / (float) this.getMaxTurnAngle()) * Math.min(this.getActualMaxSpeed(), this.getActualSpeed() * 2F);
 
         //Updates the delta yaw to consider drifting
         this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / (this.isDrifting() ? 1.5F : 2F);

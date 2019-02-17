@@ -38,7 +38,7 @@ public class RenderSmartCar extends AbstractRenderLandVehicle<EntitySmartCar>
             GlStateManager.translate(0, -0.02, 0);
             GlStateManager.scale(0.9, 0.9, 0.9);
 
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
@@ -56,7 +56,7 @@ public class RenderSmartCar extends AbstractRenderLandVehicle<EntitySmartCar>
         model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
         model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
 
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
 
