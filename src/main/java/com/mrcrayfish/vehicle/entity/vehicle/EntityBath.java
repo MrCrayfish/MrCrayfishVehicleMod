@@ -16,7 +16,7 @@ import net.minecraft.world.World;
  */
 public class EntityBath extends EntityPlane implements IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0, -0.03125, 0, 0, 0, 0, 1.0);
+    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0, 0, 0, 0, 1.0);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(4.0D, -3.75D, 0.0D);
     private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0D, 0.0D, -0.4375D);
 
@@ -63,7 +63,7 @@ public class EntityBath extends EntityPlane implements IEntityRaytraceable
     @Override
     public double getMountedYOffset()
     {
-        return 0;
+        return 0.0625;
     }
 
     @Override

@@ -39,6 +39,16 @@ public class RenderPlaneWrapper<T extends EntityPlane & EntityRaytracer.IEntityR
             GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
             GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
 
+            GlStateManager.translate(0, 0.5, 0);
+
+            float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
+            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+
+            float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
+            GlStateManager.rotate(-bodyRoll, 0, 0, 1);
+
+            GlStateManager.translate(0, -0.5, 0);
+
             //Translate the body
             GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 
@@ -55,12 +65,6 @@ public class RenderPlaneWrapper<T extends EntityPlane & EntityRaytracer.IEntityR
 
             //Translate the vehicle so it's actually riding on it's wheels
             GlStateManager.translate(0, entity.getWheelOffset() * 0.0625F, 0);
-
-            float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
-            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
-
-            float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            GlStateManager.rotate(-bodyRoll, 0, 0, 1);
 
             //Render body
             renderVehicle.render(entity, partialTicks);
