@@ -53,8 +53,8 @@ public class Wheel
             {
                 if(position == Position.FRONT)
                 {
-                    float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * partialTicks;
-                    GlStateManager.rotate(wheelAngle / 2.0F, 0, 1, 0);
+                    float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
                 }
                 if(vehicle.isMoving())
                 {

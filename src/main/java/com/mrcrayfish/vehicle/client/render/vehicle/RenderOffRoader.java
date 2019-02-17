@@ -41,7 +41,7 @@ public class RenderOffRoader extends AbstractRenderLandVehicle<EntityOffRoader>
             GlStateManager.scale(0.75, 0.75, 0.75);
 
             // Rotates the steering wheel based on the wheel angle
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
@@ -102,7 +102,7 @@ public class RenderOffRoader extends AbstractRenderLandVehicle<EntityOffRoader>
 
         if(entity.getControllingPassenger() == player)
         {
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
             model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);

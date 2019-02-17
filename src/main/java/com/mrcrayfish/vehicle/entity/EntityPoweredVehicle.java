@@ -84,12 +84,19 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public boolean disableFallDamage;
     public float fuelConsumption = 1F;
 
-    public int turnAngle;
-    public int prevTurnAngle;
+    public float turnAngle;
+    public float prevTurnAngle;
 
     public float deltaYaw;
     public float wheelAngle;
-    public float prevWheelAngle;
+    public float prevWheelAngle; //TODO can remove use render wheel angle instead
+
+    @SideOnly(Side.CLIENT)
+    public float targetWheelAngle;
+    @SideOnly(Side.CLIENT)
+    public float renderWheelAngle;
+    @SideOnly(Side.CLIENT)
+    public float prevRenderWheelAngle;
 
     public float vehicleMotionX;
     public float vehicleMotionY;
@@ -296,14 +303,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return super.processInitialInteract(player, hand);
     }
 
-    private static void sendInfoMessage(EntityPlayer player, String message)
-    {
-        if(player instanceof EntityPlayerMP)
-        {
-            ((EntityPlayerMP) player).connection.sendPacket(new SPacketChat(new TextComponentTranslation(message), ChatType.GAME_INFO));
-        }
-    }
-
     @Override
     public void onUpdateVehicle()
     {
@@ -469,10 +468,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         }
         else
         {
-            this.turnAngle *= 0.75;
+            this.turnAngle *= 0.9;
         }
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
         this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
+
+        if(world.isRemote)
+        {
+            this.renderWheelAngle = this.wheelAngle;
+        }
     }
 
     public void createParticles()
@@ -487,6 +491,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     @SideOnly(Side.CLIENT)
     public void onClientUpdate()
     {
+        prevRenderWheelAngle = renderWheelAngle;
+
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {

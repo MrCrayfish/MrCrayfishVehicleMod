@@ -37,6 +37,8 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     @Override
     public void render(EntityMoped entity, float partialTicks)
     {
+        Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(false);
+
         renderDamagedPart(entity, entity.body);
 
         GlStateManager.pushMatrix();
@@ -44,7 +46,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
             GlStateManager.translate(0, -0.0625, 11.5 * 0.0625);
             GlStateManager.rotate(-22.5F, 1, 0, 0);
 
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
 
@@ -115,7 +117,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     @Override
     public void applyPlayerModel(EntityMoped entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-75F - turnRotation);
@@ -131,7 +133,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     @Override
     public void applyPlayerRender(EntityMoped entity, EntityPlayer player, float partialTicks)
     {
-        double offset = entity.getMountedYOffset() * 3 - 3 * 0.0625;
+        double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
         GlStateManager.translate(0, offset, 0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;

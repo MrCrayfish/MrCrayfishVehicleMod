@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySportsPlane;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -106,13 +107,12 @@ public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
     @Override
     public void applyPlayerRender(EntitySportsPlane entity, EntityPlayer player, float partialTicks)
     {
-        GlStateManager.translate(0, -8 * 0.0625, 0.5);
-        GlStateManager.translate(0, 0.625, 0);
+        double offsetY = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset() - 0.5; //TODO make this last variable a variable in entity plane
+        GlStateManager.translate(0, offsetY, 0);
         float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
         float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-        GlStateManager.rotate(bodyRoll, 0, 0, 1);
         GlStateManager.rotate(-bodyPitch, 1, 0, 0);
-        GlStateManager.translate(0, -0.625, 0);
-        GlStateManager.translate(0, 8 * 0.0625, -0.5);
+        GlStateManager.rotate(bodyRoll, 0, 0, 1);
+        GlStateManager.translate(0, -offsetY, 0);
     }
 }

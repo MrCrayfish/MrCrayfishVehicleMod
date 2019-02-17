@@ -483,12 +483,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         }
     }
 
-    @Override
-    public void updatePassenger(Entity passenger)
-    {
-        super.updatePassenger(passenger);
-    }
-
     protected void applyYawToEntity(Entity entityToUpdate)
     {
         entityToUpdate.setRenderYawOffset(this.rotationYaw);

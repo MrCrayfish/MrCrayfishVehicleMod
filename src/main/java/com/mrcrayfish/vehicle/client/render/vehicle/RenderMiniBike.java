@@ -32,7 +32,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
             GlStateManager.rotate(-22.5F, 1, 0, 0);
 
             float wheelScale = 1.65F;
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
 
@@ -62,7 +62,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
     @Override
     public void applyPlayerModel(EntityMiniBike entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 8F;
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
@@ -78,7 +78,7 @@ public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
     @Override
     public void applyPlayerRender(EntityMiniBike entity, EntityPlayer player, float partialTicks)
     {
-        double offset = entity.getMountedYOffset() * 3 - 3 * 0.0625;
+        double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
         GlStateManager.translate(0, offset, 0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;

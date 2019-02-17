@@ -26,7 +26,7 @@ public class RenderDuneBuggy extends AbstractRenderLandVehicle<EntityDuneBuggy>
     {
         renderDamagedPart(entity, entity.body);
 
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         double wheelScale = 1.0F;
 
         //Render the handles bars
@@ -62,7 +62,7 @@ public class RenderDuneBuggy extends AbstractRenderLandVehicle<EntityDuneBuggy>
     @Override
     public void applyPlayerModel(EntityDuneBuggy entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 8F;
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-50F - turnRotation);
