@@ -37,7 +37,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     @Override
     public void render(EntityMoped entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(true);
+        Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(false);
 
         renderDamagedPart(entity, entity.body);
 
@@ -133,7 +133,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     @Override
     public void applyPlayerRender(EntityMoped entity, EntityPlayer player, float partialTicks)
     {
-        double offset = entity.getMountedYOffset() * 3 - 3 * 0.0625;
+        double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
         GlStateManager.translate(0, offset, 0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
