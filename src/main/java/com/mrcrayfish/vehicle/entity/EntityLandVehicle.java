@@ -127,7 +127,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
         if(world.isRemote)
         {
-            this.targetWheelAngle = this.isDrifting() ? -35F * (this.turnAngle / (float) this.getMaxTurnAngle()) * this.getNormalSpeed() : this.wheelAngle;
+            this.targetWheelAngle = this.isDrifting() ? -45F * (this.turnAngle / (float) this.getMaxTurnAngle()) * this.getNormalSpeed() : this.wheelAngle - 45F * (this.turnAngle / (float) this.getMaxTurnAngle()) * drifting;
             this.renderWheelAngle = this.renderWheelAngle + (this.targetWheelAngle - this.renderWheelAngle) * (this.isDrifting() ? 0.35F : 0.5F);
         }
     }
