@@ -19,7 +19,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceable
 {
     public static final float AXLE_OFFSET = -2.5F;
-    public static final float WHEEL_OFFSET = 3.15F;
+    public static final float WHEEL_OFFSET = 3.45F;
     public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0, 0, 0, 0, 1);
     public static final PartPosition ENGINE_POSITION = new PartPosition(0, 2, -9, 0, 180, 0, 1.2);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(3.0D, 0.5D, 0.0D);
