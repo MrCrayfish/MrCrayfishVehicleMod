@@ -1,9 +1,7 @@
-package com.mrcrayfish.vehicle.entity.trailer;
+package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;

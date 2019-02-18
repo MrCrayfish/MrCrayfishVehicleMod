@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
-import com.mrcrayfish.vehicle.client.render.LayerHeldVehicle;
+import com.mrcrayfish.vehicle.client.render.layer.LayerHeldVehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;

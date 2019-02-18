@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client.render;
+package com.mrcrayfish.vehicle.client.render.layer;
 
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.common.CommonEvents;
