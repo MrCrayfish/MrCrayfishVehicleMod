@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityBoat;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -19,8 +20,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceable
 {
-    public float prevLeanAngle;
-    public float leanAngle;
+    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.0, 0.2, 1.1);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-16.25, 3, -18.5, 0.0, -90.0, 0.0, 0.25);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(6.0, 0.0, 0.0);
 
     public EntityAluminumBoat(World worldIn)
     {
@@ -29,7 +31,8 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
         this.setTurnSensitivity(5);
         this.setMaxTurnAngle(20);
         this.setSize(2.25F, 0.875F);
-        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
+        this.setBodyPosition(BODY_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
         this.setFuelCapacity(25000F);
         this.setFuelConsumption(2.0F);
     }
@@ -66,14 +69,6 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
                 }
             }
         }
-    }
-
-    @Override
-    public void updateVehicle()
-    {
-        super.updateVehicle();
-        this.prevLeanAngle = this.leanAngle;
-        this.leanAngle = this.turnAngle / (float) getMaxTurnAngle();
     }
 
     @Override
@@ -117,7 +112,7 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
     {
         if (this.isPassenger(passenger))
         {
-            float xOffset = -0.95F;
+            float xOffset = -0.9F;
             float yOffset = (float)((this.isDead ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
             float zOffset = -0.5F;
 

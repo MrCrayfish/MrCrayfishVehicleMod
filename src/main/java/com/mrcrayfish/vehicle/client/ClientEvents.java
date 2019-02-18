@@ -183,13 +183,7 @@ public class ClientEvents
         if(ridingEntity instanceof EntityAluminumBoat)
         {
             EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            double offset = vehicle.getMountedYOffset();
-            GlStateManager.translate(0, offset + ridingEntity.getEyeHeight() + 0.25, 0);
-            float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
-            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * event.getPartialTicks()) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
-            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-            GlStateManager.translate(0, -(offset + ridingEntity.getEyeHeight()) - 0.25, 0);
+
         }
     }
 
@@ -243,25 +237,6 @@ public class ClientEvents
                 render.applyPlayerModel(vehicle, player, model, event.getPartialTicks());
                 return;
             }
-        }
-
-        if(ridingEntity instanceof EntityAluminumBoat)
-        {
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
-            return;
-        }
-
-        if(ridingEntity instanceof EntityPoweredVehicle)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
         }
     }
 

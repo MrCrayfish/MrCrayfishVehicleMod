@@ -1,29 +1,26 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.RenderPoweredVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityAluminumBoat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
+public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat>
 {
-    public ModelRenderer noWater;
+    private ModelRenderer noWater;
 
-    public RenderAluminumBoat(RenderManager renderManager)
+    public RenderAluminumBoat()
     {
-        super(renderManager);
-        this.setFuelPortPosition(-16.25, 3, -18.5, -90);
+        this.setFuelPortPosition(EntityAluminumBoat.FUEL_PORT_POSITION);
         this.noWater = (new ModelRenderer(new ModelBase()
         {
             @Override
@@ -36,38 +33,44 @@ public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
     }
 
     @Override
-    public void doRender(EntityAluminumBoat entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void render(EntityAluminumBoat entity, float partialTicks)
     {
-        RenderHelper.enableStandardItemLighting();
-
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            GlStateManager.scale(1.1, 1.1, 1.1);
-            GlStateManager.translate(0, 0.5, 0.2);
-
-            float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -15F, 0, 0, 1);
-            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-
-            this.setupBreakAnimation(entity, partialTicks);
-
-            //Render the body
-            GlStateManager.pushMatrix();
-            {
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-
-            super.doRender(entity, x, y, z, currentYaw, partialTicks);
-        }
-        GlStateManager.popMatrix();
-        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
+        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
     }
 
     @Override
+    public void applyPlayerModel(EntityAluminumBoat entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    {
+        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
+        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
+        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
+    }
+
+    @Override
+    public void applyPlayerRender(EntityAluminumBoat entity, EntityPlayer player, float partialTicks)
+    {
+        double offsetX = -0.5;
+        double offsetY = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
+        double offsetZ = -0.9;
+
+        int index = entity.getPassengers().indexOf(player);
+        if(index > 0)
+        {
+            offsetX += (index % 2) * 1F;
+            offsetZ += (index / 2) * 1.2F;
+        }
+
+        GlStateManager.translate(offsetX, offsetY, offsetZ);
+        float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
+        float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
+        GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
+        GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
+        GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+    }
+
+    //TODO fix this
+    /*@Override
     public void renderMultipass(EntityAluminumBoat entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         GlStateManager.pushMatrix();
@@ -94,5 +97,5 @@ public class RenderAluminumBoat extends RenderPoweredVehicle<EntityAluminumBoat>
     public boolean isMultipass()
     {
         return true;
-    }
+    }*/
 }
