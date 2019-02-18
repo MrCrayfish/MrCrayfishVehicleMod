@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,16 +16,15 @@ public class RenderCouch extends AbstractRenderLandVehicle<EntityCouch>
 {
     public RenderCouch()
     {
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 7.0F, 1.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 7.0F, 1.75F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, -7.0F, 1.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, -7.0F, 1.75F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 0.0625F, 7.0F, 1.75F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0625F, 7.0F, 1.75F);
+        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F);
+        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F);
     }
 
     @Override
     public void render(EntityCouch entity, float partialTicks)
     {
-        entity.setWheelOffset(4.0F);
         GlStateManager.pushMatrix();
         GlStateManager.rotate(90F, 0, 1, 0);
         this.renderDamagedPart(entity, entity.body);
