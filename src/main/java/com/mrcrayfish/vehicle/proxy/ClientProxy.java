@@ -140,7 +140,7 @@ public class ClientProxy implements Proxy
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }
 
-    private <T extends EntitySeaVehicle & EntityRaytracer.IEntityRaytraceable> void registerBoatRender(Class<T> clazz, AbstractRenderVehicle<T> render)
+    private <T extends EntityBoat & EntityRaytracer.IEntityRaytraceable> void registerBoatRender(Class<T> clazz, AbstractRenderVehicle<T> render)
     {
         RenderBoatWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderBoatWrapper<>(render);
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));

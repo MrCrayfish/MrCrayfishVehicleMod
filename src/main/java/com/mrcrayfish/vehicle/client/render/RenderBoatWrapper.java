@@ -2,14 +2,14 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
+import com.mrcrayfish.vehicle.entity.EntityBoat;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderBoatWrapper<T extends EntitySeaVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderBoatWrapper<T extends EntityBoat & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
     public RenderBoatWrapper(R renderVehicle)
     {

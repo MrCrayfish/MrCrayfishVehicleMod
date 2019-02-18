@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
-import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
+import com.mrcrayfish.vehicle.entity.EntityBoat;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -16,7 +16,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 /**
  * Author: MrCrayfish
  */
-public class EntitySpeedBoat extends EntitySeaVehicle implements IEntityRaytraceable
+public class EntitySpeedBoat extends EntityBoat implements IEntityRaytraceable
 {
     public float prevLeanAngle;
     public float leanAngle;

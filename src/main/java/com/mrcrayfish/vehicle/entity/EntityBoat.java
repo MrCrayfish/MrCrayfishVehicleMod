@@ -11,13 +11,13 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public abstract class EntitySeaVehicle extends EntityPoweredVehicle
+public abstract class EntityBoat extends EntityPoweredVehicle
 {
     protected State state;
     protected State previousState;
     private float waterLevel;
 
-    public EntitySeaVehicle(World worldIn)
+    public EntityBoat(World worldIn)
     {
         super(worldIn);
         this.setMaxTurnAngle(65);
