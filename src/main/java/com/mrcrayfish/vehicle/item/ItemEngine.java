@@ -18,6 +18,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Author: MrCrayfish
@@ -65,7 +66,7 @@ public class ItemEngine extends ItemPart implements SubItems
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
         for(EngineTier tier : EngineTier.values())
         {
-            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + tier.toString().toLowerCase()));
+            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + tier.toString().toLowerCase(Locale.ENGLISH)));
         }
         return modelLocations;
     }
