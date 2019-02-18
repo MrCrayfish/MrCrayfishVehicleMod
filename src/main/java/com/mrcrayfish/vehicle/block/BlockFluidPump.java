@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.item.ItemVehicleTool;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
 import net.minecraft.block.BlockLever;

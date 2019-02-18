@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 
 /**
  * Author: MrCrayfish

@@ -33,7 +33,6 @@ import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import com.mrcrayfish.vehicle.util.FluidUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;

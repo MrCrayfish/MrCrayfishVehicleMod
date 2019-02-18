@@ -2,9 +2,6 @@ package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.block.*;
 import com.mrcrayfish.vehicle.item.ItemBoostRamp;
-import com.mrcrayfish.vehicle.block.BlockJack;
-import com.mrcrayfish.vehicle.block.BlockObject;
-import com.mrcrayfish.vehicle.block.BlockTrafficCone;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;

@@ -8,7 +8,6 @@ import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**

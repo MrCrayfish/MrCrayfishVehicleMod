@@ -1,8 +1,5 @@
 package com.mrcrayfish.vehicle.util;
 
-import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
-import net.minecraft.crash.ICrashReportDetail;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -10,7 +7,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.ReportedException;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 

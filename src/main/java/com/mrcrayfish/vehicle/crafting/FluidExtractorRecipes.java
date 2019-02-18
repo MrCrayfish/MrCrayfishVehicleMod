@@ -1,13 +1,11 @@
 package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
 import java.util.Map;
 
 /**

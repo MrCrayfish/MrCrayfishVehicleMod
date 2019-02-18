@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.common.slot;
 
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 

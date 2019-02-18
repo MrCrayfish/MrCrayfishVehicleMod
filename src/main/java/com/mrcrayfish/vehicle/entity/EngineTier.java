@@ -2,8 +2,6 @@ package com.mrcrayfish.vehicle.entity;
 
 import net.minecraft.util.text.TextFormatting;
 
-import javax.annotation.Nullable;
-
 /**
  * Author: MrCrayfish
  */

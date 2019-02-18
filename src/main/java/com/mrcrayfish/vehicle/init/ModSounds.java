@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
-
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 

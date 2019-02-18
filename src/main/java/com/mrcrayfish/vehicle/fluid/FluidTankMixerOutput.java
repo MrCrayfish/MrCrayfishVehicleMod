@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.fluid;
 
-import com.mrcrayfish.vehicle.crafting.FluidMixerRecipes;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
 /**

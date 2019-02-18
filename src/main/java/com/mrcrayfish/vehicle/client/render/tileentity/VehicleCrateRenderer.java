@@ -19,10 +19,9 @@ import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Author: MrCrayfish

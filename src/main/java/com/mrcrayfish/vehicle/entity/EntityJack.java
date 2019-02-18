@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;

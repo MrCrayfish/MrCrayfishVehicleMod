@@ -8,8 +8,6 @@ import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
-
-import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -22,7 +20,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;

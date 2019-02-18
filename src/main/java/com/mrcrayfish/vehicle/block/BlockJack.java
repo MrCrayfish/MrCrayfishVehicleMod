@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
-import javafx.scene.chart.Axis;
-import net.minecraft.block.material.EnumPushReaction;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
