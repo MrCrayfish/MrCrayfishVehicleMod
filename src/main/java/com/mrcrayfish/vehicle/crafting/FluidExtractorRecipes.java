@@ -25,8 +25,8 @@ public class FluidExtractorRecipes
     private FluidExtractorRecipes()
     {
         ImmutableMap.Builder<ItemStack, FluidExtract> builder = new ImmutableMap.Builder<>();
-        builder.put(new ItemStack(Items.ENDER_PEARL), new FluidExtract(ModFluids.ENDER_SAP, 100));
-        builder.put(new ItemStack(Items.BLAZE_ROD), new FluidExtract(ModFluids.BLAZE_JUICE, 80));
+        builder.put(new ItemStack(Items.ENDER_PEARL), new FluidExtract(ModFluids.ENDER_SAP, 500));
+        builder.put(new ItemStack(Items.BLAZE_ROD), new FluidExtract(ModFluids.BLAZE_JUICE, 350));
         extractingMap = builder.build();
     }
 
