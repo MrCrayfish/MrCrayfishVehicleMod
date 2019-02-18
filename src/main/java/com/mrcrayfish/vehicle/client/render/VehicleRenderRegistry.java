@@ -11,24 +11,18 @@ import java.util.Map;
  */
 public final class VehicleRenderRegistry
 {
-    private static final Map<Class<? extends EntityVehicle>, AbstractRenderVehicle<? extends EntityVehicle>> renderMap = new HashMap<>();
     private static final Map<Class<? extends EntityVehicle>, RenderVehicleWrapper<? extends EntityVehicle, ? extends AbstractRenderVehicle>> renderWrapperMap = new HashMap<>();
-
-    public static void registerRender(Class<? extends EntityVehicle> clazz, AbstractRenderVehicle<? extends EntityVehicle> render)
-    {
-        renderMap.put(clazz, render);
-    }
 
     @Nullable
     public static AbstractRenderVehicle<?> getRender(Class<? extends EntityVehicle> clazz)
     {
-        return renderMap.get(clazz);
+        RenderVehicleWrapper wrapper = renderWrapperMap.get(clazz);
+        return wrapper != null ? wrapper.getRenderVehicle() : null;
     }
 
     public static void registerRenderWrapper(Class<? extends EntityVehicle> clazz, RenderVehicleWrapper<? extends EntityVehicle, ? extends AbstractRenderVehicle> wrapper)
     {
         renderWrapperMap.put(clazz, wrapper);
-        renderMap.put(clazz, wrapper.getRenderVehicle());
     }
 
     @Nullable
