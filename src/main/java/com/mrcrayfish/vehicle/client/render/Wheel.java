@@ -92,6 +92,11 @@ public class Wheel
         {
             this.offset = offset;
         }
+
+        public int getOffset()
+        {
+            return offset;
+        }
     }
 
     public enum Position

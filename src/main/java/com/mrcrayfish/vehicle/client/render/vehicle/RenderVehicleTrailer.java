@@ -1,70 +1,36 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.client.render.RenderVehicle;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.entity.trailer.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.EntityLivingBase;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleTrailer extends RenderVehicle<EntityVehicleTrailer, AbstractRenderVehicle<EntityVehicleTrailer>>
+public class RenderVehicleTrailer extends AbstractRenderVehicle<EntityVehicleTrailer>
 {
-    public RenderVehicleTrailer(RenderManager renderManager)
-    {
-        super(renderManager, null);
-    }
-
     @Override
-    public void doRender(EntityVehicleTrailer entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void render(EntityVehicleTrailer entity, float partialTicks)
     {
-        RenderHelper.enableStandardItemLighting();
-
-        EntityLivingBase entityLivingBase = (EntityLivingBase) entity.getControllingPassenger();
-        if(entityLivingBase != null)
-        {
-            entityLivingBase.renderYawOffset = currentYaw;
-            entityLivingBase.prevRenderYawOffset = currentYaw;
-        }
-
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            GlStateManager.scale(1.1, 1.1, 1.1);
-
-            this.setupBreakAnimation(entity, partialTicks);
-
-            double bodyOffset = 0.8;
-
-            //Render the body
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, bodyOffset, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-
-            renderWheel(entity, -14.5F * 0.0625F, 0.3F, -2.5F * 0.0625F, 2.0F, partialTicks);
-            renderWheel(entity, 14.5F * 0.0625F, 0.3F, -2.5F * 0.0625F, 2.0F, partialTicks);
-        }
-        GlStateManager.popMatrix();
-
-        EntityRaytracer.renderRaytraceElements(entity, x, y, z, currentYaw);
+        this.renderDamagedPart(entity, entity.body);
+        this.renderWheel(entity, false, -14.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks);
+        this.renderWheel(entity, true, 14.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks);
     }
 
-    public void renderWheel(EntityTrailer trailer, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
+    //TODO Make an abstract class for trailers so this method can be common
+    private void renderWheel(EntityTrailer trailer, boolean right, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(offsetX, offsetY, offsetZ);
+            if(right)
+            {
+                GlStateManager.rotate(180F, 0, 1, 0);
+            }
             GlStateManager.pushMatrix();
             {
                 GlStateManager.pushMatrix();

@@ -90,19 +90,19 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
         return fuelPortLidPosition;
     }
 
-    protected static void renderDamagedPart(EntityVehicle vehicle, ItemStack part)
+    protected void renderDamagedPart(EntityVehicle vehicle, ItemStack part)
     {
         IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(part);
         renderDamagedPart(vehicle, part, model);
     }
 
-    protected static void renderDamagedPart(EntityVehicle vehicle, ItemStack part, IBakedModel model)
+    protected void renderDamagedPart(EntityVehicle vehicle, ItemStack part, IBakedModel model)
     {
         renderDamagedPart(vehicle, part, model, false);
         renderDamagedPart(vehicle, part, model, true);
     }
 
-    private static void renderDamagedPart(EntityVehicle vehicle, ItemStack part, IBakedModel model, boolean renderDamage)
+    private void renderDamagedPart(EntityVehicle vehicle, ItemStack part, IBakedModel model, boolean renderDamage)
     {
         if (!part.isEmpty())
         {

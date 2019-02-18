@@ -90,7 +90,7 @@ public class ClientProxy implements Proxy
             registerHelicopterRender(EntitySofacopter.class, new RenderCouchHelicopter());
         }
 
-        RenderingRegistry.registerEntityRenderingHandler(EntityVehicleTrailer.class, RenderVehicleTrailer::new);
+        registerVehicleRender(EntityVehicleTrailer.class, new RenderVehicleTrailer());
         RenderingRegistry.registerEntityRenderingHandler(EntityStorageTrailer.class, RenderChestTrailer::new);
         registerVehicleRender(EntitySeederTrailer.class, new RenderSeederTrailer());
         registerVehicleRender(EntityFertilizerTrailer.class, new RenderFertilizerTrailer());
