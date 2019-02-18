@@ -102,7 +102,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
         {
             float amount = direction.dir * getTurnSensitivity();
-            this.turnAngle += this.isDrifting() ? amount * 0.75 : amount;
+            this.turnAngle += this.isDrifting() ? amount * 0.45 : amount;
             if(Math.abs(this.turnAngle) > getMaxTurnAngle())
             {
                 this.turnAngle = getMaxTurnAngle() * direction.dir;
@@ -110,7 +110,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         }
         else if(this.isDrifting())
         {
-            this.turnAngle *= 0.9;
+            this.turnAngle *= 0.95;
         }
         else
         {
