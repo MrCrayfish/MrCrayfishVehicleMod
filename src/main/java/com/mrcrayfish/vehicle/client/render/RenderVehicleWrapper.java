@@ -46,9 +46,6 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
             GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
             GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
 
-            //Translate the body
-            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-
             //Render the tow bar. Performed before scaling so size is consistent for all vehicles
             if(entity.canTowTrailer())
             {
@@ -60,6 +57,9 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }
+
+            //Translate the body
+            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 
             //Translate the vehicle to match how it is shown in the model creator
             GlStateManager.translate(0, 0.5, 0);
