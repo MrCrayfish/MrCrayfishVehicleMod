@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
 
@@ -47,6 +48,18 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
 
             //Translate the body
             GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+
+            //Render the tow bar. Performed before scaling so size is consistent for all vehicles
+            if(entity.canTowTrailer())
+            {
+                GlStateManager.pushMatrix();
+                GlStateManager.rotate(180F, 0, 1, 0);
+
+                Vec3d towBarOffset = entity.getTowBarVec();
+                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
+            }
 
             //Translate the vehicle to match how it is shown in the model creator
             GlStateManager.translate(0, 0.5, 0);

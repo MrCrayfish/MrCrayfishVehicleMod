@@ -67,6 +67,7 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
+        /* Vehicles */
         registerLandVehicleRender(EntityATV.class, new RenderATV());
         registerLandVehicleRender(EntityDuneBuggy.class, new RenderDuneBuggy());
         registerLandVehicleRender(EntityGoKart.class, new RenderGoKart());
@@ -83,6 +84,7 @@ public class ClientProxy implements Proxy
         registerLandVehicleRender(EntityGolfCart.class, new RenderGolfCart());
         registerLandVehicleRender(EntityOffRoader.class, new RenderOffRoader());
 
+        /* Mod Exclusive Vehicles */
         if(Loader.isModLoaded("cfm"))
         {
             registerLandVehicleRender(EntityCouch.class, new RenderCouch());
@@ -90,8 +92,9 @@ public class ClientProxy implements Proxy
             registerHelicopterRender(EntitySofacopter.class, new RenderCouchHelicopter());
         }
 
+        /* Trailers */
         registerVehicleRender(EntityVehicleTrailer.class, new RenderVehicleTrailer());
-        RenderingRegistry.registerEntityRenderingHandler(EntityStorageTrailer.class, RenderChestTrailer::new);
+        registerVehicleRender(EntityStorageTrailer.class, new RenderStorageTrailer());
         registerVehicleRender(EntitySeederTrailer.class, new RenderSeederTrailer());
         registerVehicleRender(EntityFertilizerTrailer.class, new RenderFertilizerTrailer());
 
