@@ -115,7 +115,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         }
         else if(this.isDrifting())
         {
-            this.turnAngle *= 0.85;
+            this.turnAngle *= 0.9;
         }
         else
         {
@@ -127,7 +127,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
         if(world.isRemote)
         {
-            this.targetWheelAngle = this.isDrifting() ? -45F * (this.turnAngle / (float) this.getMaxTurnAngle()) * this.getNormalSpeed() : this.wheelAngle - 45F * (this.turnAngle / (float) this.getMaxTurnAngle()) * drifting;
+            this.targetWheelAngle = this.isDrifting() ? -35F * (this.turnAngle / (float) this.getMaxTurnAngle()) * this.getNormalSpeed() : this.wheelAngle - 35F * (this.turnAngle / (float) this.getMaxTurnAngle()) * drifting;
             this.renderWheelAngle = this.renderWheelAngle + (this.targetWheelAngle - this.renderWheelAngle) * (this.isDrifting() ? 0.35F : 0.5F);
         }
     }
@@ -135,14 +135,17 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     private void updateDrifting()
     {
         TurnDirection turnDirection = this.getTurnDirection();
-        if(this.getControllingPassenger() != null && this.isDrifting() && turnDirection != TurnDirection.FORWARD)
+        if(this.getControllingPassenger() != null && this.isDrifting())
         {
-            AccelerationDirection acceleration = this.getAcceleration();
-            if(acceleration == AccelerationDirection.FORWARD)
+            if(turnDirection != TurnDirection.FORWARD)
             {
-                this.currentSpeed *= 0.975F;
+                AccelerationDirection acceleration = this.getAcceleration();
+                if(acceleration == AccelerationDirection.FORWARD)
+                {
+                    this.currentSpeed *= 0.975F;
+                }
+                this.drifting = Math.min(1.0F, this.drifting + 0.05F);
             }
-            this.drifting = Math.min(1.0F, this.drifting + 0.05F);
         }
         else
         {

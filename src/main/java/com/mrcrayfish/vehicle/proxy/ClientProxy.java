@@ -74,7 +74,7 @@ public class ClientProxy implements Proxy
         registerLandVehicleRender(EntityShoppingCart.class, new RenderShoppingCart());
         registerMotorcycleRender(EntityMiniBike.class, new RenderMiniBike());
         registerLandVehicleRender(EntityBumperCar.class, new RenderBumperCar());
-        RenderingRegistry.registerEntityRenderingHandler(EntityJetSki.class, RenderJetSki::new);
+        registerBoatRender(EntityJetSki.class, new RenderJetSki());
         RenderingRegistry.registerEntityRenderingHandler(EntitySpeedBoat.class, RenderSpeedBoat::new);
         RenderingRegistry.registerEntityRenderingHandler(EntityAluminumBoat.class, RenderAluminumBoat::new);
         registerLandVehicleRender(EntitySmartCar.class, new RenderSmartCar());
@@ -136,6 +136,13 @@ public class ClientProxy implements Proxy
     private <T extends EntityMotorcycle & EntityRaytracer.IEntityRaytraceable> void registerMotorcycleRender(Class<T> clazz, AbstractRenderLandVehicle<T> render)
     {
         RenderMotorcycleWrapper<T, AbstractRenderLandVehicle<T>> wrapper = new RenderMotorcycleWrapper<>(render);
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
+        VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
+    }
+
+    private <T extends EntitySeaVehicle & EntityRaytracer.IEntityRaytraceable> void registerBoatRender(Class<T> clazz, AbstractRenderVehicle<T> render)
+    {
+        RenderBoatWrapper<T, AbstractRenderVehicle<T>> wrapper = new RenderBoatWrapper<>(render);
         RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
         VehicleRenderRegistry.registerRenderWrapper(clazz, wrapper);
     }

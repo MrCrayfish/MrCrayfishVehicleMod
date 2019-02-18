@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntitySeaVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -19,8 +20,11 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceable
 {
-    public float prevLeanAngle;
-    public float leanAngle;
+    public static final float WHEEL_OFFSET = 2.75F;
+    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 1.25);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-1.57, 7.25, 4.87, -135, 0, 0, 0.35);
+    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(6.0, 0.0, 0.0);
+    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0, -0.09375, -0.65);
 
     /**
      * ItemStack instances used for rendering
@@ -34,8 +38,10 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
-        this.setHeldOffset(new Vec3d(6D, 0D, 0D));
-        this.setTrailerOffset(new Vec3d(0D, -0.09375D, -0.65D));
+        this.setWheelOffset(WHEEL_OFFSET);
+        this.setBodyPosition(BODY_POSITION);
+        this.setHeldOffset(HELD_OFFSET_VEC);
+        this.setTrailerOffset(TRAILER_OFFSET_VEC);
         this.setFuelConsumption(2.0F);
     }
 
@@ -67,14 +73,6 @@ public class EntityJetSki extends EntitySeaVehicle implements IEntityRaytraceabl
                 }
             }
         }
-    }
-
-    @Override
-    public void updateVehicle()
-    {
-        super.updateVehicle();
-        this.prevLeanAngle = this.leanAngle;
-        this.leanAngle = this.turnAngle / (float) getMaxTurnAngle();
     }
 
     @Override
