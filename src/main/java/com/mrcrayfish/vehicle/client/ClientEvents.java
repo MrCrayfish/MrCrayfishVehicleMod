@@ -180,18 +180,6 @@ public class ClientEvents
             }
         }
 
-        if(ridingEntity instanceof EntitySpeedBoat)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            double offset = vehicle.getMountedYOffset();
-            GlStateManager.translate(0, offset + ridingEntity.getEyeHeight() + 0.25, 0);
-            float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * event.getPartialTicks()) / vehicle.getMaxSpeed();
-            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * event.getPartialTicks()) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
-            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-            GlStateManager.translate(0, -(offset + ridingEntity.getEyeHeight()) - 0.25, 0);
-        }
-
         if(ridingEntity instanceof EntityAluminumBoat)
         {
             EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
@@ -263,24 +251,6 @@ public class ClientEvents
             model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
             model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
             model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
-            return;
-        }
-
-        if(ridingEntity instanceof EntitySpeedBoat)
-        {
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
-
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * event.getPartialTicks();
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 6F;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
             return;
         }
 

@@ -35,7 +35,7 @@ public class RenderBoatWrapper<T extends EntityBoat & EntityRaytracer.IEntityRay
 
             //Applies leaning rotation caused by turning
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
             GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -15F, 0, 0, 1);
 
             //Makes the boat tilt up the faster it goes
