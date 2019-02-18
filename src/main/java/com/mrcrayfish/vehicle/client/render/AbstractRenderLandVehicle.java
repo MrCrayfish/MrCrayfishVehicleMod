@@ -13,7 +13,7 @@ import java.util.List;
 @SideOnly(Side.CLIENT)
 public abstract class AbstractRenderLandVehicle<T extends EntityPoweredVehicle> extends AbstractRenderVehicle<T>
 {
-    private List<Wheel> wheels = new ArrayList<>();
+    private final List<Wheel> wheels = new ArrayList<>();
 
     public List<Wheel> getWheels()
     {

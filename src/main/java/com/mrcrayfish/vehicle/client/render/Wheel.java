@@ -96,6 +96,6 @@ public class Wheel
 
     public enum Position
     {
-        FRONT, REAR, NONE;
+        FRONT, REAR, NONE
     }
 }

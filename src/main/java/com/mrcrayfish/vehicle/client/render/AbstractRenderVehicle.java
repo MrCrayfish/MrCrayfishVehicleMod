@@ -41,9 +41,9 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
     public abstract void render(T entity, float partialTicks);
 
-    public void applyPlayerModel(T entity, EntityPlayer player, ModelPlayer model, float partialTicks) {};
+    public void applyPlayerModel(T entity, EntityPlayer player, ModelPlayer model, float partialTicks) {}
 
-    public void applyPlayerRender(T entity, EntityPlayer player, float partialTicks) {};
+    public void applyPlayerRender(T entity, EntityPlayer player, float partialTicks) {}
 
     protected void setEnginePosition(double x, double y, double z, double rotation, double scale)
     {

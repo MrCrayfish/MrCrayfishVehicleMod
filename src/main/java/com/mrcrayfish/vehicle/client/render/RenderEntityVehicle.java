@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 public class RenderEntityVehicle<T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends Render<T>
 {
-    private RenderVehicleWrapper<T, R> wrapper;
+    private final RenderVehicleWrapper<T, R> wrapper;
 
     public RenderEntityVehicle(RenderManager renderManager, RenderVehicleWrapper<T, R> wrapper)
     {

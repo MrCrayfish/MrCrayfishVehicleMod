@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  */
 public class RenderVehicle<T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends Render<T>
 {
-    protected R renderVehicle;
+    protected final R renderVehicle;
 
     public RenderVehicle(RenderManager renderManager, R renderVehicle)
     {

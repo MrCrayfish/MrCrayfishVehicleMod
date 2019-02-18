@@ -16,19 +16,12 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat>
 {
-    private ModelRenderer noWater;
+    private final ModelRenderer noWater;
 
     public RenderAluminumBoat()
     {
         this.setFuelPortPosition(EntityAluminumBoat.FUEL_PORT_POSITION);
-        this.noWater = (new ModelRenderer(new ModelBase()
-        {
-            @Override
-            public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
-            {
-                super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-            }
-        }, 0, 0)).setTextureSize(0, 0);
+        this.noWater = (new ModelRenderer(new ModelBase(){}, 0, 0)).setTextureSize(0, 0);
         this.noWater.addBox(-15F, -4F, -21F, 30, 8, 35, 0.0F);
     }
 
