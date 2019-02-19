@@ -47,7 +47,7 @@ import java.util.Map;
  */
 public class EntityFertilizerTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IStorage
 {
-    private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 6.9 * 0.0625F, 24 * 0.0625, 1.1));
+    private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 6.2 * 0.0625, 6 * 0.0625, 7 * 0.0625, 8.4 * 0.0625F, 18 * 0.0625, 1.1));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
     static
@@ -284,7 +284,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     @SideOnly(Side.CLIENT)
     public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
     {
-        RenderGlobal.drawSelectionBoundingBox(createScaledBoundingBox(-7 * 0.0625, 6.25 * 0.0625, 6 * 0.0625, 7 * 0.0625, 8.25 * 0.0625F, 17 * 0.0625, 1.1), 0, 1, 0, 0.4F);
+        RenderGlobal.drawSelectionBoundingBox(CONNECTION_BOX.getBox(), 0, 1, 0, 0.4F);
     }
 
     @Override
