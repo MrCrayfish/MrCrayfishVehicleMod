@@ -119,7 +119,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                 if(this.getRidingEntity() == null && this.canTowTrailer() && this.getTrailer() == null)
                 {
                     Entity entity = world.getEntityByID(trailerId);
-                    if(entity instanceof EntityTrailer)
+                    if(entity instanceof EntityTrailer && entity != this)
                     {
                         EntityTrailer trailer = (EntityTrailer) entity;
                         this.setTrailer(trailer);
