@@ -1827,7 +1827,7 @@ public class EntityRaytracer
                     Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
                     return true;
                 }
-                if(!stack.isEmpty())
+                if(!stack.isEmpty() || result.getPartHit().model != null)
                 {
                     if(notRiding)
                     {
