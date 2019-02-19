@@ -257,6 +257,7 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(rightClick)

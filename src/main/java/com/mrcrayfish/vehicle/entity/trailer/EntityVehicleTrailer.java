@@ -89,6 +89,7 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
 
     @Nullable
     @Override
+    @SideOnly(Side.CLIENT)
     public List<EntityRaytracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return Collections.singletonList(CONNECTION_BOX);
@@ -102,6 +103,7 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(result.getPartHit() == CONNECTION_BOX && rightClick)

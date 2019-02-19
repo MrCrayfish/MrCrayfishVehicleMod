@@ -451,21 +451,21 @@ public class EntityRaytracer
         List<MatrixTransformation> trailerStorageTransformGlobal = Lists.newArrayList();
         createBodyTransforms(trailerStorageTransformGlobal, EntityStorageTrailer.BODY_POSITION, 0.0F, 0.0F);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerStorageParts = Maps.newHashMap();
-        createTransformListForPart(Models.CHEST_TRAILER.getModel(), trailerStorageParts, trailerStorageTransformGlobal);
+        createTransformListForPart(Models.CHEST_TRAILER, trailerStorageParts, trailerStorageTransformGlobal);
         registerEntityStatic(EntityStorageTrailer.class, trailerStorageParts);
 
         // Seeder Trailer
         List<MatrixTransformation> seederTransformGlobal = Lists.newArrayList();
         createBodyTransforms(seederTransformGlobal, EntitySeederTrailer.BODY_POSITION, 0.0F, 0.0F);
         HashMap<RayTracePart, List<MatrixTransformation>> seederParts = Maps.newHashMap();
-        createTransformListForPart(Models.SEEDER_TRAILER.getModel(), seederParts, seederTransformGlobal);
+        createTransformListForPart(Models.SEEDER_TRAILER, seederParts, seederTransformGlobal);
         registerEntityStatic(EntitySeederTrailer.class, seederParts);
 
         // Fertilizer
         List<MatrixTransformation> fertilizerTransformGlobal = Lists.newArrayList();
         createBodyTransforms(fertilizerTransformGlobal, EntityFertilizerTrailer.BODY_POSITION, 0.0F, 0.0F);
         HashMap<RayTracePart, List<MatrixTransformation>> fertilizerParts = Maps.newHashMap();
-        createTransformListForPart(Models.FERTILIZER_TRAILER.getModel(), fertilizerParts, fertilizerTransformGlobal);
+        createTransformListForPart(Models.FERTILIZER_TRAILER, fertilizerParts, fertilizerTransformGlobal);
         registerEntityStatic(EntityFertilizerTrailer.class, fertilizerParts);
     }
 
@@ -561,8 +561,7 @@ public class EntityRaytracer
     }
 
     /**
-     * Creates part-specific transforms for a raytraceable entity's rendered part. Arguments passed here should be the same as
-     * those passed to {@link RenderPoweredVehicle#setPartPosition setPartPosition} by the entity's renderer.
+     * Creates part-specific transforms for a raytraceable entity's rendered part.
      * 
      * @param xPixel part's x position
      * @param yPixel part's y position
@@ -593,8 +592,7 @@ public class EntityRaytracer
 
     /**
      * Creates part-specific transforms for a raytraceable entity's rendered part and adds them the list of transforms
-     * for the given entity. Pixel position, rotation, and scale arguments passed here should be the same as
-     * those passed to {@link RenderPoweredVehicle#setPartPosition setPartPosition} by the entity's renderer.
+     * for the given entity.
      * 
      * @param part the rendered item part
      * @param xMeters part's x offset meters
@@ -699,7 +697,7 @@ public class EntityRaytracer
         createTransformListForPart(part, parts, Lists.newArrayList(), transforms);
     }
 
-    public static void createTransformListForPart(IBakedModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
+    public static void createTransformListForPart(Models model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
                                                  @Nullable Function<RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
     {
         List<MatrixTransformation> transformsAll = Lists.newArrayList();
@@ -716,7 +714,7 @@ public class EntityRaytracer
      * @param transformsGlobal transforms that apply to all parts for this entity
      * @param transforms part-specific transforms for the given part
      */
-    public static void createTransformListForPart(IBakedModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, MatrixTransformation... transforms)
+    public static void createTransformListForPart(Models model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, MatrixTransformation... transforms)
     {
         createTransformListForPart(model, parts, transformsGlobal, null, transforms);
     }
@@ -864,7 +862,7 @@ public class EntityRaytracer
     {
         if(part.model != null)
         {
-            return part.model;
+            return part.model.getModel();
         }
         return Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(part.partStack, null, Minecraft.getMinecraft().player);
     }
@@ -1692,7 +1690,7 @@ public class EntityRaytracer
     {
         private final ItemStack partStack;
         private final AxisAlignedBB partBox;
-        private final IBakedModel model;
+        private final Models model;
         private final Function<RayTraceResultRotated, R> continuousInteraction;
 
         public RayTracePart(ItemStack partStack, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
@@ -1705,7 +1703,7 @@ public class EntityRaytracer
             this(ItemStack.EMPTY, partBox, null, continuousInteraction);
         }
 
-        public RayTracePart(IBakedModel model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
+        public RayTracePart(Models model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this(ItemStack.EMPTY, null, model, continuousInteraction);
         }
@@ -1715,7 +1713,7 @@ public class EntityRaytracer
             this(ItemStack.EMPTY, partBox, null, null);
         }
 
-        private RayTracePart(ItemStack partStack, @Nullable AxisAlignedBB partBox, @Nullable IBakedModel model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
+        private RayTracePart(ItemStack partStack, @Nullable AxisAlignedBB partBox, @Nullable Models model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this.partStack = partStack;
             this.partBox = partBox;
@@ -1732,6 +1730,12 @@ public class EntityRaytracer
         public AxisAlignedBB getBox()
         {
             return partBox;
+        }
+
+        @Nullable
+        public Models getModel()
+        {
+            return model;
         }
 
         public Function<RayTraceResultRotated, R> getContinuousInteraction()

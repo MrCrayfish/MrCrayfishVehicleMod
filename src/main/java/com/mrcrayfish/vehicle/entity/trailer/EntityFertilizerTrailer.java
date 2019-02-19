@@ -273,8 +273,8 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
         return interactionBoxMapStatic;
     }
 
-    @Nullable
     @Override
+    @SideOnly(Side.CLIENT)
     public List<EntityRaytracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return ImmutableList.of(CONNECTION_BOX);
@@ -288,6 +288,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(rightClick)

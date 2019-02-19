@@ -96,6 +96,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
 
     @Nullable
     @Override
+    @SideOnly(Side.CLIENT)
     public List<EntityRaytracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return ImmutableList.of(CONNECTION_BOX, CHEST_BOX);
@@ -110,6 +111,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     }
 
     @Override
+    @SideOnly(Side.CLIENT)
     public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(rightClick)
