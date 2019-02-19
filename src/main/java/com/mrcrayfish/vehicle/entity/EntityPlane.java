@@ -172,7 +172,7 @@ public abstract class EntityPlane extends EntityPoweredVehicle
         }
         else
         {
-            this.turnAngle *= 0.75;
+            this.turnAngle *= 0.95;
         }
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(Math.min(currentSpeed, 30F) / 30F));
         this.deltaYaw = this.wheelAngle;
