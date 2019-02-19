@@ -35,7 +35,7 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     public static final float AXLE_OFFSET = -2.0F;
     public static final float WHEEL_OFFSET = 2.85F;
     public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.65, 0, 0, 0, 1.25);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-4.75, 12.5, 3.5, 0, -90, 0, 0.35);
+    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-4.75, 9.5, 3.5, 0, -90, 0, 0.2);
     public static final PartPosition KEY_PORT_POSITION = new PartPosition(-5, 4.5, 6.5, -45, 0, 0, 0.5);
     private static final Vec3d HELD_OFFSET_VEC = new Vec3d(12.0, -1.5, 0.0);
     private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0, 0.0, -20.0);

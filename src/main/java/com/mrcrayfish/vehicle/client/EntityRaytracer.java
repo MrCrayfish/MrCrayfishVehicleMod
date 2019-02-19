@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.passive.EntityBat;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -201,8 +202,7 @@ public class EntityRaytracer
     {
         // Aluminum boat
         List<MatrixTransformation> aluminumBoatTransformGlobal = new ArrayList<>();
-        aluminumBoatTransformGlobal.add(MatrixTransformation.createScale(1.1));
-        aluminumBoatTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.5, 0.2));
+        createBodyTransforms(aluminumBoatTransformGlobal, EntityAluminumBoat.BODY_POSITION, 0.0F, 0.0F);
         HashMap<RayTracePart, List<MatrixTransformation>> aluminumBoatParts = Maps.newHashMap();
         createTranformListForPart(ModItems.ALUMINUM_BOAT_BODY, aluminumBoatParts, aluminumBoatTransformGlobal);
         createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, 0, 0, -16.25, 3, -18.5, -90, 0.25, aluminumBoatParts, aluminumBoatTransformGlobal);
@@ -262,16 +262,14 @@ public class EntityRaytracer
 
         // Jet ski
         List<MatrixTransformation> jetSkiTransformGlobal = Lists.newArrayList();
-        jetSkiTransformGlobal.add(MatrixTransformation.createScale(1.25));
-        jetSkiTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.03125, 0.2));
+        createBodyTransforms(jetSkiTransformGlobal, EntityJetSki.BODY_POSITION, 0.0F, EntityJetSki.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> jetSkiParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.JET_SKI_BODY, jetSkiParts, jetSkiTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.7109375, 0));
+        createTranformListForPart(ModItems.JET_SKI_BODY, jetSkiParts, jetSkiTransformGlobal);
         createTranformListForPart(ModItems.ATV_HANDLE_BAR, jetSkiParts, jetSkiTransformGlobal,
-                MatrixTransformation.createTranslation(0, 1.0734375, 0.25),
+                MatrixTransformation.createTranslation(0, 0.375, 0.25),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, 0, 0, 0, -1.57, 18.65, 4.87, new Vec3d(-135, 0, 0), 0.35, jetSkiParts, jetSkiTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, 0, 0, 0, -1.57, 7.25, 4.87, new Vec3d(-135, 0, 0), 0.35, jetSkiParts, jetSkiTransformGlobal);
         registerEntityStatic(EntityJetSki.class, jetSkiParts);
 
         // Lawn mower
@@ -286,50 +284,45 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, lawnMowerParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 0.6));
-        createPartTransforms(ModItems.FUEL_PORT_2_CLOSED, EntityLawnMower.FUEL_PORT_POSITION, lawnMowerParts, lawnMowerTransformGlobal, FUNCTION_FUELING);
+        createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntityLawnMower.FUEL_PORT_POSITION, lawnMowerParts, lawnMowerTransformGlobal, FUNCTION_FUELING);
         registerEntityStatic(EntityLawnMower.class, lawnMowerParts);
 
         // Mini bike
         List<MatrixTransformation> miniBikeTransformGlobal = Lists.newArrayList();
-        miniBikeTransformGlobal.add(MatrixTransformation.createScale(1.05));
-        miniBikeTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.15, 0.15));
+        createBodyTransforms(miniBikeTransformGlobal, EntityMiniBike.BODY_POSITION, EntityMiniBike.AXLE_OFFSET, EntityMiniBike.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> miniBikeParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.MINI_BIKE_BODY, miniBikeParts, miniBikeTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.5, 0));
-        createTranformListForPart(ModItems.MINI_BIKE_HANDLE_BAR, miniBikeParts, miniBikeTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.5, 0));
-        createFuelablePartTransforms(ModItems.SMALL_ENGINE, 0, 0.10625, 0, 0, 7.25, 3, 180, 1, miniBikeParts, miniBikeTransformGlobal);
+        createTranformListForPart(ModItems.MINI_BIKE_BODY, miniBikeParts, miniBikeTransformGlobal);
+        createTranformListForPart(ModItems.MINI_BIKE_HANDLE_BAR, miniBikeParts, miniBikeTransformGlobal);
+        createFuelablePartTransforms(ModItems.SMALL_ENGINE, 0, 0, 0, 0, 1, 2.5, 180, 1, miniBikeParts, miniBikeTransformGlobal);
         registerEntityStatic(EntityMiniBike.class, miniBikeParts);
 
         // Moped
         List<MatrixTransformation> mopedTransformGlobal = Lists.newArrayList();
-        mopedTransformGlobal.add(MatrixTransformation.createScale(1.2));
-        mopedTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.6, 0.125));
+        createBodyTransforms(mopedTransformGlobal, EntityMoped.BODY_POSITION, EntityMoped.AXLE_OFFSET, EntityMoped.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> mopedParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.MOPED_BODY, mopedParts, mopedTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.0625, 0));
+        createTranformListForPart(ModItems.MOPED_BODY, mopedParts, mopedTransformGlobal);
         createTranformListForPart(ModItems.MOPED_HANDLE_BAR, mopedParts, mopedTransformGlobal,
+                MatrixTransformation.createTranslation(0, -0.0625, 0),
                 MatrixTransformation.createTranslation(0, 0.835, 0.525),
                 MatrixTransformation.createScale(0.8));
         createTranformListForPart(ModItems.MOPED_MUD_GUARD, mopedParts, mopedTransformGlobal,
+                MatrixTransformation.createTranslation(0, -0.0625, 0),
                 MatrixTransformation.createTranslation(0, -0.12, 0.785),
                 MatrixTransformation.createRotation(-22.5, 1, 0, 0),
                 MatrixTransformation.createScale(0.9));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.39375, 0, -2.75, 11.4, -3.4, -90, 0.2, mopedParts, mopedTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.39375, 0, -2.75, 10.5, -3.4, -90, 0.2, mopedParts, mopedTransformGlobal);
         registerEntityStatic(EntityMoped.class, mopedParts);
 
         // Shopping cart
+        List<MatrixTransformation> cartTransformGlobal = Lists.newArrayList();
+        createBodyTransforms(cartTransformGlobal, EntityShoppingCart.BODY_POSITION, EntityShoppingCart.AXLE_OFFSET, EntityShoppingCart.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> cartParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.SHOPPING_CART_BODY, cartParts,
-                MatrixTransformation.createScale(1.05),
-                MatrixTransformation.createTranslation(0, 0.53, 0.165));
+        createTranformListForPart(ModItems.SHOPPING_CART_BODY, cartParts, cartTransformGlobal);
         registerEntityStatic(EntityShoppingCart.class, cartParts);
 
         // Smart car
         List<MatrixTransformation> smartCarTransformGlobal = Lists.newArrayList();
-        smartCarTransformGlobal.add(MatrixTransformation.createTranslation(0, 0, 0.2));
-        smartCarTransformGlobal.add(MatrixTransformation.createScale(1.25));
-        smartCarTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.6, 0));
+        createBodyTransforms(smartCarTransformGlobal, EntitySmartCar.BODY_POSITION, EntitySmartCar.AXLE_OFFSET, EntitySmartCar.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> smartCarParts = Maps.newHashMap();
         createTranformListForPart(ModItems.SMART_CAR_BODY, smartCarParts, smartCarTransformGlobal);
         createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, smartCarParts, smartCarTransformGlobal,
@@ -340,20 +333,19 @@ public class EntityRaytracer
         createTranformListForPart(ModItems.TOW_BAR, smartCarParts,
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.35));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.38125, 0, -9.25, 15, -12.3, -90, 0.25, smartCarParts, smartCarTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.38125, 0, -9.25, 14.8, -12.3, -90, 0.25, smartCarParts, smartCarTransformGlobal);
         registerEntityStatic(EntitySmartCar.class, smartCarParts);
 
         // Speed boat
         List<MatrixTransformation> speedBoatTransformGlobal = Lists.newArrayList();
-        speedBoatTransformGlobal.add(MatrixTransformation.createTranslation(0, 0.2421875, 0.6875));
+        createBodyTransforms(speedBoatTransformGlobal, EntitySpeedBoat.BODY_POSITION, 0.0F, EntitySpeedBoat.WHEEL_OFFSET);
         HashMap<RayTracePart, List<MatrixTransformation>> speedBoatParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.SPEED_BOAT_BODY, speedBoatParts, speedBoatTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.4375, 0));
+        createTranformListForPart(ModItems.SPEED_BOAT_BODY, speedBoatParts, speedBoatTransformGlobal);
         createTranformListForPart(ModItems.GO_KART_STEERING_WHEEL, speedBoatParts, speedBoatTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.65, -0.125),
+                MatrixTransformation.createTranslation(0, 0.215, -0.125),
                 MatrixTransformation.createRotation(-45, 1, 0, 0),
                 MatrixTransformation.createTranslation(0, 0.02, 0));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.2734375, 0, -12.25, 17.25, -19.5, -90, 0.25, speedBoatParts, speedBoatTransformGlobal);
+        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, 0, -0.2734375, 0, -12.25, 10.375, -19.5, -90, 0.25, speedBoatParts, speedBoatTransformGlobal);
         registerEntityStatic(EntitySpeedBoat.class, speedBoatParts);
 
         // Sports plane
@@ -420,19 +412,20 @@ public class EntityRaytracer
         if(Loader.isModLoaded("cfm"))
         {
             // Bath
+            List<MatrixTransformation> bathTransformGlobal = Lists.newArrayList();
+            createBodyTransforms(bathTransformGlobal, EntityBath.BODY_POSITION, 0.0F, 0.0F);
             HashMap<RayTracePart, List<MatrixTransformation>> bathParts = Maps.newHashMap();
-            createTranformListForPart(Item.getByNameOrId("cfm:bath_bottom"), bathParts,
-                    MatrixTransformation.createTranslation(0, -0.03125, -0.25),
-                    MatrixTransformation.createRotation(90, 0, 1, 0),
-                    MatrixTransformation.createTranslation(0, 0.5, 0));
+            createTranformListForPart(Item.getByNameOrId("cfm:bath_bottom"), bathParts, bathTransformGlobal,
+                    MatrixTransformation.createRotation(90, 0, 1, 0));
             registerEntityStatic(EntityBath.class, bathParts);
 
             // Couch
+            List<MatrixTransformation> couchTransformGlobal = Lists.newArrayList();
+            createBodyTransforms(couchTransformGlobal, EntityCouch.BODY_POSITION, EntityCouch.AXLE_OFFSET, EntityCouch.WHEEL_OFFSET);
             HashMap<RayTracePart, List<MatrixTransformation>> couchParts = Maps.newHashMap();
-            createTranformListForPart(Item.getByNameOrId("cfm:couch_jeb"), couchParts,
-                    MatrixTransformation.createTranslation(0, -0.03125, 0.1),
+            createTranformListForPart(Item.getByNameOrId("cfm:couch_jeb"), couchParts, couchTransformGlobal,
                     MatrixTransformation.createRotation(90, 0, 1, 0),
-                    MatrixTransformation.createTranslation(0, 0.7109375, 0));
+                    MatrixTransformation.createTranslation(0, 0.0625, 0));
             registerEntityStatic(EntityCouch.class, couchParts);
 
             // Sofacopter
@@ -450,10 +443,9 @@ public class EntityRaytracer
 
         // Vehicle Trailer
         List<MatrixTransformation> trailerVehicleTransformGlobal = Lists.newArrayList();
-        trailerVehicleTransformGlobal.add(MatrixTransformation.createScale(1.1));
+        createBodyTransforms(trailerVehicleTransformGlobal, EntityVehicleTrailer.BODY_POSITION, 0.0F, 0.0F);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerVehicleParts = Maps.newHashMap();
-        createTranformListForPart(ModItems.TRAILER_BODY, trailerVehicleParts, trailerVehicleTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.8, 0));
+        createTranformListForPart(ModItems.TRAILER_BODY, trailerVehicleParts, trailerVehicleTransformGlobal);
         registerEntityStatic(EntityVehicleTrailer.class, trailerVehicleParts);
 
         // Chest Trailer
