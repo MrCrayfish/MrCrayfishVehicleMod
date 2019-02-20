@@ -28,6 +28,7 @@ item.wheel.name=輪子
 item.tow_bar.name=牽引桿／拖桿
 item.go_kart_steering_wheel.name=方向盤
 item.handle_bar.name=車把／載具手把
+item.hammer.name=錘子
 
 tile.traffic_cone.name=交通錐
 tile.boost_pad.name=加速墊
@@ -50,6 +51,7 @@ fluid.blaze_juice=烈焰汁
 
 container.fluid_extractor=流體抽取器
 container.fluid_mixer=流體混合器
+container.edit_vehicle.window_help=點擊以移動和旋轉
 
 vehicle.info_help=按住Shift以顯示資訊
 vehicle.tile.boost_pad.info=在這個加速墊上行駛會為你的車輛提供速度提升！
@@ -109,10 +111,14 @@ vehicle.config.server=伺服器
 vehicle.config.server.tooltip=適用於伺服器的配置
 vehicle.config.server.fuel_enabled=啟用燃油
 vehicle.config.server.fuel_enabled.tooltip=如果為true，載具需要燃油才能駕駛。
-vehicle.config.server.trailer_detach_threshold=牽引（拖車）分離閾值
+vehicle.config.server.vehicle_damage=載具損壞
+vehicle.config.server.vehicle_damage.tooltip=如果為true，載具會有損壞度。
+vehicle.config.server.trailer_detach_threshold=拖車分離閾值
 vehicle.config.server.trailer_detach_threshold.tooltip=拖車與載具分離前的距離
-vehicle.config.server.trailer_sync_cooldown=牽引（拖車）同步冷卻
-vehicle.config.server.trailer_sync_cooldown.tooltip=在向客戶端同步有關牽引（拖車）連接的數據之前要等待的遊戲刻時間。這對於客戶端的平滑拖車移動非常重要。
+vehicle.config.server.trailer_sync_cooldown=拖車同步冷卻
+vehicle.config.server.trailer_sync_cooldown.tooltip=在向客戶端同步有關拖車連接的數據之前要等待的遊戲刻時間。這對於客戶端的平滑拖車移動非常重要。
+vehicle.config.server.trailer_inventory_sync_cooldown=拖車物品欄同步冷卻
+vehicle.config.server.trailer_inventory_sync_cooldown.tooltip=在向客戶端同步有關拖車物品欄的數據之前要等待的遊戲刻時間。如果此值設置為0或更小，則拖車物品欄將不會同步，並且將會節省網絡使用量。
 
 vehicle.chat.pump.power=§b信號模式：§r%s
 vehicle.chat.pump.power.off=需要信號關閉
