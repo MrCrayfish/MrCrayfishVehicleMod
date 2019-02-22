@@ -1,11 +1,14 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.datasync.DataParameter;
@@ -172,25 +175,46 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         if(!this.canDrive())
             return;
 
-        int x = MathHelper.floor(this.posX);
-        int y = MathHelper.floor(this.posY - 0.2D);
-        int z = MathHelper.floor(this.posZ);
-        BlockPos pos = new BlockPos(x, y, z);
-        IBlockState state = this.world.getBlockState(pos);
-        if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+        if(this.getAcceleration() == AccelerationDirection.FORWARD)
         {
-            if(this.getAcceleration() == AccelerationDirection.FORWARD)
+            VehicleProperties properties = this.getProperties();
+            for(Wheel wheel : properties.getWheels())
             {
-                if(this.isDrifting())
+                PartPosition bodyPosition = properties.getBodyPosition();
+                double wheelX = bodyPosition.getX();
+                double wheelY = bodyPosition.getY();
+                double wheelZ = bodyPosition.getZ();
+
+                double scale = bodyPosition.getScale();
+
+                /* Applies axel and wheel offets */
+                wheelY += 0.5 * scale;
+                wheelY += (properties.getAxleOffset() * 0.0625F) * scale;
+                wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
+
+                /* Compensate offsets */
+                wheelY -= 0.5 * scale;
+                wheelY -= (properties.getAxleOffset() * 0.0625F) * scale;
+
+                /* Wheels Translations */
+                wheelX += ((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset()) * scale;
+                wheelY += (wheel.getOffsetY() * 0.0625) * scale;
+                wheelZ += (wheel.getOffsetZ() * 0.0625) * scale;
+                wheelX += ((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().getOffset()) * scale;
+
+                /* Offsets the position to the wheel contact on the ground */
+                wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScale();
+
+                /* Gets the block under the wheel and spawns a particle */
+                Vec3d wheelVec = new Vec3d(wheelX, wheelY, wheelZ).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F);
+                int x = MathHelper.floor(this.posX + wheelVec.x);
+                int y = MathHelper.floor(this.posY + wheelVec.y - 0.2D);
+                int z = MathHelper.floor(this.posZ + wheelVec.z);
+                BlockPos pos = new BlockPos(x, y, z);
+                IBlockState state = this.world.getBlockState(pos);
+                if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
                 {
-                    for(int i = 0; i < 3; i++)
-                    {
-                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
-                    }
-                }
-                else
-                {
-                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
+                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + wheelVec.x, this.posY + wheelVec.y, this.posZ + wheelVec.z, 0.0D, 0.0D, 0.0D, Block.getStateId(state));
                 }
             }
         }
