@@ -188,13 +188,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
                 double scale = bodyPosition.getScale();
 
                 /* Applies axel and wheel offets */
-                wheelY += 0.5 * scale;
-                wheelY += (properties.getAxleOffset() * 0.0625F) * scale;
                 wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
-
-                /* Compensate offsets */
-                wheelY -= 0.5 * scale;
-                wheelY -= (properties.getAxleOffset() * 0.0625F) * scale;
 
                 /* Wheels Translations */
                 wheelX += ((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset()) * scale;
