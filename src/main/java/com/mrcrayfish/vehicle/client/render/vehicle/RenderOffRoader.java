@@ -17,14 +17,6 @@ import java.util.List;
  */
 public class RenderOffRoader extends AbstractRenderLandVehicle<EntityOffRoader>
 {
-    public RenderOffRoader()
-    {
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F);
-    }
-
     @Override
     public void render(EntityOffRoader entity, float partialTicks)
     {

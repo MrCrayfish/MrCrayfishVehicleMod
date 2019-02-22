@@ -80,7 +80,7 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
                 //Offset wheels and compensate for axle offset
                 GlStateManager.translate(0, -8 * 0.0625, 0);
                 GlStateManager.translate(0, -properties.getAxleOffset() * 0.0625F, 0);
-                renderVehicle.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
+                properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
             }
             GlStateManager.popMatrix();
 

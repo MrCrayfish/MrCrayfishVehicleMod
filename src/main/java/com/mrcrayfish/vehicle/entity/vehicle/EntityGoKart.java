@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
@@ -28,6 +29,10 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
         properties.setEnginePosition(new PartPosition(0, 2, -9, 0, 180, 0, 1.2));
         properties.setHeldOffset(new Vec3d(3.0D, 0.5D, 0.0D));
         properties.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.375D));
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F);
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F);
         VehicleProperties.setProperties(EntityGoKart.class, properties);
     }
 

@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTracePart;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.TriangleRayTraceList;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
@@ -75,6 +76,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         properties.setFuelPortPosition(new PartPosition(-2.75, 4.2, -3.4, 0, -90, 0, 0.2));
         properties.setHeldOffset(new Vec3d(7.0, 2.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.65));
+        properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.5F);
         VehicleProperties.setProperties(EntityMoped.class, properties);
     }
 

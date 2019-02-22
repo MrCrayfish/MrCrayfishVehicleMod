@@ -14,11 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderMiniBike extends AbstractRenderLandVehicle<EntityMiniBike>
 {
-    public RenderMiniBike()
-    {
-        this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.65F);
-    }
-
     @Override
     public void render(EntityMiniBike entity, float partialTicks)
     {

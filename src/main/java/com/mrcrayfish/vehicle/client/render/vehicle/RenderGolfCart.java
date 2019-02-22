@@ -14,14 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderGolfCart extends AbstractRenderLandVehicle<EntityGolfCart>
 {
-    public RenderGolfCart()
-    {
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.75F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F);
-    }
-
     @Override
     public void render(EntityGolfCart entity, float partialTicks)
     {

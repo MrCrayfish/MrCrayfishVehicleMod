@@ -92,13 +92,31 @@ public class VehicleProperties
         return trailerOffset;
     }
 
-    public void addWheel(Wheel wheel)
+    public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetZ)
     {
         if(wheels == null)
         {
             wheels = new ArrayList<>();
         }
-        wheels.add(wheel);
+        wheels.add(new Wheel(side, position, 2.0F, 1.0F, offsetX, 0F, offsetZ));
+    }
+
+    public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetZ, float scale)
+    {
+        if(wheels == null)
+        {
+            wheels = new ArrayList<>();
+        }
+        wheels.add(new Wheel(side, position, 2.0F, scale, offsetX, 0F, offsetZ));
+    }
+
+    public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scale)
+    {
+        if(wheels == null)
+        {
+            wheels = new ArrayList<>();
+        }
+        wheels.add(new Wheel(side, position, 2.0F, scale, offsetX, offsetY, offsetZ));
     }
 
     public List<Wheel> getWheels()

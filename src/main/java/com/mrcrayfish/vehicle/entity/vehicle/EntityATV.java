@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
@@ -31,6 +32,10 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
         properties.setHeldOffset(new Vec3d(4.0, 3.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -20.8));
         properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.55));
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F);
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F);
         VehicleProperties.setProperties(EntityATV.class, properties);
     }
 

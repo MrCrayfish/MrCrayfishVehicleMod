@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
@@ -30,6 +31,10 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
         properties.setFuelPortPosition(new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25));
         properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F);
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F);
         VehicleProperties.setProperties(EntityOffRoader.class, properties);
     }
 

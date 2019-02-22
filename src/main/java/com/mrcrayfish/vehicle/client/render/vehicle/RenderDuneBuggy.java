@@ -14,12 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderDuneBuggy extends AbstractRenderLandVehicle<EntityDuneBuggy>
 {
-    public RenderDuneBuggy()
-    {
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, -4.25F, -5.7F, 1.0F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, -4.25F, -5.7F, 1.0F);
-    }
-
     @Override
     public void render(EntityDuneBuggy entity, float partialTicks)
     {
