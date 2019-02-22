@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -20,9 +22,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-6.25, 4, -1, 0, -90, 0, 0.25);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5);
+    static
+    {
+        VehicleProperties properties = new VehicleProperties();
+        properties.setBodyPosition(new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8));
+        properties.setFuelPortPosition(new PartPosition(-6.25, 4, -1, 0, -90, 0, 0.25));
+        properties.setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5));
+        VehicleProperties.setProperties(EntitySportsPlane.class, properties);
+    }
 
     public float wheelSpeed;
     public float wheelRotation;
@@ -54,8 +61,6 @@ public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceabl
         this.setSize(3F, 1.6875F);
         this.setFuelCapacity(75000F);
         this.setFuelConsumption(4.0F);
-        this.setBodyPosition(BODY_POSITION);
-        this.setKeyHolePosition(KEY_PORT_POSITION);
     }
 
     @Override

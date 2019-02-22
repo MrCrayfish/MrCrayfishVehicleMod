@@ -3,9 +3,11 @@ package com.mrcrayfish.vehicle.entity.trailer;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
@@ -42,8 +44,6 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     private static final EntityRaytracer.RayTracePart CHEST_BOX = new EntityRaytracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
-    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -12.0D);
-
     static
     {
         if(FMLCommonHandler.instance().getSide().isClient())
@@ -51,6 +51,11 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
             interactionBoxMapStatic.put(CONNECTION_BOX, EntityRaytracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
             interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
         }
+
+        VehicleProperties properties = new VehicleProperties();
+        properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
+        properties.setTowBarPosition(new Vec3d(0.0, 0.0, -12.0));
+        VehicleProperties.setProperties(EntityStorageTrailer.class, properties);
     }
 
     private StorageInventory inventory;
@@ -59,7 +64,6 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     {
         super(worldIn);
         this.initInventory();
-        this.setTowBarPosition(TOW_BAR_VEC);
     }
 
     @Override

@@ -14,16 +14,9 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderSpeedBoat extends AbstractRenderVehicle<EntitySpeedBoat>
 {
-    public RenderSpeedBoat()
-    {
-        this.setFuelPortPosition(EntitySpeedBoat.FUEL_PORT_POSITION);
-    }
-
     @Override
     public void render(EntitySpeedBoat entity, float partialTicks)
     {
-        this.setFuelPortPosition(new PartPosition(-12.25, 6.0, -19.5, 0.0, -90.0, 0.0, 0.25));
-
         //Render the body
         renderDamagedPart(entity, entity.body);
 

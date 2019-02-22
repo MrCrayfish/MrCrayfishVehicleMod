@@ -19,7 +19,6 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat
 
     public RenderAluminumBoat()
     {
-        this.setFuelPortPosition(EntityAluminumBoat.FUEL_PORT_POSITION);
         this.noWater = (new ModelRenderer(new ModelBase(){}, 0, 0)).setTextureSize(0, 0);
         this.noWater.addBox(-15F, -4F, -21F, 30, 8, 35, 0.0F);
     }

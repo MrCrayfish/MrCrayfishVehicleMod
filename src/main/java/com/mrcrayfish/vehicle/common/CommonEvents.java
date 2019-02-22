@@ -278,7 +278,7 @@ public class CommonEvents
 
                                 //Sets the positions and spawns the entity
                                 float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                                Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                                Vec3d heldOffset = ((EntityVehicle) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
                                 entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
                                 entity.fallDistance = 0.0F;
@@ -371,7 +371,7 @@ public class CommonEvents
             if(vehicle != null && vehicle instanceof EntityPoweredVehicle)
             {
                 float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                Vec3d heldOffset = ((EntityPoweredVehicle) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                 vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
                 player.world.spawnEntity(vehicle);
             }

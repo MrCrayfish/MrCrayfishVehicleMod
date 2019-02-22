@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -20,12 +21,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytraceable
 {
-    public static final float AXLE_OFFSET = -1.5F;
-    public static final float WHEEL_OFFSET = 1.5F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.4, 0, 0, 0, 1.2);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-8.25, 6, -9.3, 0, -90, 0, 0.25);
-    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(6D, 0D, 0D);
-    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0D, -0.03125D, -0.5625D);
+    static
+    {
+        VehicleProperties properties = new VehicleProperties();
+        properties.setAxleOffset(-1.5F);
+        properties.setWheelOffset(1.5F);
+        properties.setBodyPosition(new PartPosition(0, 0, 0.4, 0, 0, 0, 1.2));
+        properties.setFuelPortPosition(new PartPosition(-8.25, 6, -9.3, 0, -90, 0, 0.25));
+        properties.setHeldOffset(new Vec3d(6.0, 0.0, 0.0));
+        properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.5625));
+        VehicleProperties.setProperties(EntityBumperCar.class, properties);
+    }
 
     /**
      * ItemStack instances used for rendering
@@ -39,11 +45,6 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         this.setMaxSpeed(10);
         this.setSize(1.5F, 1.0F);
         this.setTurnSensitivity(20);
-        this.setAxleOffset(AXLE_OFFSET);
-        this.setWheelOffset(WHEEL_OFFSET);
-        this.setHeldOffset(HELD_OFFSET_VEC);
-        this.setTrailerOffset(TRAILER_OFFSET_VEC);
-        this.setBodyPosition(BODY_POSITION);
         this.stepHeight = 0.625F;
 
         //TODO figure out fuel system

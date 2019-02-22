@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityBoat;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -20,9 +21,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceable
 {
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.0, 0.2, 1.1);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-16.25, 3, -18.5, 0.0, -90.0, 0.0, 0.25);
-    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(6.0, 0.0, 0.0);
+    static
+    {
+        VehicleProperties properties = new VehicleProperties();
+        properties.setBodyPosition(new PartPosition(0.0, 0.0, 0.2, 1.1));
+        properties.setFuelPortPosition(new PartPosition(-16.25, 3, -18.5, 0.0, -90.0, 0.0, 0.25));
+        properties.setHeldOffset(new Vec3d(36.0, 0.0, 0.0));
+        VehicleProperties.setProperties(EntityAluminumBoat.class, properties);
+    }
 
     public EntityAluminumBoat(World worldIn)
     {
@@ -31,8 +37,6 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
         this.setTurnSensitivity(5);
         this.setMaxTurnAngle(20);
         this.setSize(2.25F, 0.875F);
-        this.setBodyPosition(BODY_POSITION);
-        this.setHeldOffset(HELD_OFFSET_VEC);
         this.setFuelCapacity(25000F);
         this.setFuelConsumption(2.0F);
     }

@@ -55,7 +55,7 @@ public class MessageThrowVehicle implements IMessage, IMessageHandler<MessageThr
 
                         //Sets the positions and spawns the entity
                         float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                        Vec3d heldOffset = ((EntityVehicle) entity).getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                        Vec3d heldOffset = ((EntityVehicle) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
                         //Gets the clicked vec if it was a right click block event
                         Vec3d lookVec = player.getLookVec();

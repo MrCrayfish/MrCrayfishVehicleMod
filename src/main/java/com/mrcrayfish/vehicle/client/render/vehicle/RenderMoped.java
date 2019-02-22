@@ -25,9 +25,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
 
     public RenderMoped()
     {
-        this.setFuelPortPosition(EntityMoped.FUEL_PORT_POSITION);
         this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.5F);
-
         Calendar calendar = Calendar.getInstance();
         this.isChristmas = calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DAY_OF_MONTH) >= 24 && calendar.get(Calendar.DAY_OF_MONTH) <= 26;
     }

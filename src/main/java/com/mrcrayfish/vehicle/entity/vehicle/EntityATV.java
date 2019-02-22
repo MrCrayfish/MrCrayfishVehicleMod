@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -19,14 +20,19 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
 {
-    public static final float AXLE_OFFSET = -1.5F;
-    public static final float WHEEL_OFFSET = 4.375F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.25, 0, 0, 0, 1.25);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-1.57, 6.55, 5.3, -90, 0, 0, 0.35);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(-5, 4.5, 6.5, -45, 0, 0, 0.5);
-    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(4.0D, 3.5D, 0.0D);
-    private static final Vec3d TOW_BAR_VEC = new Vec3d(0.0D, 0.0D, -20.8D);
-    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0D, 0.0D, -0.55D); //TODO may be able to get rid of this
+    static
+    {
+        VehicleProperties properties = new VehicleProperties();
+        properties.setAxleOffset(-1.5F);
+        properties.setWheelOffset(4.375F);
+        properties.setBodyPosition(new PartPosition(0, 0, 0.25, 0, 0, 0, 1.25));
+        properties.setFuelPortPosition(new PartPosition(-1.57, 6.55, 5.3, -90, 0, 0, 0.35));
+        properties.setKeyPortPosition(new PartPosition(-5, 4.5, 6.5, -45, 0, 0, 0.5));
+        properties.setHeldOffset(new Vec3d(4.0, 3.5, 0.0));
+        properties.setTowBarPosition(new Vec3d(0.0, 0.0, -20.8));
+        properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.55));
+        VehicleProperties.setProperties(EntityATV.class, properties);
+    }
 
     /**
      * ItemStack instances used for rendering
@@ -40,13 +46,6 @@ public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
         this.setMaxSpeed(15);
         this.setSize(1.5F, 1.0F);
         this.setFuelCapacity(20000F);
-        this.setAxleOffset(AXLE_OFFSET);
-        this.setWheelOffset(WHEEL_OFFSET);
-        this.setBodyPosition(BODY_POSITION);
-        this.setKeyHolePosition(KEY_PORT_POSITION);
-        this.setHeldOffset(HELD_OFFSET_VEC);
-        this.setTowBarPosition(TOW_BAR_VEC);
-        this.setTrailerOffset(TRAILER_OFFSET_VEC);
     }
 
     @Override

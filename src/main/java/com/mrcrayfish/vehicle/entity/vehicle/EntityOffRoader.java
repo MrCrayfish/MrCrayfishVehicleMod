@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -20,12 +21,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityOffRoader extends EntityLandVehicle implements EntityRaytracer.IEntityRaytraceable
 {
-    public static final float AXLE_OFFSET = -1.0F;
-    public static final float WHEEL_OFFSET = 5.4F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, -0.125, 0, 0, 0, 1.4);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25);
-    public static final PartPosition KEY_PORT_POSITION = new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5);
-    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(0.0D, 3.5D, 0.0D);
+    static
+    {
+        VehicleProperties properties = new VehicleProperties();
+        properties.setAxleOffset(-1.0F);
+        properties.setWheelOffset(5.4F);
+        properties.setBodyPosition(new PartPosition(0, 0, -0.125, 0, 0, 0, 1.4));
+        properties.setFuelPortPosition(new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25));
+        properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
+        properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
+        VehicleProperties.setProperties(EntityOffRoader.class, properties);
+    }
 
     /**
      * ItemStack instances used for rendering
@@ -39,11 +45,6 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
         this.setSize(2F, 1F);
         this.setMaxSpeed(18F);
         this.setFuelCapacity(25000F);
-        this.setAxleOffset(AXLE_OFFSET);
-        this.setWheelOffset(WHEEL_OFFSET);
-        this.setBodyPosition(BODY_POSITION);
-        this.setKeyHolePosition(KEY_PORT_POSITION);
-        this.setHeldOffset(HELD_OFFSET_VEC);
     }
 
     @Override

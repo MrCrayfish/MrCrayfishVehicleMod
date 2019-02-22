@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -20,11 +21,17 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytraceable
 {
-    public static final float AXLE_OFFSET = -1.7F;
-    public static final float WHEEL_OFFSET = 4.0F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.1, 0, 0, 0, 1.05);
-    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(6D, 0D, 0D);
-    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0D, -0.0625D, -0.5D);
+    static
+    {
+        VehicleProperties properties = new VehicleProperties();
+        properties.setAxleOffset(-1.7F);
+        properties.setWheelOffset(4.0F);
+        properties.setBodyPosition(new PartPosition(0, 0, 0.1, 0, 0, 0, 1.05));
+        properties.setEnginePosition(new PartPosition(0, 1, 2.5, 0, 180F, 0, 1.0));
+        properties.setHeldOffset(new Vec3d(6.0, 0.0, 0.0));
+        properties.setTrailerOffset(new Vec3d(0.0, -0.0625, -0.5));
+        VehicleProperties.setProperties(EntityMiniBike.class, properties);
+    }
 
     /**
      * ItemStack instances used for rendering
@@ -37,11 +44,6 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
         super(worldIn);
         this.setMaxSpeed(18F);
         this.setTurnSensitivity(12);
-        this.setAxleOffset(AXLE_OFFSET);
-        this.setWheelOffset(WHEEL_OFFSET);
-        this.setBodyPosition(BODY_POSITION);
-        this.setHeldOffset(HELD_OFFSET_VEC);
-        this.setTrailerOffset(TRAILER_OFFSET_VEC);
         this.setFuelCapacity(15000F);
         this.setFuelConsumption(1.5F);
     }

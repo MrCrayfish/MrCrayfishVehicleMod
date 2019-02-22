@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityMotorcycle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -59,13 +60,6 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     private static final RayTracePart TRAY_BOX = new RayTracePart(createScaledBoundingBox(-4 * 0.0625, 8 * 0.0625 + 0.1, -4.5 * 0.0625, 4 * 0.0625, 9F * 0.0625F + 0.1, -12.5 * 0.0625, 1.2));
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
 
-    public static final float AXLE_OFFSET = -1.0F;
-    public static final float WHEEL_OFFSET = 3.5F;
-    public static final PartPosition BODY_POSITION = new PartPosition(0, 0, 0.15, 0, 0, 0, 1.2);
-    public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2.75, 4.2, -3.4, 0, -90, 0, 0.2);
-    private static final Vec3d HELD_OFFSET_VEC = new Vec3d(7.0D, 2.0D, 0.0D);
-    private static final Vec3d TRAILER_OFFSET_VEC = new Vec3d(0.0D, -0.03125D, -0.65D);
-
     static
     {
         if(FMLCommonHandler.instance().getSide().isClient())
@@ -73,6 +67,15 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
             interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
             interactionBoxMapStatic.put(TRAY_BOX, EntityRaytracer.boxToTriangles(TRAY_BOX.getBox(), null));
         }
+
+        VehicleProperties properties = new VehicleProperties();
+        properties.setAxleOffset(-1.0F);
+        properties.setWheelOffset(3.5F);
+        properties.setBodyPosition(new PartPosition(0, 0, 0.15, 0, 0, 0, 1.2));
+        properties.setFuelPortPosition(new PartPosition(-2.75, 4.2, -3.4, 0, -90, 0, 0.2));
+        properties.setHeldOffset(new Vec3d(7.0, 2.0, 0.0));
+        properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.65));
+        VehicleProperties.setProperties(EntityMoped.class, properties);
     }
 
     private StorageInventory inventory;
@@ -92,11 +95,6 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         this.setMaxSpeed(12F);
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
-        this.setAxleOffset(AXLE_OFFSET);
-        this.setWheelOffset(WHEEL_OFFSET);
-        this.setBodyPosition(BODY_POSITION);
-        this.setHeldOffset(HELD_OFFSET_VEC);
-        this.setTrailerOffset(TRAILER_OFFSET_VEC);
         this.setFuelCapacity(12000F);
         this.setFuelConsumption(0.9F);
     }

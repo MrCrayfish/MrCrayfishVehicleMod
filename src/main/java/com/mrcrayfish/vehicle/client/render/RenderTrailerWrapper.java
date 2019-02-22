@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -30,8 +31,10 @@ public class RenderTrailerWrapper<T extends EntityTrailer & EntityRaytracer.IEnt
             //Enable the standard item lighting so vehicles render correctly
             RenderHelper.enableStandardItemLighting();
 
+            VehicleProperties properties = entity.getProperties();
+
             //Apply vehicle rotations and translations. This is applied to all other parts
-            PartPosition bodyPosition = entity.getBodyPosition();
+            PartPosition bodyPosition = properties.getBodyPosition();
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
             GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
             GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
@@ -45,7 +48,7 @@ public class RenderTrailerWrapper<T extends EntityTrailer & EntityRaytracer.IEnt
                 GlStateManager.pushMatrix();
                 GlStateManager.rotate(180F, 0, 1, 0);
 
-                Vec3d towBarOffset = entity.getTowBarVec();
+                Vec3d towBarOffset = properties.getTowBarPosition();
                 GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
@@ -60,10 +63,10 @@ public class RenderTrailerWrapper<T extends EntityTrailer & EntityRaytracer.IEnt
             GlStateManager.translate(0, 0.5, 0);
 
             //Translate the vehicle so it's axles are half way into the ground
-            GlStateManager.translate(0, entity.getAxleOffset() * 0.0625F, 0);
+            GlStateManager.translate(0, properties.getAxleOffset() * 0.0625F, 0);
 
             //Translate the vehicle so it's actually riding on it's wheels
-            GlStateManager.translate(0, entity.getWheelOffset() * 0.0625F, 0);
+            GlStateManager.translate(0, properties.getWheelOffset() * 0.0625F, 0);
 
             //Render body
             renderVehicle.render(entity, partialTicks);

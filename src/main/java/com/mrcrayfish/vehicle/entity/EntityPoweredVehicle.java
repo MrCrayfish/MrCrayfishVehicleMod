@@ -100,9 +100,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public float vehicleMotionZ;
 
     private UUID owner;
-    private PartPosition enginePosition;
-    private PartPosition keyHolePosition;
-    private PartPosition keyPosition;
 
     private InventoryBasic vehicleInventory;
 
@@ -895,7 +892,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     {
         if(!this.getKeyStack().isEmpty())
         {
-            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getKeyHolePosition());
+            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getProperties().getKeyPortPosition());
             world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
             this.setKeyStack(ItemStack.EMPTY);
         }
@@ -909,32 +906,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public boolean canDrive()
     {
         return !(!this.hasEngine() || !this.isFueled() || this.getDestroyedStage() >= 9) && (this.isControllingPassengerCreative() || (!this.isKeyNeeded() || !this.getKeyStack().isEmpty()));
-    }
-
-    public void setEnginePosition(PartPosition enginePosition)
-    {
-        this.enginePosition = enginePosition;
-    }
-
-    public PartPosition getEnginePosition()
-    {
-        return enginePosition;
-    }
-
-    public void setKeyHolePosition(PartPosition keyHolePosition)
-    {
-        this.keyHolePosition = keyHolePosition;
-        this.keyPosition = new PartPosition(keyHolePosition.getX(), keyHolePosition.getY(), keyHolePosition.getZ(), keyHolePosition.getRotX() + 90, 0, 0, 0.15);
-    }
-
-    public PartPosition getKeyHolePosition()
-    {
-        return keyHolePosition;
-    }
-
-    public PartPosition getKeyPosition()
-    {
-        return keyPosition;
     }
 
     public boolean isOwner(EntityPlayer player)

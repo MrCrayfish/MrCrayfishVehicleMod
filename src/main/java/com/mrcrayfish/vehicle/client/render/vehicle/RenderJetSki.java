@@ -13,11 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderJetSki extends AbstractRenderVehicle<EntityJetSki>
 {
-    public RenderJetSki()
-    {
-        this.setFuelPortPosition(EntityJetSki.FUEL_PORT_POSITION);
-    }
-
     @Override
     public void render(EntityJetSki entity, float partialTicks)
     {

@@ -26,8 +26,6 @@ public abstract class EntityTrailer extends EntityVehicle
 {
     public static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(EntityTrailer.class, DataSerializers.VARINT);
 
-    public static final PartPosition BODY_POSITION = new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1);
-
     private Entity pullingEntity;
 
     public float wheelRotation;
@@ -38,7 +36,6 @@ public abstract class EntityTrailer extends EntityVehicle
         super(worldIn);
         this.setSize(1.5F, 1.5F);
         this.stepHeight = 1.0F;
-        this.setBodyPosition(BODY_POSITION);
     }
 
     @Override
@@ -101,8 +98,8 @@ public abstract class EntityTrailer extends EntityVehicle
         if(pullingEntity instanceof EntityVehicle)
         {
             EntityVehicle vehicle = (EntityVehicle) pullingEntity;
-            Vec3d towBarVec = vehicle.getTowBarVec();
-            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + vehicle.getBodyPosition().getZ());
+            Vec3d towBarVec = vehicle.getProperties().getTowBarPosition();
+            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + vehicle.getProperties().getBodyPosition().getZ());
             if(vehicle instanceof EntityLandVehicle)
             {
                 EntityLandVehicle landVehicle = (EntityLandVehicle) vehicle;

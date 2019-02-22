@@ -13,11 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderSportsPlane extends AbstractRenderVehicle<EntitySportsPlane>
 {
-    public RenderSportsPlane()
-    {
-        this.setFuelPortPosition(EntitySportsPlane.FUEL_PORT_POSITION);
-    }
-
     @Override
     public void render(EntitySportsPlane entity, float partialTicks)
     {
