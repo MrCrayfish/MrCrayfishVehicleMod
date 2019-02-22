@@ -80,7 +80,7 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
                 //Offset wheels and compensate for axle offset
                 GlStateManager.translate(0, -8 * 0.0625, 0);
                 GlStateManager.translate(0, -properties.getAxleOffset() * 0.0625F, 0);
-                renderVehicle.getWheels().forEach(wheel -> wheel.render(entity, partialTicks));
+                renderVehicle.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
             }
             GlStateManager.popMatrix();
 
@@ -119,6 +119,35 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
                     this.renderKey(properties.getKeyPosition(), entity.getKeyStack());
                 }
             }
+        }
+        GlStateManager.popMatrix();
+    }
+
+    protected void renderWheel(EntityLandVehicle vehicle, Wheel wheel, float partialTicks)
+    {
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().offset, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+            GlStateManager.pushMatrix();
+            {
+                if(wheel.getPosition() == Wheel.Position.FRONT)
+                {
+                    float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
+                }
+                if(vehicle.isMoving())
+                {
+                    GlStateManager.rotate(-wheel.getWheelRotation(vehicle, partialTicks), 1, 0, 0);
+                }
+                GlStateManager.translate((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().offset, 0, 0);
+                GlStateManager.scale(wheel.getScale(), wheel.getScale(), wheel.getScale());
+                if(wheel.getSide() == Wheel.Side.RIGHT)
+                {
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                }
+                Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
+            }
+            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
     }

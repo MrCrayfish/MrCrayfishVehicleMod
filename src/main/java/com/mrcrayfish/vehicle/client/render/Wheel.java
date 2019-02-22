@@ -1,9 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 /**
  * Author: MrCrayfish
@@ -44,42 +41,48 @@ public class Wheel
         this(side, position, 2.0F, scale, offsetX, offsetY, offsetZ);
     }
 
-    public void render(EntityLandVehicle vehicle, float partialTicks)
-    {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate((offsetX * 0.0625) * side.offset, offsetY * 0.0625, offsetZ * 0.0625);
-            GlStateManager.pushMatrix();
-            {
-                if(position == Position.FRONT)
-                {
-                    float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
-                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
-                }
-                if(vehicle.isMoving())
-                {
-                    GlStateManager.rotate(-getWheelRotation(vehicle, partialTicks), 1, 0, 0);
-                }
-                GlStateManager.translate((((width * scale) / 2) * 0.0625) * side.offset, 0, 0);
-                GlStateManager.scale(scale, scale, scale);
-                if(side == Side.RIGHT)
-                {
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                }
-                Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-        }
-        GlStateManager.popMatrix();
-    }
-
-    private float getWheelRotation(EntityLandVehicle vehicle, float partialTicks)
+    public float getWheelRotation(EntityLandVehicle vehicle, float partialTicks)
     {
         if(position == Position.REAR)
         {
             return vehicle.prevRearWheelRotation + (vehicle.rearWheelRotation - vehicle.prevRearWheelRotation) * partialTicks;
         }
         return vehicle.prevFrontWheelRotation + (vehicle.frontWheelRotation - vehicle.prevFrontWheelRotation) * partialTicks;
+    }
+
+    public float getOffsetX()
+    {
+        return offsetX;
+    }
+
+    public float getOffsetY()
+    {
+        return offsetY;
+    }
+
+    public float getOffsetZ()
+    {
+        return offsetZ;
+    }
+
+    public float getWidth()
+    {
+        return width;
+    }
+
+    public float getScale()
+    {
+        return scale;
+    }
+
+    public Side getSide()
+    {
+        return side;
+    }
+
+    public Position getPosition()
+    {
+        return position;
     }
 
     public enum Side
