@@ -662,4 +662,9 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     {
         return VehicleProperties.getProperties(this.getClass());
     }
+
+    public float getModifiedRotationYaw()
+    {
+        return this.rotationYaw;
+    }
 }

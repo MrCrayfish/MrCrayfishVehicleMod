@@ -172,51 +172,9 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void createParticles()
     {
-        if(!this.canDrive())
-            return;
-
-        if(this.getAcceleration() == AccelerationDirection.FORWARD)
+        if(this.canDrive())
         {
-            VehicleProperties properties = this.getProperties();
-            for(Wheel wheel : properties.getWheels())
-            {
-                PartPosition bodyPosition = properties.getBodyPosition();
-                double wheelX = bodyPosition.getX();
-                double wheelY = bodyPosition.getY();
-                double wheelZ = bodyPosition.getZ();
-
-                double scale = bodyPosition.getScale();
-
-                /* Applies axel and wheel offets */
-                wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
-
-                /* Wheels Translations */
-                wheelX += ((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset()) * scale;
-                wheelY += (wheel.getOffsetY() * 0.0625) * scale;
-                wheelZ += (wheel.getOffsetZ() * 0.0625) * scale;
-                wheelX += ((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().getOffset()) * scale;
-
-                /* Offsets the position to the wheel contact on the ground */
-                wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScale();
-
-                /* Gets the block under the wheel and spawns a particle */
-                Vec3d wheelVec = new Vec3d(wheelX, wheelY, wheelZ).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F);
-                int x = MathHelper.floor(this.posX + wheelVec.x);
-                int y = MathHelper.floor(this.posY + wheelVec.y - 0.2D);
-                int z = MathHelper.floor(this.posZ + wheelVec.z);
-                BlockPos pos = new BlockPos(x, y, z);
-                IBlockState state = this.world.getBlockState(pos);
-                if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
-                {
-                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + wheelVec.x, this.posY + wheelVec.y, this.posZ + wheelVec.z, 0.0D, 0.0D, 0.0D, Block.getStateId(state));
-                }
-            }
-        }
-
-        if(this.shouldShowEngineSmoke() && this.ticksExisted % 2 == 0)
-        {
-            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F);
-            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ);
+            super.createParticles();
         }
     }
 
@@ -268,5 +226,11 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
             }
         }
         return super.getModifiedAccelerationSpeed();
+    }
+
+    @Override
+    public float getModifiedRotationYaw()
+    {
+        return this.rotationYaw - this.additionalYaw;
     }
 }

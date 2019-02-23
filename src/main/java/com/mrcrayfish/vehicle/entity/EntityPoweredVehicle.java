@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
@@ -18,6 +19,8 @@ import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -39,6 +42,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -475,9 +479,51 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public void createParticles()
     {
+        if(this.getAcceleration() == AccelerationDirection.FORWARD)
+        {
+            /* Uses the same logic when rendering wheels to determine the position, then spawns
+             * particles at the contact of the wheel and the ground. */
+            VehicleProperties properties = this.getProperties();
+            for(Wheel wheel : properties.getWheels())
+            {
+                PartPosition bodyPosition = properties.getBodyPosition();
+                double wheelX = bodyPosition.getX();
+                double wheelY = bodyPosition.getY();
+                double wheelZ = bodyPosition.getZ();
+
+                double scale = bodyPosition.getScale();
+
+                /* Applies axel and wheel offets */
+                wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
+
+                /* Wheels Translations */
+                wheelX += ((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset()) * scale;
+                wheelY += (wheel.getOffsetY() * 0.0625) * scale;
+                wheelZ += (wheel.getOffsetZ() * 0.0625) * scale;
+                wheelX += ((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().getOffset()) * scale;
+
+                /* Offsets the position to the wheel contact on the ground */
+                wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScale();
+
+                /* Update the wheel position */
+                Vec3d wheelVec = new Vec3d(wheelX, wheelY, wheelZ).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
+
+                /* Gets the block under the wheel and spawns a particle */
+                int x = MathHelper.floor(this.posX + wheelVec.x);
+                int y = MathHelper.floor(this.posY + wheelVec.y - 0.2D);
+                int z = MathHelper.floor(this.posZ + wheelVec.z);
+                BlockPos pos = new BlockPos(x, y, z);
+                IBlockState state = this.world.getBlockState(pos);
+                if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+                {
+                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + wheelVec.x, this.posY + wheelVec.y, this.posZ + wheelVec.z, 0.0D, 0.0D, 0.0D, Block.getStateId(state));
+                }
+            }
+        }
+
         if(this.shouldShowEngineSmoke()&& this.canDrive() && this.ticksExisted % 2 == 0)
         {
-            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.rotationYaw * 0.017453292F);
+            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
             this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ);
         }
     }
