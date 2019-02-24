@@ -15,8 +15,8 @@ public class Wheel
     private Side side;
     private Position position;
 
-    private boolean particles = true;
-    private boolean render = true;
+    private boolean particles;
+    private boolean render;
 
     public Wheel(Side side, Position position, float width, float scale, float offsetX, float offsetY, float offsetZ, boolean particles, boolean render)
     {

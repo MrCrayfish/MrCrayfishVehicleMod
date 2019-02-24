@@ -85,6 +85,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public boolean disableFallDamage;
     public float fuelConsumption = 1F;
 
+    protected double[] wheelPositions;
     public float turnAngle;
     public float prevTurnAngle;
 
@@ -159,6 +160,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(FUEL_CAPACITY, 15000F);
         this.dataManager.register(NEEDS_KEY, false);
         this.dataManager.register(KEY_STACK, ItemStack.EMPTY);
+
+        List<Wheel> wheels = this.getProperties().getWheels();
+        if(wheels != null && wheels.size() > 0)
+        {
+            this.wheelPositions = new double[wheels.size() * 3];
+        }
     }
 
     public abstract SoundEvent getMovingSound();
@@ -343,6 +350,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         {
             this.prevRotationYaw -= 360.0F;
         }
+        this.updateWheelPositions();
 
         this.move(MoverType.SELF, motionX + vehicleMotionX, motionY + vehicleMotionY, motionZ + vehicleMotionZ);
 
@@ -484,39 +492,28 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             /* Uses the same logic when rendering wheels to determine the position, then spawns
              * particles at the contact of the wheel and the ground. */
             VehicleProperties properties = this.getProperties();
-            for(Wheel wheel : properties.getWheels())
+            if(properties.getWheels() != null)
             {
-                PartPosition bodyPosition = properties.getBodyPosition();
-                double wheelX = bodyPosition.getX();
-                double wheelY = bodyPosition.getY();
-                double wheelZ = bodyPosition.getZ();
-
-                double scale = bodyPosition.getScale();
-
-                /* Applies axel and wheel offets */
-                wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
-
-                /* Wheels Translations */
-                wheelX += ((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset()) * scale;
-                wheelY += (wheel.getOffsetY() * 0.0625) * scale;
-                wheelZ += (wheel.getOffsetZ() * 0.0625) * scale;
-                wheelX += ((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().getOffset()) * scale;
-
-                /* Offsets the position to the wheel contact on the ground */
-                wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScale();
-
-                /* Update the wheel position */
-                Vec3d wheelVec = new Vec3d(wheelX, wheelY, wheelZ).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
-
-                /* Gets the block under the wheel and spawns a particle */
-                int x = MathHelper.floor(this.posX + wheelVec.x);
-                int y = MathHelper.floor(this.posY + wheelVec.y - 0.2D);
-                int z = MathHelper.floor(this.posZ + wheelVec.z);
-                BlockPos pos = new BlockPos(x, y, z);
-                IBlockState state = this.world.getBlockState(pos);
-                if(wheel.shouldSpawnParticles() && state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+                List<Wheel> wheels = properties.getWheels();
+                for(int i = 0; i < wheels.size(); i++)
                 {
-                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + wheelVec.x, this.posY + wheelVec.y, this.posZ + wheelVec.z, 0.0D, 0.0D, 0.0D, Block.getStateId(state));
+                    Wheel wheel = wheels.get(i);
+                    if(!wheel.shouldSpawnParticles())
+                        continue;
+                    /* Gets the block under the wheel and spawns a particle */
+                    double wheelX = this.wheelPositions[i * 3];
+                    double wheelY = this.wheelPositions[i * 3 + 1];
+                    double wheelZ = this.wheelPositions[i * 3 + 2];
+                    int x = MathHelper.floor(this.posX + wheelX);
+                    int y = MathHelper.floor(this.posY + wheelY - 0.2D);
+                    int z = MathHelper.floor(this.posZ + wheelZ);
+                    BlockPos pos = new BlockPos(x, y, z);
+                    IBlockState state = this.world.getBlockState(pos);
+                    if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+                    {
+                        Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F);
+                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + wheelX, this.posY + wheelY, this.posZ + wheelZ, dirVec.x, dirVec.y, dirVec.z, Block.getStateId(state));
+                    }
                 }
             }
         }
@@ -1123,6 +1120,44 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 CommonUtils.getItemTagCompound(key).removeTag("vehicleId");
                 InventoryUtil.spawnItemStack(world, posX, posY, posZ, key);
+            }
+        }
+    }
+
+    private void updateWheelPositions()
+    {
+        VehicleProperties properties = this.getProperties();
+        if(properties.getWheels() != null)
+        {
+            List<Wheel> wheels = properties.getWheels();
+            for(int i = 0; i < wheels.size(); i++)
+            {
+                Wheel wheel = wheels.get(i);
+
+                PartPosition bodyPosition = properties.getBodyPosition();
+                double wheelX = bodyPosition.getX();
+                double wheelY = bodyPosition.getY();
+                double wheelZ = bodyPosition.getZ();
+
+                double scale = bodyPosition.getScale();
+
+                /* Applies axel and wheel offets */
+                wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
+
+                /* Wheels Translations */
+                wheelX += ((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset()) * scale;
+                wheelY += (wheel.getOffsetY() * 0.0625) * scale;
+                wheelZ += (wheel.getOffsetZ() * 0.0625) * scale;
+                wheelX += ((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().getOffset()) * scale;
+
+                /* Offsets the position to the wheel contact on the ground */
+                wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScale();
+
+                /* Update the wheel position */
+                Vec3d wheelVec = new Vec3d(wheelX, wheelY, wheelZ).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
+                wheelPositions[i * 3] = wheelVec.x;
+                wheelPositions[i * 3 + 1] = wheelVec.y;
+                wheelPositions[i * 3 + 2] = wheelVec.z;
             }
         }
     }

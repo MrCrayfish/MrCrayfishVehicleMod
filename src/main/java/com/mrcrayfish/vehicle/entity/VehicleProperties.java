@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import net.minecraft.util.math.Vec3d;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,6 +111,7 @@ public class VehicleProperties
         wheels.add(new Wheel(side, position, 2.0F, scale, offsetX, offsetY, offsetZ, particles, render));
     }
 
+    @Nullable
     public List<Wheel> getWheels()
     {
         return wheels;
