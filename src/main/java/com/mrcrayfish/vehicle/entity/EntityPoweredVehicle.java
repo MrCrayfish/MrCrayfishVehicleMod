@@ -514,7 +514,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 int z = MathHelper.floor(this.posZ + wheelVec.z);
                 BlockPos pos = new BlockPos(x, y, z);
                 IBlockState state = this.world.getBlockState(pos);
-                if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+                if(wheel.shouldSpawnParticles() && state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
                 {
                     this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + wheelVec.x, this.posY + wheelVec.y, this.posZ + wheelVec.z, 0.0D, 0.0D, 0.0D, Block.getStateId(state));
                 }

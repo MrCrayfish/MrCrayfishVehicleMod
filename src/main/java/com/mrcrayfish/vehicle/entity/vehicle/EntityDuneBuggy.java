@@ -29,8 +29,8 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
         properties.setFuelPortPosition(new PartPosition(1.15, 3, -7.25, 0, 180, 0, 0.25));
         properties.setHeldOffset(new Vec3d(2.0, 0.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.025, -0.25));
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, -4.25F, -5.7F, 1.0F);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, -4.25F, -5.7F, 1.0F);
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, -4.25F, -5.7F, 1.0F, true, true);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, -4.25F, -5.7F, 1.0F, true, true);
         VehicleProperties.setProperties(EntityDuneBuggy.class, properties);
     }
 

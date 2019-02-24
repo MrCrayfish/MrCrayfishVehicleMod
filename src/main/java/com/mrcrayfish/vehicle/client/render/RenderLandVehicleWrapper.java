@@ -125,6 +125,9 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
 
     protected void renderWheel(EntityLandVehicle vehicle, Wheel wheel, float partialTicks)
     {
+        if(!wheel.shouldRender())
+            return;
+
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().offset, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
