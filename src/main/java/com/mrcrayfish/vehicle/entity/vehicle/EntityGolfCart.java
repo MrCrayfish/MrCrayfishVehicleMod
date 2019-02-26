@@ -22,22 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer.IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setAxleOffset(-0.5F);
-        properties.setWheelOffset(4.45F);
-        properties.setBodyPosition(new PartPosition(0, 0, 0, 0, 0, 0, 1.15));
-        properties.setFuelPortPosition(new PartPosition(-13.25, 3.5, -7.3, 0, -90, 0, 0.25));
-        properties.setKeyPortPosition(new PartPosition(-8.5, 2.75, 8.5, -67.5, 0, 0, 0.5));
-        properties.setHeldOffset(new Vec3d(1.5D, 2.5D, 0.0D));
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.75F, false, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.75F, false, true);
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F, true, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F, true, true);
-        VehicleProperties.setProperties(EntityGolfCart.class, properties);
-    }
-
     /**
      * ItemStack instances used for rendering
      */

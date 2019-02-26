@@ -22,15 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setBodyPosition(new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8));
-        properties.setFuelPortPosition(new PartPosition(-6.25, 4, -1, 0, -90, 0, 0.25));
-        properties.setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5));
-        VehicleProperties.setProperties(EntitySportsPlane.class, properties);
-    }
-
     public float wheelSpeed;
     public float wheelRotation;
     public float prevWheelRotation;

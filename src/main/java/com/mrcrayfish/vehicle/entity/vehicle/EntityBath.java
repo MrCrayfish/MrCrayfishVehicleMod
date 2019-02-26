@@ -17,15 +17,6 @@ import net.minecraft.world.World;
  */
 public class EntityBath extends EntityPlane implements IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setBodyPosition(new PartPosition(0, 0, 0, 0, 0, 0, 1.0));
-        properties.setHeldOffset(new Vec3d(4.0, 3.5, 0.0));
-        properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.4375));
-        VehicleProperties.setProperties(EntityBath.class, properties);
-    }
-
     public EntityBath(World worldIn)
     {
         super(worldIn);

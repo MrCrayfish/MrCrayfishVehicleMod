@@ -55,10 +55,6 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
         {
             interactionBoxMapStatic.put(CONNECTION_BOX, EntityRaytracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
         }
-
-        VehicleProperties properties = new VehicleProperties();
-        properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
-        VehicleProperties.setProperties(EntitySeederTrailer.class, properties);
     }
 
     private int inventoryTimer;

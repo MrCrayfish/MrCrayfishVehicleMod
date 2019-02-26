@@ -22,19 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setAxleOffset(-1.7F);
-        properties.setWheelOffset(4.0F);
-        properties.setBodyPosition(new PartPosition(0, 0, 0.1, 0, 0, 0, 1.05));
-        properties.setEnginePosition(new PartPosition(0, 1, 2.5, 0, 180F, 0, 1.0));
-        properties.setHeldOffset(new Vec3d(6.0, 0.0, 0.0));
-        properties.setTrailerOffset(new Vec3d(0.0, -0.0625, -0.5));
-        properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.65F, true, true);
-        VehicleProperties.setProperties(EntityMiniBike.class, properties);
-    }
-
     /**
      * ItemStack instances used for rendering
      */

@@ -20,17 +20,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySpeedBoat extends EntityBoat implements IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setWheelOffset(2.5F);
-        properties.setBodyPosition(new PartPosition(0.0, -0.03125, 0.6875, 1.0));
-        properties.setFuelPortPosition(new PartPosition(-12.25, 6.0, -19.5, 0.0, -90.0, 0.0, 0.25));
-        properties.setHeldOffset(new Vec3d(6.0, -0.5, 0.0));
-        properties.setTrailerOffset(new Vec3d(0.0, -0.09375, -0.75));
-        VehicleProperties.setProperties(EntitySpeedBoat.class, properties);
-    }
-
     /**
      * ItemStack instances used for rendering
      */

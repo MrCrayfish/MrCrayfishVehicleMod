@@ -22,15 +22,6 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
     public static final PartPosition FUEL_PORT_POSITION = new PartPosition(-2, 1.75, 8.25, 0, 0, 0, 0.45);
     public static final PartPosition KEY_PORT_POSITION = new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8);
 
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setBodyPosition(new PartPosition(0, 0, 0.0625, 0, 0, 0, 1));
-        properties.setFuelPortPosition(new PartPosition(-2, 1.75, 8.25, 0, 0, 0, 0.45));
-        properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
-        VehicleProperties.setProperties(EntitySofacopter.class, properties);
-    }
-
     @SideOnly(Side.CLIENT)
     public ItemStack arm;
 

@@ -22,22 +22,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityOffRoader extends EntityLandVehicle implements EntityRaytracer.IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setAxleOffset(-1.0F);
-        properties.setWheelOffset(5.4F);
-        properties.setBodyPosition(new PartPosition(0, 0, -0.125, 0, 0, 0, 1.4));
-        properties.setFuelPortPosition(new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25));
-        properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
-        properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F, true, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F, true, true);
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F, true, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F, true, true);
-        VehicleProperties.setProperties(EntityOffRoader.class, properties);
-    }
-
     /**
      * ItemStack instances used for rendering
      */

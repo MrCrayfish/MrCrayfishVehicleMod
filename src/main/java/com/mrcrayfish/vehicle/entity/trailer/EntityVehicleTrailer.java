@@ -39,11 +39,6 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
         {
             interactionBoxMapStatic.put(CONNECTION_BOX, EntityRaytracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
         }
-
-        VehicleProperties properties = new VehicleProperties();
-        properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
-        properties.setHeldOffset(new Vec3d(0D, 3D, 0D));
-        VehicleProperties.setProperties(EntityVehicleTrailer.class, properties);
     }
 
     public EntityVehicleTrailer(World worldIn)

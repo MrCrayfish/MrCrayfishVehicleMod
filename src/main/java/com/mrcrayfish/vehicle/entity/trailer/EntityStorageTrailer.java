@@ -51,11 +51,6 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
             interactionBoxMapStatic.put(CONNECTION_BOX, EntityRaytracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
             interactionBoxMapStatic.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
         }
-
-        VehicleProperties properties = new VehicleProperties();
-        properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
-        properties.setTowBarPosition(new Vec3d(0.0, 0.0, -12.0));
-        VehicleProperties.setProperties(EntityStorageTrailer.class, properties);
     }
 
     private StorageInventory inventory;

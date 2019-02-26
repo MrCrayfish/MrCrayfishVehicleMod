@@ -20,22 +20,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setAxleOffset(-2.5F);
-        properties.setWheelOffset(3.45F);
-        properties.setBodyPosition(new PartPosition(0, 0, 0, 0, 0, 0, 1.0));
-        properties.setEnginePosition(new PartPosition(0, 2, -9, 0, 180, 0, 1.2));
-        properties.setHeldOffset(new Vec3d(3.0D, 0.5D, 0.0D));
-        properties.setTrailerOffset(new Vec3d(0D, -0.03125D, -0.375D));
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F, false, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F, false, true);
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F, true, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F, true, true);
-        VehicleProperties.setProperties(EntityGoKart.class, properties);
-    }
-
     /**
      * ItemStack instances used for rendering
      */

@@ -23,21 +23,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityShoppingCart extends EntityLandVehicle implements IEntityRaytraceable
 {
-    static
-    {
-        VehicleProperties properties = new VehicleProperties();
-        properties.setAxleOffset(-1.0F);
-        properties.setWheelOffset(2.0F);
-        properties.setBodyPosition(new PartPosition(0, 0, 0.165, 0, 0, 0, 1.05));
-        properties.setHeldOffset(new Vec3d(4.0, 9.25, 0.0));
-        properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.25));
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F, false, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F, false, true);
-        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F, false, true);
-        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F, false, true);
-        VehicleProperties.setProperties(EntityShoppingCart.class, properties);
-    }
-
     private EntityPlayer pusher;
 
     public EntityShoppingCart(World worldIn)
