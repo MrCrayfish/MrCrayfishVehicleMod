@@ -42,7 +42,6 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
         super.onClientInit();
         body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
         handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
-        wheel = new ItemStack(ModItems.DUNE_BUGGY_WHEEL);
     }
 
     @Override

@@ -93,6 +93,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public void onClientInit()
     {
         towBar = new ItemStack(ModItems.TOW_BAR);
+        wheel = new ItemStack(ModItems.WHEEL, 1, WheelType.STANDARD.ordinal());
     }
 
     @Override
