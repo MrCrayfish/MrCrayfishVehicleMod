@@ -75,14 +75,17 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
             renderVehicle.render(entity, partialTicks);
 
             //Render vehicle wheels
-            GlStateManager.pushMatrix();
+            if(entity.hasWheels())
             {
-                //Offset wheels and compensate for axle offset
-                GlStateManager.translate(0, -8 * 0.0625, 0);
-                GlStateManager.translate(0, -properties.getAxleOffset() * 0.0625F, 0);
-                properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
+                GlStateManager.pushMatrix();
+                {
+                    //Offset wheels and compensate for axle offset
+                    GlStateManager.translate(0, -8 * 0.0625, 0);
+                    GlStateManager.translate(0, -properties.getAxleOffset() * 0.0625F, 0);
+                    properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
+                }
+                GlStateManager.popMatrix();
             }
-            GlStateManager.popMatrix();
 
             //Render the engine if the vehicle has explicitly stated it should
             if(entity.shouldRenderEngine() && entity.hasEngine())

@@ -98,6 +98,7 @@ public class RegistrationHandler
                 NonNullList<ResourceLocation> modelLocations = ((SubItems) item).getModels();
                 for(int i = 0; i < modelLocations.size(); i++)
                 {
+                    System.out.println(modelLocations.get(i));
                     ModelLoader.setCustomModelResourceLocation(item, i, new ModelResourceLocation(modelLocations.get(i), "inventory"));
                 }
             }

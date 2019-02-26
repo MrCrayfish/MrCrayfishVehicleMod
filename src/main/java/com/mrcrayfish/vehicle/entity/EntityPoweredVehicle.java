@@ -74,6 +74,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     protected static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.ITEM_STACK);
+    protected static final DataParameter<Boolean> HAS_WHEELS = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
+    protected static final DataParameter<Integer> WHEEL_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -160,6 +162,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(FUEL_CAPACITY, 15000F);
         this.dataManager.register(NEEDS_KEY, false);
         this.dataManager.register(KEY_STACK, ItemStack.EMPTY);
+        this.dataManager.register(HAS_WHEELS, true);
+        this.dataManager.register(WHEEL_TYPE, WheelType.STANDARD.ordinal());
 
         List<Wheel> wheels = this.getProperties().getWheels();
         if(wheels != null && wheels.size() > 0)
@@ -582,6 +586,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         {
             this.setEngineTier(EngineTier.getType(compound.getInteger("engineTier")));
         }
+        if(compound.hasKey("hasWheels", Constants.NBT.TAG_BYTE))
+        {
+            this.setWheels(compound.getBoolean("hasWheels"));
+        }
+        if(compound.hasKey("wheelType", Constants.NBT.TAG_INT))
+        {
+            this.setWheelType(WheelType.getType(compound.getInteger("wheelType")));
+        }
         if(compound.hasKey("maxSpeed", Constants.NBT.TAG_FLOAT))
         {
             this.setMaxSpeed(compound.getFloat("maxSpeed"));
@@ -631,6 +643,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         }
         compound.setBoolean("hasEngine", this.hasEngine());
         compound.setInteger("engineTier", this.getEngineTier().ordinal());
+        compound.setBoolean("hasWheels", this.hasWheels());
+        compound.setInteger("wheelType", this.getWheelType().ordinal());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
@@ -961,6 +975,35 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.owner = owner;
     }
 
+    public boolean hasWheels()
+    {
+        return this.dataManager.get(HAS_WHEELS);
+    }
+
+    public void setWheels(boolean hasWheels)
+    {
+        this.dataManager.set(HAS_WHEELS, hasWheels);
+    }
+
+    public void setWheelType(WheelType wheelType)
+    {
+        this.dataManager.set(WHEEL_TYPE, wheelType.ordinal());
+    }
+
+    public WheelType getWheelType()
+    {
+        return WheelType.values()[this.dataManager.get(WHEEL_TYPE)];
+    }
+
+    public ItemStack getWheelStack()
+    {
+        if(this.hasWheels())
+        {
+            return new ItemStack(ModItems.WHEEL, 1, this.getWheelType().ordinal());
+        }
+        return ItemStack.EMPTY;
+    }
+
     @Override
     public void notifyDataManagerChange(DataParameter<?> key)
     {
@@ -971,6 +1014,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 EngineTier tier = EngineTier.getType(this.dataManager.get(ENGINE_TIER));
                 engine.setItemDamage(tier.ordinal());
+            }
+            if(WHEEL_TYPE.equals(key))
+            {
+                WheelType type = this.getWheelType();
+                wheel.setItemDamage(type.ordinal());
             }
             if(COLOR.equals(key))
             {
@@ -1037,33 +1085,27 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public InventoryBasic getVehicleInventory()
     {
-        this.initVehicleInventory();
+        if(this.vehicleInventory == null)
+        {
+            this.initVehicleInventory();
+        }
         return this.vehicleInventory;
     }
 
     protected void initVehicleInventory()
     {
-        InventoryBasic vehicleInventory = this.vehicleInventory;
-        this.vehicleInventory = new InventoryBasic(this.getName(), false, 1);
-
-        if(vehicleInventory != null)
-        {
-            vehicleInventory.removeInventoryChangeListener(this);
-            int size = Math.min(vehicleInventory.getSizeInventory(), this.vehicleInventory.getSizeInventory());
-            for(int i = 0; i < size; i++)
-            {
-                ItemStack stack = vehicleInventory.getStackInSlot(i);
-                if(!stack.isEmpty())
-                {
-                    this.vehicleInventory.setInventorySlotContents(i, stack.copy());
-                }
-            }
-        }
+        this.vehicleInventory = new InventoryBasic(this.getName(), false, 2);
 
         ItemStack engine = this.getEngineStack();
         if(!engine.isEmpty())
         {
             this.vehicleInventory.setInventorySlotContents(0, engine);
+        }
+
+        ItemStack wheel = this.getWheelStack();
+        if(!wheel.isEmpty())
+        {
+            this.vehicleInventory.setInventorySlotContents(1, wheel);
         }
 
         this.vehicleInventory.addInventoryChangeListener(this);
@@ -1073,14 +1115,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     {
         if (!this.world.isRemote)
         {
-            ItemStack stack = this.vehicleInventory.getStackInSlot(0);
-            if(stack.getItem() instanceof ItemEngine)
+            ItemStack engine = this.vehicleInventory.getStackInSlot(0);
+            if(engine.getItem() instanceof ItemEngine)
             {
-                ItemEngine engine = (ItemEngine) stack.getItem();
-                if(engine.getEngineType() == this.getEngineType())
+                ItemEngine item = (ItemEngine) engine.getItem();
+                if(item.getEngineType() == this.getEngineType())
                 {
                     this.setEngine(true);
-                    this.setEngineTier(EngineTier.getType(stack.getMetadata()));
+                    this.setEngineTier(EngineTier.getType(engine.getMetadata()));
                 }
                 else
                 {
@@ -1090,6 +1132,17 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             else
             {
                 this.setEngine(false);
+            }
+
+            ItemStack wheel = this.vehicleInventory.getStackInSlot(1);
+            if(wheel.getItem() == ModItems.WHEEL)
+            {
+                this.setWheels(true);
+                this.setWheelType(WheelType.values()[wheel.getMetadata()]);
+            }
+            else
+            {
+                this.setWheels(false);
             }
         }
     }

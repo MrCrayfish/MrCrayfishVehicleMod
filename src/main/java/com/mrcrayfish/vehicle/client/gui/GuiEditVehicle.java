@@ -60,6 +60,11 @@ public class GuiEditVehicle extends GuiContainer
         {
             this.drawTexturedModalRect(i + 8, j + 17, 176, 0, 16, 16);
         }
+
+        if(vehicleInventory.getStackInSlot(1).isEmpty())
+        {
+            this.drawTexturedModalRect(i + 8, j + 35, 176, 16, 16, 16);
+        }
     }
 
     @Override

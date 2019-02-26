@@ -68,7 +68,7 @@ public class ModItems
     static
     {
         PANEL = new ItemPart("panel").setCreativeTab(VehicleMod.CREATIVE_TAB);
-        WHEEL = new ItemPart("wheel").setCreativeTab(VehicleMod.CREATIVE_TAB);
+        WHEEL = new ItemWheel().setColored();
         ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
         DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body").setColored();
