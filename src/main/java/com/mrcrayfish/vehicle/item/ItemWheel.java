@@ -4,14 +4,17 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.WheelType;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -22,7 +25,7 @@ import java.util.Locale;
 /**
  * Author: MrCrayfish
  */
-public class ItemWheel extends ItemPart implements SubItems
+public class ItemWheel extends ItemPart implements SubItems, IDyeable
 {
     public ItemWheel()
     {
@@ -61,5 +64,26 @@ public class ItemWheel extends ItemPart implements SubItems
                 items.add(new ItemStack(this, 1, type.ordinal()));
             }
         }
+    }
+
+    @Override
+    public boolean hasColor(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(stack);
+        return tagCompound.hasKey("color", Constants.NBT.TAG_INT);
+    }
+
+    @Override
+    public int getColor(ItemStack stack)
+    {
+        NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(stack);
+        return tagCompound.getInteger("color");
+    }
+
+    @Override
+    public void setColor(ItemStack stack, int color)
+    {
+        NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(stack);
+        tagCompound.setInteger("color", color);
     }
 }

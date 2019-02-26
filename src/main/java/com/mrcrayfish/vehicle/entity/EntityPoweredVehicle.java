@@ -76,6 +76,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<Boolean> HAS_WHEELS = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> WHEEL_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> WHEEL_COLOR = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -164,6 +165,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(KEY_STACK, ItemStack.EMPTY);
         this.dataManager.register(HAS_WHEELS, true);
         this.dataManager.register(WHEEL_TYPE, WheelType.STANDARD.ordinal());
+        this.dataManager.register(WHEEL_COLOR, -1);
 
         List<Wheel> wheels = this.getProperties().getWheels();
         if(wheels != null && wheels.size() > 0)
@@ -594,6 +596,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         {
             this.setWheelType(WheelType.getType(compound.getInteger("wheelType")));
         }
+        if(compound.hasKey("wheelColor", Constants.NBT.TAG_INT))
+        {
+            this.setWheelColor(compound.getInteger("wheelColor"));
+        }
         if(compound.hasKey("maxSpeed", Constants.NBT.TAG_FLOAT))
         {
             this.setMaxSpeed(compound.getFloat("maxSpeed"));
@@ -645,6 +651,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         compound.setInteger("engineTier", this.getEngineTier().ordinal());
         compound.setBoolean("hasWheels", this.hasWheels());
         compound.setInteger("wheelType", this.getWheelType().ordinal());
+        compound.setInteger("wheelColor", this.getWheelColor());
         compound.setFloat("maxSpeed", this.getMaxSpeed());
         compound.setFloat("accelerationSpeed", this.getAccelerationSpeed());
         compound.setInteger("turnSensitivity", this.getTurnSensitivity());
@@ -999,9 +1006,24 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     {
         if(this.hasWheels())
         {
-            return new ItemStack(ModItems.WHEEL, 1, this.getWheelType().ordinal());
+            ItemStack stack = new ItemStack(ModItems.WHEEL, 1, this.getWheelType().ordinal());
+            if(this.getWheelColor() != -1)
+            {
+                CommonUtils.getItemTagCompound(stack).setInteger("color", this.getWheelColor());
+            }
+            return stack;
         }
         return ItemStack.EMPTY;
+    }
+
+    public void setWheelColor(int color)
+    {
+        this.dataManager.set(WHEEL_COLOR, color);
+    }
+
+    public int getWheelColor()
+    {
+        return this.dataManager.get(WHEEL_COLOR);
     }
 
     @Override
@@ -1030,6 +1052,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 CommonUtils.getItemTagCompound(fuelPortBody).setInteger("color", colorInt);
                 CommonUtils.getItemTagCompound(fuelPortLid).setInteger("color", colorInt);
                 CommonUtils.getItemTagCompound(keyPort).setInteger("color", colorInt);
+            }
+            if(WHEEL_COLOR.equals(key))
+            {
+                int color = this.dataManager.get(WHEEL_COLOR);
+                CommonUtils.getItemTagCompound(wheel).setInteger("color", color != -1 ? color : 16383998);
             }
         }
     }
@@ -1139,10 +1166,21 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 this.setWheels(true);
                 this.setWheelType(WheelType.values()[wheel.getMetadata()]);
+
+                NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(wheel);
+                if(tagCompound.hasKey("color", Constants.NBT.TAG_INT))
+                {
+                    this.setWheelColor(tagCompound.getInteger("color"));
+                }
+                else
+                {
+                    this.setWheelColor(-1);
+                }
             }
             else
             {
                 this.setWheels(false);
+                this.setWheelColor(-1);
             }
         }
     }
