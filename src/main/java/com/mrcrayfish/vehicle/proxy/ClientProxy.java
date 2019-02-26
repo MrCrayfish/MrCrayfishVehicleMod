@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.gui.GuiEditVehicle;
+import com.mrcrayfish.vehicle.client.gui.GuiStorage;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
@@ -213,6 +214,20 @@ public class ClientProxy implements Proxy
         {
             IStorage wrapper = (IStorage) entity;
             wrapper.getInventory().readFromNBT(tagCompound);
+        }
+    }
+
+    @Override
+    public void openStorageWindow(int entityId, int windowId)
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        World world = player.getEntityWorld();
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof IStorage)
+        {
+            IStorage wrapper = (IStorage) entity;
+            Minecraft.getMinecraft().displayGuiScreen(new GuiStorage(player.inventory, wrapper.getInventory()));
+            player.openContainer.windowId = windowId;
         }
     }
 }

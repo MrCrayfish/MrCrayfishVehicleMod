@@ -21,5 +21,7 @@ public interface Proxy
 
     default void syncStorageInventory(int entityId, NBTTagCompound tagCompound) {}
 
+    default void openStorageWindow(int entityId, int windowId) {}
+
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {};
 }

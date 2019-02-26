@@ -1,11 +1,8 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.client.gui.GuiStorage;
-import com.mrcrayfish.vehicle.common.inventory.IStorage;
+import com.mrcrayfish.vehicle.VehicleMod;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -43,17 +40,7 @@ public class MessageStorageWindow implements IMessage, IMessageHandler<MessageSt
     @Override
     public IMessage onMessage(MessageStorageWindow message, MessageContext ctx)
     {
-        Minecraft.getMinecraft().addScheduledTask(() ->
-        {
-            Entity entity = Minecraft.getMinecraft().world.getEntityByID(message.entityId);
-            if(entity instanceof IStorage)
-            {
-                EntityPlayer player = Minecraft.getMinecraft().player;
-                IStorage wrapper = (IStorage) entity;
-                Minecraft.getMinecraft().displayGuiScreen(new GuiStorage(player.inventory, wrapper.getInventory()));
-                player.openContainer.windowId = message.windowId;
-            }
-        });
+        Minecraft.getMinecraft().addScheduledTask(() -> VehicleMod.proxy.openStorageWindow(message.entityId, message.windowId));
         return null;
     }
 }
