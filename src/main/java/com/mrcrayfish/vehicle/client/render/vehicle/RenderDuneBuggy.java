@@ -35,19 +35,22 @@ public class RenderDuneBuggy extends AbstractRenderLandVehicle<EntityDuneBuggy>
 
             Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
 
-            GlStateManager.pushMatrix();
+            if(entity.hasWheels())
             {
-                GlStateManager.translate(0, -0.355, 0.33);
-                float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
-                if(entity.isMoving())
+                GlStateManager.pushMatrix();
                 {
-                    GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
+                    GlStateManager.translate(0, -0.355, 0.33);
+                    float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
+                    if(entity.isMoving())
+                    {
+                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
+                    }
+                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
-                GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                GlStateManager.rotate(180F, 0, 1, 0);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
             }
-            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
     }

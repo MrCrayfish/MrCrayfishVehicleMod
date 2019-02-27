@@ -69,18 +69,21 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
             GlStateManager.popMatrix();
 
             //Render front wheel
-            GlStateManager.pushMatrix();
+            if(entity.hasWheels())
             {
-                GlStateManager.translate(0, -0.4, 14.5 * 0.0625);
-                float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
-                if(entity.isMoving())
+                GlStateManager.pushMatrix();
                 {
-                    GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
+                    GlStateManager.translate(0, -0.4, 14.5 * 0.0625);
+                    float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
+                    if(entity.isMoving())
+                    {
+                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
+                    }
+                    GlStateManager.scale(1.3F, 1.3F, 1.3F);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
-                GlStateManager.scale(1.3F, 1.3F, 1.3F);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
             }
-            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
 
