@@ -967,9 +967,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return true;
     }
 
+    public boolean isEnginePowered()
+    {
+        return this.hasEngine() && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9 && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
+    }
+
     public boolean canDrive()
     {
-        return this.hasWheels() && this.hasEngine() && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9 && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
+        return this.hasWheels() && this.isEnginePowered();
     }
 
     public boolean isOwner(EntityPlayer player)
