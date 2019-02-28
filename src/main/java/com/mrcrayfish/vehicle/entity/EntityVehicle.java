@@ -50,7 +50,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     protected UUID trailerId;
     protected EntityTrailer trailer = null;
-    private Vec3d towBarVec = Vec3d.ZERO;
     private int searchDelay = 20;
 
     /**
