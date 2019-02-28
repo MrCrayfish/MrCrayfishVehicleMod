@@ -11,17 +11,6 @@ public enum WheelType
     OFF_ROAD(0.8F, 1.0F, 0.50F),
     SNOW(0.75F, 0.9F, 1.0F),
     ALL_TERRAIN(0.85F, 0.85F, 0.85F),
-    WATER(0.25F, 0.25F, 0.25F)
-    {
-        @Override
-        public void applyPhysics(EntityPoweredVehicle vehicle)
-        {
-            if(vehicle.isInWater())
-            {
-                vehicle.motionY += 0.1;
-            }
-        }
-    },
     PLASTIC(0.5F, 0.5F, 0.5F);
 
     float roadMultiplier;
