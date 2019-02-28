@@ -5,11 +5,11 @@ package com.mrcrayfish.vehicle.entity;
  */
 public enum WheelType
 {
-    STANDARD(0.9F, 0.8F, 0.25F),
-    SPORTS(1.0F, 0.7F, 0.25F),
-    RACING(1.1F, 0.5F, 0.15F),
-    OFF_ROAD(0.8F, 1.0F, 0.50F),
-    SNOW(0.75F, 0.9F, 1.0F),
+    STANDARD(0.9F, 0.8F, 0.5F),
+    SPORTS(1.0F, 0.75F, 0.5F),
+    RACING(1.1F, 0.7F, 0.5F),
+    OFF_ROAD(0.75F, 1.0F, 0.85F),
+    SNOW(0.75F, 0.75F, 0.95F),
     ALL_TERRAIN(0.85F, 0.85F, 0.85F),
     PLASTIC(0.5F, 0.5F, 0.5F);
 
