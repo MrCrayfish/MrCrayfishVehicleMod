@@ -21,8 +21,8 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
     {
         renderDamagedPart(entity, entity.body, Models.FERTILIZER_TRAILER.getModel());
 
-        this.renderWheel(entity, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
-        this.renderWheel(entity, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
         StorageInventory inventory = entity.getInventory();
         if(inventory != null)
@@ -78,17 +78,21 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
         GlStateManager.popMatrix();
     }
 
-    public void renderWheel(EntityTrailer trailer, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
+    private void renderWheel(EntityTrailer trailer, boolean right, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(offsetX, offsetY, offsetZ);
+            if(right)
+            {
+                GlStateManager.rotate(180F, 0, 1, 0);
+            }
             GlStateManager.pushMatrix();
             {
                 GlStateManager.pushMatrix();
                 {
                     float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-                    GlStateManager.rotate(-wheelRotation, 1, 0, 0);
+                    GlStateManager.rotate(right ? wheelRotation : -wheelRotation, 1, 0, 0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     Minecraft.getMinecraft().getRenderItem().renderItem(trailer.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
