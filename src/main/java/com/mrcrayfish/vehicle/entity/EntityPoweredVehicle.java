@@ -19,6 +19,7 @@ import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockGrass;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -28,6 +29,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.InventoryBasic;
@@ -427,7 +429,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     protected void updateSpeed()
     {
-        currentSpeed = this.getSpeed();
+        float wheelModifier = this.getWheelModifier();
+        this.currentSpeed = this.getSpeed();
 
         EngineTier engineTier = this.getEngineTier();
         AccelerationDirection acceleration = this.getAcceleration();
@@ -437,18 +440,34 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 if(acceleration == AccelerationDirection.FORWARD)
                 {
-                    this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
-                    if(this.currentSpeed > this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed())
+                    float maxSpeed = this.getActualMaxSpeed() * wheelModifier;
+                    if(this.currentSpeed < maxSpeed)
                     {
-                        this.currentSpeed = this.getMaxSpeed() + engineTier.getAdditionalMaxSpeed();
+                        this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                        if(this.currentSpeed > maxSpeed)
+                        {
+                            this.currentSpeed = maxSpeed;
+                        }
+                    }
+                    if(this.currentSpeed > maxSpeed)
+                    {
+                        this.currentSpeed *= 0.975F;
                     }
                 }
                 else if(acceleration == AccelerationDirection.REVERSE)
                 {
-                    this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
-                    if(this.currentSpeed < -(4.0F + engineTier.getAdditionalMaxSpeed() / 2))
+                    float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier;
+                    if(this.currentSpeed > maxSpeed)
                     {
-                        this.currentSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2);
+                        this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                        if(this.currentSpeed < maxSpeed)
+                        {
+                            this.currentSpeed = maxSpeed;
+                        }
+                    }
+                    if(this.currentSpeed < maxSpeed)
+                    {
+                        this.currentSpeed *= 0.975F;
                     }
                 }
                 else
@@ -1256,6 +1275,50 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 wheelPositions[i * 3 + 2] = wheelVec.z;
             }
         }
+    }
+
+    public float getWheelModifier()
+    {
+        float wheelModifier = 0F;
+        VehicleProperties properties = this.getProperties();
+        List<Wheel> wheels = properties.getWheels();
+        if(this.hasWheels() && wheels != null)
+        {
+            int wheelCount = 0;
+            WheelType type = this.getWheelType();
+            for(int i = 0; i < wheels.size(); i++)
+            {
+                double wheelX = this.wheelPositions[i * 3];
+                double wheelY = this.wheelPositions[i * 3 + 1];
+                double wheelZ = this.wheelPositions[i * 3 + 2];
+                int x = MathHelper.floor(this.posX + wheelX);
+                int y = MathHelper.floor(this.posY + wheelY - 0.2D);
+                int z = MathHelper.floor(this.posZ + wheelZ);
+                BlockPos pos = new BlockPos(x, y, z);
+                IBlockState state = this.world.getBlockState(pos);
+                if(state.getMaterial() != Material.AIR)
+                {
+                    if(state.getMaterial() == Material.SNOW || state.getMaterial() == Material.CRAFTED_SNOW || (state.getBlock() == Blocks.GRASS && state.getValue(BlockGrass.SNOWY)))
+                    {
+                        wheelModifier += (1.0F - type.snowMultiplier);
+                    }
+                    else if(!state.getMaterial().isToolNotRequired())
+                    {
+                        wheelModifier += (1.0F - type.roadMultiplier);
+                    }
+                    else
+                    {
+                        wheelModifier += (1.0F - type.dirtMultiplier);
+                    }
+                    wheelCount++;
+                }
+            }
+            if(wheelCount > 0)
+            {
+                wheelModifier /= (float) wheelCount;
+            }
+        }
+        return 1.0F - wheelModifier;
     }
 
     public enum TurnDirection
