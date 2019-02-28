@@ -99,7 +99,7 @@ public abstract class EntityTrailer extends EntityVehicle
         {
             EntityVehicle vehicle = (EntityVehicle) pullingEntity;
             Vec3d towBarVec = vehicle.getProperties().getTowBarPosition();
-            towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + vehicle.getProperties().getBodyPosition().getZ());
+            towBarVec = new Vec3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyPosition().getZ());
             if(vehicle instanceof EntityLandVehicle)
             {
                 EntityLandVehicle landVehicle = (EntityLandVehicle) vehicle;

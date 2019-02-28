@@ -52,7 +52,7 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
                 GlStateManager.rotate(180F, 0, 1, 0);
 
                 Vec3d towBarOffset = properties.getTowBarPosition();
-                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                GlStateManager.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }
