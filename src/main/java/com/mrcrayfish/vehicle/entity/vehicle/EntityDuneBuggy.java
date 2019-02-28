@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.item.ItemStack;
@@ -42,6 +43,13 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
         super.onClientInit();
         body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
         handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
+    }
+
+    @Override
+    public void entityInit()
+    {
+        super.entityInit();
+        this.dataManager.set(WHEEL_TYPE, WheelType.PLASTIC.ordinal());
     }
 
     @Override
