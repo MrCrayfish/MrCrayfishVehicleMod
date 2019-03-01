@@ -4,11 +4,10 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
-import com.mrcrayfish.vehicle.entity.EngineTier;
-import com.mrcrayfish.vehicle.entity.EngineType;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.*;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemEngine;
+import com.mrcrayfish.vehicle.item.ItemWheel;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
@@ -17,9 +16,11 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -120,6 +121,15 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                         {
                                             return;
                                         }
+
+                                        if(entityPoweredVehicle.canChangeWheels())
+                                        {
+                                            ItemStack wheel = tileEntityWorkstation.getInventory().get(2);
+                                            if(wheel.getItem() != ModItems.WHEEL)
+                                            {
+                                                return;
+                                            }
+                                        }
                                     }
                                 }
                                 catch(NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e)
@@ -138,11 +148,12 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                     InventoryUtil.removeItemStack(player, stack);
                                 }
 
+                                TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
+
                                 /* Gets the color based on the dye */
                                 int color = EntityVehicle.DYE_TO_COLOR[0];
                                 if(vehicle.canBeColored())
                                 {
-                                    TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
                                     ItemStack dyeStack = tileEntityWorkstation.getInventory().get(0);
                                     if(dyeStack.getItem() instanceof ItemDye)
                                     {
@@ -154,7 +165,6 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                 EngineTier engineTier = EngineTier.WOOD;
                                 if(engineType != EngineType.NONE)
                                 {
-                                    TileEntityWorkstation tileEntityWorkstation = workstation.getTileEntity();
                                     ItemStack engine = tileEntityWorkstation.getInventory().get(1);
                                     if(engine.getItem() instanceof ItemEngine)
                                     {
@@ -163,9 +173,27 @@ public class MessageCraftVehicle implements IMessage, IMessageHandler<MessageCra
                                     }
                                 }
 
-                                final int finalColor = color;
-                                final EngineTier finalEngineTier = engineTier;
-                                ItemStack stack = BlockVehicleCrate.create(entityId, finalColor, finalEngineTier);
+                                int wheelColor = -1;
+                                WheelType wheelType = null;
+                                ItemStack wheel = tileEntityWorkstation.getInventory().get(2);
+                                if(vehicle instanceof EntityPoweredVehicle && ((EntityPoweredVehicle) vehicle).canChangeWheels())
+                                {
+                                    if(wheel.getItem() == ModItems.WHEEL)
+                                    {
+                                        wheelType = WheelType.values()[wheel.getMetadata()];
+                                        if(wheel.getTagCompound() != null)
+                                        {
+                                            NBTTagCompound tagCompound = wheel.getTagCompound();
+                                            if(tagCompound.hasKey("color", Constants.NBT.TAG_INT))
+                                            {
+                                                wheelColor = tagCompound.getInteger("color");
+                                            }
+                                        }
+                                        tileEntityWorkstation.getInventory().set(2, ItemStack.EMPTY);
+                                    }
+                                }
+
+                                ItemStack stack = BlockVehicleCrate.create(entityId, color, engineTier, wheelType, wheelColor);
                                 world.spawnEntity(new EntityItem(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
                             }
                         }

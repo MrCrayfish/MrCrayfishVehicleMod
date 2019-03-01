@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.common.container;
 
 import com.mrcrayfish.vehicle.item.ItemEngine;
+import com.mrcrayfish.vehicle.item.ItemWheel;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -54,6 +55,21 @@ public class ContainerWorkstation extends Container
             }
         });
 
+        this.addSlotToContainer(new Slot(tileEntityWorkstation, 2, 227, 30)
+        {
+            @Override
+            public boolean isItemValid(ItemStack stack)
+            {
+                return stack.getItem() instanceof ItemWheel;
+            }
+
+            @Override
+            public int getSlotStackLimit()
+            {
+                return 1;
+            }
+        });
+
         for(int x = 0; x < 3; x++)
         {
             for(int y = 0; y < 9; y++)
@@ -85,14 +101,14 @@ public class ContainerWorkstation extends Container
             ItemStack slotStack = slot.getStack();
             stack = slotStack.copy();
 
-            if(index == 0)
+            if(index < 3)
             {
-                if(!this.mergeItemStack(slotStack, 1, 36, true))
+                if(!this.mergeItemStack(slotStack, 3, 36, false))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(index > 0)
+            else
             {
                 if(slotStack.getItem() instanceof ItemDye)
                 {
@@ -101,21 +117,31 @@ public class ContainerWorkstation extends Container
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index >= 1 && index < 28)
+                else if(slotStack.getItem() instanceof ItemEngine)
                 {
-                    if(!this.mergeItemStack(slotStack, 28, 36, false))
+                    if(!this.mergeItemStack(slotStack, 1, 2, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index > 27 && index <= 36 && !this.mergeItemStack(slotStack, 1, 28, false))
+                else if(slotStack.getItem() instanceof ItemWheel)
+                {
+                    if(!this.mergeItemStack(slotStack, 2, 3, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(index < 31)
+                {
+                    if(!this.mergeItemStack(slotStack, 31, 39, false))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+                }
+                else if(index < 39 && !this.mergeItemStack(slotStack, 3, 31, false))
                 {
                     return ItemStack.EMPTY;
                 }
-            }
-            else if(!this.mergeItemStack(slotStack, 1, 36, false))
-            {
-                return ItemStack.EMPTY;
             }
 
             if(slotStack.isEmpty())

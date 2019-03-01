@@ -78,7 +78,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<Boolean> HAS_WHEELS = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> WHEEL_TYPE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
-    protected static final DataParameter<Integer> WHEEL_COLOR = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    public  static final DataParameter<Integer> WHEEL_COLOR = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -1237,6 +1237,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 InventoryUtil.spawnItemStack(world, posX, posY, posZ, key);
             }
         }
+    }
+
+    public boolean canChangeWheels()
+    {
+        return true;
     }
 
     private void updateWheelPositions()

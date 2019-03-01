@@ -264,6 +264,12 @@ public abstract class EntityPlane extends EntityPoweredVehicle
     @Override
     public void fall(float distance, float damageMultiplier) {}
 
+    @Override
+    public boolean canChangeWheels()
+    {
+        return false;
+    }
+
     public enum FlapDirection
     {
         UP, DOWN, NONE;

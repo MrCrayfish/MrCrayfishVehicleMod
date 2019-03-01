@@ -305,6 +305,12 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
         return bladeSpeed / 60F;
     }
 
+    @Override
+    public boolean canChangeWheels()
+    {
+        return false;
+    }
+
     public enum AltitudeChange
     {
         POSITIVE, NEGATIVE, NONE;
