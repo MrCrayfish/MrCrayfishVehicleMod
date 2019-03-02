@@ -108,8 +108,12 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                         if(entity instanceof EntityPoweredVehicle)
                         {
                             EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) entity;
-                            entityPoweredVehicle.setEngine(true);
-                            entityPoweredVehicle.setEngineTier(engineTier);
+
+                            if(engineTier != null)
+                            {
+                                entityPoweredVehicle.setEngine(true);
+                                entityPoweredVehicle.setEngineTier(engineTier);
+                            }
 
                             if(wheelType != null)
                             {
