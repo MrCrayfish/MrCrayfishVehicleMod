@@ -113,7 +113,7 @@ public class ModItems
         FUEL_PORT_2_PIPE = new ItemPart("fuel_port_2_pipe");
 
         WRENCH = new ItemVehicleTool("wrench");
-        HAMMER = new ItemVehicleTool("hammer");
+        HAMMER = new ItemHammer();
         KEY = new ItemKey();
         KEY_PORT = new ItemPart("key_hole").setColored();
 

@@ -152,6 +152,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             {
                 if(this.getHealth() < this.getMaxHealth())
                 {
+                    heldItem.damageItem(1, player);
                     this.setHealth(this.getHealth() + 5F);
                     world.playSound(null, posX, posY, posZ, ModSounds.vehicleThud, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
                     player.swingArm(hand);
