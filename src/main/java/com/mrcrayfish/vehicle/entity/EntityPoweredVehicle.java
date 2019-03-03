@@ -997,7 +997,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public boolean canDrive()
     {
-        return this.hasWheels() && this.isEnginePowered();
+        return (!this.canChangeWheels() || this.hasWheels()) && this.isEnginePowered();
     }
 
     public boolean isOwner(EntityPlayer player)
@@ -1152,13 +1152,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.vehicleInventory = new InventoryBasic(this.getName(), false, 2);
 
         ItemStack engine = this.getEngineStack();
-        if(!engine.isEmpty())
+        if(this.getEngineType() != EngineType.NONE & !engine.isEmpty())
         {
             this.vehicleInventory.setInventorySlotContents(0, engine);
         }
 
         ItemStack wheel = this.getWheelStack();
-        if(!wheel.isEmpty())
+        if(this.canChangeWheels() && !wheel.isEmpty())
         {
             this.vehicleInventory.setInventorySlotContents(1, wheel);
         }
@@ -1184,31 +1184,34 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                     this.setEngine(false);
                 }
             }
-            else
+            else if(this.getEngineType() != EngineType.NONE)
             {
                 this.setEngine(false);
             }
 
             ItemStack wheel = this.vehicleInventory.getStackInSlot(1);
-            if(wheel.getItem() == ModItems.WHEEL)
+            if(this.canChangeWheels())
             {
-                this.setWheels(true);
-                this.setWheelType(WheelType.values()[wheel.getMetadata()]);
-
-                NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(wheel);
-                if(tagCompound.hasKey("color", Constants.NBT.TAG_INT))
+                if(wheel.getItem() == ModItems.WHEEL)
                 {
-                    this.setWheelColor(tagCompound.getInteger("color"));
+                    this.setWheels(true);
+                    this.setWheelType(WheelType.values()[wheel.getMetadata()]);
+
+                    NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(wheel);
+                    if(tagCompound.hasKey("color", Constants.NBT.TAG_INT))
+                    {
+                        this.setWheelColor(tagCompound.getInteger("color"));
+                    }
+                    else
+                    {
+                        this.setWheelColor(-1);
+                    }
                 }
                 else
                 {
+                    this.setWheels(false);
                     this.setWheelColor(-1);
                 }
-            }
-            else
-            {
-                this.setWheels(false);
-                this.setWheelColor(-1);
             }
         }
     }
