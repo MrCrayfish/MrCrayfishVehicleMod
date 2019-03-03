@@ -1246,7 +1246,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         {
             // Spawns the engine if the vehicle has one
             ItemStack engine = this.getEngineStack();
-            if(!engine.isEmpty())
+            if(this.getEngineType() != EngineType.NONE && !engine.isEmpty())
             {
                 InventoryUtil.spawnItemStack(world, posX, posY, posZ, engine);
             }
@@ -1257,6 +1257,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 CommonUtils.getItemTagCompound(key).removeTag("vehicleId");
                 InventoryUtil.spawnItemStack(world, posX, posY, posZ, key);
+            }
+
+            // Spawns wheels if the vehicle has any
+            ItemStack wheel = this.getWheelStack();
+            if(this.canChangeWheels() && !wheel.isEmpty())
+            {
+                InventoryUtil.spawnItemStack(world, posX, posY, posZ, wheel);
             }
         }
     }
