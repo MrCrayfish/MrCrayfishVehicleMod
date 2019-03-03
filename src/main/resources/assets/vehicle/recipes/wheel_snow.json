@@ -1,0 +1,25 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "WLW",
+        "LIL",
+        "WLW"
+    ],
+    "key": {
+        "W": {
+            "item": "minecraft:wool",
+            "data": 15
+        },
+        "L": {
+            "item": "minecraft:leather"
+        },
+        "I": {
+            "item": "minecraft:ice"
+        }
+    },
+    "result": {
+        "item": "vehicle:wheel",
+        "data": 4,
+        "count": 1
+    }
+}

@@ -2,7 +2,7 @@
     "type": "minecraft:crafting_shaped",
     "pattern": [
         "WLW",
-        "IPI",
+        "LIL",
         "WLW"
     ],
     "key": {
@@ -14,15 +14,13 @@
             "item": "minecraft:leather"
         },
         "I": {
-            "item": "minecraft:iron_ingot"
-        },
-        "P": {
-            "item": "minecraft:fish",
-            "data": 3
+            "item": "minecraft:dirt",
+            "data": 2
         }
     },
     "result": {
         "item": "vehicle:wheel",
-        "count": 4
+        "data": 3,
+        "count": 1
     }
 }
