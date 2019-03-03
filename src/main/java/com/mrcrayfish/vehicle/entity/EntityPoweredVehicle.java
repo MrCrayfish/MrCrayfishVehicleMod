@@ -95,6 +95,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public float fuelConsumption = 1F;
 
     protected double[] wheelPositions;
+    protected boolean wheelsOnGround = true;
     public float turnAngle;
     public float prevTurnAngle;
 
@@ -341,6 +342,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         }
 
         /* Handle the current speed of the vehicle based on rider's forward movement */
+        this.updateGroundState();
         this.updateSpeed();
         this.updateTurning();
         this.updateVehicle();
@@ -444,49 +446,62 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 if(acceleration == AccelerationDirection.FORWARD)
                 {
-                    float maxSpeed = this.getActualMaxSpeed() * wheelModifier;
-                    if(this.currentSpeed < maxSpeed)
+                    if(this.wheelsOnGround)
                     {
-                        this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                        float maxSpeed = this.getActualMaxSpeed() * wheelModifier;
+                        if(this.currentSpeed < maxSpeed)
+                        {
+                            this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                            if(this.currentSpeed > maxSpeed)
+                            {
+                                this.currentSpeed = maxSpeed;
+                            }
+                        }
                         if(this.currentSpeed > maxSpeed)
                         {
-                            this.currentSpeed = maxSpeed;
+                            this.currentSpeed *= 0.975F;
                         }
-                    }
-                    if(this.currentSpeed > maxSpeed)
-                    {
-                        this.currentSpeed *= 0.975F;
+                        return;
                     }
                 }
                 else if(acceleration == AccelerationDirection.REVERSE)
                 {
-                    float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier;
-                    if(this.currentSpeed > maxSpeed)
+                    if(this.wheelsOnGround)
                     {
-                        this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier;
+                        if(this.currentSpeed > maxSpeed)
+                        {
+                            this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
+                            if(this.currentSpeed < maxSpeed)
+                            {
+                                this.currentSpeed = maxSpeed;
+                            }
+                        }
                         if(this.currentSpeed < maxSpeed)
                         {
-                            this.currentSpeed = maxSpeed;
+                            this.currentSpeed *= 0.975F;
                         }
+                        return;
                     }
-                    if(this.currentSpeed < maxSpeed)
-                    {
-                        this.currentSpeed *= 0.975F;
-                    }
-                }
-                else
-                {
-                    this.currentSpeed *= 0.9;
                 }
             }
-            else
+
+            if(this.wheelsOnGround)
             {
                 this.currentSpeed *= 0.9;
             }
+            else
+            {
+                this.currentSpeed *= 0.98;
+            }
+        }
+        else if(this.wheelsOnGround)
+        {
+            this.currentSpeed *= 0.85;
         }
         else
         {
-            this.currentSpeed *= 0.5;
+            this.currentSpeed *= 0.98;
         }
     }
 
@@ -1331,6 +1346,35 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             }
         }
         return 1.0F - wheelModifier;
+    }
+
+    private void updateGroundState()
+    {
+        if(this.hasWheels())
+        {
+            VehicleProperties properties = this.getProperties();
+            List<Wheel> wheels = properties.getWheels();
+            if(this.hasWheels() && wheels != null)
+            {
+                for(int i = 0; i < wheels.size(); i++)
+                {
+                    double wheelX = this.wheelPositions[i * 3];
+                    double wheelY = this.wheelPositions[i * 3 + 1];
+                    double wheelZ = this.wheelPositions[i * 3 + 2];
+                    int x = MathHelper.floor(this.posX + wheelX);
+                    int y = MathHelper.floor(this.posY + wheelY - 0.2D);
+                    int z = MathHelper.floor(this.posZ + wheelZ);
+                    BlockPos pos = new BlockPos(x, y, z);
+                    IBlockState state = this.world.getBlockState(pos);
+                    if(state.getCollisionBoundingBox(world, pos) != Block.NULL_AABB)
+                    {
+                        wheelsOnGround = true;
+                        return;
+                    }
+                }
+            }
+            wheelsOnGround = false;
+        }
     }
 
     @Override
