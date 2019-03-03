@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -24,6 +25,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.item.EntityItem;
@@ -42,9 +44,11 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -1324,6 +1328,31 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             }
         }
         return 1.0F - wheelModifier;
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target)
+    {
+        EngineTier engineTier = null;
+        if(this.hasEngine())
+        {
+            engineTier = this.getEngineTier();
+        }
+
+        int wheelColor = -1;
+        WheelType wheelType = null;
+        if(this.hasWheels())
+        {
+            wheelType = this.getWheelType();
+            wheelColor = this.getWheelColor();
+        }
+
+        ResourceLocation entityId = EntityList.getKey(this);
+        if(entityId != null)
+        {
+            return BlockVehicleCrate.create(entityId, this.getColor(), engineTier, wheelType, wheelColor);
+        }
+        return ItemStack.EMPTY;
     }
 
     public enum TurnDirection

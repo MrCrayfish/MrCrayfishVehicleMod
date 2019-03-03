@@ -219,12 +219,16 @@ public class BlockVehicleCrate extends BlockRotatedObject
         });
     }
 
-    public static ItemStack create(ResourceLocation entityId, int color, EngineTier engineTier, @Nullable WheelType wheelType, int wheelColor)
+    public static ItemStack create(ResourceLocation entityId, int color, @Nullable EngineTier engineTier, @Nullable WheelType wheelType, int wheelColor)
     {
         NBTTagCompound blockEntityTag = new NBTTagCompound();
         blockEntityTag.setString("vehicle", entityId.toString());
         blockEntityTag.setInteger("color", color);
-        blockEntityTag.setInteger("engineTier", engineTier.ordinal());
+
+        if(engineTier != null)
+        {
+            blockEntityTag.setInteger("engineTier", engineTier.ordinal());
+        }
 
         if(wheelType != null)
         {

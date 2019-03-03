@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
@@ -10,6 +11,7 @@ import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +25,7 @@ import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -379,7 +382,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     @Override
     public void fall(float distance, float damageMultiplier)
     {
-        if(VehicleConfig.SERVER.vehicleDamage && distance >= 4F)
+        if(VehicleConfig.SERVER.vehicleDamage && distance >= 4F) //TODO made fall distance configurable
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
@@ -666,5 +669,12 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public float getModifiedRotationYaw()
     {
         return this.rotationYaw;
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target)
+    {
+        ResourceLocation entityId = EntityList.getKey(this);
+        return BlockVehicleCrate.create(entityId, this.getColor(), null, null, -1);
     }
 }
