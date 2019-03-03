@@ -98,7 +98,7 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         if(passenger instanceof EntityVehicle)
         {
             EntityVehicle vehicle = (EntityVehicle) passenger;
-            Vec3d heldOffset = vehicle.getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
+            Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
             vehicle.setPosition(posX - heldOffset.z * 0.0625, posY - heldOffset.y * 0.0625 - 2 * 0.0625, posZ - heldOffset.x * 0.0625);
         }
     }

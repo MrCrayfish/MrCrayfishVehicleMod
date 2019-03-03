@@ -14,15 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderLawnMower extends AbstractRenderLandVehicle<EntityLawnMower>
 {
-    public RenderLawnMower()
-    {
-        this.setFuelPortPosition(EntityLawnMower.FUEL_PORT_POSITION);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.15F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.15F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 1.55F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 1.55F);
-    }
-
     @Override
     public void render(EntityLawnMower entity, float partialTicks)
     {

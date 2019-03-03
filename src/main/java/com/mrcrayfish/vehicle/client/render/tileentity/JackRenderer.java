@@ -101,7 +101,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                         GlStateManager.translate(0, 0.5 * progress, 0);
 
                         EntityVehicle vehicle = (EntityVehicle) passenger;
-                        Vec3d heldOffset = vehicle.getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
+                        Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
                         GlStateManager.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
                         GlStateManager.rotate(-passenger.rotationYaw, 0, 1, 0);
 

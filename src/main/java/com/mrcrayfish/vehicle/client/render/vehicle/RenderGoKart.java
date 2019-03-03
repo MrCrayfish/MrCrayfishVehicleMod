@@ -14,15 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderGoKart extends AbstractRenderLandVehicle<EntityGoKart>
 {
-    public RenderGoKart()
-    {
-        this.setEnginePosition(0, 2, -9, 180, 1.2);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F);
-    }
-
     @Override
     public void render(EntityGoKart entity, float partialTicks)
     {

@@ -45,14 +45,12 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 4));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
         builder.addMaterial(new ItemStack(Items.REDSTONE, 6));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntityATV.class, builder.build());
 
         /* Bumper Car */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(Items.REDSTONE, 8));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntityBumperCar.class, builder.build());
@@ -62,13 +60,11 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Blocks.CONCRETE, 16, EnumDyeColor.YELLOW.getMetadata()));
         builder.addMaterial(new ItemStack(Blocks.CONCRETE, 8, EnumDyeColor.BLUE.getMetadata()));
         builder.addMaterial(new ItemStack(Blocks.CONCRETE, 4, EnumDyeColor.RED.getMetadata()));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 3));
         mapBuilder.put(EntityDuneBuggy.class, builder.build());
 
         /* Go Kart */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 4));
         mapBuilder.put(EntityGoKart.class, builder.build());
 
@@ -78,7 +74,6 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 4));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 0));
         builder.addMaterial(new ItemStack(Items.REDSTONE, 12));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 16));
         mapBuilder.put(EntityGolfCart.class, builder.build());
 
@@ -92,7 +87,6 @@ public class VehicleRecipes
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 64));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntityLawnMower.class, builder.build());
 
@@ -100,7 +94,6 @@ public class VehicleRecipes
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 24));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 2, 15));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         mapBuilder.put(EntityMiniBike.class, builder.build());
 
         /* Moped */
@@ -108,7 +101,6 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
         builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 2));
         builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 6));
         mapBuilder.put(EntityMoped.class, builder.build());
 
@@ -118,7 +110,6 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 15));
         builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 6));
         builder.addMaterial(new ItemStack(Items.REDSTONE, 12));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 24));
         mapBuilder.put(EntityOffRoader.class, builder.build());
 
@@ -126,7 +117,6 @@ public class VehicleRecipes
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 8));
         builder.addMaterial(new ItemStack(Blocks.IRON_BARS, 4));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(Items.DYE, 2, EnumDyeColor.RED.getDyeDamage()));
         mapBuilder.put(EntityShoppingCart.class, builder.build());
 
@@ -136,7 +126,6 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Blocks.WOOL, 8, 15));
         builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 6));
         builder.addMaterial(new ItemStack(Items.REDSTONE, 8));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 16));
         mapBuilder.put(EntitySmartCar.class, builder.build());
 
@@ -153,33 +142,28 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 180));
         builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 16));
         builder.addMaterial(new ItemStack(Items.REDSTONE, 18));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 3));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 32));
         mapBuilder.put(EntitySportsPlane.class, builder.build());
 
         /* Vehicle Trailer */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 48));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 2));
         mapBuilder.put(EntityVehicleTrailer.class, builder.build());
 
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 2));
         builder.addMaterial(new ItemStack(Blocks.CHEST));
         mapBuilder.put(EntityStorageTrailer.class, builder.build());
 
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 42));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntitySeederTrailer.class, builder.build());
 
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
-        builder.addMaterial(new ItemStack(ModItems.WHEEL, 2));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntityFertilizerTrailer.class, builder.build());
 
@@ -195,7 +179,6 @@ public class VehicleRecipes
             builder = new Builder();
             builder.addMaterial(new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1));
             builder.addMaterial(new ItemStack(Items.IRON_INGOT, 8));
-            builder.addMaterial(new ItemStack(ModItems.WHEEL, 4));
             mapBuilder.put(EntityCouch.class, builder.build());
 
             /* Sofacopter */

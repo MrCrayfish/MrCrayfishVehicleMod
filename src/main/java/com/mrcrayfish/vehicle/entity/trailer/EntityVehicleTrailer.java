@@ -2,8 +2,11 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import net.minecraft.client.Minecraft;
@@ -41,7 +44,6 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
     public EntityVehicleTrailer(World worldIn)
     {
         super(worldIn);
-        this.setHeldOffset(new Vec3d(0D, 3D, 0D));
     }
 
     @Override
@@ -67,7 +69,7 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
     {
         if(passenger instanceof EntityVehicle)
         {
-            Vec3d offset = ((EntityVehicle) passenger).getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
+            Vec3d offset = ((EntityVehicle) passenger).getProperties().getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
             passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset() + offset.y, this.posZ + offset.z);
             passenger.prevRotationYaw = this.prevRotationYaw;
             passenger.rotationYaw = this.rotationYaw;

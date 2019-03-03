@@ -35,7 +35,7 @@ public class RenderVehicleTrailer extends AbstractRenderVehicle<EntityVehicleTra
                 GlStateManager.pushMatrix();
                 {
                     float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-                    GlStateManager.rotate(-wheelRotation, 1, 0, 0);
+                    GlStateManager.rotate(right ? wheelRotation : -wheelRotation, 1, 0, 0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     Minecraft.getMinecraft().getRenderItem().renderItem(trailer.wheel, ItemCameraTransforms.TransformType.NONE);
                 }

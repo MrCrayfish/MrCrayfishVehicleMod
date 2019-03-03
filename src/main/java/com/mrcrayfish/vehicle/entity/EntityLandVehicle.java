@@ -2,19 +2,13 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
-import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -167,36 +161,9 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     public void createParticles()
     {
-        if(!this.canDrive())
-            return;
-
-        int x = MathHelper.floor(this.posX);
-        int y = MathHelper.floor(this.posY - 0.2D);
-        int z = MathHelper.floor(this.posZ);
-        BlockPos pos = new BlockPos(x, y, z);
-        IBlockState state = this.world.getBlockState(pos);
-        if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+        if(this.canDrive())
         {
-            if(this.getAcceleration() == AccelerationDirection.FORWARD)
-            {
-                if(this.isDrifting())
-                {
-                    for(int i = 0; i < 3; i++)
-                    {
-                        this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
-                    }
-                }
-                else
-                {
-                    this.world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, this.posX + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, this.getEntityBoundingBox().minY + 0.1D, this.posZ + ((double) this.rand.nextFloat() - 0.5D) * (double) this.width, -this.motionX * 4.0D, 1.5D, -this.motionZ * 4.0D, Block.getStateId(state));
-                }
-            }
-        }
-
-        if(this.shouldShowEngineSmoke() && this.ticksExisted % 2 == 0)
-        {
-            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F);
-            this.world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.motionX, 0.0D, -this.motionZ);
+            super.createParticles();
         }
     }
 
@@ -248,5 +215,11 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
             }
         }
         return super.getModifiedAccelerationSpeed();
+    }
+
+    @Override
+    public float getModifiedRotationYaw()
+    {
+        return this.rotationYaw - this.additionalYaw;
     }
 }

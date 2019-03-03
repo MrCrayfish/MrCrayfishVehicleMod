@@ -12,7 +12,7 @@ import net.minecraft.util.NonNullList;
  */
 public class TileEntityWorkstation extends TileEntitySynced implements IStorageBlock
 {
-    private NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
     @Override
     public NonNullList<ItemStack> getInventory()

@@ -42,12 +42,12 @@
             "from": [ 6.9, 7, 7 ], 
             "to": [ 9.1, 9, 9 ], 
             "faces": {
-                "north": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "east": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "south": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "west": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "up": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "down": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] }
+                "north": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "east": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "south": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "west": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "up": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "down": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] }
             }
         },
         {
@@ -55,12 +55,12 @@
             "to": [ 9.1, 9, 9 ], 
             "rotation": { "origin": [ 8.0, 8.0, 8.0 ], "axis": "x", "angle": 45.0 },
             "faces": {
-                "north": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "east": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "south": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "west": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "up": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "down": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] }
+                "north": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "east": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "south": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "west": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "up": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "down": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] }
             }
         },
         {
@@ -68,12 +68,12 @@
             "to": [ 9.1, 9, 9 ], 
             "rotation": { "origin": [ 8.0, 8.0, 8.0 ], "axis": "x", "angle": 22.5 },
             "faces": {
-                "north": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "east": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "south": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "west": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "up": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "down": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] }
+                "north": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "east": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "south": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "west": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "up": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "down": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] }
             }
         },
         {
@@ -81,12 +81,12 @@
             "to": [ 9.1, 9, 9 ], 
             "rotation": { "origin": [ 8.0, 8.0, 8.0 ], "axis": "x", "angle": -22.5 },
             "faces": {
-                "north": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "east": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "south": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "west": { "texture": "#rim", "uv": [ 0, 0, 2, 2 ] },
-                "up": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] },
-                "down": { "texture": "#rim", "uv": [ 0, 0, 2.2, 2 ] }
+                "north": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "east": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "south": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "west": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2, 2 ] },
+                "up": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] },
+                "down": { "texture": "#rim", "tintindex": 0, "uv": [ 0, 0, 2.2, 2 ] }
             }
         },
         {

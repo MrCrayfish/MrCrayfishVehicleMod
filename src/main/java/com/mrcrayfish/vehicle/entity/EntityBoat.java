@@ -24,6 +24,12 @@ public abstract class EntityBoat extends EntityPoweredVehicle
     }
 
     @Override
+    public boolean canChangeWheels()
+    {
+        return false;
+    }
+
+    @Override
     public void updateVehicleMotion()
     {
         if(state == State.ON_WATER || state == State.UNDER_WATER)

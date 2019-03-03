@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -29,8 +30,10 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
             //Enable the standard item lighting so vehicles render correctly
             RenderHelper.enableStandardItemLighting();
 
+            VehicleProperties properties = entity.getProperties();
+
             //Apply vehicle rotations and translations. This is applied to all other parts
-            PartPosition bodyPosition = entity.getBodyPosition();
+            PartPosition bodyPosition = properties.getBodyPosition();
             GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
             GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
             GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
@@ -48,8 +51,8 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
                 GlStateManager.pushMatrix();
                 GlStateManager.rotate(180F, 0, 1, 0);
 
-                Vec3d towBarOffset = entity.getTowBarVec();
-                GlStateManager.translate(towBarOffset.x, towBarOffset.y + 0.5, -towBarOffset.z);
+                Vec3d towBarOffset = properties.getTowBarPosition();
+                GlStateManager.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
                 Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }
@@ -63,28 +66,31 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
             GlStateManager.translate(0, 0.5, 0);
 
             //Translate the vehicle so it's axles are half way into the ground
-            GlStateManager.translate(0, entity.getAxleOffset() * 0.0625F, 0);
+            GlStateManager.translate(0, properties.getAxleOffset() * 0.0625F, 0);
 
             //Translate the vehicle so it's actually riding on it's wheels
-            GlStateManager.translate(0, entity.getWheelOffset() * 0.0625F, 0);
+            GlStateManager.translate(0, properties.getWheelOffset() * 0.0625F, 0);
 
             //Render body
             renderVehicle.render(entity, partialTicks);
 
             //Render vehicle wheels
-            GlStateManager.pushMatrix();
+            if(entity.hasWheels())
             {
-                //Offset wheels and compensate for axle offset
-                GlStateManager.translate(0, -8 * 0.0625, 0);
-                GlStateManager.translate(0, -entity.getAxleOffset() * 0.0625F, 0);
-                renderVehicle.getWheels().forEach(wheel -> wheel.render(entity, partialTicks));
+                GlStateManager.pushMatrix();
+                {
+                    //Offset wheels and compensate for axle offset
+                    GlStateManager.translate(0, -8 * 0.0625, 0);
+                    GlStateManager.translate(0, -properties.getAxleOffset() * 0.0625F, 0);
+                    properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
+                }
+                GlStateManager.popMatrix();
             }
-            GlStateManager.popMatrix();
 
             //Render the engine if the vehicle has explicitly stated it should
             if(entity.shouldRenderEngine() && entity.hasEngine())
             {
-                this.renderEngine(entity, renderVehicle.getEnginePosition(), entity.engine);
+                this.renderEngine(entity, properties.getEnginePosition(), entity.engine);
             }
 
             //Render the fuel port of the vehicle
@@ -93,16 +99,16 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
                 EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
                 if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
                 {
-                    this.renderPart(renderVehicle.getFuelPortPosition(), entity.fuelPortBody);
+                    this.renderPart(properties.getFuelPortPosition(), entity.fuelPortBody);
                     if(renderVehicle.shouldRenderFuelLid())
                     {
-                        this.renderPart(renderVehicle.getFuelPortLidPosition(), entity.fuelPortLid);
+                        this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
                     }
                     entity.playFuelPortOpenSound();
                 }
                 else
                 {
-                    this.renderPart(renderVehicle.getFuelPortPosition(), entity.fuelPortClosed);
+                    this.renderPart(properties.getFuelPortPosition(), entity.fuelPortClosed);
                     entity.playFuelPortCloseSound();
                 }
             }
@@ -110,12 +116,44 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
 
             if(entity.isKeyNeeded())
             {
-                this.renderPart(entity.getKeyHolePosition(), entity.keyPort);
+                this.renderPart(properties.getKeyPortPosition(), entity.keyPort);
                 if(!entity.getKeyStack().isEmpty())
                 {
-                    this.renderKey(entity.getKeyPosition(), entity.getKeyStack());
+                    this.renderKey(properties.getKeyPosition(), entity.getKeyStack());
                 }
             }
+        }
+        GlStateManager.popMatrix();
+    }
+
+    protected void renderWheel(EntityLandVehicle vehicle, Wheel wheel, float partialTicks)
+    {
+        if(!wheel.shouldRender())
+            return;
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().offset, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+            GlStateManager.pushMatrix();
+            {
+                if(wheel.getPosition() == Wheel.Position.FRONT)
+                {
+                    float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
+                }
+                if(vehicle.isMoving())
+                {
+                    GlStateManager.rotate(-wheel.getWheelRotation(vehicle, partialTicks), 1, 0, 0);
+                }
+                GlStateManager.translate((((wheel.getWidth() * wheel.getScale()) / 2) * 0.0625) * wheel.getSide().offset, 0, 0);
+                GlStateManager.scale(wheel.getScale(), wheel.getScale(), wheel.getScale());
+                if(wheel.getSide() == Wheel.Side.RIGHT)
+                {
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                }
+                Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
+            }
+            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
     }

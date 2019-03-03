@@ -7,9 +7,11 @@ import net.minecraft.util.math.Vec3d;
  */
 public class PartPosition
 {
+    public static final PartPosition DEFAULT = new PartPosition(1.0);
+
     private Vec3d translate = Vec3d.ZERO;
     private Vec3d rotation = Vec3d.ZERO;
-    private double scale = 1.0F;
+    private double scale;
 
     public PartPosition(double scale)
     {

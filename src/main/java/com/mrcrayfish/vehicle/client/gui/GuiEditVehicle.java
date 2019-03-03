@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.util.MouseHelper;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -14,10 +15,13 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Author: MrCrayfish
@@ -56,9 +60,28 @@ public class GuiEditVehicle extends GuiContainer
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.ySize);
 
-        if(vehicleInventory.getStackInSlot(0).isEmpty())
+        if(vehicle.getEngineType() != EngineType.NONE)
         {
-            this.drawTexturedModalRect(i + 8, j + 17, 176, 0, 16, 16);
+            if(vehicleInventory.getStackInSlot(0).isEmpty())
+            {
+                this.drawTexturedModalRect(i + 8, j + 17, 176, 0, 16, 16);
+            }
+        }
+        else if(vehicleInventory.getStackInSlot(0).isEmpty())
+        {
+            this.drawTexturedModalRect(i + 8, j + 17, 176, 32, 16, 16);
+        }
+
+        if(vehicle.canChangeWheels())
+        {
+            if(vehicleInventory.getStackInSlot(1).isEmpty())
+            {
+                this.drawTexturedModalRect(i + 8, j + 35, 176, 16, 16, 16);
+            }
+        }
+        else if(vehicleInventory.getStackInSlot(1).isEmpty())
+        {
+            this.drawTexturedModalRect(i + 8, j + 35, 176, 32, 16, 16);
         }
     }
 
@@ -120,9 +143,9 @@ public class GuiEditVehicle extends GuiContainer
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
 
-        int i = (this.width - this.xSize) / 2;
-        int j = (this.height - this.ySize) / 2;
-        if(MouseHelper.isMouseWithin(mouseX, mouseY, i + 26, j + 17, 142, 70))
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+        if(MouseHelper.isMouseWithin(mouseX, mouseY, startX + 26, startY + 17, 142, 70))
         {
             int mouseWheelDelta = Mouse.getDWheel();
             if(mouseWheelDelta < 0 && windowZoom > 0)
@@ -157,6 +180,36 @@ public class GuiEditVehicle extends GuiContainer
                 mouseGrabbed = false;
                 windowRotationX += (mouseX - mouseClickedX);
                 windowRotationY -= (mouseY - mouseClickedY);
+            }
+        }
+
+        if(this.vehicleInventory.getStackInSlot(0).isEmpty())
+        {
+            if(MouseHelper.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16, 18, 18))
+            {
+                if(vehicle.getEngineType() != EngineType.NONE)
+                {
+                    this.drawHoveringText(Collections.singletonList("Engine"), mouseX, mouseY, this.mc.fontRenderer);
+                }
+                else
+                {
+                    this.drawHoveringText(Arrays.asList("Engine", TextFormatting.GRAY + "Not applicable"), mouseX, mouseY, this.mc.fontRenderer);
+                }
+            }
+        }
+
+        if(this.vehicleInventory.getStackInSlot(1).isEmpty())
+        {
+            if(MouseHelper.isMouseWithin(mouseX, mouseY, startX + 7, startY + 34, 18, 18))
+            {
+                if(vehicle.canChangeWheels())
+                {
+                    this.drawHoveringText(Collections.singletonList("Wheels"), mouseX, mouseY, this.mc.fontRenderer);
+                }
+                else
+                {
+                    this.drawHoveringText(Arrays.asList("Wheels", TextFormatting.GRAY + "Not applicable"), mouseX, mouseY, this.mc.fontRenderer);
+                }
             }
         }
     }

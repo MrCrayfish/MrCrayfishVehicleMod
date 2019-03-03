@@ -1,9 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 
 /**
  * Author: MrCrayfish
@@ -18,7 +15,10 @@ public class Wheel
     private Side side;
     private Position position;
 
-    public Wheel(Side side, Position position, float width, float scale, float offsetX, float offsetY, float offsetZ)
+    private boolean particles;
+    private boolean render;
+
+    public Wheel(Side side, Position position, float width, float scale, float offsetX, float offsetY, float offsetZ, boolean particles, boolean render)
     {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
@@ -27,59 +27,78 @@ public class Wheel
         this.scale = scale;
         this.side = side;
         this.position = position;
+        this.particles = particles;
+        this.render = render;
     }
 
-    public Wheel(Side side, Position position, float offsetX, float offsetZ)
-    {
-        this(side, position, 2.0F, 1.0F, offsetX, 0F, offsetZ);
-    }
-
-    public Wheel(Side side, Position position, float offsetX, float offsetZ, float scale)
-    {
-        this(side, position, 2.0F, scale, offsetX, 0F, offsetZ);
-    }
-
-    public Wheel(Side side, Position position, float offsetX, float offsetY, float offsetZ, float scale)
-    {
-        this(side, position, 2.0F, scale, offsetX, offsetY, offsetZ);
-    }
-
-    public void render(EntityLandVehicle vehicle, float partialTicks)
-    {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate((offsetX * 0.0625) * side.offset, offsetY * 0.0625, offsetZ * 0.0625);
-            GlStateManager.pushMatrix();
-            {
-                if(position == Position.FRONT)
-                {
-                    float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
-                    GlStateManager.rotate(wheelAngle, 0, 1, 0);
-                }
-                if(vehicle.isMoving())
-                {
-                    GlStateManager.rotate(-getWheelRotation(vehicle, partialTicks), 1, 0, 0);
-                }
-                GlStateManager.translate((((width * scale) / 2) * 0.0625) * side.offset, 0, 0);
-                GlStateManager.scale(scale, scale, scale);
-                if(side == Side.RIGHT)
-                {
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                }
-                Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
-        }
-        GlStateManager.popMatrix();
-    }
-
-    private float getWheelRotation(EntityLandVehicle vehicle, float partialTicks)
+    public float getWheelRotation(EntityLandVehicle vehicle, float partialTicks)
     {
         if(position == Position.REAR)
         {
             return vehicle.prevRearWheelRotation + (vehicle.rearWheelRotation - vehicle.prevRearWheelRotation) * partialTicks;
         }
         return vehicle.prevFrontWheelRotation + (vehicle.frontWheelRotation - vehicle.prevFrontWheelRotation) * partialTicks;
+    }
+
+    public float getOffsetX()
+    {
+        return offsetX;
+    }
+
+    public float getOffsetY()
+    {
+        return offsetY;
+    }
+
+    public float getOffsetZ()
+    {
+        return offsetZ;
+    }
+
+    public float getWidth()
+    {
+        return width;
+    }
+
+    public float getScale()
+    {
+        return scale;
+    }
+
+    public Side getSide()
+    {
+        return side;
+    }
+
+    public Position getPosition()
+    {
+        return position;
+    }
+
+    /**
+     * Determines if this wheels should spawn particles. Depending on the drivetrain of a vehicle,
+     * the spawning of particles can be disabled. For instance, a rear wheel drive vehicle will only
+     * spawn particles for the rear wheels as that's where the force to push the vehicle comes from.
+     * It should be noted that there is no system in place that determines the drivetrain of a vehicle
+     * and the spawning of particles is specified when adding wheels.
+     *
+     * @return if the wheel should spawn particles
+     */
+    public boolean shouldSpawnParticles()
+    {
+        return particles;
+    }
+
+    /**
+     * Determines if this wheel should render. Some vehicles have wheels that are manually rendered
+     * due the fact they need extra tranformations and rotations, and therefore shouldn't use the
+     * wheel system and rather just be a placeholder.
+     *
+     * @return if the wheel should be rendered
+     */
+    public boolean shouldRender()
+    {
+        return render;
     }
 
     public enum Side

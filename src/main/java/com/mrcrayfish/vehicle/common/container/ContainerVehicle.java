@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.common.container;
 
+import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemEngine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -27,13 +29,21 @@ public class ContainerVehicle extends Container
         {
             public boolean isItemValid(ItemStack stack)
             {
-                return stack.getItem() instanceof ItemEngine && ((ItemEngine) stack.getItem()).getEngineType() == vehicle.getEngineType();
+                return vehicle.getEngineType() != EngineType.NONE && stack.getItem() instanceof ItemEngine && ((ItemEngine) stack.getItem()).getEngineType() == vehicle.getEngineType();
             }
 
             @Override
-            public void onSlotChanged()
+            public int getSlotStackLimit()
             {
-                super.onSlotChanged();
+                return 1;
+            }
+        });
+
+        this.addSlotToContainer(new Slot(ContainerVehicle.this.vehicleInventory, 1, 8, 35)
+        {
+            public boolean isItemValid(ItemStack stack)
+            {
+                return vehicle.canChangeWheels() && stack.getItem() == ModItems.WHEEL;
             }
 
             @Override

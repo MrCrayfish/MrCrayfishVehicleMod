@@ -16,7 +16,6 @@ public class ModItems
     public static final Item ATV_HANDLE_BAR;
     public static final Item DUNE_BUGGY_BODY;
     public static final Item DUNE_BUGGY_HANDLE_BAR;
-    public static final Item DUNE_BUGGY_WHEEL;
     public static final Item GO_KART_BODY;
     public static final Item GO_KART_STEERING_WHEEL;
     public static final Item SHOPPING_CART_BODY;
@@ -68,12 +67,11 @@ public class ModItems
     static
     {
         PANEL = new ItemPart("panel").setCreativeTab(VehicleMod.CREATIVE_TAB);
-        WHEEL = new ItemPart("wheel").setCreativeTab(VehicleMod.CREATIVE_TAB);
+        WHEEL = new ItemWheel().setColored();
         ATV_BODY = new ItemPart("atv_body").setColored();
         ATV_HANDLE_BAR = new ItemPart("handle_bar");
         DUNE_BUGGY_BODY = new ItemPart("dune_buggy_body").setColored();
         DUNE_BUGGY_HANDLE_BAR = new ItemPart("dune_buggy_handle_bar");
-        DUNE_BUGGY_WHEEL = new ItemPart("dune_buggy_wheel");
         GO_KART_BODY = new ItemPart("go_kart_body").setColored();
         GO_KART_STEERING_WHEEL = new ItemPart("go_kart_steering_wheel");
         SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
@@ -133,7 +131,6 @@ public class ModItems
         register(ATV_HANDLE_BAR);
         register(DUNE_BUGGY_BODY);
         register(DUNE_BUGGY_HANDLE_BAR);
-        register(DUNE_BUGGY_WHEEL);
         register(GO_KART_BODY);
         register(GO_KART_STEERING_WHEEL);
         register(SHOPPING_CART_BODY);

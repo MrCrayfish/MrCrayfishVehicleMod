@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -34,7 +35,9 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
 
     private ResourceLocation entityId;
     private int color = EntityVehicle.DYE_TO_COLOR[0];
-    private EngineTier engineTier = EngineTier.WOOD;
+    private EngineTier engineTier = null;
+    private WheelType wheelType = null;
+    private int wheelColor = -1;
     private boolean opened = false;
     private int timer;
     private UUID opener;
@@ -104,8 +107,27 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                         }
                         if(entity instanceof EntityPoweredVehicle)
                         {
-                            ((EntityPoweredVehicle) entity).setEngine(true);
-                            ((EntityPoweredVehicle) entity).setEngineTier(engineTier);
+                            EntityPoweredVehicle entityPoweredVehicle = (EntityPoweredVehicle) entity;
+
+                            if(engineTier != null)
+                            {
+                                entityPoweredVehicle.setEngine(true);
+                                entityPoweredVehicle.setEngineTier(engineTier);
+                            }
+
+                            if(wheelType != null)
+                            {
+                                 entityPoweredVehicle.setWheels(true);
+                                 entityPoweredVehicle.setWheelType(wheelType);
+                                 if(wheelColor != -1)
+                                 {
+                                     entityPoweredVehicle.setWheelColor(wheelColor);
+                                 }
+                            }
+                            else
+                            {
+                                entityPoweredVehicle.setWheels(false);
+                            }
                         }
                     }
                     else
@@ -132,13 +154,27 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
                 Entity entity = EntityList.createEntityByIDFromName(entityId, world);
                 if(entity != null)
                 {
+                    if(entity instanceof EntityVehicle)
+                    {
+                        ((EntityVehicle) entity).setColor(color);
+                    }
                     if(opener != null && entity instanceof EntityPoweredVehicle)
                     {
                         EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
                         poweredVehicle.setOwner(opener);
-                        poweredVehicle.setColor(color);
-                        poweredVehicle.setEngine(true);
-                        poweredVehicle.setEngineTier(engineTier);
+                        if(engineTier != null)
+                        {
+                            poweredVehicle.setEngine(true);
+                            poweredVehicle.setEngineTier(engineTier);
+                        }
+                        if(wheelType != null)
+                        {
+                            poweredVehicle.setWheelType(wheelType);
+                            if(wheelColor != -1)
+                            {
+                                poweredVehicle.setWheelColor(wheelColor);
+                            }
+                        }
                     }
                     entity.setPositionAndRotation(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing.getHorizontalIndex() * 90F + 180F, 0F);
                     entity.setRotationYawHead(facing.getHorizontalIndex() * 90F + 180F);
@@ -161,7 +197,18 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
             compound.setUniqueId("opener", opener);
         }
         compound.setInteger("color", color);
-        compound.setInteger("engineTier", engineTier.ordinal());
+        if(engineTier != null)
+        {
+            compound.setInteger("engineTier", engineTier.ordinal());
+        }
+        if(wheelType != null)
+        {
+            compound.setInteger("wheelType", wheelType.ordinal());
+            if(wheelColor != -1)
+            {
+                compound.setInteger("wheelColor", wheelColor);
+            }
+        }
         compound.setBoolean("opened", opened);
         return super.writeToNBT(compound);
     }
@@ -181,6 +228,14 @@ public class TileEntityVehicleCrate extends TileEntitySynced implements ITickabl
         if(compound.hasKey("engineTier", Constants.NBT.TAG_INT))
         {
             engineTier = EngineTier.getType(compound.getInteger("engineTier"));
+        }
+        if(compound.hasKey("wheelType", Constants.NBT.TAG_INT))
+        {
+            wheelType = WheelType.getType(compound.getInteger("wheelType"));
+        }
+        if(compound.hasKey("wheelColor", Constants.NBT.TAG_INT))
+        {
+            wheelColor = compound.getInteger("wheelColor");
         }
         if(compound.hasKey("opener", Constants.NBT.TAG_STRING))
         {

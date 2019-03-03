@@ -25,9 +25,6 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
 
     public RenderMoped()
     {
-        this.setFuelPortPosition(EntityMoped.FUEL_PORT_POSITION);
-        this.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.5F);
-
         Calendar calendar = Calendar.getInstance();
         this.isChristmas = calendar.get(Calendar.MONTH) + 1 == 12 && calendar.get(Calendar.DAY_OF_MONTH) >= 24 && calendar.get(Calendar.DAY_OF_MONTH) <= 26;
     }
@@ -72,18 +69,21 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
             GlStateManager.popMatrix();
 
             //Render front wheel
-            GlStateManager.pushMatrix();
+            if(entity.hasWheels())
             {
-                GlStateManager.translate(0, -0.4, 14.5 * 0.0625);
-                float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
-                if(entity.isMoving())
+                GlStateManager.pushMatrix();
                 {
-                    GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
+                    GlStateManager.translate(0, -0.4, 14.5 * 0.0625);
+                    float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
+                    if(entity.isMoving())
+                    {
+                        GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
+                    }
+                    GlStateManager.scale(1.3F, 1.3F, 1.3F);
+                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
                 }
-                GlStateManager.scale(1.3F, 1.3F, 1.3F);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
             }
-            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
 

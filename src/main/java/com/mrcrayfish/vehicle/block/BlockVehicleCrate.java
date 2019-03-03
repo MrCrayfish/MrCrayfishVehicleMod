@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EngineTier;
+import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
@@ -130,14 +131,14 @@ public class BlockVehicleCrate extends BlockRotatedObject
         if(tileEntity instanceof TileEntityVehicleCrate && canOpen(world, pos))
         {
             if (world.isRemote)
-                spawnCrateOpeningparticles(world, pos, state);
+                spawnCrateOpeningParticles(world, pos, state);
             else
                 ((TileEntityVehicleCrate) tileEntity).open(placer.getUniqueID());
         }
     }
 
     @SideOnly(Side.CLIENT)
-    private void spawnCrateOpeningparticles(World world, BlockPos pos, IBlockState state)
+    private void spawnCrateOpeningParticles(World world, BlockPos pos, IBlockState state)
     {
         double y = 0.875;
         double x, z;
@@ -208,6 +209,8 @@ public class BlockVehicleCrate extends BlockRotatedObject
         {
             NBTTagCompound blockEntityTag = new NBTTagCompound();
             blockEntityTag.setString("vehicle", resourceLocation.toString());
+            blockEntityTag.setInteger("engineTier", EngineTier.WOOD.ordinal());
+            blockEntityTag.setInteger("wheelType", WheelType.STANDARD.ordinal());
             NBTTagCompound itemTag = new NBTTagCompound();
             itemTag.setTag("BlockEntityTag", blockEntityTag);
             ItemStack stack = new ItemStack(this);
@@ -216,12 +219,26 @@ public class BlockVehicleCrate extends BlockRotatedObject
         });
     }
 
-    public static ItemStack create(ResourceLocation entityId, int color, EngineTier engineTier)
+    public static ItemStack create(ResourceLocation entityId, int color, @Nullable EngineTier engineTier, @Nullable WheelType wheelType, int wheelColor)
     {
         NBTTagCompound blockEntityTag = new NBTTagCompound();
         blockEntityTag.setString("vehicle", entityId.toString());
         blockEntityTag.setInteger("color", color);
-        blockEntityTag.setInteger("engineTier", engineTier.ordinal());
+
+        if(engineTier != null)
+        {
+            blockEntityTag.setInteger("engineTier", engineTier.ordinal());
+        }
+
+        if(wheelType != null)
+        {
+            blockEntityTag.setInteger("wheelType", wheelType.ordinal());
+            if(wheelColor != -1)
+            {
+                blockEntityTag.setInteger("wheelColor", wheelColor);
+            }
+        }
+
         NBTTagCompound itemTag = new NBTTagCompound();
         itemTag.setTag("BlockEntityTag", blockEntityTag);
         ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);

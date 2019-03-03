@@ -11,14 +11,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderShoppingCart extends AbstractRenderLandVehicle<EntityShoppingCart>
 {
-    public RenderShoppingCart()
-    {
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F);
-    }
-
     @Override
     public void render(EntityShoppingCart entity, float partialTicks)
     {

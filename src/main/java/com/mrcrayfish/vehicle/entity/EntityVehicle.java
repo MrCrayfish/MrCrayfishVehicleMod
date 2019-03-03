@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
@@ -10,6 +11,7 @@ import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -23,6 +25,7 @@ import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
@@ -57,7 +60,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     protected UUID trailerId;
     protected EntityTrailer trailer = null;
-    private Vec3d towBarVec = Vec3d.ZERO;
     private int searchDelay = 20;
 
     /**
@@ -100,6 +102,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public void onClientInit()
     {
         towBar = new ItemStack(ModItems.TOW_BAR);
+        wheel = new ItemStack(ModItems.WHEEL, 1, WheelType.STANDARD.ordinal());
     }
 
     @Override
@@ -171,7 +174,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                                 double width = this.width * 2;
                                 double height = this.height * 1.5;
 
-                                Vec3d heldOffset = this.heldOffset.rotateYaw((float) Math.toRadians(-this.rotationYaw));
+                                Vec3d heldOffset = this.getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
                                 double x = posX + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
                                 double y = posY + height * rand.nextFloat();
                                 double z = posZ + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
@@ -584,59 +587,9 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
     }
 
-    public void setBodyPosition(PartPosition bodyPosition)
-    {
-        this.bodyPosition = bodyPosition;
-    }
-
-    public PartPosition getBodyPosition()
-    {
-        return bodyPosition;
-    }
-
-    public void setHeldOffset(Vec3d heldOffset)
-    {
-        this.heldOffset = heldOffset;
-    }
-
-    public Vec3d getHeldOffset()
-    {
-        return heldOffset;
-    }
-
-    public void setTrailerOffset(Vec3d trailerOffset)
-    {
-        this.trailerOffset = trailerOffset;
-    }
-
-    public Vec3d getTrailerOffset()
-    {
-        return trailerOffset;
-    }
-
     public boolean canMountTrailer()
     {
         return true;
-    }
-
-    public void setAxleOffset(float axleOffset)
-    {
-        this.axleOffset = axleOffset;
-    }
-
-    public float getAxleOffset()
-    {
-        return axleOffset;
-    }
-
-    public void setWheelOffset(float wheelOffset)
-    {
-        this.wheelOffset = wheelOffset;
-    }
-
-    public float getWheelOffset()
-    {
-        return wheelOffset;
     }
 
     /**
@@ -647,9 +600,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
      */
     protected Vec3d getPartPositionAbsoluteVec(PartPosition position)
     {
+        VehicleProperties properties = this.getProperties();
+        PartPosition bodyPosition = properties.getBodyPosition();
         Vec3d partVec = new Vec3d(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-        partVec = partVec.addVector(0, this.getWheelOffset() * 0.0625, 0);
-        partVec = partVec.addVector(0, this.getAxleOffset() * 0.0625, 0);
+        partVec = partVec.addVector(0, properties.getWheelOffset() * 0.0625, 0);
+        partVec = partVec.addVector(0, properties.getAxleOffset() * 0.0625, 0);
         partVec = partVec.addVector(0, 0.5, 0);
         partVec = partVec.scale(bodyPosition.getScale());
         partVec = partVec.addVector(0, -0.5, 0);
@@ -674,16 +629,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public void readSpawnData(ByteBuf buffer)
     {
         rotationYaw = prevRotationYaw = buffer.readFloat();
-    }
-
-    public void setTowBarPosition(Vec3d towBarVec)
-    {
-        this.towBarVec = towBarVec.scale(0.0625);
-    }
-
-    public Vec3d getTowBarVec()
-    {
-        return towBarVec;
     }
 
     public boolean canTowTrailer()
@@ -722,5 +667,22 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public EntityTrailer getTrailer()
     {
         return trailer;
+    }
+
+    public VehicleProperties getProperties()
+    {
+        return VehicleProperties.getProperties(this.getClass());
+    }
+
+    public float getModifiedRotationYaw()
+    {
+        return this.rotationYaw;
+    }
+
+    @Override
+    public ItemStack getPickedResult(RayTraceResult target)
+    {
+        ResourceLocation entityId = EntityList.getKey(this);
+        return BlockVehicleCrate.create(entityId, this.getColor(), null, null, -1);
     }
 }

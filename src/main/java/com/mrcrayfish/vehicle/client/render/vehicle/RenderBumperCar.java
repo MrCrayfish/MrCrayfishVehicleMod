@@ -14,15 +14,6 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class RenderBumperCar extends AbstractRenderLandVehicle<EntityBumperCar>
 {
-    public RenderBumperCar()
-    {
-        this.setFuelPortPosition(EntityBumperCar.FUEL_PORT_POSITION);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F);
-        this.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F);
-        this.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F);
-    }
-
     @Override
     public void render(EntityBumperCar entity, float partialTicks)
     {
