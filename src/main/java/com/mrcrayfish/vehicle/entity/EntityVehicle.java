@@ -386,7 +386,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     @Override
     public void fall(float distance, float damageMultiplier)
     {
-        if(VehicleConfig.SERVER.vehicleDamage && distance >= 4F)
+        if(VehicleConfig.SERVER.vehicleDamage && distance >= 4F && this.motionY < -1.0F)
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
