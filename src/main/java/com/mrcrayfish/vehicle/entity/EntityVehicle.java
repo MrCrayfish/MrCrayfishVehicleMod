@@ -408,7 +408,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                 for(ItemStack stack : materials)
                 {
                     ItemStack copy = stack.copy();
-                    int shrink = copy.getCount() / 4;
+                    int shrink = copy.getCount() / 2;
                     if(shrink > 0)
                         copy.shrink(rand.nextInt(shrink));
                     InventoryUtil.spawnItemStack(world, posX, posY, posZ, copy);
