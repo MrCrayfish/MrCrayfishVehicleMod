@@ -51,13 +51,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     private static final DataParameter<Float> HEALTH = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityVehicle.class, DataSerializers.VARINT);
 
-    private PartPosition bodyPosition;
-    private Vec3d heldOffset = Vec3d.ZERO;
-    private Vec3d trailerOffset = Vec3d.ZERO;
-
-    private float axleOffset;
-    private float wheelOffset;
-
     protected UUID trailerId;
     protected EntityTrailer trailer = null;
     private int searchDelay = 20;
