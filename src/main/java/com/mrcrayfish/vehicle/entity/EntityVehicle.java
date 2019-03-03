@@ -410,7 +410,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                     ItemStack copy = stack.copy();
                     int shrink = copy.getCount() / 2;
                     if(shrink > 0)
-                        copy.shrink(rand.nextInt(shrink));
+                        copy.shrink(rand.nextInt(shrink + 1));
                     InventoryUtil.spawnItemStack(world, posX, posY, posZ, copy);
                 }
             }
