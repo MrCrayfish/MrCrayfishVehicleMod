@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -11,12 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderDuneBuggy extends AbstractRenderLandVehicle<EntityDuneBuggy>
+public class RenderDuneBuggy extends AbstractRenderVehicle<EntityDuneBuggy>
 {
     @Override
     public void render(EntityDuneBuggy entity, float partialTicks)
     {
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, entity.body);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         double wheelScale = 1.0F;

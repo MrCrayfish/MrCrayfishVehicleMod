@@ -13,7 +13,7 @@ import net.minecraft.util.math.Vec3d;
 /**
  * Author: MrCrayfish
  */
-public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderLandVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
     public RenderLandVehicleWrapper(R renderVehicle)
     {

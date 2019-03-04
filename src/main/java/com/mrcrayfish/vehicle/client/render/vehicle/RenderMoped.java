@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMoped;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
@@ -15,7 +15,7 @@ import java.util.Calendar;
 /**
  * Author: MrCrayfish
  */
-public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
+public class RenderMoped extends AbstractRenderVehicle<EntityMoped>
 {
     private static final ModelChest MOPED_CHEST = new ModelChest();
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
@@ -33,7 +33,7 @@ public class RenderMoped extends AbstractRenderLandVehicle<EntityMoped>
     {
         Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(false);
 
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, entity.body);
 
         GlStateManager.pushMatrix();
         {

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderCouch extends AbstractRenderLandVehicle<EntityCouch>
+public class RenderCouch extends AbstractRenderVehicle<EntityCouch>
 {
     @Override
     public void render(EntityCouch entity, float partialTicks)

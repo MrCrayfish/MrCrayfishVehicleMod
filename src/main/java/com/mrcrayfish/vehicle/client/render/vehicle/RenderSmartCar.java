@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySmartCar;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -11,12 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderSmartCar extends AbstractRenderLandVehicle<EntitySmartCar>
+public class RenderSmartCar extends AbstractRenderVehicle<EntitySmartCar>
 {
     @Override
     public void render(EntitySmartCar entity, float partialTicks)
     {
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

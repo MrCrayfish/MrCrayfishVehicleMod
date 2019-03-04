@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.RenderHelper;
 /**
  * Author: MrCrayfish
  */
-public class RenderMotorcycleWrapper<T extends EntityMotorcycle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderLandVehicle<T>> extends RenderLandVehicleWrapper<T, R>
+public class RenderMotorcycleWrapper<T extends EntityMotorcycle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderLandVehicleWrapper<T, R>
 {
     public RenderMotorcycleWrapper(R renderVehicle)
     {

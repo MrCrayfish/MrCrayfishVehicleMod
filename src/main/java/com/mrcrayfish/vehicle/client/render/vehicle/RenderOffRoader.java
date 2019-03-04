@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityOffRoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -14,12 +14,12 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class RenderOffRoader extends AbstractRenderLandVehicle<EntityOffRoader>
+public class RenderOffRoader extends AbstractRenderVehicle<EntityOffRoader>
 {
     @Override
     public void render(EntityOffRoader entity, float partialTicks)
     {
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, entity.body);
 
         //Render the handles bars
         GlStateManager.pushMatrix();

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -11,7 +11,7 @@ import net.minecraft.entity.player.EntityPlayer;
 /**
  * Author: MrCrayfish
  */
-public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
+public class RenderATV extends AbstractRenderVehicle<EntityATV>
 {
     @Override
     protected boolean shouldRenderFuelLid()
@@ -23,7 +23,7 @@ public class RenderATV extends AbstractRenderLandVehicle<EntityATV>
     public void render(EntityATV entity, float partialTicks)
     {
         //Body
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, entity.body);
 
         //Handle Bars
         GlStateManager.pushMatrix();
