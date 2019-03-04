@@ -55,15 +55,26 @@ public class ControllerEvents
         {
             if(Controllers.getEventSource().equals(controller))
             {
-                if(Controllers.getEventButtonState() && Controllers.getEventControlIndex() == 11)
+                if(Controllers.isEventButton() && Controllers.getEventButtonState())
                 {
-                    EntityPlayer player = Minecraft.getMinecraft().player;
-                    if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
+                    if(Controllers.getEventControlIndex() == 11)
                     {
-                        EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-                        if(vehicle.canTowTrailer())
+                        EntityPlayer player = Minecraft.getMinecraft().player;
+                        if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
                         {
-                            PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                            EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+                            if(vehicle.canTowTrailer())
+                            {
+                                PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                            }
+                        }
+                    }
+                    else if(Controllers.getEventControlIndex() == 13)
+                    {
+                        Minecraft.getMinecraft().gameSettings.thirdPersonView++;
+                        if(Minecraft.getMinecraft().gameSettings.thirdPersonView > 2)
+                        {
+                            Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
                         }
                     }
                 }
