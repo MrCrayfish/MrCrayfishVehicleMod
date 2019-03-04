@@ -577,7 +577,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
-            AccelerationDirection acceleration = AccelerationDirection.fromEntity(entity);
+            AccelerationDirection acceleration = VehicleMod.proxy.getAccelerationDirection(entity);
             if(this.getAcceleration() != acceleration)
             {
                 this.setAcceleration(acceleration);

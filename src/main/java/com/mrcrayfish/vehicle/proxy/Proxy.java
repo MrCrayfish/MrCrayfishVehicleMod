@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.proxy;
 
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
@@ -24,4 +25,9 @@ public interface Proxy
     default void openStorageWindow(int entityId, int windowId) {}
 
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {}
+
+    default EntityPoweredVehicle.AccelerationDirection getAccelerationDirection(EntityLivingBase entity)
+    {
+        return EntityPoweredVehicle.AccelerationDirection.NONE;
+    }
 }

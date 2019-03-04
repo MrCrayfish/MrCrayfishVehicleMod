@@ -40,6 +40,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
@@ -265,5 +266,23 @@ public class ClientProxy implements Proxy
             Minecraft.getMinecraft().displayGuiScreen(new GuiStorage(player.inventory, wrapper.getInventory()));
             player.openContainer.windowId = windowId;
         }
+    }
+
+    @Override
+    public EntityPoweredVehicle.AccelerationDirection getAccelerationDirection(EntityLivingBase entity)
+    {
+        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        {
+            if(ControllerEvents.controller.isButtonPressed(1))
+            {
+                return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+            }
+            if(ControllerEvents.controller.isButtonPressed(3))
+            {
+                return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+            }
+            return EntityPoweredVehicle.AccelerationDirection.NONE;
+        }
+        return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
     }
 }
