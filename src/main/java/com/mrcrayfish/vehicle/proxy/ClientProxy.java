@@ -282,7 +282,6 @@ public class ClientProxy implements Proxy
             {
                 return EntityPoweredVehicle.AccelerationDirection.REVERSE;
             }
-            return EntityPoweredVehicle.AccelerationDirection.NONE;
         }
         return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
     }
@@ -308,7 +307,6 @@ public class ClientProxy implements Proxy
             {
                 return EntityPoweredVehicle.TurnDirection.LEFT;
             }
-            return EntityPoweredVehicle.TurnDirection.FORWARD;
         }
         if(entity.moveStrafing < 0)
         {
@@ -327,7 +325,6 @@ public class ClientProxy implements Proxy
         EntityPoweredVehicle.TurnDirection direction = vehicle.getTurnDirection();
         if(vehicle.getControllingPassenger() != null)
         {
-            float amount = direction.getDir() * vehicle.getTurnSensitivity();
             if(VehicleConfig.CLIENT.experimental.controllerSupport)
             {
                 Controller controller = ControllerEvents.controller;
@@ -341,28 +338,25 @@ public class ClientProxy implements Proxy
                     }
                     return newTurnAngle;
                 }
-                else if(drifting)
-                {
-                    return vehicle.turnAngle * 0.95F;
-                }
-                else
-                {
-                    return vehicle.turnAngle * 0.75F;
-                }
             }
 
-            if(drifting)
+            if(direction != EntityPoweredVehicle.TurnDirection.FORWARD)
             {
-                amount *= 0.45F;
+                float amount = direction.getDir() * vehicle.getTurnSensitivity();
+                if(drifting)
+                {
+                    amount *= 0.45F;
+                }
+                float newTurnAngle = vehicle.turnAngle + amount;
+                if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                {
+                    return vehicle.getMaxTurnAngle() * direction.getDir();
+                }
+                return newTurnAngle;
             }
-            float newTurnAngle = vehicle.turnAngle + amount;
-            if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
-            {
-                return vehicle.getMaxTurnAngle() * direction.getDir();
-            }
-            return newTurnAngle;
         }
-        else if(drifting)
+
+        if(drifting)
         {
             return vehicle.turnAngle * 0.95F;
         }
@@ -375,9 +369,9 @@ public class ClientProxy implements Proxy
         if(VehicleConfig.CLIENT.experimental.controllerSupport)
         {
             Controller controller = ControllerEvents.controller;
-            if(controller != null)
+            if(controller != null && controller.isButtonPressed(5))
             {
-                return controller.isButtonPressed(5);
+                return true;
             }
         }
         return Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
