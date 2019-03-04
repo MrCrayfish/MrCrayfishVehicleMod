@@ -19,7 +19,8 @@ public class PacketHandler
 
     public static void init()
     {
-        registerMessage(MessageTurn.class, Side.SERVER);
+        registerMessage(MessageTurnDirection.class, Side.SERVER);
+        registerMessage(MessageTurnAngle.class, Side.SERVER);
         registerMessage(MessageAccelerating.class, Side.SERVER);
         registerMessage(MessageDrift.class, Side.SERVER);
         registerMessage(MessageHorn.class, Side.SERVER);

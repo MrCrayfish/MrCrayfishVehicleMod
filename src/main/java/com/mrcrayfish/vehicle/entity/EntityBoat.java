@@ -190,6 +190,12 @@ public abstract class EntityBoat extends EntityPoweredVehicle
         }
     }
 
+    @Override
+    protected void updateGroundState()
+    {
+        this.wheelsOnGround = this.getState() == State.ON_WATER || this.getState() == State.UNDER_WATER;
+    }
+
     protected enum State
     {
         ON_WATER, UNDER_WATER, IN_AIR, ON_LAND

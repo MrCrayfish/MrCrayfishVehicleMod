@@ -16,6 +16,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
@@ -310,5 +311,38 @@ public class ClientProxy implements Proxy
             return EntityPoweredVehicle.TurnDirection.LEFT;
         }
         return EntityPoweredVehicle.TurnDirection.FORWARD;
+    }
+
+    @Override
+    public float getTargetTurnAngle(EntityPoweredVehicle vehicle, boolean drifting)
+    {
+        EntityPoweredVehicle.TurnDirection direction = vehicle.getTurnDirection();
+        if(vehicle.getControllingPassenger() != null)
+        {
+            if(VehicleConfig.CLIENT.experimental.controllerSupport)
+            {
+                Controller controller = ControllerEvents.controller;
+                return vehicle.getMaxTurnAngle() * -controller.getXAxisValue();
+            }
+
+            if(direction != EntityPoweredVehicle.TurnDirection.FORWARD)
+            {
+                float amount = direction.getDir() * vehicle.getTurnSensitivity();
+                if(drifting)
+                {
+                    amount *= 0.45F;
+                }
+                float newTurnAngle = vehicle.turnAngle + amount;
+                if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                {
+                    return vehicle.getMaxTurnAngle() * direction.getDir();
+                }
+            }
+        }
+        else if(drifting)
+        {
+            return vehicle.turnAngle * 0.95F;
+        }
+        return vehicle.turnAngle * 0.75F;
     }
 }

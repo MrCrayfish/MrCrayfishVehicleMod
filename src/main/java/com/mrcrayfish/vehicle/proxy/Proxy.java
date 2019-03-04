@@ -35,4 +35,9 @@ public interface Proxy
     {
         return EntityPoweredVehicle.TurnDirection.FORWARD;
     }
+
+    default float getTargetTurnAngle(EntityPoweredVehicle vehicle, boolean drifting)
+    {
+        return 0F;
+    }
 }

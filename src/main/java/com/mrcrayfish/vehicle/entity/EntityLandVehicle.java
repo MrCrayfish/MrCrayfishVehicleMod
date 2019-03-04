@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.client.Minecraft;
@@ -92,25 +93,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     @Override
     protected void updateTurning()
     {
-        TurnDirection direction = this.getTurnDirection();
-        if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
-        {
-            float amount = direction.dir * getTurnSensitivity();
-            this.turnAngle += this.isDrifting() ? amount * 0.45 : amount;
-            if(Math.abs(this.turnAngle) > getMaxTurnAngle())
-            {
-                this.turnAngle = getMaxTurnAngle() * direction.dir;
-            }
-        }
-        else if(this.isDrifting())
-        {
-            this.turnAngle *= 0.95;
-        }
-        else
-        {
-            this.turnAngle *= 0.75;
-        }
-
+        this.turnAngle = VehicleMod.proxy.getTargetTurnAngle(this, this.isDrifting());
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
         this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
 
