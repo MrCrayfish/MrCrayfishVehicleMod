@@ -1,9 +1,7 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import com.mrcrayfish.vehicle.client.ClientEvents;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.client.*;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
@@ -57,6 +55,9 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Controller;
+import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -145,6 +146,40 @@ public class ClientProxy implements Proxy
             FluidUtils.clearCacheFluidColor();
             EntityRaytracer.clearDataForReregistration();
         });
+
+        this.setupController();
+    }
+
+    private void setupController()
+    {
+        if(!VehicleConfig.CLIENT.experimental.controllerSupport)
+            return;
+
+        try
+        {
+            Controllers.create();
+        }
+        catch(LWJGLException e)
+        {
+            e.printStackTrace();
+        }
+
+        Controllers.poll();
+
+        if(Controllers.getControllerCount() > 0)
+        {
+            for(int i = 0; i < Controllers.getControllerCount(); i++)
+            {
+                Controller controller = Controllers.getController(i);
+                String name = controller.getName();
+                /* Wireless Controller is the name of PS4 Controller and it should have 14 buttons */
+                if("Wireless Controller".equals(name) && controller.getButtonCount() == 14)
+                {
+                    ControllerEvents.controller = controller;
+                    break;
+                }
+            }
+        }
     }
 
     @Override
