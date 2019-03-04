@@ -38,6 +38,19 @@ public class ControllerEvents
         if(!VehicleConfig.CLIENT.experimental.controllerSupport || controller == null)
             return;
 
+        if(controller.getZAxisValue() != 0.0F)
+        {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            player.rotationYaw += 1.0F * (controller.getZAxisValue() > 0.0F ? 1 : -1) * Math.abs(controller.getZAxisValue());
+        }
+
+        /* Handles rotating the pitch of player*/
+        if(controller.getRZAxisValue() != 0.0F)
+        {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            player.rotationPitch += 0.75F * (controller.getRZAxisValue() > 0.0F ? 1 : -1) * Math.abs(controller.getRZAxisValue());
+        }
+
         while(Controllers.next())
         {
             if(Controllers.getEventSource().equals(controller))
