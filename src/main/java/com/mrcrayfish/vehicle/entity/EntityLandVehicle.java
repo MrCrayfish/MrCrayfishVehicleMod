@@ -58,7 +58,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
-            boolean drifting = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
+            boolean drifting = VehicleMod.proxy.isDrifting();
             if(this.isDrifting() != drifting)
             {
                 this.setDrifting(drifting);
@@ -116,12 +116,12 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
                 {
                     this.currentSpeed *= 0.975F;
                 }
-                this.drifting = Math.min(1.0F, this.drifting + 0.05F);
+                this.drifting = Math.min(1.0F, this.drifting + 0.025F);
             }
         }
         else
         {
-            this.drifting *= 0.85F;
+            this.drifting *= 0.95F;
         }
         this.additionalYaw = 25F * drifting * (turnAngle / (float) this.getMaxTurnAngle()) * Math.min(this.getActualMaxSpeed(), this.getActualSpeed() * 2F);
 

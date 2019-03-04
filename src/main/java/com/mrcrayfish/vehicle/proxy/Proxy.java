@@ -40,4 +40,9 @@ public interface Proxy
     {
         return 0F;
     }
+
+    default boolean isDrifting()
+    {
+        return false;
+    }
 }

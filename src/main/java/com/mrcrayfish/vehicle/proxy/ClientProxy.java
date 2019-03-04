@@ -300,6 +300,14 @@ public class ClientProxy implements Proxy
             {
                 return EntityPoweredVehicle.TurnDirection.LEFT;
             }
+            if(ControllerEvents.controller.getPovX() > 0.0F)
+            {
+                return EntityPoweredVehicle.TurnDirection.RIGHT;
+            }
+            if(ControllerEvents.controller.getPovX() < 0.0F)
+            {
+                return EntityPoweredVehicle.TurnDirection.LEFT;
+            }
             return EntityPoweredVehicle.TurnDirection.FORWARD;
         }
         if(entity.moveStrafing < 0)
@@ -319,30 +327,59 @@ public class ClientProxy implements Proxy
         EntityPoweredVehicle.TurnDirection direction = vehicle.getTurnDirection();
         if(vehicle.getControllingPassenger() != null)
         {
+            float amount = direction.getDir() * vehicle.getTurnSensitivity();
             if(VehicleConfig.CLIENT.experimental.controllerSupport)
             {
                 Controller controller = ControllerEvents.controller;
-                return vehicle.getMaxTurnAngle() * -controller.getXAxisValue();
+                float turnNormal = controller.getXAxisValue() != 0.0F ? controller.getXAxisValue() : controller.getPovX();
+                if(turnNormal != 0.0F)
+                {
+                    float newTurnAngle = vehicle.turnAngle + ((vehicle.getMaxTurnAngle() * -turnNormal) - vehicle.turnAngle) * 0.15F;
+                    if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                    {
+                        return vehicle.getMaxTurnAngle() * direction.getDir();
+                    }
+                    return newTurnAngle;
+                }
+                else if(drifting)
+                {
+                    return vehicle.turnAngle * 0.95F;
+                }
+                else
+                {
+                    return vehicle.turnAngle * 0.75F;
+                }
             }
 
-            if(direction != EntityPoweredVehicle.TurnDirection.FORWARD)
+            if(drifting)
             {
-                float amount = direction.getDir() * vehicle.getTurnSensitivity();
-                if(drifting)
-                {
-                    amount *= 0.45F;
-                }
-                float newTurnAngle = vehicle.turnAngle + amount;
-                if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
-                {
-                    return vehicle.getMaxTurnAngle() * direction.getDir();
-                }
+                amount *= 0.45F;
             }
+            float newTurnAngle = vehicle.turnAngle + amount;
+            if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+            {
+                return vehicle.getMaxTurnAngle() * direction.getDir();
+            }
+            return newTurnAngle;
         }
         else if(drifting)
         {
             return vehicle.turnAngle * 0.95F;
         }
         return vehicle.turnAngle * 0.75F;
+    }
+
+    @Override
+    public boolean isDrifting()
+    {
+        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        {
+            Controller controller = ControllerEvents.controller;
+            if(controller != null)
+            {
+                return controller.isButtonPressed(5);
+            }
+        }
+        return Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
     }
 }
