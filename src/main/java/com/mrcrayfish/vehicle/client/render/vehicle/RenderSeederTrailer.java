@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.Models;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
@@ -14,14 +14,13 @@ import net.minecraft.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class RenderSeederTrailer extends AbstractRenderVehicle<EntitySeederTrailer>
+public class RenderSeederTrailer extends AbstractRenderTrailer<EntitySeederTrailer>
 {
     @Override
     public void render(EntitySeederTrailer entity, float partialTicks)
     {
         //Render the body
-        renderDamagedPart(entity, entity.body, Models.SEEDER_TRAILER.getModel());
-
+        this.renderDamagedPart(entity, entity.body, Models.SEEDER_TRAILER.getModel());
         this.renderWheel(entity, true, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, false, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
@@ -72,52 +71,27 @@ public class RenderSeederTrailer extends AbstractRenderVehicle<EntitySeederTrail
             }
         }
 
-        this.renderSpiker(entity, -12.0F * 0.0625F, -0.65F, 0.0F, 0.75F, partialTicks);
-        this.renderSpiker(entity, -8.0F * 0.0625F, -0.65F, 0.0F, 0.75F, partialTicks);
-        this.renderSpiker(entity, -4.0F * 0.0625F, -0.65F, 0.0F, 0.75F, partialTicks);
-        this.renderSpiker(entity, 0.0F, -0.65F, 0.0F, 0.75F, partialTicks);
-        this.renderSpiker(entity, 4.0F * 0.0625F, -0.65F, 0.0F, 0.75F, partialTicks);
-        this.renderSpiker(entity, 8.0F * 0.0625F, -0.65F, 0.0F, 0.75F, partialTicks);
-        this.renderSpiker(entity, 12.0F * 0.0625F, -0.65F, 0.0F, 0.75F, partialTicks);
+        this.renderSpike(entity, -12.0F * 0.0625F, partialTicks);
+        this.renderSpike(entity, -8.0F * 0.0625F, partialTicks);
+        this.renderSpike(entity, -4.0F * 0.0625F, partialTicks);
+        this.renderSpike(entity, 0.0F, partialTicks);
+        this.renderSpike(entity, 4.0F * 0.0625F, partialTicks);
+        this.renderSpike(entity, 8.0F * 0.0625F, partialTicks);
+        this.renderSpike(entity, 12.0F * 0.0625F, partialTicks);
     }
 
-    private void renderWheel(EntityTrailer trailer, boolean right, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
+    private void renderSpike(EntityTrailer trailer, float offsetX, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {
-            GlStateManager.translate(offsetX, offsetY, offsetZ);
-            if(right)
-            {
-                GlStateManager.rotate(180F, 0, 1, 0);
-            }
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.pushMatrix();
-                {
-                    float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-                    GlStateManager.rotate(right ? wheelRotation : -wheelRotation, 1, 0, 0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(trailer.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
-        }
-        GlStateManager.popMatrix();
-    }
-
-    public void renderSpiker(EntityTrailer trailer, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
-    {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(offsetX, offsetY, offsetZ);
+            GlStateManager.translate(offsetX, -0.65F, 0.0F);
             GlStateManager.pushMatrix();
             {
                 GlStateManager.pushMatrix();
                 {
                     float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
                     GlStateManager.rotate(-wheelRotation, 1, 0, 0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
+                    GlStateManager.scale((float) 0.75, (float) 0.75, (float) 0.75);
                     RenderUtil.renderItemModel(trailer.body, Models.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();

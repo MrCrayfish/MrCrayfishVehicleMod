@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.Models;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
@@ -14,13 +14,12 @@ import net.minecraft.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertilizerTrailer>
+public class RenderFertilizerTrailer extends AbstractRenderTrailer<EntityFertilizerTrailer>
 {
     @Override
     public void render(EntityFertilizerTrailer entity, float partialTicks)
     {
-        renderDamagedPart(entity, entity.body, Models.FERTILIZER_TRAILER.getModel());
-
+        this.renderDamagedPart(entity, entity.body, Models.FERTILIZER_TRAILER.getModel());
         this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
@@ -48,7 +47,7 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
                             {
                                 int layerIndex = index % maxLayerCount;
                                 GlStateManager.translate(0, layer * 0.1 + j * 0.0625, 0);
-                                GlStateManager.translate((layerIndex % width) * 0.5, 0, (layerIndex / width) * 0.75);
+                                GlStateManager.translate((layerIndex % width) * 0.5, 0, (float) (layerIndex / width) * 0.75);
                                 GlStateManager.translate(0.5 * (layer % 2), 0, 0);
                                 GlStateManager.rotate(90F, 1, 0, 0);
                                 GlStateManager.rotate(47F * index, 0, 0, 1);
@@ -69,57 +68,15 @@ public class RenderFertilizerTrailer extends AbstractRenderVehicle<EntityFertili
             }
         }
 
+        /* Renders the spike */
         GlStateManager.pushMatrix();
         {
             GlStateManager.translate(0, -0.5, -0.4375);
             GlStateManager.rotate(90F, 0, 0, 1);
-            this.renderSpiker(entity, 0.0F, 0.0F, 0.0F, 1.25F, partialTicks);
-        }
-        GlStateManager.popMatrix();
-    }
-
-    private void renderWheel(EntityTrailer trailer, boolean right, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
-    {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(offsetX, offsetY, offsetZ);
-            if(right)
-            {
-                GlStateManager.rotate(180F, 0, 1, 0);
-            }
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.pushMatrix();
-                {
-                    float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-                    GlStateManager.rotate(right ? wheelRotation : -wheelRotation, 1, 0, 0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(trailer.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
-        }
-        GlStateManager.popMatrix();
-    }
-
-    public void renderSpiker(EntityTrailer trailer, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
-    {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(offsetX, offsetY, offsetZ);
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.pushMatrix();
-                {
-                    float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-                    GlStateManager.rotate(-wheelRotation, 1, 0, 0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    RenderUtil.renderItemModel(trailer.body, Models.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
+            float wheelRotation = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
+            GlStateManager.rotate(-wheelRotation, 1, 0, 0);
+            GlStateManager.scale((float) 1.25, (float) 1.25, (float) 1.25);
+            RenderUtil.renderItemModel(entity.body, Models.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
     }
