@@ -6,6 +6,7 @@ import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Controller;
+import org.lwjgl.input.Controllers;
 
 /**
  * Author: MrCrayfish

@@ -285,4 +285,30 @@ public class ClientProxy implements Proxy
         }
         return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
     }
+
+    @Override
+    public EntityPoweredVehicle.TurnDirection getTurnDirection(EntityLivingBase entity)
+    {
+        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        {
+            if(ControllerEvents.controller.getXAxisValue() > 0.0F)
+            {
+                return EntityPoweredVehicle.TurnDirection.RIGHT;
+            }
+            if(ControllerEvents.controller.getXAxisValue() < 0.0F)
+            {
+                return EntityPoweredVehicle.TurnDirection.LEFT;
+            }
+            return EntityPoweredVehicle.TurnDirection.FORWARD;
+        }
+        if(entity.moveStrafing < 0)
+        {
+            return EntityPoweredVehicle.TurnDirection.RIGHT;
+        }
+        else if(entity.moveStrafing > 0)
+        {
+            return EntityPoweredVehicle.TurnDirection.LEFT;
+        }
+        return EntityPoweredVehicle.TurnDirection.FORWARD;
+    }
 }

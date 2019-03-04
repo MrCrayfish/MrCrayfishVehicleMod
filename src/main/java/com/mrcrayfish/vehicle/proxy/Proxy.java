@@ -30,4 +30,9 @@ public interface Proxy
     {
         return EntityPoweredVehicle.AccelerationDirection.NONE;
     }
+
+    default EntityPoweredVehicle.TurnDirection getTurnDirection(EntityLivingBase entity)
+    {
+        return EntityPoweredVehicle.TurnDirection.FORWARD;
+    }
 }

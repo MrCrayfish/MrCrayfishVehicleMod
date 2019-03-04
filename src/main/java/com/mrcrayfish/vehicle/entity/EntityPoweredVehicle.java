@@ -588,15 +588,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             this.setHorn(horn);
             PacketHandler.INSTANCE.sendToServer(new MessageHorn(horn));
 
-            TurnDirection direction = TurnDirection.FORWARD;
-            if(entity.moveStrafing < 0)
-            {
-                direction = TurnDirection.RIGHT;
-            }
-            else if(entity.moveStrafing > 0)
-            {
-                direction = TurnDirection.LEFT;
-            }
+            TurnDirection direction = VehicleMod.proxy.getTurnDirection(entity);
             if(this.getTurnDirection() != direction)
             {
                 this.setTurnDirection(direction);
