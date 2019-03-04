@@ -45,4 +45,9 @@ public interface Proxy
     {
         return false;
     }
+
+    default boolean isHonking()
+    {
+        return false;
+    }
 }

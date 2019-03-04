@@ -571,7 +571,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 PacketHandler.INSTANCE.sendToServer(new MessageAccelerating(acceleration));
             }
 
-            boolean horn = ClientProxy.KEY_HORN.isKeyDown();
+            boolean horn = VehicleMod.proxy.isHonking();
             this.setHorn(horn);
             PacketHandler.INSTANCE.sendToServer(new MessageHorn(horn));
 
@@ -582,12 +582,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 PacketHandler.INSTANCE.sendToServer(new MessageTurnDirection(direction));
             }
 
-            if(VehicleConfig.CLIENT.experimental.controllerSupport)
-            {
-                float targetTurnAngle = VehicleMod.proxy.getTargetTurnAngle(this, false);
-                this.setTargetTurnAngle(targetTurnAngle);
-                PacketHandler.INSTANCE.sendToServer(new MessageTurnAngle(targetTurnAngle));
-            }
+            float targetTurnAngle = VehicleMod.proxy.getTargetTurnAngle(this, false);
+            this.setTargetTurnAngle(targetTurnAngle);
+            PacketHandler.INSTANCE.sendToServer(new MessageTurnAngle(targetTurnAngle));
         }
     }
 

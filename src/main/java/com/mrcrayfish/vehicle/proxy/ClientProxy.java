@@ -376,4 +376,18 @@ public class ClientProxy implements Proxy
         }
         return Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
     }
+
+    @Override
+    public boolean isHonking()
+    {
+        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        {
+            Controller controller = ControllerEvents.controller;
+            if(controller != null && controller.isButtonPressed(10))
+            {
+                return true;
+            }
+        }
+        return ClientProxy.KEY_HORN.isKeyDown();
+    }
 }
