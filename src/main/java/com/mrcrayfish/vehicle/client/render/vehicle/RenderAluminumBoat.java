@@ -49,7 +49,7 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat
         if(index > 0)
         {
             offsetX += (index % 2) * 1F;
-            offsetZ += (index / 2) * 1.2F;
+            offsetZ += (index / 2F) * 1.2F;
         }
 
         GlStateManager.translate(offsetX, offsetY, offsetZ);

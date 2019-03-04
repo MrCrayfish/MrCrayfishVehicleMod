@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
@@ -14,8 +13,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
-
-import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish

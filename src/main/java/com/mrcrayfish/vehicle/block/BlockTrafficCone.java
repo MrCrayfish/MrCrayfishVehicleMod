@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -35,6 +36,6 @@ public class BlockTrafficCone extends BlockObject
     @Override
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
     {
-        super.addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BOX);
+        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BOX);
     }
 }

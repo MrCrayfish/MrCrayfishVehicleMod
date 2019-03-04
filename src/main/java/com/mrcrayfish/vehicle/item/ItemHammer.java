@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.item.Item;
 
 /**

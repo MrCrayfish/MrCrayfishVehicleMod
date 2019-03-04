@@ -25,7 +25,7 @@ public class QuadHelper
 	
 	public List<BakedQuad> createCuboid(Vec3d v1, Vec3d v2)
 	{
-		List<BakedQuad> quads = new ArrayList<BakedQuad>();
+		List<BakedQuad> quads = new ArrayList<>();
 		
 		float width = (float) (v2.x - v1.x) * 16F;
 		float height = (float) (v2.y - v1.y) * 16F;
@@ -78,7 +78,7 @@ public class QuadHelper
 	
 	public List<BakedQuad> createAngledCuboid(Vec3d v1, Vec3d v2, double heightOffset)
 	{
-		List<BakedQuad> quads = new ArrayList<BakedQuad>();
+		List<BakedQuad> quads = new ArrayList<>();
 		
 		float width = (float) (v2.x - v1.x) * 16F;
 		float height = (float) (v2.y - v1.y) * 16F;

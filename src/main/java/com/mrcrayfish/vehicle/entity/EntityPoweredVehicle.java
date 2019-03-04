@@ -1132,10 +1132,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         Entity entity = this.getControllingPassenger();
         if(entity instanceof EntityPlayer)
         {
-            if(((EntityPlayer) entity).isCreative())
-            {
-                return true;
-            }
+            return ((EntityPlayer) entity).isCreative();
         }
         return false;
     }

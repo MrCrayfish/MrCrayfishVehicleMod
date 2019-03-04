@@ -45,7 +45,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.input.Mouse;
@@ -93,7 +92,7 @@ public class EntityRaytracer
      * Scales and offsets for rendering the entities in crates
      */
     private static final Map<Class<? extends Entity>, Pair<Float, Float>> entityCrateScalesAndOffsets = new HashMap<>();
-    private static final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<Float, Float>(0.25F, 0.0F);
+    private static final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<>(0.25F, 0.0F);
 
     /**
      * Nearest common superclass shared by all raytraceable entity classes
@@ -910,7 +909,7 @@ public class EntityRaytracer
                 generateTriangles(model.getQuads(null, facing, 0L), matrix, triangles);
             }
         }
-        catch (Exception e) {}
+        catch (Exception ignored) {}
         return triangles;
     }
 
@@ -923,9 +922,8 @@ public class EntityRaytracer
      */
     private static void generateTriangles(List<BakedQuad> list, @Nullable Matrix4d matrix, List<TriangleRayTrace> triangles)
     {
-        for (int i = 0; i < list.size(); i++)
+        for(BakedQuad quad : list)
         {
-            BakedQuad quad = list.get(i);
             int size = quad.getFormat().getIntegerSize();
             int[] data = quad.getVertexData();
             // Two triangles that represent the BakedQuad
@@ -1333,7 +1331,7 @@ public class EntityRaytracer
         {
             for (Entry<RayTracePart, TriangleRayTraceList> entry : parts.entrySet())
             {
-                if (partsApplicable == null || (invalidateParts ? !partsApplicable.contains(entry.getKey()) : partsApplicable.contains(entry.getKey())))
+                if (partsApplicable == null || (invalidateParts != partsApplicable.contains(entry.getKey())))
                 {
                     RayTraceResultTriangle lookObjectPutative;
                     double distance;

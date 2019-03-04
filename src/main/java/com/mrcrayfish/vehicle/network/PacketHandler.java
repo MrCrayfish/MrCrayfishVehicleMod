@@ -14,7 +14,7 @@ public class PacketHandler
     {
         CLIENT,
         SERVER,
-        BOTH;
+        BOTH
     }
 
     public static void init()

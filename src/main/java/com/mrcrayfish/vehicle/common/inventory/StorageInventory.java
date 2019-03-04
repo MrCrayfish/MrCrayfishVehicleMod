@@ -66,15 +66,12 @@ public class StorageInventory extends InventoryBasic
                 else
                 {
                     int i;
-                    while(true)
+                    do
                     {
                         i = stack.getCount();
                         stack.setCount(this.storePartialItemStack(stack));
-                        if(stack.isEmpty() || stack.getCount() >= i)
-                        {
-                            break;
-                        }
                     }
+                    while(!stack.isEmpty() && stack.getCount() < i);
                     return stack.getCount() < i;
                 }
             }

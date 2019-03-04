@@ -1,11 +1,8 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -94,7 +91,7 @@ public class EntityGolfCart extends EntityLandVehicle implements EntityRaytracer
                 int index = this.getPassengers().indexOf(passenger);
                 if (index > 0)
                 {
-                    xOffset -= (index / 2) * 0.6875F;
+                    xOffset -= (index / 2F) * 0.6875F;
                     zOffset -= (index % 2) * 0.8F;
                 }
 

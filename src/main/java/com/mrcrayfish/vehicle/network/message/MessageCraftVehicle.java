@@ -7,7 +7,6 @@ import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemEngine;
-import com.mrcrayfish.vehicle.item.ItemWheel;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;

@@ -2,8 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;

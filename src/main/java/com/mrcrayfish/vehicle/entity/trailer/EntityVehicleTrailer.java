@@ -2,11 +2,8 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import net.minecraft.client.Minecraft;

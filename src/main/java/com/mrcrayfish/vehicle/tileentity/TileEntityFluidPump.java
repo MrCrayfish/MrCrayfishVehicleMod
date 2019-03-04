@@ -34,7 +34,7 @@ public class TileEntityFluidPump extends TileEntityFluidPipe
         private static final String LANG_KEY_CHAT_PREFIX = Reference.MOD_ID + ".chat.pump.power";
         private String langKeyChat;
 
-        private PowerMode(String langKeyChat)
+        PowerMode(String langKeyChat)
         {
             this.langKeyChat = langKeyChat;
         }

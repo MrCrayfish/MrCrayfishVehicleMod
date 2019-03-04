@@ -4,11 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -40,7 +38,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 
@@ -311,10 +308,7 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
         if(!stack.isEmpty() && stack.getItem() instanceof ItemDye)
         {
             EnumDyeColor dyeColor = EnumDyeColor.byDyeDamage(stack.getMetadata());
-            if(dyeColor == EnumDyeColor.WHITE)
-            {
-                return true;
-            }
+            return dyeColor == EnumDyeColor.WHITE;
         }
         return false;
     }

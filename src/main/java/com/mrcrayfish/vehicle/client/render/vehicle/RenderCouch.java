@@ -1,13 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.render.AbstractRenderLandVehicle;
-import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish

@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.resources.I18n;
@@ -12,7 +11,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.relauncher.Side;

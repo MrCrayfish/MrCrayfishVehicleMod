@@ -23,5 +23,5 @@ public interface Proxy
 
     default void openStorageWindow(int entityId, int windowId) {}
 
-    default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {};
+    default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {}
 }

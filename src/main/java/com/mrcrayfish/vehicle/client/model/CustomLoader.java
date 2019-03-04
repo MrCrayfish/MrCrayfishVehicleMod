@@ -41,7 +41,7 @@ public class CustomLoader implements ICustomModelLoader
 	}
 
 	@Override
-	public IModel loadModel(ResourceLocation resource) throws Exception
+	public IModel loadModel(ResourceLocation resource)
 	{
 		return BLOCK_MODELS.get(resource.getResourcePath().replace("models/item/", ""));
 	}

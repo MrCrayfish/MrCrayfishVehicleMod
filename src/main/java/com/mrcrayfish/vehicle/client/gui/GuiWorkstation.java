@@ -17,7 +17,6 @@ import com.mrcrayfish.vehicle.item.ItemWheel;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageCraftVehicle;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
-import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import com.mrcrayfish.vehicle.util.MouseHelper;
 import net.minecraft.client.Minecraft;
@@ -36,7 +35,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Loader;
@@ -48,7 +46,6 @@ import java.awt.*;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -265,7 +262,7 @@ public class GuiWorkstation extends GuiContainer
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException
+    protected void actionPerformed(GuiButton button)
     {
         if(button.id == 1)
         {

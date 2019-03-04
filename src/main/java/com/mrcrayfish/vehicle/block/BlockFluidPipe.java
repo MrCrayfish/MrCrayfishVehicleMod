@@ -285,7 +285,7 @@ public class BlockFluidPipe extends BlockObject
                 }
                 if (world.getBlockState(pos.offset(facing)).getBlock() != Blocks.LEVER && getCollisionFacing(state) != facing)
                 {
-                    return new ImmutablePair<AxisAlignedBB, EnumFacing>(boxes.get(i).offset(pos), facing);
+                    return new ImmutablePair<>(boxes.get(i).offset(pos), facing);
                 }
             }
         }

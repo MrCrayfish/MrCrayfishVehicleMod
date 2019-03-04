@@ -3,8 +3,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -51,7 +51,7 @@ public class RenderSeederTrailer extends AbstractRenderVehicle<EntitySeederTrail
                                 //double yOffset = Math.sin(Math.PI * (((layerIndex + 0.5) % (double) width) / (double) width)) * 0.1;
                                 //GlStateManager.translate(0, yOffset * ((double) layer / inventory.getSizeInventory()), 0);
                                 GlStateManager.translate(0, layer * 0.05, 0);
-                                GlStateManager.translate((layerIndex % width) * 0.75, 0, (layerIndex / width) * 0.5);
+                                GlStateManager.translate((layerIndex % width) * 0.75, 0, (float) (layerIndex / width) * 0.5);
                                 GlStateManager.translate(0.7 * (layer % 2), 0, 0);
                                 GlStateManager.rotate(90F, 1, 0, 0);
                                 GlStateManager.rotate(47F * index, 0, 0, 1);

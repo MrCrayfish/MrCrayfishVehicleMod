@@ -1,10 +1,8 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityBoat;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
@@ -116,7 +114,7 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
                 int index = this.getPassengers().indexOf(passenger);
                 if (index > 0)
                 {
-                    xOffset += (index / 2) * 1.2F;
+                    xOffset += (index / 2F) * 1.2F;
                     zOffset += (index % 2) * 1F;
                 }
             }

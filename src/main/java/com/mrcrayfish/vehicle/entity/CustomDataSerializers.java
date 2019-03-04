@@ -6,8 +6,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
 
-import java.io.IOException;
-
 /**
  * Author: MrCrayfish
  */
@@ -22,7 +20,7 @@ public class CustomDataSerializers
         }
 
         @Override
-        public EnumDyeColor read(PacketBuffer buf) throws IOException
+        public EnumDyeColor read(PacketBuffer buf)
         {
             return EnumDyeColor.byDyeDamage(buf.readInt());
         }

@@ -192,6 +192,6 @@ public abstract class EntityBoat extends EntityPoweredVehicle
 
     protected enum State
     {
-        ON_WATER, UNDER_WATER, IN_AIR, ON_LAND;
+        ON_WATER, UNDER_WATER, IN_AIR, ON_LAND
     }
 }

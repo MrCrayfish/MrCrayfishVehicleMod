@@ -418,10 +418,7 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
                 {
                     return true;
                 }
-                if(facing == blockFacing.rotateY())
-                {
-                    return true;
-                }
+                return facing == blockFacing.rotateY();
             }
             return false;
         }

@@ -74,6 +74,6 @@ public class StateHelper
         DOWN,
         LEFT,
         RIGHT,
-        NONE;
+        NONE
     }
 }
