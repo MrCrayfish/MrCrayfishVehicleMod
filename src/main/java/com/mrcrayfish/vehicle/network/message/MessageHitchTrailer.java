@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -67,7 +67,7 @@ public class MessageHitchTrailer implements IMessage, IMessageHandler<MessageHit
                         VehicleProperties properties = vehicle.getProperties();
                         Vec3d vehicleVec = vehicle.getPositionVector();
                         Vec3d towBarVec = properties.getTowBarPosition();
-                        towBarVec = new Vec3d(towBarVec.x, towBarVec.y, towBarVec.z + properties.getBodyPosition().getZ());
+                        towBarVec = new Vec3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + properties.getBodyPosition().getZ());
                         if(vehicle instanceof EntityLandVehicle)
                         {
                             EntityLandVehicle landVehicle = (EntityLandVehicle) vehicle;
