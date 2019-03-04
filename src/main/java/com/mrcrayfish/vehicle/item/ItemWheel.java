@@ -40,7 +40,7 @@ public class ItemWheel extends ItemPart implements SubItems, IDyeable
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
         WheelType type = WheelType.getType(stack.getMetadata());
-        tooltip.add(TextFormatting.BOLD.toString() + type.name());
+        tooltip.add(I18n.format("vehicle.wheel_type." + type.getId() + ".name"));
     }
 
     @Override
