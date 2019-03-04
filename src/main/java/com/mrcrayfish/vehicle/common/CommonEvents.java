@@ -215,7 +215,7 @@ public class CommonEvents
                         {
                             NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                             Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
-                            if(entity != null && entity instanceof EntityVehicle)
+                            if(entity instanceof EntityVehicle)
                             {
                                 NBTTagCompound tag = new NBTTagCompound();
                                 player.getDataManager().set(HELD_VEHICLE, tag);
@@ -227,7 +227,9 @@ public class CommonEvents
                                     heldVehicle.setVehicleTag(tag);
                                 }
 
+                                entity.fallDistance = 0.0F;
                                 entity.rotationYaw = (player.getRotationYawHead() + 90F) % 360.0F;
+
                                 jack.setVehicle((EntityVehicle) entity);
                                 if(jack.getJack() != null)
                                 {
@@ -258,7 +260,7 @@ public class CommonEvents
 
                     NBTTagCompound tagCompound = player.getDataManager().get(HELD_VEHICLE);
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, world);
-                    if(entity != null && entity instanceof EntityVehicle)
+                    if(entity instanceof EntityVehicle)
                     {
                         MinecraftServer server = world.getMinecraftServer();
                         if(server != null && server.getEntityFromUuid(entity.getUniqueID()) == null)
