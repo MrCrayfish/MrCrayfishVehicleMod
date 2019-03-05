@@ -39,6 +39,7 @@ public class PacketHandler
         registerMessage(MessageOpenStorage.class, Side.SERVER);
         registerMessage(MessageStorageWindow.class, Side.CLIENT);
         registerMessage(MessageDismount.class, Side.SERVER);
+        registerMessage(MessageTravelProperties.class, Side.SERVER);
     }
 
     private static void registerMessage(Class packet, Side side)

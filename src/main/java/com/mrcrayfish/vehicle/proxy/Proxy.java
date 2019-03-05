@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.proxy;
 
+import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,5 +56,20 @@ public interface Proxy
     default EntityPlane.FlapDirection getFlapDirection()
     {
         return EntityPlane.FlapDirection.NONE;
+    }
+
+    default EntityHelicopter.AltitudeChange getAltitudeChange()
+    {
+        return EntityHelicopter.AltitudeChange.NONE;
+    }
+
+    default float getTravelDirection(EntityHelicopter vehicle)
+    {
+        return 0F;
+    }
+
+    default float getTravelSpeed(EntityHelicopter helicopter)
+    {
+        return 0F;
     }
 }

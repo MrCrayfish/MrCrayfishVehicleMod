@@ -16,10 +16,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.entity.EntityPlane;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
@@ -407,5 +404,65 @@ public class ClientProxy implements Proxy
             }
         }
         return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
+    }
+
+    @Override
+    public EntityHelicopter.AltitudeChange getAltitudeChange()
+    {
+        boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
+        boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
+        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        {
+            Controller controller = ControllerEvents.controller;
+            if(controller != null)
+            {
+                flapUp |= controller.isButtonPressed(5);
+                flapDown |= controller.isButtonPressed(4);
+            }
+        }
+        return EntityHelicopter.AltitudeChange.fromInput(flapUp, flapDown);
+    }
+
+    @Override
+    public float getTravelDirection(EntityHelicopter vehicle)
+    {
+        float xAxis = ControllerEvents.controller.getXAxisValue();
+        float yAxis = ControllerEvents.controller.getYAxisValue();
+        if(xAxis != 0.0F || yAxis != 0.0F)
+        {
+            float angle = (float) Math.toDegrees(Math.atan2(-xAxis, yAxis)) + 180F;
+            return vehicle.rotationYaw + angle;
+        }
+
+        EntityPoweredVehicle.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
+        EntityPoweredVehicle.TurnDirection turnDirection = vehicle.getTurnDirection();
+        if(vehicle.getControllingPassenger() != null)
+        {
+            if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.FORWARD)
+            {
+                return vehicle.rotationYaw + turnDirection.getDir() * -45F;
+            }
+            else if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.REVERSE)
+            {
+                return vehicle.rotationYaw + 180F + turnDirection.getDir() * 45F;
+            }
+            else
+            {
+                return vehicle.rotationYaw + turnDirection.getDir() * -90F;
+            }
+        }
+        return vehicle.rotationYaw;
+    }
+
+    @Override
+    public float getTravelSpeed(EntityHelicopter helicopter)
+    {
+        float xAxis = ControllerEvents.controller.getXAxisValue();
+        float yAxis = ControllerEvents.controller.getYAxisValue();
+        if(xAxis != 0.0F || yAxis != 0.0F)
+        {
+            return (float) Math.min(1.0, Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)));
+        }
+        return helicopter.getAcceleration() != EntityPoweredVehicle.AccelerationDirection.NONE || helicopter.getTurnDirection() != EntityPoweredVehicle.TurnDirection.FORWARD ? 1.0F : 0.0F;
     }
 }
