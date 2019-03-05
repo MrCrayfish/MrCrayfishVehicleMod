@@ -145,7 +145,7 @@ public class ControllerEvents
                 int dir = controller.getXAxisValue() > 0.0F ? -1 : 1;
                 event.getMovementInput().rightKeyDown = dir < 0;
                 event.getMovementInput().leftKeyDown = dir > 0;
-                event.getMovementInput().moveStrafe += dir;
+                event.getMovementInput().moveStrafe = dir * Math.abs(controller.getXAxisValue());
             }
         }
     }
