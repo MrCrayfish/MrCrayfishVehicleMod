@@ -17,6 +17,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
@@ -389,5 +390,22 @@ public class ClientProxy implements Proxy
             }
         }
         return ClientProxy.KEY_HORN.isKeyDown();
+    }
+
+    @Override
+    public EntityPlane.FlapDirection getFlapDirection()
+    {
+        boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
+        boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
+        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        {
+            Controller controller = ControllerEvents.controller;
+            if(controller != null)
+            {
+                flapUp |= controller.isButtonPressed(5);
+                flapDown |= controller.isButtonPressed(4);
+            }
+        }
+        return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
     }
 }

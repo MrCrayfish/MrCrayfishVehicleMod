@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageFlaps;
 import net.minecraft.client.Minecraft;
@@ -73,10 +74,7 @@ public abstract class EntityPlane extends EntityPoweredVehicle
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
-            boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
-            boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
-
-            FlapDirection flapDirection = FlapDirection.fromInput(flapUp, flapDown);
+            FlapDirection flapDirection = VehicleMod.proxy.getFlapDirection();
             if(this.getFlapDirection() != flapDirection)
             {
                 this.setFlapDirection(flapDirection);

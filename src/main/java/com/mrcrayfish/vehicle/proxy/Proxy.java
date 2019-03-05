@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.proxy;
 
+import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -49,5 +50,10 @@ public interface Proxy
     default boolean isHonking()
     {
         return false;
+    }
+
+    default EntityPlane.FlapDirection getFlapDirection()
+    {
+        return EntityPlane.FlapDirection.NONE;
     }
 }
