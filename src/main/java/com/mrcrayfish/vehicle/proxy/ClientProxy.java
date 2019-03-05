@@ -278,7 +278,7 @@ public class ClientProxy implements Proxy
             {
                 return EntityPoweredVehicle.AccelerationDirection.FORWARD;
             }
-            if(ControllerEvents.controller.isButtonPressed(2))
+            if(ControllerEvents.controller.isButtonPressed(0))
             {
                 return EntityPoweredVehicle.AccelerationDirection.REVERSE;
             }

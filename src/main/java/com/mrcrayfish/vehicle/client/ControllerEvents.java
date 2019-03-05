@@ -70,7 +70,7 @@ public class ControllerEvents
             {
                 if(Controllers.isEventButton() && Controllers.getEventButtonState())
                 {
-                    if(Controllers.getEventControlIndex() == 0) // Square
+                    if(Controllers.getEventControlIndex() == 2) // Square
                     {
                         if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
                         {
@@ -113,6 +113,14 @@ public class ControllerEvents
                         else
                         {
                             PacketHandler.INSTANCE.sendToServer(new MessageDismount());
+                        }
+                    }
+                    else if(Controllers.getEventControlIndex() == 11) // L3
+                    {
+                        if(player.getRidingEntity() instanceof EntityVehicle)
+                        {
+                            player.rotationYaw = player.getRidingEntity().rotationYaw;
+                            player.rotationPitch = 15F;
                         }
                     }
                 }
