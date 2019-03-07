@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,10 +24,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SPacketAnimation;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.Constants;
@@ -97,6 +95,11 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         towBar = new ItemStack(ModItems.TOW_BAR);
         wheel = new ItemStack(ModItems.WHEEL, 1, WheelType.STANDARD.ordinal());
     }
+
+    /* Overridden to prevent odd step sound when driving vehicles. Ain't no subclasses getting
+     * the ability to override this. */
+    @Override
+    protected final void playStepSound(BlockPos pos, Block blockIn) {}
 
     @Override
     public AxisAlignedBB getRenderBoundingBox()

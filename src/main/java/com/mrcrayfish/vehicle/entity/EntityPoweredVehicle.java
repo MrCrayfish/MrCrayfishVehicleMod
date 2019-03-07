@@ -718,9 +718,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         super.applyYawToEntity(passenger);
     }
 
-    @Override
-    protected void playStepSound(BlockPos pos, Block blockIn) {}
-
     public boolean isMoving()
     {
         return this.currentSpeed != 0;
