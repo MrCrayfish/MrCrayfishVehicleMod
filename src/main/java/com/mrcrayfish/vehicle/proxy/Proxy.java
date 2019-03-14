@@ -18,6 +18,8 @@ public interface Proxy
 
     default void init() {}
 
+    default void postInit() {}
+
     default void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle) {}
 
     default void openVehicleEditWindow(int entityId, int windowId) {}

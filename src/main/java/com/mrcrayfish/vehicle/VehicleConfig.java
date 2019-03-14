@@ -68,11 +68,6 @@ public class VehicleConfig
         @Config.Comment("Configuration for display related options")
         @Config.LangKey(Reference.MOD_ID + ".config.client.display")
         public Display display = new Display();
-
-        @Config.Name("Experimental")
-        @Config.Comment("Configuration for experimental related options")
-        @Config.LangKey(Reference.MOD_ID + ".config.client.experimental")
-        public Experimental experimental = new Experimental();
     }
 
     public static class Interaction
@@ -113,15 +108,6 @@ public class VehicleConfig
         @Config.Comment("If true, the raytracer will be reloaded each tick.")
         @Config.LangKey(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload")
         public boolean reloadRaytracerEachTick = false;
-    }
-
-    public static class Experimental
-    {
-        @Config.Name("Controller Support")
-        @Config.Comment("Enables the ability to use a controller to drive vehicles. Only PS4 Controllers are supported as of right now.")
-        @Config.LangKey(Reference.MOD_ID + ".config.client.experimental.controller_support")
-        @Config.RequiresMcRestart
-        public boolean controllerSupport = false;
     }
 
     @SubscribeEvent

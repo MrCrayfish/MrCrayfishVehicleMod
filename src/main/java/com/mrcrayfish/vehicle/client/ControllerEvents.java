@@ -1,127 +1,145 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.controllable.Buttons;
+import com.mrcrayfish.controllable.client.Action;
+import com.mrcrayfish.controllable.event.AvailableActionsEvent;
+import com.mrcrayfish.controllable.event.ControllerEvent;
+import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;
 import com.mrcrayfish.vehicle.VehicleConfig;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.network.message.MessageDismount;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumHand;
-import net.minecraftforge.client.event.InputUpdateEvent;
-import net.minecraftforge.client.event.RenderWorldLastEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Controller;
-import org.lwjgl.input.Controllers;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+@SideOnly(Side.CLIENT)
 public class ControllerEvents
 {
-    public static Controller controller = null;
-
     @SubscribeEvent
-    public static void onRender(RenderWorldLastEvent event)
+    public void onButtonInput(ControllerEvent.ButtonInput event)
     {
-        if(!VehicleConfig.CLIENT.experimental.controllerSupport || controller == null)
-            return;
-
-        /* Updates the values in the controller */
-        controller.poll();
+        if(event.getState())
+        {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            switch(event.getButton())
+            {
+                case Buttons.A:
+                    if(player.getRidingEntity() instanceof EntityPoweredVehicle)
+                    {
+                        event.setCanceled(true);
+                    }
+                    break;
+                case Buttons.X:
+                    if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
+                    {
+                        EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+                        if(vehicle.canTowTrailer())
+                        {
+                            PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                        }
+                        event.setCanceled(true);
+                    }
+                    break;
+                case Buttons.TOUCH_PAD:
+                    if(player.getRidingEntity() instanceof EntityVehicle)
+                    {
+                        player.rotationYaw = player.getRidingEntity().rotationYaw;
+                        player.rotationPitch = 15F;
+                        event.setCanceled(true);
+                    }
+                    break;
+                case Buttons.RIGHT_BUMPER:
+                case Buttons.LEFT_BUMPER:
+                    if(player.getRidingEntity() instanceof EntityVehicle)
+                    {
+                        event.setCanceled(true);
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
     @SubscribeEvent
-    public static void onTick(TickEvent.RenderTickEvent event)
+    public void onControllerMove(ControllerEvent.Move event)
     {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player == null)
-            return;
-
-        if(!VehicleConfig.CLIENT.experimental.controllerSupport || controller == null)
-            return;
-
-        if(event.phase == TickEvent.Phase.END)
-            return;
-
-        /* Handles rotating the yaw of player */
-        if(controller.getZAxisValue() != 0.0F)
+        if(player.getRidingEntity() instanceof EntityVehicle)
         {
-            player.rotationYaw += 2.0F * (controller.getZAxisValue() > 0.0F ? 1 : -1) * Math.abs(controller.getZAxisValue());
+            event.setCanceled(true);
         }
+    }
 
-        /* Handles rotating the pitch of player */
-        if(controller.getRZAxisValue() != 0.0F)
+    @SubscribeEvent
+    public void onAvailableActions(AvailableActionsEvent event)
+    {
+        Map<Integer, Action> availableActions = event.getActions();
+        Minecraft mc = Minecraft.getMinecraft();
+        EntityPlayer player = mc.player;
+        if(player.getRidingEntity() instanceof EntityVehicle && mc.currentScreen == null)
         {
-            player.rotationPitch += 0.75F * (controller.getRZAxisValue() > 0.0F ? 1 : -1) * Math.abs(controller.getRZAxisValue());
-        }
+            availableActions.remove(Buttons.RIGHT_BUMPER);
+            availableActions.remove(Buttons.LEFT_BUMPER);
+            availableActions.remove(Buttons.RIGHT_TRIGGER);
+            availableActions.remove(Buttons.LEFT_TRIGGER);
+            availableActions.remove(Buttons.LEFT_THUMB_STICK);
+            availableActions.remove(Buttons.X);
+            availableActions.remove(Buttons.DPAD_DOWN);
 
-        while(Controllers.next())
-        {
-            if(Controllers.getEventSource().equals(controller))
+            availableActions.put(Buttons.LEFT_THUMB_STICK, new Action("Exit Vehicle", Action.Side.RIGHT));
+            availableActions.put(Buttons.A, new Action("Accelerate", Action.Side.LEFT));
+
+            EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+
+            if(vehicle instanceof EntityPoweredVehicle)
             {
-                if(Controllers.isEventButton() && Controllers.getEventButtonState())
+                if(((EntityPoweredVehicle) vehicle).getSpeed() > 0.05F)
                 {
-                    if(Controllers.getEventControlIndex() == 2) // Square
+                    availableActions.put(Buttons.B, new Action("Brake", Action.Side.LEFT));
+                }
+                else
+                {
+                    availableActions.put(Buttons.B, new Action("Reverse", Action.Side.LEFT));
+                }
+            }
+
+            if(vehicle instanceof EntityLandVehicle)
+            {
+                availableActions.put(Buttons.RIGHT_BUMPER, new Action("Drift", Action.Side.RIGHT));
+            }
+            else if(vehicle instanceof EntityPlane)
+            {
+                availableActions.put(Buttons.RIGHT_BUMPER, new Action("Pull Up", Action.Side.RIGHT));
+                availableActions.put(Buttons.LEFT_BUMPER, new Action("Pull Down", Action.Side.RIGHT));
+            }
+            else if(vehicle instanceof EntityHelicopter)
+            {
+                availableActions.put(Buttons.RIGHT_BUMPER, new Action("Increase Elevation", Action.Side.RIGHT));
+                availableActions.put(Buttons.LEFT_BUMPER, new Action("Decreased Elevation", Action.Side.RIGHT));
+            }
+        }
+        else
+        {
+            if(!player.isRiding())
+            {
+                if(mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.ENTITY)
+                {
+                    Entity entity = mc.objectMouseOver.entityHit;
+                    if(entity instanceof EntityVehicle)
                     {
-                        if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
-                        {
-                            EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
-                            if(vehicle.canTowTrailer())
-                            {
-                                PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
-                            }
-                        }
-                    }
-                    else if(Controllers.getEventControlIndex() == 13) // Touch Pad
-                    {
-                        Minecraft.getMinecraft().gameSettings.thirdPersonView++;
-                        if(Minecraft.getMinecraft().gameSettings.thirdPersonView > 2)
-                        {
-                            Minecraft.getMinecraft().gameSettings.thirdPersonView = 0;
-                        }
-                    }
-                    else if(Controllers.getEventControlIndex() == 3) // Triangle
-                    {
-                        if(!player.isRiding())
-                        {
-                            List<EntityPoweredVehicle> vehicles = Minecraft.getMinecraft().world.getEntitiesWithinAABB(EntityPoweredVehicle.class, player.getEntityBoundingBox().grow(1.0, 0.0, 1.0));
-                            Entity closestVehicle = null;
-                            float closestDistance = -1.0F;
-                            for(Entity vehicle : vehicles)
-                            {
-                                float distance = vehicle.getDistance(player);
-                                if(closestDistance == -1.0F || distance < closestDistance)
-                                {
-                                    closestDistance = distance;
-                                    closestVehicle = vehicle;
-                                }
-                            }
-                            if(closestVehicle != null)
-                            {
-                                Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, closestVehicle, EnumHand.MAIN_HAND);
-                            }
-                        }
-                        else
-                        {
-                            PacketHandler.INSTANCE.sendToServer(new MessageDismount());
-                        }
-                    }
-                    else if(Controllers.getEventControlIndex() == 11) // L3
-                    {
-                        if(player.getRidingEntity() instanceof EntityVehicle)
-                        {
-                            player.rotationYaw = player.getRidingEntity().rotationYaw;
-                            player.rotationPitch = 15F;
-                        }
+                        availableActions.put(Buttons.LEFT_TRIGGER, new Action("Ride Vehicle", Action.Side.RIGHT));
                     }
                 }
             }
@@ -129,32 +147,30 @@ public class ControllerEvents
     }
 
     @SubscribeEvent
-    public static void onInputUpdate(InputUpdateEvent event)
+    public void onRenderPlayerPreview(RenderPlayerPreviewEvent event)
     {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player == null)
-            return;
-
-        if(!VehicleConfig.CLIENT.experimental.controllerSupport || controller == null)
-            return;
-
-        if(Minecraft.getMinecraft().currentScreen == null && !(player.getRidingEntity() instanceof EntityVehicle))
+        if(player.getRidingEntity() instanceof EntityVehicle)
         {
-            if(controller.getYAxisValue() != 0.0F)
-            {
-                int dir = controller.getYAxisValue() > 0.0F ? -1 : 1;
-                event.getMovementInput().forwardKeyDown = dir > 0;
-                event.getMovementInput().backKeyDown = dir < 0;
-                event.getMovementInput().moveForward = dir * Math.abs(controller.getYAxisValue());
-            }
+            event.setCanceled(true);
+        }
+    }
 
-            if(controller.getXAxisValue() != 0.0F)
+    private EntityPoweredVehicle getClosestVehicle()
+    {
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        List<EntityPoweredVehicle> vehicles = Minecraft.getMinecraft().world.getEntitiesWithinAABB(EntityPoweredVehicle.class, player.getEntityBoundingBox().grow(1.0, 0.0, 1.0));
+        EntityPoweredVehicle closestVehicle = null;
+        float closestDistance = -1.0F;
+        for(EntityPoweredVehicle vehicle : vehicles)
+        {
+            float distance = vehicle.getDistance(player);
+            if(closestDistance == -1.0F || distance < closestDistance)
             {
-                int dir = controller.getXAxisValue() > 0.0F ? -1 : 1;
-                event.getMovementInput().rightKeyDown = dir < 0;
-                event.getMovementInput().leftKeyDown = dir > 0;
-                event.getMovementInput().moveStrafe = dir * Math.abs(controller.getXAxisValue());
+                closestDistance = distance;
+                closestVehicle = vehicle;
             }
         }
+        return closestVehicle;
     }
 }

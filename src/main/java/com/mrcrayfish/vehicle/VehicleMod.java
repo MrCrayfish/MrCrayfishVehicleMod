@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle;
 
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.client.ControllerEvents;
 import com.mrcrayfish.vehicle.client.gui.GuiHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
@@ -30,8 +31,7 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 
@@ -94,6 +94,12 @@ public class VehicleMod
     {
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
         proxy.init();
+    }
+
+    @Mod.EventHandler
+    public void onPostInit(FMLPostInitializationEvent event)
+    {
+        proxy.postInit();
     }
 
     private void registerVehicles()

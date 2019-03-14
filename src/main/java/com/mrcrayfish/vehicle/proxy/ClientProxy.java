@@ -1,5 +1,8 @@
 package com.mrcrayfish.vehicle.proxy;
 
+import com.mrcrayfish.controllable.Buttons;
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.Controller;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.*;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
@@ -55,9 +58,6 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Controller;
-import org.lwjgl.input.Controllers;
 import org.lwjgl.input.Keyboard;
 
 /**
@@ -67,6 +67,8 @@ public class ClientProxy implements Proxy
 {
     public static final KeyBinding KEY_HORN = new KeyBinding("key.horn", Keyboard.KEY_H, "key.categories.vehicle");
 
+    private boolean controllableLoaded = false;
+    
     @Override
     public void preInit()
     {
@@ -146,39 +148,15 @@ public class ClientProxy implements Proxy
             FluidUtils.clearCacheFluidColor();
             EntityRaytracer.clearDataForReregistration();
         });
-
-        this.setupController();
     }
 
-    private void setupController()
+    @Override
+    public void postInit()
     {
-        if(!VehicleConfig.CLIENT.experimental.controllerSupport)
-            return;
-
-        try
+        if(Loader.isModLoaded("controllable"))
         {
-            Controllers.create();
-        }
-        catch(LWJGLException e)
-        {
-            e.printStackTrace();
-        }
-
-        Controllers.poll();
-
-        if(Controllers.getControllerCount() > 0)
-        {
-            for(int i = 0; i < Controllers.getControllerCount(); i++)
-            {
-                Controller controller = Controllers.getController(i);
-                String name = controller.getName();
-                /* Wireless Controller is the name of PS4 Controller and it should have 14 buttons */
-                if("Wireless Controller".equals(name) && controller.getButtonCount() == 14)
-                {
-                    ControllerEvents.controller = controller;
-                    break;
-                }
-            }
+            controllableLoaded = true;
+            MinecraftForge.EVENT_BUS.register(new ControllerEvents());
         }
     }
 
@@ -270,15 +248,19 @@ public class ClientProxy implements Proxy
     @Override
     public EntityPoweredVehicle.AccelerationDirection getAccelerationDirection(EntityLivingBase entity)
     {
-        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        if(controllableLoaded)
         {
-            if(ControllerEvents.controller.isButtonPressed(1))
+            Controller controller = Controllable.getController();
+            if(controller != null)
             {
-                return EntityPoweredVehicle.AccelerationDirection.FORWARD;
-            }
-            if(ControllerEvents.controller.isButtonPressed(0))
-            {
-                return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+                if(controller.isButtonPressed(Buttons.A))
+                {
+                    return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+                }
+                if(controller.isButtonPressed(Buttons.B))
+                {
+                    return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+                }
             }
         }
         return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
@@ -287,23 +269,27 @@ public class ClientProxy implements Proxy
     @Override
     public EntityPoweredVehicle.TurnDirection getTurnDirection(EntityLivingBase entity)
     {
-        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        if(controllableLoaded)
         {
-            if(ControllerEvents.controller.getXAxisValue() > 0.0F)
+            Controller controller = Controllable.getController();
+            if(controller != null)
             {
-                return EntityPoweredVehicle.TurnDirection.RIGHT;
-            }
-            if(ControllerEvents.controller.getXAxisValue() < 0.0F)
-            {
-                return EntityPoweredVehicle.TurnDirection.LEFT;
-            }
-            if(ControllerEvents.controller.getPovX() > 0.0F)
-            {
-                return EntityPoweredVehicle.TurnDirection.RIGHT;
-            }
-            if(ControllerEvents.controller.getPovX() < 0.0F)
-            {
-                return EntityPoweredVehicle.TurnDirection.LEFT;
+                if(controller.getLThumbStickXValue() > 0.0F)
+                {
+                    return EntityPoweredVehicle.TurnDirection.RIGHT;
+                }
+                if(controller.getLThumbStickXValue() < 0.0F)
+                {
+                    return EntityPoweredVehicle.TurnDirection.LEFT;
+                }
+                if(controller.isButtonPressed(Buttons.DPAD_RIGHT))
+                {
+                    return EntityPoweredVehicle.TurnDirection.RIGHT;
+                }
+                if(controller.isButtonPressed(Buttons.DPAD_LEFT))
+                {
+                    return EntityPoweredVehicle.TurnDirection.LEFT;
+                }
             }
         }
         if(entity.moveStrafing < 0)
@@ -323,18 +309,21 @@ public class ClientProxy implements Proxy
         EntityPoweredVehicle.TurnDirection direction = vehicle.getTurnDirection();
         if(vehicle.getControllingPassenger() != null)
         {
-            if(VehicleConfig.CLIENT.experimental.controllerSupport)
+            if(controllableLoaded)
             {
-                Controller controller = ControllerEvents.controller;
-                float turnNormal = controller.getXAxisValue() != 0.0F ? controller.getXAxisValue() : controller.getPovX();
-                if(turnNormal != 0.0F)
+                Controller controller = Controllable.getController();
+                if(controller != null)
                 {
-                    float newTurnAngle = vehicle.turnAngle + ((vehicle.getMaxTurnAngle() * -turnNormal) - vehicle.turnAngle) * 0.15F;
-                    if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                    float turnNormal = controller.getLThumbStickXValue() != 0.0F ? controller.getLThumbStickXValue() : controller.getDpadXValue();
+                    if(turnNormal != 0.0F)
                     {
-                        return vehicle.getMaxTurnAngle() * direction.getDir();
+                        float newTurnAngle = vehicle.turnAngle + ((vehicle.getMaxTurnAngle() * -turnNormal) - vehicle.turnAngle) * 0.15F;
+                        if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                        {
+                            return vehicle.getMaxTurnAngle() * direction.getDir();
+                        }
+                        return newTurnAngle;
                     }
-                    return newTurnAngle;
                 }
             }
 
@@ -364,12 +353,15 @@ public class ClientProxy implements Proxy
     @Override
     public boolean isDrifting()
     {
-        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        if(controllableLoaded)
         {
-            Controller controller = ControllerEvents.controller;
-            if(controller != null && controller.isButtonPressed(5))
+            Controller controller = Controllable.getController();
+            if(controller != null)
             {
-                return true;
+                if(controller.isButtonPressed(Buttons.RIGHT_BUMPER))
+                {
+                    return true;
+                }
             }
         }
         return Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
@@ -378,12 +370,15 @@ public class ClientProxy implements Proxy
     @Override
     public boolean isHonking()
     {
-        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        if(controllableLoaded)
         {
-            Controller controller = ControllerEvents.controller;
-            if(controller != null && controller.isButtonPressed(10))
+            Controller controller = Controllable.getController();
+            if(controller != null)
             {
-                return true;
+                if(controller.isButtonPressed(Buttons.RIGHT_THUMB_STICK))
+                {
+                    return true;
+                }
             }
         }
         return ClientProxy.KEY_HORN.isKeyDown();
@@ -394,13 +389,13 @@ public class ClientProxy implements Proxy
     {
         boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
         boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
-        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        if(controllableLoaded)
         {
-            Controller controller = ControllerEvents.controller;
+            Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.isButtonPressed(5);
-                flapDown |= controller.isButtonPressed(4);
+                flapUp |= controller.isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.isButtonPressed(Buttons.LEFT_BUMPER);
             }
         }
         return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
@@ -411,13 +406,13 @@ public class ClientProxy implements Proxy
     {
         boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
         boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
-        if(VehicleConfig.CLIENT.experimental.controllerSupport)
+        if(controllableLoaded)
         {
-            Controller controller = ControllerEvents.controller;
+            Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.isButtonPressed(5);
-                flapDown |= controller.isButtonPressed(4);
+                flapUp |= controller.isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.isButtonPressed(Buttons.LEFT_BUMPER);
             }
         }
         return EntityHelicopter.AltitudeChange.fromInput(flapUp, flapDown);
@@ -426,12 +421,19 @@ public class ClientProxy implements Proxy
     @Override
     public float getTravelDirection(EntityHelicopter vehicle)
     {
-        float xAxis = ControllerEvents.controller.getXAxisValue();
-        float yAxis = ControllerEvents.controller.getYAxisValue();
-        if(xAxis != 0.0F || yAxis != 0.0F)
+        if(controllableLoaded)
         {
-            float angle = (float) Math.toDegrees(Math.atan2(-xAxis, yAxis)) + 180F;
-            return vehicle.rotationYaw + angle;
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                float xAxis = controller.getLThumbStickXValue();
+                float yAxis = controller.getLThumbStickYValue();
+                if(xAxis != 0.0F || yAxis != 0.0F)
+                {
+                    float angle = (float) Math.toDegrees(Math.atan2(-xAxis, yAxis)) + 180F;
+                    return vehicle.rotationYaw + angle;
+                }
+            }
         }
 
         EntityPoweredVehicle.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
@@ -457,11 +459,18 @@ public class ClientProxy implements Proxy
     @Override
     public float getTravelSpeed(EntityHelicopter helicopter)
     {
-        float xAxis = ControllerEvents.controller.getXAxisValue();
-        float yAxis = ControllerEvents.controller.getYAxisValue();
-        if(xAxis != 0.0F || yAxis != 0.0F)
+        if(controllableLoaded)
         {
-            return (float) Math.min(1.0, Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)));
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                float xAxis = controller.getLThumbStickXValue();
+                float yAxis = controller.getLThumbStickYValue();
+                if(xAxis != 0.0F || yAxis != 0.0F)
+                {
+                    return (float) Math.min(1.0, Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)));
+                }
+            }
         }
         return helicopter.getAcceleration() != EntityPoweredVehicle.AccelerationDirection.NONE || helicopter.getTurnDirection() != EntityPoweredVehicle.TurnDirection.FORWARD ? 1.0F : 0.0F;
     }
