@@ -1,13 +1,12 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mrcrayfish.controllable.Buttons;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;
 import com.mrcrayfish.vehicle.VehicleConfig;
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
@@ -21,7 +20,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Mouse;
 
-import java.util.List;
 import java.util.Map;
 
 /**

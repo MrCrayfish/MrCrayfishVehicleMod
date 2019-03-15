@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import com.mrcrayfish.controllable.Buttons;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.Controllable;
-import com.mrcrayfish.controllable.Controller;
+import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.*;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
