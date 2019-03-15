@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
@@ -18,6 +19,7 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageFuelVehicle;
 import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
+import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -167,8 +169,7 @@ public class EntityRaytracer
         for (EnumHand hand : EnumHand.values())
         {
             ItemStack stack = Minecraft.getMinecraft().player.getHeldItem(hand);
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan
-                    && Mouse.isButtonDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100))
+            if (!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan && ControllerEvents.isRightClicking())
             {
                 Entity entity = rayTraceResult.entityHit;
                 if (entity instanceof EntityPoweredVehicle)
@@ -1128,28 +1129,40 @@ public class EntityRaytracer
      * @param event mouse event
      */
     @SubscribeEvent
-    public static void raytraceEntities(MouseEvent event)
+    public static void onMouseEvent(MouseEvent event)
     {
         // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
         boolean rightClick = Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100 == event.getButton();
         if ((!rightClick && (!VehicleConfig.CLIENT.interaction.enabledLeftClick
                 || Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode() + 100 != event.getButton()))
-                || !event.isButtonstate() || entityRaytraceSuperclass == null)
+                || !event.isButtonstate())
         {
             return;
         }
-        RayTraceResultRotated result = raytraceEntities(rightClick);
-        if (result != null)
+        if (performRayTrace(rightClick))
         {
             // Cancel click
             event.setCanceled(true);
+        }
+    }
+
+    public static boolean performRayTrace(boolean rightClick)
+    {
+        if(entityRaytraceSuperclass == null)
+            return false;
+
+        RayTraceResultRotated result = raytraceEntities(rightClick);
+        if (result != null)
+        {
             continuousInteractionObject = result.performContinuousInteraction();
             if (continuousInteractionObject != null)
             {
                 continuousInteraction = result;
                 continuousInteractionTickCounter = 1;
             }
+            return true;
         }
+        return false;
     }
 
     /**

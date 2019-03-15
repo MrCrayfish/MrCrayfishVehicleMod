@@ -67,7 +67,7 @@ public class ClientProxy implements Proxy
 {
     public static final KeyBinding KEY_HORN = new KeyBinding("key.horn", Keyboard.KEY_H, "key.categories.vehicle");
 
-    private boolean controllableLoaded = false;
+    public static boolean controllableLoaded = false;
     
     @Override
     public void preInit()
@@ -253,14 +253,26 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                if(controller.isButtonPressed(Buttons.A))
+                if(VehicleConfig.CLIENT.controller.useTriggers)
+                {
+                    if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() == 0.0F)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+                    }
+                    else if(controller.getLTriggerValue() != 0.0F && controller.getRTriggerValue() == 0.0F)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+                    }
+                }
+                else if(controller.getRawController().isButtonPressed(Buttons.A))
                 {
                     return EntityPoweredVehicle.AccelerationDirection.FORWARD;
                 }
-                if(controller.isButtonPressed(Buttons.B))
+                else if(controller.getRawController().isButtonPressed(Buttons.B))
                 {
                     return EntityPoweredVehicle.AccelerationDirection.REVERSE;
                 }
+
             }
         }
         return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
@@ -282,11 +294,11 @@ public class ClientProxy implements Proxy
                 {
                     return EntityPoweredVehicle.TurnDirection.LEFT;
                 }
-                if(controller.isButtonPressed(Buttons.DPAD_RIGHT))
+                if(controller.getDpadXValue() == 1.0F)
                 {
                     return EntityPoweredVehicle.TurnDirection.RIGHT;
                 }
-                if(controller.isButtonPressed(Buttons.DPAD_LEFT))
+                if(controller.getDpadXValue() == -1.0F)
                 {
                     return EntityPoweredVehicle.TurnDirection.LEFT;
                 }
@@ -358,7 +370,7 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                if(controller.isButtonPressed(Buttons.RIGHT_BUMPER))
+                if(controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER))
                 {
                     return true;
                 }
@@ -394,8 +406,8 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.isButtonPressed(Buttons.RIGHT_BUMPER);
-                flapDown |= controller.isButtonPressed(Buttons.LEFT_BUMPER);
+                flapUp |= controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.getRawController().isButtonPressed(Buttons.LEFT_BUMPER);
             }
         }
         return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
@@ -411,8 +423,8 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.isButtonPressed(Buttons.RIGHT_BUMPER);
-                flapDown |= controller.isButtonPressed(Buttons.LEFT_BUMPER);
+                flapUp |= controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.getRawController().isButtonPressed(Buttons.LEFT_BUMPER);
             }
         }
         return EntityHelicopter.AltitudeChange.fromInput(flapUp, flapDown);
@@ -473,5 +485,27 @@ public class ClientProxy implements Proxy
             }
         }
         return helicopter.getAcceleration() != EntityPoweredVehicle.AccelerationDirection.NONE || helicopter.getTurnDirection() != EntityPoweredVehicle.TurnDirection.FORWARD ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public float getPower(EntityPoweredVehicle vehicle)
+    {
+        if(controllableLoaded && VehicleConfig.CLIENT.controller.useTriggers)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                EntityPoweredVehicle.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
+                if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.FORWARD)
+                {
+                    return controller.getRTriggerValue();
+                }
+                else if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.REVERSE)
+                {
+                    return controller.getLTriggerValue();
+                }
+            }
+        }
+        return 1.0F;
     }
 }

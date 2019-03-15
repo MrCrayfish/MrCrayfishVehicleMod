@@ -65,6 +65,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     protected static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> POWER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Float> TARGET_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
@@ -156,6 +157,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(CURRENT_SPEED, 0F);
         this.dataManager.register(MAX_SPEED, 10F);
         this.dataManager.register(ACCELERATION_SPEED, 0.5F);
+        this.dataManager.register(POWER, 1.0F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.dataManager.register(TARGET_TURN_ANGLE, 0F);
         this.dataManager.register(TURN_SENSITIVITY, 6);
@@ -447,7 +449,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 {
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
-                        float maxSpeed = this.getActualMaxSpeed() * wheelModifier;
+                        float maxSpeed = this.getActualMaxSpeed() * wheelModifier * this.getPower();
                         if(this.currentSpeed < maxSpeed)
                         {
                             this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
@@ -467,7 +469,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 {
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
-                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier;
+                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier * this.getPower();;
                         if(this.currentSpeed > maxSpeed)
                         {
                             this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
@@ -564,6 +566,13 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
+            float power = VehicleMod.proxy.getPower(this);
+            if(power != this.getPower())
+            {
+                this.setPower(power);
+                PacketHandler.INSTANCE.sendToServer(new MessagePower(power));
+            }
+
             AccelerationDirection acceleration = VehicleMod.proxy.getAccelerationDirection(entity);
             if(this.getAcceleration() != acceleration)
             {
@@ -792,6 +801,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public AccelerationDirection getAcceleration()
     {
         return AccelerationDirection.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
+    }
+
+    public void setPower(float power)
+    {
+        this.dataManager.set(POWER, power);
+    }
+
+    public float getPower()
+    {
+        return this.dataManager.get(POWER);
     }
 
     public void setTurnSensitivity(int sensitivity)

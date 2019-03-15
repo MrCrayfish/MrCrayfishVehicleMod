@@ -67,11 +67,16 @@ public interface Proxy
 
     default float getTravelDirection(EntityHelicopter vehicle)
     {
-        return 0F;
+        return 0.0F;
     }
 
     default float getTravelSpeed(EntityHelicopter helicopter)
     {
-        return 0F;
+        return 0.0F;
+    }
+
+    default float getPower(EntityPoweredVehicle vehicle)
+    {
+        return 1.0F;
     }
 }

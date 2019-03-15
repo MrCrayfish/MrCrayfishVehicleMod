@@ -38,8 +38,8 @@ public class PacketHandler
         registerMessage(MessageSyncInventory.class, Side.CLIENT);
         registerMessage(MessageOpenStorage.class, Side.SERVER);
         registerMessage(MessageStorageWindow.class, Side.CLIENT);
-        registerMessage(MessageDismount.class, Side.SERVER);
         registerMessage(MessageTravelProperties.class, Side.SERVER);
+        registerMessage(MessagePower.class, Side.SERVER);
     }
 
     private static void registerMessage(Class packet, Side side)

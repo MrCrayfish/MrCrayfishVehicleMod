@@ -1,14 +1,17 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.controllable.Buttons;
+import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
+import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +19,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Mouse;
 
 import java.util.List;
 import java.util.Map;
@@ -32,6 +36,9 @@ public class ControllerEvents
         if(event.getState())
         {
             EntityPlayer player = Minecraft.getMinecraft().player;
+            if(player == null)
+                return;
+
             switch(event.getButton())
             {
                 case Buttons.A:
@@ -62,6 +69,17 @@ public class ControllerEvents
                 case Buttons.RIGHT_BUMPER:
                 case Buttons.LEFT_BUMPER:
                     if(player.getRidingEntity() instanceof EntityVehicle)
+                    {
+                        event.setCanceled(true);
+                    }
+                    break;
+                case Buttons.RIGHT_TRIGGER:
+                case Buttons.LEFT_TRIGGER:
+                    if(VehicleConfig.CLIENT.controller.useTriggers && player.getRidingEntity() instanceof EntityVehicle)
+                    {
+                        event.setCanceled(true);
+                    }
+                    if(EntityRaytracer.performRayTrace(event.getButton() == Buttons.LEFT_TRIGGER))
                     {
                         event.setCanceled(true);
                     }
@@ -98,20 +116,29 @@ public class ControllerEvents
             availableActions.remove(Buttons.X);
             availableActions.remove(Buttons.DPAD_DOWN);
 
-            availableActions.put(Buttons.LEFT_THUMB_STICK, new Action("Exit Vehicle", Action.Side.RIGHT));
-            availableActions.put(Buttons.A, new Action("Accelerate", Action.Side.LEFT));
+            availableActions.put(Buttons.LEFT_THUMB_STICK, new Action("Exit Vehicle", Action.Side.LEFT));
+
+            if(VehicleConfig.CLIENT.controller.useTriggers)
+            {
+                availableActions.put(Buttons.RIGHT_TRIGGER, new Action("Accelerate", Action.Side.RIGHT));
+            }
+            else
+            {
+                availableActions.put(Buttons.A, new Action("Accelerate", Action.Side.RIGHT));
+            }
 
             EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
 
             if(vehicle instanceof EntityPoweredVehicle)
             {
+                int button = VehicleConfig.CLIENT.controller.useTriggers ? Buttons.LEFT_TRIGGER : Buttons.B;
                 if(((EntityPoweredVehicle) vehicle).getSpeed() > 0.05F)
                 {
-                    availableActions.put(Buttons.B, new Action("Brake", Action.Side.LEFT));
+                    availableActions.put(button, new Action("Brake", Action.Side.RIGHT));
                 }
                 else
                 {
-                    availableActions.put(Buttons.B, new Action("Reverse", Action.Side.LEFT));
+                    availableActions.put(button, new Action("Reverse", Action.Side.RIGHT));
                 }
             }
 
@@ -156,21 +183,10 @@ public class ControllerEvents
         }
     }
 
-    private EntityPoweredVehicle getClosestVehicle()
+    public static boolean isRightClicking()
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        List<EntityPoweredVehicle> vehicles = Minecraft.getMinecraft().world.getEntitiesWithinAABB(EntityPoweredVehicle.class, player.getEntityBoundingBox().grow(1.0, 0.0, 1.0));
-        EntityPoweredVehicle closestVehicle = null;
-        float closestDistance = -1.0F;
-        for(EntityPoweredVehicle vehicle : vehicles)
-        {
-            float distance = vehicle.getDistance(player);
-            if(closestDistance == -1.0F || distance < closestDistance)
-            {
-                closestDistance = distance;
-                closestVehicle = vehicle;
-            }
-        }
-        return closestVehicle;
+        boolean isRightClicking = Mouse.isButtonDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100);
+        isRightClicking |= ClientProxy.controllableLoaded && Controllable.getController() != null && Controllable.getController().getLTriggerValue() != 0.0F;
+        return isRightClicking;
     }
 }

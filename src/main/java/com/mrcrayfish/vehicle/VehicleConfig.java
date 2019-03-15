@@ -68,6 +68,11 @@ public class VehicleConfig
         @Config.Comment("Configuration for display related options")
         @Config.LangKey(Reference.MOD_ID + ".config.client.display")
         public Display display = new Display();
+
+        @Config.Name("Controller")
+        @Config.Comment("Configuration options for controller support (Must have Controllable install)")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.controller")
+        public Controller controller = new Controller();
     }
 
     public static class Interaction
@@ -95,6 +100,14 @@ public class VehicleConfig
         @Config.Comment("If true, an animation is performed while cycling vehicles in the workstation")
         @Config.LangKey(Reference.MOD_ID + ".config.client.display.workstation_animation")
         public boolean workstationAnimation = true;
+    }
+
+    public static class Controller
+    {
+        @Config.Name("Use Triggers")
+        @Config.Comment("If true, will use the triggers on controller to control the acceleration of the vehicle.")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.controller.use_triggers")
+        public boolean useTriggers = false;
     }
 
     public static class Debug
