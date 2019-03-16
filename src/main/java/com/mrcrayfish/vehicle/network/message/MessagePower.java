@@ -8,38 +8,38 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-public class MessageTurn implements IMessage, IMessageHandler<MessageTurn, IMessage>
+public class MessagePower implements IMessage, IMessageHandler<MessagePower, IMessage>
 {
-	private EntityPoweredVehicle.TurnDirection direction;
+	private float power;
 
-	public MessageTurn() {}
+	public MessagePower() {}
 
-	public MessageTurn(EntityPoweredVehicle.TurnDirection direction)
+	public MessagePower(float power)
 	{
-		this.direction = direction;
+		this.power = power;
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf)
 	{
-		buf.writeInt(direction.ordinal());
+		buf.writeFloat(power);
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf)
 	{
-		this.direction = EntityPoweredVehicle.TurnDirection.values()[buf.readInt()];
+		this.power = buf.readFloat();
 	}
 
 	@Override
-	public IMessage onMessage(MessageTurn message, MessageContext ctx)
+	public IMessage onMessage(MessagePower message, MessageContext ctx)
 	{
 	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
         {
             Entity riding = ctx.getServerHandler().player.getRidingEntity();
             if(riding instanceof EntityPoweredVehicle)
             {
-                ((EntityPoweredVehicle) riding).setTurnDirection(message.direction);
+                ((EntityPoweredVehicle) riding).setPower(message.power);
             }
         });
 		return null;

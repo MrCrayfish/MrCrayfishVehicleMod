@@ -12,10 +12,7 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.network.message.MessageAccelerating;
-import com.mrcrayfish.vehicle.network.message.MessageHorn;
-import com.mrcrayfish.vehicle.network.message.MessageTurn;
-import com.mrcrayfish.vehicle.network.message.MessageVehicleWindow;
+import com.mrcrayfish.vehicle.network.message.*;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
@@ -68,7 +65,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     protected static final DataParameter<Float> CURRENT_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> MAX_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> ACCELERATION_SPEED = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> POWER = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Integer> TURN_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
+    protected static final DataParameter<Float> TARGET_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
     protected static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.VARINT);
@@ -158,7 +157,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(CURRENT_SPEED, 0F);
         this.dataManager.register(MAX_SPEED, 10F);
         this.dataManager.register(ACCELERATION_SPEED, 0.5F);
+        this.dataManager.register(POWER, 1.0F);
         this.dataManager.register(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
+        this.dataManager.register(TARGET_TURN_ANGLE, 0F);
         this.dataManager.register(TURN_SENSITIVITY, 6);
         this.dataManager.register(MAX_TURN_ANGLE, 45);
         this.dataManager.register(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
@@ -446,9 +447,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 if(acceleration == AccelerationDirection.FORWARD)
                 {
-                    if(this.wheelsOnGround)
+                    if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
-                        float maxSpeed = this.getActualMaxSpeed() * wheelModifier;
+                        float maxSpeed = this.getActualMaxSpeed() * wheelModifier * this.getPower();
                         if(this.currentSpeed < maxSpeed)
                         {
                             this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
@@ -466,9 +467,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 }
                 else if(acceleration == AccelerationDirection.REVERSE)
                 {
-                    if(this.wheelsOnGround)
+                    if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
-                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier;
+                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier * this.getPower();;
                         if(this.currentSpeed > maxSpeed)
                         {
                             this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
@@ -486,7 +487,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 }
             }
 
-            if(this.wheelsOnGround)
+            if(this.wheelsOnGround || this.canAccelerateInAir())
             {
                 this.currentSpeed *= 0.9;
             }
@@ -507,19 +508,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     protected void updateTurning()
     {
-        TurnDirection direction = this.getTurnDirection();
-        if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
-        {
-            this.turnAngle += direction.dir * getTurnSensitivity();
-            if(Math.abs(this.turnAngle) > getMaxTurnAngle())
-            {
-                this.turnAngle = getMaxTurnAngle() * direction.dir;
-            }
-        }
-        else
-        {
-            this.turnAngle *= 0.9;
-        }
+        this.turnAngle = this.getTargetTurnAngle();
         this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
         this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
 
@@ -577,31 +566,34 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         EntityLivingBase entity = (EntityLivingBase) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getMinecraft().player))
         {
-            AccelerationDirection acceleration = AccelerationDirection.fromEntity(entity);
+            float power = VehicleMod.proxy.getPower(this);
+            if(power != this.getPower())
+            {
+                this.setPower(power);
+                PacketHandler.INSTANCE.sendToServer(new MessagePower(power));
+            }
+
+            AccelerationDirection acceleration = VehicleMod.proxy.getAccelerationDirection(entity);
             if(this.getAcceleration() != acceleration)
             {
                 this.setAcceleration(acceleration);
                 PacketHandler.INSTANCE.sendToServer(new MessageAccelerating(acceleration));
             }
 
-            boolean horn = ClientProxy.KEY_HORN.isKeyDown();
+            boolean horn = VehicleMod.proxy.isHonking();
             this.setHorn(horn);
             PacketHandler.INSTANCE.sendToServer(new MessageHorn(horn));
 
-            TurnDirection direction = TurnDirection.FORWARD;
-            if(entity.moveStrafing < 0)
-            {
-                direction = TurnDirection.RIGHT;
-            }
-            else if(entity.moveStrafing > 0)
-            {
-                direction = TurnDirection.LEFT;
-            }
+            TurnDirection direction = VehicleMod.proxy.getTurnDirection(entity);
             if(this.getTurnDirection() != direction)
             {
                 this.setTurnDirection(direction);
-                PacketHandler.INSTANCE.sendToServer(new MessageTurn(direction));
+                PacketHandler.INSTANCE.sendToServer(new MessageTurnDirection(direction));
             }
+
+            float targetTurnAngle = VehicleMod.proxy.getTargetTurnAngle(this, false);
+            this.setTargetTurnAngle(targetTurnAngle);
+            PacketHandler.INSTANCE.sendToServer(new MessageTurnAngle(targetTurnAngle));
         }
     }
 
@@ -788,6 +780,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return TurnDirection.values()[this.dataManager.get(TURN_DIRECTION)];
     }
 
+    public void setTargetTurnAngle(float targetTurnAngle)
+    {
+        this.dataManager.set(TARGET_TURN_ANGLE, targetTurnAngle);
+    }
+
+    public float getTargetTurnAngle()
+    {
+        return this.dataManager.get(TARGET_TURN_ANGLE);
+    }
+
     public void setAcceleration(AccelerationDirection direction)
     {
         this.dataManager.set(ACCELERATION_DIRECTION, direction.ordinal());
@@ -796,6 +798,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public AccelerationDirection getAcceleration()
     {
         return AccelerationDirection.values()[this.dataManager.get(ACCELERATION_DIRECTION)];
+    }
+
+    public void setPower(float power)
+    {
+        this.dataManager.set(POWER, power);
+    }
+
+    public float getPower()
+    {
+        return this.dataManager.get(POWER);
     }
 
     public void setTurnSensitivity(int sensitivity)
@@ -1349,7 +1361,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return 1.0F - wheelModifier;
     }
 
-    private void updateGroundState()
+    protected void updateGroundState()
     {
         if(this.hasWheels())
         {
@@ -1376,6 +1388,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             }
             wheelsOnGround = false;
         }
+    }
+
+    protected boolean canAccelerateInAir()
+    {
+        return false;
     }
 
     @Override

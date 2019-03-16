@@ -1,9 +1,10 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import com.mrcrayfish.vehicle.client.ClientEvents;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.controllable.client.Buttons;
+import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Controller;
+import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.client.*;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
@@ -18,8 +19,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
@@ -42,6 +42,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
@@ -66,6 +67,8 @@ public class ClientProxy implements Proxy
 {
     public static final KeyBinding KEY_HORN = new KeyBinding("key.horn", Keyboard.KEY_H, "key.categories.vehicle");
 
+    public static boolean controllableLoaded = false;
+    
     @Override
     public void preInit()
     {
@@ -145,6 +148,16 @@ public class ClientProxy implements Proxy
             FluidUtils.clearCacheFluidColor();
             EntityRaytracer.clearDataForReregistration();
         });
+    }
+
+    @Override
+    public void postInit()
+    {
+        if(Loader.isModLoaded("controllable"))
+        {
+            controllableLoaded = true;
+            MinecraftForge.EVENT_BUS.register(new ControllerEvents());
+        }
     }
 
     @Override
@@ -230,5 +243,269 @@ public class ClientProxy implements Proxy
             Minecraft.getMinecraft().displayGuiScreen(new GuiStorage(player.inventory, wrapper.getInventory()));
             player.openContainer.windowId = windowId;
         }
+    }
+
+    @Override
+    public EntityPoweredVehicle.AccelerationDirection getAccelerationDirection(EntityLivingBase entity)
+    {
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                if(VehicleConfig.CLIENT.controller.useTriggers)
+                {
+                    if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() == 0.0F)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+                    }
+                    else if(controller.getLTriggerValue() != 0.0F && controller.getRTriggerValue() == 0.0F)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+                    }
+                }
+                else if(controller.getRawController().isButtonPressed(Buttons.A))
+                {
+                    return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+                }
+                else if(controller.getRawController().isButtonPressed(Buttons.B))
+                {
+                    return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+                }
+
+            }
+        }
+        return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
+    }
+
+    @Override
+    public EntityPoweredVehicle.TurnDirection getTurnDirection(EntityLivingBase entity)
+    {
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                if(controller.getLThumbStickXValue() > 0.0F)
+                {
+                    return EntityPoweredVehicle.TurnDirection.RIGHT;
+                }
+                if(controller.getLThumbStickXValue() < 0.0F)
+                {
+                    return EntityPoweredVehicle.TurnDirection.LEFT;
+                }
+                if(controller.getDpadXValue() == 1.0F)
+                {
+                    return EntityPoweredVehicle.TurnDirection.RIGHT;
+                }
+                if(controller.getDpadXValue() == -1.0F)
+                {
+                    return EntityPoweredVehicle.TurnDirection.LEFT;
+                }
+            }
+        }
+        if(entity.moveStrafing < 0)
+        {
+            return EntityPoweredVehicle.TurnDirection.RIGHT;
+        }
+        else if(entity.moveStrafing > 0)
+        {
+            return EntityPoweredVehicle.TurnDirection.LEFT;
+        }
+        return EntityPoweredVehicle.TurnDirection.FORWARD;
+    }
+
+    @Override
+    public float getTargetTurnAngle(EntityPoweredVehicle vehicle, boolean drifting)
+    {
+        EntityPoweredVehicle.TurnDirection direction = vehicle.getTurnDirection();
+        if(vehicle.getControllingPassenger() != null)
+        {
+            if(controllableLoaded)
+            {
+                Controller controller = Controllable.getController();
+                if(controller != null)
+                {
+                    float turnNormal = controller.getLThumbStickXValue() != 0.0F ? controller.getLThumbStickXValue() : controller.getDpadXValue();
+                    if(turnNormal != 0.0F)
+                    {
+                        float newTurnAngle = vehicle.turnAngle + ((vehicle.getMaxTurnAngle() * -turnNormal) - vehicle.turnAngle) * 0.15F;
+                        if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                        {
+                            return vehicle.getMaxTurnAngle() * direction.getDir();
+                        }
+                        return newTurnAngle;
+                    }
+                }
+            }
+
+            if(direction != EntityPoweredVehicle.TurnDirection.FORWARD)
+            {
+                float amount = direction.getDir() * vehicle.getTurnSensitivity();
+                if(drifting)
+                {
+                    amount *= 0.45F;
+                }
+                float newTurnAngle = vehicle.turnAngle + amount;
+                if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
+                {
+                    return vehicle.getMaxTurnAngle() * direction.getDir();
+                }
+                return newTurnAngle;
+            }
+        }
+
+        if(drifting)
+        {
+            return vehicle.turnAngle * 0.95F;
+        }
+        return vehicle.turnAngle * 0.75F;
+    }
+
+    @Override
+    public boolean isDrifting()
+    {
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                if(controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER))
+                {
+                    return true;
+                }
+            }
+        }
+        return Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
+    }
+
+    @Override
+    public boolean isHonking()
+    {
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                if(controller.isButtonPressed(Buttons.RIGHT_THUMB_STICK))
+                {
+                    return true;
+                }
+            }
+        }
+        return ClientProxy.KEY_HORN.isKeyDown();
+    }
+
+    @Override
+    public EntityPlane.FlapDirection getFlapDirection()
+    {
+        boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
+        boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                flapUp |= controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.getRawController().isButtonPressed(Buttons.LEFT_BUMPER);
+            }
+        }
+        return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
+    }
+
+    @Override
+    public EntityHelicopter.AltitudeChange getAltitudeChange()
+    {
+        boolean flapUp = Minecraft.getMinecraft().gameSettings.keyBindJump.isKeyDown();
+        boolean flapDown = Minecraft.getMinecraft().gameSettings.keyBindSprint.isKeyDown();
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                flapUp |= controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.getRawController().isButtonPressed(Buttons.LEFT_BUMPER);
+            }
+        }
+        return EntityHelicopter.AltitudeChange.fromInput(flapUp, flapDown);
+    }
+
+    @Override
+    public float getTravelDirection(EntityHelicopter vehicle)
+    {
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                float xAxis = controller.getLThumbStickXValue();
+                float yAxis = controller.getLThumbStickYValue();
+                if(xAxis != 0.0F || yAxis != 0.0F)
+                {
+                    float angle = (float) Math.toDegrees(Math.atan2(-xAxis, yAxis)) + 180F;
+                    return vehicle.rotationYaw + angle;
+                }
+            }
+        }
+
+        EntityPoweredVehicle.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
+        EntityPoweredVehicle.TurnDirection turnDirection = vehicle.getTurnDirection();
+        if(vehicle.getControllingPassenger() != null)
+        {
+            if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.FORWARD)
+            {
+                return vehicle.rotationYaw + turnDirection.getDir() * -45F;
+            }
+            else if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.REVERSE)
+            {
+                return vehicle.rotationYaw + 180F + turnDirection.getDir() * 45F;
+            }
+            else
+            {
+                return vehicle.rotationYaw + turnDirection.getDir() * -90F;
+            }
+        }
+        return vehicle.rotationYaw;
+    }
+
+    @Override
+    public float getTravelSpeed(EntityHelicopter helicopter)
+    {
+        if(controllableLoaded)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                float xAxis = controller.getLThumbStickXValue();
+                float yAxis = controller.getLThumbStickYValue();
+                if(xAxis != 0.0F || yAxis != 0.0F)
+                {
+                    return (float) Math.min(1.0, Math.sqrt(Math.pow(xAxis, 2) + Math.pow(yAxis, 2)));
+                }
+            }
+        }
+        return helicopter.getAcceleration() != EntityPoweredVehicle.AccelerationDirection.NONE || helicopter.getTurnDirection() != EntityPoweredVehicle.TurnDirection.FORWARD ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public float getPower(EntityPoweredVehicle vehicle)
+    {
+        if(controllableLoaded && VehicleConfig.CLIENT.controller.useTriggers)
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null)
+            {
+                EntityPoweredVehicle.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
+                if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.FORWARD)
+                {
+                    return controller.getRTriggerValue();
+                }
+                else if(accelerationDirection == EntityPoweredVehicle.AccelerationDirection.REVERSE)
+                {
+                    return controller.getLTriggerValue();
+                }
+            }
+        }
+        return 1.0F;
     }
 }
