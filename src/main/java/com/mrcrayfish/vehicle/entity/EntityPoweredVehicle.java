@@ -39,10 +39,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
@@ -1215,21 +1212,26 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             {
                 if(wheel.getItem() == ModItems.WHEEL)
                 {
-                    this.setWheels(true);
-                    this.setWheelType(WheelType.values()[wheel.getMetadata()]);
+                    if(!this.hasWheels())
+                    {
+                        world.playSound(null, getPosition(), ModSounds.airWrenchGun, SoundCategory.BLOCKS, 1.0F, 1.1F);
+                        this.setWheels(true);
+                        this.setWheelType(WheelType.values()[wheel.getMetadata()]);
 
-                    NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(wheel);
-                    if(tagCompound.hasKey("color", Constants.NBT.TAG_INT))
-                    {
-                        this.setWheelColor(tagCompound.getInteger("color"));
-                    }
-                    else
-                    {
-                        this.setWheelColor(-1);
+                        NBTTagCompound tagCompound = CommonUtils.getItemTagCompound(wheel);
+                        if(tagCompound.hasKey("color", Constants.NBT.TAG_INT))
+                        {
+                            this.setWheelColor(tagCompound.getInteger("color"));
+                        }
+                        else
+                        {
+                            this.setWheelColor(-1);
+                        }
                     }
                 }
                 else
                 {
+                    world.playSound(null, posX, posY, posZ, ModSounds.airWrenchGun, SoundCategory.BLOCKS, 1.0F, 0.8F);
                     this.setWheels(false);
                     this.setWheelColor(-1);
                 }

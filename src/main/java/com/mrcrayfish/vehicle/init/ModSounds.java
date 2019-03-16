@@ -39,6 +39,7 @@ public class ModSounds
     public static SoundEvent vehicleImpact;
     public static SoundEvent vehicleDestroyed;
     public static SoundEvent vehicleThud;
+    public static SoundEvent airWrenchGun;
 
     public static void register()
     {
@@ -72,6 +73,7 @@ public class ModSounds
         vehicleImpact = registerSound("vehicle_impact");
         vehicleDestroyed = registerSound("vehicle_destroyed");
         vehicleThud = registerSound("vehicle_thud");
+        airWrenchGun = registerSound("air_wrench_gun");
     }
 
     private static SoundEvent registerSound(String soundNameIn)

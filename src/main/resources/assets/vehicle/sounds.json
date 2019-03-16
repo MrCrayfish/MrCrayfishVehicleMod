@@ -88,5 +88,8 @@
     },
     "vehicle_thud": {
         "sounds": [ {"name": "vehicle:vehicle_thud"}]
+    },
+    "air_wrench_gun": {
+        "sounds": [ {"name": "vehicle:air_wrench_gun"}]
     }
 }
