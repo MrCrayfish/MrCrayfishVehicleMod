@@ -264,11 +264,11 @@ public class ClientProxy implements Proxy
                         return EntityPoweredVehicle.AccelerationDirection.REVERSE;
                     }
                 }
-                else if(controller.getRawController().isButtonPressed(Buttons.A))
+                else if(controller.getState().a)
                 {
                     return EntityPoweredVehicle.AccelerationDirection.FORWARD;
                 }
-                else if(controller.getRawController().isButtonPressed(Buttons.B))
+                else if(controller.getState().b)
                 {
                     return EntityPoweredVehicle.AccelerationDirection.REVERSE;
                 }
@@ -294,11 +294,11 @@ public class ClientProxy implements Proxy
                 {
                     return EntityPoweredVehicle.TurnDirection.LEFT;
                 }
-                if(controller.getDpadXValue() == 1.0F)
+                if(controller.getState().dpadRight)
                 {
                     return EntityPoweredVehicle.TurnDirection.RIGHT;
                 }
-                if(controller.getDpadXValue() == -1.0F)
+                if(controller.getState().dpadLeft)
                 {
                     return EntityPoweredVehicle.TurnDirection.LEFT;
                 }
@@ -326,7 +326,7 @@ public class ClientProxy implements Proxy
                 Controller controller = Controllable.getController();
                 if(controller != null)
                 {
-                    float turnNormal = controller.getLThumbStickXValue() != 0.0F ? controller.getLThumbStickXValue() : controller.getDpadXValue();
+                    float turnNormal = controller.getLThumbStickXValue();
                     if(turnNormal != 0.0F)
                     {
                         float newTurnAngle = vehicle.turnAngle + ((vehicle.getMaxTurnAngle() * -turnNormal) - vehicle.turnAngle) * 0.15F;
@@ -370,7 +370,7 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                if(controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER))
+                if(controller.getState().rb)
                 {
                     return true;
                 }
@@ -406,8 +406,8 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER);
-                flapDown |= controller.getRawController().isButtonPressed(Buttons.LEFT_BUMPER);
+                flapUp |= controller.getState().rb;
+                flapDown |= controller.getState().lb;
             }
         }
         return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
@@ -423,8 +423,8 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.getRawController().isButtonPressed(Buttons.RIGHT_BUMPER);
-                flapDown |= controller.getRawController().isButtonPressed(Buttons.LEFT_BUMPER);
+                flapUp |= controller.getState().rb;
+                flapDown |= controller.getState().lb;
             }
         }
         return EntityHelicopter.AltitudeChange.fromInput(flapUp, flapDown);

@@ -56,7 +56,7 @@ public class ControllerEvents
                         event.setCanceled(true);
                     }
                     break;
-                case Buttons.TOUCH_PAD:
+                case Buttons.SELECT:
                     if(player.getRidingEntity() instanceof EntityVehicle)
                     {
                         player.rotationYaw = player.getRidingEntity().rotationYaw;
