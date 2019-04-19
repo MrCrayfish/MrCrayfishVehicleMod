@@ -20,6 +20,8 @@ public class TileEntityFuelDrum extends TileFluidHandlerSynced
                 syncToClient();
             }
         };
+        tank.setCanFill(true);
+        tank.setCanDrain(true);
     }
 
     public TileEntityFuelDrum(int capacity)

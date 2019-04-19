@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
+import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.util.Bounds;
 import net.minecraft.block.material.Material;
@@ -24,6 +25,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -73,6 +75,12 @@ public class BlockFuelDrum extends BlockRotatedObject
         if(!worldIn.isRemote)
         {
             ItemStack stack = playerIn.getHeldItem(hand);
+
+            if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
+            {
+                return true;
+            }
+
             if(stack.getItem() instanceof ItemJerryCan)
             {
                 ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
@@ -100,7 +108,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                 }
             }
         }
-        return false;
+        return true;
     }
 
     @Override
