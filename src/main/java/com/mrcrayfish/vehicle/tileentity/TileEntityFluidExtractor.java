@@ -64,7 +64,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
         {
             ItemStack source = this.getStackInSlot(SLOT_FLUID_SOURCE);
             ItemStack fuel = this.getStackInSlot(SLOT_FUEL_SOURCE);
-            if(!fuel.isEmpty() && !source.isEmpty() && remainingFuel == 0)
+            if(!fuel.isEmpty() && !source.isEmpty() && remainingFuel == 0 && canFillWithFluid(source))
             {
                 fuelMaxProgress = TileEntityFurnace.getItemBurnTime(fuel);
                 remainingFuel = fuelMaxProgress;
@@ -87,7 +87,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
                 extractionProgress = 0;
             }
 
-            if(remainingFuel > 0)
+            if(remainingFuel > 0 && canFillWithFluid(source))
             {
                 remainingFuel--;
             }
