@@ -237,8 +237,6 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
             case 3:
                 if(tank.getFluid() != null)
                     tank.getFluid().amount = value;
-                else
-                    tank.setFluid(new FluidStack(ModFluids.FUELIUM, value));
                 break;
         }
     }

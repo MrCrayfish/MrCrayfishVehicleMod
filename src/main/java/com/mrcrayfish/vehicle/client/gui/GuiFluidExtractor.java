@@ -50,7 +50,7 @@ public class GuiFluidExtractor extends GuiContainer
             {
                 if(stack.amount > 0)
                 {
-                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GREEN.toString() + tileEntityFluidExtractor.getFluidLevel() + "/" + TileEntityFluidExtractor.TANK_CAPACITY + " mB"), mouseX, mouseY);
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GRAY.toString() + tileEntityFluidExtractor.getFluidLevel() + "/" + TileEntityFluidExtractor.TANK_CAPACITY + " mB"), mouseX, mouseY);
                 }
                 else
                 {
