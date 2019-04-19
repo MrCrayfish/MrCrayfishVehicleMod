@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
+import com.mrcrayfish.vehicle.tileentity.TileEntitySynced;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -41,6 +42,7 @@ public class BlockFluidMixer extends BlockRotatedObject
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
                 if(tileEntity instanceof TileEntityFluidMixer)
                 {
+                    ((TileEntitySynced)tileEntity).syncToClient();
                     playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
                 }
             }

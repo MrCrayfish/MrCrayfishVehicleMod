@@ -51,7 +51,7 @@ public class GuiFluidMixer extends GuiContainer
             {
                 if(stack.amount > 0)
                 {
-                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GOLD.toString() + tileEntityFluidMixer.getBlazeLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GRAY.toString() + tileEntityFluidMixer.getBlazeLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
                 }
                 else
                 {
@@ -67,7 +67,7 @@ public class GuiFluidMixer extends GuiContainer
             {
                 if(stack.amount > 0)
                 {
-                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.DARK_GREEN.toString() + tileEntityFluidMixer.getEnderSapLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GRAY.toString() + tileEntityFluidMixer.getEnderSapLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
                 }
                 else
                 {
@@ -83,7 +83,7 @@ public class GuiFluidMixer extends GuiContainer
             {
                 if(stack.amount > 0)
                 {
-                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GREEN.toString() + tileEntityFluidMixer.getFueliumLevel() + "/" + 10000 + " mB"), mouseX, mouseY);
+                    this.drawHoveringText(Arrays.asList(stack.getLocalizedName(), TextFormatting.GRAY.toString() + tileEntityFluidMixer.getFueliumLevel() + "/" + 10000 + " mB"), mouseX, mouseY);
                 }
                 else
                 {

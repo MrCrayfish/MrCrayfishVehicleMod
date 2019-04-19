@@ -9,7 +9,7 @@ import net.minecraft.world.WorldServer;
 
 public class TileEntitySynced extends TileEntity
 {
-    protected void syncToClient()
+    public void syncToClient()
     {
         this.markDirty();
         if(!world.isRemote)

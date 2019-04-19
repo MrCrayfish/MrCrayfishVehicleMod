@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class TileEntityFluidMixer extends TileEntity implements IInventory, ITickable
+public class TileEntityFluidMixer extends TileEntitySynced implements IInventory, ITickable
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -189,20 +189,14 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
             case 3:
                 if(tankBlaze.getFluid() != null)
                     tankBlaze.getFluid().amount = value;
-                else
-                    tankBlaze.setFluid(new FluidStack(ModFluids.BLAZE_JUICE, value));
                 break;
             case 4:
                 if(tankEnderSap.getFluid() != null)
                     tankEnderSap.getFluid().amount = value;
-                else
-                    tankEnderSap.setFluid(new FluidStack(ModFluids.ENDER_SAP, value));
                 break;
             case 5:
                 if(tankFuelium.getFluid() != null)
                     tankFuelium.getFluid().amount = value;
-                else
-                    tankFuelium.setFluid(new FluidStack(ModFluids.FUELIUM, value));
                 break;
         }
     }
@@ -380,6 +374,26 @@ public class TileEntityFluidMixer extends TileEntity implements IInventory, ITic
         tag.setInteger("RemainingFuel", remainingFuel);
         tag.setInteger("FuelMaxProgress", fuelMaxProgress);
         tag.setInteger("ExtractionProgress", extractionProgress);
+        return tag;
+    }
+
+    @Override
+    public NBTTagCompound getUpdateTag()
+    {
+        NBTTagCompound tag = super.writeToNBT(new NBTTagCompound());
+
+        NBTTagCompound tagTankBlaze = new NBTTagCompound();
+        tankBlaze.writeToNBT(tagTankBlaze);
+        tag.setTag("TankBlaze", tagTankBlaze);
+
+        NBTTagCompound tagTankEnderSap = new NBTTagCompound();
+        tankEnderSap.writeToNBT(tagTankEnderSap);
+        tag.setTag("TankEnderSap", tagTankEnderSap);
+
+        NBTTagCompound tagTankFuelium = new NBTTagCompound();
+        tankFuelium.writeToNBT(tagTankFuelium);
+        tag.setTag("TankFuelium", tagTankFuelium);
+
         return tag;
     }
 
