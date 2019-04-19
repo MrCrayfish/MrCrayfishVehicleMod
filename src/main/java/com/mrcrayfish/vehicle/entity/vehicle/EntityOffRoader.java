@@ -92,7 +92,7 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
                 int index = this.getPassengers().indexOf(passenger);
                 if (index > 0)
                 {
-                    xOffset -= (index / 2F) * 1.0F;
+                    xOffset -= (index / 2) * 1.0F;
                     zOffset -= (index % 2) * 0.8125F;
                 }
 
