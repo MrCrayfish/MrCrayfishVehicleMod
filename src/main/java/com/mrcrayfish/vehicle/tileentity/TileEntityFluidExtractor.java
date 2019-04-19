@@ -54,6 +54,7 @@ public class TileEntityFluidExtractor extends TileFluidHandler implements IInven
     {
         tank = new FluidTank(TANK_CAPACITY);
         tank.setCanFill(false);
+        tank.setCanDrain(true);
     }
 
     @Override
