@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fluids.FluidStack;
 
 /**
  * Author: MrCrayfish
@@ -25,6 +26,8 @@ public interface Proxy
     default void openVehicleEditWindow(int entityId, int windowId) {}
 
     default void syncStorageInventory(int entityId, NBTTagCompound tagCompound) {}
+
+    default void syncEntityFluid(int entityId, FluidStack stack) {}
 
     default void openStorageWindow(int entityId, int windowId) {}
 

@@ -5,6 +5,8 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
+import com.mrcrayfish.vehicle.network.message.MessageEntityFluid;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -22,6 +24,8 @@ import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -30,11 +34,12 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Author: MrCrayfish
  */
-public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable
+public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable, IEntityAdditionalSpawnData
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 8.5 * 0.0625F, 24 * 0.0625, 1.1));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
@@ -47,7 +52,14 @@ public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer
         }
     }
 
-    protected FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 100);
+    protected FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 100)
+    {
+        @Override
+        protected void onContentsChanged()
+        {
+            syncTank();
+        }
+    };
 
     public EntityFluidTrailer(World worldIn)
     {
@@ -118,9 +130,9 @@ public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound compound)
+    protected void readEntityFromNBT(NBTTagCompound compound)
     {
-        super.readFromNBT(compound);
+        super.readEntityFromNBT(compound);
         if(compound.hasKey("Tank", Constants.NBT.TAG_COMPOUND))
         {
             tank.readFromNBT(compound.getCompoundTag("Tank"));
@@ -128,13 +140,12 @@ public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    protected void writeEntityToNBT(NBTTagCompound compound)
     {
-        super.writeToNBT(compound);
+        super.writeEntityToNBT(compound);
         NBTTagCompound tankTag = new NBTTagCompound();
         tank.writeToNBT(tankTag);
         compound.setTag("Tank", tankTag);
-        return compound;
     }
 
     @Override
@@ -151,5 +162,32 @@ public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer
         if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
             return (T) tank;
         return super.getCapability(capability, facing);
+    }
+
+    public FluidTank getTank()
+    {
+        return tank;
+    }
+
+    public void syncTank()
+    {
+        if(!world.isRemote && tank.getFluid() != null)
+        {
+            PacketHandler.INSTANCE.sendToAllTracking(new MessageEntityFluid(this.getEntityId(), tank.getFluid()), this);
+        }
+    }
+
+    @Override
+    public void writeSpawnData(ByteBuf buffer)
+    {
+        super.writeSpawnData(buffer);
+        ByteBufUtils.writeTag(buffer, tank.writeToNBT(new NBTTagCompound()));
+    }
+
+    @Override
+    public void readSpawnData(ByteBuf buffer)
+    {
+        super.readSpawnData(buffer);
+        tank.readFromNBT(Objects.requireNonNull(ByteBufUtils.readTag(buffer)));
     }
 }

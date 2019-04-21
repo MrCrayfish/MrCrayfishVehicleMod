@@ -50,6 +50,10 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -507,5 +511,21 @@ public class ClientProxy implements Proxy
             }
         }
         return 1.0F;
+    }
+
+    @Override
+    public void syncEntityFluid(int entityId, FluidStack stack)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity != null && entity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+        {
+            IFluidHandler handler = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            if(handler instanceof FluidTank)
+            {
+                FluidTank tank = (FluidTank) handler;
+                tank.setFluid(stack);
+            }
+        }
     }
 }
