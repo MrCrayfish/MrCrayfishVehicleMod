@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.tileentity.TileEntityBoost;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -13,6 +14,7 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -76,6 +78,13 @@ public class BlockBoostPad extends BlockRotatedObject
             EnumFacing facing = state.getValue(FACING);
             if(facing == entityIn.getHorizontalFacing())
             {
+                float speedMultiplier = 0.0F;
+                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                if(tileEntity instanceof TileEntityBoost)
+                {
+                    speedMultiplier = ((TileEntityBoost) tileEntity).getSpeedMultiplier();
+                }
+
                 EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
                 if(!poweredVehicle.isBoosting())
                 {
@@ -83,7 +92,7 @@ public class BlockBoostPad extends BlockRotatedObject
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
-                poweredVehicle.speedMultiplier = 0.5F;
+                poweredVehicle.speedMultiplier = speedMultiplier;
             }
         }
     }
@@ -113,5 +122,19 @@ public class BlockBoostPad extends BlockRotatedObject
     protected BlockStateContainer createBlockState()
     {
         return new BlockStateContainer(this, FACING, LEFT, RIGHT);
+    }
+
+
+    @Override
+    public boolean hasTileEntity(IBlockState state)
+    {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(World world, IBlockState state)
+    {
+        return new TileEntityBoost(0.5F);
     }
 }
