@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.entity.trailer;
 import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import net.minecraft.client.Minecraft;
@@ -11,12 +10,22 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +34,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable
+public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer.IEntityRaytraceable
 {
     private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 8.5 * 0.0625F, 24 * 0.0625, 1.1));
     private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = Maps.newHashMap();
@@ -38,16 +47,12 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
         }
     }
 
-    public EntityVehicleTrailer(World worldIn)
+    protected FluidTank tank = new FluidTank(Fluid.BUCKET_VOLUME * 100);
+
+    public EntityFluidTrailer(World worldIn)
     {
         super(worldIn);
         this.setSize(1.5F, 1.5F);
-    }
-
-    @Override
-    public double getMountedYOffset()
-    {
-        return 8 * 0.0625;
     }
 
     @Override
@@ -59,25 +64,17 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
     @Override
     protected boolean canBeRidden(Entity entityIn)
     {
-        return true;
+        return false;
     }
 
     @Override
-    public void updatePassenger(Entity passenger)
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
-        if(passenger instanceof EntityVehicle)
+        if(!world.isRemote && !player.isSneaking())
         {
-            Vec3d offset = ((EntityVehicle) passenger).getProperties().getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-            passenger.setPosition(this.posX + offset.x, this.posY + getMountedYOffset() + offset.y, this.posZ + offset.z);
-            passenger.prevRotationYaw = this.prevRotationYaw;
-            passenger.rotationYaw = this.rotationYaw;
+            FluidUtil.interactWithFluidHandler(player, hand, tank);
         }
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return passenger instanceof EntityVehicle && this.getPassengers().size() == 0;
+        return true;
     }
 
     @Override
@@ -118,5 +115,41 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
     public double getHitchOffset()
     {
         return -25.0;
+    }
+
+    @Override
+    public void readFromNBT(NBTTagCompound compound)
+    {
+        super.readFromNBT(compound);
+        if(compound.hasKey("Tank", Constants.NBT.TAG_COMPOUND))
+        {
+            tank.readFromNBT(compound.getCompoundTag("Tank"));
+        }
+    }
+
+    @Override
+    public NBTTagCompound writeToNBT(NBTTagCompound compound)
+    {
+        super.writeToNBT(compound);
+        NBTTagCompound tankTag = new NBTTagCompound();
+        tank.writeToNBT(tankTag);
+        compound.setTag("Tank", tankTag);
+        return compound;
+    }
+
+    @Override
+    public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+    {
+        return capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY || super.hasCapability(capability, facing);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Nullable
+    public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
+    {
+        if (capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+            return (T) tank;
+        return super.getCapability(capability, facing);
     }
 }

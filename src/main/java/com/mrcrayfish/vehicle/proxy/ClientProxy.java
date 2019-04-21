@@ -20,10 +20,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.*;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
@@ -72,7 +69,7 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
-        /* Vehicles */
+        /* Register Vehicles */
         registerVehicleRender(EntityATV.class, new RenderLandVehicleWrapper<>(new RenderATV()));
         registerVehicleRender(EntityDuneBuggy.class, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
         registerVehicleRender(EntityGoKart.class, new RenderLandVehicleWrapper<>(new RenderGoKart()));
@@ -89,7 +86,7 @@ public class ClientProxy implements Proxy
         registerVehicleRender(EntityGolfCart.class, new RenderLandVehicleWrapper<>(new RenderGolfCart()));
         registerVehicleRender(EntityOffRoader.class, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
 
-        /* Mod Exclusive Vehicles */
+        /* Register Mod Exclusive Vehicles */
         if(Loader.isModLoaded("cfm"))
         {
             registerVehicleRender(EntityCouch.class, new RenderLandVehicleWrapper<>(new RenderCouch()));
@@ -97,25 +94,28 @@ public class ClientProxy implements Proxy
             registerVehicleRender(EntitySofacopter.class, new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
         }
 
-        /* Trailers */
+        /* Register Trailers */
         registerVehicleRender(EntityVehicleTrailer.class, new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
         registerVehicleRender(EntityStorageTrailer.class, new RenderVehicleWrapper<>(new RenderStorageTrailer()));
         registerVehicleRender(EntitySeederTrailer.class, new RenderVehicleWrapper<>(new RenderSeederTrailer()));
         registerVehicleRender(EntityFertilizerTrailer.class, new RenderVehicleWrapper<>(new RenderFertilizerTrailer()));
+        registerVehicleRender(EntityFluidTrailer.class, new RenderVehicleWrapper<>(new RenderFluidTrailer()));
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
-
+        /* Client Events */
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
         MinecraftForge.EVENT_BUS.register(this);
 
-        ClientRegistry.registerKeyBinding(KEY_HORN);
+        /* Tile Entity Special Renderer*/
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidExtractor.class, new FluidExtractorRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVehicleCrate.class, new VehicleCrateRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
+
+        /* Key Bindings */
+        ClientRegistry.registerKeyBinding(KEY_HORN);
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());
-
         Models.registerModels(ModItems.MODELS);
     }
 

@@ -9,10 +9,7 @@ import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -131,6 +128,7 @@ public class VehicleMod
         registerVehicle("storage_trailer", EntityStorageTrailer.class);
         registerVehicle("seeder_trailer", EntitySeederTrailer.class);
         registerVehicle("fertilizer_trailer", EntityFertilizerTrailer.class);
+        registerVehicle("fluid_trailer", EntityFluidTrailer.class);
 
         EntityRegistry.registerModEntity(new ResourceLocation(Reference.MOD_ID, "jack"), EntityJack.class, Reference.MOD_ID + "." + "jack", nextEntityId++, this, 256, 1, true);
     }

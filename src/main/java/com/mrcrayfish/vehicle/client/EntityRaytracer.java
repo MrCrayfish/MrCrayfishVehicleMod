@@ -8,10 +8,7 @@ import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
@@ -469,6 +466,13 @@ public class EntityRaytracer
         HashMap<RayTracePart, List<MatrixTransformation>> fertilizerParts = Maps.newHashMap();
         createTransformListForPart(Models.FERTILIZER_TRAILER, fertilizerParts, fertilizerTransformGlobal);
         registerEntityStatic(EntityFertilizerTrailer.class, fertilizerParts);
+
+        // Fluid
+        List<MatrixTransformation> trailerFluidTransformGlobal = Lists.newArrayList();
+        createBodyTransforms(trailerFluidTransformGlobal, EntityFluidTrailer.class);
+        HashMap<RayTracePart, List<MatrixTransformation>> trailerFluidParts = Maps.newHashMap();
+        createTransformListForPart(Models.FLUID_TRAILER, trailerFluidParts, trailerFluidTransformGlobal);
+        registerEntityStatic(EntityFluidTrailer.class, trailerFluidParts);
     }
 
     /**
