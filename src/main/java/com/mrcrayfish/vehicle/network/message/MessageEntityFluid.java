@@ -35,14 +35,21 @@ public class MessageEntityFluid implements IMessage, IMessageHandler<MessageEnti
     public void toBytes(ByteBuf buf)
     {
         buf.writeInt(entityId);
-        ByteBufUtils.writeTag(buf, stack.writeToNBT(new NBTTagCompound()));
+        buf.writeBoolean(stack != null);
+        if(stack != null)
+        {
+            ByteBufUtils.writeTag(buf, stack.writeToNBT(new NBTTagCompound()));
+        }
     }
 
     @Override
     public void fromBytes(ByteBuf buf)
     {
         entityId = buf.readInt();
-        stack = FluidStack.loadFluidStackFromNBT(ByteBufUtils.readTag(buf));
+        if(buf.readBoolean())
+        {
+            stack = FluidStack.loadFluidStackFromNBT(ByteBufUtils.readTag(buf));
+        }
     }
 
     @Override

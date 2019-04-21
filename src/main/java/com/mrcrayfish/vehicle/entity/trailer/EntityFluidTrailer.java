@@ -171,7 +171,7 @@ public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer
 
     public void syncTank()
     {
-        if(!world.isRemote && tank.getFluid() != null)
+        if(!world.isRemote)
         {
             PacketHandler.INSTANCE.sendToAllTracking(new MessageEntityFluid(this.getEntityId(), tank.getFluid()), this);
         }
