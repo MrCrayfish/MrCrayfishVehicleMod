@@ -20,10 +20,7 @@ import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.*;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.RegistrationHandler;
@@ -53,6 +50,10 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
@@ -72,7 +73,7 @@ public class ClientProxy implements Proxy
     @Override
     public void preInit()
     {
-        /* Vehicles */
+        /* Register Vehicles */
         registerVehicleRender(EntityATV.class, new RenderLandVehicleWrapper<>(new RenderATV()));
         registerVehicleRender(EntityDuneBuggy.class, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
         registerVehicleRender(EntityGoKart.class, new RenderLandVehicleWrapper<>(new RenderGoKart()));
@@ -89,7 +90,7 @@ public class ClientProxy implements Proxy
         registerVehicleRender(EntityGolfCart.class, new RenderLandVehicleWrapper<>(new RenderGolfCart()));
         registerVehicleRender(EntityOffRoader.class, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
 
-        /* Mod Exclusive Vehicles */
+        /* Register Mod Exclusive Vehicles */
         if(Loader.isModLoaded("cfm"))
         {
             registerVehicleRender(EntityCouch.class, new RenderLandVehicleWrapper<>(new RenderCouch()));
@@ -97,25 +98,28 @@ public class ClientProxy implements Proxy
             registerVehicleRender(EntitySofacopter.class, new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
         }
 
-        /* Trailers */
+        /* Register Trailers */
         registerVehicleRender(EntityVehicleTrailer.class, new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
         registerVehicleRender(EntityStorageTrailer.class, new RenderVehicleWrapper<>(new RenderStorageTrailer()));
         registerVehicleRender(EntitySeederTrailer.class, new RenderVehicleWrapper<>(new RenderSeederTrailer()));
         registerVehicleRender(EntityFertilizerTrailer.class, new RenderVehicleWrapper<>(new RenderFertilizerTrailer()));
+        registerVehicleRender(EntityFluidTrailer.class, new RenderVehicleWrapper<>(new RenderFluidTrailer()));
 
-        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
-
+        /* Client Events */
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
         MinecraftForge.EVENT_BUS.register(this);
 
-        ClientRegistry.registerKeyBinding(KEY_HORN);
+        /* Tile Entity Special Renderer*/
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFluidExtractor.class, new FluidExtractorRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVehicleCrate.class, new VehicleCrateRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
+
+        /* Key Bindings */
+        ClientRegistry.registerKeyBinding(KEY_HORN);
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());
-
         Models.registerModels(ModItems.MODELS);
     }
 
@@ -507,5 +511,21 @@ public class ClientProxy implements Proxy
             }
         }
         return 1.0F;
+    }
+
+    @Override
+    public void syncEntityFluid(int entityId, FluidStack stack)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity != null && entity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+        {
+            IFluidHandler handler = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+            if(handler instanceof FluidTank)
+            {
+                FluidTank tank = (FluidTank) handler;
+                tank.setFluid(stack);
+            }
+        }
     }
 }

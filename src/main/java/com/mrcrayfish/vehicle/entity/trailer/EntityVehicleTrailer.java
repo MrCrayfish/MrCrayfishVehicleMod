@@ -41,6 +41,7 @@ public class EntityVehicleTrailer extends EntityTrailer implements EntityRaytrac
     public EntityVehicleTrailer(World worldIn)
     {
         super(worldIn);
+        this.setSize(1.5F, 1.5F);
     }
 
     @Override

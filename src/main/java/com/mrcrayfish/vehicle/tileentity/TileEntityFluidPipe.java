@@ -3,16 +3,19 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -100,6 +103,13 @@ public class TileEntityFluidPipe extends TileFluidHandlerSynced implements ITick
                 return handler;
             }
         }
+
+        List<Entity> fluidEntities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(adjacentPos), entity -> entity != null && entity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null));
+        if(!fluidEntities.isEmpty())
+        {
+            return fluidEntities.get(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
+        }
+
         return null;
     }
 

@@ -40,6 +40,7 @@ public class PacketHandler
         registerMessage(MessageStorageWindow.class, Side.CLIENT);
         registerMessage(MessageTravelProperties.class, Side.SERVER);
         registerMessage(MessagePower.class, Side.SERVER);
+        registerMessage(MessageEntityFluid.class, Side.CLIENT);
     }
 
     private static void registerMessage(Class packet, Side side)

@@ -2,10 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import net.minecraft.util.math.Vec3d;
 
@@ -251,6 +248,12 @@ public class VehicleProperties
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
         VehicleProperties.setProperties(EntityFertilizerTrailer.class, properties);
+
+        /* Fluid Trailer */
+        properties = new VehicleProperties();
+        properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
+        properties.setHeldOffset(new Vec3d(0D, 3D, 0D));
+        VehicleProperties.setProperties(EntityFluidTrailer.class, properties);
 
         /* Seeder Trailer */
         properties = new VehicleProperties();
