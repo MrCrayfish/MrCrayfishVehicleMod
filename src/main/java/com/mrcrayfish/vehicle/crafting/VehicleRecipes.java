@@ -2,10 +2,7 @@ package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntitySeederTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.Entity;
@@ -166,6 +163,12 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntityFertilizerTrailer.class, builder.build());
+
+        builder = new Builder();
+        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 48));
+        builder.addMaterial(new ItemStack(ModItems.PANEL, 16));
+        builder.addMaterial(new ItemStack(Blocks.GLASS_PANE, 2));
+        mapBuilder.put(EntityFluidTrailer.class, builder.build());
 
         if(Loader.isModLoaded("cfm"))
         {
