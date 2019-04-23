@@ -7,7 +7,7 @@ public class Reference
 {
     public static final String MOD_ID = "vehicle";
     public static final String MOD_NAME = "MrCrayfish's Vehicle Mod";
-    public static final String MOD_VERSION = "0.38.1";
+    public static final String MOD_VERSION = "0.39.0";
     public static final String MOD_COMPATIBILITY = "[1.12.2]";
     public static final String MOD_DEPENDS = "required-after:obfuscate@[0.2.5,);after:cfm@[4.1.5,);after:controllable@[0.2.1,);required-after:forge@[14.23.4.2705,)";
 
