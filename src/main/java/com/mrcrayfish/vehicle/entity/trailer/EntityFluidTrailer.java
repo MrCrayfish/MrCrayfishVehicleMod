@@ -84,9 +84,12 @@ public class EntityFluidTrailer extends EntityTrailer implements EntityRaytracer
     {
         if(!world.isRemote && !player.isSneaking())
         {
-            FluidUtil.interactWithFluidHandler(player, hand, tank);
+            if(FluidUtil.interactWithFluidHandler(player, hand, tank))
+            {
+                return true;
+            }
         }
-        return true;
+        return super.processInitialInteract(player, hand);
     }
 
     @Override
