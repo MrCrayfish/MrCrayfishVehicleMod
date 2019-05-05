@@ -10,7 +10,10 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -56,6 +59,55 @@ public class LayerHeldVehicle implements LayerRenderer<AbstractClientPlayer>
                         GlStateManager.translate(0F, 1F - 1F * counter.getProgress(partialTicks), -0.5F * Math.sin(Math.PI * counter.getProgress(partialTicks)) - width * (1.0F - counter.getProgress(partialTicks)));
                     }
                     Vec3d heldOffset = cachedEntity.getProperties().getHeldOffset();
+                    if(player.isRiding())
+                    {
+                        if(player.getRidingEntity() instanceof EntityVehicle)
+                        {
+                            if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                            {
+                                adjustLeft();
+                            }
+                            else
+                            {
+                                adjustRight();
+                            }
+                        }
+                        else if(player.getRidingEntity() instanceof EntityPig)
+                        {
+                            if(player.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK)
+                            {
+                                if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                                {
+                                    adjustLeft();
+                                }
+                                else
+                                {
+                                    adjustRight();
+                                }
+                            }
+                            else if(player.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK)
+                            {
+                                if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                                {
+                                    adjustRight();
+                                }
+                                else
+                                {
+                                    adjustLeft();
+                                }
+                            }
+                            else
+                            {
+                                adjustLeft();
+                                adjustRight();
+                            }
+                        }
+                        else
+                        {
+                            adjustLeft();
+                            adjustRight();
+                        }
+                    }
                     GlStateManager.translate(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
                     GlStateManager.rotate(180F, 1, 0, 0);
                     GlStateManager.rotate(-90F, 0, 1, 0);
@@ -71,6 +123,16 @@ public class LayerHeldVehicle implements LayerRenderer<AbstractClientPlayer>
             cachedClass = null;
             cachedEntity = null;
         }
+    }
+    
+    private void adjustLeft()
+    {
+        GlStateManager.translate(7 * 0.0625D, 0, 0);
+    }
+    
+    private void adjustRight()
+    {
+        GlStateManager.translate(-7 * 0.0625D, 0, 0);
     }
 
     @Override

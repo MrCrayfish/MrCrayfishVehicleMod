@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.client.render.layer.LayerHeldVehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
@@ -10,7 +11,12 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumHandSide;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -83,12 +89,74 @@ public class HeldVehicleEvents
         AnimationCounter counter = idToCounter.get(player.getUniqueID());
         counter.update(holdingVehicle);
         float progress = counter.getProgress(event.getPartialTicks());
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
-        model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F * progress);
-        model.bipedRightArm.rotationPointY = -1.5F * progress;
+        if(player.isRiding())
+        {
+            if(player.getRidingEntity() instanceof EntityVehicle)
+            {
+                if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                {
+                    holdLeft(model, progress);
+                }
+                else
+                {
+                    holdRight(model, progress);
+                }
+            }
+            else if(player.getRidingEntity() instanceof EntityPig)
+            {
+                if(player.getHeldItemMainhand().getItem() == Items.CARROT_ON_A_STICK)
+                {
+                    if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                    {
+                        holdLeft(model, progress);
+                    }
+                    else
+                    {
+                        holdRight(model, progress);
+                    }
+                }
+                else if(player.getHeldItemOffhand().getItem() == Items.CARROT_ON_A_STICK)
+                {
+                    if(player.getPrimaryHand() == EnumHandSide.RIGHT)
+                    {
+                        holdRight(model, progress);
+                    }
+                    else
+                    {
+                        holdLeft(model, progress);
+                    }
+                }
+                else
+                {
+                    holdLeft(model, progress);
+                    holdRight(model, progress);
+                }
+            }
+            else
+            {
+                holdLeft(model, progress);
+                holdRight(model, progress);
+            }
+        }
+        else
+        {
+            holdLeft(model, progress);
+            holdRight(model, progress);
+        }
+    }
+    
+    private void holdLeft(ModelPlayer model, float progress)
+    {
         model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
         model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(5F * progress);
         model.bipedLeftArm.rotationPointY = -1.5F * progress;
+    }
+    
+    private void holdRight(ModelPlayer model, float progress)
+    {
+        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
+        model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F * progress);
+        model.bipedRightArm.rotationPointY = -1.5F * progress;
     }
 
     public static class AnimationCounter
