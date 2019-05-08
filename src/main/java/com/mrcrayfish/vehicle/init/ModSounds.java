@@ -40,6 +40,8 @@ public class ModSounds
     public static SoundEvent vehicleDestroyed;
     public static SoundEvent vehicleThud;
     public static SoundEvent airWrenchGun;
+    public static SoundEvent tractorEngineMono;
+    public static SoundEvent tractorEngineStereo;
 
     public static void register()
     {
@@ -74,6 +76,8 @@ public class ModSounds
         vehicleDestroyed = registerSound("vehicle_destroyed");
         vehicleThud = registerSound("vehicle_thud");
         airWrenchGun = registerSound("air_wrench_gun");
+        tractorEngineMono = registerSound("tractor_engine_mono");
+        tractorEngineStereo = registerSound("tractor_engine_stereo");
     }
 
     private static SoundEvent registerSound(String soundNameIn)

@@ -91,5 +91,11 @@
     },
     "air_wrench_gun": {
         "sounds": [ {"name": "vehicle:air_wrench_gun"}]
+    },
+    "tractor_engine_mono": {
+        "sounds": [ {"name": "vehicle:tractor_engine_mono"}]
+    },
+    "tractor_engine_stereo": {
+        "sounds": [ {"name": "vehicle:tractor_engine_stereo"}]
     }
 }

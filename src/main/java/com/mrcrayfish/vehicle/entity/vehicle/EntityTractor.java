@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.SoundEvent;
@@ -42,13 +43,25 @@ public class EntityTractor extends EntityLandVehicle implements EntityRaytracer.
     @Override
     public SoundEvent getMovingSound()
     {
-        return null;
+        return ModSounds.tractorEngineMono;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return null;
+        return ModSounds.tractorEngineStereo;
+    }
+
+    @Override
+    public float getMinEnginePitch()
+    {
+        return 0.8F;
+    }
+
+    @Override
+    public float getMaxEnginePitch()
+    {
+        return 1.6F;
     }
 
     @Override
