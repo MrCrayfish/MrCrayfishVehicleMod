@@ -11,20 +11,24 @@ public class Wheel
     private float offsetY;
     private float offsetZ;
     private float width;
-    private float scale;
+    private float scaleX;
+    private float scaleY;
+    private float scaleZ;
     private Side side;
     private Position position;
 
     private boolean particles;
     private boolean render;
 
-    public Wheel(Side side, Position position, float width, float scale, float offsetX, float offsetY, float offsetZ, boolean particles, boolean render)
+    public Wheel(Side side, Position position, float width, float scaleX, float scaleY, float scaleZ, float offsetX, float offsetY, float offsetZ, boolean particles, boolean render)
     {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.offsetZ = offsetZ;
         this.width = width;
-        this.scale = scale;
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        this.scaleZ = scaleZ;
         this.side = side;
         this.position = position;
         this.particles = particles;
@@ -60,9 +64,19 @@ public class Wheel
         return width;
     }
 
-    public float getScale()
+    public float getScaleX()
     {
-        return scale;
+        return scaleX;
+    }
+
+    public float getScaleY()
+    {
+        return scaleY;
+    }
+
+    public float getScaleZ()
+    {
+        return scaleZ;
     }
 
     public Side getSide()

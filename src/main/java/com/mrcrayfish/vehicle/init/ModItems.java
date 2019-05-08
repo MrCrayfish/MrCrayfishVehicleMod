@@ -37,6 +37,7 @@ public class ModItems
     public static final Item SPORTS_PLANE_PROPELLER;
     public static final Item GOLF_CART_BODY;
     public static final Item OFF_ROADER_BODY;
+    public static final Item TRACTOR_BODY;
 
     public static final Item TRAILER_BODY;
     public static final Item TOW_BAR;
@@ -93,6 +94,7 @@ public class ModItems
         SPORTS_PLANE_PROPELLER = new ItemPart("sports_plane_propeller").setColored();
         GOLF_CART_BODY = new ItemPart("golf_cart_body").setColored();
         OFF_ROADER_BODY = new ItemPart("off_roader_body").setColored();
+        TRACTOR_BODY = new ItemPart("tractor_body").setColored();
 
         TRAILER_BODY = new ItemPart("trailer_body").setColored();
         TOW_BAR = new ItemPart("tow_bar");
@@ -152,6 +154,7 @@ public class ModItems
         register(SPORTS_PLANE_PROPELLER);
         register(GOLF_CART_BODY);
         register(OFF_ROADER_BODY);
+        register(TRACTOR_BODY);
 
         register(TRAILER_BODY);
         register(TOW_BAR);

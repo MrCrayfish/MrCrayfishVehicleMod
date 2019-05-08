@@ -244,6 +244,22 @@ public class VehicleProperties
         properties.setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5));
         VehicleProperties.setProperties(EntitySportsPlane.class, properties);
 
+        /* Tractor */
+        properties = new VehicleProperties();
+        properties.setAxleOffset(-3.0F);
+        properties.setWheelOffset(5.5F);
+        properties.setBodyPosition(new PartPosition(0, 0, 0.25, 0, 0, 0, 1.0));
+        properties.setEnginePosition(new PartPosition(0, 6, 8.775, 0, 0, 0, 0.85));
+        properties.setFuelPortPosition(new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25));
+        properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
+        properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
+        properties.setTowBarPosition(new Vec3d(0.0, 0.0, -24.5));
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 1.5F, 2.25F, 2.25F, true, true);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 1.5F, 2.25F, 2.25F, true, true);
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 3.0F, 4.5F, 4.5F, true, true);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 3.0F, 4.5F, 4.5F, true, true);
+        VehicleProperties.setProperties(EntityTractor.class, properties);
+
         /* Fertilizer Trailer */
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
@@ -342,7 +358,7 @@ public class VehicleProperties
         {
             wheels = new ArrayList<>();
         }
-        wheels.add(new Wheel(side, position, 2.0F, scale, offsetX, 0F, offsetZ, particles, render));
+        wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, 0F, offsetZ, particles, render));
     }
 
     public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scale, boolean particles, boolean render)
@@ -351,7 +367,16 @@ public class VehicleProperties
         {
             wheels = new ArrayList<>();
         }
-        wheels.add(new Wheel(side, position, 2.0F, scale, offsetX, offsetY, offsetZ, particles, render));
+        wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, offsetY, offsetZ, particles, render));
+    }
+
+    public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scaleX, float scaleY, float scaleZ, boolean particles, boolean render)
+    {
+        if(wheels == null)
+        {
+            wheels = new ArrayList<>();
+        }
+        wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, particles, render));
     }
 
     @Nullable
