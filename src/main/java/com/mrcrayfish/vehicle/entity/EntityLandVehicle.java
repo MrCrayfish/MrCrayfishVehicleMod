@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.client.Minecraft;
@@ -41,6 +42,13 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     }
 
     @Override
+    public void onUpdateVehicle()
+    {
+        super.onUpdateVehicle();
+        this.updateWheels();
+    }
+
+    @Override
     public void updateVehicle()
     {
         prevAdditionalYaw = additionalYaw;
@@ -48,7 +56,6 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         prevRearWheelRotation = rearWheelRotation;
 
         this.updateDrifting();
-        this.updateWheels();
     }
 
     @Override
@@ -131,9 +138,26 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
 
     public void updateWheels()
     {
-        float speedPercent = this.getNormalSpeed();
-        this.frontWheelRotation -= (68F * speedPercent);
-        this.rearWheelRotation -= (68F * speedPercent);
+        VehicleProperties properties = VehicleProperties.getProperties(this.getClass());
+        double wheelCircumference = 16.0;
+        double vehicleScale = properties.getBodyPosition().getScale();
+        double speed = this.getSpeed();
+
+        Wheel frontWheel = properties.getFirstFrontWheel();
+        if(frontWheel != null)
+        {
+            double frontWheelCircumference = wheelCircumference * vehicleScale * frontWheel.getScaleY();
+            double rotation = (speed * 16) / frontWheelCircumference;
+            this.frontWheelRotation -= rotation * 20F;
+        }
+
+        Wheel rearWheel = properties.getFirstRearWheel();
+        if(rearWheel != null)
+        {
+            double rearWheelCircumference = wheelCircumference * vehicleScale * rearWheel.getScaleY();
+            double rotation = (speed * 16) / rearWheelCircumference;
+            this.rearWheelRotation -= rotation * 20F;
+        }
     }
 
     @Override

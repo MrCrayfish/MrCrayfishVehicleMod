@@ -385,6 +385,18 @@ public class VehicleProperties
         return wheels;
     }
 
+    @Nullable
+    public Wheel getFirstFrontWheel()
+    {
+        return wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.FRONT).findFirst().orElse(null);
+    }
+
+    @Nullable
+    public Wheel getFirstRearWheel()
+    {
+        return wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.REAR).findFirst().orElse(null);
+    }
+
     public void setBodyPosition(PartPosition bodyPosition)
     {
         this.bodyPosition = bodyPosition;
