@@ -28,6 +28,7 @@ public class EntityTractor extends EntityLandVehicle implements EntityRaytracer.
     {
         super(worldIn);
         this.setMaxSpeed(6);
+        this.setTurnSensitivity(3);
         this.setSize(1.5F, 1.5F);
     }
 
