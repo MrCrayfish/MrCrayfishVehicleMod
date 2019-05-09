@@ -132,11 +132,6 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     public void updateWheels()
     {
         float speedPercent = this.getNormalSpeed();
-        AccelerationDirection acceleration = this.getAcceleration();
-        if(this.getControllingPassenger() != null && acceleration == AccelerationDirection.FORWARD)
-        {
-            this.rearWheelRotation -= 68F * (1.0 - speedPercent);
-        }
         this.frontWheelRotation -= (68F * speedPercent);
         this.rearWheelRotation -= (68F * speedPercent);
     }
