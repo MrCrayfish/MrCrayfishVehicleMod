@@ -142,6 +142,14 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(ModItems.PANEL, 32));
         mapBuilder.put(EntitySportsPlane.class, builder.build());
 
+        /* Tractor */
+        builder = new Builder();
+        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 128));
+        builder.addMaterial(new ItemStack(Blocks.WOOL, 4, 15));
+        builder.addMaterial(new ItemStack(Items.REDSTONE, 8));
+        builder.addMaterial(new ItemStack(ModItems.PANEL, 16));
+        mapBuilder.put(EntityTractor.class, builder.build());
+
         /* Vehicle Trailer */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Items.IRON_INGOT, 48));
