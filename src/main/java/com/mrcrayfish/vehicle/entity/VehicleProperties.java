@@ -250,7 +250,7 @@ public class VehicleProperties
         properties.setWheelOffset(5.5F);
         properties.setBodyPosition(new PartPosition(0, 0, 0.25, 0, 0, 0, 1.0));
         properties.setEnginePosition(new PartPosition(0, 6, 8.775, 0, 0, 0, 0.85));
-        properties.setFuelPortPosition(new PartPosition(-12.25, 8.5, -7.3, 0, -90, 0, 0.25));
+        properties.setFuelPortPosition(new PartPosition(-6.25, 9.5, -1.75, 0, -90, 0, 0.3));
         properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -24.5));
