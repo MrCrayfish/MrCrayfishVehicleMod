@@ -93,6 +93,7 @@ entity.vehicle.storage_trailer.name=Remorque de Stockage
 entity.vehicle.seeder_trailer.name=Semoir
 entity.vehicle.fertilizer_trailer.name=Fertiliseur
 entity.vehicle.fluid_trailer.name=Remorque-Réservoir
+entity.vehicle.tractor.name=Tractor
 
 vehicle.config.title=Configuration de MrCrayfish's Vehicle Mod
 vehicle.config.client=Client
