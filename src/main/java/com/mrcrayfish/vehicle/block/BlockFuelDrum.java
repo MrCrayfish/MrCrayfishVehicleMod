@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
@@ -25,6 +26,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -94,14 +96,21 @@ public class BlockFuelDrum extends BlockRotatedObject
                     IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
                     if(handler != null)
                     {
-                        FluidStack fluidStack = handler.drain(50, true);
-                        if(fluidStack != null)
+                        if(handler instanceof FluidTank)
                         {
-                            int remaining = jerryCan.fill(stack, fluidStack.amount);
-                            if(remaining > 0)
+                            FluidTank tank = (FluidTank) handler;
+                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                                return false;
+
+                            FluidStack fluidStack = handler.drain(50, true);
+                            if(fluidStack != null)
                             {
-                                fluidStack.amount = remaining;
-                                handler.fill(fluidStack, true);
+                                int remaining = jerryCan.fill(stack, fluidStack.amount);
+                                if(remaining > 0)
+                                {
+                                    fluidStack.amount = remaining;
+                                    handler.fill(fluidStack, true);
+                                }
                             }
                         }
                     }
