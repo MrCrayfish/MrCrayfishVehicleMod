@@ -121,4 +121,10 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     {
         return false;
     }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
+    }
 }

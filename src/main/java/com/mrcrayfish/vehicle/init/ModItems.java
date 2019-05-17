@@ -75,7 +75,7 @@ public class ModItems
         DUNE_BUGGY_HANDLE_BAR = new ItemPart("dune_buggy_handle_bar");
         GO_KART_BODY = new ItemPart("go_kart_body").setColored();
         GO_KART_STEERING_WHEEL = new ItemPart("go_kart_steering_wheel");
-        SHOPPING_CART_BODY = new ItemPart("shopping_cart_body");
+        SHOPPING_CART_BODY = new ItemPart("shopping_cart_body").setColored();
         MINI_BIKE_BODY = new ItemPart("mini_bike_body").setColored();
         MINI_BIKE_HANDLE_BAR = new ItemPart("mini_bike_handle_bar").setColored();
         BUMPER_CAR_BODY = new ItemPart("bumper_car_body").setColored();
