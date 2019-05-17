@@ -265,18 +265,6 @@ public class GuiWorkstation extends GuiContainer
     {
         if(button.id == 1)
         {
-            if(currentVehicle + 1 >= VEHICLES.size())
-            {
-                this.loadVehicle(0);
-            }
-            else
-            {
-                this.loadVehicle(currentVehicle + 1);
-            }
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-        }
-        else if(button.id == 2)
-        {
             if(currentVehicle - 1 < 0)
             {
                 this.loadVehicle(VEHICLES.size() - 1);
@@ -284,6 +272,18 @@ public class GuiWorkstation extends GuiContainer
             else
             {
                 this.loadVehicle(currentVehicle - 1);
+            }
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        }
+        else if(button.id == 2)
+        {
+            if(currentVehicle + 1 >= VEHICLES.size())
+            {
+                this.loadVehicle(0);
+            }
+            else
+            {
+                this.loadVehicle(currentVehicle + 1);
             }
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }
