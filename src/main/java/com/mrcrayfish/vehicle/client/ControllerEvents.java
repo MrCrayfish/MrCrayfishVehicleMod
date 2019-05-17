@@ -77,10 +77,6 @@ public class ControllerEvents
                     {
                         event.setCanceled(true);
                     }
-                    if(EntityRaytracer.performRayTrace(event.getButton() == Buttons.LEFT_TRIGGER))
-                    {
-                        event.setCanceled(true);
-                    }
                     break;
                 default:
                     break;
