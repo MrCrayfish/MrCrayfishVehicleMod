@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
@@ -129,7 +130,7 @@ public class CommonEvents
 
     public static boolean pickUpVehicle(World world, EntityPlayer player, EnumHand hand, Entity targetEntity)
     {
-        if(hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && !player.isSpectator())
+        if(hand == EnumHand.MAIN_HAND && !world.isRemote && player.isSneaking() && !player.isSpectator() && VehicleConfig.SERVER.pickUpVehicles)
         {
             if(player.getDataManager().get(HELD_VEHICLE).hasNoTags())
             {

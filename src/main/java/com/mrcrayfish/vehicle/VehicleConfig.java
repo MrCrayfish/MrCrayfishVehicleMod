@@ -50,6 +50,11 @@ public class VehicleConfig
         @Config.Comment("The amount of ticks to wait before syncing trailer inventory to tracking clients. If the value is set to 0 or less, the inventory will not sync and will save on network usage.")
         @Config.LangKey(Reference.MOD_ID + ".config.server.trailer_inventory_sync_cooldown")
         public int trailerInventorySyncCooldown = 20;
+
+        @Config.Name("Pickup Vehicles")
+        @Config.Comment("Allows players to pick up vehicles by crouching and right clicking")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.pick_up_vehicles")
+        public boolean pickUpVehicles = true;
     }
 
     public static class Client

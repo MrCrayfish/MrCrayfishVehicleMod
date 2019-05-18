@@ -137,6 +137,8 @@ vehicle.config.server.trailer_sync_cooldown=Trailer Sync Cooldown
 vehicle.config.server.trailer_sync_cooldown.tooltip=The amount of ticks to wait before syncing data to clients about the trailer connection. This is important for smooth trailer movement on client side.
 vehicle.config.server.trailer_inventory_sync_cooldown=Trailer Inventory Sync Cooldown
 vehicle.config.server.trailer_inventory_sync_cooldown.tooltip=The amount of ticks to wait before syncing trailer inventory to tracking clients. If the value is set to 0 or less, the inventory will not sync and will save on network usage.
+vehicle.config.server.pick_up_vehicles=Pickup Vehicle
+vehicle.config.server.pick_up_vehicles.tooltip=Allows players to pick up vehicles by crouching and right clicking
 
 vehicle.chat.pump.power=§bPower Mode:§r %s
 vehicle.chat.pump.power.off=requires signal off
