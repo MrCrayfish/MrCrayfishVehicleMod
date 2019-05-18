@@ -1,5 +1,9 @@
 itemGroup.tabVehicle=MrCrayfish's Vehicle Mod
 
+vehicle.engine_type.small.name=Small Engine
+vehicle.engine_type.large.name=Large Engine
+vehicle.engine_type.electric.name=Electric Engine
+
 vehicle.engine_tier.wood.name=Wood Tier
 vehicle.engine_tier.stone.name=Stone Tier
 vehicle.engine_tier.iron.name=Iron Tier
@@ -145,3 +149,10 @@ vehicle.status.key_created=Key successfully bound to vehicle
 vehicle.status.not_lockable=This vehicle cannot be locked
 vehicle.status.key_invalid=This key does not fit this vehicle
 vehicle.status.key_removed=Vehicle is no longer locked
+
+vehicle.tooltip.optional=Optional
+vehicle.tooltip.required=Required
+vehicle.tooltip.not_applicable=Not applicable
+vehicle.tooltip.paint_color=Paint Color
+vehicle.tooltip.engine=Engine
+vehicle.tooltip.wheels=Wheels

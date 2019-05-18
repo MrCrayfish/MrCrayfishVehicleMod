@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.gui;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.container.ContainerWorkstation;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -24,6 +25,7 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.IInventory;
@@ -32,6 +34,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.Loader;
@@ -371,9 +374,34 @@ public class GuiWorkstation extends GuiContainer
             }
         }
 
-        this.drawSlotTooltip("Paint Color", startX, startY, 186, 29, mouseX, mouseY, 0);
-        this.drawSlotTooltip("Engine", startX, startY, 206, 29, mouseX, mouseY, 1);
-        this.drawSlotTooltip("Wheels", startX, startY, 226, 29, mouseX, mouseY, 2);
+        EntityVehicle vehicle = cachedVehicle[currentVehicle];
+        if(vehicle.canBeColored())
+        {
+            this.drawSlotTooltip(Lists.newArrayList(TextFormatting.AQUA + I18n.format("vehicle.tooltip.optional"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.paint_color")), startX, startY, 186, 29, mouseX, mouseY, 0);
+        }
+        else
+        {
+            this.drawSlotTooltip(Lists.newArrayList(I18n.format("vehicle.tooltip.paint_color"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.not_applicable")), startX, startY, 186, 29, mouseX, mouseY, 0);
+        }
+
+        if(vehicle instanceof EntityPoweredVehicle && ((EntityPoweredVehicle) vehicle).getEngineType() != EngineType.NONE)
+        {
+            String engineName = ((EntityPoweredVehicle) vehicle).getEngineType().getEngineName();
+            this.drawSlotTooltip(Lists.newArrayList(TextFormatting.RED + I18n.format("vehicle.tooltip.required"), TextFormatting.GRAY + engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
+        }
+        else
+        {
+            this.drawSlotTooltip(Lists.newArrayList(I18n.format("vehicle.tooltip.engine"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.not_applicable")), startX, startY, 206, 29, mouseX, mouseY, 1);
+        }
+
+        if(vehicle instanceof EntityPoweredVehicle && ((EntityPoweredVehicle) vehicle).canChangeWheels())
+        {
+            this.drawSlotTooltip(Lists.newArrayList(TextFormatting.RED + I18n.format("vehicle.tooltip.required"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
+        }
+        else
+        {
+            this.drawSlotTooltip(Lists.newArrayList(I18n.format("vehicle.tooltip.wheels"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.not_applicable")), startX, startY, 226, 29, mouseX, mouseY, 2);
+        }
     }
 
     @Override
@@ -398,10 +426,11 @@ public class GuiWorkstation extends GuiContainer
         this.drawTexturedModalRect(startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
 
         /* Slots */
-        this.drawSlot(startX, startY, 186, 29, 80, 0, 0, false);
-        this.drawSlot(startX, startY, 206, 29, 80, 16, 1, !validEngine);
+        this.drawSlot(startX, startY, 186, 29, 80, 0, 0, false, cachedVehicle[currentVehicle].canBeColored());
+        boolean needsEngine = cachedVehicle[currentVehicle] instanceof EntityPoweredVehicle && ((EntityPoweredVehicle) cachedVehicle[currentVehicle]).getEngineType() != EngineType.NONE;
+        this.drawSlot(startX, startY, 206, 29, 80, 16, 1, !validEngine, needsEngine);
         boolean needsWheels = cachedVehicle[currentVehicle] instanceof EntityPoweredVehicle && ((EntityPoweredVehicle) cachedVehicle[currentVehicle]).canChangeWheels();
-        this.drawSlot(startX, startY, 226, 29, 80, 32, 2, needsWheels && workstation.getStackInSlot(2).isEmpty());
+        this.drawSlot(startX, startY, 226, 29, 80, 32, 2, needsWheels && workstation.getStackInSlot(2).isEmpty(), needsWheels);
 
         this.checkBoxMaterials.draw(mc, guiLeft, guiTop);
 
@@ -482,23 +511,30 @@ public class GuiWorkstation extends GuiContainer
         }
     }
 
-    private void drawSlot(int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required)
+    private void drawSlot(int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required, boolean applicable)
     {
         int textureOffset = required ? 18 : 0;
         this.drawTexturedModalRect(startX + x, startY + y, 128 + textureOffset, 0, 18, 18);
         if(workstation.getStackInSlot(slot).isEmpty())
         {
-            this.drawTexturedModalRect(startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), iconY, 16, 16);
+            if(applicable)
+            {
+                this.drawTexturedModalRect(startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), iconY, 16, 16);
+            }
+            else
+            {
+                this.drawTexturedModalRect(startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), 48, 16, 16);
+            }
         }
     }
 
-    private void drawSlotTooltip(String title, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
+    private void drawSlotTooltip(List<String> text, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
     {
         if(workstation.getStackInSlot(slot).isEmpty())
         {
             if(MouseHelper.isMouseWithin(mouseX, mouseY, startX + x, startY + y, 18, 18))
             {
-                this.drawHoveringText(Collections.singletonList(title), mouseX, mouseY, this.mc.fontRenderer);
+                this.drawHoveringText(text, mouseX, mouseY, this.mc.fontRenderer);
             }
         }
     }
