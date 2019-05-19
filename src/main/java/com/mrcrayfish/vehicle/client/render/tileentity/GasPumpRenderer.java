@@ -49,7 +49,10 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
         EntityVehicle vehicle = vehicles.get(0);
         VehicleProperties properties = VehicleProperties.getProperties(vehicle.getClass());
         PartPosition position = properties.getFuelPortPosition();
-        Vec3d fuelVec = vehicle.getPartPositionAbsoluteVec(position);
+        if(position == null)
+            return;
+
+        Vec3d fuelVec = vehicle.getPartPositionAbsoluteVec(position, partialTicks);
         double fuelX = (double) blockPos.getX() - fuelVec.x;
         double fuelY = (double) blockPos.getY() - fuelVec.y;
         double fuelZ = (double) blockPos.getZ() - fuelVec.z;
@@ -67,7 +70,7 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
             Vec3d v = Minecraft.getMinecraft().player.getLook(partialTicks);
             HermiteInterpolator spline = new HermiteInterpolator(Lists.newArrayList(
                     new HermiteInterpolator.Point(new Vec3d(pos[0], 0.55, pos[1]), new Vec3d(0, -5, 0)),
-                    new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, 0, fuelRot.z * 3))
+                    new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
             ));
 
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.5 + v.y / 2, -z + v.z / 2), new Vec3d(v.x * 5, v.y, v.z * 5))

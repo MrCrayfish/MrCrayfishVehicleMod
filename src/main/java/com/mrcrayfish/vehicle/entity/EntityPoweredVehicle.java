@@ -1000,7 +1000,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     {
         if(!this.getKeyStack().isEmpty())
         {
-            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getProperties().getKeyPortPosition());
+            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getProperties().getKeyPortPosition(), 1F);
             world.spawnEntity(new EntityItem(world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
             this.setKeyStack(ItemStack.EMPTY);
         }

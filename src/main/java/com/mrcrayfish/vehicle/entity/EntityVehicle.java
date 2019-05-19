@@ -594,19 +594,26 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
      * @param position the position definition of the part
      * @return a Vec3d containing the exact location
      */
-    public Vec3d getPartPositionAbsoluteVec(PartPosition position)
+    public Vec3d getPartPositionAbsoluteVec(PartPosition position, float partialTicks)
     {
         VehicleProperties properties = this.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        Vec3d partVec = new Vec3d(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        Vec3d partVec = Vec3d.ZERO;
+        partVec = partVec.addVector(0, 0.5, 0);
+        partVec = partVec.scale(position.getScale());
+        partVec = partVec.addVector(0, -0.5, 0);
+        partVec = partVec.addVector(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
         partVec = partVec.addVector(0, properties.getWheelOffset() * 0.0625, 0);
         partVec = partVec.addVector(0, properties.getAxleOffset() * 0.0625, 0);
         partVec = partVec.addVector(0, 0.5, 0);
         partVec = partVec.scale(bodyPosition.getScale());
         partVec = partVec.addVector(0, -0.5, 0);
+        partVec = partVec.addVector(0, 0.5, 0);
         partVec = partVec.addVector(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-        partVec = partVec.rotateYaw(-this.rotationYaw * 0.017453292F);
-        partVec = partVec.add(this.getPositionVector());
+        partVec = partVec.rotateYaw(-(this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks) * 0.017453292F);
+        partVec = partVec.addVector(this.prevPosX + (this.posX - this.prevPosX) * partialTicks, 0, 0);
+        partVec = partVec.addVector(0, this.prevPosY + (this.posY - this.prevPosY) * partialTicks, 0);
+        partVec = partVec.addVector(0, 0, this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks);
         return partVec;
     }
 
