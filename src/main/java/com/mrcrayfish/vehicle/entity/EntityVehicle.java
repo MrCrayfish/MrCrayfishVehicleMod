@@ -594,7 +594,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
      * @param position the position definition of the part
      * @return a Vec3d containing the exact location
      */
-    protected Vec3d getPartPositionAbsoluteVec(PartPosition position)
+    public Vec3d getPartPositionAbsoluteVec(PartPosition position)
     {
         VehicleProperties properties = this.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();

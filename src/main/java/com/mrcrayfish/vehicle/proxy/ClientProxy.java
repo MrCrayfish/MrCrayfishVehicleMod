@@ -13,10 +13,7 @@ import com.mrcrayfish.vehicle.client.gui.GuiEditVehicle;
 import com.mrcrayfish.vehicle.client.gui.GuiStorage;
 import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.*;
-import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
-import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
-import com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer;
-import com.mrcrayfish.vehicle.client.render.tileentity.VehicleCrateRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.*;
@@ -27,10 +24,7 @@ import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.item.ItemKey;
 import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
-import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
-import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
+import com.mrcrayfish.vehicle.tileentity.*;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -116,6 +110,7 @@ public class ClientProxy implements Proxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityFuelDrum.class, new FuelDrumRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVehicleCrate.class, new VehicleCrateRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasPump.class, new GasPumpRenderer());
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);

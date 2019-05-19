@@ -17,7 +17,7 @@ public class CollisionHelper
         return new AxisAlignedBB(fixedBounds[0], bounds.y1, fixedBounds[1], fixedBounds[2], bounds.y2, fixedBounds[3]);
     }
 
-    private static double[] fixRotation(EnumFacing facing, double x1, double z1, double x2, double z2)
+    public static double[] fixRotation(EnumFacing facing, double x1, double z1, double x2, double z2)
     {
         switch(facing)
         {
