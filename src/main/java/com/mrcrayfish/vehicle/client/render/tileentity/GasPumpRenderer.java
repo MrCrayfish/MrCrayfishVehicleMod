@@ -37,7 +37,7 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
         BlockPos blockPos = te.getPos();
         IBlockState state = te.getWorld().getBlockState(blockPos);
         boolean top = state.getValue(BlockGasPump.TOP);
-        if(state.getBlock() != ModBlocks.GAS_PUMP || !top || te.getFuelingEntity() == null)
+        if(state.getBlock() != ModBlocks.GAS_PUMP || !top)
             return;
 
         EnumFacing facing = state.getValue(BlockGasPump.FACING);
@@ -65,29 +65,39 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
         {
             GlStateManager.translate(x, y, z);
 
-            ItemStack stack = new ItemStack(Blocks.CONCRETE, 1, 15);
-            IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
+            HermiteInterpolator.Point destPoint;
+            if(te.getFuelingEntity() != null)
+            {
+                EntityPlayer entity = te.getFuelingEntity();
+                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
+                double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
+                double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
+                float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
+                Vec3d lookVec = Vec3d.fromPitchYaw(0F, renderYawOffset);
+                Vec3d hoseVec = new Vec3d(-0.3875, 0, 0.0625).rotateYaw(-renderYawOffset * 0.017453292F);
+                destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
+            }
+            else
+            {
+                double[] destPos = CollisionHelper.fixRotation(facing, 0.35, 1.078125, 0.35, 1.078125);
+                destPoint = new HermiteInterpolator.Point(new Vec3d(destPos[0], 0.5625, destPos[1]), new Vec3d(0, 5, 0));
+            }
 
-            EntityPlayer entity = te.getFuelingEntity();
-            Vec3d v = entity.getLook(partialTicks);
-            double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
-            double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
-            double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
-            HermiteInterpolator spline = new HermiteInterpolator(Lists.newArrayList(
-                    new HermiteInterpolator.Point(new Vec3d(pos[0], 0.55, pos[1]), new Vec3d(0, -5, 0)),
-                    new HermiteInterpolator.Point(new Vec3d(-playerX + v.x / 2, -playerY + 1.25, -playerZ + v.z / 2), new Vec3d(v.x * 5, 0, v.z * 5))
-            ));
+            HermiteInterpolator spline = new HermiteInterpolator(Lists.newArrayList(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.5625, pos[1]), new Vec3d(0, -5, 0)), destPoint));
 
             //new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.5 + v.y / 2, -z + v.z / 2), new Vec3d(v.x * 5, v.y, v.z * 5))
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.25, -z + v.z / 2), new Vec3d(-x + v.x * 10, -y, -z + v.z * 10))
+
+            ItemStack stack = new ItemStack(Blocks.CONCRETE, 1, 15);
+            IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
 
             GlStateManager.pushMatrix();
             {
                 int steps = 100;
                 for(int i = 0; i < spline.getSize() - 1; i++)
                 {
-                    for(int j = 0; j < steps; j++)
+                    for(int j = 0; j <= steps; j++)
                     {
                         float percent = j / (float) steps;
                         HermiteInterpolator.Result r = spline.get(i, percent);
@@ -95,7 +105,7 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
                         GlStateManager.translate(r.getPoint().x, r.getPoint().y, r.getPoint().z);
                         GlStateManager.rotate((float) Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z)), 0, 1, 0);
                         GlStateManager.rotate((float) Math.toDegrees(Math.asin(-r.getDir().normalize().y)), 1, 0, 0);
-                        GlStateManager.scale(0.1, 0.1, 0.1);
+                        GlStateManager.scale(0.075, 0.075, 0.075);
                         RenderUtil.renderItemModel(stack, model, ItemCameraTransforms.TransformType.NONE);
                         GlStateManager.popMatrix();
                     }

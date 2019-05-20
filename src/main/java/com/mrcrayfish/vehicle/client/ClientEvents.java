@@ -178,12 +178,6 @@ public class ClientEvents
                 return;
             }
         }
-
-        if(ridingEntity instanceof EntityAluminumBoat)
-        {
-            EntityPoweredVehicle vehicle = (EntityPoweredVehicle) ridingEntity;
-
-        }
     }
 
     @SubscribeEvent
@@ -196,6 +190,15 @@ public class ClientEvents
 
         Entity ridingEntity = player.getRidingEntity();
         ModelPlayer model = event.getModelPlayer();
+
+        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        {
+            boolean rightHanded = player.getPrimaryHand() == EnumHandSide.RIGHT;
+            if(rightHanded)
+            {
+                model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
+            }
+        }
 
         if(!player.isRiding())
         {
