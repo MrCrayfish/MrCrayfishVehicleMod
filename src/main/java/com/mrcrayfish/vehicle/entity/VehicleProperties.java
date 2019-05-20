@@ -420,11 +420,12 @@ public class VehicleProperties
     public void setFuelPortPosition(PartPosition fuelPortPosition)
     {
         this.fuelPortPosition = fuelPortPosition;
-        this.fuelPortLidPosition = new PartPosition(fuelPortPosition.getX(),
+        this.fuelPortLidPosition = new PartPosition(
+                fuelPortPosition.getX() - 6 * fuelPortPosition.getScale(),
                 fuelPortPosition.getY(),
-                fuelPortPosition.getZ(),
+                fuelPortPosition.getZ() - 5 * fuelPortPosition.getScale(),
                 fuelPortPosition.getRotX(),
-                fuelPortPosition.getRotY() - 110,
+                fuelPortPosition.getRotY() - 90,
                 fuelPortPosition.getRotZ(),
                 fuelPortPosition.getScale());
     }
