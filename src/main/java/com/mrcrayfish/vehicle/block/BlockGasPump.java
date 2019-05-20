@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -28,6 +29,28 @@ public class BlockGasPump extends BlockRotatedObject
         super(Material.ANVIL, "gas_pump");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP, false));
         this.setHardness(1.0F);
+    }
+
+    @Override
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing face, float hitX, float hitY, float hitZ)
+    {
+        if(!worldIn.isRemote && state.getValue(TOP))
+        {
+            TileEntity tileEntity = worldIn.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityGasPump)
+            {
+                TileEntityGasPump gasPump = (TileEntityGasPump) tileEntity;
+                if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerIn.getEntityId())
+                {
+                    gasPump.setFuelingEntity(null);
+                }
+                else if(state.getValue(FACING).rotateY().equals(face))
+                {
+                    gasPump.setFuelingEntity(playerIn);
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -88,7 +111,7 @@ public class BlockGasPump extends BlockRotatedObject
     @Override
     public boolean hasTileEntity(IBlockState state)
     {
-        return true;
+        return state.getValue(TOP);
     }
 
     @Nullable

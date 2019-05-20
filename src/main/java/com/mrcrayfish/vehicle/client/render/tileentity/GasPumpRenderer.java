@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -36,13 +37,13 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
         BlockPos blockPos = te.getPos();
         IBlockState state = te.getWorld().getBlockState(blockPos);
         boolean top = state.getValue(BlockGasPump.TOP);
-        if(state.getBlock() != ModBlocks.GAS_PUMP || !top)
+        if(state.getBlock() != ModBlocks.GAS_PUMP || !top || te.getFuelingEntity() == null)
             return;
 
         EnumFacing facing = state.getValue(BlockGasPump.FACING);
         double[] pos = CollisionHelper.fixRotation(facing, 0.640625, 1.078125, 0.640625, 1.078125);
 
-        List<EntityVehicle> vehicles = te.getWorld().getEntitiesWithinAABB(EntityVehicle.class, new AxisAlignedBB(te.getPos()).grow(5.0));
+       /* List<EntityVehicle> vehicles = te.getWorld().getEntitiesWithinAABB(EntityVehicle.class, new AxisAlignedBB(te.getPos()).grow(5.0));
         if(vehicles.size() == 0)
             return;
 
@@ -58,7 +59,7 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
         double fuelZ = (double) blockPos.getZ() - fuelVec.z;
 
         Vec3d fuelRot = Vec3d.fromPitchYaw((float) position.getRotX(), (float) position.getRotY());
-        fuelRot = fuelRot.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)).normalize();
+        fuelRot = fuelRot.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)).normalize();*/
 
         GlStateManager.pushMatrix();
         {
@@ -67,12 +68,17 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
             ItemStack stack = new ItemStack(Blocks.CONCRETE, 1, 15);
             IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(stack);
 
-            Vec3d v = Minecraft.getMinecraft().player.getLook(partialTicks);
+            EntityPlayer entity = te.getFuelingEntity();
+            Vec3d v = entity.getLook(partialTicks);
+            double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
+            double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
+            double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
             HermiteInterpolator spline = new HermiteInterpolator(Lists.newArrayList(
                     new HermiteInterpolator.Point(new Vec3d(pos[0], 0.55, pos[1]), new Vec3d(0, -5, 0)),
-                    new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
+                    new HermiteInterpolator.Point(new Vec3d(-playerX + v.x / 2, -playerY + 1.25, -playerZ + v.z / 2), new Vec3d(v.x * 5, 0, v.z * 5))
             ));
 
+            //new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.5 + v.y / 2, -z + v.z / 2), new Vec3d(v.x * 5, v.y, v.z * 5))
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.25, -z + v.z / 2), new Vec3d(-x + v.x * 10, -y, -z + v.z * 10))
 

@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
@@ -247,6 +248,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public void fuelVehicle(EntityPlayer player, EnumHand hand)
     {
+        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        {
+            this.addFuel(100);
+            return;
+        }
+
         ItemStack stack = player.getHeldItem(hand);
         if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
         {

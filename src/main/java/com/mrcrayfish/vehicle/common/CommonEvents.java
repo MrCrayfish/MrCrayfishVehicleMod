@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.common;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleConfig;
@@ -8,10 +9,13 @@ import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
+import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
@@ -47,6 +51,7 @@ public class CommonEvents
     public static final DataParameter<Boolean> PUSHING_CART = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
     public static final DataParameter<NBTTagCompound> HELD_VEHICLE = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.COMPOUND_TAG);
     public static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.VARINT);
+    public static final DataParameter<Optional<BlockPos>> GAS_PUMP = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.OPTIONAL_BLOCK_POS);
 
     private static final List<String> IGNORE_ITEMS;
     private static final List<String> IGNORE_SOUNDS;
@@ -116,6 +121,7 @@ public class CommonEvents
             event.getEntity().getDataManager().register(PUSHING_CART, false);
             event.getEntity().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
             event.getEntity().getDataManager().register(TRAILER, -1);
+            event.getEntity().getDataManager().register(GAS_PUMP, Optional.absent());
         }
     }
 
@@ -405,6 +411,25 @@ public class CommonEvents
             {
                 this.dropVehicle(player);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public void onRightClick(PlayerInteractEvent.RightClickItem event)
+    {
+        if(event.getEntityPlayer().getDataManager().get(GAS_PUMP).isPresent())
+        {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public void onRightClick(PlayerInteractEvent.RightClickBlock event)
+    {
+        IBlockState state = event.getWorld().getBlockState(event.getPos());
+        if(state.getBlock() != ModBlocks.GAS_PUMP && event.getEntityPlayer().getDataManager().get(GAS_PUMP).isPresent())
+        {
+            event.setCanceled(true);
         }
     }
 }
