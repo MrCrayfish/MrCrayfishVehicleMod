@@ -7,10 +7,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -23,6 +25,17 @@ public class TileEntityGasPump extends TileEntitySynced implements ITickable
 {
     private int fuelingEntityId;
     private EntityPlayer fuelingEntity;
+
+    @Nullable
+    public FluidTank getTank()
+    {
+        TileEntity tileEntity = world.getTileEntity(pos.down());
+        if(tileEntity instanceof TileEntityGasPumpTank)
+        {
+            return ((TileEntityGasPumpTank) tileEntity).getFluidTank();
+        }
+        return null;
+    }
 
     public EntityPlayer getFuelingEntity()
     {

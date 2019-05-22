@@ -15,6 +15,7 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -28,6 +29,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -149,6 +151,50 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
                 }
                 GlStateManager.popMatrix();
             }
+
+            GlStateManager.pushMatrix();
+            {
+                GlStateManager.translate(0.5, 0, 0.5);
+                GlStateManager.rotate(facing.getHorizontalIndex() * -90F, 0, 1, 0);
+                GlStateManager.translate(-0.5, 0, -0.5);
+                GlStateManager.translate(0.5, 11 * 0.0625, 3 * 0.0625);
+                GlStateManager.rotate(180F, 0, 1, 0);
+
+                GlStateManager.translate(0F, 0F, 0.01F);
+
+                GlStateManager.pushMatrix();
+                {
+                    GlStateManager.scale(0.015F, -0.015F, 0.015F);
+                    GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
+                    GlStateManager.depthMask(false);
+                    FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+                    if(te.getTank() != null)
+                    {
+                        int amount = (int) Math.ceil(100 * (te.getTank().getFluidAmount() / (double) te.getTank().getCapacity()));
+                        String percent = String.format("%d%%", amount);
+                        int width = fontRenderer.getStringWidth(percent);
+                        fontRenderer.drawString(percent, -width / 2, 10, 16777215);
+                        GlStateManager.depthMask(true);
+                    }
+                }
+                GlStateManager.popMatrix();
+
+                GlStateManager.pushMatrix();
+                {
+                    GlStateManager.translate(0, 1 * 0.0625, 0);
+                    GlStateManager.scale(0.01F, -0.01F, 0.01F);
+                    GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
+                    GlStateManager.depthMask(false);
+                    FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;
+                    int width = fontRenderer.getStringWidth("Fuelium");
+                    fontRenderer.drawString("Fuelium", -width / 2, 10, 9761325);
+                    GlStateManager.depthMask(true);
+                }
+                GlStateManager.popMatrix();
+
+                GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+            }
+            GlStateManager.popMatrix();
         }
         GlStateManager.popMatrix();
     }
