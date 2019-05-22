@@ -178,6 +178,7 @@ public class VehicleProperties
         properties.setHeldOffset(new Vec3d(7.0, 2.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.65));
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.5F, true, true);
+        properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.4F, 14.5F, 1.3F, true, false);
         VehicleProperties.setProperties(EntityMoped.class, properties);
 
         /* Off Roader */
