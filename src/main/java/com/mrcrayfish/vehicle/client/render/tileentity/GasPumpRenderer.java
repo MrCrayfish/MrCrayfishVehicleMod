@@ -2,11 +2,13 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
+import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
 import com.mrcrayfish.vehicle.util.CollisionHelper;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -99,8 +101,8 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
             }
             else
             {
-                double[] destPos = CollisionHelper.fixRotation(facing, 0.35, 1.078125, 0.35, 1.078125);
-                destPoint = new HermiteInterpolator.Point(new Vec3d(destPos[0], 0.5625, destPos[1]), new Vec3d(0, 5, 0));
+                double[] destPos = CollisionHelper.fixRotation(facing, 0.345, 1.06, 0.345, 1.06);
+                destPoint = new HermiteInterpolator.Point(new Vec3d(destPos[0], 0.0625, destPos[1]), new Vec3d(0, 3, 0));
             }
 
             HermiteInterpolator spline = new HermiteInterpolator(Lists.newArrayList(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.5625, pos[1]), new Vec3d(0, -5, 0)), destPoint));
@@ -132,6 +134,21 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
                 }
             }
             GlStateManager.popMatrix();
+
+            if(te.getFuelingEntity() == null)
+            {
+                GlStateManager.pushMatrix();
+                {
+                    double[] destPos = CollisionHelper.fixRotation(facing, 0.29, 1.06, 0.29, 1.06);
+                    GlStateManager.translate(destPos[0], 0.5, destPos[1]);
+                    GlStateManager.rotate(facing.getHorizontalIndex() * -90F, 0, 1, 0);
+                    GlStateManager.rotate(180F, 0, 1, 0);
+                    GlStateManager.rotate(90F, 1, 0, 0);
+                    GlStateManager.scale(0.8, 0.8, 0.8);
+                    RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
+                }
+                GlStateManager.popMatrix();
+            }
         }
         GlStateManager.popMatrix();
     }
