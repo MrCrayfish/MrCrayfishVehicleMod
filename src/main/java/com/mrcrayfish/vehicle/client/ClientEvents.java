@@ -198,6 +198,7 @@ public class ClientEvents
                 model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
                 model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
                 model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(0F);
+                return;
             }
         }
 
