@@ -59,7 +59,7 @@ public class VehicleConfig
         @Config.Name("Max Hose Distance")
         @Config.Comment("The maximum distance before the hose from the gas pump or fluid hose breaks")
         @Config.LangKey(Reference.MOD_ID + ".config.server.max_hose_distance")
-        public double maxHoseDistance = 5.0;
+        public double maxHoseDistance = 6.0;
     }
 
     public static class Client
