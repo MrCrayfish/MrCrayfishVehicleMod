@@ -15,6 +15,8 @@ import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.*;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
+import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
+import com.mrcrayfish.vehicle.tileentity.TileEntityGasPumpTank;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Block;
@@ -40,6 +42,7 @@ import net.minecraft.nbt.NBTUtil;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -47,6 +50,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -250,7 +254,25 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     {
         if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
         {
-            this.addFuel(100);
+            BlockPos pos = player.getDataManager().get(CommonEvents.GAS_PUMP).get();
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(tileEntity instanceof TileEntityGasPump)
+            {
+                tileEntity = world.getTileEntity(pos.down());
+                if(tileEntity instanceof TileEntityGasPumpTank)
+                {
+                    TileEntityGasPumpTank gasPumpTank = (TileEntityGasPumpTank) tileEntity;
+                    FluidStack stack = gasPumpTank.getFluidTank().drain(200, true);
+                    if(stack != null)
+                    {
+                        stack.amount = this.addFuel(stack.amount);
+                        if(stack.amount > 0)
+                        {
+                            gasPumpTank.getFluidTank().fill(stack, true);
+                        }
+                    }
+                }
+            }
             return;
         }
 
