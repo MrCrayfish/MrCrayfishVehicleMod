@@ -40,10 +40,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -74,6 +71,7 @@ public class ClientEvents
     private int tickCounter;
     private boolean fueling;
     private double offsetPrev, offsetPrevPrev;
+    private boolean shouldRenderNozzle;
 
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
@@ -334,17 +332,33 @@ public class ClientEvents
         }
 
         EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent() && event.getHand() == EnumHand.MAIN_HAND)
+        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
         {
-            GlStateManager.pushMatrix();
-            boolean mainHand = event.getHand() == EnumHand.MAIN_HAND;
-            EnumHandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
-            int handOffset = handSide == EnumHandSide.RIGHT ? 1 : -1;
-            GlStateManager.translate((float) handOffset * 0.65F, -0.52F + 0.25F, -0.72F);
-            GlStateManager.rotate(45F, 1, 0, 0);
-            RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
-            GlStateManager.popMatrix();
-            event.setCanceled(true);
+            if(event.getSwingProgress() > 0)
+            {
+                shouldRenderNozzle = true;
+            }
+            if(event.getHand() == EnumHand.MAIN_HAND && shouldRenderNozzle)
+            {
+                if(event.getSwingProgress() > 0 && event.getSwingProgress() <= 0.25) return;
+                GlStateManager.pushMatrix();
+                boolean mainHand = event.getHand() == EnumHand.MAIN_HAND;
+                EnumHandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+                float f = -0.6F * MathHelper.sin(MathHelper.sqrt(event.getSwingProgress()) * (float) Math.PI);
+                float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt(event.getSwingProgress()) * ((float) Math.PI * 2F));
+                float f2 = -0.2F * MathHelper.sin(event.getSwingProgress() * (float) Math.PI);
+                int handOffset = handSide == EnumHandSide.RIGHT ? 1 : -1;
+                GlStateManager.translate((float) handOffset * f, f1, f2);
+                GlStateManager.translate((float) handOffset * 0.65F, -0.52F + 0.25F, -0.72F);
+                GlStateManager.rotate(45F, 1, 0, 0);
+                RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
+                GlStateManager.popMatrix();
+                event.setCanceled(true);
+            }
+        }
+        else
+        {
+            shouldRenderNozzle = false;
         }
     }
 
