@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -12,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -43,10 +45,12 @@ public class BlockGasPump extends BlockRotatedObject
                 if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerIn.getEntityId())
                 {
                     gasPump.setFuelingEntity(null);
+                    worldIn.playSound(null, pos, ModSounds.nozzlePutDown, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 else if(state.getValue(FACING).rotateY().equals(face))
                 {
                     gasPump.setFuelingEntity(playerIn);
+                    worldIn.playSound(null, pos, ModSounds.nozzlePickUp, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
             }
         }

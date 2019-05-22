@@ -97,5 +97,11 @@
     },
     "tractor_engine_stereo": {
         "sounds": [ {"name": "vehicle:tractor_engine_stereo"}]
+    },
+    "nozzle_pick_up": {
+        "sounds": [ {"name": "vehicle:nozzle_pick_up"}]
+    },
+    "nozzle_put_down": {
+        "sounds": [ {"name": "vehicle:nozzle_put_down"}]
     }
 }
