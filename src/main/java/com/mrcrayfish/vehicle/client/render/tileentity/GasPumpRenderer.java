@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -70,18 +71,19 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
             if(te.getFuelingEntity() != null)
             {
                 EntityPlayer entity = te.getFuelingEntity();
+                double side = entity.getPrimaryHand() == EnumHandSide.RIGHT ? 1 : -1;
                 double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
                 double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
                 double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
                 float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
                 Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
-                Vec3d hoseVec = new Vec3d(-0.3875, -0.02, 0.0625);
+                Vec3d hoseVec = new Vec3d(-0.3875 * side, -0.02, 0.0625);
                 if(entity instanceof AbstractClientPlayer)
                 {
                     String skinType = ((AbstractClientPlayer) entity).getSkinType();
                     if(skinType.equals("slim"))
                     {
-                        hoseVec = hoseVec.addVector(0.065, 0.0, 0.0);
+                        hoseVec = hoseVec.addVector(0.065 * side, 0.0, 0.0);
                     }
                 }
                 hoseVec = hoseVec.rotateYaw(-renderYawOffset * 0.017453292F);

@@ -198,8 +198,14 @@ public class ClientEvents
                 model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
                 model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
                 model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(0F);
-                return;
             }
+            else
+            {
+                model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-20F);
+                model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
+                model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(0F);
+            }
+            return;
         }
 
         if(!player.isRiding())
