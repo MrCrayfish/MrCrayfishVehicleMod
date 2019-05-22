@@ -22,5 +22,6 @@ public class ModTileEntities
         GameRegistry.registerTileEntity(TileEntityJack.class, new ResourceLocation(Reference.MOD_ID, "jack"));
         GameRegistry.registerTileEntity(TileEntityBoost.class, new ResourceLocation(Reference.MOD_ID, "boost"));
         GameRegistry.registerTileEntity(TileEntityGasPump.class, new ResourceLocation(Reference.MOD_ID, "gas_pump"));
+        GameRegistry.registerTileEntity(TileEntityGasPumpTank.class, new ResourceLocation(Reference.MOD_ID, "gas_pump_tank"));
     }
 }

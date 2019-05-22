@@ -111,6 +111,7 @@ public class ClientProxy implements Proxy
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityVehicleCrate.class, new VehicleCrateRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityJack.class, new JackRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasPump.class, new GasPumpRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileEntityGasPumpTank.class, new GasPumpTankRenderer());
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);
