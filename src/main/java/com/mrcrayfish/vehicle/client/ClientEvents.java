@@ -344,17 +344,18 @@ public class ClientEvents
     @SubscribeEvent
     public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
     {
+        Entity entity = event.getEntity();
+        if(entity instanceof EntityPlayer && entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        {
+            event.setCanceled(true);
+            return;
+        }
+
         if(!event.getItem().isEmpty() && event.getItem().getItem() instanceof ItemSprayCan && event.getItem().getMetadata() == 0)
         {
             ItemStack stack = event.getItem().copy();
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), stack, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
-            event.setCanceled(true);
-        }
-
-        Entity entity = event.getEntity();
-        if(entity instanceof EntityPlayer && entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
-        {
             event.setCanceled(true);
         }
     }
