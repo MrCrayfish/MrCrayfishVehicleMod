@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.google.common.base.Optional;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -73,7 +74,7 @@ public class TileEntityGasPump extends TileEntitySynced implements ITickable
 
         if(!world.isRemote && fuelingEntity != null)
         {
-            if(Math.sqrt(fuelingEntity.getDistanceSq(this.getPos())) > 8.0 || fuelingEntity.isDead) //TODO config option
+            if(Math.sqrt(fuelingEntity.getDistanceSq(this.getPos())) > VehicleConfig.SERVER.maxHoseDistance || fuelingEntity.isDead)
             {
                 if(!fuelingEntity.isDead)
                 {

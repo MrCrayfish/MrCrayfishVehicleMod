@@ -55,6 +55,11 @@ public class VehicleConfig
         @Config.Comment("Allows players to pick up vehicles by crouching and right clicking")
         @Config.LangKey(Reference.MOD_ID + ".config.server.pick_up_vehicles")
         public boolean pickUpVehicles = true;
+
+        @Config.Name("Max Hose Distance")
+        @Config.Comment("The maximum distance before the hose from the gas pump or fluid hose breaks")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.max_hose_distance")
+        public double maxHoseDistance = 5.0;
     }
 
     public static class Client

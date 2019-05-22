@@ -139,6 +139,8 @@ vehicle.config.server.trailer_inventory_sync_cooldown=Trailer Inventory Sync Coo
 vehicle.config.server.trailer_inventory_sync_cooldown.tooltip=The amount of ticks to wait before syncing trailer inventory to tracking clients. If the value is set to 0 or less, the inventory will not sync and will save on network usage.
 vehicle.config.server.pick_up_vehicles=Pickup Vehicle
 vehicle.config.server.pick_up_vehicles.tooltip=Allows players to pick up vehicles by crouching and right clicking
+vehicle.config.server.max_hose_distance=Max Hose Distance
+vehicle.config.server.max_hose_distance.tooltip=The maximum distance before the hose from the gas pump or fluid hose breaks
 
 vehicle.chat.pump.power=§bPower Mode:§r %s
 vehicle.chat.pump.power.off=requires signal off
