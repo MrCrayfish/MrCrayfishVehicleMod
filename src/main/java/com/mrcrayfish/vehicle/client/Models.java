@@ -19,7 +19,8 @@ public enum Models
     SEEDER_TRAILER("trailer_seeder_body"),
     SEED_SPIKER("seed_spiker"),
     FERTILIZER_TRAILER("trailer_fertilizer_body"),
-    FLUID_TRAILER("trailer_fluid_body");
+    FLUID_TRAILER("trailer_fluid_body"),
+    NOZZLE("nozzle");
 
     /**
      * An arbitrary item in your mod to register isolated models as variants of
