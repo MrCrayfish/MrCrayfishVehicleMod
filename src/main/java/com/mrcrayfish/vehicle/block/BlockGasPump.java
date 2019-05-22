@@ -2,10 +2,14 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
+import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.CollisionHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,10 +18,13 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -26,11 +33,29 @@ public class BlockGasPump extends BlockRotatedObject
 {
     public static final PropertyBool TOP = PropertyBool.create("top");
 
+    private static final AxisAlignedBB[] COLLISION_BOXES = new Bounds(3, 0, 0, 13, 15, 16).getRotatedBounds();
+    private static final AxisAlignedBB[] TOP_SELECTION_BOXES = new Bounds(3, -16, 0, 13, 15, 16).getRotatedBounds();
+    private static final AxisAlignedBB[] BOTTOM_SELECTION_BOXES = new Bounds(3, 0, 0, 13, 31, 16).getRotatedBounds();
+
     public BlockGasPump()
     {
         super(Material.ANVIL, "gas_pump");
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP, false));
         this.setHardness(1.0F);
+    }
+
+    @Override
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    {
+        EnumFacing facing = state.getValue(FACING);
+        return state.getValue(TOP) ? TOP_SELECTION_BOXES[facing.getHorizontalIndex()] : BOTTOM_SELECTION_BOXES[facing.getHorizontalIndex()];
+    }
+
+    @Override
+    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+    {
+        EnumFacing facing = state.getValue(FACING);
+        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BOXES[facing.getHorizontalIndex()]);
     }
 
     @Override
