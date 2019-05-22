@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.util.CollisionHelper;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -73,8 +74,25 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
                 double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
                 double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
                 float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
-                Vec3d lookVec = Vec3d.fromPitchYaw(0F, renderYawOffset);
-                Vec3d hoseVec = new Vec3d(-0.3875, 0, 0.0625).rotateYaw(-renderYawOffset * 0.017453292F);
+                Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
+                Vec3d hoseVec = new Vec3d(-0.3875, -0.02, 0.0625);
+                if(entity instanceof AbstractClientPlayer)
+                {
+                    String skinType = ((AbstractClientPlayer) entity).getSkinType();
+                    if(skinType.equals("slim"))
+                    {
+                        hoseVec = hoseVec.addVector(0.065, 0.0, 0.0);
+                    }
+                }
+                hoseVec = hoseVec.rotateYaw(-renderYawOffset * 0.017453292F);
+                if(entity.equals(Minecraft.getMinecraft().player))
+                {
+                    if(Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+                    {
+                        lookVec = Vec3d.fromPitchYaw(0F, entity.rotationYaw);
+                        hoseVec = new Vec3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
+                    }
+                }
                 destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
             }
             else
