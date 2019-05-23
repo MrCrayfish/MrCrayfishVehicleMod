@@ -174,8 +174,8 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
                         String percent = String.format("%d%%", amount);
                         int width = fontRenderer.getStringWidth(percent);
                         fontRenderer.drawString(percent, -width / 2, 10, 16777215);
-                        GlStateManager.depthMask(true);
                     }
+                    GlStateManager.depthMask(true);
                 }
                 GlStateManager.popMatrix();
 
