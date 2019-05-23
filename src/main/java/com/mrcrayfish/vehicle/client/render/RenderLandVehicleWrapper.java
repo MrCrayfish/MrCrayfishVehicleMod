@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -27,9 +28,6 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
 
         GlStateManager.pushMatrix();
         {
-            //Enable the standard item lighting so vehicles render correctly
-            RenderHelper.enableStandardItemLighting();
-
             VehicleProperties properties = entity.getProperties();
 
             //Apply vehicle rotations and translations. This is applied to all other parts

@@ -38,9 +38,6 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
 
         GlStateManager.pushMatrix();
         {
-            //Enable the standard item lighting so vehicles render correctly
-            RenderHelper.enableStandardItemLighting();
-
             VehicleProperties properties = entity.getProperties();
 
             //Apply vehicle rotations and translations. This is applied to all other parts
