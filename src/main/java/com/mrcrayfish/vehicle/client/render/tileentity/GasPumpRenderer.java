@@ -4,9 +4,6 @@ import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
 import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
@@ -25,12 +22,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-
-import java.awt.*;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -42,9 +35,16 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
     {
         BlockPos blockPos = te.getPos();
         IBlockState state = te.getWorld().getBlockState(blockPos);
-        boolean top = state.getValue(BlockGasPump.TOP);
-        if(state.getBlock() != ModBlocks.GAS_PUMP || !top)
+        if(state.getBlock() != ModBlocks.GAS_PUMP)
+        {
             return;
+        }
+
+        boolean top = state.getValue(BlockGasPump.TOP);
+        if(!top)
+        {
+            return;
+        }
 
         EnumFacing facing = state.getValue(BlockGasPump.FACING);
         double[] pos = CollisionHelper.fixRotation(facing, 0.640625, 1.078125, 0.640625, 1.078125);
