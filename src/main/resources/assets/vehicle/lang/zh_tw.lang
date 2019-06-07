@@ -1,5 +1,9 @@
 itemGroup.tabVehicle=MrCrayfish載具模組
 
+vehicle.engine_type.small.name=小型引擎
+vehicle.engine_type.large.name=大型引擎
+vehicle.engine_type.electric.name=電動引擎
+
 vehicle.engine_tier.wood.name=木等級
 vehicle.engine_tier.stone.name=石等級
 vehicle.engine_tier.iron.name=鐵等級
@@ -13,7 +17,7 @@ vehicle.wheel_type.stock.name=原種
 vehicle.wheel_type.sports.name=運動
 vehicle.wheel_type.racing.name=競速
 vehicle.wheel_type.off_road.name=越野
-vehicle.wheel_type.snow.name=雪
+vehicle.wheel_type.snow.name=雪地
 vehicle.wheel_type.all_terrain.name=全地形
 vehicle.wheel_type.plastic.name=塑膠
 
@@ -93,6 +97,7 @@ entity.vehicle.storage_trailer.name=存儲拖車
 entity.vehicle.seeder_trailer.name=播種機拖車
 entity.vehicle.fertilizer_trailer.name=肥料拖車
 entity.vehicle.fluid_trailer.name=流體拖車
+entity.vehicle.tractor.name=拖拉機
 
 vehicle.config.title=MrCrayfish載具模組配置
 vehicle.config.client=用戶端
@@ -132,6 +137,10 @@ vehicle.config.server.trailer_sync_cooldown=拖車同步冷卻
 vehicle.config.server.trailer_sync_cooldown.tooltip=在向客戶端同步有關拖車連接的數據之前要等待的遊戲刻時間。這對於客戶端的平滑拖車移動非常重要。
 vehicle.config.server.trailer_inventory_sync_cooldown=拖車物品欄同步冷卻
 vehicle.config.server.trailer_inventory_sync_cooldown.tooltip=在向客戶端同步有關拖車物品欄的數據之前要等待的遊戲刻時間。如果此值設置為0或更小，則拖車物品欄將不會同步，並且將會節省網絡使用量。
+vehicle.config.server.pick_up_vehicles=拾起載具
+vehicle.config.server.pick_up_vehicles.tooltip=允許玩家通過蹲下和右鍵點擊來拾起載具
+vehicle.config.server.max_hose_distance=軟管最大長度
+vehicle.config.server.max_hose_distance.tooltip=從氣泵到軟管的最大距離，更遠時軟管會破裂
 
 vehicle.chat.pump.power=§b信號模式：§r%s
 vehicle.chat.pump.power.off=需要信號關閉
@@ -144,3 +153,10 @@ vehicle.status.key_created=此鑰匙已成功地綁定到此載具
 vehicle.status.not_lockable=此載具無法鎖上
 vehicle.status.key_invalid=此鑰匙不適合此載具
 vehicle.status.key_removed=此載具不再鎖上
+
+vehicle.tooltip.optional=可選的
+vehicle.tooltip.required=必需的
+vehicle.tooltip.not_applicable=不適用
+vehicle.tooltip.paint_color=油漆顏色
+vehicle.tooltip.engine=引擎
+vehicle.tooltip.wheels=輪子
