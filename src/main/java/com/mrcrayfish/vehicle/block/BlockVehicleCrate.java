@@ -213,7 +213,6 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public void getSubBlocks(CreativeTabs itemIn, NonNullList<ItemStack> items)
     {
-        Collections.sort(REGISTERED_CRATES);
         REGISTERED_CRATES.forEach(resourceLocation ->
         {
             NBTTagCompound blockEntityTag = new NBTTagCompound();
@@ -261,6 +260,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
         if(!REGISTERED_CRATES.contains(resource))
         {
             REGISTERED_CRATES.add(resource);
+            Collections.sort(REGISTERED_CRATES);
         }
     }
 
