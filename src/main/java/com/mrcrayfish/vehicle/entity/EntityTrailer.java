@@ -53,6 +53,12 @@ public abstract class EntityTrailer extends EntityVehicle
     }
 
     @Override
+    public boolean canBeCollidedWith()
+    {
+        return true;
+    }
+
+    @Override
     public void onUpdateVehicle()
     {
         prevWheelRotation = wheelRotation;

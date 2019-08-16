@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
@@ -17,10 +18,13 @@ import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -88,6 +92,18 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     public Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> getStaticInteractionBoxMap()
     {
         return interactionBoxMapStatic;
+    }
+
+    @Override
+    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
+    {
+        ItemStack heldItem = player.getHeldItem(hand);
+        if((heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan)) && player instanceof EntityPlayerMP)
+        {
+            inventory.openGui((EntityPlayerMP) player, this);
+            return true;
+        }
+        return super.processInitialInteract(player, hand);
     }
 
     @Nullable
