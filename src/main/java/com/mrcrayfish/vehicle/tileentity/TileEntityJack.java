@@ -70,19 +70,19 @@ public class TileEntityJack extends TileEntity implements ITickable
             {
                 if(!activated)
                 {
-                    world.playSound(null, pos, ModSounds.jackUp, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, ModSounds.JACK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     activated = true;
                 }
             }
             else if(activated)
             {
-                world.playSound(null, pos, ModSounds.jackDown, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                world.playSound(null, pos, ModSounds.JACK_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 activated = false;
             }
         }
         else if(activated)
         {
-            world.playSound(null, pos, ModSounds.jackDown, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, pos, ModSounds.JACK_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
             activated = false;
         }
 

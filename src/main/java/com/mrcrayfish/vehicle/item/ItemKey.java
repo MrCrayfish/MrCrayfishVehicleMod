@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.util.ItemNames;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,8 +14,8 @@ public class ItemKey extends Item implements IDyeable
 {
     public ItemKey()
     {
-        this.setUnlocalizedName("key");
-        this.setRegistryName("key");
+        this.setUnlocalizedName(ItemNames.KEY.replace(":", "."));
+        this.setRegistryName(ItemNames.KEY);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
         this.setMaxStackSize(1);
     }

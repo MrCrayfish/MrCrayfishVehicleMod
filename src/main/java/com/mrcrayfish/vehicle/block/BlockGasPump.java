@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPumpTank;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import com.mrcrayfish.vehicle.util.Bounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -46,7 +47,7 @@ public class BlockGasPump extends BlockRotatedObject
 
     public BlockGasPump()
     {
-        super(Material.ANVIL, "gas_pump");
+        super(Material.ANVIL, BlockNames.GAS_PUMP);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP, false));
         this.setHardness(1.0F);
     }
@@ -79,12 +80,12 @@ public class BlockGasPump extends BlockRotatedObject
                     if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerIn.getEntityId())
                     {
                         gasPump.setFuelingEntity(null);
-                        worldIn.playSound(null, pos, ModSounds.nozzlePutDown, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        worldIn.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     else if(state.getValue(FACING).rotateY().equals(face))
                     {
                         gasPump.setFuelingEntity(playerIn);
-                        worldIn.playSound(null, pos, ModSounds.nozzlePickUp, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        worldIn.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                 }
             }

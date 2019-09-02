@@ -141,7 +141,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                         if(this.getColor() != color)
                         {
                             this.setColor(tagCompound.getInteger("color"));
-                            player.world.playSound(null, posX, posY, posZ, ModSounds.sprayCanSpray, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            player.world.playSound(null, posX, posY, posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
                             tagCompound.setInteger("remainingSprays", remainingSprays - 1);
                         }
                     }
@@ -153,7 +153,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                 {
                     heldItem.damageItem(1, player);
                     this.setHealth(this.getHealth() + 5F);
-                    world.playSound(null, posX, posY, posZ, ModSounds.vehicleThud, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
+                    world.playSound(null, posX, posY, posZ, ModSounds.VEHICLE_THUD, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
                     player.swingArm(hand);
                     if(player instanceof EntityPlayerMP)
                     {
@@ -390,13 +390,13 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
-            world.playSound(null, posX, posY, posZ, ModSounds.vehicleImpact, SoundCategory.AMBIENT, 1.0F, 1.0F);
+            world.playSound(null, posX, posY, posZ, ModSounds.VEHICLE_IMPACT, SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
     }
 
     protected void onVehicleDestroyed(EntityLivingBase entity)
     {
-        world.playSound(null, posX, posY, posZ, ModSounds.vehicleDestroyed, SoundCategory.AMBIENT, 1.0F, 0.5F);
+        world.playSound(null, posX, posY, posZ, ModSounds.VEHICLE_DESTROYED, SoundCategory.AMBIENT, 1.0F, 0.5F);
 
         boolean isCreativeMode = entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode;
         if(!isCreativeMode && this.world.getGameRules().getBoolean("doEntityDrops"))

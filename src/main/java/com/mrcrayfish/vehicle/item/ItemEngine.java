@@ -66,7 +66,7 @@ public class ItemEngine extends ItemPart implements SubItems
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
         for(EngineTier tier : EngineTier.values())
         {
-            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + tier.toString().toLowerCase(Locale.ENGLISH)));
+            modelLocations.add(new ResourceLocation(this.getRegistryName() + "/" + tier.toString().toLowerCase(Locale.ENGLISH)));
         }
         return modelLocations;
     }

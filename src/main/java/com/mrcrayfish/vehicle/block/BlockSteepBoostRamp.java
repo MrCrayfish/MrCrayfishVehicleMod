@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.TileEntityBoost;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import com.mrcrayfish.vehicle.util.Bounds;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.material.Material;
@@ -54,7 +55,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
 
     public BlockSteepBoostRamp()
     {
-        super(Material.ROCK, "steep_boost_ramp");
+        super(Material.ROCK, BlockNames.STEEP_BOOST_RAMP);
         this.setHardness(1.0F);
     }
 
@@ -63,7 +64,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("vehicle.tile.boost_ramp.info");
+            String info = I18n.format(this.getUnlocalizedName() + ".info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
@@ -90,7 +91,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
                 EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
                 if(!poweredVehicle.isBoosting())
                 {
-                    worldIn.playSound(null, pos, ModSounds.boostPad, SoundCategory.BLOCKS, 2.0F, 0.5F);
+                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(3);

@@ -7,7 +7,7 @@ public class ItemVehicleTool extends Item
 {
     public ItemVehicleTool(String id)
     {
-        this.setUnlocalizedName(id);
+        this.setUnlocalizedName(id.replace(":", "."));
         this.setRegistryName(id);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
         this.setMaxStackSize(1);

@@ -35,7 +35,7 @@ public class ItemTrafficCone extends ItemBlock
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("vehicle.tile.traffic_cone.info");
+            String info = I18n.format("tile.vehicle.traffic_cone.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else

@@ -36,13 +36,13 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.atvEngineMono;
+        return ModSounds.ATV_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.atvEngineStereo;
+        return ModSounds.ATV_ENGINE_STEREO;
     }
 
     @Override

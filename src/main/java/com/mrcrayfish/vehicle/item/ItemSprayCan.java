@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.util.ItemNames;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -28,8 +29,8 @@ public class ItemSprayCan extends Item implements SubItems, IDyeable
 
     public ItemSprayCan()
     {
-        this.setUnlocalizedName("spray_can");
-        this.setRegistryName("spray_can");
+        this.setUnlocalizedName(ItemNames.SPRAY_CAN.replace(":", "."));
+        this.setRegistryName(ItemNames.SPRAY_CAN);
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
@@ -39,8 +40,8 @@ public class ItemSprayCan extends Item implements SubItems, IDyeable
     public NonNullList<ResourceLocation> getModels()
     {
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
-        modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "_lid"));
-        modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5)));
+        modelLocations.add(new ResourceLocation(this.getRegistryName() + "_lid"));
+        modelLocations.add(new ResourceLocation(this.getRegistryName().toString()));
         return modelLocations;
     }
 
@@ -49,7 +50,7 @@ public class ItemSprayCan extends Item implements SubItems, IDyeable
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("item.spray_can.info");
+            String info = I18n.format("item.vehicle.spray_can.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
@@ -60,7 +61,7 @@ public class ItemSprayCan extends Item implements SubItems, IDyeable
             }
             else
             {
-                tooltip.add(I18n.format("item.spray_can.empty"));
+                tooltip.add(I18n.format("item.vehicle.spray_can.empty"));
             }
             tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
         }

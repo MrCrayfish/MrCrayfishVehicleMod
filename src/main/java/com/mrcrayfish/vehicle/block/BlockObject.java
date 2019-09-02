@@ -24,7 +24,7 @@ public class BlockObject extends Block
     public BlockObject(Material material, MapColor mapColor, String id)
     {
         super(material, mapColor);
-        this.setUnlocalizedName(id);
+        this.setUnlocalizedName(id.replace(":", "."));
         this.setRegistryName(id);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
     }

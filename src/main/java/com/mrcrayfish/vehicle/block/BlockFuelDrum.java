@@ -56,7 +56,7 @@ public class BlockFuelDrum extends BlockRotatedObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("vehicle.tile.fuel_drum.info");
+            String info = I18n.format("tile.vehicle.fuel_drum.info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else

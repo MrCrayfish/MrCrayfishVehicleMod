@@ -45,13 +45,13 @@ public class EntityOffRoader extends EntityLandVehicle implements EntityRaytrace
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.speedBoatEngineMono;
+        return ModSounds.SPEED_BOAT_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.speedBoatEngineStereo;
+        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
     }
 
     @Override

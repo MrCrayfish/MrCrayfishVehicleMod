@@ -11,7 +11,7 @@ public class ItemPart extends Item
 
     public ItemPart(String id)
     {
-        this.setUnlocalizedName(id);
+        this.setUnlocalizedName(id.replace(":", "."));
         this.setRegistryName(id);
     }
 

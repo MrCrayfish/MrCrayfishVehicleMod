@@ -30,7 +30,7 @@ public class ItemJerryCan extends Item
 
     public ItemJerryCan(String id, int capacity, int fillRate)
     {
-        this.setUnlocalizedName(id);
+        this.setUnlocalizedName(id.replace(":", "."));
         this.setRegistryName(id);
         this.setMaxStackSize(1);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);

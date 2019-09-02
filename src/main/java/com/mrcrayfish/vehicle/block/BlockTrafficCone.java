@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.util.BlockNames;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -23,7 +24,7 @@ public class BlockTrafficCone extends BlockObject
 
     public BlockTrafficCone()
     {
-        super(Material.CLAY, MapColor.ORANGE_STAINED_HARDENED_CLAY, "traffic_cone");
+        super(Material.CLAY, MapColor.ORANGE_STAINED_HARDENED_CLAY, BlockNames.TRAFFIC_CONE);
         this.setHardness(0.5F);
     }
 

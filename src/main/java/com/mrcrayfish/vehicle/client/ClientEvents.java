@@ -269,7 +269,7 @@ public class ClientEvents
                 if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemSprayCan)
                 {
                     float pitch = 0.85F + 0.15F * ItemSprayCan.getRemainingSprays(player.inventory.getCurrentItem());
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getRecord(ModSounds.sprayCanShake, pitch, 0.75F));
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getRecord(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
                 }
             }
 
@@ -319,7 +319,7 @@ public class ClientEvents
             double offset = Math.sin((tickCounter + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.4) * 0.01;
             if (offsetPrev > offsetPrevPrev && offsetPrev > offset)
             {
-                Minecraft.getMinecraft().player.playSound(ModSounds.liquidGlug, 0.3F, 1F);
+                Minecraft.getMinecraft().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
             }
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;

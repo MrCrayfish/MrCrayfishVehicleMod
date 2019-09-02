@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
@@ -21,7 +22,7 @@ public class BlockJack extends BlockObject
 
     public BlockJack()
     {
-        super(Material.PISTON, "jack");
+        super(Material.PISTON, BlockNames.JACK);
     }
 
     @Override

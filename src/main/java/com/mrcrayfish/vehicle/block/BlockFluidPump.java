@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPump;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import net.minecraft.block.BlockLever;
 import net.minecraft.block.state.BlockFaceShape;
 import net.minecraft.block.state.IBlockState;
@@ -39,7 +40,7 @@ public class BlockFluidPump extends BlockFluidPipe
 
     public BlockFluidPump()
     {
-        super("fluid_pump");
+        super(BlockNames.FLUID_PUMP);
         this.setHardness(0.5F);
     }
 

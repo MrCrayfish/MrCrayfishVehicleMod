@@ -44,13 +44,13 @@ public class EntityTractor extends EntityLandVehicle implements EntityRaytracer.
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.tractorEngineMono;
+        return ModSounds.TRACTOR_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.tractorEngineStereo;
+        return ModSounds.TRACTOR_ENGINE_STEREO;
     }
 
     @Override

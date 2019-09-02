@@ -235,7 +235,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(180, 0, 1, 0),
                 MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
         createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, EntityATV.class, atvParts, atvTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_PORT, EntityATV.class, atvParts, atvTransformGlobal);
+        createKeyPortTransforms(ModItems.KEY_HOLE, EntityATV.class, atvParts, atvTransformGlobal);
         registerEntityStatic(EntityATV.class, atvParts);
 
         // Bumper car
@@ -368,7 +368,7 @@ public class EntityRaytracer
         HashMap<RayTracePart, List<MatrixTransformation>> sportsPlaneParts = Maps.newHashMap();
         createTransformListForPart(ModItems.SPORTS_PLANE_BODY, sportsPlaneParts, sportsPlaneTransformGlobal);
         createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySportsPlane.class, sportsPlaneParts, sportsPlaneTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_PORT, EntitySportsPlane.class, sportsPlaneParts, sportsPlaneTransformGlobal);
+        createKeyPortTransforms(ModItems.KEY_HOLE, EntitySportsPlane.class, sportsPlaneParts, sportsPlaneTransformGlobal);
         createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WING, "wingRight"), sportsPlaneParts, sportsPlaneTransformGlobal,
                 MatrixTransformation.createTranslation(0, -0.1875, 0.5),
                 MatrixTransformation.createRotation(180, 0, 0, 1),
@@ -406,7 +406,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.95));
         createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityGolfCart.class, golfCartParts, golfCartTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_PORT, EntityGolfCart.class, golfCartParts, golfCartTransformGlobal);
+        createKeyPortTransforms(ModItems.KEY_HOLE, EntityGolfCart.class, golfCartParts, golfCartTransformGlobal);
         registerEntityStatic(EntityGolfCart.class, golfCartParts);
 
         // Off-Roader
@@ -420,7 +420,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.75));
         createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityOffRoader.class, offRoaderParts, offRoaderTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_PORT, EntityOffRoader.class, offRoaderParts, offRoaderTransformGlobal);
+        createKeyPortTransforms(ModItems.KEY_HOLE, EntityOffRoader.class, offRoaderParts, offRoaderTransformGlobal);
         registerEntityStatic(EntityOffRoader.class, offRoaderParts);
 
         List<MatrixTransformation> tractorTransformGlobal = Lists.newArrayList();
@@ -433,7 +433,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0, -0.02, 0),
                 MatrixTransformation.createScale(0.9));
         createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityTractor.class, tractorParts, tractorTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_PORT, EntityTractor.class, tractorParts, tractorTransformGlobal);
+        createKeyPortTransforms(ModItems.KEY_HOLE, EntityTractor.class, tractorParts, tractorTransformGlobal);
         registerEntityStatic(EntityTractor.class, tractorParts);
 
         if(Loader.isModLoaded("cfm"))
@@ -464,7 +464,7 @@ public class EntityRaytracer
             createTransformListForPart(ModItems.COUCH_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
                     MatrixTransformation.createTranslation(0, 8 * 0.0625, 0.0));
             createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySofacopter.FUEL_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal, FUNCTION_FUELING);
-            createPartTransforms(ModItems.KEY_PORT, EntitySofacopter.KEY_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal);
+            createPartTransforms(ModItems.KEY_HOLE, EntitySofacopter.KEY_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal);
             registerEntityStatic(EntitySofacopter.class, sofacopterParts);
         }
 
@@ -1881,7 +1881,7 @@ public class EntityRaytracer
             ItemStack stack = result.getPartHit().getStack();
             if(!stack.isEmpty())
             {
-                if(stack.getItem() == ModItems.KEY_PORT)
+                if(stack.getItem() == ModItems.KEY_HOLE)
                 {
                     PacketHandler.INSTANCE.sendToServer(new MessageInteractKey((Entity) this));
                     return true;

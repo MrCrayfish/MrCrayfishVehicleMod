@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
+import com.mrcrayfish.vehicle.util.ItemNames;
 import net.minecraft.item.Item;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
@@ -11,8 +12,8 @@ public class ItemModels extends Item implements SubItems
 {
     public ItemModels()
     {
-        this.setUnlocalizedName("models");
-        this.setRegistryName("models");
+        this.setUnlocalizedName(ItemNames.MODELS.replace(":", "."));
+        this.setRegistryName(ItemNames.MODELS);
     }
 
     @Override

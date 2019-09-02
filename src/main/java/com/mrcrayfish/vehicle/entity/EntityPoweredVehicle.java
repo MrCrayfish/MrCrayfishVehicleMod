@@ -14,7 +14,6 @@ import com.mrcrayfish.vehicle.item.ItemEngine;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.*;
-import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPumpTank;
 import com.mrcrayfish.vehicle.util.CommonUtils;
@@ -191,12 +190,12 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     //TODO ability to change with nbt
     public SoundEvent getHornSound()
     {
-        return ModSounds.hornMono;
+        return ModSounds.HORN_MONO;
     }
 
     public SoundEvent getHornRidingSound()
     {
-        return ModSounds.hornStereo;
+        return ModSounds.HORN_STEREO;
     }
 
     public void playFuelPortOpenSound()
@@ -238,7 +237,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     {
         super.onClientInit();
         engine = new ItemStack(ModItems.SMALL_ENGINE);
-        keyPort = new ItemStack(ModItems.KEY_PORT);
+        keyPort = new ItemStack(ModItems.KEY_HOLE);
         setFuelPort(FuelPort.LID);
     }
 
@@ -1243,7 +1242,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 {
                     if(!this.hasWheels())
                     {
-                        world.playSound(null, getPosition(), ModSounds.airWrenchGun, SoundCategory.BLOCKS, 1.0F, 1.1F);
+                        world.playSound(null, getPosition(), ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 1.1F);
                         this.setWheels(true);
                         this.setWheelType(WheelType.values()[wheel.getMetadata()]);
 
@@ -1260,7 +1259,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                 }
                 else
                 {
-                    world.playSound(null, posX, posY, posZ, ModSounds.airWrenchGun, SoundCategory.BLOCKS, 1.0F, 0.8F);
+                    world.playSound(null, posX, posY, posZ, ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 0.8F);
                     this.setWheels(false);
                     this.setWheelColor(-1);
                 }
@@ -1488,8 +1487,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public enum FuelPort
     {
-        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.fuelPortOpen, 0.25F, 0.6F, ModSounds.fuelPortClose, 0.12F, 0.6F),
-        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.fuelPort2Open, 0.4F, 0.6F, ModSounds.fuelPort2Close, 0.3F, 0.6F);
+        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
+        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
 
         private Item closed, body, lid;
         private SoundEvent soundOpen, soundClose;

@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.tileentity.TileEntityWorkstation;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
@@ -21,7 +22,7 @@ public class BlockWorkstation extends BlockRotatedObject
 {
     public BlockWorkstation()
     {
-        super(Material.IRON, "workstation");
+        super(Material.IRON, BlockNames.WORKSTATION);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.TileEntityBoost;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -38,7 +39,7 @@ public class BlockBoostPad extends BlockRotatedObject
 
     public BlockBoostPad()
     {
-        super(Material.ROCK, "boost_pad");
+        super(Material.ROCK, BlockNames.BOOST_PAD);
         this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(LEFT, false).withProperty(RIGHT, false));
         this.setHardness(0.6F);
     }
@@ -48,7 +49,7 @@ public class BlockBoostPad extends BlockRotatedObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("vehicle.tile.boost_pad.info");
+            String info = I18n.format(this.getUnlocalizedName() + ".info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else
@@ -88,7 +89,7 @@ public class BlockBoostPad extends BlockRotatedObject
                 EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
                 if(!poweredVehicle.isBoosting())
                 {
-                    worldIn.playSound(null, pos, ModSounds.boostPad, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 1.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();

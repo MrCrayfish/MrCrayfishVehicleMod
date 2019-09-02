@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
 import com.mrcrayfish.vehicle.tileentity.TileEntitySynced;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -28,7 +29,7 @@ public class BlockFluidMixer extends BlockRotatedObject
 {
     public BlockFluidMixer()
     {
-        super(Material.ANVIL, "fluid_mixer");
+        super(Material.ANVIL, BlockNames.FLUID_MIXER);
         this.setHardness(1.0F);
     }
 

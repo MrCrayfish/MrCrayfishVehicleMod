@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
+import com.mrcrayfish.vehicle.util.BlockNames;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
@@ -63,7 +64,7 @@ public class BlockFluidPipe extends BlockObject
 
     public BlockFluidPipe()
     {
-        this("fluid_pipe");
+        this(BlockNames.FLUID_PIPE);
         this.setHardness(0.5F);
     }
 
@@ -90,7 +91,7 @@ public class BlockFluidPipe extends BlockObject
     {
         if(GuiScreen.isShiftKeyDown())
         {
-            String info = I18n.format("vehicle.tile." + name + ".info");
+            String info = I18n.format(this.getUnlocalizedName() + ".info");
             tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
         }
         else

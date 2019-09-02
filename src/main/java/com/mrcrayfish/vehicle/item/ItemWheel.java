@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.util.CommonUtils;
+import com.mrcrayfish.vehicle.util.ItemNames;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
@@ -27,7 +28,7 @@ public class ItemWheel extends ItemPart implements SubItems, IDyeable
 {
     public ItemWheel()
     {
-        super("wheel");
+        super(ItemNames.WHEEL);
         this.setMaxDamage(0);
         this.setHasSubtypes(true);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
@@ -47,7 +48,7 @@ public class ItemWheel extends ItemPart implements SubItems, IDyeable
         NonNullList<ResourceLocation> modelLocations = NonNullList.create();
         for(WheelType type : WheelType.values())
         {
-            modelLocations.add(new ResourceLocation(Reference.MOD_ID, getUnlocalizedName().substring(5) + "/" + type.toString().toLowerCase(Locale.ENGLISH)));
+            modelLocations.add(new ResourceLocation(this.getRegistryName() + "/" + type.toString().toLowerCase(Locale.ENGLISH)));
         }
         return modelLocations;
     }

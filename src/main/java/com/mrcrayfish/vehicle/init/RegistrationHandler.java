@@ -40,6 +40,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Block> event)
         {
+            ModBlocks.register();
             BLOCKS.forEach(block -> event.getRegistry().register(block));
         }
     }
@@ -62,6 +63,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<Item> event)
         {
+            ModItems.register();
             ITEMS.forEach(item -> event.getRegistry().register(item));
         }
     }
@@ -79,6 +81,7 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void register(final RegistryEvent.Register<IRecipe> event)
         {
+            ModRecipes.register();
             RECIPES.forEach(recipe -> event.getRegistry().register(recipe));
         }
     }
@@ -105,7 +108,7 @@ public class RegistrationHandler
             }
             else
             {
-                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(Reference.MOD_ID + ":" + item.getUnlocalizedName().substring(5), "inventory"));
+                ModelLoader.setCustomModelResourceLocation(item, 0, new ModelResourceLocation(item.getRegistryName(), "inventory"));
             }
         }
     }
@@ -123,17 +126,10 @@ public class RegistrationHandler
         @SubscribeEvent
         public static void registerSounds(final RegistryEvent.Register<SoundEvent> event)
         {
+            ModSounds.register();
             IForgeRegistry<SoundEvent> registry = event.getRegistry();
             SOUNDS.forEach(registry::register);
             SOUNDS.clear();
         }
-    }
-
-    public static void init()
-    {
-        ModItems.register();
-        ModBlocks.register();
-        ModRecipes.register();
-        ModSounds.register();
     }
 }

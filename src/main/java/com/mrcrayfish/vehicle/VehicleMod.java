@@ -75,7 +75,6 @@ public class VehicleMod
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
 
         ModFluids.register();
-        RegistrationHandler.init();
         PacketHandler.init();
         CustomDataSerializers.register();
         HeldVehicleDataHandler.register();

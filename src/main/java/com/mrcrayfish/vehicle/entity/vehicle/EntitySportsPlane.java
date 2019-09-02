@@ -128,13 +128,13 @@ public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceabl
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.sportsPlaneEngineMono;
+        return ModSounds.SPORTS_PLANE_ENGINE_MONO;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.sportsPlaneEngineStereo;
+        return ModSounds.SPORTS_PLANE_ENGINE_STEREO;
     }
 
     @Override
