@@ -117,7 +117,6 @@ public class ClientProxy implements Proxy
         ClientRegistry.registerKeyBinding(KEY_HORN);
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());
-        Models.registerModels(ModItems.MODELS);
     }
 
     private <T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> void registerVehicleRender(Class<T> clazz, RenderVehicleWrapper<T, R> wrapper)
