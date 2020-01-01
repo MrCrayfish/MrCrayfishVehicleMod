@@ -1,42 +1,42 @@
 package com.mrcrayfish.vehicle.item;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockBoostRamp;
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemBlock;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 
 /**
  * Author: MrCrayfish
  */
-public class ItemBoostRamp extends ItemBlock
+public class ItemBoostRamp extends BlockItem
 {
     public ItemBoostRamp(Block block)
     {
-        super(block);
+        super(block, new Item.Properties().group(VehicleMod.CREATIVE_TAB));
     }
 
     @Override
-    public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand)
+    public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context)
     {
-        if(side == EnumFacing.UP)
+        if(context.getFace() == Direction.UP)
         {
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = context.getWorld().getBlockState(context.getPos());
             Block block = state.getBlock();
             if(block instanceof BlockBoostRamp)
             {
-                if(!state.getValue(BlockBoostRamp.STACKED))
+                if(!state.get(BlockBoostRamp.STACKED))
                 {
-                    world.setBlockState(pos, block.getDefaultState().withProperty(BlockBoostRamp.FACING, state.getValue(BlockBoostRamp.FACING)).withProperty(BlockBoostRamp.STACKED, true));
+                    context.getWorld().setBlockState(context.getPos(), block.getDefaultState().with(BlockBoostRamp.DIRECTION, state.get(BlockBoostRamp.DIRECTION)).with(BlockBoostRamp.STACKED, true));
                 }
-                return EnumActionResult.SUCCESS;
+                return ActionResultType.SUCCESS;
             }
         }
-        return super.onItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
+        return super.onItemUseFirst(stack, context);
     }
 }

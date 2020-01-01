@@ -1,9 +1,10 @@
 package com.mrcrayfish.vehicle.client.util;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
 /**
@@ -12,7 +13,7 @@ import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 public class BakedQuadBuilder
 {
     private UnpackedBakedQuad.Builder builder;
-    private EnumFacing facing = null;
+    private Direction facing = null;
     private TextureAtlasSprite texture;
 
     public BakedQuadBuilder(VertexFormat format)
@@ -20,13 +21,13 @@ public class BakedQuadBuilder
         this.builder = new UnpackedBakedQuad.Builder(format);
     }
 
-    public void setFacing(EnumFacing facing)
+    public void setFacing(Direction facing)
     {
         this.facing = facing;
         this.builder.setQuadOrientation(facing);
     }
 
-    public EnumFacing getFacing()
+    public Direction getFacing()
     {
         return facing;
     }
@@ -46,7 +47,7 @@ public class BakedQuadBuilder
         return quad;
     }
 
-    public BakedQuadBuilder put(VertexData data, EnumFacing side)
+    public BakedQuadBuilder put(VertexData data, Direction side)
     {
         data = rotate(data);
         VertexFormat format = builder.getVertexFormat();

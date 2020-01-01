@@ -1,26 +1,27 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidMixer;
-import com.mrcrayfish.vehicle.tileentity.TileEntitySynced;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.tileentity.FluidMixerTileEntity;
+import com.mrcrayfish.vehicle.util.Names;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 /**
  * Author: MrCrayfish
@@ -29,79 +30,71 @@ public class BlockFluidMixer extends BlockRotatedObject
 {
     public BlockFluidMixer()
     {
-        super(Material.ANVIL, BlockNames.FLUID_MIXER);
-        this.setHardness(1.0F);
+        super(Names.Block.FLUID_MIXER, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(!worldIn.isRemote)
+        if(!world.isRemote)
         {
-            if(!FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
+            if(!FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace()))
             {
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityFluidMixer)
+                TileEntity tileEntity = world.getTileEntity(pos);
+                if(tileEntity instanceof FluidMixerTileEntity)
                 {
-                    ((TileEntitySynced)tileEntity).syncToClient();
-                    playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                    player.openContainer((FluidMixerTileEntity) tileEntity);
                 }
             }
         }
-        return true;
+        return ActionResultType.PASS;
     }
 
     @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
+    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
     {
-        return Items.AIR;
-    }
-
-    @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
-    {
-        if(!world.isRemote && !player.capabilities.isCreativeMode)
+        if(!world.isRemote && !player.isCreative())
         {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityFluidMixer)
+            if(tileEntity instanceof FluidMixerTileEntity)
             {
-                TileEntityFluidMixer tileEntityFluidMixer = (TileEntityFluidMixer) tileEntity;
-                NBTTagCompound tileEntityTag = new NBTTagCompound();
-                tileEntity.writeToNBT(tileEntityTag);
-                tileEntityTag.removeTag("x");
-                tileEntityTag.removeTag("y");
-                tileEntityTag.removeTag("z");
-                tileEntityTag.removeTag("id");
-                tileEntityTag.removeTag("RemainingFuel");
-                tileEntityTag.removeTag("FuelMaxProgress");
-                tileEntityTag.removeTag("ExtractionProgress");
+                FluidMixerTileEntity fluidMixerTileEntity = (FluidMixerTileEntity) tileEntity;
+                CompoundNBT tileEntityTag = new CompoundNBT();
+                tileEntity.write(tileEntityTag);
+                tileEntityTag.remove("x");
+                tileEntityTag.remove("y");
+                tileEntityTag.remove("z");
+                tileEntityTag.remove("id");
+                tileEntityTag.remove("RemainingFuel");
+                tileEntityTag.remove("FuelMaxProgress");
+                tileEntityTag.remove("ExtractionProgress");
 
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setTag("BlockEntityTag", tileEntityTag);
+                CompoundNBT compound = new CompoundNBT();
+                compound.put("BlockEntityTag", tileEntityTag);
 
                 ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-                drop.setTagCompound(compound);
-                if(tileEntityFluidMixer.hasCustomName())
+                drop.setTag(compound);
+                if(fluidMixerTileEntity.hasCustomName())
                 {
-                    drop.setStackDisplayName(tileEntityFluidMixer.getName());
+                    drop.setDisplayName(fluidMixerTileEntity.getDisplayName());
                 }
-                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-                return world.setBlockToAir(pos);
+                world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+                return world.setBlockState(pos, Blocks.AIR.getDefaultState());
             }
         }
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new TileEntityFluidMixer();
+        return new FluidMixerTileEntity();
     }
 }

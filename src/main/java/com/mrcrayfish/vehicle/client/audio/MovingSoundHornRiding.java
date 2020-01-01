@@ -1,23 +1,23 @@
 package com.mrcrayfish.vehicle.client.audio;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.MovingSound;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.audio.TickableSound;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Author: MrCrayfish
  */
-@SideOnly(Side.CLIENT)
-public class MovingSoundHornRiding extends MovingSound
+@OnlyIn(Dist.CLIENT)
+public class MovingSoundHornRiding extends TickableSound
 {
-    private final EntityPlayer player;
-    private final EntityPoweredVehicle vehicle;
+    private final PlayerEntity player;
+    private final PoweredVehicleEntity vehicle;
 
-    public MovingSoundHornRiding(EntityPlayer player, EntityPoweredVehicle vehicle)
+    public MovingSoundHornRiding(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
         super(vehicle.getHornRidingSound(), SoundCategory.NEUTRAL);
         this.player = player;
@@ -30,10 +30,10 @@ public class MovingSoundHornRiding extends MovingSound
     }
 
     @Override
-    public void update()
+    public void tick()
     {
         this.volume = vehicle.getHorn() ? 1.0F : 0.0F;
-        if(vehicle.isDead || !player.isRiding() || player.getRidingEntity() != vehicle || player != Minecraft.getMinecraft().player)
+        if(!this.vehicle.isAlive() || this.player.getRidingEntity() == null || this.player.getRidingEntity() != this.vehicle || this.player != Minecraft.getInstance().player)
         {
             this.donePlaying = true;
         }

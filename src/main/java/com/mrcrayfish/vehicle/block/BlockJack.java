@@ -1,15 +1,17 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
+import com.mrcrayfish.vehicle.util.Names;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderType;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumBlockRenderType;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
@@ -18,42 +20,47 @@ import javax.annotation.Nullable;
  */
 public class BlockJack extends BlockObject
 {
-    private static final AxisAlignedBB BOUNDING_BOX = new AxisAlignedBB(0, 0, 0, 1, 0.5625, 1);
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 9, 16);
 
     public BlockJack()
     {
-        super(Material.PISTON, BlockNames.JACK);
+        super(Names.Block.JACK, Block.Properties.create(Material.PISTON));
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
     {
-        TileEntity tileEntity = source.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityJack)
-        {
-            TileEntityJack tileEntityJack = (TileEntityJack) tileEntity;
-            float progress = tileEntityJack.liftProgress / (float) TileEntityJack.MAX_LIFT_PROGRESS;
-            return BOUNDING_BOX.expand(0, 0.5 * progress, 0);
-        }
-        return BOUNDING_BOX;
+        return false;
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof JackTileEntity)
+        {
+            JackTileEntity jack = (JackTileEntity) tileEntity;
+            return VoxelShapes.create(SHAPE.getBoundingBox().expand(0, 0.5 * jack.getProgress(), 0));
+        }
+        return SHAPE;
+    }
+
+    @Override
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new TileEntityJack();
+        return new JackTileEntity();
     }
 
     @Override
-    public EnumBlockRenderType getRenderType(IBlockState state)
+    public BlockRenderType getRenderType(BlockState state)
     {
-        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
+        return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 }

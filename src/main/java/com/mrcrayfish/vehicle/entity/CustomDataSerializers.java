@@ -1,38 +1,38 @@
 package com.mrcrayfish.vehicle.entity;
 
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializer;
 import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.IDataSerializer;
 
 /**
  * Author: MrCrayfish
  */
 public class CustomDataSerializers
 {
-    public static final DataSerializer<EnumDyeColor> DYE_COLOR = new DataSerializer<EnumDyeColor>()
+    public static final IDataSerializer<DyeColor> DYE_COLOR = new IDataSerializer<DyeColor>()
     {
         @Override
-        public void write(PacketBuffer buf, EnumDyeColor value)
+        public void write(PacketBuffer buf, DyeColor value)
         {
-            buf.writeInt(value.getDyeDamage());
+            buf.writeInt(value.getId());
         }
 
         @Override
-        public EnumDyeColor read(PacketBuffer buf)
+        public DyeColor read(PacketBuffer buf)
         {
-            return EnumDyeColor.byDyeDamage(buf.readInt());
+            return DyeColor.byId(buf.readInt());
         }
 
         @Override
-        public DataParameter<EnumDyeColor> createKey(int id)
+        public DataParameter<DyeColor> createKey(int id)
         {
             return new DataParameter<>(id, this);
         }
 
         @Override
-        public EnumDyeColor copyValue(EnumDyeColor value)
+        public DyeColor copyValue(DyeColor value)
         {
             return value;
         }

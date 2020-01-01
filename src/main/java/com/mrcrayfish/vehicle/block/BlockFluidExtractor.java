@@ -1,26 +1,28 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
+import com.mrcrayfish.vehicle.util.Names;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.Items;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nullable;
-import java.util.Random;
 
 /**
  * Author: MrCrayfish
@@ -29,95 +31,90 @@ public class BlockFluidExtractor extends BlockRotatedObject
 {
     public BlockFluidExtractor()
     {
-        super(Material.ANVIL, BlockNames.FLUID_EXTRACTOR);
-        this.setHardness(1.0F);
+        super(Names.Block.FLUID_EXTRACTOR, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(!worldIn.isRemote)
+        if(!world.isRemote)
         {
-            ItemStack stack = playerIn.getHeldItem(hand);
+            ItemStack stack = player.getHeldItem(hand);
             if(stack.getItem() == Items.BUCKET)
             {
-                if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, facing))
-                {
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if(tileEntity instanceof TileEntityFluidExtractor)
+                FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace());
+                //if())
+                //{
+                    /*TileEntity tileEntity = world.getPipeTileEntity(pos);
+                    if(tileEntity instanceof FluidExtractorTileEntity)
                     {
-                        ((TileEntityFluidExtractor) tileEntity).syncFluidLevelToClients();
-                    }
-                }
-                return true;
+                        ((FluidExtractorTileEntity) tileEntity).syncFluidLevelToClients();
+                    }*/
+                //}
+                return ActionResultType.SUCCESS;
             }
 
-            TileEntity tileEntity = worldIn.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityFluidExtractor)
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if(tileEntity instanceof FluidExtractorTileEntity)
             {
-                playerIn.openGui(VehicleMod.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
+                player.openContainer((FluidExtractorTileEntity) tileEntity);
+                return ActionResultType.SUCCESS;
             }
         }
-        return true;
+        return ActionResultType.PASS;
     }
 
-    @Override
-    public Item getItemDropped(IBlockState state, Random rand, int fortune)
-    {
-        return Items.AIR;
-    }
+    /*@Override
+        //public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ)
+        {
 
+        }
+    */
     @Override
-    public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest)
+    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
     {
-        if(!world.isRemote && !player.capabilities.isCreativeMode)
+        if(!world.isRemote && !player.isCreative())
         {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityFluidExtractor)
+            if(tileEntity instanceof FluidExtractorTileEntity)
             {
-                TileEntityFluidExtractor fluidExtractor = (TileEntityFluidExtractor) tileEntity;
-                NBTTagCompound tileEntityTag = new NBTTagCompound();
-                tileEntity.writeToNBT(tileEntityTag);
-                tileEntityTag.removeTag("x");
-                tileEntityTag.removeTag("y");
-                tileEntityTag.removeTag("z");
-                tileEntityTag.removeTag("id");
-                tileEntityTag.removeTag("RemainingFuel");
-                tileEntityTag.removeTag("FuelMaxProgress");
-                tileEntityTag.removeTag("ExtractionProgress");
+                FluidExtractorTileEntity fluidExtractor = (FluidExtractorTileEntity) tileEntity;
+                CompoundNBT tileEntityTag = new CompoundNBT();
+                tileEntity.write(tileEntityTag);
+                tileEntityTag.remove("x");
+                tileEntityTag.remove("y");
+                tileEntityTag.remove("z");
+                tileEntityTag.remove("id");
+                tileEntityTag.remove("RemainingFuel");
+                tileEntityTag.remove("FuelMaxProgress");
+                tileEntityTag.remove("ExtractionProgress");
 
-                NBTTagCompound compound = new NBTTagCompound();
-                compound.setTag("BlockEntityTag", tileEntityTag);
+                CompoundNBT compound = new CompoundNBT();
+                compound.put("BlockEntityTag", tileEntityTag);
 
                 ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-                drop.setTagCompound(compound);
+                drop.setTag(compound);
                 if(fluidExtractor.hasCustomName())
                 {
-                    drop.setStackDisplayName(fluidExtractor.getName());
+                    drop.setDisplayName(fluidExtractor.getDisplayName());
                 }
-                world.spawnEntity(new EntityItem(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-                return world.setBlockToAir(pos);
+                world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+                return world.setBlockState(pos, Blocks.AIR.getDefaultState());
             }
         }
-        return super.removedByPlayer(state, world, pos, player, willHarvest);
+        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
     }
 
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new TileEntityFluidExtractor();
-    }
-
-    @Override
-    public BlockRenderLayer getBlockLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
+        return new FluidExtractorTileEntity();
     }
 }

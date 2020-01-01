@@ -1,50 +1,63 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import net.minecraft.nbt.NBTTagCompound;
+import com.mrcrayfish.vehicle.util.TileEntityUtil;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.server.management.PlayerChunkMapEntry;
-import net.minecraft.world.WorldServer;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.TileFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+
+import javax.annotation.Nonnull;
+import java.util.function.Predicate;
 
 public class TileFluidHandlerSynced extends TileFluidHandler
 {
-    protected void syncToClient()
+    public TileFluidHandlerSynced(@Nonnull TileEntityType<?> tileEntityTypeIn, int capacity)
     {
-        markDirty();
-        if(!world.isRemote)
+        super(tileEntityTypeIn);
+        this.tank = new FluidTank(capacity)
         {
-            if(world instanceof WorldServer)
+            @Override
+            protected void onContentsChanged()
             {
-                WorldServer server = (WorldServer) world;
-                PlayerChunkMapEntry entry = server.getPlayerChunkMap().getEntry(pos.getX() >> 4, pos.getZ() >> 4);
-                if(entry != null)
-                {
-                    SPacketUpdateTileEntity packet = getUpdatePacket();
-                    if(packet != null)
-                    {
-                        entry.sendPacket(packet);
-                    }
-                }
+                TileFluidHandlerSynced.this.syncFluidToClient();
             }
+        };
+    }
+
+    public TileFluidHandlerSynced(@Nonnull TileEntityType<?> tileEntityTypeIn, int capacity, Predicate<FluidStack> validator)
+    {
+        super(tileEntityTypeIn);
+        this.tank = new FluidTank(capacity, validator)
+        {
+            @Override
+            protected void onContentsChanged()
+            {
+                TileFluidHandlerSynced.this.syncFluidToClient();
+            }
+        };
+    }
+
+    protected void syncFluidToClient()
+    {
+        if(this.world != null && !this.world.isRemote)
+        {
+            CompoundNBT compound = new CompoundNBT();
+            super.write(compound);
+            TileEntityUtil.sendUpdatePacket(this, compound);
         }
     }
 
     @Override
-    public NBTTagCompound getUpdateTag()
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        return writeToNBT(new NBTTagCompound());
+        this.read(pkt.getNbtCompound());
     }
 
-    @Override
-    public SPacketUpdateTileEntity getUpdatePacket()
+    public FluidTank getFluidTank()
     {
-        return new SPacketUpdateTileEntity(getPos(), 0, getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(final NetworkManager net, final SPacketUpdateTileEntity pkt)
-    {
-        readFromNBT(pkt.getNbtCompound());
+        return this.tank;
     }
 }

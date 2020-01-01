@@ -2,18 +2,19 @@ package com.mrcrayfish.vehicle.common.entity;
 
 import com.mrcrayfish.vehicle.Reference;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,19 +34,15 @@ public class HeldVehicleDataHandler
     }
 
     @Nullable
-    public static IHeldVehicle getHandler(EntityPlayer player)
+    public static IHeldVehicle getHandler(PlayerEntity player)
     {
-        if (player.hasCapability(CAPABILITY_HELD_VEHICLE, EnumFacing.DOWN))
-        {
-            return player.getCapability(CAPABILITY_HELD_VEHICLE, EnumFacing.DOWN);
-        }
-        return null;
+        return player.getCapability(CAPABILITY_HELD_VEHICLE, Direction.DOWN).orElse(null);
     }
 
     @SubscribeEvent
     public void attachCapabilities(AttachCapabilitiesEvent<Entity> event)
     {
-        if (event.getObject() instanceof EntityPlayer)
+        if (event.getObject() instanceof PlayerEntity)
         {
             event.addCapability(new ResourceLocation(Reference.MOD_ID, "held_vehicle"), new Provider());
         }
@@ -53,24 +50,24 @@ public class HeldVehicleDataHandler
 
     public interface IHeldVehicle
     {
-        void setVehicleTag(NBTTagCompound tagCompound);
-        NBTTagCompound getVehicleTag();
+        void setVehicleTag(CompoundNBT tagCompound);
+        CompoundNBT getVehicleTag();
     }
 
     public static class HeldVehicle implements IHeldVehicle
     {
-        private NBTTagCompound tagCompound = new NBTTagCompound();
+        private CompoundNBT compound = new CompoundNBT();
 
         @Override
-        public void setVehicleTag(NBTTagCompound tagCompound)
+        public void setVehicleTag(CompoundNBT tagCompound)
         {
-            this.tagCompound = tagCompound;
+            this.compound = tagCompound;
         }
 
         @Override
-        public NBTTagCompound getVehicleTag()
+        public CompoundNBT getVehicleTag()
         {
-            return tagCompound;
+            return compound;
         }
     }
 
@@ -78,45 +75,39 @@ public class HeldVehicleDataHandler
     {
         @Nullable
         @Override
-        public NBTBase writeNBT(Capability<IHeldVehicle> capability, IHeldVehicle instance, EnumFacing side)
+        public INBT writeNBT(Capability<IHeldVehicle> capability, IHeldVehicle instance, Direction side)
         {
             return instance.getVehicleTag();
         }
 
         @Override
-        public void readNBT(Capability<IHeldVehicle> capability, IHeldVehicle instance, EnumFacing side, NBTBase nbt)
+        public void readNBT(Capability<IHeldVehicle> capability, IHeldVehicle instance, Direction side, INBT nbt)
         {
-            instance.setVehicleTag((NBTTagCompound) nbt);
+            instance.setVehicleTag((CompoundNBT) nbt);
         }
     }
 
-    public static class Provider implements ICapabilitySerializable<NBTTagCompound>
+    public static class Provider implements ICapabilitySerializable<CompoundNBT>
     {
         final IHeldVehicle INSTANCE = CAPABILITY_HELD_VEHICLE.getDefaultInstance();
 
         @Override
-        public boolean hasCapability(@Nonnull Capability<?> capability, @Nullable EnumFacing facing)
+        public CompoundNBT serializeNBT()
         {
-            return capability == CAPABILITY_HELD_VEHICLE;
-        }
-
-        @Nullable
-        @Override
-        public <T> T getCapability(@Nonnull Capability<T> capability, @Nullable EnumFacing facing)
-        {
-            return hasCapability(capability, facing) ? CAPABILITY_HELD_VEHICLE.cast(INSTANCE) : null;
+            return (CompoundNBT) CAPABILITY_HELD_VEHICLE.getStorage().writeNBT(CAPABILITY_HELD_VEHICLE, INSTANCE, null);
         }
 
         @Override
-        public NBTTagCompound serializeNBT()
+        public void deserializeNBT(CompoundNBT compound)
         {
-            return (NBTTagCompound) CAPABILITY_HELD_VEHICLE.getStorage().writeNBT(CAPABILITY_HELD_VEHICLE, INSTANCE, null);
+            CAPABILITY_HELD_VEHICLE.getStorage().readNBT(CAPABILITY_HELD_VEHICLE, INSTANCE, null, compound);
         }
 
+        @Nonnull
         @Override
-        public void deserializeNBT(NBTTagCompound tagCompound)
+        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
         {
-            CAPABILITY_HELD_VEHICLE.getStorage().readNBT(CAPABILITY_HELD_VEHICLE, INSTANCE, null, tagCompound);
+            return CAPABILITY_HELD_VEHICLE.orEmpty(cap, LazyOptional.of(() -> INSTANCE));
         }
     }
 }

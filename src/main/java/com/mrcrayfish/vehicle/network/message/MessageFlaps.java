@@ -1,47 +1,51 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityPlane;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageFlaps implements IMessage, IMessageHandler<MessageFlaps, IMessage>
+import java.util.function.Supplier;
+
+public class MessageFlaps implements IMessage<MessageFlaps>
 {
-	private EntityPlane.FlapDirection flapDirection;
+	private PlaneEntity.FlapDirection flapDirection;
 
 	public MessageFlaps() {}
 
-	public MessageFlaps(EntityPlane.FlapDirection flapDirection)
+	public MessageFlaps(PlaneEntity.FlapDirection flapDirection)
 	{
 		this.flapDirection = flapDirection;
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(MessageFlaps message, PacketBuffer buffer)
 	{
-		buf.writeInt(flapDirection.ordinal());
+		buffer.writeEnumValue(message.flapDirection);
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageFlaps decode(PacketBuffer buffer)
 	{
-		this.flapDirection = EntityPlane.FlapDirection.values()[buf.readInt()];
+		return new MessageFlaps(buffer.readEnumValue(PlaneEntity.FlapDirection.class));
 	}
 
 	@Override
-	public IMessage onMessage(MessageFlaps message, MessageContext ctx)
+	public void handle(MessageFlaps message, Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            Entity riding = ctx.getServerHandler().player.getRidingEntity();
-            if(riding instanceof EntityPlane)
-            {
-                ((EntityPlane) riding).setFlapDirection(message.flapDirection);
-            }
-        });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null)
+			{
+				Entity riding = player.getRidingEntity();
+				if(riding instanceof PlaneEntity)
+				{
+					((PlaneEntity) riding).setFlapDirection(message.flapDirection);
+				}
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

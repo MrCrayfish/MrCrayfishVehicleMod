@@ -1,15 +1,16 @@
 package com.mrcrayfish.vehicle.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 
 /**
  * Author: MrCrayfish
  */
-public interface IStorageBlock extends IInventory
+public interface IStorageBlock extends IInventory, INamedContainerProvider
 {
     NonNullList<ItemStack> getInventory();
 
@@ -76,42 +77,9 @@ public interface IStorageBlock extends IInventory
     }
 
     @Override
-    default int getInventoryStackLimit()
-    {
-        return 64;
-    }
-
-    @Override
-    default boolean isUsableByPlayer(EntityPlayer player)
+    default boolean isUsableByPlayer(PlayerEntity player)
     {
         return false;
-    }
-
-    @Override
-    default void openInventory(EntityPlayer player) {}
-
-    @Override
-    default void closeInventory(EntityPlayer player) {}
-
-    @Override
-    default boolean isItemValidForSlot(int index, ItemStack stack)
-    {
-        return true;
-    }
-
-    @Override
-    default int getField(int id)
-    {
-        return 0;
-    }
-
-    @Override
-    default void setField(int id, int value) {}
-
-    @Override
-    default int getFieldCount()
-    {
-        return 0;
     }
 
     @Override
@@ -119,11 +87,4 @@ public interface IStorageBlock extends IInventory
     {
         this.getInventory().clear();
     }
-
-    @Override
-    default boolean hasCustomName()
-    {
-        return false;
-    }
-
 }

@@ -1,23 +1,27 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityVehicleTrailer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import com.mrcrayfish.vehicle.entity.trailer.VehicleEntityTrailer;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleTrailer extends AbstractRenderTrailer<EntityVehicleTrailer>
+public class RenderVehicleTrailer extends AbstractRenderTrailer<VehicleEntityTrailer>
 {
     @Override
-    public void render(EntityVehicleTrailer entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        this.renderDamagedPart(entity, entity.body);
-        this.renderWheel(entity, false, -14.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks);
-        this.renderWheel(entity, true, 14.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks);
+        return SpecialModel.VEHICLE_TRAILER;
+    }
+
+    @Override
+    public void render(VehicleEntityTrailer entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        this.renderDamagedPart(entity, SpecialModel.VEHICLE_TRAILER.getModel(), matrixStack, renderTypeBuffer);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -14.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 14.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks);
     }
 }

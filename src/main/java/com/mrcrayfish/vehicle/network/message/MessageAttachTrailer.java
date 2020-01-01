@@ -1,20 +1,20 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageAttachTrailer implements IMessage, IMessageHandler<MessageAttachTrailer, IMessage>
+public class MessageAttachTrailer implements IMessage<MessageAttachTrailer>
 {
     private int trailerId;
     private int entityId;
@@ -28,37 +28,40 @@ public class MessageAttachTrailer implements IMessage, IMessageHandler<MessageAt
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessageAttachTrailer message, PacketBuffer buffer)
     {
-        buf.writeInt(this.trailerId);
-        buf.writeInt(this.entityId);
+        buffer.writeInt(message.trailerId);
+        buffer.writeInt(message.entityId);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessageAttachTrailer decode(PacketBuffer buffer)
     {
-        this.trailerId = buf.readInt();
-        this.entityId = buf.readInt();
+        return new MessageAttachTrailer(buffer.readInt(), buffer.readInt());
     }
 
     @Override
-    public IMessage onMessage(MessageAttachTrailer message, MessageContext ctx)
+    public void handle(MessageAttachTrailer message, Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        supplier.get().enqueueWork(() ->
         {
-            World world = ctx.getServerHandler().player.world;
-            Entity trailerEntity = world.getEntityByID(message.trailerId);
-            if(trailerEntity instanceof EntityTrailer)
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null)
             {
-                EntityTrailer trailer = (EntityTrailer) trailerEntity;
-                Entity entity = world.getEntityByID(message.entityId);
-                if(entity instanceof EntityPlayer && entity.getRidingEntity() == null)
+                World world = player.world;
+                Entity trailerEntity = world.getEntityByID(message.trailerId);
+                if(trailerEntity instanceof TrailerEntity)
                 {
-                    trailer.setPullingEntity(entity);
-                    entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
+                    TrailerEntity trailer = (TrailerEntity) trailerEntity;
+                    Entity entity = world.getEntityByID(message.entityId);
+                    if(entity instanceof PlayerEntity && entity.getRidingEntity() == null)
+                    {
+                        trailer.setPullingEntity(entity);
+                        entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
+                    }
                 }
             }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

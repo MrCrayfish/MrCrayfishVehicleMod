@@ -1,48 +1,57 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityOffRoader;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.vehicle.OffRoaderEntity;
+import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderOffRoader extends AbstractRenderVehicle<EntityOffRoader>
+public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
 {
     @Override
-    public void render(EntityOffRoader entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        this.renderDamagedPart(entity, entity.body);
-
-        //Render the handles bars
-        GlStateManager.pushMatrix();
-        {
-            // Positions the steering wheel in the correct position
-            GlStateManager.translate(-0.3125, 0.35, 0.2);
-            GlStateManager.rotate(-45F, 1, 0, 0);
-            GlStateManager.translate(0, -0.02, 0);
-            GlStateManager.scale(0.75, 0.75, 0.75);
-
-            // Rotates the steering wheel based on the wheel angle
-            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 25F;
-            GlStateManager.rotate(turnRotation, 0, 1, 0);
-
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
+        return SpecialModel.OFF_ROADER_BODY;
     }
 
     @Override
-    public void applyPlayerModel(EntityOffRoader entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void render(OffRoaderEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        this.renderDamagedPart(entity, SpecialModel.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer);
+
+        //Render the handles bars
+        matrixStack.func_227860_a_();
+            // Positions the steering wheel in the correct position
+        matrixStack.func_227861_a_(-0.3125, 0.35, 0.2);
+        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.func_227861_a_(0, -0.02, 0);
+        matrixStack.func_227862_a_(0.75F, 0.75F, 0.75F);
+
+        // Rotates the steering wheel based on the wheel angle
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngleNormal = wheelAngle / 45F;
+        float turnRotation = wheelAngleNormal * 25F;
+        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+
+        matrixStack.func_227865_b_();
+    }
+
+    @Override
+    public void applyPlayerModel(OffRoaderEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         List<Entity> passengers = entity.getPassengers();
         int index = passengers.indexOf(player);

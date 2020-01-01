@@ -1,11 +1,11 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import com.mrcrayfish.vehicle.entity.EntityHelicopter;
-import com.mrcrayfish.vehicle.entity.EntityPlane;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
+import com.mrcrayfish.vehicle.entity.HelicopterEntity;
+import com.mrcrayfish.vehicle.entity.PlaneEntity;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
@@ -15,17 +15,13 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public interface Proxy
 {
-    default void preInit() {}
+    default void setupClient() {}
 
-    default void init() {}
-
-    default void postInit() {}
-
-    default void playVehicleSound(EntityPlayer player, EntityPoweredVehicle vehicle) {}
+    default void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle) {}
 
     default void openVehicleEditWindow(int entityId, int windowId) {}
 
-    default void syncStorageInventory(int entityId, NBTTagCompound tagCompound) {}
+    default void syncStorageInventory(int entityId, CompoundNBT compound) {}
 
     default void syncEntityFluid(int entityId, FluidStack stack) {}
 
@@ -33,17 +29,19 @@ public interface Proxy
 
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {}
 
-    default EntityPoweredVehicle.AccelerationDirection getAccelerationDirection(EntityLivingBase entity)
+    default void playSound(SoundEvent sound, float volume, float pitch) {}
+
+    default PoweredVehicleEntity.AccelerationDirection getAccelerationDirection(LivingEntity entity)
     {
-        return EntityPoweredVehicle.AccelerationDirection.NONE;
+        return PoweredVehicleEntity.AccelerationDirection.NONE;
     }
 
-    default EntityPoweredVehicle.TurnDirection getTurnDirection(EntityLivingBase entity)
+    default PoweredVehicleEntity.TurnDirection getTurnDirection(LivingEntity entity)
     {
-        return EntityPoweredVehicle.TurnDirection.FORWARD;
+        return PoweredVehicleEntity.TurnDirection.FORWARD;
     }
 
-    default float getTargetTurnAngle(EntityPoweredVehicle vehicle, boolean drifting)
+    default float getTargetTurnAngle(PoweredVehicleEntity vehicle, boolean drifting)
     {
         return 0F;
     }
@@ -58,27 +56,27 @@ public interface Proxy
         return false;
     }
 
-    default EntityPlane.FlapDirection getFlapDirection()
+    default PlaneEntity.FlapDirection getFlapDirection()
     {
-        return EntityPlane.FlapDirection.NONE;
+        return PlaneEntity.FlapDirection.NONE;
     }
 
-    default EntityHelicopter.AltitudeChange getAltitudeChange()
+    default HelicopterEntity.AltitudeChange getAltitudeChange()
     {
-        return EntityHelicopter.AltitudeChange.NONE;
+        return HelicopterEntity.AltitudeChange.NONE;
     }
 
-    default float getTravelDirection(EntityHelicopter vehicle)
-    {
-        return 0.0F;
-    }
-
-    default float getTravelSpeed(EntityHelicopter helicopter)
+    default float getTravelDirection(HelicopterEntity vehicle)
     {
         return 0.0F;
     }
 
-    default float getPower(EntityPoweredVehicle vehicle)
+    default float getTravelSpeed(HelicopterEntity helicopter)
+    {
+        return 0.0F;
+    }
+
+    default float getPower(PoweredVehicleEntity vehicle)
     {
         return 1.0F;
     }

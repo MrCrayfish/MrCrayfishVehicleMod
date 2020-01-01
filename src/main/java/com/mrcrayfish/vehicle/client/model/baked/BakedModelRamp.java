@@ -1,33 +1,11 @@
 package com.mrcrayfish.vehicle.client.model.baked;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.block.BlockBoostRamp;
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
-import com.mrcrayfish.vehicle.client.util.BakedQuadBuilder;
-import com.mrcrayfish.vehicle.client.util.TransformationBuilder;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import java.util.List;
-import java.util.function.Function;
-
 /**
  * Author: MrCrayfish
  */
-public class BakedModelRamp implements IBakedModel
+public class BakedModelRamp
 {
-    private static final ImmutableMap<ItemCameraTransforms.TransformType, Matrix4f> CAMERA_TRANSFORMATIONS;
+    /*private static final ImmutableMap<ItemCameraTransforms.TransformType, Matrix4f> CAMERA_TRANSFORMATIONS;
 
     static
     {
@@ -54,15 +32,15 @@ public class BakedModelRamp implements IBakedModel
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable Direction side, long rand)
     {
         List<BakedQuad> quads = Lists.newArrayList();
         if(side == null)
         {
             BakedQuadBuilder builder = new BakedQuadBuilder(format);
-            builder.setFacing(EnumFacing.NORTH);
+            builder.setFacing(Direction.NORTH);
 
-            EnumFacing facing = EnumFacing.NORTH;
+            Direction facing = Direction.NORTH;
             float startHeight = 0.0F;
             float endHeight = 0.5F;
             boolean left = false;
@@ -70,9 +48,9 @@ public class BakedModelRamp implements IBakedModel
 
             if(state != null)
             {
-                if(state.getPropertyKeys().contains(BlockRotatedObject.FACING))
+                if(state.getPropertyKeys().contains(BlockRotatedObject.DIRECTION))
                 {
-                    facing = state.getValue(BlockRotatedObject.FACING);
+                    facing = state.getValue(BlockRotatedObject.DIRECTION);
                     builder.setFacing(facing);
                 }
                 if(state.getPropertyKeys().contains(BlockBoostRamp.STACKED) && state.getValue(BlockBoostRamp.STACKED))
@@ -90,10 +68,10 @@ public class BakedModelRamp implements IBakedModel
             int offsetEnd = right ? 16 : 15;
 
             //Boost Pad
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetStart * 0.0625F, offsetStart, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetEnd * 0.0625F, offsetEnd, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetEnd * 0.0625F, offsetEnd, 16), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetStart * 0.0625F, offsetStart, 16), EnumFacing.UP);
+            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetStart * 0.0625F, offsetStart, 0), Direction.UP);
+            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetEnd * 0.0625F, offsetEnd, 0), Direction.UP);
+            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetEnd * 0.0625F, offsetEnd, 16), Direction.UP);
+            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetStart * 0.0625F, offsetStart, 16), Direction.UP);
             quads.add(builder.build());
 
             builder.setTexture(mainTexture);
@@ -101,20 +79,20 @@ public class BakedModelRamp implements IBakedModel
             if(!left)
             {
                 //Left Trim
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 0, 0, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 0, 0, 16), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 0, 0, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 0, 0, 16), Direction.UP);
                 quads.add(builder.build());
             }
 
             if(!right)
             {
                 //Right Trim
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1, 16, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1, 16, 16), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1, 16, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1, 16, 16), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), Direction.UP);
                 quads.add(builder.build());
             }
 
@@ -192,5 +170,5 @@ public class BakedModelRamp implements IBakedModel
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
         return Pair.of(this, CAMERA_TRANSFORMATIONS.get(cameraTransformType));
-    }
+    }*/
 }

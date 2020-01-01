@@ -1,14 +1,14 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityHelicopter;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageTravelProperties implements IMessage, IMessageHandler<MessageTravelProperties, IMessage>
+import java.util.function.Supplier;
+
+public class MessageTravelProperties implements IMessage<MessageTravelProperties>
 {
 	private float travelSpeed;
 	private float travelDirection;
@@ -22,32 +22,35 @@ public class MessageTravelProperties implements IMessage, IMessageHandler<Messag
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(MessageTravelProperties message, PacketBuffer buffer)
 	{
-		buf.writeFloat(this.travelSpeed);
-		buf.writeFloat(this.travelDirection);
+		buffer.writeFloat(message.travelSpeed);
+		buffer.writeFloat(message.travelDirection);
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageTravelProperties decode(PacketBuffer buffer)
 	{
-		this.travelSpeed = buf.readFloat();
-		this.travelDirection = buf.readFloat();
+		return new MessageTravelProperties(buffer.readFloat(), buffer.readFloat());
 	}
 
 	@Override
-	public IMessage onMessage(MessageTravelProperties message, MessageContext ctx)
+	public void handle(MessageTravelProperties message, Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            Entity riding = ctx.getServerHandler().player.getRidingEntity();
-            if(riding instanceof EntityHelicopter)
-            {
-				EntityHelicopter helicopter = (EntityHelicopter) riding;
-				helicopter.setTravelSpeed(message.travelSpeed);
-				helicopter.setTravelDirection(message.travelDirection);
-            }
-        });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null)
+			{
+				Entity riding = player.getRidingEntity();
+				if(riding instanceof HelicopterEntity)
+				{
+					HelicopterEntity helicopter = (HelicopterEntity) riding;
+					helicopter.setTravelSpeed(message.travelSpeed);
+					helicopter.setTravelDirection(message.travelDirection);
+				}
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

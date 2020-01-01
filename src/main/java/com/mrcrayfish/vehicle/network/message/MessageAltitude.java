@@ -1,47 +1,51 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityHelicopter;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageAltitude implements IMessage, IMessageHandler<MessageAltitude, IMessage>
+import java.util.function.Supplier;
+
+public class MessageAltitude implements IMessage<MessageAltitude>
 {
-	private EntityHelicopter.AltitudeChange altitudeChange;
+	private HelicopterEntity.AltitudeChange altitudeChange;
 
 	public MessageAltitude() {}
 
-	public MessageAltitude(EntityHelicopter.AltitudeChange altitudeChange)
+	public MessageAltitude(HelicopterEntity.AltitudeChange altitudeChange)
 	{
 		this.altitudeChange = altitudeChange;
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(MessageAltitude message, PacketBuffer buffer)
 	{
-		buf.writeInt(altitudeChange.ordinal());
+		buffer.writeEnumValue(message.altitudeChange);
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageAltitude decode(PacketBuffer buffer)
 	{
-		this.altitudeChange = EntityHelicopter.AltitudeChange.values()[buf.readInt()];
+		return new MessageAltitude(buffer.readEnumValue(HelicopterEntity.AltitudeChange.class));
 	}
 
 	@Override
-	public IMessage onMessage(MessageAltitude message, MessageContext ctx)
+	public void handle(MessageAltitude message, Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            Entity riding = ctx.getServerHandler().player.getRidingEntity();
-            if(riding instanceof EntityHelicopter)
-            {
-                ((EntityHelicopter) riding).setAltitudeChange(message.altitudeChange);
-            }
-        });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null)
+			{
+				Entity riding = player.getRidingEntity();
+				if(riding instanceof HelicopterEntity)
+				{
+					((HelicopterEntity) riding).setAltitudeChange(message.altitudeChange);
+				}
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

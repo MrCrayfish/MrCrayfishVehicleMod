@@ -1,11 +1,12 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.tileentity.TileEntityBoost;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.tileentity.BoostTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.Names;
 import com.mrcrayfish.vehicle.util.StateHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
@@ -16,8 +17,9 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -33,8 +35,8 @@ import java.util.List;
  */
 public class BlockSteepBoostRamp extends BlockRotatedObject
 {
-    public static final PropertyBool LEFT = PropertyBool.create("left");
-    public static final PropertyBool RIGHT = PropertyBool.create("right");
+    public static final BooleanProperty LEFT = BooleanProperty.create("left");
+    public static final BooleanProperty RIGHT = BooleanProperty.create("right");
 
     private static final AxisAlignedBB COLLISION_BASE = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.0625, 1.0);
     private static final AxisAlignedBB[] COLLISION_ONE = new Bounds(1, 1, 0, 16, 2, 16).getRotatedBounds();
@@ -55,8 +57,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
 
     public BlockSteepBoostRamp()
     {
-        super(Material.ROCK, BlockNames.STEEP_BOOST_RAMP);
-        this.setHardness(1.0F);
+        super(Names.Block.STEEP_BOOST_RAMP, Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
     }
 
     @Override
@@ -76,19 +77,19 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     @Override
     public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
     {
-        if(entityIn instanceof EntityPoweredVehicle && entityIn.getControllingPassenger() != null)
+        if(entityIn instanceof PoweredVehicleEntity && entityIn.getControllingPassenger() != null)
         {
-            EnumFacing facing = state.getValue(FACING);
+            Direction facing = state.getValue(DIRECTION);
             if(facing == entityIn.getHorizontalFacing())
             {
                 float speedMultiplier = 0.0F;
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityBoost)
+                if(tileEntity instanceof BoostTileEntity)
                 {
-                    speedMultiplier = ((TileEntityBoost) tileEntity).getSpeedMultiplier();
+                    speedMultiplier = ((BoostTileEntity) tileEntity).getSpeedMultiplier();
                 }
 
-                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
+                PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entityIn;
                 if(!poweredVehicle.isBoosting())
                 {
                     worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
@@ -105,7 +106,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     @Override
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
     {
-        EnumFacing facing = state.getValue(FACING);
+        Direction facing = state.getValue(DIRECTION);
         addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BASE);
         addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_ONE[facing.getHorizontalIndex()]);
         addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_TWO[facing.getHorizontalIndex()]);
@@ -127,19 +128,19 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     @Override
     public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
     {
-        EnumFacing facing = state.getValue(FACING);
+        Direction facing = state.getValue(DIRECTION);
         state = state.withProperty(LEFT, false);
         state = state.withProperty(RIGHT, false);
-        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.LEFT) == this)
+        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.RelativeDirection.LEFT) == this)
         {
-            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.LEFT) == StateHelper.Direction.DOWN)
+            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.RelativeDirection.LEFT) == StateHelper.RelativeDirection.DOWN)
             {
                 state = state.withProperty(RIGHT, true);
             }
         }
-        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.RIGHT) == this)
+        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.RelativeDirection.RIGHT) == this)
         {
-            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.RIGHT) == StateHelper.Direction.DOWN)
+            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.RelativeDirection.RIGHT) == StateHelper.RelativeDirection.DOWN)
             {
                 state = state.withProperty(LEFT, true);
             }
@@ -150,7 +151,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     @Override
     protected BlockStateContainer createBlockState()
     {
-        return new BlockStateContainer(this, FACING, LEFT, RIGHT);
+        return new BlockStateContainer(this, DIRECTION, LEFT, RIGHT);
     }
 
 
@@ -164,6 +165,6 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     @Override
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntityBoost(1.0F);
+        return new BoostTileEntity(1.0F);
     }
 }

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 
 /**
  * Author: MrCrayfish
@@ -35,7 +35,7 @@ public class Wheel
         this.render = render;
     }
 
-    public float getWheelRotation(EntityLandVehicle vehicle, float partialTicks)
+    public float getWheelRotation(LandVehicleEntity vehicle, float partialTicks)
     {
         if(position == Position.REAR)
         {

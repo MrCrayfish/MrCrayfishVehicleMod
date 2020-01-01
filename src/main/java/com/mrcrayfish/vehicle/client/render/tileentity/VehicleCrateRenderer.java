@@ -1,37 +1,25 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.Models;
-import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.EntityRenderer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import org.apache.commons.lang3.tuple.Pair;
-
-import java.util.List;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 /**
  * Author: MrCrayfish
  */
-public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVehicleCrate>
+public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEntity>
 {
-    @Override
-    public void render(TileEntityVehicleCrate te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+    public VehicleCrateRenderer(TileEntityRendererDispatcher dispatcher)
     {
-        IBlockState state = te.getWorld().getBlockState(te.getPos());
+        super(dispatcher);
+    }
+
+    @Override
+    public void func_225616_a_(VehicleCrateTileEntity vehicleCrateTileEntity, float v, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int i, int i1)
+    {
+        /*IBlockState state = te.getWorld().getBlockState(te.getPos());
         if(state.getBlock() != ModBlocks.VEHICLE_CRATE)
             return;
 
@@ -39,7 +27,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
         {
             GlStateManager.translate(x, y, z);
 
-            EnumFacing facing = state.getValue(BlockRotatedObject.FACING);
+            Direction facing = state.getValue(BlockRotatedObject.DIRECTION);
             GlStateManager.translate(0.5, 0.5, 0.5);
             GlStateManager.rotate(facing.getHorizontalIndex() * -90F + 180F, 0, 1, 0);
             GlStateManager.translate(-0.5, -0.5, -0.5);
@@ -72,7 +60,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
 
                 GlStateManager.translate(-0.5, 0, -0.5);
                 GlStateManager.translate(0, 0, -2 * 0.0625);
-                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
+                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(SpecialModel.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.popMatrix();
             }
 
@@ -85,7 +73,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
                 GlStateManager.scale(1.001, 1.001, 1.001);
                 GlStateManager.translate(-0.5, -0.5, -0.5);
                 GlStateManager.translate(0, 0, (6 * 0.0625) * 0.998);
-                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
+                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(SpecialModel.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.popMatrix();
             }
 
@@ -96,7 +84,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
             GlStateManager.scale(1.001, 1.001, 1.001);
             GlStateManager.translate(-0.5, -0.5, -0.5);
             GlStateManager.translate(0, 0, (6 * 0.0625) * 0.998);
-            Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
+            Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(SpecialModel.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
 
             GlStateManager.popMatrix();
@@ -125,45 +113,6 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
                 Minecraft.getMinecraft().getRenderManager().renderEntity(te.getEntity(), 0.0D, 0.0D, 0.0D, 0.0F, partialTicks, false);
             }
         }
-        GlStateManager.popMatrix();
-    }
-
-    private void renderModel(IBakedModel model, int color, ItemStack stack)
-    {
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
-        bufferbuilder.begin(7, DefaultVertexFormats.ITEM);
-        for (EnumFacing enumfacing : EnumFacing.values())
-        {
-            this.renderQuads(bufferbuilder, model.getQuads(null, enumfacing, 0L), color, stack);
-        }
-
-        this.renderQuads(bufferbuilder, model.getQuads(null, null, 0L), color, stack);
-        tessellator.draw();
-    }
-
-    private void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, int color, ItemStack stack)
-    {
-        boolean hasColor = color == -1 && !stack.isEmpty();
-        int i = 0;
-        for (int j = quads.size(); i < j; ++i)
-        {
-            BakedQuad quad = quads.get(i);
-            int k = color;
-
-            if (hasColor && quad.hasTintIndex())
-            {
-                k = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, quad.getTintIndex());
-
-                if (EntityRenderer.anaglyphEnable)
-                {
-                    k = TextureUtil.anaglyphColor(k);
-                }
-
-                k = k | -16777216;
-            }
-
-            net.minecraftforge.client.model.pipeline.LightUtil.renderQuadColor(renderer, quad, k);
-        }
+        GlStateManager.popMatrix();*/
     }
 }

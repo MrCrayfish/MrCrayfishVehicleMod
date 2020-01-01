@@ -1,15 +1,18 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.util.SoundNames;
+import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 /**
  * Author: MrCrayfish
  */
-@GameRegistry.ObjectHolder(Reference.MOD_ID)
+@ObjectHolder(Reference.MOD_ID)
 public class ModSounds
 {
     public static final SoundEvent HORN_MONO = null;
@@ -48,49 +51,50 @@ public class ModSounds
     public static final SoundEvent NOZZLE_PICK_UP = null;
     public static final SoundEvent NOZZLE_PUT_DOWN = null;
 
-    public static void register()
-    {
-        register(SoundNames.HORN_MONO);
-        register(SoundNames.HORN_STEREO);
-        register(SoundNames.ATV_ENGINE_MONO);
-        register(SoundNames.ATV_ENGINE_STEREO);
-        register(SoundNames.GO_KART_ENGINE_MONO);
-        register(SoundNames.GO_KART_ENGINE_STEREO);
-        register(SoundNames.ELECTRIC_ENGINE_MONO);
-        register(SoundNames.ELECTRIC_ENGINE_STEREO);
-        register(SoundNames.BONK);
-        register(SoundNames.PICK_UP_VEHICLE);
-        register(SoundNames.SPEED_BOAT_ENGINE_MONO);
-        register(SoundNames.SPEED_BOAT_ENGINE_STEREO);
-        register(SoundNames.SPRAY_CAN_SPRAY);
-        register(SoundNames.SPRAY_CAN_SHAKE);
-        register(SoundNames.MOPED_ENGINE_MONO);
-        register(SoundNames.MOPED_ENGINE_STEREO);
-        register(SoundNames.SPORTS_PLANE_ENGINE_MONO);
-        register(SoundNames.SPORTS_PLANE_ENGINE_STEREO);
-        register(SoundNames.BOOST_PAD);
-        register(SoundNames.LIQUID_GLUG);
-        register(SoundNames.FUEL_PORT_OPEN);
-        register(SoundNames.FUEL_PORT_CLOSE);
-        register(SoundNames.FUEL_PORT_2_OPEN);
-        register(SoundNames.FUEL_PORT_2_CLOSE);
-        register(SoundNames.VEHICLE_CRATE_PANEL_LAND);
-        register(SoundNames.JACK_UP);
-        register(SoundNames.JACK_DOWN);
-        register(SoundNames.VEHICLE_IMPACT);
-        register(SoundNames.VEHICLE_DESTROYED);
-        register(SoundNames.VEHICLE_THUD);
-        register(SoundNames.AIR_WRENCH_GUN);
-        register(SoundNames.TRACTOR_ENGINE_MONO);
-        register(SoundNames.TRACTOR_ENGINE_STEREO);
-        register(SoundNames.NOZZLE_PICK_UP);
-        register(SoundNames.NOZZLE_PUT_DOWN);
-    }
-
-    private static void register(String soundNameIn)
+    private static SoundEvent buildSound(String soundNameIn)
     {
         ResourceLocation resource = new ResourceLocation(soundNameIn);
-        SoundEvent sound = new SoundEvent(resource).setRegistryName(soundNameIn);
-        RegistrationHandler.Sounds.register(sound);
+        return new SoundEvent(resource).setRegistryName(soundNameIn);
+    }
+
+    @SubscribeEvent
+    public static void buildSound(final RegistryEvent.Register<SoundEvent> event)
+    {
+        IForgeRegistry<SoundEvent> registry = event.getRegistry();
+        registry.register(buildSound(Names.Sound.HORN_MONO));
+        registry.register(buildSound(Names.Sound.HORN_STEREO));
+        registry.register(buildSound(Names.Sound.ATV_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.ATV_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.GO_KART_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.GO_KART_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.ELECTRIC_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.ELECTRIC_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.BONK));
+        registry.register(buildSound(Names.Sound.PICK_UP_VEHICLE));
+        registry.register(buildSound(Names.Sound.SPEED_BOAT_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.SPEED_BOAT_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.SPRAY_CAN_SPRAY));
+        registry.register(buildSound(Names.Sound.SPRAY_CAN_SHAKE));
+        registry.register(buildSound(Names.Sound.MOPED_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.MOPED_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.SPORTS_PLANE_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.SPORTS_PLANE_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.BOOST_PAD));
+        registry.register(buildSound(Names.Sound.LIQUID_GLUG));
+        registry.register(buildSound(Names.Sound.FUEL_PORT_OPEN));
+        registry.register(buildSound(Names.Sound.FUEL_PORT_CLOSE));
+        registry.register(buildSound(Names.Sound.FUEL_PORT_2_OPEN));
+        registry.register(buildSound(Names.Sound.FUEL_PORT_2_CLOSE));
+        registry.register(buildSound(Names.Sound.VEHICLE_CRATE_PANEL_LAND));
+        registry.register(buildSound(Names.Sound.JACK_UP));
+        registry.register(buildSound(Names.Sound.JACK_DOWN));
+        registry.register(buildSound(Names.Sound.VEHICLE_IMPACT));
+        registry.register(buildSound(Names.Sound.VEHICLE_DESTROYED));
+        registry.register(buildSound(Names.Sound.VEHICLE_THUD));
+        registry.register(buildSound(Names.Sound.AIR_WRENCH_GUN));
+        registry.register(buildSound(Names.Sound.TRACTOR_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.TRACTOR_ENGINE_STEREO));
+        registry.register(buildSound(Names.Sound.NOZZLE_PICK_UP));
+        registry.register(buildSound(Names.Sound.NOZZLE_PUT_DOWN));
     }
 }

@@ -3,8 +3,8 @@ package com.mrcrayfish.vehicle.client.util;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumFacing.Axis;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.client.model.pipeline.UnpackedBakedQuad;
 
@@ -15,7 +15,7 @@ public class QuadHelper
 {
 	private VertexFormat format;
 	private TextureAtlasSprite sprite;
-	private EnumFacing facing = EnumFacing.EAST;
+	private Direction facing = Direction.EAST;
 	
 	public QuadHelper(VertexFormat format, TextureAtlasSprite sprite)
 	{
@@ -36,42 +36,42 @@ public class QuadHelper
 				             new Vertex(v1.x, v2.y, v2.z, 0F, height), 
 				             new Vertex(v1.x, v2.y, v1.z, depth, height), 
 				             new Vertex(v1.x, v1.y, v1.z, depth, 0F),
-	             	 		 EnumFacing.WEST));
+	             	 		 Direction.WEST));
 		
 		// Back
 		quads.add(createQuad(new Vertex(v2.x, v1.y, v1.z, 0F, 0F), 
 	             			 new Vertex(v2.x, v2.y, v1.z, 0F, height), 
 	             			 new Vertex(v2.x, v2.y, v2.z, depth, height), 
 	             			 new Vertex(v2.x, v1.y, v2.z, depth, 0F),
-	             	 		 EnumFacing.EAST));
+	             	 		 Direction.EAST));
 		
 		// Left
 		quads.add(createQuad(new Vertex(v1.x, v1.y, v1.z, 0F, 0F), 
 	             		 	 new Vertex(v1.x, v2.y, v1.z, 0F, height), 
 	             		 	 new Vertex(v2.x, v2.y, v1.z, width, height), 
 	             		 	 new Vertex(v2.x, v1.y, v1.z, width, 0F),
-	             	 		 EnumFacing.NORTH));
+	             	 		 Direction.NORTH));
 		
 		// Right
 		quads.add(createQuad(new Vertex(v2.x, v1.y, v2.z, 0F, 0F), 
 			    		 	 new Vertex(v2.x, v2.y, v2.z, 0F, height), 
 			    		 	 new Vertex(v1.x, v2.y, v2.z, width, height), 
 			    		 	 new Vertex(v1.x, v1.y, v2.z, width, 0F),
-			    	 		 EnumFacing.SOUTH));
+			    	 		 Direction.SOUTH));
 		
 		// Bottom
 		quads.add(createQuad(new Vertex(v1.x, v1.y, v2.z, 0F, 0F),
 							 new Vertex(v1.x, v1.y, v1.z, 0F, depth),
     	 		 			 new Vertex(v2.x, v1.y, v1.z, width, depth), 
 	             	 		 new Vertex(v2.x, v1.y, v2.z, width, 0F),
-	             	 		 EnumFacing.DOWN));
+	             	 		 Direction.DOWN));
 		
 		// Top
 		quads.add(createQuad(new Vertex(v1.x, v2.y, v1.z, 0F, 0F), 
     	 		 			 new Vertex(v1.x, v2.y, v2.z, 0F, depth),
     	 		 			 new Vertex(v2.x, v2.y, v2.z, width, depth), 
 	             	 		 new Vertex(v2.x, v2.y, v1.z, width, 0F),
-	             	 		 EnumFacing.UP));
+	             	 		 Direction.UP));
 
         return quads;
 	}
@@ -89,47 +89,47 @@ public class QuadHelper
 				             new Vertex(v1.x, v2.y, v2.z, 0F, height), 
 				             new Vertex(v1.x, v2.y, v1.z, depth, height), 
 				             new Vertex(v1.x, v1.y, v1.z, depth, 0F),
-	             	 		 EnumFacing.WEST));
+	             	 		 Direction.WEST));
 		
 		// Back
 		quads.add(createQuad(new Vertex(v2.x, v1.y + heightOffset, v1.z, 0F, 0F), 
 	             			 new Vertex(v2.x, v2.y + heightOffset, v1.z, 0F, height), 
 	             			 new Vertex(v2.x, v2.y + heightOffset, v2.z, depth, height), 
 	             			 new Vertex(v2.x, v1.y + heightOffset, v2.z, depth, 0F),
-	             	 		 EnumFacing.EAST));
+	             	 		 Direction.EAST));
 		
 		// Left
 		quads.add(createQuad(new Vertex(v1.x, v1.y, v1.z, 0F, 0F), 
 	             		 	 new Vertex(v1.x, v2.y, v1.z, 0F, height), 
 	             		 	 new Vertex(v2.x, v2.y + heightOffset, v1.z, width, height), 
 	             		 	 new Vertex(v2.x, v1.y + heightOffset, v1.z, width, 0F),
-	             	 		 EnumFacing.NORTH));
+	             	 		 Direction.NORTH));
 		
 		// Right
 		quads.add(createQuad(new Vertex(v2.x, v1.y + heightOffset, v2.z, 0F, 0F), 
 			    		 	 new Vertex(v2.x, v2.y + heightOffset, v2.z, 0F, height), 
 			    		 	 new Vertex(v1.x, v2.y, v2.z, width, height), 
 			    		 	 new Vertex(v1.x, v1.y, v2.z, width, 0F),
-			    	 		 EnumFacing.SOUTH));
+			    	 		 Direction.SOUTH));
 		
 		// Bottom
 		quads.add(createQuad(new Vertex(v1.x, v1.y, v2.z, 0F, 0F),
 							 new Vertex(v1.x, v1.y, v1.z, 0F, depth),
     	 		 			 new Vertex(v2.x, v1.y + heightOffset, v1.z, width, depth), 
 	             	 		 new Vertex(v2.x, v1.y + heightOffset, v2.z, width, 0F),
-	             	 		 EnumFacing.DOWN));
+	             	 		 Direction.DOWN));
 		
 		// Top
 		quads.add(createQuad(new Vertex(v1.x, v2.y, v1.z, 0F, 0F), 
     	 		 			 new Vertex(v1.x, v2.y, v2.z, 0F, depth),
     	 		 			 new Vertex(v2.x, v2.y + heightOffset, v2.z, width, depth), 
 	             	 		 new Vertex(v2.x, v2.y + heightOffset, v1.z, width, 0F),
-	             	 		 EnumFacing.UP));
+	             	 		 Direction.UP));
 
         return quads;
 	}
 	
-	public BakedQuad createQuad(Vertex v1, Vertex v2, Vertex v3, Vertex v4, EnumFacing face)
+	public BakedQuad createQuad(Vertex v1, Vertex v2, Vertex v3, Vertex v4, Direction face)
 	{
 		v1 = rotate(v1, facing);
 		v2 = rotate(v2, facing);
@@ -151,7 +151,7 @@ public class QuadHelper
         return builder.build();
 	}
 	
-	private void putVertex(UnpackedBakedQuad.Builder builder, EnumFacing side, Vec3d normal, double x, double y, double z, float u, float v) 
+	private void putVertex(UnpackedBakedQuad.Builder builder, Direction side, Vec3d normal, double x, double y, double z, float u, float v)
 	{
         for (int i = 0; i < format.getElementCount(); i++) 
         {
@@ -185,7 +185,7 @@ public class QuadHelper
 		this.sprite = sprite;
 	}
 	
-	public void setFacing(EnumFacing facing) 
+	public void setFacing(Direction facing)
 	{
 		if(facing == null) return;
 		this.facing = facing;
@@ -221,7 +221,7 @@ public class QuadHelper
 		}
 	}
 	
-	public static Vertex rotate(Vertex v, EnumFacing facing)
+	public static Vertex rotate(Vertex v, Direction facing)
 	{
 		switch (facing)
 		{
@@ -250,7 +250,7 @@ public class QuadHelper
 	 /**
      * Get the index of this horizontal facing (0-3). The order is S0-W1-N2-E3
      */
-	public EnumFacing rotateFacing(EnumFacing side)
+	public Direction rotateFacing(Direction side)
 	{
 		if(side.getAxis() == Axis.Y) return side;
 		

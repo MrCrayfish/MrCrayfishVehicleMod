@@ -1,43 +1,52 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.tileentity.TileEntityBoost;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.tileentity.BoostTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.Names;
 import com.mrcrayfish.vehicle.util.StateHelper;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
 public class BlockBoostRamp extends BlockRotatedObject
 {
-    public static final PropertyBool STACKED = PropertyBool.create("stacked");
-    public static final PropertyBool LEFT = PropertyBool.create("left");
-    public static final PropertyBool RIGHT = PropertyBool.create("right");
+    public static final BooleanProperty STACKED = BooleanProperty.create("stacked");
+    public static final BooleanProperty LEFT = BooleanProperty.create("left");
+    public static final BooleanProperty RIGHT = BooleanProperty.create("right");
 
-    private static final AxisAlignedBB COLLISION_BASE = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.0625, 1.0);
+    //TODO redo collisions
+    /*private static final AxisAlignedBB COLLISION_BASE = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.0625, 1.0);
     private static final AxisAlignedBB COLLISION_STACKED_BASE = new AxisAlignedBB(0.0, 0.0, 0.0, 1.0, 0.5625, 1.0);
 
     private static final AxisAlignedBB[] COLLISION_ONE = new Bounds(2, 1, 0, 16, 2, 16).getRotatedBounds();
@@ -56,142 +65,110 @@ public class BlockBoostRamp extends BlockRotatedObject
     private static final AxisAlignedBB[] COLLISION_STACKED_SIX = new Bounds(12, 14, 0, 16, 15, 16).getRotatedBounds();
     private static final AxisAlignedBB[] COLLISION_STACKED_SEVEN = new Bounds(14, 15, 0, 16, 16, 16).getRotatedBounds();
 
-    private static final AxisAlignedBB BOUNDING_BOX_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);
+    private static final AxisAlignedBB BOUNDING_BOX_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);*/
 
     public BlockBoostRamp()
     {
-        super(Material.ROCK, BlockNames.BOOST_RAMP);
-        this.setHardness(0.8F);
+        super(Names.Block.BOOST_RAMP, Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
+    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        if(GuiScreen.isShiftKeyDown())
+        if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getUnlocalizedName() + ".info");
-            tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
+            String info = I18n.format(this.getTranslationKey() + ".info");
+            tooltip.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
         }
         else
         {
-            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
+            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
         }
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
     {
-        if(entityIn instanceof EntityPoweredVehicle && entityIn.getControllingPassenger() != null)
+        if(entity instanceof PoweredVehicleEntity && entity.getControllingPassenger() != null)
         {
-            EnumFacing facing = state.getValue(FACING);
-            if(facing == entityIn.getHorizontalFacing())
+            Direction facing = state.get(DIRECTION);
+            if(facing == entity.getHorizontalFacing())
             {
                 float speedMultiplier = 0.0F;
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityBoost)
+                TileEntity tileEntity = world.getTileEntity(pos);
+                if(tileEntity instanceof BoostTileEntity)
                 {
-                    speedMultiplier = ((TileEntityBoost) tileEntity).getSpeedMultiplier();
+                    speedMultiplier = ((BoostTileEntity) tileEntity).getSpeedMultiplier();
                 }
 
-                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entityIn;
+                PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                 if(!poweredVehicle.isBoosting())
                 {
-                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
+                    world.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(2);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = speedMultiplier;
-                poweredVehicle.motionY = (poweredVehicle.currentSpeed * 0.5) / 20F + 0.1;
+                Vec3d motion = poweredVehicle.getMotion();
+                poweredVehicle.setMotion(new Vec3d(motion.x, (poweredVehicle.currentSpeed * 0.5) / 20F + 0.1, motion.z));
             }
         }
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
     {
-        return !state.getValue(STACKED) ? BOUNDING_BOX_BOTTOM : FULL_BLOCK_AABB;
+        return this.getRampState(state, world, pos, state.get(DIRECTION));
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+    public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        EnumFacing facing = state.getValue(FACING);
-        if(state.getValue(STACKED))
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_BASE);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_ONE[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_TWO[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_THREE[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_FOUR[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_FIVE[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_SIX[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_STACKED_SEVEN[facing.getHorizontalIndex()]);
-        }
-        else
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BASE);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_ONE[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_TWO[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_THREE[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_FOUR[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_FIVE[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_SIX[facing.getHorizontalIndex()]);
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_SEVEN[facing.getHorizontalIndex()]);
-        }
+        return this.getRampState(this.getDefaultState(), context.getWorld(), context.getPos(), context.getPlacementHorizontalFacing());
     }
 
-    @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    private BlockState getRampState(BlockState state, IWorld world, BlockPos pos, Direction facing)
     {
-        EnumFacing facing = state.getValue(FACING);
-        state = state.withProperty(LEFT, false);
-        state = state.withProperty(RIGHT, false);
-        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.LEFT) == this)
+        state = state.with(LEFT, false);
+        state = state.with(RIGHT, false);
+        if(StateHelper.getBlock(world, pos, facing, StateHelper.RelativeDirection.LEFT) == this)
         {
-            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.LEFT) == StateHelper.Direction.DOWN)
+            if(StateHelper.getRotation(world, pos, facing, StateHelper.RelativeDirection.LEFT) == StateHelper.RelativeDirection.DOWN)
             {
-                state = state.withProperty(RIGHT, true);
+                state = state.with(RIGHT, true);
             }
         }
-        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.Direction.RIGHT) == this)
+        if(StateHelper.getBlock(world, pos, facing, StateHelper.RelativeDirection.RIGHT) == this)
         {
-            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.Direction.RIGHT) == StateHelper.Direction.DOWN)
+            if(StateHelper.getRotation(world, pos, facing, StateHelper.RelativeDirection.RIGHT) == StateHelper.RelativeDirection.DOWN)
             {
-                state = state.withProperty(LEFT, true);
+                state = state.with(LEFT, true);
             }
         }
         return state;
     }
 
     @Override
-    public int getMetaFromState(IBlockState state)
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
-        return state.getValue(FACING).getHorizontalIndex() + (state.getValue(STACKED) ? 4 : 0);
+        super.fillStateContainer(builder);
+        builder.add(DIRECTION);
+        builder.add(STACKED);
+        builder.add(LEFT);
+        builder.add(RIGHT);
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta % 4)).withProperty(STACKED, meta / 4 == 1);
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, FACING, STACKED, LEFT, RIGHT);
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new TileEntityBoost(1.0F);
+        return new BoostTileEntity(1.0F);
     }
 }

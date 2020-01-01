@@ -1,23 +1,32 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.vehicle.entity.vehicle.ShoppingCartEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderShoppingCart extends AbstractRenderVehicle<EntityShoppingCart>
+public class RenderShoppingCart extends AbstractRenderVehicle<ShoppingCartEntity>
 {
     @Override
-    public void render(EntityShoppingCart entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        this.renderDamagedPart(entity, entity.body);
+        return SpecialModel.SHOPPING_CART_BODY;
     }
 
     @Override
-    public void applyPlayerModel(EntityShoppingCart entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void render(ShoppingCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        this.renderDamagedPart(entity,SpecialModel.SHOPPING_CART_BODY.getModel(), matrixStack, renderTypeBuffer);
+    }
+
+    @Override
+    public void applyPlayerModel(ShoppingCartEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-70F);
         model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);

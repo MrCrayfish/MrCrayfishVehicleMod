@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.block.model.ItemOverrideList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -54,15 +54,15 @@ public class BakedModelSteepRamp implements IBakedModel
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand)
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable Direction side, long rand)
     {
         List<BakedQuad> quads = Lists.newArrayList();
         if(side == null)
         {
             BakedQuadBuilder builder = new BakedQuadBuilder(format);
-            builder.setFacing(EnumFacing.NORTH);
+            builder.setFacing(Direction.NORTH);
 
-            EnumFacing facing = EnumFacing.NORTH;
+            Direction facing = Direction.NORTH;
             float startHeight = 0.0F;
             float endHeight = 1.0F;
             boolean left = false;
@@ -70,9 +70,9 @@ public class BakedModelSteepRamp implements IBakedModel
 
             if(state != null)
             {
-                if(state.getPropertyKeys().contains(BlockRotatedObject.FACING))
+                if(state.getPropertyKeys().contains(BlockRotatedObject.DIRECTION))
                 {
-                    facing = state.getValue(BlockRotatedObject.FACING);
+                    facing = state.getValue(BlockRotatedObject.DIRECTION);
                     builder.setFacing(facing);
                 }
                 left = state.getPropertyKeys().contains(BlockSteepBoostRamp.LEFT) && state.getValue(BlockSteepBoostRamp.LEFT);
@@ -85,10 +85,10 @@ public class BakedModelSteepRamp implements IBakedModel
             int offsetEnd = right ? 16 : 15;
 
             //Boost Pad
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetStart * 0.0625F, offsetStart, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetEnd * 0.0625F, offsetEnd, 0), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetEnd * 0.0625F, offsetEnd, 16), EnumFacing.UP);
-            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetStart * 0.0625F, offsetStart, 16), EnumFacing.UP);
+            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetStart * 0.0625F, offsetStart, 0), Direction.UP);
+            builder.put(new BakedQuadBuilder.VertexData(0, startHeight, offsetEnd * 0.0625F, offsetEnd, 0), Direction.UP);
+            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetEnd * 0.0625F, offsetEnd, 16), Direction.UP);
+            builder.put(new BakedQuadBuilder.VertexData(1, endHeight, offsetStart * 0.0625F, offsetStart, 16), Direction.UP);
             quads.add(builder.build());
 
             builder.setTexture(mainTexture);
@@ -96,20 +96,20 @@ public class BakedModelSteepRamp implements IBakedModel
             if(!left)
             {
                 //Left Trim
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 0, 0, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 0, 0, 16), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 0, 0, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1 * 0.0625F, 1, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1 * 0.0625F, 1, 16), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 0, 0, 16), Direction.UP);
                 quads.add(builder.build());
             }
 
             if(!right)
             {
                 //Right Trim
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1, 16, 0), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1, 16, 16), EnumFacing.UP);
-                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), EnumFacing.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 15 * 0.0625F, 15, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(0, startHeight, 1, 16, 0), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 1, 16, 16), Direction.UP);
+                builder.put(new BakedQuadBuilder.VertexData(1, endHeight, 15 * 0.0625F, 15, 16), Direction.UP);
                 quads.add(builder.build());
             }
 

@@ -1,56 +1,61 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessagePickupVehicle extends MessageVehicleInteract implements IMessageHandler<MessagePickupVehicle, IMessage>
+public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
 {
-    public MessagePickupVehicle() {}
+    private int entityId;
+
+    public MessagePickupVehicle()
+    {
+    }
 
     public MessagePickupVehicle(Entity targetEntity)
     {
-        super(targetEntity);
+        this.entityId = targetEntity.getEntityId();
+    }
+
+    public MessagePickupVehicle(int entityId)
+    {
+        this.entityId = entityId;
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessagePickupVehicle message, PacketBuffer buffer)
     {
-        super.toBytes(buf);
+        buffer.writeInt(message.entityId);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessagePickupVehicle decode(PacketBuffer buffer)
     {
-        super.fromBytes(buf);
+        return new MessagePickupVehicle(buffer.readInt());
     }
 
     @Override
-    public IMessage onMessage(MessagePickupVehicle message, MessageContext ctx)
+    public void handle(MessagePickupVehicle message, Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            EntityPlayer player = ctx.getServerHandler().player;
-            MinecraftServer server = player.world.getMinecraftServer();
-            if(server != null && player.isSneaking())
+        supplier.get().enqueueWork(() -> {
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null && player.isCrouching())
             {
-                Entity targetEntity = server.getEntityFromUuid(message.targetEntityID);
-                if (targetEntity != null)
+                Entity targetEntity = player.world.getEntityByID(message.entityId);
+                if(targetEntity != null)
                 {
-                    CommonEvents.pickUpVehicle(player.world, player, EnumHand.MAIN_HAND, targetEntity);
+                    CommonEvents.pickUpVehicle(player.world, player, Hand.MAIN_HAND, targetEntity);
                 }
             }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

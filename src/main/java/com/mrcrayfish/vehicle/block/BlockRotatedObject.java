@@ -1,77 +1,51 @@
 package com.mrcrayfish.vehicle.block;
 
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.block.material.MapColor;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockFaceShape;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Mirror;
+import net.minecraft.util.Rotation;
 
 /**
  * Author: MrCrayfish
  */
 public abstract class BlockRotatedObject extends BlockObject
 {
-    public static final PropertyDirection FACING = BlockHorizontal.FACING;
+    public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
 
-    public BlockRotatedObject(Material material, String id)
+    public BlockRotatedObject(String id, Block.Properties properties)
     {
-        super(material, id);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
-    }
-
-    public BlockRotatedObject(Material material, MapColor color, String id)
-    {
-        super(material, color, id);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+        super(id, properties);
+        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
     }
 
     @Override
-    public boolean isOpaqueCube(IBlockState state)
+    public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        return false;
+        return super.getStateForPlacement(context).with(DIRECTION, context.getPlacementHorizontalFacing());
     }
 
     @Override
-    public boolean isFullCube(IBlockState state)
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
-        return false;
+        super.fillStateContainer(builder);
+        builder.add(DIRECTION);
     }
 
     @Override
-    public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer)
+    public BlockState rotate(BlockState state, Rotation rotation)
     {
-        IBlockState state = super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
-        return state.withProperty(FACING, placer.getHorizontalFacing());
+        return state.with(DIRECTION, rotation.rotate(state.get(DIRECTION)));
     }
 
     @Override
-    public int getMetaFromState(IBlockState state)
+    public BlockState mirror(BlockState state, Mirror mirror)
     {
-        return state.getValue(FACING).getHorizontalIndex();
+        return state.rotate(mirror.toRotation(state.get(DIRECTION)));
     }
 
-    @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta));
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, FACING);
-    }
-
-    @Override
-    public BlockFaceShape getBlockFaceShape(IBlockAccess worldIn, IBlockState state, BlockPos pos, EnumFacing face)
-    {
-        return BlockFaceShape.UNDEFINED;
-    }
 }

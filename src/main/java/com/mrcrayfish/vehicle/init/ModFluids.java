@@ -1,30 +1,37 @@
 package com.mrcrayfish.vehicle.init;
 
-import com.mrcrayfish.vehicle.Reference;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
+import com.mrcrayfish.vehicle.fluid.BlazeJuice;
+import com.mrcrayfish.vehicle.fluid.EnderSap;
+import com.mrcrayfish.vehicle.fluid.Fuelium;
+import net.minecraft.fluid.Fluid;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Author: MrCrayfish
  */
 public class ModFluids
 {
-    public static final Fluid FUELIUM;
-    public static final Fluid ENDER_SAP;
-    public static final Fluid BLAZE_JUICE;
+    public static final Fluid FUELIUM = null;
+    public static final Fluid FLOWING_FUELIUM = null;
+    public static final Fluid ENDER_SAP = null;
+    public static final Fluid FLOWING_ENDER_SAP = null;
+    public static final Fluid BLAZE_JUICE = null;
+    public static final Fluid FLOWING_BLAZE_JUICE = null;
 
-    static
+    @SubscribeEvent
+    @SuppressWarnings("unused")
+    public static void register(final RegistryEvent.Register<Fluid> event)
     {
-        FUELIUM = new Fluid("fuelium", new ResourceLocation(Reference.MOD_ID, "fluids/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "fluids/fuelium_flow")).setDensity(900).setViscosity(900);
-        ENDER_SAP = new Fluid("ender_sap", new ResourceLocation(Reference.MOD_ID, "fluids/ender_sap_still"), new ResourceLocation(Reference.MOD_ID, "fluids/ender_sap_flow")).setViscosity(3000);
-        BLAZE_JUICE = new Fluid("blaze_juice", new ResourceLocation(Reference.MOD_ID, "fluids/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "fluids/blaze_juice_flow")).setViscosity(800);
+        registerFluid(event.getRegistry(), new Fuelium.Source(), new Fuelium.Flowing());
+        registerFluid(event.getRegistry(), new EnderSap.Source(), new EnderSap.Flowing());
+        registerFluid(event.getRegistry(), new BlazeJuice.Source(), new BlazeJuice.Flowing());
     }
 
-    public static void register()
+    private static void registerFluid(IForgeRegistry<Fluid> registry, Fluid still, Fluid flowing)
     {
-        FluidRegistry.addBucketForFluid(FUELIUM);
-        FluidRegistry.addBucketForFluid(ENDER_SAP);
-        FluidRegistry.addBucketForFluid(BLAZE_JUICE);
+        registry.register(still);
+        registry.register(flowing);
     }
 }

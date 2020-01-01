@@ -1,42 +1,37 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.MapColor;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.block.material.MaterialColor;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
-import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.List;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 
 /**
  * Author: MrCrayfish
  */
 public class BlockTrafficCone extends BlockObject
 {
-    private static final AxisAlignedBB COLLISION_BOX = new AxisAlignedBB(0.125, 0, 0.125, 0.875, 18 * 0.0625, 0.875);
-    private static final AxisAlignedBB SELECTION_BOX = new AxisAlignedBB(0.0625, 0, 0.0625, 0.9375, 16 * 0.0625, 0.9375);
+    private static final VoxelShape COLLISION_SHAPE = Block.makeCuboidShape(2, 0, 2, 14, 18, 14);
+    private static final VoxelShape SELECTION_SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
 
     public BlockTrafficCone()
     {
-        super(Material.CLAY, MapColor.ORANGE_STAINED_HARDENED_CLAY, BlockNames.TRAFFIC_CONE);
-        this.setHardness(0.5F);
+        super(Names.Block.TRAFFIC_CONE, Block.Properties.create(Material.CLAY, MaterialColor.ORANGE_TERRACOTTA).hardnessAndResistance(0.5F));
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        return SELECTION_BOX;
+        return SELECTION_SHAPE;
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BOX);
+        return COLLISION_SHAPE;
     }
 }

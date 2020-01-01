@@ -2,48 +2,51 @@ package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageSyncInventory implements IMessage, IMessageHandler<MessageSyncInventory, IMessage>
+public class MessageSyncInventory implements IMessage<MessageSyncInventory>
 {
     private int entityId;
-    private NBTTagCompound tagCompound;
+    private CompoundNBT compound;
 
     public MessageSyncInventory() {}
 
     public MessageSyncInventory(int entityId, StorageInventory storageInventory)
     {
         this.entityId = entityId;
-        this.tagCompound = storageInventory.writeToNBT();
+        this.compound = storageInventory.writeToNBT();
+    }
+
+    private MessageSyncInventory(int entityId, CompoundNBT compound)
+    {
+        this.entityId = entityId;
+        this.compound = compound;
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessageSyncInventory message, PacketBuffer buffer)
     {
-        buf.writeInt(entityId);
-        ByteBufUtils.writeTag(buf, tagCompound);
+        buffer.writeInt(message.entityId);
+        buffer.writeCompoundTag(message.compound);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessageSyncInventory decode(PacketBuffer buffer)
     {
-        entityId = buf.readInt();
-        tagCompound = ByteBufUtils.readTag(buf);
+        return new MessageSyncInventory(buffer.readInt(), buffer.readCompoundTag());
     }
 
     @Override
-    public IMessage onMessage(MessageSyncInventory message, MessageContext ctx)
+    public void handle(MessageSyncInventory message, Supplier<NetworkEvent.Context> supplier)
     {
-        Minecraft.getMinecraft().addScheduledTask(() -> VehicleMod.proxy.syncStorageInventory(message.entityId, message.tagCompound));
-        return null;
+        supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncStorageInventory(message.entityId, message.compound));
+        supplier.get().setPacketHandled(true);
     }
 }

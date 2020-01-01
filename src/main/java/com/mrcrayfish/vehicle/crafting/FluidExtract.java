@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.crafting;
 
-import net.minecraftforge.fluids.Fluid;
+import net.minecraft.fluid.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -19,16 +19,16 @@ public class FluidExtract
 
     public Fluid getFluid()
     {
-        return fluid;
+        return this.fluid;
     }
 
     public int getAmount()
     {
-        return amount;
+        return this.amount;
     }
 
     public FluidStack createStack()
     {
-        return new FluidStack(fluid, amount);
+        return new FluidStack(this.fluid, this.amount);
     }
 }

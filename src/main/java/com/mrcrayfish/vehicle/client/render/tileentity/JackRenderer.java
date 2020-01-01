@@ -1,40 +1,29 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
-import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
-import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.IBlockAccess;
-import net.minecraftforge.client.MinecraftForgeClient;
-import org.lwjgl.opengl.GL11;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 
 /**
  * Author: MrCrayfish
  */
-public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
+public class JackRenderer extends TileEntityRenderer<JackTileEntity>
 {
-    @Override
-    @SuppressWarnings("unchecked")
-    public void render(TileEntityJack te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
+    public JackRenderer(TileEntityRendererDispatcher dispatcher)
     {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(x, y, z);
+        super(dispatcher);
+    }
+
+    @Override
+    public void func_225616_a_(JackTileEntity jack, float v, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int i, int i1)
+    {
+        /*matrixStack.func_227860_a_();
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
-            this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+            //this.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
             RenderHelper.disableStandardItemLighting();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
             GlStateManager.enableBlend();
@@ -50,7 +39,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
             }
 
             BlockPos pos = te.getPos();
-            IBlockAccess world = MinecraftForgeClient.getRegionRenderCache(te.getWorld(), pos);
+            IBlockAccess world = MinecraftForgeClient.getRegionRenderCache(jack.getWorld(), pos);
             IBlockState state = world.getBlockState(pos);
             BlockRendererDispatcher rendererDispatcher = Minecraft.getMinecraft().getBlockRendererDispatcher();
 
@@ -64,9 +53,9 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                 //Render the base
                 IBakedModel model = rendererDispatcher.getBlockModelShapes().getModelForState(state);
                 buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
-                buffer.setTranslation(-pos.getX(), -pos.getY(), -pos.getZ());
-                rendererDispatcher.getBlockModelRenderer().renderModel(te.getWorld(), model, state, pos, buffer, false);
-                buffer.setTranslation(0, 0, 0);
+                buffer.func_225582_a_(-pos.getX(), -pos.getY(), -pos.getZ());
+                rendererDispatcher.getBlockModelRenderer().renderModel(jack.getWorld(), model, state, pos, matrixStack, buffer.getVertexBuilder(), false);
+                buffer.func_225582_a_(0, 0, 0);
                 tessellator.draw();
             }
             GlStateManager.popMatrix();
@@ -74,7 +63,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
             GlStateManager.pushMatrix();
             {
                 GlStateManager.translate(0, -2 * 0.0625, 0);
-                float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) TileEntityJack.MAX_LIFT_PROGRESS;
+                float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
                 GlStateManager.translate(0, 0.5 * progress, 0);
 
                 //Render the head
@@ -93,14 +82,14 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                 if(jack != null && jack.getPassengers().size() > 0)
                 {
                     Entity passenger = jack.getPassengers().get(0);
-                    if(passenger instanceof EntityVehicle && !passenger.isDead)
+                    if(passenger instanceof VehicleEntity && !passenger.isDead)
                     {
                         GlStateManager.translate(0.5, 0.5, 0.5);
                         GlStateManager.translate(0, -1 * 0.0625, 0);
-                        float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) TileEntityJack.MAX_LIFT_PROGRESS;
+                        float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
                         GlStateManager.translate(0, 0.5 * progress, 0);
 
-                        EntityVehicle vehicle = (EntityVehicle) passenger;
+                        VehicleEntity vehicle = (VehicleEntity) passenger;
                         Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
                         GlStateManager.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
                         GlStateManager.rotate(-passenger.rotationYaw, 0, 1, 0);
@@ -108,7 +97,7 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
                         RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper(vehicle.getClass());
                         if(wrapper != null)
                         {
-                            wrapper.render(vehicle, partialTicks);
+                            wrapper.render(vehicle, , , partialTicks);
                         }
                     }
                 }
@@ -117,6 +106,6 @@ public class JackRenderer extends TileEntitySpecialRenderer<TileEntityJack>
 
             RenderHelper.enableStandardItemLighting();
         }
-        GlStateManager.popMatrix();
+        GlStateManager.popMatrix();*/
     }
 }

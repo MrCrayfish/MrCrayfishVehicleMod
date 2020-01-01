@@ -1,38 +1,33 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.entity.TrailerEntity;
+import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractRenderTrailer<T extends EntityTrailer> extends AbstractRenderVehicle<T>
+public abstract class AbstractRenderTrailer<T extends TrailerEntity> extends AbstractRenderVehicle<T>
 {
     //TODO Eventually converted to the wheel system. Consider it a pulled vehicle rather than powered
-    protected void renderWheel(EntityTrailer trailer, boolean right, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
+    protected void renderWheel(TrailerEntity trailer, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, boolean right, float offsetX, float offsetY, float offsetZ, float wheelScale, float partialTicks)
     {
-        GlStateManager.pushMatrix();
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(offsetX, offsetY, offsetZ);
+        if(right)
         {
-            GlStateManager.translate(offsetX, offsetY, offsetZ);
-            if(right)
-            {
-                GlStateManager.rotate(180F, 0, 1, 0);
-            }
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.pushMatrix();
-                {
-                    float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-                    GlStateManager.rotate(right ? wheelRotation : -wheelRotation, 1, 0, 0);
-                    GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(trailer.wheel, ItemCameraTransforms.TransformType.NONE);
-                }
-                GlStateManager.popMatrix();
-            }
-            GlStateManager.popMatrix();
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
         }
-        GlStateManager.popMatrix();
+        float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(right ? wheelRotation : -wheelRotation));
+        matrixStack.func_227862_a_(wheelScale, wheelScale, wheelScale);
+        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1,15728880, OverlayTexture.field_229196_a_);
+        matrixStack.func_227865_b_();
     }
 }

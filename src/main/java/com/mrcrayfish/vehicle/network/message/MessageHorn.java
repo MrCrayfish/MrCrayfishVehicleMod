@@ -1,14 +1,14 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageHorn implements IMessage, IMessageHandler<MessageHorn, IMessage>
+import java.util.function.Supplier;
+
+public class MessageHorn implements IMessage<MessageHorn>
 {
 	private boolean horn;
 
@@ -20,28 +20,32 @@ public class MessageHorn implements IMessage, IMessageHandler<MessageHorn, IMess
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(MessageHorn message, PacketBuffer buffer)
 	{
-		buf.writeBoolean(horn);
+		buffer.writeBoolean(message.horn);
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageHorn decode(PacketBuffer buffer)
 	{
-		this.horn = buf.readBoolean();
+		return new MessageHorn(buffer.readBoolean());
 	}
 
 	@Override
-	public IMessage onMessage(MessageHorn message, MessageContext ctx)
+	public void handle(MessageHorn message, Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            Entity riding = ctx.getServerHandler().player.getRidingEntity();
-            if(riding instanceof EntityPoweredVehicle)
-            {
-                ((EntityPoweredVehicle) riding).setHorn(message.horn);
-            }
-        });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null)
+			{
+				Entity riding = player.getRidingEntity();
+				if(riding instanceof PoweredVehicleEntity)
+				{
+					((PoweredVehicleEntity) riding).setHorn(message.horn);
+				}
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

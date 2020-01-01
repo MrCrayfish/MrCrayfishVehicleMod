@@ -2,62 +2,52 @@ package com.mrcrayfish.vehicle.network;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.network.message.*;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class PacketHandler
 {
-    public static final SimpleNetworkWrapper INSTANCE = NetworkRegistry.INSTANCE.newSimpleChannel(Reference.MOD_ID);
-    private static int messageId = 0;
+    public static final String PROTOCOL_VERSION = "1";
 
-    private enum Side
+    public static SimpleChannel instance;
+    private static int nextId = 0;
+
+    public static void register()
     {
-        CLIENT,
-        SERVER,
-        BOTH
+        instance = NetworkRegistry.ChannelBuilder
+                .named(new ResourceLocation(Reference.MOD_ID, "network"))
+                .networkProtocolVersion(() -> PROTOCOL_VERSION)
+                .clientAcceptedVersions(PROTOCOL_VERSION::equals)
+                .serverAcceptedVersions(PROTOCOL_VERSION::equals)
+                .simpleChannel();
+
+        register(MessageTurnDirection.class, new MessageTurnDirection());
+        register(MessageTurnAngle.class, new MessageTurnAngle());
+        register(MessageAccelerating.class, new MessageAccelerating());
+        register(MessageDrift.class, new MessageDrift());
+        register(MessageHorn.class, new MessageHorn());
+        register(MessageThrowVehicle.class, new MessageThrowVehicle());
+        register(MessagePickupVehicle.class, new MessagePickupVehicle());
+        register(MessageFlaps.class, new MessageFlaps());
+        register(MessageAttachChest.class, new MessageAttachChest());
+        register(MessageAttachTrailer.class, new MessageAttachTrailer());
+        register(MessageFuelVehicle.class, new MessageFuelVehicle());
+        register(MessageInteractKey.class, new MessageInteractKey());
+        register(MessageAltitude.class, new MessageAltitude());
+        register(MessageCraftVehicle.class, new MessageCraftVehicle());
+        register(MessageVehicleWindow.class, new MessageVehicleWindow());
+        register(MessageHitchTrailer.class, new MessageHitchTrailer());
+        register(MessageSyncInventory.class, new MessageSyncInventory());
+        register(MessageOpenStorage.class, new MessageOpenStorage());
+        register(MessageStorageWindow.class, new MessageStorageWindow());
+        register(MessageTravelProperties.class, new MessageTravelProperties());
+        register(MessagePower.class, new MessagePower());
+        register(MessageEntityFluid.class, new MessageEntityFluid());
     }
 
-    public static void init()
+    private static <T> void register(Class<T> clazz, IMessage<T> message)
     {
-        registerMessage(MessageTurnDirection.class, Side.SERVER);
-        registerMessage(MessageTurnAngle.class, Side.SERVER);
-        registerMessage(MessageAccelerating.class, Side.SERVER);
-        registerMessage(MessageDrift.class, Side.SERVER);
-        registerMessage(MessageHorn.class, Side.SERVER);
-        registerMessage(MessageThrowVehicle.class, Side.SERVER);
-        registerMessage(MessagePickupVehicle.class, Side.SERVER);
-        registerMessage(MessageFlaps.class, Side.SERVER);
-        registerMessage(MessageAttachChest.class, Side.SERVER);
-        registerMessage(MessageAttachTrailer.class, Side.SERVER);
-        registerMessage(MessageFuelVehicle.class, Side.SERVER);
-        registerMessage(MessageInteractKey.class, Side.SERVER);
-        registerMessage(MessageAltitude.class, Side.SERVER);
-        registerMessage(MessageCraftVehicle.class, Side.SERVER);
-        registerMessage(MessageVehicleWindow.class, Side.CLIENT);
-        registerMessage(MessageHitchTrailer.class, Side.SERVER);
-        registerMessage(MessageSyncInventory.class, Side.CLIENT);
-        registerMessage(MessageOpenStorage.class, Side.SERVER);
-        registerMessage(MessageStorageWindow.class, Side.CLIENT);
-        registerMessage(MessageTravelProperties.class, Side.SERVER);
-        registerMessage(MessagePower.class, Side.SERVER);
-        registerMessage(MessageEntityFluid.class, Side.CLIENT);
-    }
-
-    private static void registerMessage(Class packet, Side side)
-    {
-        if(side != Side.CLIENT)
-        {
-            registerMessage(packet, net.minecraftforge.fml.relauncher.Side.SERVER);
-        }
-
-        if(side != Side.SERVER)
-        {
-            registerMessage(packet, net.minecraftforge.fml.relauncher.Side.CLIENT);
-        }
-    }
-
-    private static void registerMessage(Class packet, net.minecraftforge.fml.relauncher.Side side)
-    {
-        INSTANCE.registerMessage(packet, packet, messageId++, side);
+        instance.registerMessage(nextId++, clazz, message::encode, message::decode, message::handle);
     }
 }

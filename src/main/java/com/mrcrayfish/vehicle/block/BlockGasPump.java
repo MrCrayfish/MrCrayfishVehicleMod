@@ -2,28 +2,35 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
-import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
-import com.mrcrayfish.vehicle.tileentity.TileEntityGasPumpTank;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.item.JerryCanItem;
+import com.mrcrayfish.vehicle.tileentity.GasPumpTankTileEntity;
+import com.mrcrayfish.vehicle.tileentity.GasPumpTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyBool;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -39,7 +46,7 @@ import java.util.List;
  */
 public class BlockGasPump extends BlockRotatedObject
 {
-    public static final PropertyBool TOP = PropertyBool.create("top");
+    public static final BooleanProperty TOP = BooleanProperty.create("top");
 
     private static final AxisAlignedBB[] COLLISION_BOXES = new Bounds(3, 0, 0, 13, 15, 16).getRotatedBounds();
     private static final AxisAlignedBB[] TOP_SELECTION_BOXES = new Bounds(3, -16, 0, 13, 15, 16).getRotatedBounds();
@@ -47,42 +54,27 @@ public class BlockGasPump extends BlockRotatedObject
 
     public BlockGasPump()
     {
-        super(Material.ANVIL, BlockNames.GAS_PUMP);
-        this.setDefaultState(this.blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH).withProperty(TOP, false));
-        this.setHardness(1.0F);
+        super(Names.Block.GAS_PUMP, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
+        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));
     }
 
     @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        EnumFacing facing = state.getValue(FACING);
-        return state.getValue(TOP) ? TOP_SELECTION_BOXES[facing.getHorizontalIndex()] : BOTTOM_SELECTION_BOXES[facing.getHorizontalIndex()];
-    }
-
-    @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
-    {
-        EnumFacing facing = state.getValue(FACING);
-        Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BOXES[facing.getHorizontalIndex()]);
-    }
-
-    @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing face, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, Direction face, float hitX, float hitY, float hitZ)
     {
         if(!worldIn.isRemote)
         {
             if(state.getValue(TOP))
             {
                 TileEntity tileEntity = worldIn.getTileEntity(pos);
-                if(tileEntity instanceof TileEntityGasPump)
+                if(tileEntity instanceof GasPumpTileEntity)
                 {
-                    TileEntityGasPump gasPump = (TileEntityGasPump) tileEntity;
+                    GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
                     if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerIn.getEntityId())
                     {
                         gasPump.setFuelingEntity(null);
                         worldIn.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
-                    else if(state.getValue(FACING).rotateY().equals(face))
+                    else if(state.getValue(DIRECTION).rotateY().equals(face))
                     {
                         gasPump.setFuelingEntity(playerIn);
                         worldIn.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -98,9 +90,9 @@ public class BlockGasPump extends BlockRotatedObject
                     return true;
                 }
 
-                if(stack.getItem() instanceof ItemJerryCan)
+                if(stack.getItem() instanceof JerryCanItem)
                 {
-                    ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
+                    JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
 
                     if(jerryCan.isFull(stack))
                     {
@@ -147,68 +139,52 @@ public class BlockGasPump extends BlockRotatedObject
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
+    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-        worldIn.setBlockState(pos.up(), state.withProperty(TOP, true));
+        worldIn.setBlockState(pos.up(), state.with(TOP, true));
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
+    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        if(state.getValue(TOP))
+        if(state.get(TOP))
         {
             if(worldIn.getBlockState(pos.down()).getBlock() instanceof BlockGasPump)
             {
-                worldIn.setBlockToAir(pos.down());
+                worldIn.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
             }
         }
         else
         {
             if(worldIn.getBlockState(pos.up()).getBlock() instanceof BlockGasPump)
             {
-                worldIn.setBlockToAir(pos.up());
+                worldIn.setBlockState(pos.up(), Blocks.AIR.getDefaultState());
             }
         }
     }
 
     @Override
-    public int getMetaFromState(IBlockState state)
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
-        return state.getValue(FACING).getHorizontalIndex() + (state.getValue(TOP) ? 4 : 0);
+        super.fillStateContainer(builder);
+        builder.add(DIRECTION);
+        builder.add(TOP);
     }
 
     @Override
-    public IBlockState getStateFromMeta(int meta)
-    {
-        return this.getDefaultState().withProperty(FACING, EnumFacing.getHorizontal(meta % 4)).withProperty(TOP, meta / 4 > 0);
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState()
-    {
-        return new BlockStateContainer(this, FACING, TOP);
-    }
-
-    @Override
-    public BlockRenderLayer getBlockLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        if(state.getValue(TOP))
+        if(state.get(TOP))
         {
-            return new TileEntityGasPump();
+            return new GasPumpTileEntity();
         }
-        return new TileEntityGasPumpTank();
+        return new GasPumpTankTileEntity();
     }
 }

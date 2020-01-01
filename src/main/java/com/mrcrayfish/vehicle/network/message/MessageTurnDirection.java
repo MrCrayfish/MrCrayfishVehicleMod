@@ -1,47 +1,51 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageTurnDirection implements IMessage, IMessageHandler<MessageTurnDirection, IMessage>
+import java.util.function.Supplier;
+
+public class MessageTurnDirection implements IMessage<MessageTurnDirection>
 {
-	private EntityPoweredVehicle.TurnDirection direction;
+	private PoweredVehicleEntity.TurnDirection direction;
 
 	public MessageTurnDirection() {}
 
-	public MessageTurnDirection(EntityPoweredVehicle.TurnDirection direction)
+	public MessageTurnDirection(PoweredVehicleEntity.TurnDirection direction)
 	{
 		this.direction = direction;
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(MessageTurnDirection message, PacketBuffer buffer)
 	{
-		buf.writeInt(direction.ordinal());
+		buffer.writeEnumValue(message.direction);
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageTurnDirection decode(PacketBuffer buffer)
 	{
-		this.direction = EntityPoweredVehicle.TurnDirection.values()[buf.readInt()];
+		return new MessageTurnDirection(buffer.readEnumValue(PoweredVehicleEntity.TurnDirection.class));
 	}
 
 	@Override
-	public IMessage onMessage(MessageTurnDirection message, MessageContext ctx)
+	public void handle(MessageTurnDirection message, Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            Entity riding = ctx.getServerHandler().player.getRidingEntity();
-            if(riding instanceof EntityPoweredVehicle)
-            {
-                ((EntityPoweredVehicle) riding).setTurnDirection(message.direction);
-            }
-        });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null)
+			{
+				Entity riding = player.getRidingEntity();
+				if(riding instanceof PoweredVehicleEntity)
+				{
+					((PoweredVehicleEntity) riding).setTurnDirection(message.direction);
+				}
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

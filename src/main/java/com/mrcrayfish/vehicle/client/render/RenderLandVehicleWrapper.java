@@ -1,158 +1,141 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
+import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
     public RenderLandVehicleWrapper(R renderVehicle)
     {
         super(renderVehicle);
     }
 
-    public void render(T entity, float partialTicks)
+    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
     {
-        if(entity.isDead)
+        if(!entity.isAlive())
             return;
 
-        GlStateManager.pushMatrix();
+        matrixStack.func_227860_a_();
+
+        VehicleProperties properties = entity.getProperties();
+        PartPosition bodyPosition = properties.getBodyPosition();
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_((float) bodyPosition.getRotX()));
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_((float) bodyPosition.getRotY()));
+        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_((float) bodyPosition.getRotZ()));
+
+        float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(additionalYaw));
+
+        matrixStack.func_227861_a_(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+
+        if(entity.canTowTrailer())
         {
-            VehicleProperties properties = entity.getProperties();
+            matrixStack.func_227860_a_();
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
+            Vec3d towBarOffset = properties.getTowBarPosition();
+            matrixStack.func_227861_a_(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
+            RenderUtil.renderColoredModel(SpecialModel.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+            matrixStack.func_227865_b_();
+        }
 
-            //Apply vehicle rotations and translations. This is applied to all other parts
-            PartPosition bodyPosition = properties.getBodyPosition();
-            GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
+        matrixStack.func_227862_a_((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
+        matrixStack.func_227861_a_(0.0, 0.5, 0.0);
+        matrixStack.func_227861_a_(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+        matrixStack.func_227861_a_(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+        renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks);
 
-            //Applies the additional yaw which is caused by drifting
-            float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
-            GlStateManager.rotate(additionalYaw, 0, 1, 0);
+        if(entity.hasWheels())
+        {
+            matrixStack.func_227860_a_();
+            matrixStack.func_227861_a_(0.0, -8 * 0.0625, 0.0);
+            matrixStack.func_227861_a_(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
+            IBakedModel wheelModel = this.getWheelModel(entity);
+            properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer));
+            matrixStack.func_227865_b_();
+        }
 
-            //Translate the body
-            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+        //Render the engine if the vehicle has explicitly stated it should
+        if(entity.shouldRenderEngine() && entity.hasEngine())
+        {
+            IBakedModel engineModel = this.getEngineModel(entity);
+            this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer);
+        }
 
-            //Render the tow bar. Performed before scaling so size is consistent for all vehicles
-            if(entity.canTowTrailer())
+        //Render the fuel port of the vehicle
+        if(entity.shouldRenderFuelPort() && entity.requiresFuel())
+        {
+            EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
+            if (result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                GlStateManager.pushMatrix();
-                GlStateManager.rotate(180F, 0, 1, 0);
-
-                Vec3d towBarOffset = properties.getTowBarPosition();
-                GlStateManager.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
-                GlStateManager.popMatrix();
-            }
-
-            //Translate the vehicle to match how it is shown in the model creator
-            GlStateManager.translate(0, 0.5, 0);
-
-            //Apply vehicle scale
-            GlStateManager.translate(0, -0.5, 0);
-            GlStateManager.scale(bodyPosition.getScale(), bodyPosition.getScale(), bodyPosition.getScale());
-            GlStateManager.translate(0, 0.5, 0);
-
-            //Translate the vehicle so it's axles are half way into the ground
-            GlStateManager.translate(0, properties.getAxleOffset() * 0.0625F, 0);
-
-            //Translate the vehicle so it's actually riding on it's wheels
-            GlStateManager.translate(0, properties.getWheelOffset() * 0.0625F, 0);
-
-            //Render body
-            renderVehicle.render(entity, partialTicks);
-
-            //Render vehicle wheels
-            if(entity.hasWheels())
-            {
-                GlStateManager.pushMatrix();
+                this.renderPart(properties.getFuelPortPosition(), renderVehicle.getOpenFuelDoorModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                if(renderVehicle.shouldRenderFuelLid())
                 {
-                    //Offset wheels and compensate for axle offset
-                    GlStateManager.translate(0, -8 * 0.0625, 0);
-                    GlStateManager.translate(0, -properties.getAxleOffset() * 0.0625F, 0);
-                    properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, partialTicks));
+                    //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
                 }
-                GlStateManager.popMatrix();
+                entity.playFuelPortOpenSound();
             }
-
-            //Render the engine if the vehicle has explicitly stated it should
-            if(entity.shouldRenderEngine() && entity.hasEngine())
+            else
             {
-                this.renderEngine(entity, properties.getEnginePosition(), entity.engine);
-            }
-
-            //Render the fuel port of the vehicle
-            if(entity.shouldRenderFuelPort() && entity.requiresFuel())
-            {
-                EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-                if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
-                {
-                    this.renderPart(properties.getFuelPortPosition(), entity.fuelPortBody);
-                    if(renderVehicle.shouldRenderFuelLid())
-                    {
-                        this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
-                    }
-                    entity.playFuelPortOpenSound();
-                }
-                else
-                {
-                    this.renderPart(properties.getFuelPortPosition(), entity.fuelPortClosed);
-                    entity.playFuelPortCloseSound();
-                }
-            }
-
-
-            if(entity.isKeyNeeded())
-            {
-                this.renderPart(properties.getKeyPortPosition(), entity.keyPort);
-                if(!entity.getKeyStack().isEmpty())
-                {
-                    this.renderKey(properties.getKeyPosition(), entity.getKeyStack());
-                }
+                this.renderPart(properties.getFuelPortPosition(), renderVehicle.getClosedFuelDoorModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                entity.playFuelPortCloseSound();
             }
         }
-        GlStateManager.popMatrix();
+
+
+        if(entity.isKeyNeeded())
+        {
+            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+            if(!entity.getKeyStack().isEmpty())
+            {
+                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+            }
+        }
+
+        matrixStack.func_227865_b_();
     }
 
-    protected void renderWheel(EntityLandVehicle vehicle, Wheel wheel, float partialTicks)
+    protected void renderWheel(LandVehicleEntity vehicle, Wheel wheel, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer)
     {
         if(!wheel.shouldRender())
             return;
 
-        GlStateManager.pushMatrix();
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_((wheel.getOffsetX() * 0.0625) * wheel.getSide().offset, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+        if(wheel.getPosition() == Wheel.Position.FRONT)
         {
-            GlStateManager.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().offset, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
-            GlStateManager.pushMatrix();
-            {
-                if(wheel.getPosition() == Wheel.Position.FRONT)
-                {
-                    float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
-                    GlStateManager.rotate(wheelAngle / 2.0F, 0, 1, 0);
-                }
-                if(vehicle.isMoving())
-                {
-                    GlStateManager.rotate(-wheel.getWheelRotation(vehicle, partialTicks), 1, 0, 0);
-                }
-                GlStateManager.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().offset, 0, 0);
-                GlStateManager.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
-                if(wheel.getSide() == Wheel.Side.RIGHT)
-                {
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                }
-                Minecraft.getMinecraft().getRenderItem().renderItem(vehicle.wheel, ItemCameraTransforms.TransformType.NONE);
-            }
-            GlStateManager.popMatrix();
+            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(wheelAngle / 2.0F));
         }
-        GlStateManager.popMatrix();
+        if(vehicle.isMoving())
+        {
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-wheel.getWheelRotation(vehicle, partialTicks)));
+        }
+        matrixStack.func_227861_a_((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().offset, 0.0, 0.0);
+        matrixStack.func_227862_a_(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
+        if(wheel.getSide() == Wheel.Side.RIGHT)
+        {
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
+        }
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getWheelColor(), 15728880, OverlayTexture.field_229196_a_);
+        matrixStack.func_227865_b_();
     }
 }

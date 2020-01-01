@@ -1,28 +1,23 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.CommonUtils;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.UUID;
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageInteractKey implements IMessage, IMessageHandler<MessageInteractKey, IMessage>
+public class MessageInteractKey implements IMessage<MessageInteractKey>
 {
-    private UUID targetEntity;
+    private int entityId;
 
     public MessageInteractKey()
     {
@@ -30,34 +25,39 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
 
     public MessageInteractKey(Entity targetEntity)
     {
-        this.targetEntity = targetEntity.getUniqueID();
+        this.entityId = targetEntity.getEntityId();
+    }
+
+    private MessageInteractKey(int entityId)
+    {
+        this.entityId = entityId;
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessageInteractKey message, PacketBuffer buffer)
     {
-        ByteBufUtils.writeUTF8String(buf, targetEntity.toString());
+        buffer.writeInt(message.entityId);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessageInteractKey decode(PacketBuffer buffer)
     {
-        targetEntity = UUID.fromString(ByteBufUtils.readUTF8String(buf));
+        return new MessageInteractKey(buffer.readInt());
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Override
-    public IMessage onMessage(MessageInteractKey message, MessageContext ctx)
+    public void handle(MessageInteractKey message, Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        supplier.get().enqueueWork(() ->
         {
-            EntityPlayer player = ctx.getServerHandler().player;
-            MinecraftServer server = player.world.getMinecraftServer();
-            if(server != null)
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null)
             {
-                Entity targetEntity = server.getEntityFromUuid(message.targetEntity);
-                if(targetEntity != null && targetEntity instanceof EntityPoweredVehicle)
+                Entity targetEntity = player.world.getEntityByID(message.entityId);
+                if(targetEntity instanceof PoweredVehicleEntity)
                 {
-                    EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) targetEntity;
+                    PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) targetEntity;
                     if(poweredVehicle.isKeyNeeded())
                     {
                         ItemStack stack = player.getHeldItemMainhand();
@@ -79,10 +79,10 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
                         {
                             if(!stack.isEmpty() && stack.getItem() == ModItems.KEY)
                             {
-                                if(poweredVehicle.getUniqueID().equals(CommonUtils.getItemTagCompound(stack).getUniqueId("vehicleId")))
+                                if(poweredVehicle.getUniqueID().equals(CommonUtils.getOrCreateStackTag(stack).getUniqueId("vehicleId")))
                                 {
                                     poweredVehicle.setKeyStack(stack.copy());
-                                    player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                                    player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
                                 }
                                 else
                                 {
@@ -98,6 +98,6 @@ public class MessageInteractKey implements IMessage, IMessageHandler<MessageInte
                 }
             }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

@@ -1,19 +1,20 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
+import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.vehicle.client.render.layer.LayerHeldVehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.AbstractClientPlayer;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.entity.Render;
-import net.minecraft.client.renderer.entity.RenderLivingBase;
-import net.minecraft.client.renderer.entity.RenderPlayer;
+import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingRenderer;
+import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,32 +33,32 @@ public class HeldVehicleEvents
     {
         if(!setupExtraLayers)
         {
-            Render render = Minecraft.getMinecraft().getRenderManager().getEntityClassRenderObject(AbstractClientPlayer.class);
-            Map<String, RenderPlayer> skinMap = render.getRenderManager().getSkinMap();
+            EntityRenderer render = Minecraft.getInstance().getRenderManager().renderers.get(EntityType.PLAYER);
+            Map<String, PlayerRenderer> skinMap = render.getRenderManager().getSkinMap();
             this.patchPlayerRender(skinMap.get("default"));
             this.patchPlayerRender(skinMap.get("slim"));
             setupExtraLayers = true;
         }
     }
 
-    private void patchPlayerRender(RenderPlayer player)
+    private void patchPlayerRender(PlayerRenderer player)
     {
-        List<LayerRenderer<AbstractClientPlayer>> layers = ObfuscationReflectionHelper.getPrivateValue(RenderLivingBase.class, player, "field_177097_h");
+        List<LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>> layers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, player, "field_177097_h");
         if(layers != null)
         {
-            layers.add(new LayerHeldVehicle());
+            layers.add(new LayerHeldVehicle(player));
         }
     }
 
     public static final Map<UUID, AnimationCounter> idToCounter = new HashMap<>();
 
     @SubscribeEvent
-    public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
+    public void onSetupAngles(PlayerModelEvent.SetupAngles.Post event)
     {
-        ModelPlayer model = event.getModelPlayer();
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerModel model = event.getModelPlayer();
+        PlayerEntity player = event.getPlayer();
 
-        boolean holdingVehicle = !player.getDataManager().get(CommonEvents.HELD_VEHICLE).hasNoTags();
+        boolean holdingVehicle = !player.getDataManager().get(CommonEvents.HELD_VEHICLE).isEmpty();
         if(holdingVehicle && !idToCounter.containsKey(player.getUniqueID()))
         {
             idToCounter.put(player.getUniqueID(), new AnimationCounter(40));

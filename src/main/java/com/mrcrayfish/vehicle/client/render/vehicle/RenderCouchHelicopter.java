@@ -1,38 +1,46 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntitySofacopter;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.vehicle.entity.vehicle.SofacopterEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderCouchHelicopter extends AbstractRenderVehicle<EntitySofacopter>
+public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntity>
 {
     @Override
-    public void render(EntitySofacopter entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.rotate(90F, 0, 1, 0);
-        renderDamagedPart(entity, entity.body);
-        GlStateManager.popMatrix();
+        return SpecialModel.ALUMINUM_BOAT_BODY;
+    }
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 8 * 0.0625, 0);
-        renderDamagedPart(entity, entity.arm);
-        GlStateManager.popMatrix();
+    @Override
+    public void render(SofacopterEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        matrixStack.func_227860_a_();
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        matrixStack.func_227865_b_();
 
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 32 * 0.0625, 0);
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(0.0, 8 * 0.0625, 0.0);
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        matrixStack.func_227865_b_();
+
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(0.0, 32 * 0.0625, 0.0);
         float bladeRotation = entity.prevBladeRotation + (entity.bladeRotation - entity.prevBladeRotation) * partialTicks;
-        GlStateManager.rotate(bladeRotation, 0, 1, 0);
-        GlStateManager.scale(1.5, 1.5, 1.5);
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.blade, ItemCameraTransforms.TransformType.NONE);
-        GlStateManager.popMatrix();
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(bladeRotation));
+        matrixStack.func_227862_a_(1.5F, 1.5F, 1.5F);
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        matrixStack.func_227865_b_();
 
        /* GlStateManager.pushMatrix();
         Minecraft.getMinecraft().getRenderItem().renderItem(entity.skid, ItemCameraTransforms.TransformType.NONE);
@@ -40,7 +48,7 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<EntitySofacopte
     }
 
     @Override
-    public void applyPlayerModel(EntitySofacopter entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void applyPlayerModel(SofacopterEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
         model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);
@@ -53,15 +61,15 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<EntitySofacopte
     }
 
     @Override
-    public void applyPlayerRender(EntitySofacopter entity, EntityPlayer player, float partialTicks)
+    public void applyPlayerRender(SofacopterEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         float entityYaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks;
         float playerOffset = (float) ((entity.getMountedYOffset() + player.getYOffset()) * 16.0F - 14.0F * 0.0625F);
-        GlStateManager.translate(0, -playerOffset, 0);
-        GlStateManager.rotate(-entityYaw, 0, 1, 0);
-        GlStateManager.rotate(-(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks), 0, 0, 1);
-        GlStateManager.rotate(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks, 1, 0, 0);
-        GlStateManager.rotate(entityYaw, 0, 1, 0);
-        GlStateManager.translate(0, playerOffset, 0);
+        matrixStack.func_227861_a_(0.0, -playerOffset, 0.0);
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
+        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(-(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks)));
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks));
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(entityYaw));
+        matrixStack.func_227861_a_(0.0, playerOffset, 0.0);
     }
 }

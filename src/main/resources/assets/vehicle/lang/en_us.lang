@@ -63,6 +63,7 @@ fluid.blaze_juice=Blaze Juice
 
 container.fluid_extractor=Fluid Extractor
 container.fluid_mixer=Fluid Mixer
+container.workstation=Workstation
 container.edit_vehicle.window_help=Click to move and rotate
 
 vehicle.info_help=Hold SHIFT for Info

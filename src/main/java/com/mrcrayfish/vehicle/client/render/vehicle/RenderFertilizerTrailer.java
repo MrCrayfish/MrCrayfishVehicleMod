@@ -1,27 +1,35 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.Models;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderFertilizerTrailer extends AbstractRenderTrailer<EntityFertilizerTrailer>
+public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTrailerEntity>
 {
     @Override
-    public void render(EntityFertilizerTrailer entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        this.renderDamagedPart(entity, entity.body, Models.FERTILIZER_TRAILER.getModel());
-        this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
-        this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        return SpecialModel.FERTILIZER_TRAILER;
+    }
+
+    @Override
+    public void render(FertilizerTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        this.renderDamagedPart(entity, SpecialModel.FERTILIZER_TRAILER.getModel(), matrixStack, renderTypeBuffer);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
         StorageInventory inventory = entity.getInventory();
         if(inventory != null)
@@ -33,51 +41,49 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<EntityFertili
                 ItemStack stack = inventory.getStackInSlot(i);
                 if(!stack.isEmpty())
                 {
-                    GlStateManager.pushMatrix();
-                    {
-                        GlStateManager.translate(-5.5 * 0.0625, -3 * 0.0625, -3 * 0.0625);
-                        GlStateManager.scale(0.45, 0.45, 0.45);
+                    matrixStack.func_227860_a_();
+                    matrixStack.func_227861_a_(-5.5 * 0.0625, -3 * 0.0625, -3 * 0.0625);
+                    matrixStack.func_227862_a_(0.45F, 0.45F, 0.45F);
 
-                        int count = Math.max(1, stack.getCount() / 32);
-                        int width = 3;
-                        int maxLayerCount = 6;
-                        for(int j = 0; j < count; j++)
+                    int count = Math.max(1, stack.getCount() / 32);
+                    int width = 3;
+                    int maxLayerCount = 6;
+                    for(int j = 0; j < count; j++)
+                    {
+                        matrixStack.func_227860_a_();
                         {
-                            GlStateManager.pushMatrix();
-                            {
-                                int layerIndex = index % maxLayerCount;
-                                GlStateManager.translate(0, layer * 0.1 + j * 0.0625, 0);
-                                GlStateManager.translate((layerIndex % width) * 0.5, 0, (float) (layerIndex / width) * 0.75);
-                                GlStateManager.translate(0.5 * (layer % 2), 0, 0);
-                                GlStateManager.rotate(90F, 1, 0, 0);
-                                GlStateManager.rotate(47F * index, 0, 0, 1);
-                                GlStateManager.rotate(2F * layerIndex, 1, 0, 0);
-                                GlStateManager.translate(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                                Minecraft.getMinecraft().getRenderItem().renderItem(stack, ItemCameraTransforms.TransformType.NONE);
-                            }
-                            GlStateManager.popMatrix();
-                            index++;
-                            if(index % maxLayerCount == 0)
-                            {
-                                layer++;
-                            }
+                            int layerIndex = index % maxLayerCount;
+                            matrixStack.func_227861_a_(0, layer * 0.1 + j * 0.0625, 0);
+                            matrixStack.func_227861_a_((layerIndex % width) * 0.5, 0, (float) (layerIndex / width) * 0.75);
+                            matrixStack.func_227861_a_(0.5 * (layer % 2), 0, 0);
+                            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90F));
+                            matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(47F * index));
+                            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(2F * layerIndex));
+                            matrixStack.func_227861_a_(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
+                            Minecraft.getInstance().getItemRenderer().func_229111_a_(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, 15728880, OverlayTexture.field_229196_a_, RenderUtil.getModel(stack));
+                        }
+                        matrixStack.func_227865_b_();
+                        index++;
+                        if(index % maxLayerCount == 0)
+                        {
+                            layer++;
                         }
                     }
-                    GlStateManager.popMatrix();
+                    matrixStack.func_227865_b_();
                 }
             }
         }
 
         /* Renders the spike */
-        GlStateManager.pushMatrix();
+        matrixStack.func_227860_a_();
         {
-            GlStateManager.translate(0, -0.5, -0.4375);
-            GlStateManager.rotate(90F, 0, 0, 1);
+            matrixStack.func_227861_a_(0, -0.5, -0.4375);
+            matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(90F));
             float wheelRotation = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
-            GlStateManager.rotate(-wheelRotation, 1, 0, 0);
-            GlStateManager.scale((float) 1.25, (float) 1.25, (float) 1.25);
-            RenderUtil.renderItemModel(entity.body, Models.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-wheelRotation));
+            matrixStack.func_227862_a_((float) 1.25, (float) 1.25, (float) 1.25);
+            RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
         }
-        GlStateManager.popMatrix();
+        matrixStack.func_227865_b_();
     }
 }

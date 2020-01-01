@@ -1,43 +1,49 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntitySpeedBoat;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.vehicle.SpeedBoatEntity;
+import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderSpeedBoat extends AbstractRenderVehicle<EntitySpeedBoat>
+public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
 {
     @Override
-    public void render(EntitySpeedBoat entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        //Render the body
-        renderDamagedPart(entity, entity.body);
-
-        //Render the handles bars
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(0, 0.215, -0.125);
-            GlStateManager.rotate(-45F, 1, 0, 0);
-            GlStateManager.translate(0, 0.02, 0);
-
-            float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 15F;
-            GlStateManager.rotate(turnRotation, 0, 1, 0);
-
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
+        return SpecialModel.SPEED_BOAT_BODY;
     }
 
     @Override
-    public void applyPlayerModel(EntitySpeedBoat entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void render(SpeedBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        //Render the body
+        this.renderDamagedPart(entity, SpecialModel.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(0, 0.215, -0.125);
+        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.func_227861_a_(0, 0.02, 0);
+        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngleNormal = wheelAngle / 45F;
+        float turnRotation = wheelAngleNormal * 15F;
+        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+        matrixStack.func_227865_b_();
+    }
+
+    @Override
+    public void applyPlayerModel(SpeedBoatEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
@@ -54,15 +60,15 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<EntitySpeedBoat>
     }
 
     @Override
-    public void applyPlayerRender(EntitySpeedBoat entity, EntityPlayer player, float partialTicks)
+    public void applyPlayerRender(SpeedBoatEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
-        GlStateManager.translate(0, offset, 0);
+        matrixStack.func_227861_a_(0, offset, 0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-        GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
-        GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-        GlStateManager.translate(0, -offset, 0);
+        matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
+        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+        matrixStack.func_227861_a_(0, -offset, 0);
     }
 
     @Override

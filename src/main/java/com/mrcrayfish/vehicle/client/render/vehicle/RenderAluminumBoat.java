@@ -1,36 +1,47 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityAluminumBoat;
+import com.mrcrayfish.vehicle.entity.vehicle.AluminumBoatEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat>
+public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity>
 {
-    private final ModelRenderer noWater;
+    //private final ModelRenderer noWater;
 
     public RenderAluminumBoat()
     {
-        this.noWater = (new ModelRenderer(new ModelBase(){}, 0, 0)).setTextureSize(0, 0);
-        this.noWater.addBox(-15F, -4F, -21F, 30, 8, 35, 0.0F);
+        //this.noWater = (new ModelRenderer(new Model(){}, 0, 0)).setTextureSize(0, 0);
+        //this.noWater.addBox(-15F, -4F, -21F, 30, 8, 35, 0.0F);
     }
 
     @Override
-    public void render(EntityAluminumBoat entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        return SpecialModel.ALUMINUM_BOAT_BODY;
     }
 
     @Override
-    public void applyPlayerModel(EntityAluminumBoat entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void render(AluminumBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+    }
+
+    @Override
+    public void applyPlayerModel(AluminumBoatEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
@@ -39,7 +50,7 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat
     }
 
     @Override
-    public void applyPlayerRender(EntityAluminumBoat entity, EntityPlayer player, float partialTicks)
+    public void applyPlayerRender(AluminumBoatEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         double offsetX = -0.5;
         double offsetY = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
@@ -52,17 +63,17 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat
             offsetZ += (index / 2F) * 1.2F;
         }
 
-        GlStateManager.translate(offsetX, offsetY, offsetZ);
+        matrixStack.func_227861_a_(offsetX, offsetY, offsetZ);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-        GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
-        GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-        GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+        matrixStack.func_227861_a_(-offsetX, -offsetY, -offsetZ);
     }
 
     //TODO fix this
     /*@Override
-    public void renderMultipass(EntityAluminumBoat entity, double x, double y, double z, float currentYaw, float partialTicks)
+    public void renderMultipass(AluminumBoatEntity entity, double x, double y, double z, float currentYaw, float partialTicks)
     {
         GlStateManager.pushMatrix();
         {

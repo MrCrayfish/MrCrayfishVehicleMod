@@ -1,9 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
 import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish
@@ -22,11 +19,6 @@ public enum EngineType
         this.id = id;
     }
 
-    public static EngineType getType(ItemStack stack)
-    {
-        return getType(stack.getItemDamage());
-    }
-
     public static EngineType getType(int index)
     {
         if(index < 0 || index >= values().length)
@@ -36,9 +28,8 @@ public enum EngineType
         return EngineType.values()[index];
     }
 
-    @SideOnly(Side.CLIENT)
     public String getEngineName()
     {
-        return I18n.format("vehicle.engine_type." + id + ".name");
+        return I18n.format("vehicle.engine_type." + this.id + ".name");
     }
 }

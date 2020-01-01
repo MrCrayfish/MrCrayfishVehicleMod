@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import net.minecraft.entity.EntityType;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -11,23 +12,23 @@ import java.util.Map;
  */
 public final class VehicleRenderRegistry
 {
-    private static final Map<Class<? extends EntityVehicle>, RenderVehicleWrapper<? extends EntityVehicle, ? extends AbstractRenderVehicle>> renderWrapperMap = new HashMap<>();
+    private static final Map<EntityType<? extends VehicleEntity>, RenderVehicleWrapper<? extends VehicleEntity, ? extends AbstractRenderVehicle>> renderWrapperMap = new HashMap<>();
 
     @Nullable
-    public static AbstractRenderVehicle<?> getRender(Class<? extends EntityVehicle> clazz)
+    public static AbstractRenderVehicle<?> getRender(EntityType<? extends VehicleEntity> type)
     {
-        RenderVehicleWrapper wrapper = renderWrapperMap.get(clazz);
+        RenderVehicleWrapper wrapper = renderWrapperMap.get(type);
         return wrapper != null ? wrapper.getRenderVehicle() : null;
     }
 
-    public static void registerRenderWrapper(Class<? extends EntityVehicle> clazz, RenderVehicleWrapper<? extends EntityVehicle, ? extends AbstractRenderVehicle> wrapper)
+    public static void registerRenderWrapper(EntityType<? extends VehicleEntity> type, RenderVehicleWrapper<? extends VehicleEntity, ? extends AbstractRenderVehicle> wrapper)
     {
-        renderWrapperMap.put(clazz, wrapper);
+        renderWrapperMap.put(type, wrapper);
     }
 
     @Nullable
-    public static RenderVehicleWrapper<?, ?> getRenderWrapper(Class<? extends EntityVehicle> clazz)
+    public static RenderVehicleWrapper<?, ?> getRenderWrapper(EntityType<? extends VehicleEntity> type)
     {
-        return renderWrapperMap.get(clazz);
+        return renderWrapperMap.get(type);
     }
 }

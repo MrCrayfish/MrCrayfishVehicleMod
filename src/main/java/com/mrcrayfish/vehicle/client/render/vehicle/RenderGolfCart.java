@@ -1,46 +1,53 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityGolfCart;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.vehicle.GolfCartEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderGolfCart extends AbstractRenderVehicle<EntityGolfCart>
+public class RenderGolfCart extends AbstractRenderVehicle<GolfCartEntity>
 {
     @Override
-    public void render(EntityGolfCart entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        //Render the body
-        this.renderDamagedPart(entity, entity.body);
-
-        //Render the handles bars
-        GlStateManager.pushMatrix();
-        {
-            // Positions the steering wheel in the correct position
-            GlStateManager.translate(-0.345, 0.425, 0.1);
-            GlStateManager.rotate(-45F, 1, 0, 0);
-            GlStateManager.translate(0, -0.02, 0);
-            GlStateManager.scale(0.95, 0.95, 0.95);
-
-            // Rotates the steering wheel based on the wheel angle
-            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 25F;
-            GlStateManager.rotate(turnRotation, 0, 1, 0);
-
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
+        return SpecialModel.GOLF_CART_BODY;
     }
 
     @Override
-    public void applyPlayerModel(EntityGolfCart entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void render(GolfCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        //Render the body
+        this.renderDamagedPart(entity, SpecialModel.GOLF_CART_BODY.getModel(), matrixStack, renderTypeBuffer);
+
+        //Render the handles bars
+        matrixStack.func_227860_a_();
+
+        // Positions the steering wheel in the correct position
+        matrixStack.func_227861_a_(-0.345, 0.425, 0.1);
+        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.func_227861_a_(0, -0.02, 0);
+        matrixStack.func_227862_a_(0.95F, 0.95F, 0.95F);
+
+        // Rotates the steering wheel based on the wheel angle
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngleNormal = wheelAngle / 45F;
+        float turnRotation = wheelAngleNormal * 25F;
+        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+
+        this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer);
+
+        matrixStack.func_227865_b_();
+    }
+
+    @Override
+    public void applyPlayerModel(GolfCartEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-80F);
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);

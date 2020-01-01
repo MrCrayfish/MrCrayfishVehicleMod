@@ -1,28 +1,37 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.vehicle.entity.vehicle.CouchEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.player.PlayerEntity;
 
 /**
  * Author: MrCrayfish
  */
-public class RenderCouch extends AbstractRenderVehicle<EntityCouch>
+public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
 {
     @Override
-    public void render(EntityCouch entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translate(0, 0.0625, 0);
-        GlStateManager.rotate(90F, 0, 1, 0);
-        this.renderDamagedPart(entity, entity.body);
-        GlStateManager.popMatrix();
+        return SpecialModel.ATV_BODY;
     }
 
     @Override
-    public void applyPlayerModel(EntityCouch entity, EntityPlayer player, ModelPlayer model, float partialTicks)
+    public void render(CouchEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(0.0, 0.0625, 0.0);
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
+        this.renderDamagedPart(entity, this.getBodyModel().getModel(), matrixStack, renderTypeBuffer);
+        matrixStack.func_227865_b_();
+    }
+
+    @Override
+    public void applyPlayerModel(CouchEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
         model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);

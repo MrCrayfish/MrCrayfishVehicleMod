@@ -2,8 +2,9 @@ package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.init.ModFluids;
-import net.minecraft.init.Items;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -40,31 +41,11 @@ public class FluidExtractorRecipes
     {
         for(Map.Entry<ItemStack, FluidExtract> entry : extractingMap.entrySet())
         {
-            if(areItemStacksEqual(stack, entry.getKey()))
+            if(InventoryUtil.areItemStacksEqualIgnoreCount(stack, entry.getKey()))
             {
                 return entry.getValue();
             }
         }
         return null;
-    }
-
-    private static boolean areItemStacksEqual(ItemStack stack, ItemStack other)
-    {
-        if (stack.getItem() != other.getItem())
-        {
-            return false;
-        }
-        else if (stack.getItemDamage() != other.getItemDamage())
-        {
-            return false;
-        }
-        else if(stack.getTagCompound() == null && other.getTagCompound() != null)
-        {
-            return false;
-        }
-        else
-        {
-            return (stack.getTagCompound() == null || stack.getTagCompound().equals(other.getTagCompound()));
-        }
     }
 }

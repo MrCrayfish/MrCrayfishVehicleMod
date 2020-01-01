@@ -2,56 +2,54 @@ package com.mrcrayfish.vehicle.client;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.trailer.*;
-import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.item.ItemJerryCan;
+import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageFuelVehicle;
 import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.Direction;
+import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
-import net.minecraftforge.client.event.MouseEvent;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector4d;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
@@ -62,7 +60,7 @@ import java.util.function.Function;
  * <p>
  * This class allows precise ratraces to be performed on the rendered model item parts, as well as on additional interaction boxes, of entities.
  */
-@EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class EntityRaytracer
 {
     /**
@@ -73,28 +71,23 @@ public class EntityRaytracer
     /**
      * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise static versions of the faces of their BakedQuads
      */
-    private static final Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTrianglesStatic = Maps.newHashMap();
+    private static final Map<EntityType<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTrianglesStatic = Maps.newHashMap();
 
     /**
      * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise dynamic versions of the faces of their BakedQuads
      */
-    private static final Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTrianglesDynamic = Maps.newHashMap();
+    private static final Map<EntityType<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTrianglesDynamic = Maps.newHashMap();
 
     /**
      * Contains all data in entityRaytraceTrianglesStatic and entityRaytraceTrianglesDynamic
      */
-    private static final Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTriangles = new HashMap<>();
+    private static final Map<EntityType<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityRaytraceTriangles = new HashMap<>();
 
     /**
      * Scales and offsets for rendering the entities in crates
      */
-    private static final Map<Class<? extends Entity>, Pair<Float, Float>> entityCrateScalesAndOffsets = new HashMap<>();
+    private static final Map<EntityType<? extends IEntityRaytraceable>, Pair<Float, Float>> entityCrateScalesAndOffsets = new HashMap<>();
     private static final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<>(0.25F, 0.0F);
-
-    /**
-     * Nearest common superclass shared by all raytraceable entity classes
-     */
-    private static Class<? extends Entity> entityRaytraceSuperclass;
 
     /**
      * NBT key for a name string tag that parts stacks with NBT tags will have.
@@ -128,7 +121,6 @@ public class EntityRaytracer
         entityRaytraceTrianglesDynamic.clear();
         entityRaytraceTriangles.clear();
         entityCrateScalesAndOffsets.clear();
-        entityRaytraceSuperclass = null;
         initialized = false;
     }
 
@@ -159,43 +151,44 @@ public class EntityRaytracer
      * 
      * @return whether or not fueling can continue
      */
-    public static final Function<RayTraceResultRotated, EnumHand> FUNCTION_FUELING = (rayTraceResult) ->
+    public static final Function<RayTraceResultRotated, Hand> FUNCTION_FUELING = (rayTraceResult) ->
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent() && ControllerEvents.isRightClicking())
         {
-            Entity entity = rayTraceResult.entityHit;
-            if(entity instanceof EntityPoweredVehicle)
+            Entity entity = rayTraceResult.getEntity();
+            if(entity instanceof PoweredVehicleEntity)
             {
-                EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
+                PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                 if(poweredVehicle.requiresFuel() && poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
                 {
                     if(continuousInteractionTickCounter % 2 == 0)
                     {
-                        PacketHandler.INSTANCE.sendToServer(new MessageFuelVehicle(Minecraft.getMinecraft().player, EnumHand.MAIN_HAND, rayTraceResult.entityHit));
+                        PacketHandler.instance.sendToServer(new MessageFuelVehicle(rayTraceResult.getEntity().getEntityId(), Hand.MAIN_HAND));
+                        poweredVehicle.fuelVehicle(player, Hand.MAIN_HAND);
                     }
-                    return EnumHand.MAIN_HAND;
+                    return Hand.MAIN_HAND;
                 }
             }
         }
 
-        for(EnumHand hand : EnumHand.values())
+        for(Hand hand : Hand.values())
         {
-            ItemStack stack = Minecraft.getMinecraft().player.getHeldItem(hand);
-            if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan && ControllerEvents.isRightClicking())
+            ItemStack stack = Minecraft.getInstance().player.getHeldItem(hand);
+            if(!stack.isEmpty() && stack.getItem() instanceof JerryCanItem && ControllerEvents.isRightClicking())
             {
-                Entity entity = rayTraceResult.entityHit;
-                if(entity instanceof EntityPoweredVehicle)
+                Entity entity = rayTraceResult.getEntity();
+                if(entity instanceof PoweredVehicleEntity)
                 {
-                    EntityPoweredVehicle poweredVehicle = (EntityPoweredVehicle) entity;
+                    PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                     if(poweredVehicle.requiresFuel() && poweredVehicle.getCurrentFuel() < poweredVehicle.getFuelCapacity())
                     {
-                        int fuel = ((ItemJerryCan) stack.getItem()).getCurrentFuel(stack);
+                        int fuel = ((JerryCanItem) stack.getItem()).getCurrentFuel(stack);
                         if(fuel > 0)
                         {
                             if(continuousInteractionTickCounter % 2 == 0)
                             {
-                                PacketHandler.INSTANCE.sendToServer(new MessageFuelVehicle(Minecraft.getMinecraft().player, hand, entity));
+                                PacketHandler.instance.sendToServer(new MessageFuelVehicle(entity.getEntityId(), hand));
                             }
                             return hand;
                         }
@@ -216,292 +209,292 @@ public class EntityRaytracer
     {
         // Aluminum boat
         List<MatrixTransformation> aluminumBoatTransformGlobal = new ArrayList<>();
-        createBodyTransforms(aluminumBoatTransformGlobal, EntityAluminumBoat.class);
+        createBodyTransforms(aluminumBoatTransformGlobal, ModEntities.ALUMINUM_BOAT);
         HashMap<RayTracePart, List<MatrixTransformation>> aluminumBoatParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.ALUMINUM_BOAT_BODY, aluminumBoatParts, aluminumBoatTransformGlobal);
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityAluminumBoat.class, aluminumBoatParts, aluminumBoatTransformGlobal);
-        registerEntityStatic(EntityAluminumBoat.class, aluminumBoatParts);
+        createTransformListForPart(SpecialModel.ALUMINUM_BOAT_BODY, aluminumBoatParts, aluminumBoatTransformGlobal);
+        createFuelablePartTransforms(ModEntities.ALUMINUM_BOAT, aluminumBoatParts, aluminumBoatTransformGlobal);
+        registerEntityStatic(ModEntities.ALUMINUM_BOAT, aluminumBoatParts);
 
         // ATV
         List<MatrixTransformation> atvTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(atvTransformGlobal, EntityATV.class);
+        createBodyTransforms(atvTransformGlobal, ModEntities.ATV);
         HashMap<RayTracePart, List<MatrixTransformation>> atvParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.ATV_BODY, atvParts, atvTransformGlobal);
-        createTransformListForPart(ModItems.ATV_HANDLE_BAR, atvParts, atvTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.3375, 0.25),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.025, 0));
-        createTransformListForPart(ModItems.TOW_BAR, atvParts,
-                MatrixTransformation.createRotation(180, 0, 1, 0),
-                MatrixTransformation.createTranslation(0.0, 0.5, 1.05));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, EntityATV.class, atvParts, atvTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_HOLE, EntityATV.class, atvParts, atvTransformGlobal);
-        registerEntityStatic(EntityATV.class, atvParts);
+        createTransformListForPart(SpecialModel.ATV_BODY, atvParts, atvTransformGlobal);
+        createTransformListForPart(SpecialModel.ATV_HANDLES, atvParts, atvTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.3375F, 0.25F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, -0.025F, 0.0F));
+        createTransformListForPart(SpecialModel.TOW_BAR, atvParts,
+                MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                MatrixTransformation.createTranslation(0.0F, 0.5F, 1.05F));
+        createFuelablePartTransforms(ModEntities.ATV, atvParts, atvTransformGlobal);
+        createKeyPortTransforms(ModEntities.ATV, atvParts, atvTransformGlobal);
+        registerEntityStatic(ModEntities.ATV, atvParts);
 
         // Bumper car
         List<MatrixTransformation> bumperCarTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(bumperCarTransformGlobal, EntityBumperCar.class);
+        createBodyTransforms(bumperCarTransformGlobal, ModEntities.BUMPER_CAR);
         HashMap<RayTracePart, List<MatrixTransformation>> bumperCarParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.BUMPER_CAR_BODY, bumperCarParts, bumperCarTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, bumperCarParts, bumperCarTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.2, 0),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.9));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityBumperCar.class, bumperCarParts, bumperCarTransformGlobal);
-        registerEntityStatic(EntityBumperCar.class, bumperCarParts);
+        createTransformListForPart(SpecialModel.BUMPER_CAR_BODY, bumperCarParts, bumperCarTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, bumperCarParts, bumperCarTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.2F, 0.0F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.9F));
+        createFuelablePartTransforms(ModEntities.BUMPER_CAR, bumperCarParts, bumperCarTransformGlobal);
+        registerEntityStatic(ModEntities.BUMPER_CAR, bumperCarParts);
 
         // Dune buggy
         List<MatrixTransformation> duneBuggyTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(duneBuggyTransformGlobal, EntityDuneBuggy.class);
+        createBodyTransforms(duneBuggyTransformGlobal, ModEntities.DUNE_BUGGY);
         HashMap<RayTracePart, List<MatrixTransformation>> duneBuggyParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.DUNE_BUGGY_BODY, duneBuggyParts, duneBuggyTransformGlobal);
-        createTransformListForPart(ModItems.DUNE_BUGGY_HANDLE_BAR, duneBuggyParts, duneBuggyTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0, -0.0046875));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityDuneBuggy.class, duneBuggyParts, duneBuggyTransformGlobal);
-        registerEntityStatic(EntityDuneBuggy.class, duneBuggyParts);
+        createTransformListForPart(SpecialModel.DUNE_BUGGY_BODY, duneBuggyParts, duneBuggyTransformGlobal);
+        createTransformListForPart(SpecialModel.DUNE_BUGGY_HANDLES, duneBuggyParts, duneBuggyTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.0F, -0.0046875F));
+        createFuelablePartTransforms(ModEntities.DUNE_BUGGY, duneBuggyParts, duneBuggyTransformGlobal);
+        registerEntityStatic(ModEntities.DUNE_BUGGY, duneBuggyParts);
 
         // Go kart
         List<MatrixTransformation> goKartTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(goKartTransformGlobal, EntityGoKart.class);
+        createBodyTransforms(goKartTransformGlobal, ModEntities.GO_KART);
         HashMap<RayTracePart, List<MatrixTransformation>> goKartParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.GO_KART_BODY, goKartParts, goKartTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, goKartParts, goKartTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.09, 0.49),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.9));
-        createPartTransforms(ModItems.SMALL_ENGINE, VehicleProperties.getProperties(EntityGoKart.class).getEnginePosition(), goKartParts, goKartTransformGlobal, FUNCTION_FUELING);
-        registerEntityStatic(EntityGoKart.class, goKartParts);
+        createTransformListForPart(SpecialModel.GO_KART_BODY, goKartParts, goKartTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, goKartParts, goKartTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.09F, 0.49F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.9F));
+        createPartTransforms(ModItems.WOOD_SMALL_ENGINE, VehicleProperties.getProperties(ModEntities.GO_KART).getEnginePosition(), goKartParts, goKartTransformGlobal, FUNCTION_FUELING);
+        registerEntityStatic(ModEntities.GO_KART, goKartParts);
 
         // Jet ski
         List<MatrixTransformation> jetSkiTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(jetSkiTransformGlobal, EntityJetSki.class);
+        createBodyTransforms(jetSkiTransformGlobal, ModEntities.JET_SKI);
         HashMap<RayTracePart, List<MatrixTransformation>> jetSkiParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.JET_SKI_BODY, jetSkiParts, jetSkiTransformGlobal);
-        createTransformListForPart(ModItems.ATV_HANDLE_BAR, jetSkiParts, jetSkiTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.375, 0.25),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, 0.02, 0));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_2_CLOSED, EntityJetSki.class, jetSkiParts, jetSkiTransformGlobal);
-        registerEntityStatic(EntityJetSki.class, jetSkiParts);
+        createTransformListForPart(SpecialModel.JET_SKI_BODY, jetSkiParts, jetSkiTransformGlobal);
+        createTransformListForPart(SpecialModel.ATV_HANDLES, jetSkiParts, jetSkiTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.375F, 0.25F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, 0.02F, 0.0F));
+        createFuelablePartTransforms(ModEntities.JET_SKI, jetSkiParts, jetSkiTransformGlobal);
+        registerEntityStatic(ModEntities.JET_SKI, jetSkiParts);
 
         // Lawn mower
         List<MatrixTransformation> lawnMowerTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(lawnMowerTransformGlobal, EntityLawnMower.class);
+        createBodyTransforms(lawnMowerTransformGlobal, ModEntities.LAWN_MOWER);
         HashMap<RayTracePart, List<MatrixTransformation>> lawnMowerParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.LAWN_MOWER_BODY, lawnMowerParts, lawnMowerTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, lawnMowerParts, lawnMowerTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.4, -0.15),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createScale(0.9));
-        createTransformListForPart(ModItems.TOW_BAR, lawnMowerParts,
-                MatrixTransformation.createRotation(180, 0, 1, 0),
-                MatrixTransformation.createTranslation(0.0, 0.5, 0.6));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityLawnMower.class, lawnMowerParts, lawnMowerTransformGlobal);
-        registerEntityStatic(EntityLawnMower.class, lawnMowerParts);
+        createTransformListForPart(SpecialModel.LAWN_MOWER_BODY, lawnMowerParts, lawnMowerTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, lawnMowerParts, lawnMowerTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.4F, -0.15F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createScale(0.9F));
+        createTransformListForPart(SpecialModel.TOW_BAR, lawnMowerParts,
+                MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                MatrixTransformation.createTranslation(0.0F, 0.5F, 0.6F));
+        createFuelablePartTransforms(ModEntities.LAWN_MOWER, lawnMowerParts, lawnMowerTransformGlobal);
+        registerEntityStatic(ModEntities.LAWN_MOWER, lawnMowerParts);
 
         // Mini bike
         List<MatrixTransformation> miniBikeTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(miniBikeTransformGlobal, EntityMiniBike.class);
+        createBodyTransforms(miniBikeTransformGlobal, ModEntities.MINI_BIKE);
         HashMap<RayTracePart, List<MatrixTransformation>> miniBikeParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.MINI_BIKE_BODY, miniBikeParts, miniBikeTransformGlobal);
-        createTransformListForPart(ModItems.MINI_BIKE_HANDLE_BAR, miniBikeParts, miniBikeTransformGlobal);
-        createPartTransforms(ModItems.SMALL_ENGINE, VehicleProperties.getProperties(EntityMiniBike.class).getEnginePosition(), miniBikeParts, miniBikeTransformGlobal, FUNCTION_FUELING);
-        registerEntityStatic(EntityMiniBike.class, miniBikeParts);
+        createTransformListForPart(SpecialModel.MINI_BIKE_BODY, miniBikeParts, miniBikeTransformGlobal);
+        createTransformListForPart(SpecialModel.MINI_BIKE_HANDLES, miniBikeParts, miniBikeTransformGlobal);
+        createPartTransforms(ModItems.WOOD_SMALL_ENGINE, VehicleProperties.getProperties(ModEntities.MINI_BIKE).getEnginePosition(), miniBikeParts, miniBikeTransformGlobal, FUNCTION_FUELING);
+        registerEntityStatic(ModEntities.MINI_BIKE, miniBikeParts);
 
         // Moped
         List<MatrixTransformation> mopedTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(mopedTransformGlobal, EntityMoped.class);
+        createBodyTransforms(mopedTransformGlobal, ModEntities.MOPED);
         HashMap<RayTracePart, List<MatrixTransformation>> mopedParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.MOPED_BODY, mopedParts, mopedTransformGlobal);
-        createTransformListForPart(ModItems.MOPED_HANDLE_BAR, mopedParts, mopedTransformGlobal,
-                MatrixTransformation.createTranslation(0, -0.0625, 0),
-                MatrixTransformation.createTranslation(0, 0.835, 0.525),
-                MatrixTransformation.createScale(0.8));
-        createTransformListForPart(ModItems.MOPED_MUD_GUARD, mopedParts, mopedTransformGlobal,
-                MatrixTransformation.createTranslation(0, -0.0625, 0),
-                MatrixTransformation.createTranslation(0, -0.12, 0.785),
-                MatrixTransformation.createRotation(-22.5, 1, 0, 0),
-                MatrixTransformation.createScale(0.9));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityMoped.class, mopedParts, mopedTransformGlobal);
-        registerEntityStatic(EntityMoped.class, mopedParts);
+        createTransformListForPart(SpecialModel.MOPED_BODY, mopedParts, mopedTransformGlobal);
+        createTransformListForPart(SpecialModel.MOPED_HANDLES, mopedParts, mopedTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, -0.0625F, 0.0F),
+                MatrixTransformation.createTranslation(0.0F, 0.835F, 0.525F),
+                MatrixTransformation.createScale(0.8F));
+        createTransformListForPart(SpecialModel.MOPED_MUD_GUARD, mopedParts, mopedTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, -0.0625F, 0.0F),
+                MatrixTransformation.createTranslation(0.0F, -0.12F, 0.785F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -22.5F),
+                MatrixTransformation.createScale(0.9F));
+        createFuelablePartTransforms(ModEntities.MOPED, mopedParts, mopedTransformGlobal);
+        registerEntityStatic(ModEntities.MOPED, mopedParts);
 
         // Shopping cart
         List<MatrixTransformation> cartTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(cartTransformGlobal, EntityShoppingCart.class);
+        createBodyTransforms(cartTransformGlobal, ModEntities.SHOPPING_CART);
         HashMap<RayTracePart, List<MatrixTransformation>> cartParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.SHOPPING_CART_BODY, cartParts, cartTransformGlobal);
-        registerEntityStatic(EntityShoppingCart.class, cartParts);
+        createTransformListForPart(SpecialModel.SHOPPING_CART_BODY, cartParts, cartTransformGlobal);
+        registerEntityStatic(ModEntities.SHOPPING_CART, cartParts);
 
         // Smart car
         List<MatrixTransformation> smartCarTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(smartCarTransformGlobal, EntitySmartCar.class);
+        createBodyTransforms(smartCarTransformGlobal, ModEntities.SMART_CAR);
         HashMap<RayTracePart, List<MatrixTransformation>> smartCarParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.SMART_CAR_BODY, smartCarParts, smartCarTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, smartCarParts, smartCarTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.2, 0.3),
-                MatrixTransformation.createRotation(-67.5, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.9));
-        createTransformListForPart(ModItems.TOW_BAR, smartCarParts,
-                MatrixTransformation.createRotation(180, 0, 1, 0),
-                MatrixTransformation.createTranslation(0.0, 0.5, 1.35));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySmartCar.class, smartCarParts, smartCarTransformGlobal);
-        registerEntityStatic(EntitySmartCar.class, smartCarParts);
+        createTransformListForPart(SpecialModel.SMART_CAR_BODY, smartCarParts, smartCarTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, smartCarParts, smartCarTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.2F, 0.3F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.9F));
+        createTransformListForPart(SpecialModel.TOW_BAR, smartCarParts,
+                MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                MatrixTransformation.createTranslation(0.0F, 0.5F, 1.35F));
+        createFuelablePartTransforms(ModEntities.SMART_CAR, smartCarParts, smartCarTransformGlobal);
+        registerEntityStatic(ModEntities.SMART_CAR, smartCarParts);
 
         // Speed boat
         List<MatrixTransformation> speedBoatTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(speedBoatTransformGlobal, EntitySpeedBoat.class);
+        createBodyTransforms(speedBoatTransformGlobal, ModEntities.SPEED_BOAT);
         HashMap<RayTracePart, List<MatrixTransformation>> speedBoatParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.SPEED_BOAT_BODY, speedBoatParts, speedBoatTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, speedBoatParts, speedBoatTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.215, -0.125),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, 0.02, 0));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySpeedBoat.class, speedBoatParts, speedBoatTransformGlobal);
-        registerEntityStatic(EntitySpeedBoat.class, speedBoatParts);
+        createTransformListForPart(SpecialModel.SPEED_BOAT_BODY, speedBoatParts, speedBoatTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, speedBoatParts, speedBoatTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.215F, -0.125F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, 0.02F, 0.0F));
+        createFuelablePartTransforms(ModEntities.SPEED_BOAT, speedBoatParts, speedBoatTransformGlobal);
+        registerEntityStatic(ModEntities.SPEED_BOAT, speedBoatParts);
 
         // Sports plane
         List<MatrixTransformation> sportsPlaneTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(sportsPlaneTransformGlobal, EntitySportsPlane.class);
+        createBodyTransforms(sportsPlaneTransformGlobal, ModEntities.SPORTS_PLANE);
         HashMap<RayTracePart, List<MatrixTransformation>> sportsPlaneParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.SPORTS_PLANE_BODY, sportsPlaneParts, sportsPlaneTransformGlobal);
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySportsPlane.class, sportsPlaneParts, sportsPlaneTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_HOLE, EntitySportsPlane.class, sportsPlaneParts, sportsPlaneTransformGlobal);
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WING, "wingRight"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(0, -0.1875, 0.5),
-                MatrixTransformation.createRotation(180, 0, 0, 1),
-                MatrixTransformation.createTranslation(0.875, 0.0625, 0),
-                MatrixTransformation.createRotation(5, 1, 0, 0));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WING, "wingLeft"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(0.875, -0.1875, 0.5),
-                MatrixTransformation.createRotation(-5, 1, 0, 0));
-        sportsPlaneTransformGlobal.add(MatrixTransformation.createTranslation(0, -0.5, 0));
-        sportsPlaneTransformGlobal.add(MatrixTransformation.createScale(0.85));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WHEEL_COVER, "wheelCoverFront"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(0, -0.1875, 1.5));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_LEG, "legFront"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(0, -0.1875, 1.5));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WHEEL_COVER, "wheelCoverRight"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(-0.46875, -0.1875, 0.125));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_LEG, "legRight"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(-0.46875, -0.1875, 0.125),
-                MatrixTransformation.createRotation(-100, 0, 1, 0));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_WHEEL_COVER, "wheelCoverLeft"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(0.46875, -0.1875, 0.125));
-        createTransformListForPart(getNamedPartStack(ModItems.SPORTS_PLANE_LEG, "legLeft"), sportsPlaneParts, sportsPlaneTransformGlobal,
-                MatrixTransformation.createTranslation(0.46875, -0.1875, 0.125),
-                MatrixTransformation.createRotation(100, 0, 1, 0));
-        registerEntityStatic(EntitySportsPlane.class, sportsPlaneParts);
+        createTransformListForPart(SpecialModel.SPORTS_PLANE, sportsPlaneParts, sportsPlaneTransformGlobal);
+        createFuelablePartTransforms(ModEntities.SPORTS_PLANE, sportsPlaneParts, sportsPlaneTransformGlobal);
+        createKeyPortTransforms(ModEntities.SPORTS_PLANE, sportsPlaneParts, sportsPlaneTransformGlobal);
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_WING, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(0, -0.1875F, 0.5F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_Z, 180F),
+                MatrixTransformation.createTranslation(0.875F, 0.0625F, 0.0F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, 5F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_WING, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(0.875F, -0.1875F, 0.5F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -5F));
+        sportsPlaneTransformGlobal.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
+        sportsPlaneTransformGlobal.add(MatrixTransformation.createScale(0.85F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_WHEEL_COVER, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, -0.1875F, 1.5F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_LEG, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, -0.1875F, 1.5F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_WHEEL_COVER, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(-0.46875F, -0.1875F, 0.125F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_LEG, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(-0.46875F, -0.1875F, 0.125F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_Y, -100F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_WHEEL_COVER, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(0.46875F, -0.1875F, 0.125F));
+        createTransformListForPart(SpecialModel.SPORTS_PLANE_LEG, sportsPlaneParts, sportsPlaneTransformGlobal,
+                MatrixTransformation.createTranslation(0.46875F, -0.1875F, 0.125F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_Y, 100F));
+        registerEntityStatic(ModEntities.SPORTS_PLANE, sportsPlaneParts);
 
         // Golf Cart
         List<MatrixTransformation> golfCartTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(golfCartTransformGlobal, EntityGolfCart.class);
+        createBodyTransforms(golfCartTransformGlobal, ModEntities.GOLF_CART);
         HashMap<RayTracePart, List<MatrixTransformation>> golfCartParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.GOLF_CART_BODY, golfCartParts, golfCartTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, golfCartParts, golfCartTransformGlobal,
-                MatrixTransformation.createTranslation(-0.345, 0.425, 0.1),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.95));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityGolfCart.class, golfCartParts, golfCartTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_HOLE, EntityGolfCart.class, golfCartParts, golfCartTransformGlobal);
-        registerEntityStatic(EntityGolfCart.class, golfCartParts);
+        createTransformListForPart(SpecialModel.GOLF_CART_BODY, golfCartParts, golfCartTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, golfCartParts, golfCartTransformGlobal,
+                MatrixTransformation.createTranslation(-0.345F, 0.425F, 0.1F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.95F));
+        createFuelablePartTransforms(ModEntities.GOLF_CART, golfCartParts, golfCartTransformGlobal);
+        createKeyPortTransforms(ModEntities.GOLF_CART, golfCartParts, golfCartTransformGlobal);
+        registerEntityStatic(ModEntities.GOLF_CART, golfCartParts);
 
         // Off-Roader
         List<MatrixTransformation> offRoaderTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(offRoaderTransformGlobal, EntityOffRoader.class);
+        createBodyTransforms(offRoaderTransformGlobal, ModEntities.OFF_ROADER);
         HashMap<RayTracePart, List<MatrixTransformation>> offRoaderParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.OFF_ROADER_BODY, offRoaderParts, offRoaderTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, offRoaderParts, offRoaderTransformGlobal,
-                MatrixTransformation.createTranslation(-0.3125, 0.35, 0.2),
-                MatrixTransformation.createRotation(-45, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.75));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityOffRoader.class, offRoaderParts, offRoaderTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_HOLE, EntityOffRoader.class, offRoaderParts, offRoaderTransformGlobal);
-        registerEntityStatic(EntityOffRoader.class, offRoaderParts);
+        createTransformListForPart(SpecialModel.OFF_ROADER_BODY, offRoaderParts, offRoaderTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, offRoaderParts, offRoaderTransformGlobal,
+                MatrixTransformation.createTranslation(-0.3125F, 0.35F, 0.2F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.75F));
+        createFuelablePartTransforms(ModEntities.OFF_ROADER, offRoaderParts, offRoaderTransformGlobal);
+        createKeyPortTransforms(ModEntities.OFF_ROADER, offRoaderParts, offRoaderTransformGlobal);
+        registerEntityStatic(ModEntities.OFF_ROADER, offRoaderParts);
 
         List<MatrixTransformation> tractorTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(tractorTransformGlobal, EntityTractor.class);
+        createBodyTransforms(tractorTransformGlobal, ModEntities.TRACTOR);
         HashMap<RayTracePart, List<MatrixTransformation>> tractorParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.TRACTOR_BODY, tractorParts, tractorTransformGlobal);
-        createTransformListForPart(ModItems.GO_KART_STEERING_WHEEL, tractorParts, tractorTransformGlobal,
-                MatrixTransformation.createTranslation(0, 0.66, -0.475),
-                MatrixTransformation.createRotation(-67.5F, 1, 0, 0),
-                MatrixTransformation.createTranslation(0, -0.02, 0),
-                MatrixTransformation.createScale(0.9));
-        createFuelablePartTransforms(ModItems.FUEL_PORT_CLOSED, EntityTractor.class, tractorParts, tractorTransformGlobal);
-        createKeyPortTransforms(ModItems.KEY_HOLE, EntityTractor.class, tractorParts, tractorTransformGlobal);
-        registerEntityStatic(EntityTractor.class, tractorParts);
+        createTransformListForPart(SpecialModel.TRACTOR, tractorParts, tractorTransformGlobal);
+        createTransformListForPart(SpecialModel.GO_KART_STEERING_WHEEL, tractorParts, tractorTransformGlobal,
+                MatrixTransformation.createTranslation(0.0F, 0.66F, -0.475F),
+                MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.9F));
+        createFuelablePartTransforms(ModEntities.TRACTOR, tractorParts, tractorTransformGlobal);
+        createKeyPortTransforms(ModEntities.TRACTOR, tractorParts, tractorTransformGlobal);
+        registerEntityStatic(ModEntities.TRACTOR, tractorParts);
 
-        if(Loader.isModLoaded("cfm"))
+        if(ModList.get().isLoaded("cfm"))
         {
             // Bath
             List<MatrixTransformation> bathTransformGlobal = Lists.newArrayList();
-            createBodyTransforms(bathTransformGlobal, EntityBath.class);
+            createBodyTransforms(bathTransformGlobal, ModEntities.BATH);
             HashMap<RayTracePart, List<MatrixTransformation>> bathParts = Maps.newHashMap();
-            createTransformListForPart(Item.getByNameOrId("cfm:bath_bottom"), bathParts, bathTransformGlobal,
-                    MatrixTransformation.createRotation(90, 0, 1, 0));
-            registerEntityStatic(EntityBath.class, bathParts);
+            createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:bath")), bathParts, bathTransformGlobal,
+                    MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
+            registerEntityStatic(ModEntities.BATH, bathParts);
 
             // Couch
             List<MatrixTransformation> couchTransformGlobal = Lists.newArrayList();
-            createBodyTransforms(couchTransformGlobal, EntityCouch.class);
+            createBodyTransforms(couchTransformGlobal, ModEntities.SOFA);
             HashMap<RayTracePart, List<MatrixTransformation>> couchParts = Maps.newHashMap();
-            createTransformListForPart(Item.getByNameOrId("cfm:couch_jeb"), couchParts, couchTransformGlobal,
-                    MatrixTransformation.createRotation(90, 0, 1, 0),
-                    MatrixTransformation.createTranslation(0, 0.0625, 0));
-            registerEntityStatic(EntityCouch.class, couchParts);
+            createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:rainbow_sofa")), couchParts, couchTransformGlobal,
+                    MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F),
+                    MatrixTransformation.createTranslation(0.0F, 0.0625F, 0.0F));
+            registerEntityStatic(ModEntities.SOFA, couchParts);
 
             // Sofacopter
             List<MatrixTransformation> sofacopterTransformGlobal = Lists.newArrayList();
-            createBodyTransforms(sofacopterTransformGlobal, EntitySofacopter.class);
+            createBodyTransforms(sofacopterTransformGlobal, ModEntities.SOFACOPTER);
             HashMap<RayTracePart, List<MatrixTransformation>> sofacopterParts = Maps.newHashMap();
-            createTransformListForPart(Item.getByNameOrId("cfm:couch"), sofacopterParts, sofacopterTransformGlobal,
-                    MatrixTransformation.createRotation(90, 0, 1, 0));
-            createTransformListForPart(ModItems.COUCH_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
-                    MatrixTransformation.createTranslation(0, 8 * 0.0625, 0.0));
-            createPartTransforms(ModItems.FUEL_PORT_CLOSED, EntitySofacopter.FUEL_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal, FUNCTION_FUELING);
-            createPartTransforms(ModItems.KEY_HOLE, EntitySofacopter.KEY_PORT_POSITION, sofacopterParts, sofacopterTransformGlobal);
-            registerEntityStatic(EntitySofacopter.class, sofacopterParts);
+            createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:sofa")), sofacopterParts, sofacopterTransformGlobal,
+                    MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
+            createTransformListForPart(SpecialModel.SOFA_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
+                    MatrixTransformation.createTranslation(0.0F, 8 * 0.0625F, 0.0F));
+            createFuelablePartTransforms(ModEntities.SOFACOPTER, sofacopterParts, sofacopterTransformGlobal);
+            createKeyPortTransforms(ModEntities.SOFACOPTER, sofacopterParts, sofacopterTransformGlobal);
+            registerEntityStatic(ModEntities.SOFACOPTER, sofacopterParts);
         }
 
         // Vehicle Trailer
         List<MatrixTransformation> trailerVehicleTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(trailerVehicleTransformGlobal, EntityVehicleTrailer.class);
+        createBodyTransforms(trailerVehicleTransformGlobal, ModEntities.VEHICLE_TRAILER);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerVehicleParts = Maps.newHashMap();
-        createTransformListForPart(ModItems.TRAILER_BODY, trailerVehicleParts, trailerVehicleTransformGlobal);
-        registerEntityStatic(EntityVehicleTrailer.class, trailerVehicleParts);
+        createTransformListForPart(SpecialModel.VEHICLE_TRAILER, trailerVehicleParts, trailerVehicleTransformGlobal);
+        registerEntityStatic(ModEntities.VEHICLE_TRAILER, trailerVehicleParts);
 
         // Chest Trailer
         List<MatrixTransformation> trailerStorageTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(trailerStorageTransformGlobal, EntityStorageTrailer.class);
+        createBodyTransforms(trailerStorageTransformGlobal, ModEntities.STORAGE_TRAILER);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerStorageParts = Maps.newHashMap();
-        createTransformListForPart(Models.CHEST_TRAILER, trailerStorageParts, trailerStorageTransformGlobal);
-        registerEntityStatic(EntityStorageTrailer.class, trailerStorageParts);
+        createTransformListForPart(SpecialModel.STORAGE_TRAILER, trailerStorageParts, trailerStorageTransformGlobal);
+        registerEntityStatic(ModEntities.STORAGE_TRAILER, trailerStorageParts);
 
         // Seeder Trailer
         List<MatrixTransformation> seederTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(seederTransformGlobal, EntitySeederTrailer.class);
+        createBodyTransforms(seederTransformGlobal, ModEntities.SEEDER);
         HashMap<RayTracePart, List<MatrixTransformation>> seederParts = Maps.newHashMap();
-        createTransformListForPart(Models.SEEDER_TRAILER, seederParts, seederTransformGlobal);
-        registerEntityStatic(EntitySeederTrailer.class, seederParts);
+        createTransformListForPart(SpecialModel.SEEDER_TRAILER, seederParts, seederTransformGlobal);
+        registerEntityStatic(ModEntities.SEEDER, seederParts);
 
         // Fertilizer
         List<MatrixTransformation> fertilizerTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(fertilizerTransformGlobal, EntityFertilizerTrailer.class);
+        createBodyTransforms(fertilizerTransformGlobal, ModEntities.FERTILIZER);
         HashMap<RayTracePart, List<MatrixTransformation>> fertilizerParts = Maps.newHashMap();
-        createTransformListForPart(Models.FERTILIZER_TRAILER, fertilizerParts, fertilizerTransformGlobal);
-        registerEntityStatic(EntityFertilizerTrailer.class, fertilizerParts);
+        createTransformListForPart(SpecialModel.FERTILIZER_TRAILER, fertilizerParts, fertilizerTransformGlobal);
+        registerEntityStatic(ModEntities.FERTILIZER, fertilizerParts);
 
         // Fluid
         List<MatrixTransformation> trailerFluidTransformGlobal = Lists.newArrayList();
-        createBodyTransforms(trailerFluidTransformGlobal, EntityFluidTrailer.class);
+        createBodyTransforms(trailerFluidTransformGlobal, ModEntities.FLUID_TRAILER);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerFluidParts = Maps.newHashMap();
-        createTransformListForPart(Models.FLUID_TRAILER, trailerFluidParts, trailerFluidTransformGlobal);
-        registerEntityStatic(EntityFluidTrailer.class, trailerFluidParts);
+        createTransformListForPart(SpecialModel.FLUID_TRAILER, trailerFluidParts, trailerFluidTransformGlobal);
+        registerEntityStatic(ModEntities.FLUID_TRAILER, trailerFluidParts);
     }
 
     /**
@@ -514,7 +507,7 @@ public class EntityRaytracer
         /* Map<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>> aluminumBoatPartsDynamic = Maps.<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>>newHashMap();
         aluminumBoatPartsDynamic.put(new RayTracePart(new ItemStack(ModItems.ALUMINUM_BOAT_BODY)), (part, entity) ->
         {
-            EntityVehicle aluminumBoat = (EntityVehicle) entity;
+            VehicleEntity aluminumBoat = (VehicleEntity) entity;
             Matrix4d matrix = new Matrix4d();
             matrix.setIdentity();
             MatrixTransformation.createScale(1.1).transform(matrix);
@@ -526,24 +519,7 @@ public class EntityRaytracer
             finalizePartStackMatrix(matrix);
             return matrix;
         });
-        registerDynamicClass(EntityAluminumBoat.class, aluminumBoatPartsDynamic); */
-    }
-
-    /**
-     * Creates a part stack with an NBT tag containing a string name of the part
-     * 
-     * @param part the rendered item part
-     * @param name name of the part
-     * 
-     * @return the part stack
-     */
-    public static ItemStack getNamedPartStack(Item part, String name)
-    {
-        ItemStack partStack = new ItemStack(part);
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setString(PART_NAME, name);
-        partStack.setTagCompound(nbt);
-        return partStack;
+        registerDynamicClass(AluminumBoatEntity.class, aluminumBoatPartsDynamic); */
     }
 
     /**
@@ -551,47 +527,61 @@ public class EntityRaytracer
      * arguments should be the same as the static properties defined for the vehicle.
      *
      * @param transforms the global transformation matrix
-     * @param clazz the vehicle class
+     * @param entityType the vehicle entity type
      */
-    public static void createBodyTransforms(List<MatrixTransformation> transforms, Class<? extends EntityVehicle> clazz)
+    public static void createBodyTransforms(List<MatrixTransformation> transforms, EntityType<? extends VehicleEntity> entityType)
     {
-        VehicleProperties properties = VehicleProperties.getProperties(clazz);
+        VehicleProperties properties = VehicleProperties.getProperties(entityType);
         PartPosition bodyPosition = properties.getBodyPosition();
-        transforms.add(MatrixTransformation.createRotation(bodyPosition.getRotX(), 1, 0, 0));
-        transforms.add(MatrixTransformation.createRotation(bodyPosition.getRotY(), 0, 1, 0));
-        transforms.add(MatrixTransformation.createRotation(bodyPosition.getRotZ(), 0, 0, 1));
-        transforms.add(MatrixTransformation.createTranslation(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ()));
-        transforms.add(MatrixTransformation.createScale(bodyPosition.getScale()));
-        transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        transforms.add(MatrixTransformation.createTranslation(0, properties.getAxleOffset() * 0.0625, 0));
-        transforms.add(MatrixTransformation.createTranslation(0, properties.getWheelOffset() * 0.0625, 0));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) bodyPosition.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) bodyPosition.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) bodyPosition.getRotZ()));
+        transforms.add(MatrixTransformation.createTranslation((float) bodyPosition.getX(), (float) bodyPosition.getY(), (float) bodyPosition.getZ()));
+        transforms.add(MatrixTransformation.createScale((float) bodyPosition.getScale()));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, properties.getAxleOffset() * 0.0625F, 0.0F));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, properties.getWheelOffset() * 0.0625F, 0.0F));
     }
 
-    public static void createPartTransforms(Item part, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    public static void createPartTransforms(SpecialModel model, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
         List<MatrixTransformation> transforms = Lists.newArrayList();
         transforms.addAll(transformsGlobal);
-        transforms.add(MatrixTransformation.createTranslation(partPosition.getX() * 0.0625, partPosition.getY() * 0.0625, partPosition.getZ() * 0.0625));
-        transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
-        transforms.add(MatrixTransformation.createScale(partPosition.getScale()));
-        transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        transforms.add(MatrixTransformation.createRotation(partPosition.getRotX(), 1, 0, 0));
-        transforms.add(MatrixTransformation.createRotation(partPosition.getRotY(), 0, 1, 0));
-        transforms.add(MatrixTransformation.createRotation(partPosition.getRotZ(), 0, 0, 1));
-        createTransformListForPart(new ItemStack(part), parts, transforms);
+        transforms.add(MatrixTransformation.createTranslation((float) partPosition.getX() * 0.0625F, (float) partPosition.getY() * 0.0625F, (float) partPosition.getZ() * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createScale((float) partPosition.getScale()));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) partPosition.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) partPosition.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) partPosition.getRotZ()));
+        createTransformListForPart(model, parts, transforms);
     }
 
-    public static void createPartTransforms(Item part, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, Function<RayTraceResultRotated, EnumHand> function)
+    public static void createPartTransforms(SpecialModel model, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, Function<RayTraceResultRotated, Hand> function)
     {
         List<MatrixTransformation> transforms = Lists.newArrayList();
         transforms.addAll(transformsGlobal);
-        transforms.add(MatrixTransformation.createTranslation(partPosition.getX() * 0.0625, partPosition.getY() * 0.0625, partPosition.getZ() * 0.0625));
-        transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
-        transforms.add(MatrixTransformation.createScale(partPosition.getScale()));
-        transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        transforms.add(MatrixTransformation.createRotation(partPosition.getRotX(), 1, 0, 0));
-        transforms.add(MatrixTransformation.createRotation(partPosition.getRotY(), 0, 1, 0));
-        transforms.add(MatrixTransformation.createRotation(partPosition.getRotZ(), 0, 0, 1));
+        transforms.add(MatrixTransformation.createTranslation((float) partPosition.getX() * 0.0625F, (float) partPosition.getY() * 0.0625F, (float) partPosition.getZ() * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createScale((float) partPosition.getScale()));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) partPosition.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) partPosition.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) partPosition.getRotZ()));
+        createTransformListForPart(model, parts, transforms, function);
+    }
+
+    public static void createPartTransforms(Item part, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, Function<RayTraceResultRotated, Hand> function)
+    {
+        List<MatrixTransformation> transforms = Lists.newArrayList();
+        transforms.addAll(transformsGlobal);
+        transforms.add(MatrixTransformation.createTranslation((float) partPosition.getX() * 0.0625F, (float) partPosition.getY() * 0.0625F, (float) partPosition.getZ() * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createScale((float) partPosition.getScale()));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) partPosition.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) partPosition.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) partPosition.getRotZ()));
         createTransformListForPart(new ItemStack(part), parts, transforms, function);
     }
 
@@ -605,23 +595,23 @@ public class EntityRaytracer
      * @param scale part's scale
      * @param transforms list that part transforms are added to
      */
-    public static void createPartTransforms(double xPixel, double yPixel, double zPixel, Vec3d rotation, double scale, List<MatrixTransformation> transforms)
+    public static void createPartTransforms(double xPixel, double yPixel, double zPixel, Vector3f rotation, double scale, List<MatrixTransformation> transforms)
     {
-        transforms.add(MatrixTransformation.createTranslation(xPixel * 0.0625, yPixel * 0.0625, zPixel * 0.0625));
-        transforms.add(MatrixTransformation.createTranslation(0, -0.5, 0));
-        transforms.add(MatrixTransformation.createScale(scale));
-        transforms.add(MatrixTransformation.createTranslation(0, 0.5, 0));
-        if (rotation.x != 0)
+        transforms.add(MatrixTransformation.createTranslation((float) xPixel * 0.0625F, (float) yPixel * 0.0625F, (float) zPixel * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
+        transforms.add(MatrixTransformation.createScale((float) scale));
+        transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
+        if (rotation.getX() != 0)
         {
-            transforms.add(MatrixTransformation.createRotation(rotation.x, 1, 0, 0));
+            transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, rotation.getX()));
         }
-        if (rotation.y != 0)
+        if (rotation.getY() != 0)
         {
-            transforms.add(MatrixTransformation.createRotation(rotation.y, 0, 1, 0));
+            transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, rotation.getY()));
         }
-        if (rotation.z != 0)
+        if (rotation.getZ() != 0)
         {
-            transforms.add(MatrixTransformation.createRotation(rotation.z, 0, 0, 1));
+            transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, rotation.getY()));
         }
     }
 
@@ -642,10 +632,10 @@ public class EntityRaytracer
      * @param transformsGlobal transforms that apply to all parts for this entity
      */
     public static void createFuelablePartTransforms(Item part, double xMeters, double yMeters, double zMeters, double xPixel, double yPixel, double zPixel,
-            Vec3d rotation, double scale, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+            Vector3f rotation, double scale, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
         List<MatrixTransformation> partTransforms = Lists.newArrayList();
-        partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
+        partTransforms.add(MatrixTransformation.createTranslation((float) xMeters, (float) yMeters, (float) zMeters));
         createPartTransforms(xPixel, yPixel, zPixel, rotation, scale, partTransforms);
         transformsGlobal.addAll(partTransforms);
         createTransformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
@@ -655,15 +645,18 @@ public class EntityRaytracer
      * Creates part-specific transforms for a raytraceable entity's rendered part and adds them the list of transforms
      * for the given entity.
      *
-     * @param part the rendered item part
-     * @param clazz the vehicle class
+     * @param entityType the vehicle entity type
      * @param parts map of all parts to their transforms
      * @param transformsGlobal transforms that apply to all parts for this entity
      */
-    public static void createFuelablePartTransforms(Item part, Class<? extends EntityVehicle> clazz, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    public static void createFuelablePartTransforms(EntityType<? extends VehicleEntity> entityType, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
-        PartPosition fuelPortPosition = VehicleProperties.getProperties(clazz).getFuelPortPosition();
-        createPartTransforms(part, fuelPortPosition, parts, transformsGlobal, FUNCTION_FUELING);
+        PartPosition fuelPortPosition = VehicleProperties.getProperties(entityType).getFuelPortPosition();
+        AbstractRenderVehicle<?> renderVehicle = VehicleRenderRegistry.getRender(entityType);
+        if(renderVehicle != null)
+        {
+            createPartTransforms(renderVehicle.getClosedFuelDoorModel(), fuelPortPosition, parts, transformsGlobal, FUNCTION_FUELING);
+        }
     }
 
     /**
@@ -685,16 +678,16 @@ public class EntityRaytracer
             double rotation, double scale, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
         List<MatrixTransformation> partTransforms = Lists.newArrayList();
-        partTransforms.add(MatrixTransformation.createTranslation(xMeters, yMeters, zMeters));
-        createPartTransforms(xPixel, yPixel, zPixel, new Vec3d(0, rotation, 0), scale, partTransforms);
+        partTransforms.add(MatrixTransformation.createTranslation((float) xMeters, (float) yMeters, (float) zMeters));
+        createPartTransforms(xPixel, yPixel, zPixel, new Vector3f(0.0F, (float) rotation, 0.0F), scale, partTransforms);
         transformsGlobal.addAll(partTransforms);
         createTransformListForPart(new ItemStack(part), parts, transformsGlobal, FUNCTION_FUELING);
     }
 
-    public static void createKeyPortTransforms(Item part, Class<? extends EntityVehicle> clazz, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    public static void createKeyPortTransforms(EntityType<? extends VehicleEntity> entityType, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
-        PartPosition keyPortPosition = VehicleProperties.getProperties(clazz).getKeyPortPosition();
-        createPartTransforms(part, keyPortPosition, parts, transformsGlobal);
+        PartPosition keyPortPosition = VehicleProperties.getProperties(entityType).getKeyPortPosition();
+        createPartTransforms(SpecialModel.KEY_HOLE, keyPortPosition, parts, transformsGlobal);
     }
 
     /**
@@ -707,7 +700,7 @@ public class EntityRaytracer
      * @param transforms part-specific transforms for the given part 
      */
     public static void createTransformListForPart(ItemStack part, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
-                                                  @Nullable Function<RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
+                                                  @Nullable Function<RayTraceResultRotated, Hand> continuousInteraction, MatrixTransformation... transforms)
     {
         List<MatrixTransformation> transformsAll = Lists.newArrayList();
         transformsAll.addAll(transformsGlobal);
@@ -743,6 +736,18 @@ public class EntityRaytracer
 
     /**
      * Version of {@link EntityRaytracer#createTransformListForPart(Item, HashMap, List, MatrixTransformation[]) createTransformListForPart} without global transform list
+     *
+     * @param model the special model
+     * @param parts map of all parts to their transforms
+     * @param transforms part-specific transforms for the given part
+     */
+    public static void createTransformListForPart(SpecialModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, MatrixTransformation... transforms)
+    {
+        createTransformListForPart(model, parts, Lists.newArrayList(), transforms);
+    }
+
+    /**
+     * Version of {@link EntityRaytracer#createTransformListForPart(Item, HashMap, List, MatrixTransformation[]) createTransformListForPart} without global transform list
      * 
      * @param part the rendered item part
      * @param parts map of all parts to their transforms
@@ -753,8 +758,8 @@ public class EntityRaytracer
         createTransformListForPart(part, parts, Lists.newArrayList(), transforms);
     }
 
-    public static void createTransformListForPart(Models model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
-                                                 @Nullable Function<RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
+    public static void createTransformListForPart(SpecialModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
+                                                  @Nullable Function<RayTraceResultRotated, Hand> continuousInteraction, MatrixTransformation... transforms)
     {
         List<MatrixTransformation> transformsAll = Lists.newArrayList();
         transformsAll.addAll(transformsGlobal);
@@ -770,7 +775,7 @@ public class EntityRaytracer
      * @param transformsGlobal transforms that apply to all parts for this entity
      * @param transforms part-specific transforms for the given part
      */
-    public static void createTransformListForPart(Models model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, MatrixTransformation... transforms)
+    public static void createTransformListForPart(SpecialModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, MatrixTransformation... transforms)
     {
         createTransformListForPart(model, parts, transformsGlobal, null, transforms);
     }
@@ -780,7 +785,7 @@ public class EntityRaytracer
      * of each rendered item part for each raytraceable entity class, and finds the nearest superclass in common between those classes.
      * <p>
      * 
-     * <strong>Note:</strong> this must be called on the client during the {@link net.minecraftforge.fml.common.event.FMLInitializationEvent init} phase.
+     * <strong>Note:</strong> this must be called on the client during the {@link net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent} phase.
      */
     public static void init()
     {
@@ -790,34 +795,15 @@ public class EntityRaytracer
         registerEntitiesDynamic();
         registerEntitiesStatic();
 
-        for (Class raytraceClass : entityRaytraceTriangles.keySet())
+        for (EntityType<? extends IEntityRaytraceable> entityType : entityRaytraceTriangles.keySet())
         {
-            // Find nearest common superclass
-            if (entityRaytraceSuperclass != null)
-            {
-                Class<?> nearestSuperclass = raytraceClass;
-                while (!nearestSuperclass.isAssignableFrom(entityRaytraceSuperclass))
-                {
-                    nearestSuperclass = nearestSuperclass.getSuperclass();
-                    if (nearestSuperclass == Entity.class)
-                    {
-                        break;
-                    }
-                }
-                entityRaytraceSuperclass = (Class<? extends Entity>) nearestSuperclass;
-            }
-            else
-            {
-                entityRaytraceSuperclass = raytraceClass;
-            }
-
             // Calculate scale and offset for rendering the entity in a crate
             float min = 0;
             float max = 0;
             float[] data;
             float x, y, z;
-            Entity entity = EntityList.newEntity(raytraceClass, Minecraft.getMinecraft().world);
-            for (Entry<RayTracePart, TriangleRayTraceList> entry : entityRaytraceTriangles.get(raytraceClass).entrySet())
+            Entity entity = entityType.create(Minecraft.getInstance().world);
+            for (Entry<RayTracePart, TriangleRayTraceList> entry : entityRaytraceTriangles.get(entityType).entrySet())
             {
                 for (TriangleRayTrace triangle : entity == null ? entry.getValue().getTriangles() : entry.getValue().getTriangles(entry.getKey(), entity))
                 {
@@ -837,7 +823,7 @@ public class EntityRaytracer
                 }
             }
             float range = max - min;
-            entityCrateScalesAndOffsets.put(raytraceClass, new ImmutablePair<>(1 / (range * 1.25F), -(min + range * 0.5F)));
+            entityCrateScalesAndOffsets.put(entityType, new ImmutablePair<>(1 / (range * 1.25F), -(min + range * 0.5F)));
         }
         initialized = true;
     }
@@ -845,10 +831,10 @@ public class EntityRaytracer
     /**
      * Create static triangles for raytraceable entity
      * 
-     * @param raytraceClass class of entity
+     * @param entityType the entity type
      * @param transforms matrix transforms for each part
      */
-    private static void registerEntityStatic(Class<? extends IEntityRaytraceable> raytraceClass, Map<RayTracePart, List<MatrixTransformation>> transforms)
+    private static <T extends VehicleEntity & IEntityRaytraceable> void registerEntityStatic(EntityType<T> entityType, Map<RayTracePart, List<MatrixTransformation>> transforms)
     {
         Map<RayTracePart, TriangleRayTraceList> partTriangles = Maps.newHashMap();
         for (Entry<RayTracePart, List<MatrixTransformation>> entryPart : transforms.entrySet())
@@ -856,8 +842,8 @@ public class EntityRaytracer
             RayTracePart part = entryPart.getKey();
 
             // Generate part-specific matrix
-            Matrix4d matrix = new Matrix4d();
-            matrix.setIdentity();
+            Matrix4f matrix = new Matrix4f();
+            matrix.func_226591_a_();
             for (MatrixTransformation tranform : entryPart.getValue())
                 tranform.transform(matrix);
 
@@ -865,33 +851,34 @@ public class EntityRaytracer
 
             partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part), matrix)));
         }
-        entityRaytraceTrianglesStatic.put(raytraceClass, partTriangles);
-        HashMap partTrianglesCopy = new HashMap<>(partTriangles);
-        Map<RayTracePart, TriangleRayTraceList> partTrianglesAll = entityRaytraceTriangles.get(raytraceClass);
+        entityRaytraceTrianglesStatic.put(entityType, partTriangles);
+        HashMap<RayTracePart, TriangleRayTraceList> partTrianglesCopy = new HashMap<>(partTriangles);
+        Map<RayTracePart, TriangleRayTraceList> partTrianglesAll = entityRaytraceTriangles.get(entityType);
         if (partTrianglesAll != null)
+        {
             partTrianglesCopy.putAll(partTrianglesAll);
-
-        entityRaytraceTriangles.put(raytraceClass, partTrianglesCopy);
+        }
+        entityRaytraceTriangles.put(entityType, partTrianglesCopy);
     }
 
     /**
      * Create dynamic triangles for raytraceable entity
      * 
-     * @param raytraceClass class of entity
+     * @param entityType the entity type
      * @param matrixFactories functions for dynamic triangles that take the part and the raytraced
      * entity as arguments and output that part's dynamically generated transformation matrix
      */
     @SuppressWarnings("unused")
-    private static void registerEntityDynamic(Class<? extends IEntityRaytraceable> raytraceClass, Map<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>> matrixFactories)
+    private static <T extends VehicleEntity & IEntityRaytraceable> void registerEntityDynamic(EntityType<T> entityType, Map<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4f>> matrixFactories)
     {
         Map<RayTracePart, TriangleRayTraceList> partTriangles = Maps.newHashMap();
-        for (Entry<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4d>> entryPart : matrixFactories.entrySet())
+        for (Entry<RayTracePart, BiFunction<RayTracePart, Entity, Matrix4f>> entryPart : matrixFactories.entrySet())
         {
             RayTracePart part = entryPart.getKey();
             partTriangles.put(part, new TriangleRayTraceList(generateTriangles(getModel(part), null), entryPart.getValue()));
         }
-        entityRaytraceTrianglesDynamic.put(raytraceClass, partTriangles);
-        entityRaytraceTriangles.put(raytraceClass, partTriangles);
+        entityRaytraceTrianglesDynamic.put(entityType, partTriangles);
+        entityRaytraceTriangles.put(entityType, partTriangles);
     }
 
     /**
@@ -920,7 +907,7 @@ public class EntityRaytracer
         {
             return part.model.getModel();
         }
-        return Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(part.partStack, null, Minecraft.getMinecraft().player);
+        return Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(part.partStack, null, Minecraft.getInstance().player);
     }
 
     /**
@@ -931,16 +918,19 @@ public class EntityRaytracer
      * 
      * @return list of all triangles
      */
-    private static List<TriangleRayTrace> generateTriangles(IBakedModel model, @Nullable Matrix4d matrix)
+    private static List<TriangleRayTrace> generateTriangles(IBakedModel model, @Nullable Matrix4f matrix)
     {
         List<TriangleRayTrace> triangles = Lists.newArrayList();
         try
         {
+            Random random = new Random();
+            random.setSeed(42L);
             // Generate triangles for all faceless and faced quads
-            generateTriangles(model.getQuads(null, null, 0L), matrix, triangles);
-            for (EnumFacing facing : EnumFacing.values())
+            generateTriangles(model.getQuads(null, null, random), matrix, triangles);
+            for (Direction facing : Direction.values())
             {
-                generateTriangles(model.getQuads(null, facing, 0L), matrix, triangles);
+                random.setSeed(42L);
+                generateTriangles(model.getQuads(null, facing, random), matrix, triangles);
             }
         }
         catch (Exception ignored) {}
@@ -954,7 +944,7 @@ public class EntityRaytracer
      * @param matrix part-specific matrix mirroring the static GL operations performed on that part during rendering - should be null for dynamic triangles
      * @param triangles list of all triangles for the given raytraceable entity class
      */
-    private static void generateTriangles(List<BakedQuad> list, @Nullable Matrix4d matrix, List<TriangleRayTrace> triangles)
+    private static void generateTriangles(List<BakedQuad> list, @Nullable Matrix4f matrix, List<TriangleRayTrace> triangles)
     {
         for(BakedQuad quad : list)
         {
@@ -996,7 +986,7 @@ public class EntityRaytracer
      * @param matrix part-specific matrix mirroring the static GL operations performed on that part during rendering - should be null for dynamic triangles
      * @param triangles list of all triangles for the given raytraceable entity class
      */
-    private static void transformTriangleAndAdd(float[] triangle, @Nullable Matrix4d matrix, List<TriangleRayTrace> triangles)
+    private static void transformTriangleAndAdd(float[] triangle, @Nullable Matrix4f matrix, List<TriangleRayTrace> triangles)
     {
         triangles.add(new TriangleRayTrace(matrix != null ? getTransformedTriangle(triangle, matrix) : triangle));
     }
@@ -1009,16 +999,16 @@ public class EntityRaytracer
      * 
      * @return new transformed triangle
      */
-    private static float[] getTransformedTriangle(float[] triangle, Matrix4d matrix)
+    private static float[] getTransformedTriangle(float[] triangle, Matrix4f matrix)
     {
         float[] triangleNew = new float[9];
         for (int i = 0; i < 9; i += 3)
         {
-            Vector4d vec = new Vector4d(triangle[i], triangle[i + 1], triangle[i + 2], 1);
-            matrix.transform(vec);
-            triangleNew[i] = (float) vec.x;
-            triangleNew[i + 1] = (float) vec.y;
-            triangleNew[i + 2] = (float) vec.z;
+            Vector4f vec = new Vector4f(triangle[i], triangle[i + 1], triangle[i + 2], 1);
+            vec.func_229372_a_(matrix);
+            triangleNew[i] = vec.getX();
+            triangleNew[i + 1] = vec.getY();
+            triangleNew[i + 2] = vec.getZ();
         }
         return triangleNew;
     }
@@ -1028,9 +1018,9 @@ public class EntityRaytracer
      * 
      * @param matrix part-specific matrix mirroring the GL operation performed on that part during rendering
      */
-    public static void finalizePartStackMatrix(Matrix4d matrix)
+    public static void finalizePartStackMatrix(Matrix4f matrix)
     {
-        MatrixTransformation.createTranslation(-0.5, -0.5, -0.5).transform(matrix);
+        MatrixTransformation.createTranslation(-0.5F, -0.5F, -0.5F).transform(matrix);
     }
 
     /**
@@ -1039,7 +1029,8 @@ public class EntityRaytracer
     public static class MatrixTransformation
     {
         private final MatrixTransformationType type;
-        private double x, y, z, angle;
+        private float x, y, z;
+        private float angle;
 
         /**
          * Three matrix transformations that correspond to the three supported GL operations that might be performed on a rendered item part
@@ -1049,7 +1040,7 @@ public class EntityRaytracer
             TRANSLATION, ROTATION, SCALE
         }
 
-        public MatrixTransformation(MatrixTransformationType type, double x, double y, double z)
+        public MatrixTransformation(MatrixTransformationType type, float x, float y, float z)
         {
             this.type = type;
             this.x = x;
@@ -1057,53 +1048,53 @@ public class EntityRaytracer
             this.z = z;
         }
 
-        public MatrixTransformation(MatrixTransformationType type, double x, double y, double z, double angle)
+        public MatrixTransformation(MatrixTransformationType type, float x, float y, float z, float angle)
         {
             this(type, x, y, z);
             this.angle = angle;
         }
 
-        public static MatrixTransformation createTranslation(double x, double y, double z)
+        public static MatrixTransformation createTranslation(float x, float y, float z)
         {
             return new MatrixTransformation(MatrixTransformationType.TRANSLATION, x, y, z);
         }
 
-        public static MatrixTransformation createRotation(double angle, double x, double y, double z)
+        public static MatrixTransformation createRotation(Vector3f axis, float angle)
         {
-            return new MatrixTransformation(MatrixTransformationType.ROTATION, x, y, z, angle);
+            return new MatrixTransformation(MatrixTransformationType.ROTATION, axis.getX(), axis.getY(), axis.getZ(), angle);
         }
 
-        public static MatrixTransformation createScale(double x, double y, double z)
+        public static MatrixTransformation createScale(float x, float y, float z)
         {
             return new MatrixTransformation(MatrixTransformationType.SCALE, x, y, z);
         }
 
-        public static MatrixTransformation createScale(double xyz)
+        public static MatrixTransformation createScale(float xyz)
         {
             return new MatrixTransformation(MatrixTransformationType.SCALE, xyz, xyz, xyz);
         }
 
         /**
          * Applies the matrix transformation that this class represents to the passed matrix
-         * 
+         *
          * @param matrix matrix to apply this transformation to
          */
-        public void transform(Matrix4d matrix)
+        public void transform(Matrix4f matrix)
         {
-            Matrix4d temp = new Matrix4d();
-            switch (type)
+            Matrix4f temp = new Matrix4f();
+            switch(type)
             {
-                case ROTATION:      temp.set(new AxisAngle4d(x, y, z, (float) Math.toRadians(angle)));
-                                    break;
-                case TRANSLATION:   temp.set(new Vector3d(x, y, z));
-                                    break;
-                case SCALE:         Vector3d scaleVec = new Vector3d(x, y, z);
-                                    temp.setIdentity();
-                                    temp.m00 = scaleVec.x;
-                                    temp.m11 = scaleVec.y;
-                                    temp.m22 = scaleVec.z;
+                case ROTATION:
+                    temp.func_226596_a_(new Vector3f(this.x, this.y, this.z).func_229187_a_(this.angle)); //TODO Check if this works
+                    break;
+                case TRANSLATION:
+                    temp.setTranslation(this.x, this.y, this.z); //TODO test this
+                    break;
+                case SCALE:
+                    temp = Matrix4f.func_226593_a_(this.x, this.y, this.z); //TODO test this
+                    break;
             }
-            matrix.mul(temp);
+            matrix.func_226595_a_(temp);
         }
     }
 
@@ -1113,10 +1104,10 @@ public class EntityRaytracer
      * @param entity raytraceable entity
      * @param result the result of the raytrace
      */
-    public static void interactWithEntity(IEntityRaytraceable entity, RayTraceResult result)
+    public static void interactWithEntity(IEntityRaytraceable entity, EntityRayTraceResult result)
     {
-        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, EnumHand.MAIN_HAND);
-        Minecraft.getMinecraft().playerController.interactWithEntity(Minecraft.getMinecraft().player, (Entity) entity, result, EnumHand.MAIN_HAND);
+        Minecraft.getInstance().playerController.interactWithEntity(Minecraft.getInstance().player, (Entity) entity, Hand.MAIN_HAND);
+        Minecraft.getInstance().playerController.interactWithEntity(Minecraft.getInstance().player, (Entity) entity, result, Hand.MAIN_HAND);
     }
 
     /**
@@ -1125,19 +1116,19 @@ public class EntityRaytracer
      * @param event tick event
      */
     @SubscribeEvent
-    public static void raytraceEntitiesContinuously(ClientTickEvent event)
+    public static void raytraceEntitiesContinuously(TickEvent.ClientTickEvent event)
     {
-        if (event.phase != Phase.START)
+        if (event.phase != TickEvent.Phase.START)
             return;
 
-        if ((!initialized || VehicleConfig.CLIENT.debug.reloadRaytracerEachTick) && Minecraft.getMinecraft().world != null)
+        if ((!initialized || Config.CLIENT.reloadRayTracerEachTick.get()) && Minecraft.getInstance().world != null)
             init();
 
-        if (continuousInteraction == null || Minecraft.getMinecraft().player == null)
+        if (continuousInteraction == null || Minecraft.getInstance().player == null)
             return;
 
         RayTraceResultRotated result = raytraceEntities(continuousInteraction.isRightClick());
-        if (result == null || result.entityHit != continuousInteraction.entityHit || result.getPartHit() != continuousInteraction.getPartHit())
+        if (result == null || result.getEntity() != continuousInteraction.getEntity() || result.getPartHit() != continuousInteraction.getPartHit())
         {
             continuousInteraction = null;
             continuousInteractionTickCounter = 0;
@@ -1162,13 +1153,15 @@ public class EntityRaytracer
      * @param event mouse event
      */
     @SubscribeEvent
-    public static void onMouseEvent(MouseEvent event)
+    public static void onMouseEvent(InputEvent.RawMouseEvent event)
     {
         // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
-        boolean rightClick = Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100 == event.getButton();
-        if ((!rightClick && (!VehicleConfig.CLIENT.interaction.enabledLeftClick
-                || Minecraft.getMinecraft().gameSettings.keyBindAttack.getKeyCode() + 100 != event.getButton()))
-                || !event.isButtonstate())
+        //boolean rightClick = Minecraft.getInstance().gameSettings.keyBindUseItem.getKeyCode() + 100 == event.getButton();
+        boolean rightClick = event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+        boolean leftClick = event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+        if ((!rightClick && (!Config.CLIENT.enabledLeftClick.get()
+                || !leftClick))
+                || event.getAction() == GLFW.GLFW_RELEASE)
         {
             return;
         }
@@ -1181,9 +1174,6 @@ public class EntityRaytracer
 
     public static boolean performRayTrace(boolean rightClick)
     {
-        if(entityRaytraceSuperclass == null)
-            return false;
-
         RayTraceResultRotated result = raytraceEntities(rightClick);
         if (result != null)
         {
@@ -1207,20 +1197,21 @@ public class EntityRaytracer
      * @return the result of the raytrace - returns null, if it fails
      */
     @Nullable
+    //@SuppressWarnings("SuspiciousMethodCalls")
     private static RayTraceResultRotated raytraceEntities(boolean rightClick)
     {
-        float reach = Minecraft.getMinecraft().playerController.getBlockReachDistance();
-        Vec3d eyeVec = Minecraft.getMinecraft().player.getPositionEyes(1);
-        Vec3d forwardVec = eyeVec.add(Minecraft.getMinecraft().player.getLook(1).scale(reach));
+        float reach = Minecraft.getInstance().playerController.getBlockReachDistance();
+        Vec3d eyeVec = Minecraft.getInstance().player.getEyePosition(1.0F);
+        Vec3d forwardVec = eyeVec.add(Minecraft.getInstance().player.getLook(1.0F).scale(reach));
         AxisAlignedBB box = new AxisAlignedBB(eyeVec, eyeVec).grow(reach);
         RayTraceResultRotated lookObject = null;
         double distanceShortest = Double.MAX_VALUE;
         // Perform raytrace on all raytraceable entities within reach of the player
         RayTraceResultRotated lookObjectPutative;
         double distance;
-        for (Entity entity : Minecraft.getMinecraft().world.getEntitiesWithinAABB(entityRaytraceSuperclass, box))
+        for (Entity entity : Minecraft.getInstance().world.getEntitiesWithinAABB((EntityType<?>) null, box, entity -> entity instanceof IEntityRaytraceable))
         {
-            if (entityRaytraceTrianglesDynamic.keySet().contains(entity.getClass()) || entityRaytraceTrianglesStatic.keySet().contains(entity.getClass()))
+            if (entityRaytraceTrianglesDynamic.containsKey(entity.getType()) || entityRaytraceTrianglesStatic.containsKey(entity.getType()))
             {
                 lookObjectPutative = rayTraceEntityRotated((IEntityRaytraceable) entity, eyeVec, forwardVec, reach, rightClick);
                 if (lookObjectPutative != null)
@@ -1240,40 +1231,41 @@ public class EntityRaytracer
             if (eyeDistance <= reach)
             {
                 Vec3d hit = forwardVec;
-                RayTraceResult lookObjectMC = Minecraft.getMinecraft().objectMouseOver;
+                RayTraceResult result = Minecraft.getInstance().objectMouseOver;
                 // If the hit entity is a raytraceable entity, and if the player's eyes are inside what MC
                 // thinks the player is looking at, then process the hit regardless of what MC thinks
-                boolean bypass = entityRaytraceTrianglesStatic.keySet().contains(lookObject.entityHit.getClass());
-                if (bypass && lookObjectMC != null && lookObjectMC.typeOfHit != Type.MISS)
+                boolean bypass = entityRaytraceTrianglesStatic.keySet().contains(lookObject.getEntity().getType());
+                if (bypass && result != null && result.getType() != Type.MISS)
                 {
-                    AxisAlignedBB boxMC;
-                    if (lookObjectMC.typeOfHit == Type.ENTITY)
+                    AxisAlignedBB boxMC = null;
+                    if (result.getType() == Type.ENTITY)
                     {
-                        boxMC = lookObjectMC.entityHit.getEntityBoundingBox();
+                        boxMC = lookObject.getEntity().getBoundingBox();
                     }
-                    else
+                    else if(result.getType() == Type.BLOCK)
                     {
-                        boxMC = lookObject.entityHit.world.getBlockState(lookObjectMC.getBlockPos()).getBoundingBox(lookObject.entityHit.world, lookObjectMC.getBlockPos());
+                        BlockPos pos = ((BlockRayTraceResult)result).getPos();
+                        boxMC = lookObject.getEntity().world.getBlockState(pos).getShape(lookObject.getEntity().world, pos).getBoundingBox();
                     }
                     bypass = boxMC != null && boxMC.contains(eyeVec);
                 }
 
-                if (!bypass && lookObjectMC != null && lookObjectMC.typeOfHit != Type.MISS)
+                if (!bypass && result != null && result.getType() != Type.MISS)
                 {
                     // Set hit to what MC thinks the player is looking at if the player is not looking at the hit entity
-                    if (lookObjectMC.typeOfHit == Type.ENTITY && lookObjectMC.entityHit == lookObject.entityHit)
+                    if (result.getType() == Type.ENTITY && ((EntityRayTraceResult) result).getEntity() == lookObject.getEntity())
                     {
                         bypass = true;
                     }
                     else
                     {
-                        hit = lookObjectMC.hitVec;
+                        hit = result.getHitVec();
                     }
                 }
                 // If not bypassed, process the hit only if it is closer to the player's eyes than what MC thinks the player is looking
                 if (bypass || eyeDistance < hit.distanceTo(eyeVec))
                 {
-                    if (((IEntityRaytraceable) lookObject.entityHit).processHit(lookObject, rightClick))
+                    if (((IEntityRaytraceable) lookObject.getEntity()).processHit(lookObject, rightClick))
                     {
                         return lookObject;
                     }
@@ -1427,34 +1419,38 @@ public class EntityRaytracer
      * </ul>
      * 
      * @param entity raytraced entity
-     * @param x entity's x position
-     * @param y entity's y position
-     * @param z entity's z position
+     * @param matrixStack the matrix stack of the entity
      * @param yaw entity's rotation yaw
      */
-    public static void renderRaytraceElements(IEntityRaytraceable entity, double x, double y, double z, float yaw)
+    public static <T extends VehicleEntity & IEntityRaytraceable> void renderRaytraceElements(T entity, MatrixStack matrixStack, float yaw)
     {
-        if (VehicleConfig.CLIENT.debug.renderOutlines)
+        if(Config.CLIENT.renderOutlines.get())
         {
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(x, y, z);
-                GlStateManager.rotate(-yaw, 0, 1, 0);
-                GlStateManager.enableBlend();
-                GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                GlStateManager.glLineWidth(2.0F);
-                GlStateManager.disableTexture2D();
-                GlStateManager.disableLighting();
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
-                renderRaytraceTriangles(entity, tessellator, buffer, entityRaytraceTrianglesStatic);
-                renderRaytraceTriangles(entity, tessellator, buffer, entityRaytraceTrianglesDynamic);
-                entity.drawInteractionBoxes(tessellator, buffer);
-                GlStateManager.enableLighting();
-                GlStateManager.enableTexture2D();
-                GlStateManager.disableBlend();
-            }
-            GlStateManager.popMatrix();
+            matrixStack.func_227860_a_();
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-yaw));
+
+            RenderSystem.pushMatrix();
+            RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
+
+            RenderSystem.enableBlend();
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.lineWidth(2.0F);
+            RenderSystem.disableTexture();
+            RenderSystem.disableLighting();
+
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder buffer = tessellator.getBuffer();
+            renderRaytraceTriangles(entity, tessellator, buffer, entityRaytraceTrianglesStatic);
+            renderRaytraceTriangles(entity, tessellator, buffer, entityRaytraceTrianglesDynamic);
+            entity.drawInteractionBoxes(tessellator, buffer);
+
+            RenderSystem.enableLighting();
+            RenderSystem.enableTexture();
+            RenderSystem.disableBlend();
+
+            RenderSystem.popMatrix();
+
+            matrixStack.func_227865_b_();
         }
     }
 
@@ -1466,10 +1462,10 @@ public class EntityRaytracer
      * @param buffer tessellator's vertex buffer
      * @param entityTriangles map containing the triangles for the given ray traceable entity
      */
-    private static void renderRaytraceTriangles(IEntityRaytraceable entity, Tessellator tessellator, BufferBuilder buffer,
-            Map<Class<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityTriangles)
+    private static <T extends VehicleEntity & IEntityRaytraceable> void renderRaytraceTriangles(T entity, Tessellator tessellator, BufferBuilder buffer,
+            Map<EntityType<? extends IEntityRaytraceable>, Map<RayTracePart, TriangleRayTraceList>> entityTriangles)
     {
-        Map<RayTracePart, TriangleRayTraceList> map = entityTriangles.get(entity.getClass());
+        Map<RayTracePart, TriangleRayTraceList> map = entityTriangles.get(entity.getType());
         if (map != null)
         {
             List<RayTracePart> partsNonApplicable = entity.getNonApplicableParts();
@@ -1477,7 +1473,7 @@ public class EntityRaytracer
             {
                 if (partsNonApplicable == null || !partsNonApplicable.contains(entry.getKey()))
                 {
-                    for (TriangleRayTrace triangle : entry.getValue().getTriangles(entry.getKey(), (Entity) entity))
+                    for (TriangleRayTrace triangle : entry.getValue().getTriangles(entry.getKey(), entity))
                     {
                         triangle.draw(tessellator, buffer, 1, 0, 0, 0.4F);
                     }
@@ -1495,7 +1491,7 @@ public class EntityRaytracer
      * 
      * @return triangle list
      */
-    public static TriangleRayTraceList boxToTriangles(AxisAlignedBB box, @Nullable BiFunction<RayTracePart, Entity, Matrix4d> matrixFactory)
+    public static TriangleRayTraceList boxToTriangles(AxisAlignedBB box, @Nullable BiFunction<RayTracePart, Entity, Matrix4f> matrixFactory)
     {
         List<TriangleRayTrace> triangles = Lists.newArrayList();
         getTranglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, box.minX, box.minY, box.minZ);
@@ -1576,9 +1572,9 @@ public class EntityRaytracer
         public void draw(Tessellator tessellator, BufferBuilder buffer, float red, float green, float blue, float alpha)
         {
             buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-            buffer.pos(data[6], data[7], data[8]).color(red, green, blue, alpha).endVertex();
-            buffer.pos(data[0], data[1], data[2]).color(red, green, blue, alpha).endVertex();
-            buffer.pos(data[3], data[4], data[5]).color(red, green, blue, alpha).endVertex();
+            buffer.func_225582_a_(data[6], data[7], data[8]).func_227885_a_(red, green, blue, alpha).endVertex();
+            buffer.func_225582_a_(data[0], data[1], data[2]).func_227885_a_(red, green, blue, alpha).endVertex();
+            buffer.func_225582_a_(data[3], data[4], data[5]).func_227885_a_(red, green, blue, alpha).endVertex();
             tessellator.draw();
         }
     }
@@ -1589,7 +1585,7 @@ public class EntityRaytracer
     public static class TriangleRayTraceList
     {
         private final List<TriangleRayTrace> triangles;
-        private final BiFunction<RayTracePart, Entity, Matrix4d> matrixFactory;
+        private final BiFunction<RayTracePart, Entity, Matrix4f> matrixFactory;
 
         /**
          * Constructor for static triangles
@@ -1608,7 +1604,7 @@ public class EntityRaytracer
          * @param matrixFactory function for dynamic triangles that takes the part and the raytraced
          * entity as arguments and outputs that part's dynamically generated transformation matrix
          */
-        public TriangleRayTraceList(List<TriangleRayTrace> triangles, @Nullable BiFunction<RayTracePart, Entity, Matrix4d> matrixFactory)
+        public TriangleRayTraceList(List<TriangleRayTrace> triangles, @Nullable BiFunction<RayTracePart, Entity, Matrix4f> matrixFactory)
         {
             this.triangles = triangles;
             this.matrixFactory = matrixFactory;
@@ -1625,7 +1621,7 @@ public class EntityRaytracer
             if (matrixFactory != null)
             {
                 List<TriangleRayTrace> triangles = Lists.newArrayList();
-                Matrix4d matrix = matrixFactory.apply(part, entity);
+                Matrix4f matrix = matrixFactory.apply(part, entity);
                 for (TriangleRayTrace triangle : this.triangles)
                 {
                     triangles.add(new TriangleRayTrace(getTransformedTriangle(triangle.getData(), matrix)));
@@ -1757,7 +1753,7 @@ public class EntityRaytracer
     {
         private final ItemStack partStack;
         private final AxisAlignedBB partBox;
-        private final Models model;
+        private final SpecialModel model;
         private final Function<RayTraceResultRotated, R> continuousInteraction;
 
         public RayTracePart(ItemStack partStack, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
@@ -1770,7 +1766,7 @@ public class EntityRaytracer
             this(ItemStack.EMPTY, partBox, null, continuousInteraction);
         }
 
-        public RayTracePart(Models model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
+        public RayTracePart(SpecialModel model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this(ItemStack.EMPTY, null, model, continuousInteraction);
         }
@@ -1780,7 +1776,7 @@ public class EntityRaytracer
             this(ItemStack.EMPTY, partBox, null, null);
         }
 
-        private RayTracePart(ItemStack partStack, @Nullable AxisAlignedBB partBox, @Nullable Models model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
+        private RayTracePart(ItemStack partStack, @Nullable AxisAlignedBB partBox, @Nullable SpecialModel model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this.partStack = partStack;
             this.partBox = partBox;
@@ -1800,7 +1796,7 @@ public class EntityRaytracer
         }
 
         @Nullable
-        public Models getModel()
+        public SpecialModel getModel()
         {
             return model;
         }
@@ -1814,7 +1810,7 @@ public class EntityRaytracer
     /**
      * The result of a rotated raytrace
      */
-    public static class RayTraceResultRotated extends RayTraceResult
+    public static class RayTraceResultRotated extends EntityRayTraceResult
     {
         private final RayTracePart partHit;
         private final double distanceToEyes;
@@ -1875,36 +1871,33 @@ public class EntityRaytracer
          * 
          * @return whether or not the click that initiated the hit should be canceled
          */
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         default boolean processHit(RayTraceResultRotated result, boolean rightClick)
         {
-            ItemStack stack = result.getPartHit().getStack();
-            if(!stack.isEmpty())
+            if(result.getPartHit().getModel() == SpecialModel.KEY_HOLE)
             {
-                if(stack.getItem() == ModItems.KEY_HOLE)
-                {
-                    PacketHandler.INSTANCE.sendToServer(new MessageInteractKey((Entity) this));
-                    return true;
-                }
+                PacketHandler.instance.sendToServer(new MessageInteractKey((Entity) this));
+                return true;
             }
 
+            Minecraft mc = Minecraft.getInstance();
             boolean isContinuous = result.partHit.getContinuousInteraction() != null;
-            if(isContinuous || !(Minecraft.getMinecraft().objectMouseOver != null && Minecraft.getMinecraft().objectMouseOver.entityHit == this))
+            if(isContinuous || !(mc.objectMouseOver != null && mc.objectMouseOver.getType() == Type.ENTITY && ((EntityRayTraceResult)mc.objectMouseOver).getEntity() == this))
             {
-                EntityPlayer player = Minecraft.getMinecraft().player;
+                PlayerEntity player = mc.player;
                 boolean notRiding = player.getRidingEntity() != this;
                 if(!rightClick && notRiding)
                 {
-                    Minecraft.getMinecraft().playerController.attackEntity(player, (Entity) this);
+                    mc.playerController.attackEntity(player, (Entity) this);
                     return true;
                 }
-                if(!stack.isEmpty() || result.getPartHit().model != null)
+                if(result.getPartHit().model != null)
                 {
                     if(notRiding)
                     {
-                        if(player.isSneaking() && !player.isSpectator())
+                        if(player.isCrouching() && !player.isSpectator())
                         {
-                            PacketHandler.INSTANCE.sendToServer(new MessagePickupVehicle((Entity) this));
+                            PacketHandler.instance.sendToServer(new MessagePickupVehicle((Entity) this));
                             return true;
                         }
                         if(!isContinuous) interactWithEntity(this, result);
@@ -1920,7 +1913,7 @@ public class EntityRaytracer
          * 
          * @return box to triangle map
          */
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         default Map<RayTracePart, TriangleRayTraceList> getStaticInteractionBoxMap()
         {
             return Maps.newHashMap();
@@ -1931,7 +1924,7 @@ public class EntityRaytracer
          * 
          * @return box to triangle map
          */
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         default Map<RayTracePart, TriangleRayTraceList> getDynamicInteractionBoxMap()
         {
             return Maps.newHashMap();
@@ -1943,7 +1936,7 @@ public class EntityRaytracer
          * @return box list - if null, all box are assumed to be applicable
          */
         @Nullable
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         default List<RayTracePart> getApplicableInteractionBoxes()
         {
             return null;
@@ -1955,7 +1948,7 @@ public class EntityRaytracer
          * @return part list - if null, all parts are assumed to be applicable
          */
         @Nullable
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         default List<RayTracePart> getNonApplicableParts()
         {
             return null;
@@ -1967,7 +1960,7 @@ public class EntityRaytracer
          * @param tessellator rendered plane tiler
          * @param buffer tessellator's vertex buffer
          */
-        @SideOnly(Side.CLIENT)
+        @OnlyIn(Dist.CLIENT)
         default void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer) {}
     }
 }

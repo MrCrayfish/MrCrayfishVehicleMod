@@ -1,83 +1,96 @@
 package com.mrcrayfish.vehicle.recipe;
 
-import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
-import net.minecraft.inventory.InventoryCrafting;
+import com.mrcrayfish.vehicle.init.ModRecipes;
+import com.mrcrayfish.vehicle.item.SprayCanItem;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 /**
  * Author: MrCrayfish
  */
-public class RecipeRefillSprayCan extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeRefillSprayCan extends SpecialRecipe
 {
-    public RecipeRefillSprayCan()
+    public RecipeRefillSprayCan(ResourceLocation id)
     {
-        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "refill_spray_can"));
+        super(id);
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(CraftingInventory inventory, World worldIn)
     {
-        ItemStack foundSprayCan = ItemStack.EMPTY;
-        ItemStack foundEmptySprayCan = ItemStack.EMPTY;
+        ItemStack sprayCan = ItemStack.EMPTY;
+        ItemStack emptySprayCan = ItemStack.EMPTY;
 
-        for (int i = 0; i < inv.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getSizeInventory(); i++)
         {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (!stack.isEmpty())
+            ItemStack stack = inventory.getStackInSlot(i);
+            if(!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemSprayCan)
+                if(stack.getItem() instanceof SprayCanItem)
                 {
-                    if(ItemSprayCan.createTagCompound(stack).hasKey("color"))
+                    if(((SprayCanItem) stack.getItem()).hasColor(stack))
                     {
-                        if (!foundSprayCan.isEmpty())
+                        if(!sprayCan.isEmpty())
                         {
                             return false;
                         }
-                        foundSprayCan = stack;
+                        sprayCan = stack.copy();
                     }
                     else
                     {
-                        if (!foundEmptySprayCan.isEmpty())
+                        if(!emptySprayCan.isEmpty())
                         {
                             return false;
                         }
-                        foundEmptySprayCan = stack;
+                        emptySprayCan = stack.copy();
                     }
                 }
             }
         }
-        return !foundSprayCan.isEmpty() && !foundEmptySprayCan.isEmpty();
+        return !sprayCan.isEmpty() && !emptySprayCan.isEmpty();
     }
 
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv)
+    public ItemStack getCraftingResult(CraftingInventory inventory)
     {
-        ItemStack foundSprayCan = ItemStack.EMPTY;
-        for (int i = 0; i < inv.getSizeInventory(); ++i)
+        ItemStack sprayCan = ItemStack.EMPTY;
+        ItemStack emptySprayCan = ItemStack.EMPTY;
+
+        for(int i = 0; i < inventory.getSizeInventory(); i++)
         {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (!stack.isEmpty())
+            ItemStack stack = inventory.getStackInSlot(i);
+            if(!stack.isEmpty())
             {
-                if (stack.getItem() instanceof ItemSprayCan)
+                if(stack.getItem() instanceof SprayCanItem)
                 {
-                    if(ItemSprayCan.createTagCompound(stack).hasKey("color"))
+                    if(((SprayCanItem) stack.getItem()).hasColor(stack))
                     {
-                        foundSprayCan = stack;
+                        if(!sprayCan.isEmpty())
+                        {
+                            return ItemStack.EMPTY;
+                        }
+                        sprayCan = stack.copy();
+                    }
+                    else
+                    {
+                        if(!emptySprayCan.isEmpty())
+                        {
+                            return ItemStack.EMPTY;
+                        }
+                        emptySprayCan = stack.copy();
                     }
                 }
             }
         }
 
-        if(!foundSprayCan.isEmpty())
+        if(!sprayCan.isEmpty() && !emptySprayCan.isEmpty())
         {
-            ItemStack copy = foundSprayCan.copy();
-            NBTTagCompound tagCompound = ItemSprayCan.createTagCompound(copy);
-            tagCompound.setInteger("remainingSprays", ItemSprayCan.MAX_SPRAYS);
+            ItemStack copy = sprayCan.copy();
+            ((SprayCanItem) copy.getItem()).refill(copy);
             return copy;
         }
 
@@ -100,5 +113,11 @@ public class RecipeRefillSprayCan extends net.minecraftforge.registries.IForgeRe
     public boolean isDynamic()
     {
         return true;
+    }
+
+    @Override
+    public IRecipeSerializer<?> getSerializer()
+    {
+        return ModRecipes.REFILL_SPRAY_CAN;
     }
 }

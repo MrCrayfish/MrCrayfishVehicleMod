@@ -1,14 +1,14 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageDrift implements IMessage, IMessageHandler<MessageDrift, IMessage>
+import java.util.function.Supplier;
+
+public class MessageDrift implements IMessage<MessageDrift>
 {
 	private boolean drifting;
 
@@ -20,28 +20,32 @@ public class MessageDrift implements IMessage, IMessageHandler<MessageDrift, IMe
 	}
 
 	@Override
-	public void toBytes(ByteBuf buf)
+	public void encode(MessageDrift message, PacketBuffer buffer)
 	{
-		buf.writeBoolean(drifting);
+		buffer.writeBoolean(message.drifting);
 	}
 
 	@Override
-	public void fromBytes(ByteBuf buf)
+	public MessageDrift decode(PacketBuffer buffer)
 	{
-		this.drifting = buf.readBoolean();
+		return new MessageDrift(buffer.readBoolean());
 	}
 
 	@Override
-	public IMessage onMessage(MessageDrift message, MessageContext ctx)
+	public void handle(MessageDrift message, Supplier<NetworkEvent.Context> supplier)
 	{
-	    FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            Entity riding = ctx.getServerHandler().player.getRidingEntity();
-            if(riding instanceof EntityLandVehicle)
-            {
-                ((EntityLandVehicle) riding).setDrifting(message.drifting);
-            }
-        });
-		return null;
+		supplier.get().enqueueWork(() ->
+		{
+			ServerPlayerEntity player = supplier.get().getSender();
+			if(player != null)
+			{
+				Entity riding = player.getRidingEntity();
+				if(riding instanceof LandVehicleEntity)
+				{
+					((LandVehicleEntity) riding).setDrifting(message.drifting);
+				}
+			}
+		});
+		supplier.get().setPacketHandled(true);
 	}
 }

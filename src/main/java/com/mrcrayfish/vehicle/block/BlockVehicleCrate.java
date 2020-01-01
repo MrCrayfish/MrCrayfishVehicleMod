@@ -7,10 +7,9 @@ import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
-import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
-import com.mrcrayfish.vehicle.util.BlockNames;
+import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
@@ -58,7 +57,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     public BlockVehicleCrate()
     {
-        super(Material.IRON, MapColor.SILVER, BlockNames.VEHICLE_CRATE);
+        super(Material.IRON, MapColor.SILVER, Names.Block.VEHICLE_CRATE);
         this.setHardness(1.5F);
         this.setResistance(5.0F);
         this.setCreativeTab(VehicleMod.CREATIVE_TAB);
@@ -73,7 +72,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     private boolean canOpen(World world, BlockPos pos)
     {
         BlockPos pos2;
-        for (EnumFacing side : EnumFacing.HORIZONTALS)
+        for (Direction side : Direction.HORIZONTALS)
         {
             pos2 = pos.offset(side);
             if (!world.getCollisionBoxes(null, Block.FULL_BLOCK_AABB.offset(pos2)).isEmpty() || !isBelowBlockTopSolid(world, pos2))
@@ -84,16 +83,16 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     private boolean isBelowBlockTopSolid(World world, BlockPos pos)
     {
-        return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), EnumFacing.UP);
+        return world.getBlockState(pos.down()).isSideSolid(world, pos.down(), Direction.UP);
     }
 
     @Override
     public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
     {
         TileEntity tileEntity = source.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityVehicleCrate)
+        if(tileEntity instanceof VehicleCrateTileEntity)
         {
-            if(((TileEntityVehicleCrate) tileEntity).isOpened())
+            if(((VehicleCrateTileEntity) tileEntity).isOpened())
             {
                 return PANEL;
             }
@@ -105,9 +104,9 @@ public class BlockVehicleCrate extends BlockRotatedObject
     public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
     {
         TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityVehicleCrate)
+        if(tileEntity instanceof VehicleCrateTileEntity)
         {
-            if(((TileEntityVehicleCrate) tileEntity).isOpened())
+            if(((VehicleCrateTileEntity) tileEntity).isOpened())
             {
                 Block.addCollisionBoxToList(pos, entityBox, collidingBoxes, PANEL);
                 return;
@@ -117,9 +116,9 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, Direction facing, float hitX, float hitY, float hitZ)
     {
-        if(facing == EnumFacing.UP && playerIn.getHeldItem(hand).getItem() == ModItems.WRENCH)
+        if(facing == Direction.UP && playerIn.getHeldItem(hand).getItem() == ModItems.WRENCH)
             openCrate(world, pos, state, playerIn);
 
         return true;
@@ -135,12 +134,12 @@ public class BlockVehicleCrate extends BlockRotatedObject
     private void openCrate(World world, BlockPos pos, IBlockState state, EntityLivingBase placer)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
-        if(tileEntity instanceof TileEntityVehicleCrate && canOpen(world, pos))
+        if(tileEntity instanceof VehicleCrateTileEntity && canOpen(world, pos))
         {
             if (world.isRemote)
                 spawnCrateOpeningParticles(world, pos, state);
             else
-                ((TileEntityVehicleCrate) tileEntity).open(placer.getUniqueID());
+                ((VehicleCrateTileEntity) tileEntity).open(placer.getUniqueID());
         }
     }
 
@@ -172,7 +171,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public TileEntity createTileEntity(World world, IBlockState state)
     {
-        return new TileEntityVehicleCrate();
+        return new VehicleCrateTileEntity();
     }
 
     @Override
@@ -277,7 +276,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
         if(!world.isRemote && !player.capabilities.isCreativeMode)
         {
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof TileEntityVehicleCrate)
+            if(tileEntity instanceof VehicleCrateTileEntity)
             {
                 ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
 

@@ -1,67 +1,56 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.Hand;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageFuelVehicle extends MessageVehicleInteract implements IMessageHandler<MessageFuelVehicle, IMessage>
+import java.util.function.Supplier;
+
+public class MessageFuelVehicle implements IMessage<MessageFuelVehicle>
 {
-    private EnumHand hand;
+    protected int entityId;
+    private Hand hand;
 
-    public MessageFuelVehicle() {}
-
-    public MessageFuelVehicle(EntityPlayer player, EnumHand hand, Entity targetEntity)
+    public MessageFuelVehicle()
     {
-        super(targetEntity);
+    }
+
+    public MessageFuelVehicle(int entityId, Hand hand)
+    {
+        this.entityId = entityId;
         this.hand = hand;
-        fuelVehicle(player, hand, targetEntity);
-    }
-
-    private void fuelVehicle(EntityPlayer player, EnumHand hand, Entity targetEntity)
-    {
-        if (targetEntity instanceof EntityPoweredVehicle)
-        {
-            ((EntityPoweredVehicle) targetEntity).fuelVehicle(player, hand);
-        }
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessageFuelVehicle message, PacketBuffer buffer)
     {
-        super.toBytes(buf);
-        buf.writeInt(hand.ordinal());
+        buffer.writeInt(message.entityId);
+        buffer.writeEnumValue(message.hand);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessageFuelVehicle decode(PacketBuffer buffer)
     {
-        super.fromBytes(buf);
-        hand = EnumHand.values()[buf.readInt()];
+        return new MessageFuelVehicle(buffer.readInt(), buffer.readEnumValue(Hand.class));
     }
 
     @Override
-    public IMessage onMessage(MessageFuelVehicle message, MessageContext ctx)
+    public void handle(MessageFuelVehicle message, Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
-        {
-            EntityPlayer player = ctx.getServerHandler().player;
-            MinecraftServer server = player.world.getMinecraftServer();
-            if(server != null)
+        supplier.get().enqueueWork(() -> {
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null)
             {
-                Entity targetEntity = server.getEntityFromUuid(message.targetEntityID);
-                if (targetEntity != null)
+                Entity targetEntity = player.world.getEntityByID(message.entityId);
+                if(targetEntity instanceof PoweredVehicleEntity)
                 {
-                    fuelVehicle(player, message.hand, targetEntity);
+                    ((PoweredVehicleEntity) targetEntity).fuelVehicle(player, message.hand);
                 }
             }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

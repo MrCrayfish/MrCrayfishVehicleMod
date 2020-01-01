@@ -1,22 +1,30 @@
 package com.mrcrayfish.vehicle.common.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
+import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public interface IStorage extends ISidedInventory
+public interface IStorage extends IInventory, INamedContainerProvider
 {
     StorageInventory getInventory();
 
-    @Override
-    default int[] getSlotsForFace(EnumFacing side)
+    /*@Override
+    default int[] getSlotsForFace(Direction side)
     {
-        int[] slots = new int[getInventory().getSizeInventory()];
-        for(int i = 0; i < getInventory().getSizeInventory(); i++)
+        int[] slots = new int[this.getInventory().getSizeInventory()];
+        for(int i = 0; i < this.getInventory().getSizeInventory(); i++)
         {
             slots[i] = i;
         }
@@ -24,105 +32,87 @@ public interface IStorage extends ISidedInventory
     }
 
     @Override
-    default boolean canInsertItem(int index, ItemStack itemStackIn, EnumFacing direction)
+    default boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction)
     {
         return this.isItemValidForSlot(index, itemStackIn);
     }
 
     @Override
-    default boolean canExtractItem(int index, ItemStack stack, EnumFacing direction)
+    default boolean canExtractItem(int index, ItemStack stack, Direction direction)
     {
         return true;
     }
-
+*/
     @Override
     default int getSizeInventory()
     {
-        return getInventory().getSizeInventory();
+        return this.getInventory().getSizeInventory();
     }
 
     @Override
     default boolean isEmpty()
     {
-        return getInventory().isEmpty();
+        return this.getInventory().isEmpty();
     }
 
     @Override
     default ItemStack getStackInSlot(int index)
     {
-        return getInventory().getStackInSlot(index);
+        return this.getInventory().getStackInSlot(index);
     }
 
     @Override
     default ItemStack decrStackSize(int index, int count)
     {
-        return getInventory().decrStackSize(index, count);
+        return this.getInventory().decrStackSize(index, count);
     }
 
     @Override
     default ItemStack removeStackFromSlot(int index)
     {
-        return getInventory().removeStackFromSlot(index);
+        return this.getInventory().removeStackFromSlot(index);
     }
 
     @Override
     default void setInventorySlotContents(int index, ItemStack stack)
     {
-        getInventory().setInventorySlotContents(index, stack);
+        this.getInventory().setInventorySlotContents(index, stack);
     }
 
     @Override
     default int getInventoryStackLimit()
     {
-        return getInventory().getInventoryStackLimit();
+        return this.getInventory().getInventoryStackLimit();
     }
 
     @Override
     default void markDirty()
     {
-        getInventory().markDirty();
+        this.getInventory().markDirty();
     }
 
     @Override
-    default boolean isUsableByPlayer(EntityPlayer player)
+    default boolean isUsableByPlayer(PlayerEntity player)
     {
-        return getInventory().isUsableByPlayer(player);
+        return this.getInventory().isUsableByPlayer(player);
     }
 
     @Override
-    default void openInventory(EntityPlayer player)
+    default void openInventory(PlayerEntity player)
     {
-        getInventory().openInventory(player);
+        this.getInventory().openInventory(player);
     }
 
     @Override
-    default void closeInventory(EntityPlayer player)
+    default void closeInventory(PlayerEntity player)
     {
-        getInventory().openInventory(player);
+        this.getInventory().openInventory(player);
     }
 
     @Override
     default boolean isItemValidForSlot(int index, ItemStack stack)
     {
         return getInventory().isItemValidForSlot(index, stack);
-    }
-
-    @Override
-    default int getField(int id)
-    {
-        return getInventory().getField(id);
-    }
-
-    @Override
-    default void setField(int id, int value)
-    {
-        getInventory().setField(id, value);
-    }
-
-    @Override
-    default int getFieldCount()
-    {
-        return getInventory().getFieldCount();
     }
 
     @Override
@@ -134,5 +124,12 @@ public interface IStorage extends ISidedInventory
     default boolean isStorageItem(ItemStack stack)
     {
         return true;
+    }
+
+    @Nullable
+    @Override
+    default Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
+    {
+        return new StorageContainer(i, playerInventory, this.getInventory(), playerEntity);
     }
 }

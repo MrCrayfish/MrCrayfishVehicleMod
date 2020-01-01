@@ -1,16 +1,15 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import io.netty.buffer.ByteBuf;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageStorageWindow implements IMessage, IMessageHandler<MessageStorageWindow, IMessage>
+public class MessageStorageWindow implements IMessage<MessageStorageWindow>
 {
     private int windowId;
     private int entityId;
@@ -24,23 +23,22 @@ public class MessageStorageWindow implements IMessage, IMessageHandler<MessageSt
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessageStorageWindow message, PacketBuffer buffer)
     {
-        buf.writeInt(windowId);
-        buf.writeInt(entityId);
+        buffer.writeInt(message.windowId);
+        buffer.writeInt(message.entityId);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessageStorageWindow decode(PacketBuffer buffer)
     {
-        windowId = buf.readInt();
-        entityId = buf.readInt();
+        return new MessageStorageWindow(buffer.readInt(), buffer.readInt());
     }
 
     @Override
-    public IMessage onMessage(MessageStorageWindow message, MessageContext ctx)
+    public void handle(MessageStorageWindow message, Supplier<NetworkEvent.Context> supplier)
     {
-        Minecraft.getMinecraft().addScheduledTask(() -> VehicleMod.proxy.openStorageWindow(message.entityId, message.windowId));
-        return null;
+        supplier.get().enqueueWork(() -> VehicleMod.PROXY.openStorageWindow(message.entityId, message.windowId));
+        supplier.get().setPacketHandled(true);
     }
 }

@@ -1,25 +1,23 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
-import io.netty.buffer.ByteBuf;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
  */
-public class MessageAttachChest implements IMessage, IMessageHandler<MessageAttachChest, IMessage>
+public class MessageAttachChest implements IMessage<MessageAttachChest>
 {
     private int entityId;
 
@@ -31,43 +29,46 @@ public class MessageAttachChest implements IMessage, IMessageHandler<MessageAtta
     }
 
     @Override
-    public void toBytes(ByteBuf buf)
+    public void encode(MessageAttachChest message, PacketBuffer buffer)
     {
-        buf.writeInt(this.entityId);
+        buffer.writeInt(message.entityId);
     }
 
     @Override
-    public void fromBytes(ByteBuf buf)
+    public MessageAttachChest decode(PacketBuffer buffer)
     {
-        this.entityId = buf.readInt();
+        return new MessageAttachChest(buffer.readInt());
     }
 
     @Override
-    public IMessage onMessage(MessageAttachChest message, MessageContext ctx)
+    public void handle(MessageAttachChest message, Supplier<NetworkEvent.Context> supplier)
     {
-        FMLCommonHandler.instance().getWorldThread(ctx.netHandler).addScheduledTask(() ->
+        supplier.get().enqueueWork(() ->
         {
-            EntityPlayerMP player = ctx.getServerHandler().player;
-            World world = player.world;
-            Entity targetEntity = world.getEntityByID(message.entityId);
-            if(targetEntity != null && targetEntity instanceof IAttachableChest)
+            ServerPlayerEntity player = supplier.get().getSender();
+            if(player != null)
             {
-                float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
-                if(player.getDistance(targetEntity) < reachDistance)
+                World world = player.world;
+                Entity targetEntity = world.getEntityByID(message.entityId);
+                if(targetEntity instanceof IAttachableChest)
                 {
-                    IAttachableChest attachableChest = (IAttachableChest) targetEntity;
-                    if(!attachableChest.hasChest())
+                    float reachDistance = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+                    if(player.getDistance(targetEntity) < reachDistance)
                     {
-                        ItemStack stack = player.inventory.getCurrentItem();
-                        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+                        IAttachableChest attachableChest = (IAttachableChest) targetEntity;
+                        if(!attachableChest.hasChest())
                         {
-                            attachableChest.attachChest(stack);
-                            world.playSound(null, targetEntity.posX, targetEntity.posY, targetEntity.posZ, SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            ItemStack stack = player.inventory.getCurrentItem();
+                            if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
+                            {
+                                attachableChest.attachChest(stack);
+                                world.playSound(null, targetEntity.func_226277_ct_(), targetEntity.func_226278_cu_(), targetEntity.func_226281_cx_(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            }
                         }
                     }
                 }
             }
         });
-        return null;
+        supplier.get().setPacketHandled(true);
     }
 }

@@ -1,14 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.Models;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
-import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelChest;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Calendar;
@@ -16,9 +12,9 @@ import java.util.Calendar;
 /**
  * Author: MrCrayfish
  */
-public class RenderStorageTrailer extends AbstractRenderTrailer<EntityStorageTrailer>
+public class RenderStorageTrailer extends AbstractRenderTrailer<StorageTrailerEntity>
 {
-    private static final ModelChest MOPED_CHEST = new ModelChest();
+    //private static final ModelChest MOPED_CHEST = new ModelChest();
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
     private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
     private final boolean isChristmas;
@@ -30,14 +26,20 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<EntityStorageTra
     }
 
     @Override
-    public void render(EntityStorageTrailer entity, float partialTicks)
+    public SpecialModel getBodyModel()
     {
-        this.renderDamagedPart(entity, entity.body, Models.CHEST_TRAILER.getModel());
-        this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
-        this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        return SpecialModel.STORAGE_TRAILER;
+    }
 
-        //Render chest
-        GlStateManager.pushMatrix();
+    @Override
+    public void render(StorageTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    {
+        this.renderDamagedPart(entity, SpecialModel.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+
+        /*//Render chest
+        GlStateManager.pushMatrix(); //TODO add this back once I create a model class for chest
         {
             GlStateManager.translate(0.0, 0.0625, 0.0);
             GlStateManager.rotate(180F, 0, 1, 0);
@@ -56,8 +58,6 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<EntityStorageTra
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             MOPED_CHEST.renderAll();
         }
-        GlStateManager.popMatrix();
-
-
+        GlStateManager.popMatrix();*/
     }
 }

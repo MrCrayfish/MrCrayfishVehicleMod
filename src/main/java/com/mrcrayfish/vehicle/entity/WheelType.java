@@ -46,7 +46,7 @@ public enum WheelType
         return snowMultiplier;
     }
 
-    public void applyPhysics(EntityPoweredVehicle vehicle) {}
+    public void applyPhysics(PoweredVehicleEntity vehicle) {}
 
     public static WheelType getType(int index)
     {

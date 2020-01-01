@@ -1,9 +1,12 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
-import io.netty.buffer.ByteBuf;
+import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.IPacket;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -23,8 +26,7 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
 
     public EntityJack(World worldIn)
     {
-        super(worldIn);
-        this.setSize(0F, 0F);
+        super(ModEntities.JACK, worldIn);
         this.setNoGravity(true);
         this.noClip = true;
     }
@@ -40,40 +42,46 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
     }
 
     @Override
-    public void onEntityUpdate()
+    protected void registerData()
     {
-        super.onEntityUpdate();
+
+    }
+
+    @Override
+    public void tick()
+    {
+        super.tick();
 
         if(!world.isRemote && this.getPassengers().size() == 0)
         {
-            this.setDead();
+            this.remove();
         }
 
-        if(isDead)
+        if(!this.isAlive())
             return;
 
-        if(!activated && this.getPassengers().size() > 0)
+        if(!this.activated && this.getPassengers().size() > 0)
         {
-            activated = true;
+            this.activated = true;
         }
 
-        if(activated)
+        if(this.activated)
         {
-            if(liftProgress < 10)
+            if(this.liftProgress < 10)
             {
-                liftProgress++;
+                this.liftProgress++;
             }
         }
-        else if(liftProgress > 0)
+        else if(this.liftProgress > 0)
         {
-            liftProgress--;
+            this.liftProgress--;
         }
 
-        TileEntity tileEntity = world.getTileEntity(new BlockPos(initialX, initialY, initialZ));
-        if(tileEntity instanceof TileEntityJack)
+        TileEntity tileEntity = this.world.getTileEntity(new BlockPos(this.initialX, this.initialY, this.initialZ));
+        if(tileEntity instanceof JackTileEntity)
         {
-            TileEntityJack tileEntityJack = (TileEntityJack) tileEntity;
-            this.setPosition(initialX, initialY + 0.5 * (tileEntityJack.liftProgress / (double) TileEntityJack.MAX_LIFT_PROGRESS), initialZ);
+            JackTileEntity jackTileEntity = (JackTileEntity) tileEntity;
+            this.setPosition(this.initialX, this.initialY + 0.5 * (jackTileEntity.liftProgress / (double) JackTileEntity.MAX_LIFT_PROGRESS), this.initialZ);
         }
     }
 
@@ -83,68 +91,68 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         super.addPassenger(passenger);
         if(this.getPassengers().contains(passenger))
         {
-            passenger.prevPosX = posX;
-            passenger.prevPosY = posY;
-            passenger.prevPosZ = posZ;
-            passenger.lastTickPosX = posX;
-            passenger.lastTickPosY = posY;
-            passenger.lastTickPosZ = posZ;
+            passenger.prevPosX = this.func_226277_ct_();
+            passenger.prevPosY = this.func_226278_cu_();
+            passenger.prevPosZ = this.func_226281_cx_();
+            passenger.lastTickPosX = this.func_226277_ct_();
+            passenger.lastTickPosY = this.func_226278_cu_();
+            passenger.lastTickPosZ = this.func_226281_cx_();
         }
+    }
+
+    @Override
+    public IPacket<?> createSpawnPacket()
+    {
+        return new SSpawnObjectPacket(this);
     }
 
     @Override
     public void updatePassenger(Entity passenger)
     {
-        if(passenger instanceof EntityVehicle)
+        if(passenger instanceof VehicleEntity)
         {
-            EntityVehicle vehicle = (EntityVehicle) passenger;
+            VehicleEntity vehicle = (VehicleEntity) passenger;
             Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
-            vehicle.setPosition(posX - heldOffset.z * 0.0625, posY - heldOffset.y * 0.0625 - 2 * 0.0625, posZ - heldOffset.x * 0.0625);
+            vehicle.setPosition(this.func_226277_ct_() - heldOffset.z * 0.0625, this.func_226278_cu_() - heldOffset.y * 0.0625 - 2 * 0.0625, this.func_226281_cx_() - heldOffset.x * 0.0625);
         }
     }
 
     @Override
-    protected void entityInit()
+    protected void readAdditional(CompoundNBT compound)
     {
-
+        this.initialX = compound.getDouble("initialX");
+        this.initialY = compound.getDouble("initialY");
+        this.initialZ = compound.getDouble("initialZ");
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound compound)
+    protected void writeAdditional(CompoundNBT compound)
     {
-        initialX = compound.getDouble("initialX");
-        initialY = compound.getDouble("initialY");
-        initialZ = compound.getDouble("initialZ");
+        compound.putDouble("initialX", this.initialX);
+        compound.putDouble("initialY", this.initialY);
+        compound.putDouble("initialZ", this.initialZ);
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound compound)
+    public void writeSpawnData(PacketBuffer buffer)
     {
-        compound.setDouble("initialX", initialX);
-        compound.setDouble("initialY", initialY);
-        compound.setDouble("initialZ", initialZ);
+        buffer.writeDouble(this.initialX);
+        buffer.writeDouble(this.initialY);
+        buffer.writeDouble(this.initialZ);
     }
 
     @Override
-    public void writeSpawnData(ByteBuf buffer)
+    public void readSpawnData(PacketBuffer buffer)
     {
-        buffer.writeDouble(initialX);
-        buffer.writeDouble(initialY);
-        buffer.writeDouble(initialZ);
-    }
-
-    @Override
-    public void readSpawnData(ByteBuf additionalData)
-    {
-        initialX = additionalData.readDouble();
-        initialY = additionalData.readDouble();
-        initialZ = additionalData.readDouble();
-        this.setLocationAndAngles(initialX, initialY, initialZ, rotationYaw, rotationPitch);
-        prevPosX = initialX;
-        prevPosY = initialY;
-        prevPosZ = initialZ;
-        lastTickPosX = initialX;
-        lastTickPosY = initialY;
-        lastTickPosZ = initialZ;
+        this.initialX = buffer.readDouble();
+        this.initialY = buffer.readDouble();
+        this.initialZ = buffer.readDouble();
+        this.setLocationAndAngles(this.initialX, this.initialY, this.initialZ, this.rotationYaw, this.rotationPitch);
+        this.prevPosX = this.initialX;
+        this.prevPosY = this.initialY;
+        this.prevPosZ = this.initialZ;
+        this.lastTickPosX = this.initialX;
+        this.lastTickPosY = this.initialY;
+        this.lastTickPosZ = this.initialZ;
     }
 }

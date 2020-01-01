@@ -6,6 +6,7 @@ import com.mrcrayfish.controllable.client.Action;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -14,7 +15,12 @@ import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,7 +31,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-@SideOnly(Side.CLIENT)
+@OnlyIn(Dist.CLIENT)
 public class ControllerEvents
 {
     @SubscribeEvent
@@ -33,31 +39,31 @@ public class ControllerEvents
     {
         if(event.getState())
         {
-            EntityPlayer player = Minecraft.getMinecraft().player;
+            PlayerEntity player = Minecraft.getInstance().player;
             if(player == null)
                 return;
 
             switch(event.getButton())
             {
                 case Buttons.A:
-                    if(player.getRidingEntity() instanceof EntityPoweredVehicle)
+                    if(player.getRidingEntity() instanceof PoweredVehicleEntity)
                     {
                         event.setCanceled(true);
                     }
                     break;
                 case Buttons.X:
-                    if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
+                    if(Minecraft.getInstance().currentScreen == null && player.getRidingEntity() instanceof VehicleEntity)
                     {
-                        EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+                        VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
                         if(vehicle.canTowTrailer())
                         {
-                            PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                            PacketHandler.instance.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
                         }
                         event.setCanceled(true);
                     }
                     break;
                 case Buttons.SELECT:
-                    if(player.getRidingEntity() instanceof EntityVehicle)
+                    if(player.getRidingEntity() instanceof VehicleEntity)
                     {
                         player.rotationYaw = player.getRidingEntity().rotationYaw;
                         player.rotationPitch = 15F;
@@ -66,14 +72,14 @@ public class ControllerEvents
                     break;
                 case Buttons.RIGHT_BUMPER:
                 case Buttons.LEFT_BUMPER:
-                    if(player.getRidingEntity() instanceof EntityVehicle)
+                    if(player.getRidingEntity() instanceof VehicleEntity)
                     {
                         event.setCanceled(true);
                     }
                     break;
                 case Buttons.RIGHT_TRIGGER:
                 case Buttons.LEFT_TRIGGER:
-                    if(VehicleConfig.CLIENT.controller.useTriggers && player.getRidingEntity() instanceof EntityVehicle)
+                    if(Config.CLIENT.useTriggers.get() && player.getRidingEntity() instanceof VehicleEntity)
                     {
                         event.setCanceled(true);
                     }
@@ -87,8 +93,8 @@ public class ControllerEvents
     @SubscribeEvent
     public void onControllerMove(ControllerEvent.Move event)
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player.getRidingEntity() instanceof EntityVehicle)
+        PlayerEntity player = Minecraft.getInstance().player;
+        if(player.getRidingEntity() instanceof VehicleEntity)
         {
             event.setCanceled(true);
         }
@@ -98,9 +104,9 @@ public class ControllerEvents
     public void onAvailableActions(AvailableActionsEvent event)
     {
         Map<Integer, Action> availableActions = event.getActions();
-        Minecraft mc = Minecraft.getMinecraft();
-        EntityPlayer player = mc.player;
-        if(player.getRidingEntity() instanceof EntityVehicle && mc.currentScreen == null)
+        Minecraft mc = Minecraft.getInstance();
+        PlayerEntity player = mc.player;
+        if(player.getRidingEntity() instanceof VehicleEntity && mc.currentScreen == null)
         {
             availableActions.remove(Buttons.RIGHT_BUMPER);
             availableActions.remove(Buttons.LEFT_BUMPER);
@@ -112,7 +118,7 @@ public class ControllerEvents
 
             availableActions.put(Buttons.LEFT_THUMB_STICK, new Action("Exit Vehicle", Action.Side.LEFT));
 
-            if(VehicleConfig.CLIENT.controller.useTriggers)
+            if(Config.CLIENT.useTriggers.get())
             {
                 availableActions.put(Buttons.RIGHT_TRIGGER, new Action("Accelerate", Action.Side.RIGHT));
             }
@@ -121,12 +127,12 @@ public class ControllerEvents
                 availableActions.put(Buttons.A, new Action("Accelerate", Action.Side.RIGHT));
             }
 
-            EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+            VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
 
-            if(vehicle instanceof EntityPoweredVehicle)
+            if(vehicle instanceof PoweredVehicleEntity)
             {
-                int button = VehicleConfig.CLIENT.controller.useTriggers ? Buttons.LEFT_TRIGGER : Buttons.B;
-                if(((EntityPoweredVehicle) vehicle).getSpeed() > 0.05F)
+                int button = Config.CLIENT.useTriggers.get() ? Buttons.LEFT_TRIGGER : Buttons.B;
+                if(((PoweredVehicleEntity) vehicle).getSpeed() > 0.05F)
                 {
                     availableActions.put(button, new Action("Brake", Action.Side.RIGHT));
                 }
@@ -136,16 +142,16 @@ public class ControllerEvents
                 }
             }
 
-            if(vehicle instanceof EntityLandVehicle)
+            if(vehicle instanceof LandVehicleEntity)
             {
                 availableActions.put(Buttons.RIGHT_BUMPER, new Action("Drift", Action.Side.RIGHT));
             }
-            else if(vehicle instanceof EntityPlane)
+            else if(vehicle instanceof PlaneEntity)
             {
                 availableActions.put(Buttons.RIGHT_BUMPER, new Action("Pull Up", Action.Side.RIGHT));
                 availableActions.put(Buttons.LEFT_BUMPER, new Action("Pull Down", Action.Side.RIGHT));
             }
-            else if(vehicle instanceof EntityHelicopter)
+            else if(vehicle instanceof HelicopterEntity)
             {
                 availableActions.put(Buttons.RIGHT_BUMPER, new Action("Increase Elevation", Action.Side.RIGHT));
                 availableActions.put(Buttons.LEFT_BUMPER, new Action("Decreased Elevation", Action.Side.RIGHT));
@@ -153,12 +159,12 @@ public class ControllerEvents
         }
         else
         {
-            if(!player.isRiding())
+            if(player.getRidingEntity() == null)
             {
-                if(mc.objectMouseOver != null && mc.objectMouseOver.typeOfHit == RayTraceResult.Type.ENTITY)
+                if(mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.ENTITY)
                 {
-                    Entity entity = mc.objectMouseOver.entityHit;
-                    if(entity instanceof EntityVehicle)
+                    Entity entity = ((EntityRayTraceResult) mc.objectMouseOver).getEntity();
+                    if(entity instanceof VehicleEntity)
                     {
                         availableActions.put(Buttons.LEFT_TRIGGER, new Action("Ride Vehicle", Action.Side.RIGHT));
                     }
@@ -170,8 +176,8 @@ public class ControllerEvents
     @SubscribeEvent
     public void onRenderPlayerPreview(RenderPlayerPreviewEvent event)
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player.getRidingEntity() instanceof EntityVehicle)
+        PlayerEntity player = Minecraft.getInstance().player;
+        if(player.getRidingEntity() instanceof VehicleEntity)
         {
             event.setCanceled(true);
         }

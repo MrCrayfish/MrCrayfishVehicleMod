@@ -1,49 +1,51 @@
 package com.mrcrayfish.vehicle.recipe;
 
 import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.init.ModRecipes;
 import com.mrcrayfish.vehicle.item.IDyeable;
-import net.minecraft.inventory.InventoryCrafting;
+import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.NonNullList;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
-public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe
+public class RecipeColorSprayCan extends SpecialRecipe
 {
-    public RecipeColorSprayCan()
+    public RecipeColorSprayCan(ResourceLocation id)
     {
-        this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "color_spray_can"));
+        super(id);
     }
 
     @Override
-    public boolean matches(InventoryCrafting inv, World worldIn)
+    public boolean matches(CraftingInventory inventory, World worldIn)
     {
         ItemStack dyeableItem = ItemStack.EMPTY;
         List<ItemStack> dyes = Lists.newArrayList();
 
-        for (int i = 0; i < inv.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getSizeInventory(); ++i)
         {
-            ItemStack stack = inv.getStackInSlot(i);
-            if (!stack.isEmpty())
+            ItemStack stack = inventory.getStackInSlot(i);
+            if(!stack.isEmpty())
             {
-                if (stack.getItem() instanceof IDyeable)
+                if(stack.getItem() instanceof IDyeable)
                 {
-                    if (!dyeableItem.isEmpty())
+                    if(!dyeableItem.isEmpty())
                     {
                         return false;
                     }
-                    dyeableItem = stack;
+                    dyeableItem = stack.copy();
                 }
                 else
                 {
-                    if (!net.minecraftforge.oredict.DyeUtils.isDye(stack))
+                    if(!stack.getItem().isIn(Tags.Items.DYES))
                     {
                         return false;
                     }
@@ -56,81 +58,36 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
     }
 
     @Override
-    public ItemStack getCraftingResult(InventoryCrafting inv)
+    public ItemStack getCraftingResult(CraftingInventory inventory)
     {
         ItemStack dyeableItem = ItemStack.EMPTY;
-        IDyeable dyeable = null;
-        int[] combinedValues = new int[3];
-        int combinedColor = 0;
-        int colorCount = 0;
+        List<DyeItem> dyes = Lists.newArrayList();
 
-        for (int k = 0; k < inv.getSizeInventory(); ++k)
+        for(int i = 0; i < inventory.getSizeInventory(); ++i)
         {
-            ItemStack stack = inv.getStackInSlot(k);
-            if (!stack.isEmpty())
+            ItemStack stack = inventory.getStackInSlot(i);
+            if(!stack.isEmpty())
             {
-                if (stack.getItem() instanceof IDyeable)
+                if(stack.getItem() instanceof IDyeable)
                 {
-                    dyeable = (IDyeable) stack.getItem();
-                    if (!dyeableItem.isEmpty())
+                    if(!dyeableItem.isEmpty())
                     {
                         return ItemStack.EMPTY;
                     }
                     dyeableItem = stack.copy();
-                    dyeableItem.setCount(1);
-
-                    if (dyeable.hasColor(stack))
-                    {
-                        int color = dyeable.getColor(dyeableItem);
-                        float red = (float)(color >> 16 & 255) / 255.0F;
-                        float green = (float)(color >> 8 & 255) / 255.0F;
-                        float blue = (float)(color & 255) / 255.0F;
-                        combinedColor = (int)((float)combinedColor + Math.max(red, Math.max(green, blue)) * 255.0F);
-                        combinedValues[0] = (int)((float)combinedValues[0] + red * 255.0F);
-                        combinedValues[1] = (int)((float)combinedValues[1] + green * 255.0F);
-                        combinedValues[2] = (int)((float)combinedValues[2] + blue * 255.0F);
-                        colorCount++;
-                    }
                 }
                 else
                 {
-                    if (!net.minecraftforge.oredict.DyeUtils.isDye(stack))
+                    if(!(stack.getItem() instanceof DyeItem))
                     {
                         return ItemStack.EMPTY;
                     }
-
-                    float[] color = net.minecraftforge.oredict.DyeUtils.colorFromStack(stack).get().getColorComponentValues();
-                    int red = (int)(color[0] * 255.0F);
-                    int green = (int)(color[1] * 255.0F);
-                    int blue = (int)(color[2] * 255.0F);
-                    combinedColor += Math.max(red, Math.max(green, blue));
-                    combinedValues[0] += red;
-                    combinedValues[1] += green;
-                    combinedValues[2] += blue;
-                    colorCount++;
+                    dyes.add((DyeItem) stack.getItem());
                 }
             }
         }
 
-        if (dyeable == null)
-        {
-            return ItemStack.EMPTY;
-        }
-        else
-        {
-            int red = combinedValues[0] / colorCount;
-            int green = combinedValues[1] / colorCount;
-            int blue = combinedValues[2] / colorCount;
-            float averageColor = (float)combinedColor / (float)colorCount;
-            float maxValue = (float)Math.max(red, Math.max(green, blue));
-            red = (int)((float)red * averageColor / maxValue);
-            green = (int)((float)green * averageColor / maxValue);
-            blue = (int)((float)blue * averageColor / maxValue);
-            int finalColor = (red << 8) + green;
-            finalColor = (finalColor << 8) + blue;
-            dyeable.setColor(dyeableItem, finalColor);
-            return dyeableItem;
-        }
+        return !dyeableItem.isEmpty() && !dyes.isEmpty() ? IDyeable.dyeStack(dyeableItem, dyes) : ItemStack.EMPTY;
     }
 
     @Override
@@ -140,26 +97,14 @@ public class RecipeColorSprayCan extends net.minecraftforge.registries.IForgeReg
     }
 
     @Override
-    public ItemStack getRecipeOutput()
-    {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv)
-    {
-        NonNullList<ItemStack> remainingItems = NonNullList.<ItemStack>withSize(inv.getSizeInventory(), ItemStack.EMPTY);
-        for (int i = 0; i < remainingItems.size(); ++i)
-        {
-            ItemStack stack = inv.getStackInSlot(i);
-            remainingItems.set(i, net.minecraftforge.common.ForgeHooks.getContainerItem(stack));
-        }
-        return remainingItems;
-    }
-
-    @Override
     public boolean isDynamic()
     {
         return true;
+    }
+
+    @Override
+    public IRecipeSerializer<?> getSerializer()
+    {
+        return ModRecipes.COLOR_SPRAY_CAN;
     }
 }

@@ -1,14 +1,20 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
@@ -17,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>>
+public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>>
 {
     protected final R renderVehicle;
 
@@ -31,54 +37,37 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
         return renderVehicle;
     }
 
-    public void render(T entity, float partialTicks)
+    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
     {
-        if(entity.isDead)
+        if(!entity.isAlive())
             return;
 
-        GlStateManager.pushMatrix();
+        matrixStack.func_227860_a_();
+
+        VehicleProperties properties = entity.getProperties();
+        PartPosition bodyPosition = properties.getBodyPosition();
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_((float) bodyPosition.getRotX()));
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_((float) bodyPosition.getRotY()));
+        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_((float) bodyPosition.getRotZ()));
+
+        if(entity.canTowTrailer())
         {
-            VehicleProperties properties = entity.getProperties();
-
-            //Apply vehicle rotations and translations. This is applied to all other parts
-            PartPosition bodyPosition = properties.getBodyPosition();
-            GlStateManager.rotate((float) bodyPosition.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) bodyPosition.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) bodyPosition.getRotZ(), 0, 0, 1);
-
-            //Render the tow bar. Performed before scaling so size is consistent for all vehicles
-            if(entity.canTowTrailer())
-            {
-                GlStateManager.pushMatrix();
-                GlStateManager.rotate(180F, 0, 1, 0);
-
-                Vec3d towBarOffset = properties.getTowBarPosition();
-                GlStateManager.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
-                GlStateManager.popMatrix();
-            }
-
-            //Translate the body
-            GlStateManager.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-
-            //Translate the vehicle to match how it is shown in the model creator
-            GlStateManager.translate(0, 0.5, 0);
-
-            //Apply vehicle scale
-            GlStateManager.translate(0, -0.5, 0);
-            GlStateManager.scale(bodyPosition.getScale(), bodyPosition.getScale(), bodyPosition.getScale());
-            GlStateManager.translate(0, 0.5, 0);
-
-            //Translate the vehicle so it's axles are half way into the ground
-            GlStateManager.translate(0, properties.getAxleOffset() * 0.0625F, 0);
-
-            //Translate the vehicle so it's actually riding on it's wheels
-            GlStateManager.translate(0, properties.getWheelOffset() * 0.0625F, 0);
-
-            //Render body
-            renderVehicle.render(entity, partialTicks);
+            matrixStack.func_227860_a_();
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
+            Vec3d towBarOffset = properties.getTowBarPosition();
+            matrixStack.func_227861_a_(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
+            RenderUtil.renderColoredModel(SpecialModel.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+            matrixStack.func_227865_b_();
         }
-        GlStateManager.popMatrix();
+
+        matrixStack.func_227861_a_(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+        matrixStack.func_227862_a_((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
+        matrixStack.func_227861_a_(0.0, 0.5, 0.0);
+        matrixStack.func_227861_a_(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+        matrixStack.func_227861_a_(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+        this.renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks);
+
+        matrixStack.func_227865_b_();
     }
 
     /**
@@ -86,51 +75,47 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
      * @param entity
      * @param partialTicks
      */
-    public void applyPreRotations(T entity, float partialTicks) {}
+    public void applyPreRotations(T entity, MatrixStack stack, float partialTicks) {}
 
     /**
      * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
      * will be cancelled if the PartPosition parameter is null.
      *
      * @param position the render definitions to apply to the part
-     * @param part the part to render onto the vehicle
+     * @param model the part to render onto the vehicle
      */
-    protected void renderPart(@Nullable PartPosition position, ItemStack part)
+    protected void renderPart(@Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
         if(position == null)
             return;
 
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-            GlStateManager.translate(0, -0.5, 0);
-            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
-            GlStateManager.translate(0, 0.5, 0);
-            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        matrixStack.func_227861_a_(0.0, -0.5, 0.0);
+        matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+        matrixStack.func_227861_a_(0.0, 0.5, 0.0);
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_((float) position.getRotX()));
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
+        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, color, lightTexture, overlayTexture);
+        matrixStack.func_227865_b_();
     }
 
-    protected void renderKey(@Nullable PartPosition position, ItemStack part)
+    protected void renderKey(@Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
         if(position == null)
             return;
 
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-            GlStateManager.translate(0, -0.25, 0);
-            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
-            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
-            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
-            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
-            GlStateManager.translate(0, 0, -0.05);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
-        }
-        GlStateManager.popMatrix();
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        matrixStack.func_227861_a_(0.0, -0.25, 0.0);
+        matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_((float) position.getRotX()));
+        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
+        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
+        matrixStack.func_227861_a_(0.0, 0.0, -0.05);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, color, lightTexture, overlayTexture);
+        matrixStack.func_227865_b_();
     }
 
 
@@ -141,13 +126,34 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
      * @param position the render definitions to apply to the part
      * @param part the part to render onto the vehicle
      */
-    protected void renderEngine(EntityPoweredVehicle entity, @Nullable PartPosition position, ItemStack part)
+    protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer)
     {
         if(entity.isFueled() && entity.getControllingPassenger() != null)
         {
-            GlStateManager.rotate(0.5F * (entity.ticksExisted % 2), 1, 0, 1);
-            GlStateManager.rotate(-0.5F * (entity.ticksExisted % 2), 0, 1, 0);
+            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
+            matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
+            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-0.5F * (entity.ticksExisted % 2)));
         }
-        this.renderPart(position, part);
+        this.renderPart(position, model, matrixStack, buffer, -1, 15728880, OverlayTexture.field_229196_a_);
+    }
+
+    protected IBakedModel getWheelModel(PoweredVehicleEntity entity)
+    {
+        ItemStack stack = ItemLookup.getWheel(entity);
+        if(!stack.isEmpty())
+        {
+            return RenderUtil.getModel(stack);
+        }
+        return Minecraft.getInstance().getModelManager().getMissingModel();
+    }
+
+    protected IBakedModel getEngineModel(PoweredVehicleEntity entity)
+    {
+        ItemStack stack = ItemLookup.getEngine(entity);
+        if(!stack.isEmpty())
+        {
+            return RenderUtil.getModel(stack);
+        }
+        return Minecraft.getInstance().getModelManager().getMissingModel();
     }
 }

@@ -1,61 +1,43 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
-import com.mrcrayfish.vehicle.VehicleConfig;
-import com.mrcrayfish.vehicle.block.BlockFluidPipe;
-import com.mrcrayfish.vehicle.block.BlockFluidPump;
-import com.mrcrayfish.vehicle.block.BlockFuelDrum;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CommonEvents;
-import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
-import com.mrcrayfish.vehicle.entity.EntityVehicle;
-import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.item.ItemSprayCan;
+import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderGlobal;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.*;
+import net.minecraft.util.Hand;
+import net.minecraft.util.HandSide;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
-import net.minecraftforge.client.event.DrawBlockHighlightEvent;
-import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.RenderSpecificHandEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.tuple.Pair;
-import org.lwjgl.opengl.GL11;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -76,24 +58,24 @@ public class ClientEvents
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
     {
-        if(VehicleConfig.CLIENT.display.autoPerspective)
+        if(Config.CLIENT.autoPerspective.get())
         {
-            if(FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+            if(event.getWorldObj().isRemote)
             {
-                if(event.getEntityMounting().equals(Minecraft.getMinecraft().player))
+                if(event.getEntityMounting().equals(Minecraft.getInstance().player))
                 {
                     if(event.isMounting())
                     {
                         Entity entity = event.getEntityBeingMounted();
-                        if(entity instanceof EntityVehicle)
+                        if(entity instanceof VehicleEntity)
                         {
-                            originalPerspective = Minecraft.getMinecraft().gameSettings.thirdPersonView;
-                            Minecraft.getMinecraft().gameSettings.thirdPersonView = 1;
+                            originalPerspective = Minecraft.getInstance().gameSettings.thirdPersonView;
+                            Minecraft.getInstance().gameSettings.thirdPersonView = 1;
                         }
                     }
                     else if(originalPerspective != -1)
                     {
-                        Minecraft.getMinecraft().gameSettings.thirdPersonView = originalPerspective;
+                        Minecraft.getInstance().gameSettings.thirdPersonView = originalPerspective;
                         originalPerspective = -1;
                     }
                 }
@@ -104,12 +86,12 @@ public class ClientEvents
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event)
     {
-        if(VehicleConfig.CLIENT.display.autoPerspective)
+        if(Config.CLIENT.autoPerspective.get())
         {
-            Entity entity = Minecraft.getMinecraft().player.getRidingEntity();
-            if(entity instanceof EntityVehicle)
+            Entity entity = Minecraft.getInstance().player.getRidingEntity();
+            if(entity instanceof VehicleEntity)
             {
-                if(Minecraft.getMinecraft().gameSettings.keyBindTogglePerspective.isKeyDown())
+                if(Minecraft.getInstance().gameSettings.keyBindTogglePerspective.isKeyDown())
                 {
                     originalPerspective = -1;
                 }
@@ -120,18 +102,18 @@ public class ClientEvents
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event)
     {
-        if(VehicleConfig.CLIENT.display.enabledSpeedometer && event.phase == TickEvent.Phase.END)
+        if(Config.CLIENT.enabledSpeedometer.get() && event.phase == TickEvent.Phase.END)
         {
-            Minecraft mc = Minecraft.getMinecraft();
-            if(mc.inGameHasFocus)
+            Minecraft mc = Minecraft.getInstance();
+            if(mc.isGameFocused())
             {
-                EntityPlayer player = mc.player;
+                PlayerEntity player = mc.player;
                 if(player != null)
                 {
                     Entity entity = player.getRidingEntity();
-                    if(entity instanceof EntityPoweredVehicle)
+                    if(entity instanceof PoweredVehicleEntity)
                     {
-                        EntityPoweredVehicle vehicle = (EntityPoweredVehicle) entity;
+                        PoweredVehicleEntity vehicle = (PoweredVehicleEntity) entity;
 
                         String speed = new DecimalFormat("0.0").format(vehicle.getKilometersPreHour());
                         mc.fontRenderer.drawStringWithShadow(TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
@@ -151,46 +133,46 @@ public class ClientEvents
     @SubscribeEvent
     public void onFovUpdate(FOVUpdateEvent event)
     {
-        Entity ridingEntity = Minecraft.getMinecraft().player.getRidingEntity();
-        if(ridingEntity instanceof EntityVehicle)
+        Entity ridingEntity = Minecraft.getInstance().player.getRidingEntity();
+        if(ridingEntity instanceof VehicleEntity)
         {
             event.setNewfov(1.0F);
         }
     }
 
     @SubscribeEvent
-    public void onPreRender(ModelPlayerEvent.Render.Pre event)
+    public void onPreRender(PlayerModelEvent.Render.Pre event)
     {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
         Entity ridingEntity = player.getRidingEntity();
-        if(ridingEntity instanceof EntityVehicle)
+        if(ridingEntity instanceof VehicleEntity)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            VehicleEntity vehicle = (VehicleEntity) ridingEntity;
             /* Suppressed due to warning however it's safe to say cast won't throw an exception
              * due to the strict registration process of vehicle renders */
             @SuppressWarnings("unchecked")
-            AbstractRenderVehicle<EntityVehicle> render = (AbstractRenderVehicle<EntityVehicle>) VehicleRenderRegistry.getRender(vehicle.getClass());
+            AbstractRenderVehicle<VehicleEntity> render = (AbstractRenderVehicle<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
             if(render != null)
             {
-                render.applyPlayerRender(vehicle, player, event.getPartialTicks());
+                render.applyPlayerRender(vehicle, player, event.getPartialTicks(), event.getMatrixStack(), event.getBuilder());
             }
         }
     }
 
     @SubscribeEvent
-    public void onSetupAngles(ModelPlayerEvent.SetupAngles.Post event)
+    public void onSetupAngles(PlayerModelEvent.SetupAngles.Post event)
     {
-        EntityPlayer player = event.getEntityPlayer();
+        PlayerEntity player = event.getPlayer();
 
-        if(player.equals(Minecraft.getMinecraft().player) && Minecraft.getMinecraft().gameSettings.thirdPersonView == 0)
+        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
             return;
 
         Entity ridingEntity = player.getRidingEntity();
-        ModelPlayer model = event.getModelPlayer();
+        PlayerModel model = event.getModelPlayer();
 
         if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
         {
-            boolean rightHanded = player.getPrimaryHand() == EnumHandSide.RIGHT;
+            boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
             if(rightHanded)
             {
                 model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
@@ -206,19 +188,19 @@ public class ClientEvents
             return;
         }
 
-        if(!player.isRiding())
+        if(player.getRidingEntity() != null)
         {
-            boolean rightHanded = player.getPrimaryHand() == EnumHandSide.RIGHT;
+            boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
             ItemStack rightItem = rightHanded ? player.getHeldItemMainhand() : player.getHeldItemOffhand();
             ItemStack leftItem = rightHanded ? player.getHeldItemOffhand() : player.getHeldItemMainhand();
-            if(!rightItem.isEmpty() && rightItem.getItem() instanceof ItemSprayCan)
+            if(!rightItem.isEmpty() && rightItem.getItem() instanceof SprayCanItem)
             {
                 copyModelAngles(model.bipedHead, model.bipedRightArm);
                 model.bipedRightArm.rotateAngleX += Math.toRadians(-80F);
             }
-            if(!leftItem.isEmpty() && leftItem.getItem() instanceof ItemSprayCan)
+            if(!leftItem.isEmpty() && leftItem.getItem() instanceof SprayCanItem)
             {
-                ModelBiped.copyModelAngles(model.bipedHead, model.bipedLeftArm);
+                model.bipedLeftArm.copyModelAngles(model.bipedHead);
                 model.bipedLeftArm.rotateAngleX += Math.toRadians(-80F);
             }
         }
@@ -233,13 +215,13 @@ public class ClientEvents
             return;
         }
 
-        if(ridingEntity != null && ridingEntity instanceof EntityVehicle)
+        if(ridingEntity != null && ridingEntity instanceof VehicleEntity)
         {
-            EntityVehicle vehicle = (EntityVehicle) ridingEntity;
+            VehicleEntity vehicle = (VehicleEntity) ridingEntity;
             /* Suppressed due to warning however it's safe to say cast won't throw an exception
              * due to the registration process of vehicle renders */
             @SuppressWarnings("unchecked")
-            AbstractRenderVehicle<EntityVehicle> render = (AbstractRenderVehicle<EntityVehicle>) VehicleRenderRegistry.getRender(vehicle.getClass());
+            AbstractRenderVehicle<VehicleEntity> render = (AbstractRenderVehicle<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
             if(render != null)
             {
                 render.applyPlayerModel(vehicle, player, model, event.getPartialTicks());
@@ -248,7 +230,7 @@ public class ClientEvents
         }
     }
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
     {
         dest.rotateAngleX = source.rotateAngleX;
@@ -259,17 +241,18 @@ public class ClientEvents
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event)
     {
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(event.phase == TickEvent.Phase.END && player != null)
         {
             int slot = player.inventory.currentItem;
             if(this.lastSlot != slot)
             {
                 this.lastSlot = slot;
-                if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof ItemSprayCan)
+                if(!player.inventory.getCurrentItem().isEmpty() && player.inventory.getCurrentItem().getItem() instanceof SprayCanItem)
                 {
-                    float pitch = 0.85F + 0.15F * ItemSprayCan.getRemainingSprays(player.inventory.getCurrentItem());
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getRecord(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
+                    SprayCanItem sprayCan = (SprayCanItem) player.inventory.getCurrentItem().getItem();
+                    float pitch = 0.85F + 0.15F * sprayCan.getRemainingSprays(player.inventory.getCurrentItem());
+                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
                 }
             }
 
@@ -298,61 +281,63 @@ public class ClientEvents
     @SubscribeEvent
     public void onRenderHand(RenderSpecificHandEvent event)
     {
-        if (event.getHand() == EnumHand.OFF_HAND && fuelingHandOffset > -1)
+        MatrixStack matrixStack = event.getMatrixStack();
+        if (event.getHand() == Hand.OFF_HAND && fuelingHandOffset > -1)
         {
-            GlStateManager.rotate(25F, 1, 0, 0);
-            GlStateManager.translate(0, -0.35 - fuelingHandOffset, 0.2);
+            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(25F));
+            matrixStack.func_227861_a_(0, -0.35 - fuelingHandOffset, 0.2);
         }
 
-        if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof ItemSprayCan && event.getItemStack().getMetadata() == 0)
+        if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof SprayCanItem)
         {
-            ItemStack stack = event.getItemStack().copy();
-            stack.setItemDamage(1);
-            Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
-            event.setCanceled(true);
+            //ItemStack stack = event.getItemStack().copy(); //TODO fix the spray can item render
+            //stack.setItemDamage(1);
+            //Minecraft.getMinecraft().getItemRenderer().renderItemInFirstPerson(Minecraft.getMinecraft().player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), stack, event.getEquipProgress());
+            //event.setCanceled(true);
         }
 
         fuelingHandOffset = -1;
         RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
         if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING) && event.getHand() == EntityRaytracer.getContinuousInteractionObject())
         {
-            double offset = Math.sin((tickCounter + Minecraft.getMinecraft().getRenderPartialTicks()) * 0.4) * 0.01;
+            double offset = Math.sin((tickCounter + Minecraft.getInstance().getRenderPartialTicks()) * 0.4) * 0.01;
             if (offsetPrev > offsetPrevPrev && offsetPrev > offset)
             {
-                Minecraft.getMinecraft().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
+                Minecraft.getInstance().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
             }
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;
-            GlStateManager.translate(0, 0.35 + offset, -0.2);
-            GlStateManager.rotate(-25F, 1, 0, 0);
-            if (event.getHand() == EnumHand.MAIN_HAND)
+            matrixStack.func_227861_a_(0, 0.35 + offset, -0.2);
+            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-25F));
+            if (event.getHand() == Hand.MAIN_HAND)
             {
                 fuelingHandOffset = offset;
             }
         }
 
-        EntityPlayer player = Minecraft.getMinecraft().player;
+        PlayerEntity player = Minecraft.getInstance().player;
         if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
         {
             if(event.getSwingProgress() > 0)
             {
                 shouldRenderNozzle = true;
             }
-            if(event.getHand() == EnumHand.MAIN_HAND && shouldRenderNozzle)
+            if(event.getHand() == Hand.MAIN_HAND && shouldRenderNozzle)
             {
                 if(event.getSwingProgress() > 0 && event.getSwingProgress() <= 0.25) return;
-                GlStateManager.pushMatrix();
-                boolean mainHand = event.getHand() == EnumHand.MAIN_HAND;
-                EnumHandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+                matrixStack.func_227860_a_();
+                boolean mainHand = event.getHand() == Hand.MAIN_HAND;
+                HandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                 float f = -0.6F * MathHelper.sin(MathHelper.sqrt(event.getSwingProgress()) * (float) Math.PI);
                 float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt(event.getSwingProgress()) * ((float) Math.PI * 2F));
                 float f2 = -0.2F * MathHelper.sin(event.getSwingProgress() * (float) Math.PI);
-                int handOffset = handSide == EnumHandSide.RIGHT ? 1 : -1;
-                GlStateManager.translate((float) handOffset * f, f1, f2);
-                GlStateManager.translate((float) handOffset * 0.65F, -0.52F + 0.25F, -0.72F);
-                GlStateManager.rotate(45F, 1, 0, 0);
-                RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
-                GlStateManager.popMatrix();
+                int handOffset = handSide == HandSide.RIGHT ? 1 : -1;
+                matrixStack.func_227861_a_(handOffset * f, f1, f2);
+                matrixStack.func_227861_a_(handOffset * 0.65, -0.52 + 0.25, -0.72);
+                matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(45F));
+                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228489_c_();
+                RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_); //TODO check
+                matrixStack.func_227865_b_();
                 event.setCanceled(true);
             }
         }
@@ -366,80 +351,77 @@ public class ClientEvents
     public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
     {
         Entity entity = event.getEntity();
-        if(entity instanceof EntityPlayer && entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(entity instanceof PlayerEntity && entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
             return;
         }
 
-        if(!event.getItem().isEmpty() && event.getItem().getItem() instanceof ItemSprayCan && event.getItem().getMetadata() == 0)
+        if(!event.getItem().isEmpty() && event.getItem().getItem() instanceof SprayCanItem)
         {
-            ItemStack stack = event.getItem().copy();
+            /*ItemStack stack = event.getItem().copy(); //TODO fix this spray can render
             stack.setItemDamage(1);
             Minecraft.getMinecraft().getItemRenderer().renderItemSide(event.getEntity(), stack, event.getTransformType(), event.getHandSide() == EnumHandSide.LEFT);
-            event.setCanceled(true);
+            event.setCanceled(true);*/
         }
     }
 
     @SubscribeEvent
-    public void onModelRenderPost(ModelPlayerEvent.Render.Post event)
+    public void onModelRenderPost(PlayerModelEvent.Render.Post event)
     {
-        EntityPlayer entity = event.getEntityPlayer();
+        MatrixStack matrixStack = event.getMatrixStack();
+        PlayerEntity entity = event.getPlayer();
         if(entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
         {
-            GlStateManager.pushMatrix();
+            matrixStack.func_227860_a_();
             {
                 if(event.getModelPlayer().isChild)
                 {
-                    GlStateManager.translate(0.0F, 0.75F, 0.0F);
-                    GlStateManager.scale(0.5F, 0.5F, 0.5F);
+                    matrixStack.func_227861_a_(0.0, 0.75, 0.0);
+                    matrixStack.func_227862_a_(0.5F, 0.5F, 0.5F);
                 }
-                GlStateManager.pushMatrix();
+                matrixStack.func_227860_a_();
                 {
-                    if(entity.isSneaking())
+                    if(entity.isCrouching())
                     {
-                        GlStateManager.translate(0.0F, 0.2F, 0.0F);
+                        matrixStack.func_227861_a_(0.0, 0.2, 0.0);
                     }
-                    event.getModelPlayer().postRenderArm(0.0625F, entity.getPrimaryHand());
-                    GlStateManager.rotate(180F, 1, 0, 0);
-                    GlStateManager.rotate(180F, 0, 1, 0);
-                    boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
-                    GlStateManager.translate((float) (leftHanded ? -1 : 1) / 16.0F, 0.125F, -0.625F);
-                    GlStateManager.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
-                    RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
+                    //event.getModelPlayer().postRenderArm(0.0625F, entity.getPrimaryHand()); //TODO find out what this is
+                    matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(180F));
+                    matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
+                    boolean leftHanded = entity.getPrimaryHand() == HandSide.LEFT;
+                    matrixStack.func_227861_a_((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
+                    matrixStack.func_227861_a_(0, -9 * 0.0625F, 5.75 * 0.0625F);
+                    //TODO figure this out. Missing mappings is making this difficult
+                    //RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.field_229196_a_);
                 }
-                GlStateManager.popMatrix();
+                matrixStack.func_227865_b_();
             }
-            GlStateManager.popMatrix();
+            matrixStack.func_227865_b_();
         }
     }
 
     @SubscribeEvent
-    public void renderCustomBlockHighlights(DrawBlockHighlightEvent event)
+    public void renderCustomBlockHighlights(DrawHighlightEvent.HighlightBlock event)
     {
-        RayTraceResult target = event.getTarget();
-        if (target == null || target.typeOfHit != RayTraceResult.Type.BLOCK)
-        {
-            return;
-        }
-
-        EntityPlayer player = event.getPlayer();
+        /*BlockRayTraceResult target = event.getTarget();
+        Entity player = event.getInfo().getRenderViewEntity();
         World world = player.world;
-        BlockPos pos = target.getBlockPos();
+        BlockPos pos = target.getPos();
         if (!world.getWorldBorder().contains(pos))
         {
             return;
         }
 
-        double dx = player.lastTickPosX + (player.posX - player.lastTickPosX) * event.getPartialTicks();
-        double dy = player.lastTickPosY + (player.posY - player.lastTickPosY) * event.getPartialTicks();
-        double dz = player.lastTickPosZ + (player.posZ - player.lastTickPosZ) * event.getPartialTicks();
+        double dx = player.lastTickPosX + (player.func_226277_ct_() - player.lastTickPosX) * event.getPartialTicks();
+        double dy = player.lastTickPosY + (player.func_226278_cu_() - player.lastTickPosY) * event.getPartialTicks();
+        double dz = player.lastTickPosZ + (player.func_226281_cx_() - player.lastTickPosZ) * event.getPartialTicks();
 
-        IBlockState state = world.getBlockState(pos);
+        BlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof BlockFuelDrum)
         {
             boxRenderGlStart();
-            AxisAlignedBB box = state.getSelectedBoundingBox(world, pos).grow(0.0020000000949949026D).offset(-dx, -dy, -dz);
+            AxisAlignedBB box = state.getRaytraceShape(world, pos).getBoundingBox().grow(0.002D).offset(-dx, -dy, -dz);
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
             float alpha = 0.4F;
@@ -508,20 +490,20 @@ public class ClientEvents
         }
         else if (state.getBlock() instanceof BlockFluidPipe)
         {
-            RayTraceResult objectMouseOver = Minecraft.getMinecraft().objectMouseOver;
-            for (EnumHand hand : EnumHand.values())
+            for (Hand hand : Hand.values())
             {
                 if (!(player.getHeldItem(hand).getItem() == ModItems.WRENCH))
                 {
                     continue;
                 }
 
-                TileEntityFluidPipe pipe = BlockFluidPipe.getTileEntity(world, pos);
+                FluidPipeTileEntity pipe = BlockFluidPipe.getPipeTileEntity(world, pos);
                 Vec3d hitVec = objectMouseOver.hitVec.subtract(pos.getX(), pos.getY(), pos.getZ());
-                Pair<AxisAlignedBB, EnumFacing> hit = ((BlockFluidPipe) state.getBlock()).getWrenchableBox(world, pos, state, player, hand, objectMouseOver.sideHit, hitVec.x, hitVec.y, hitVec.z, pipe);
+                Pair<AxisAlignedBB, Direction> hit = ((BlockFluidPipe) state.getBlock()).getWrenchableBox(world, pos, state, player, hand, objectMouseOver.sideHit, hitVec.x, hitVec.y, hitVec.z, pipe);
                 if (hit != null)
                 {
                     boxRenderGlStart();
+                    VoxelShape
                     RenderGlobal.drawSelectionBoundingBox(hit.getLeft().grow(0.0020000000949949026D).offset(-dx, -dy, -dz), 0, 0, 0, 0.4F);
                     boxRenderGlEnd();
                 }
@@ -538,50 +520,51 @@ public class ClientEvents
                 event.setCanceled(true);
                 break;
             }
-        }
+        }*/
     }
 
     private void boxRenderGlStart()
     {
-        GlStateManager.enableBlend();
+        /*GlStateManager.enableBlend();
         GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
         GlStateManager.glLineWidth(2.0F);
         GlStateManager.disableTexture2D();
-        GlStateManager.depthMask(false);
+        GlStateManager.depthMask(false);*/
     }
 
     private void boxRenderGlEnd()
     {
-        GlStateManager.depthMask(true);
+        /*GlStateManager.depthMask(true);
         GlStateManager.enableTexture2D();
-        GlStateManager.disableBlend();
+        GlStateManager.disableBlend();*/
     }
 
     @SubscribeEvent
     public void setLiquidFogDensity(EntityViewRenderEvent.FogDensity event)
     {
-        Block block = event.getState().getBlock();
+        event.getInfo().getBlockAtCamera();
+        /*Block block = event.getState().getBlock(); //TODO do i need to fix this
         boolean isSap = block == ModBlocks.ENDER_SAP;
         if (isSap || block == ModBlocks.FUELIUM || block == ModBlocks.BLAZE_JUICE)
         {
             GlStateManager.setFog(GlStateManager.FogMode.EXP);
             event.setDensity(isSap ? 1 : 0.5F);
             event.setCanceled(true);
-        }
+        }*/
     }
 
     @SubscribeEvent
     public void onJump(InputEvent.KeyInputEvent event)
     {
-        if(GuiScreen.isCtrlKeyDown())
+        if(Screen.hasControlDown())
         {
-            EntityPlayer player = Minecraft.getMinecraft().player;
-            if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
+            PlayerEntity player = Minecraft.getInstance().player;
+            if(Minecraft.getInstance().currentScreen == null && player.getRidingEntity() instanceof VehicleEntity)
             {
-                EntityVehicle vehicle = (EntityVehicle) player.getRidingEntity();
+                VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
                 if(vehicle.canTowTrailer())
                 {
-                    PacketHandler.INSTANCE.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                    PacketHandler.instance.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
                 }
             }
         }

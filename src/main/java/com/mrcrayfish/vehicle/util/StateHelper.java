@@ -2,33 +2,32 @@ package com.mrcrayfish.vehicle.util;
 
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockAir;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IWorldReader;
 
 public class StateHelper
 {
-    public static Block getBlock(IBlockAccess world, BlockPos pos, EnumFacing facing, Direction dir)
+    public static Block getBlock(IWorldReader world, BlockPos pos, Direction facing, RelativeDirection dir)
     {
         BlockPos target = getBlockPosRelativeTo(world, pos, facing, dir);
         return world.getBlockState(target).getBlock();
     }
 
-    public static Direction getRotation(IBlockAccess world, BlockPos pos, EnumFacing facing, Direction dir)
+    public static RelativeDirection getRotation(IWorldReader world, BlockPos pos, Direction facing, RelativeDirection dir)
     {
         BlockPos target = getBlockPosRelativeTo(world, pos, facing, dir);
-        EnumFacing other = world.getBlockState(target).getValue(BlockRotatedObject.FACING);
+        Direction other = world.getBlockState(target).get(BlockRotatedObject.DIRECTION);
         return getDirectionRelativeTo(facing, other);
     }
 
-    public static boolean isAirBlock(IBlockAccess world, BlockPos pos, EnumFacing facing, Direction dir)
+    public static boolean isAirBlock(IWorldReader world, BlockPos pos, Direction facing, RelativeDirection dir)
     {
         BlockPos target = getBlockPosRelativeTo(world, pos, facing, dir);
-        return world.getBlockState(target).getBlock() instanceof BlockAir;
+        return world.getBlockState(target).isAir();
     }
 
-    private static BlockPos getBlockPosRelativeTo(IBlockAccess world, BlockPos pos, EnumFacing facing, Direction dir)
+    private static BlockPos getBlockPosRelativeTo(IWorldReader world, BlockPos pos, Direction facing, RelativeDirection dir)
     {
         switch(dir)
         {
@@ -45,30 +44,30 @@ public class StateHelper
         }
     }
 
-    private static Direction getDirectionRelativeTo(EnumFacing thisBlock, EnumFacing otherBlock)
+    private static RelativeDirection getDirectionRelativeTo(Direction thisBlock, Direction otherBlock)
     {
         int num = thisBlock.getHorizontalIndex() - otherBlock.getHorizontalIndex();
         switch(num)
         {
             case -3:
-                return Direction.LEFT;
+                return RelativeDirection.LEFT;
             case -2:
-                return Direction.UP;
+                return RelativeDirection.UP;
             case -1:
-                return Direction.RIGHT;
+                return RelativeDirection.RIGHT;
             case 0:
-                return Direction.DOWN;
+                return RelativeDirection.DOWN;
             case 1:
-                return Direction.LEFT;
+                return RelativeDirection.LEFT;
             case 2:
-                return Direction.UP;
+                return RelativeDirection.UP;
             case 3:
-                return Direction.RIGHT;
+                return RelativeDirection.RIGHT;
         }
-        return Direction.NONE;
+        return RelativeDirection.NONE;
     }
 
-    public enum Direction
+    public enum RelativeDirection
     {
         UP,
         DOWN,
