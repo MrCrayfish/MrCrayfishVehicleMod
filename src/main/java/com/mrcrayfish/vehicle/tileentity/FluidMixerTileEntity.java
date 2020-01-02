@@ -384,15 +384,15 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         CompoundNBT tag = super.write(new CompoundNBT());
 
         CompoundNBT tagTankBlaze = new CompoundNBT();
-        tankBlaze.writeToNBT(tagTankBlaze);
+        tankBlaze.write(tagTankBlaze);
         tag.put("TankBlaze", tagTankBlaze);
 
         CompoundNBT tagTankEnderSap = new CompoundNBT();
-        tankEnderSap.writeToNBT(tagTankEnderSap);
+        tankEnderSap.write(tagTankEnderSap);
         tag.put("TankEnderSap", tagTankEnderSap);
 
         CompoundNBT tagTankFuelium = new CompoundNBT();
-        tankFuelium.writeToNBT(tagTankFuelium);
+        tankFuelium.write(tagTankFuelium);
         tag.put("TankFuelium", tagTankFuelium);
 
         return tag;

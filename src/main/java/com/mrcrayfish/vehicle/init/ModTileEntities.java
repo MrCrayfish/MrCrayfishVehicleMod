@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.tileentity.*;
+import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraftforge.event.RegistryEvent;
@@ -41,16 +42,16 @@ public class ModTileEntities
     public static void registerTypes(final RegistryEvent.Register<TileEntityType<?>> event)
     {
         IForgeRegistry<TileEntityType<?>> registry = event.getRegistry();
-        registry.register(buildType("fluid_extractor", TileEntityType.Builder.create(FluidExtractorTileEntity::new, ModBlocks.FLUID_EXTRACTOR)));
-        registry.register(buildType("fluid_pipe", TileEntityType.Builder.create(FluidPipeTileEntity::new, ModBlocks.FLUID_PIPE)));
-        registry.register(buildType("fluid_pump", TileEntityType.Builder.create(FluidPumpTileEntity::new, ModBlocks.FLUID_PUMP)));
-        registry.register(buildType("fluid_mixer", TileEntityType.Builder.create(FluidMixerTileEntity::new, ModBlocks.FLUID_MIXER)));
-        registry.register(buildType("fuel_drum", TileEntityType.Builder.create(FuelDrumTileEntity::new, ModBlocks.FUEL_DRUM, ModBlocks.INDUSTRIAL_FUEL_DRUM)));
-        registry.register(buildType("vehicle_crate", TileEntityType.Builder.create(VehicleCrateTileEntity::new, ModBlocks.VEHICLE_CRATE)));
-        registry.register(buildType("workstation", TileEntityType.Builder.create(WorkstationTileEntity::new, ModBlocks.WORKSTATION)));
-        registry.register(buildType("jack", TileEntityType.Builder.create(JackTileEntity::new, ModBlocks.JACK)));
-        registry.register(buildType("boost", TileEntityType.Builder.create(BoostTileEntity::new, ModBlocks.BOOST_PAD, ModBlocks.BOOST_RAMP, ModBlocks.STEEP_BOOST_RAMP)));
-        registry.register(buildType("gas_pump", TileEntityType.Builder.create(GasPumpTileEntity::new, ModBlocks.GAS_PUMP)));
-        registry.register(buildType("gas_pump_tank", TileEntityType.Builder.create(GasPumpTankTileEntity::new, ModBlocks.GAS_PUMP)));
+        registry.register(buildType(Names.TileEntity.FLUID_EXTRACTOR, TileEntityType.Builder.create(FluidExtractorTileEntity::new, ModBlocks.FLUID_EXTRACTOR)));
+        registry.register(buildType(Names.TileEntity.FLUID_PIPE, TileEntityType.Builder.create(FluidPipeTileEntity::new, ModBlocks.FLUID_PIPE)));
+        registry.register(buildType(Names.TileEntity.FLUID_PUMP, TileEntityType.Builder.create(FluidPumpTileEntity::new, ModBlocks.FLUID_PUMP)));
+        registry.register(buildType(Names.TileEntity.FLUID_MIXER, TileEntityType.Builder.create(FluidMixerTileEntity::new, ModBlocks.FLUID_MIXER)));
+        registry.register(buildType(Names.TileEntity.FUEL_DRUM, TileEntityType.Builder.create(FuelDrumTileEntity::new, ModBlocks.FUEL_DRUM, ModBlocks.INDUSTRIAL_FUEL_DRUM)));
+        registry.register(buildType(Names.TileEntity.VEHICLE_CRATE, TileEntityType.Builder.create(VehicleCrateTileEntity::new, ModBlocks.VEHICLE_CRATE)));
+        registry.register(buildType(Names.TileEntity.WORKSTATION, TileEntityType.Builder.create(WorkstationTileEntity::new, ModBlocks.WORKSTATION)));
+        registry.register(buildType(Names.TileEntity.JACK, TileEntityType.Builder.create(JackTileEntity::new, ModBlocks.JACK)));
+        registry.register(buildType(Names.TileEntity.BOOST, TileEntityType.Builder.create(BoostTileEntity::new, ModBlocks.BOOST_PAD, ModBlocks.BOOST_RAMP, ModBlocks.STEEP_BOOST_RAMP)));
+        registry.register(buildType(Names.TileEntity.GAS_PUMP, TileEntityType.Builder.create(GasPumpTileEntity::new, ModBlocks.GAS_PUMP)));
+        registry.register(buildType(Names.TileEntity.GAS_PUMP_TANK, TileEntityType.Builder.create(GasPumpTankTileEntity::new, ModBlocks.GAS_PUMP)));
     }
 }

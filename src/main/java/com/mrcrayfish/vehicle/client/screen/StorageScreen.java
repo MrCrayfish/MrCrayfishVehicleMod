@@ -22,7 +22,7 @@ public class StorageScreen extends ContainerScreen<StorageContainer>
 
     public StorageScreen(int windowId, PlayerInventory playerInventory, StorageInventory storageInventory)
     {
-        super(new StorageContainer(windowId, playerInventory, storageInventory, playerInventory.player), playerInventory, storageInventory.getTitle());
+        super(new StorageContainer(windowId, playerInventory, storageInventory, playerInventory.player), playerInventory, storageInventory.getDisplayName());
         this.playerInventory = playerInventory;
         this.passEvents = false;
         this.inventoryRows = storageInventory.getSizeInventory() / 9;

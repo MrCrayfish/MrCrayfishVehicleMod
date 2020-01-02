@@ -1,0 +1,26 @@
+modLoader="javafml"
+loaderVersion="[30,)"
+
+[[mods]]
+modId="vehicle"
+version="0.41.1"
+displayName="MrCrayfish's Vehicle Mod"
+updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/vehicle/update.json"
+displayURL="https://mrcrayfish.com/mods?id=vehicle"
+logoFile="vehicle.png"
+credits="Phylogeny https://github.com/Phylogeny"
+authors="MrCrayfish"
+description="A mod that adds vehicles into Minecraft!"
+
+[[dependencies.vehicle]]
+    modId="forge"
+    mandatory=true
+    versionRange="[30.0.18,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.vehicle]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.15.1,)"
+    ordering="NONE"
+    side="BOTH"

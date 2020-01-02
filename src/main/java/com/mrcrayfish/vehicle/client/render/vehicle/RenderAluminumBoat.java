@@ -5,14 +5,9 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.AluminumBoatEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ModelPlayer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 
 /**

@@ -20,8 +20,8 @@ public class Config
 
         Client(ForgeConfigSpec.Builder builder)
         {
-            builder.comment("Client configuration settings").translation(Reference.MOD_ID + ".config.client").push("client");
-            builder.comment("Configuration options for debugging vehicles").translation(Reference.MOD_ID + ".config.client.debug").push("debug");
+            builder.comment("Client configuration settings").push("client");
+            builder.comment("Configuration options for debugging vehicles").push("debug");
             this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.")
                 .translation(Reference.MOD_ID + ".config.client.debug.render_outlines")
                 .define("renderOutlines", false);
@@ -29,12 +29,12 @@ public class Config
                 .translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload")
                 .define("reloadRaytracerEachTick", false);
             builder.pop();
-            builder.comment("Configuration options for vehicle interaction").translation(Reference.MOD_ID + ".config.client.interaction").push("interaction");
+            builder.comment("Configuration options for vehicle interaction").push("interaction");
             this.enabledLeftClick = builder.comment("If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.")
                 .translation(Reference.MOD_ID + ".config.client.interaction.left_click")
                 .define("enabledLeftClick", true);
             builder.pop();
-            builder.comment("Configuration for display related options").translation(Reference.MOD_ID + ".config.client.display").push("display");
+            builder.comment("Configuration for display related options").push("display");
             this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle")
                 .translation(Reference.MOD_ID + ".config.client.display.speedometer")
                 .define("enabledSpeedometer", true);
@@ -45,7 +45,7 @@ public class Config
                 .translation(Reference.MOD_ID + ".config.client.display.workstation_animation")
                 .define("workstationAnimation", true);
             builder.pop();
-            builder.comment("Configuration options for controller support (Must have Controllable install)").translation(Reference.MOD_ID + ".config.client.controller").push("controller");
+            builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
             this.useTriggers = builder.comment("If true, will use the triggers on controller to control the acceleration of the vehicle.")
                     .translation(Reference.MOD_ID + ".config.client.controller.use_triggers")
                     .define("useTriggers", false);
@@ -66,7 +66,7 @@ public class Config
 
         Common(ForgeConfigSpec.Builder builder)
         {
-            builder.comment("Common configuration settings").translation(Reference.MOD_ID + ".config.common").push("common");
+            builder.comment("Common configuration settings").push("common");
             this.fuelEnabled = builder.comment("If true, vehicles will require fuel for them to be driven.")
                 .translation(Reference.MOD_ID + ".config.server.fuel_enabled")
                 .define("fuelEnabled", true);

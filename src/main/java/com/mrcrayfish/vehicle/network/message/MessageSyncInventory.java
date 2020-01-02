@@ -21,7 +21,7 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     public MessageSyncInventory(int entityId, StorageInventory storageInventory)
     {
         this.entityId = entityId;
-        this.compound = storageInventory.writeToNBT();
+        this.compound = storageInventory.write();
     }
 
     private MessageSyncInventory(int entityId, CompoundNBT compound)

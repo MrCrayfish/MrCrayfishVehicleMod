@@ -67,13 +67,13 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                                 }
                                 else
                                 {
-                                    attachableChest.getInventory().openGui(player, targetEntity);
+                                    player.openContainer(attachableChest.getInventory());
                                 }
                             }
                         }
                         else
                         {
-                            ((IStorage) targetEntity).getInventory().openGui(player, targetEntity);
+                            player.openContainer((IStorage) targetEntity);
                         }
                     }
                 }

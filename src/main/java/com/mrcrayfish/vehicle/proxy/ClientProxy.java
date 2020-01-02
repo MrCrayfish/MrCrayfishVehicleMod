@@ -38,7 +38,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -237,7 +236,7 @@ public class ClientProxy implements Proxy
         if(entity instanceof IStorage)
         {
             IStorage wrapper = (IStorage) entity;
-            wrapper.getInventory().readFromNBT(compound);
+            wrapper.getInventory().read(compound);
         }
     }
 

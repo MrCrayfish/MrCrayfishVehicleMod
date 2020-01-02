@@ -1,6 +1,6 @@
 {
     "parent": "vehicle:item/small_engine",
     "textures": {
-        "tier": "blocks/planks_oak"
+        "tier": "minecraft:block/oak_planks"
     }
 }

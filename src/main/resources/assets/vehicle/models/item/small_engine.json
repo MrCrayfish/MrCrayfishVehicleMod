@@ -1,13 +1,13 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "cover": "minecraft:blocks/anvil_base",
-        "fuel_tank_trim": "minecraft:blocks/concrete_silver",
-        "tier": "minecraft:blocks/anvil_base",
-        "handle": "minecraft:blocks/concrete_black",
-        "detail": "minecraft:blocks/concrete_gray",
-        "fuel_tank": "minecraft:blocks/iron_block",
-        "base": "minecraft:blocks/hardened_clay_stained_cyan"
+        "cover": "minecraft:block/anvil",
+        "fuel_tank_trim": "minecraft:block/light_gray_concrete",
+        "tier": "minecraft:block/anvil",
+        "handle": "minecraft:block/black_concrete",
+        "detail": "minecraft:block/gray_concrete",
+        "fuel_tank": "minecraft:block/iron_block",
+        "base": "minecraft:block/cyan_terracotta"
     },
     "display": {
         "gui": {

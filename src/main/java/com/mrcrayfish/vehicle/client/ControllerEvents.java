@@ -1,30 +1,24 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
 import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-import org.lwjgl.input.Mouse;
 
 import java.util.Map;
 
@@ -185,7 +179,7 @@ public class ControllerEvents
 
     public static boolean isRightClicking()
     {
-        boolean isRightClicking = Mouse.isButtonDown(Minecraft.getMinecraft().gameSettings.keyBindUseItem.getKeyCode() + 100);
+        boolean isRightClicking = Minecraft.getInstance().mouseHelper.isRightDown();
         isRightClicking |= ClientProxy.controllableLoaded && Controllable.getController() != null && Controllable.getController().getLTriggerValue() != 0.0F;
         return isRightClicking;
     }

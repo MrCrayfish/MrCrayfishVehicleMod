@@ -1,33 +1,11 @@
 package com.mrcrayfish.vehicle.client.model.baked;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
-import com.mrcrayfish.vehicle.block.BlockSteepBoostRamp;
-import com.mrcrayfish.vehicle.client.util.BakedQuadBuilder;
-import com.mrcrayfish.vehicle.client.util.TransformationBuilder;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.IBakedModel;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.block.model.ItemOverrideList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import org.apache.commons.lang3.tuple.Pair;
-
-import javax.annotation.Nullable;
-import javax.vecmath.Matrix4f;
-import java.util.List;
-import java.util.function.Function;
-
 /**
  * Author: MrCrayfish
  */
-public class BakedModelSteepRamp implements IBakedModel
+public class BakedModelSteepRamp
 {
-    private static final ImmutableMap<ItemCameraTransforms.TransformType, Matrix4f> CAMERA_TRANSFORMATIONS;
+    /*private static final ImmutableMap<ItemCameraTransforms.TransformType, Matrix4f> CAMERA_TRANSFORMATIONS;
 
     static
     {
@@ -178,5 +156,5 @@ public class BakedModelSteepRamp implements IBakedModel
     public Pair<? extends IBakedModel, Matrix4f> handlePerspective(ItemCameraTransforms.TransformType cameraTransformType)
     {
         return Pair.of(this, CAMERA_TRANSFORMATIONS.get(cameraTransformType));
-    }
+    }*/
 }

@@ -11,35 +11,29 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -59,83 +53,80 @@ public class BlockGasPump extends BlockRotatedObject
     }
 
     @Override
-    public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, Direction face, float hitX, float hitY, float hitZ)
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(!worldIn.isRemote)
+        if(!world.isRemote)
         {
-            if(state.getValue(TOP))
+            if(state.get(TOP))
             {
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                TileEntity tileEntity = world.getTileEntity(pos);
                 if(tileEntity instanceof GasPumpTileEntity)
                 {
                     GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
-                    if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerIn.getEntityId())
+                    if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerEntity.getEntityId())
                     {
                         gasPump.setFuelingEntity(null);
-                        worldIn.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
-                    else if(state.getValue(DIRECTION).rotateY().equals(face))
+                    else if(state.get(DIRECTION).rotateY().equals(result.getFace()))
                     {
-                        gasPump.setFuelingEntity(playerIn);
-                        worldIn.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        gasPump.setFuelingEntity(playerEntity);
+                        world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                 }
             }
             else
             {
-                ItemStack stack = playerIn.getHeldItem(hand);
+                ItemStack stack = playerEntity.getHeldItem(hand);
 
-                if(FluidUtil.interactWithFluidHandler(playerIn, hand, worldIn, pos, face))
+                if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
                 {
-                    return true;
+                    return ActionResultType.SUCCESS;
                 }
 
                 if(stack.getItem() instanceof JerryCanItem)
                 {
                     JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
-
                     if(jerryCan.isFull(stack))
                     {
-                        return false;
+                        return ActionResultType.PASS;
                     }
 
-                    TileEntity tileEntity = worldIn.getTileEntity(pos);
-                    if(tileEntity != null && tileEntity.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null))
+                    TileEntity tileEntity = world.getTileEntity(pos);
+                    if(tileEntity != null)
                     {
-                        IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null);
-                        if(handler != null)
+                        IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
+                        if(handler instanceof FluidTank)
                         {
-                            if(handler instanceof FluidTank)
+                            FluidTank tank = (FluidTank) handler;
+                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
                             {
-                                FluidTank tank = (FluidTank) handler;
-                                if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
-                                {
-                                    return false;
-                                }
+                                return ActionResultType.PASS;
+                            }
 
-                                FluidStack fluidStack = handler.drain(50, true);
-                                if(fluidStack != null)
+                            FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
+                            if(fluidStack != null)
+                            {
+                                int remaining = jerryCan.fill(stack, fluidStack.getAmount());
+                                if(remaining > 0)
                                 {
-                                    int remaining = jerryCan.fill(stack, fluidStack.amount);
-                                    if(remaining > 0)
-                                    {
-                                        fluidStack.amount = remaining;
-                                        handler.fill(fluidStack, true);
-                                    }
+                                    fluidStack.setAmount(remaining);
+                                    handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                                 }
                             }
+                            return ActionResultType.SUCCESS;
                         }
                     }
                 }
             }
         }
-        return true;
+        return ActionResultType.PASS;
     }
 
     @Override
-    public boolean canPlaceBlockAt(World worldIn, BlockPos pos)
+    public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos)
     {
-        return worldIn.isAirBlock(pos) && worldIn.isAirBlock(pos.up());
+        return reader.isAirBlock(pos) && reader.isAirBlock(pos.up());
     }
 
     @Override
@@ -167,7 +158,6 @@ public class BlockGasPump extends BlockRotatedObject
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(DIRECTION);
         builder.add(TOP);
     }
 

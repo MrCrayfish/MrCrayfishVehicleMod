@@ -33,8 +33,7 @@ public class HeldVehicleEvents
     {
         if(!setupExtraLayers)
         {
-            EntityRenderer render = Minecraft.getInstance().getRenderManager().renderers.get(EntityType.PLAYER);
-            Map<String, PlayerRenderer> skinMap = render.getRenderManager().getSkinMap();
+            Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
             this.patchPlayerRender(skinMap.get("default"));
             this.patchPlayerRender(skinMap.get("slim"));
             setupExtraLayers = true;

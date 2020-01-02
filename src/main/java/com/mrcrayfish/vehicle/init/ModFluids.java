@@ -1,16 +1,21 @@
 package com.mrcrayfish.vehicle.init;
 
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.fluid.BlazeJuice;
 import com.mrcrayfish.vehicle.fluid.EnderSap;
 import com.mrcrayfish.vehicle.fluid.Fuelium;
 import net.minecraft.fluid.Fluid;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
+import net.minecraftforge.registries.ObjectHolder;
 
 /**
  * Author: MrCrayfish
  */
+@ObjectHolder(Reference.MOD_ID)
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModFluids
 {
     public static final Fluid FUELIUM = null;

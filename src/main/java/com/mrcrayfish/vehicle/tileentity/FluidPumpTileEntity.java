@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
+import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -24,6 +25,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
 
     public FluidPumpTileEntity()
     {
+        super(ModTileEntities.FLUID_PUMP);
         this.powerMode = PowerMode.REQUIRES_SIGNAL_ON;
     }
 

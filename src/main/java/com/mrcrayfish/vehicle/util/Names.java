@@ -1,11 +1,15 @@
 package com.mrcrayfish.vehicle.util;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
 import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
 import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
+import com.mrcrayfish.vehicle.tileentity.*;
 import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.tileentity.TileEntityType;
+import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Author: MrCrayfish
@@ -151,5 +155,20 @@ public class Names
         public static final String EDIT_VEHICLE = PREFIX + "edit_vehicle";
         public static final String WORKSTATION = PREFIX + "workstation";
         public static final String STORAGE = PREFIX + "storage";
+    }
+
+    public static class TileEntity
+    {
+        public static final String FLUID_EXTRACTOR = PREFIX + "fluid_extractor";
+        public static final String FLUID_PIPE = PREFIX + "fluid_pipe";
+        public static final String FLUID_PUMP = PREFIX + "fluid_pump";
+        public static final String FLUID_MIXER = PREFIX + "fluid_mixer";
+        public static final String FUEL_DRUM = PREFIX + "fuel_drum";
+        public static final String VEHICLE_CRATE = PREFIX + "vehicle_crate";
+        public static final String WORKSTATION = PREFIX + "workstation";
+        public static final String JACK = PREFIX + "jack";
+        public static final String BOOST = PREFIX + "boost";
+        public static final String GAS_PUMP = PREFIX + "gas_pump";
+        public static final String GAS_PUMP_TANK = PREFIX + "gas_pump_tank";
     }
 }

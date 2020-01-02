@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.google.common.base.Optional;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
@@ -10,7 +9,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -20,6 +18,7 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -56,14 +55,14 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
         {
             if(this.fuelingEntity != null)
             {
-                this.fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.absent());
+                this.fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.empty());
             }
             this.fuelingEntity = null;
             this.fuelingEntityId = -1;
             if(entity != null)
             {
                 this.fuelingEntityId = entity.getEntityId();
-                entity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.fromNullable(this.getPos()));
+                entity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.of(this.getPos()));
             }
             this.syncToClient();
         }
@@ -101,7 +100,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
                 {
                     this.world.playSound(null, this.fuelingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
-                this.fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.absent());
+                this.fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.empty());
                 this.fuelingEntityId = -1;
                 this.fuelingEntity = null;
                 this.syncFuelingEntity();

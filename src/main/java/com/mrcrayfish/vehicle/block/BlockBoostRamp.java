@@ -153,7 +153,6 @@ public class BlockBoostRamp extends BlockRotatedObject
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(DIRECTION);
         builder.add(STACKED);
         builder.add(LEFT);
         builder.add(RIGHT);

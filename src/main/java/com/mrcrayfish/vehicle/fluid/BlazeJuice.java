@@ -23,7 +23,7 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
     {
         public Source()
         {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "blazxe_juice"));
+            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "blaze_juice"));
         }
 
         @Override
@@ -43,7 +43,7 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
     {
         public Flowing()
         {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "flowing_fuelium"));
+            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "flowing_blaze_juice"));
         }
 
         @Override

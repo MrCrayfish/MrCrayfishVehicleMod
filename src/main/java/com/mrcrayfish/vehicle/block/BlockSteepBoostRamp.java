@@ -7,28 +7,36 @@ import com.mrcrayfish.vehicle.util.Bounds;
 import com.mrcrayfish.vehicle.util.Names;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyBool;
-import net.minecraft.block.state.BlockStateContainer;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -61,109 +69,100 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World player, List<String> tooltip, ITooltipFlag advanced)
+    @OnlyIn(Dist.CLIENT)
+    public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        if(GuiScreen.isShiftKeyDown())
+        if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getUnlocalizedName() + ".info");
-            tooltip.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(info, 150));
+            String info = I18n.format(this.getTranslationKey() + ".info");
+            list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
         }
         else
         {
-            tooltip.add(TextFormatting.YELLOW + I18n.format("vehicle.info_help"));
+            list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
         }
     }
 
     @Override
-    public void onEntityCollidedWithBlock(World worldIn, BlockPos pos, IBlockState state, Entity entityIn)
+    public void onEntityCollision(BlockState state, World world, BlockPos pos, Entity entity)
     {
-        if(entityIn instanceof PoweredVehicleEntity && entityIn.getControllingPassenger() != null)
+        if(entity instanceof PoweredVehicleEntity && entity.getControllingPassenger() != null)
         {
-            Direction facing = state.getValue(DIRECTION);
-            if(facing == entityIn.getHorizontalFacing())
+            Direction facing = state.get(DIRECTION);
+            if(facing == entity.getHorizontalFacing())
             {
                 float speedMultiplier = 0.0F;
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                TileEntity tileEntity = world.getTileEntity(pos);
                 if(tileEntity instanceof BoostTileEntity)
                 {
                     speedMultiplier = ((BoostTileEntity) tileEntity).getSpeedMultiplier();
                 }
 
-                PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entityIn;
+                PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                 if(!poweredVehicle.isBoosting())
                 {
-                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
+                    world.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(3);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = speedMultiplier;
-                poweredVehicle.motionY = poweredVehicle.currentSpeed / 20F + 0.1;
+                Vec3d motion = poweredVehicle.getMotion();
+                poweredVehicle.setMotion(new Vec3d(motion.x, poweredVehicle.currentSpeed / 20F + 0.1, motion.z));
             }
         }
     }
 
     @Override
-    public void addCollisionBoxToList(IBlockState state, World worldIn, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entityIn, boolean isActualState)
+    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
     {
-        Direction facing = state.getValue(DIRECTION);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_BASE);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_ONE[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_TWO[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_THREE[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_FOUR[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_FIVE[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_SIX[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_SEVEN[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_EIGHT[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_NINE[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_TEN[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_ELEVEN[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_TWELVE[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_THIRTEEN[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_FOURTEEN[facing.getHorizontalIndex()]);
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, COLLISION_FIFTEEN[facing.getHorizontalIndex()]);
+        return this.getRampState(state, world, pos, state.get(DIRECTION));
     }
 
     @Override
-    public IBlockState getActualState(IBlockState state, IBlockAccess worldIn, BlockPos pos)
+    public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        Direction facing = state.getValue(DIRECTION);
-        state = state.withProperty(LEFT, false);
-        state = state.withProperty(RIGHT, false);
-        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.RelativeDirection.LEFT) == this)
+        return this.getRampState(this.getDefaultState(), context.getWorld(), context.getPos(), context.getPlacementHorizontalFacing());
+    }
+
+    private BlockState getRampState(BlockState state, IWorld world, BlockPos pos, Direction facing)
+    {
+        state = state.with(LEFT, false);
+        state = state.with(RIGHT, false);
+        if(StateHelper.getBlock(world, pos, facing, StateHelper.RelativeDirection.LEFT) == this)
         {
-            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.RelativeDirection.LEFT) == StateHelper.RelativeDirection.DOWN)
+            if(StateHelper.getRotation(world, pos, facing, StateHelper.RelativeDirection.LEFT) == StateHelper.RelativeDirection.DOWN)
             {
-                state = state.withProperty(RIGHT, true);
+                state = state.with(RIGHT, true);
             }
         }
-        if(StateHelper.getBlock(worldIn, pos, facing, StateHelper.RelativeDirection.RIGHT) == this)
+        if(StateHelper.getBlock(world, pos, facing, StateHelper.RelativeDirection.RIGHT) == this)
         {
-            if(StateHelper.getRotation(worldIn, pos, facing, StateHelper.RelativeDirection.RIGHT) == StateHelper.RelativeDirection.DOWN)
+            if(StateHelper.getRotation(world, pos, facing, StateHelper.RelativeDirection.RIGHT) == StateHelper.RelativeDirection.DOWN)
             {
-                state = state.withProperty(LEFT, true);
+                state = state.with(LEFT, true);
             }
         }
         return state;
     }
 
     @Override
-    protected BlockStateContainer createBlockState()
+    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
-        return new BlockStateContainer(this, DIRECTION, LEFT, RIGHT);
+        super.fillStateContainer(builder);
+        builder.add(LEFT);
+        builder.add(RIGHT);
     }
 
-
     @Override
-    public boolean hasTileEntity(IBlockState state)
+    public boolean hasTileEntity(BlockState state)
     {
         return true;
     }
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(World world, IBlockState state)
+    public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
         return new BoostTileEntity(1.0F);
     }

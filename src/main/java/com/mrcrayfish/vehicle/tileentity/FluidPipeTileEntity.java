@@ -9,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
@@ -30,7 +31,12 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     @SuppressWarnings("ConstantConditions")
     public FluidPipeTileEntity()
     {
-        super(ModTileEntities.FLUID_PIPE, 500);
+        this(ModTileEntities.FLUID_PIPE);
+    }
+
+    public FluidPipeTileEntity(TileEntityType<?> tileEntityType)
+    {
+        super(tileEntityType, 500);
         this.transferAmount = 20; //TODO change to config value
         this.disabledConnections = new boolean[Direction.values().length];
     }

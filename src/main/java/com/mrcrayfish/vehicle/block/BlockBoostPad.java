@@ -140,7 +140,6 @@ public class BlockBoostPad extends BlockRotatedObject
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
     {
         super.fillStateContainer(builder);
-        builder.add(DIRECTION);
         builder.add(LEFT);
         builder.add(RIGHT);
     }
