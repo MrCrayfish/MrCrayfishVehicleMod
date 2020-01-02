@@ -84,9 +84,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
     }
 
     @OnlyIn(Dist.CLIENT)
-    public Entity getEntity()
+    public <E extends Entity> E getEntity()
     {
-        return entity;
+        return (E) entity;
     }
 
     @Override

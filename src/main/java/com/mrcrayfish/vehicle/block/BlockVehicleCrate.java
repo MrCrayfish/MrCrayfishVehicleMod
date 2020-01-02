@@ -37,6 +37,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -65,7 +68,61 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     public BlockVehicleCrate()
     {
-        super(Names.Block.VEHICLE_CRATE, Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F));
+        super(Names.Block.VEHICLE_CRATE, Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
+    }
+
+    @Override
+    public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+    {
+        return true;
+    }
+
+    @Override
+    public boolean func_220074_n(BlockState state)
+    {
+        return false;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof VehicleCrateTileEntity)
+        {
+            if(((VehicleCrateTileEntity) tileEntity).isOpened())
+            {
+                return VoxelShapes.empty();
+            }
+        }
+        return super.getCollisionShape(state, worldIn, pos, context);
+    }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof VehicleCrateTileEntity)
+        {
+            if(((VehicleCrateTileEntity) tileEntity).isOpened())
+            {
+                return VoxelShapes.empty();
+            }
+        }
+        return VoxelShapes.empty();
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof VehicleCrateTileEntity)
+        {
+            if(((VehicleCrateTileEntity) tileEntity).isOpened())
+            {
+                return VoxelShapes.empty();
+            }
+        }
+        return VoxelShapes.empty();
     }
 
     @Override
