@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -80,10 +81,11 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRaytrace
         //Render the fuel port of the vehicle
         if(entity.shouldRenderFuelPort() && entity.requiresFuel())
         {
+            PoweredVehicleEntity.FuelPortType fuelPortType = entity.getFuelPortType();
             EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-            if (result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getFuelPortPosition(), renderVehicle.getOpenFuelDoorModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
                 if(renderVehicle.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -92,7 +94,7 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRaytrace
             }
             else
             {
-                this.renderPart(properties.getFuelPortPosition(), renderVehicle.getClosedFuelDoorModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
                 entity.playFuelPortCloseSound();
             }
         }

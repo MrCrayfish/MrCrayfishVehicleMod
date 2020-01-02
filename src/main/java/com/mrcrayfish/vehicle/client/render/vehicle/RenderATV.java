@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -39,13 +40,13 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         //Handle bar transformations
         matrixStack.func_227860_a_();
         matrixStack.func_227861_a_(0.0, 0.3375, 0.25);
-        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0.0, -0.025, 0.25);
+        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.func_227861_a_(0.0, -0.025, 0);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
+        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
         RenderUtil.renderColoredModel(SpecialModel.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
 

@@ -212,7 +212,7 @@ public class EntityRaytracer
         createBodyTransforms(aluminumBoatTransformGlobal, ModEntities.ALUMINUM_BOAT);
         HashMap<RayTracePart, List<MatrixTransformation>> aluminumBoatParts = Maps.newHashMap();
         createTransformListForPart(SpecialModel.ALUMINUM_BOAT_BODY, aluminumBoatParts, aluminumBoatTransformGlobal);
-        createFuelablePartTransforms(ModEntities.ALUMINUM_BOAT, aluminumBoatParts, aluminumBoatTransformGlobal);
+        createFuelablePartTransforms(ModEntities.ALUMINUM_BOAT, SpecialModel.FUEL_DOOR_CLOSED, aluminumBoatParts, aluminumBoatTransformGlobal);
         registerEntityStatic(ModEntities.ALUMINUM_BOAT, aluminumBoatParts);
 
         // ATV
@@ -227,7 +227,7 @@ public class EntityRaytracer
         createTransformListForPart(SpecialModel.TOW_BAR, atvParts,
                 MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
                 MatrixTransformation.createTranslation(0.0F, 0.5F, 1.05F));
-        createFuelablePartTransforms(ModEntities.ATV, atvParts, atvTransformGlobal);
+        createFuelablePartTransforms(ModEntities.ATV, SpecialModel.SMALL_FUEL_DOOR_CLOSED, atvParts, atvTransformGlobal);
         createKeyPortTransforms(ModEntities.ATV, atvParts, atvTransformGlobal);
         registerEntityStatic(ModEntities.ATV, atvParts);
 
@@ -241,7 +241,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
                 MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 MatrixTransformation.createScale(0.9F));
-        createFuelablePartTransforms(ModEntities.BUMPER_CAR, bumperCarParts, bumperCarTransformGlobal);
+        createFuelablePartTransforms(ModEntities.BUMPER_CAR, SpecialModel.FUEL_DOOR_CLOSED, bumperCarParts, bumperCarTransformGlobal);
         registerEntityStatic(ModEntities.BUMPER_CAR, bumperCarParts);
 
         // Dune buggy
@@ -251,7 +251,7 @@ public class EntityRaytracer
         createTransformListForPart(SpecialModel.DUNE_BUGGY_BODY, duneBuggyParts, duneBuggyTransformGlobal);
         createTransformListForPart(SpecialModel.DUNE_BUGGY_HANDLES, duneBuggyParts, duneBuggyTransformGlobal,
                 MatrixTransformation.createTranslation(0.0F, 0.0F, -0.0046875F));
-        createFuelablePartTransforms(ModEntities.DUNE_BUGGY, duneBuggyParts, duneBuggyTransformGlobal);
+        createFuelablePartTransforms(ModEntities.DUNE_BUGGY, SpecialModel.FUEL_DOOR_CLOSED, duneBuggyParts, duneBuggyTransformGlobal);
         registerEntityStatic(ModEntities.DUNE_BUGGY, duneBuggyParts);
 
         // Go kart
@@ -276,7 +276,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0.0F, 0.375F, 0.25F),
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
                 MatrixTransformation.createTranslation(0.0F, 0.02F, 0.0F));
-        createFuelablePartTransforms(ModEntities.JET_SKI, jetSkiParts, jetSkiTransformGlobal);
+        createFuelablePartTransforms(ModEntities.JET_SKI, SpecialModel.SMALL_FUEL_DOOR_CLOSED, jetSkiParts, jetSkiTransformGlobal);
         registerEntityStatic(ModEntities.JET_SKI, jetSkiParts);
 
         // Lawn mower
@@ -291,7 +291,7 @@ public class EntityRaytracer
         createTransformListForPart(SpecialModel.TOW_BAR, lawnMowerParts,
                 MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
                 MatrixTransformation.createTranslation(0.0F, 0.5F, 0.6F));
-        createFuelablePartTransforms(ModEntities.LAWN_MOWER, lawnMowerParts, lawnMowerTransformGlobal);
+        createFuelablePartTransforms(ModEntities.LAWN_MOWER, SpecialModel.FUEL_DOOR_CLOSED, lawnMowerParts, lawnMowerTransformGlobal);
         registerEntityStatic(ModEntities.LAWN_MOWER, lawnMowerParts);
 
         // Mini bike
@@ -317,7 +317,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0.0F, -0.12F, 0.785F),
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -22.5F),
                 MatrixTransformation.createScale(0.9F));
-        createFuelablePartTransforms(ModEntities.MOPED, mopedParts, mopedTransformGlobal);
+        createFuelablePartTransforms(ModEntities.MOPED, SpecialModel.FUEL_DOOR_CLOSED, mopedParts, mopedTransformGlobal);
         registerEntityStatic(ModEntities.MOPED, mopedParts);
 
         // Shopping cart
@@ -340,7 +340,7 @@ public class EntityRaytracer
         createTransformListForPart(SpecialModel.TOW_BAR, smartCarParts,
                 MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
                 MatrixTransformation.createTranslation(0.0F, 0.5F, 1.35F));
-        createFuelablePartTransforms(ModEntities.SMART_CAR, smartCarParts, smartCarTransformGlobal);
+        createFuelablePartTransforms(ModEntities.SMART_CAR, SpecialModel.FUEL_DOOR_CLOSED, smartCarParts, smartCarTransformGlobal);
         registerEntityStatic(ModEntities.SMART_CAR, smartCarParts);
 
         // Speed boat
@@ -352,7 +352,7 @@ public class EntityRaytracer
                 MatrixTransformation.createTranslation(0.0F, 0.215F, -0.125F),
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
                 MatrixTransformation.createTranslation(0.0F, 0.02F, 0.0F));
-        createFuelablePartTransforms(ModEntities.SPEED_BOAT, speedBoatParts, speedBoatTransformGlobal);
+        createFuelablePartTransforms(ModEntities.SPEED_BOAT, SpecialModel.FUEL_DOOR_CLOSED, speedBoatParts, speedBoatTransformGlobal);
         registerEntityStatic(ModEntities.SPEED_BOAT, speedBoatParts);
 
         // Sports plane
@@ -360,7 +360,7 @@ public class EntityRaytracer
         createBodyTransforms(sportsPlaneTransformGlobal, ModEntities.SPORTS_PLANE);
         HashMap<RayTracePart, List<MatrixTransformation>> sportsPlaneParts = Maps.newHashMap();
         createTransformListForPart(SpecialModel.SPORTS_PLANE, sportsPlaneParts, sportsPlaneTransformGlobal);
-        createFuelablePartTransforms(ModEntities.SPORTS_PLANE, sportsPlaneParts, sportsPlaneTransformGlobal);
+        createFuelablePartTransforms(ModEntities.SPORTS_PLANE, SpecialModel.FUEL_DOOR_CLOSED, sportsPlaneParts, sportsPlaneTransformGlobal);
         createKeyPortTransforms(ModEntities.SPORTS_PLANE, sportsPlaneParts, sportsPlaneTransformGlobal);
         createTransformListForPart(SpecialModel.SPORTS_PLANE_WING, sportsPlaneParts, sportsPlaneTransformGlobal,
                 MatrixTransformation.createTranslation(0, -0.1875F, 0.5F),
@@ -398,7 +398,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
                 MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 MatrixTransformation.createScale(0.95F));
-        createFuelablePartTransforms(ModEntities.GOLF_CART, golfCartParts, golfCartTransformGlobal);
+        createFuelablePartTransforms(ModEntities.GOLF_CART, SpecialModel.FUEL_DOOR_CLOSED, golfCartParts, golfCartTransformGlobal);
         createKeyPortTransforms(ModEntities.GOLF_CART, golfCartParts, golfCartTransformGlobal);
         registerEntityStatic(ModEntities.GOLF_CART, golfCartParts);
 
@@ -412,7 +412,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
                 MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 MatrixTransformation.createScale(0.75F));
-        createFuelablePartTransforms(ModEntities.OFF_ROADER, offRoaderParts, offRoaderTransformGlobal);
+        createFuelablePartTransforms(ModEntities.OFF_ROADER, SpecialModel.FUEL_DOOR_CLOSED, offRoaderParts, offRoaderTransformGlobal);
         createKeyPortTransforms(ModEntities.OFF_ROADER, offRoaderParts, offRoaderTransformGlobal);
         registerEntityStatic(ModEntities.OFF_ROADER, offRoaderParts);
 
@@ -425,7 +425,7 @@ public class EntityRaytracer
                 MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
                 MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 MatrixTransformation.createScale(0.9F));
-        createFuelablePartTransforms(ModEntities.TRACTOR, tractorParts, tractorTransformGlobal);
+        createFuelablePartTransforms(ModEntities.TRACTOR, SpecialModel.FUEL_DOOR_CLOSED, tractorParts, tractorTransformGlobal);
         createKeyPortTransforms(ModEntities.TRACTOR, tractorParts, tractorTransformGlobal);
         registerEntityStatic(ModEntities.TRACTOR, tractorParts);
 
@@ -456,7 +456,7 @@ public class EntityRaytracer
                     MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
             createTransformListForPart(SpecialModel.SOFA_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
                     MatrixTransformation.createTranslation(0.0F, 8 * 0.0625F, 0.0F));
-            createFuelablePartTransforms(ModEntities.SOFACOPTER, sofacopterParts, sofacopterTransformGlobal);
+            createFuelablePartTransforms(ModEntities.SOFACOPTER, SpecialModel.FUEL_DOOR_CLOSED, sofacopterParts, sofacopterTransformGlobal);
             createKeyPortTransforms(ModEntities.SOFACOPTER, sofacopterParts, sofacopterTransformGlobal);
             registerEntityStatic(ModEntities.SOFACOPTER, sofacopterParts);
         }
@@ -649,14 +649,10 @@ public class EntityRaytracer
      * @param parts map of all parts to their transforms
      * @param transformsGlobal transforms that apply to all parts for this entity
      */
-    public static void createFuelablePartTransforms(EntityType<? extends VehicleEntity> entityType, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    public static void createFuelablePartTransforms(EntityType<? extends VehicleEntity> entityType, SpecialModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
         PartPosition fuelPortPosition = VehicleProperties.getProperties(entityType).getFuelPortPosition();
-        AbstractRenderVehicle<?> renderVehicle = VehicleRenderRegistry.getRender(entityType);
-        if(renderVehicle != null)
-        {
-            createPartTransforms(renderVehicle.getClosedFuelDoorModel(), fuelPortPosition, parts, transformsGlobal, FUNCTION_FUELING);
-        }
+        createPartTransforms(model, fuelPortPosition, parts, transformsGlobal, FUNCTION_FUELING);
     }
 
     /**

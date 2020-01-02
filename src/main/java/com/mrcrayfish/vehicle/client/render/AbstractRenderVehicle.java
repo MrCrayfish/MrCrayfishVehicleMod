@@ -37,16 +37,6 @@ public abstract class AbstractRenderVehicle<T extends VehicleEntity>
 
     public abstract SpecialModel getBodyModel();
 
-    public SpecialModel getClosedFuelDoorModel()
-    {
-        return SpecialModel.FUEL_DOOR_CLOSED;
-    }
-
-    public SpecialModel getOpenFuelDoorModel()
-    {
-        return SpecialModel.FUEL_DOOR_OPEN;
-    }
-
     public SpecialModel getKeyHoleModel()
     {
         return SpecialModel.FUEL_DOOR_OPEN;
