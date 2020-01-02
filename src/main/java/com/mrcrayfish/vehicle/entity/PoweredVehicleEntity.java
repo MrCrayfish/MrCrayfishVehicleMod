@@ -1299,7 +1299,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 BlockState state = this.world.getBlockState(pos);
                 if(state.getMaterial() != Material.AIR)
                 {
-                    if(state.getMaterial() == Material.SNOW || state.getMaterial() == Material.SNOW_BLOCK || (state.getBlock() == Blocks.GRASS && state.get(GrassBlock.SNOWY)))
+                    if(state.getMaterial() == Material.SNOW || state.getMaterial() == Material.SNOW_BLOCK || (state.getBlock() == Blocks.GRASS_BLOCK && state.get(GrassBlock.SNOWY)))
                     {
                         wheelModifier += (1.0F - type.snowMultiplier);
                     }
