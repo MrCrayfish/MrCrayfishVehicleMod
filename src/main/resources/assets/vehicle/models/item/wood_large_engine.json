@@ -1,11 +1,11 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "cover_trim": "minecraft:blocks/log_oak",
-        "wheel": "minecraft:blocks/concrete_white",
-        "cover_top": "minecraft:blocks/planks_oak",
-        "pipes": "minecraft:blocks/concrete_silver",
-        "base": "minecraft:blocks/concrete_gray"
+        "cover_trim": "minecraft:block/oak_log",
+        "wheel": "minecraft:block/white_concrete",
+        "cover_top": "minecraft:block/oak_planks",
+        "pipes": "minecraft:block/light_gray_concrete",
+        "base": "minecraft:block/gray_concrete"
     },
     "display": {
         "gui": {

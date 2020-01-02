@@ -1,9 +1,9 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "handle": "minecraft:blocks/concrete_silver",
-        "detail": "minecraft:blocks/anvil_base",
-        "base": "minecraft:blocks/concrete_green"
+        "handle": "minecraft:block/light_gray_concrete",
+        "detail": "minecraft:block/anvil",
+        "base": "minecraft:block/green_concrete"
     },
     "display": {
         "gui": {

@@ -1,9 +1,9 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "nozzle": "minecraft:blocks/concrete_silver",
-        "color": "minecraft:blocks/concrete_red",
-        "handle": "minecraft:blocks/concrete_gray"
+        "nozzle": "minecraft:block/light_gray_concrete",
+        "color": "minecraft:block/red_concrete",
+        "handle": "minecraft:block/gray_concrete"
     },
     "elements": [
         {

@@ -1,10 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "blocks/concrete_red",
-        "0": "blocks/concrete_red",
-        "1": "blocks/concrete_silver",
-        "2": "blocks/anvil_base"
+        "particle": "minecraft:block/red_concrete",
+        "0": "minecraft:block/red_concrete",
+        "1": "minecraft:block/light_gray_concrete",
+        "2": "minecraft:block/anvil"
     },
     "display": {
         "gui": {

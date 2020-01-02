@@ -1,11 +1,11 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "minecraft:blocks/concrete_silver",
-        "handle_guard": "minecraft:blocks/concrete_gray",
-        "metal_tip": "minecraft:blocks/iron_block",
-        "metal_base": "minecraft:blocks/concrete_red",
-        "handle": "minecraft:blocks/concrete_silver"
+        "particle": "minecraft:block/light_gray_concrete",
+        "handle_guard": "minecraft:block/gray_concrete",
+        "metal_tip": "minecraft:block/iron_block",
+        "metal_base": "minecraft:block/red_concrete",
+        "handle": "minecraft:block/light_gray_concrete"
     },
     "display": {
         "gui": {

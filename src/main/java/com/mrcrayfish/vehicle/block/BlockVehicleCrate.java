@@ -179,7 +179,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
             if(tagCompound.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
             {
                 CompoundNBT blockEntityTag = tagCompound.getCompound("BlockEntityTag");
-                vehicle = blockEntityTag.getString("VehicleId");
+                vehicle = blockEntityTag.getString("Vehicle");
                 if(!Strings.isNullOrEmpty(vehicle))
                 {
                     vehicle = I18n.format("entity.vehicle." + vehicle.split(":")[1] + ".name");

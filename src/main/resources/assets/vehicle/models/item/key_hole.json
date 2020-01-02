@@ -1,9 +1,9 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "detail": "minecraft:blocks/anvil_base",
-        "inner": "minecraft:blocks/concrete_black",
-        "base": "minecraft:blocks/concrete_white"
+        "detail": "minecraft:block/anvil",
+        "inner": "minecraft:block/black_concrete",
+        "base": "minecraft:block/white_concrete"
     },
     "elements": [
         {

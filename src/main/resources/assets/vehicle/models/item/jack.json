@@ -1,12 +1,12 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "minecraft:blocks/concrete_red",
-        "piston_side": "minecraft:blocks/piston_side",
-        "support_top": "minecraft:blocks/concrete_silver",
-        "support_base": "minecraft:blocks/anvil_base",
-        "piston_top": "minecraft:blocks/piston_top_normal",
-        "base": "minecraft:blocks/concrete_red"
+        "particle": "minecraft:block/red_concrete",
+        "piston_side": "minecraft:block/piston_side",
+        "support_top": "minecraft:block/light_gray_concrete",
+        "support_base": "minecraft:block/anvil",
+        "piston_top": "minecraft:block/piston_top_normal",
+        "base": "minecraft:block/red_concrete"
     },
     "display": {
         "gui": {

@@ -1,5 +1,5 @@
 {
     "variants": {
-        "normal": { "model": "vehicle:traffic_cone" }
+        "": { "model": "vehicle:block/traffic_cone" }
     }
 }

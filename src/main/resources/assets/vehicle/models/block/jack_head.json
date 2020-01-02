@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "blocks/piston_side",
-        "1": "blocks/piston_top_normal"
+        "0": "minecraft:block/piston_side",
+        "1": "minecraft:block/piston_top_normal"
     },
     "display": {
         "gui": {

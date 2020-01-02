@@ -1,19 +1,36 @@
 {
-    "forge_marker": 1,
     "variants": {
-        "facing": {
-            "north": { "y": 0   },
-            "east":  { "y": 90  },
-            "south": { "y": 180 },
-            "west":  { "y": 270 }
+        "facing=north,top=false": {
+            "model": "vehicle:block/gas_pump_top",
+            "y": 0
         },
-        "top": {
-            "true": {
-                "model": "vehicle:gas_pump_top"
-            },
-            "false": {
-                "model": "vehicle:gas_pump_bottom"
-            }
+        "facing=east,top=false": {
+            "model": "vehicle:block/gas_pump_top",
+            "y": 90
+        },
+        "facing=south,top=false": {
+            "model": "vehicle:block/gas_pump_top",
+            "y": 180
+        },
+        "facing=west,top=false": {
+            "model": "vehicle:block/gas_pump_top",
+            "y": 270
+        },
+        "facing=north,top=true": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 0
+        },
+        "facing=east,top=true": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 90
+        },
+        "facing=south,top=true": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 180
+        },
+        "facing=west,top=true": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 270
         }
     }
 }

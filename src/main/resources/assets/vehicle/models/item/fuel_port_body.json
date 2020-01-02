@@ -1,10 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "outline": "minecraft:blocks/concrete_white",
-        "lid": "minecraft:blocks/concrete_black",
-        "back": "minecraft:blocks/concrete_silver",
-        "pipe": "minecraft:blocks/concrete_gray"
+        "outline": "minecraft:block/white_concrete",
+        "lid": "minecraft:block/black_concrete",
+        "back": "minecraft:block/light_gray_concrete",
+        "pipe": "minecraft:block/gray_concrete"
     },
     "elements": [
         {

@@ -66,7 +66,7 @@ public class ModEntities
 
     private static <T extends Entity> EntityType<T> buildVehicleType(String id, Function<World, T> function, float width, float height)
     {
-        EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(id);
+        EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(id);
         type.setRegistryName(id);
         ENTITY_TYPES.add(type);
         BlockVehicleCrate.registerVehicle(id);

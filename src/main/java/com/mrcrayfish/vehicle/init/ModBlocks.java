@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.*;
 import com.mrcrayfish.vehicle.item.ItemBoostRamp;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
@@ -57,7 +58,7 @@ public class ModBlocks
 
     private static Block register(Block block)
     {
-        return register(block, block1 -> new BlockItem(block1, new Item.Properties()));
+        return register(block, block1 -> new BlockItem(block1, new Item.Properties().group(VehicleMod.CREATIVE_TAB)));
     }
 
     private static Block register(Block block, @Nullable Function<Block, BlockItem> supplier)

@@ -1,6 +1,6 @@
 {
     "parent": "vehicle:item/small_engine",
     "textures": {
-        "tier": "blocks/gold_block"
+        "tier": "minecraft:block/gold_block"
     }
 }

@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -91,11 +92,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     protected final void playStepSound(BlockPos pos, BlockState blockIn) {}
 
-    /*@Override //TODO hmmmmmmmm
+    @Override //TODO hmmmmmmmm
     public AxisAlignedBB getRenderBoundingBox()
     {
-        return this.getEntityBoundingBox().grow(1);
-    }*/
+        return this.getBoundingBox().grow(1);
+    }
 
     @Override
     public boolean processInitialInteract(PlayerEntity player, Hand hand)
@@ -429,10 +430,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
     {
-        //super.setPositionAndRotationDirect(x, y, z, yaw, pitch, posRotationIncrements, teleport);
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;
@@ -682,6 +681,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public IPacket<?> createSpawnPacket()
     {
-        return new SSpawnObjectPacket(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 }

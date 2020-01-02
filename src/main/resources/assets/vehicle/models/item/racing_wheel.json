@@ -1,10 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "concrete_silver": "minecraft:blocks/concrete_silver",
-        "rubber": "minecraft:blocks/concrete_black",
-        "rim": "minecraft:blocks/hardened_clay_stained_cyan",
-        "logo": "vehicle:models/cray_industries"
+        "light_gray_concrete": "minecraft:block/light_gray_concrete",
+        "rubber": "minecraft:block/black_concrete",
+        "rim": "minecraft:block/cyan_terracotta",
+        "logo": "vehicle:model/cray_industries"
     },
     "display": {
         "gui": {
@@ -409,12 +409,12 @@
             "from": [ 7.5, 7.6, 7.6 ], 
             "to": [ 9, 8.4, 8.4 ], 
             "faces": {
-                "north": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] },
-                "east": { "texture": "#concrete_silver", "uv": [ 0, 0, 0.8, 0.8 ] },
-                "south": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] },
-                "west": { "texture": "#concrete_silver", "uv": [ 0, 0, 0.8, 0.8 ] },
-                "up": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] },
-                "down": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] }
+                "north": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] },
+                "east": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 0.8, 0.8 ] },
+                "south": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] },
+                "west": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 0.8, 0.8 ] },
+                "up": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] },
+                "down": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] }
             }
         },
         {
@@ -422,12 +422,12 @@
             "to": [ 9, 8.4, 8.4 ], 
             "rotation": { "origin": [ 8, 8, 8 ], "axis": "x", "angle": 45.0 },
             "faces": {
-                "north": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] },
-                "east": { "texture": "#concrete_silver", "uv": [ 0, 0, 0.8, 0.8 ] },
-                "south": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] },
-                "west": { "texture": "#concrete_silver", "uv": [ 0, 0, 0.8, 0.8 ] },
-                "up": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] },
-                "down": { "texture": "#concrete_silver", "uv": [ 0, 0, 1.5, 0.8 ] }
+                "north": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] },
+                "east": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 0.8, 0.8 ] },
+                "south": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] },
+                "west": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 0.8, 0.8 ] },
+                "up": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] },
+                "down": { "texture": "#light_gray_concrete", "uv": [ 0, 0, 1.5, 0.8 ] }
             }
         },
         {

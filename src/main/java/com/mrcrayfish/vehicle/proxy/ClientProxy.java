@@ -19,6 +19,7 @@ import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.item.KeyItem;
@@ -28,6 +29,8 @@ import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -55,6 +58,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
@@ -68,6 +72,11 @@ public class ClientProxy implements Proxy
     @Override
     public void setupClient()
     {
+        Predicate<RenderType> cutoutPredicate = renderType -> renderType == RenderType.func_228643_e_();
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, cutoutPredicate);
+        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, cutoutPredicate);
+        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, cutoutPredicate);
+
         /* Register Vehicles */
         registerVehicleRender(ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));
         registerVehicleRender(ModEntities.DUNE_BUGGY, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
@@ -127,7 +136,7 @@ public class ClientProxy implements Proxy
             {
                 return stack.getTag().getInt("Color");
             }
-            return 0;
+            return 0xFFFFFF;
         };
 
         ForgeRegistries.ITEMS.forEach(item ->

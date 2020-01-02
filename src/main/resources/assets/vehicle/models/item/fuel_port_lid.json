@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "outline": "minecraft:blocks/concrete_white"
+        "outline": "minecraft:block/white_concrete"
     },
     "elements": [
         {

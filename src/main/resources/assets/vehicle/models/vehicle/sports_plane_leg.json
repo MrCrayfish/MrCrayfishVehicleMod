@@ -1,0 +1,33 @@
+{
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
+    "textures": {
+        "base": "minecraft:block/white_concrete"
+    },
+    "elements": [
+        {
+            "from": [ 7.4, 8, 7.4 ], 
+            "to": [ 8.6, 11, 8.6 ], 
+            "faces": {
+                "north": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "east": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "south": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "west": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "up": { "texture": "#base", "uv": [ 0, 0, 1.2, 1.2 ] },
+                "down": { "texture": "#base", "uv": [ 0, 0, 1.2, 1.2 ] }
+            }
+        },
+        {
+            "from": [ 7.4, 11, 7.4 ], 
+            "to": [ 8.6, 14, 8.6 ], 
+            "rotation": { "origin": [ 8.0, 11.0, 8.600000008940697 ], "axis": "x", "angle": -22.5 },
+            "faces": {
+                "north": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "east": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "south": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "west": { "texture": "#base", "uv": [ 0, 0, 1.2, 3 ] },
+                "up": { "texture": "#base", "uv": [ 0, 0, 1.2, 1.2 ] },
+                "down": { "texture": "#base", "uv": [ 0, 0, 1.2, 1.2 ] }
+            }
+        }
+    ]
+}

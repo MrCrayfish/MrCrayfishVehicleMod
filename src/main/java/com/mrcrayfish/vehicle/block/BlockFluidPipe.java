@@ -50,7 +50,7 @@ import java.util.stream.Stream;
  */
 public class BlockFluidPipe extends BlockObject
 {
-    public static final DirectionProperty DIRECTION = DirectionProperty.create("direction", Direction.values());
+    public static final DirectionProperty DIRECTION = DirectionProperty.create("facing", Direction.values());
     public static final BooleanProperty[] CONNECTED_PIPES = Util.make(() ->
     {
         BooleanProperty[] directions = new BooleanProperty[Direction.values().length];

@@ -380,7 +380,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
         this.updateWheelPositions();
 
-        this.move(MoverType.SELF, this.getMotion().add(this.vehicleMotionX, this.vehicleMotionY, this.vehicleMotionY));
+        this.move(MoverType.SELF, this.getMotion().add(this.vehicleMotionX, this.vehicleMotionY, this.vehicleMotionZ));
 
         /* Reduces the motion and speed multiplier */
         if(this.onGround)

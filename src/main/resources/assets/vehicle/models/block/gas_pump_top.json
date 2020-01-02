@@ -1,12 +1,12 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "minecraft:blocks/concrete_red",
+        "particle": "minecraft:blocks/red_concrete",
         "0": "minecraft:blocks/iron_block",
-        "1": "minecraft:blocks/concrete_red",
-        "2": "vehicle:models/cray_industries",
-        "3": "minecraft:blocks/anvil_base",
-        "4": "minecraft:blocks/concrete_black"
+        "1": "minecraft:blocks/red_concrete",
+        "2": "vehicle:model/cray_industries",
+        "3": "minecraft:blocks/anvil",
+        "4": "minecraft:blocks/black_concrete"
     },
     "display": {
         "gui": {

@@ -1,15 +1,15 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "blocks/iron_block",
-        "0": "blocks/anvil_base",
-        "1": "blocks/iron_block",
-        "2": "blocks/concrete_black",
-        "3": "blocks/concrete_red",
-        "4": "blocks/concrete_silver",
-        "5": "blocks/concrete_yellow",
-        "6": "blocks/prismarine_dark",
-        "7": "blocks/concrete_lime"
+        "particle": "minecraft:block/iron_block",
+        "0": "minecraft:block/anvil",
+        "1": "minecraft:block/iron_block",
+        "2": "minecraft:block/black_concrete",
+        "3": "minecraft:block/red_concrete",
+        "4": "minecraft:block/light_gray_concrete",
+        "5": "minecraft:block/yellow_concrete",
+        "6": "minecraft:block/prismarine_dark",
+        "7": "minecraft:block/lime_concrete"
     },
     "display": {
         "gui": {

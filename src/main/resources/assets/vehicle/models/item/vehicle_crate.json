@@ -1,10 +1,10 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "logo": "vehicle:models/cray_industries_logo",
-        "bolt": "minecraft:blocks/concrete_silver",
-        "frame": "minecraft:blocks/anvil_base",
-        "base": "minecraft:blocks/iron_block"
+        "logo": "vehicle:model/cray_industries_logo",
+        "bolt": "minecraft:block/light_gray_concrete",
+        "frame": "minecraft:block/anvil",
+        "base": "minecraft:block/iron_block"
     },
     "display": {
         "gui": {

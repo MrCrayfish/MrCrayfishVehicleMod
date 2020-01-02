@@ -1,5 +1,4 @@
 {
-    "forge_marker": 1,
     "defaults": {
         "model": "vehicle:fuel_drum",
         "textures": {
@@ -8,14 +7,21 @@
         }
     },
     "variants": {
-        "inventory": {
-            "model": "vehicle:fuel_drum"
+        "facing=north": {
+            "model": "vehicle:block/industrial_fuel_drum",
+            "y": 0
         },
-        "facing": {
-            "north": { "y": 0   },
-            "east":  { "y": 90  },
-            "south": { "y": 180 },
-            "west":  { "y": 270 }
+        "facing=east": {
+            "model": "vehicle:block/industrial_fuel_drum",
+            "y": 90
+        },
+        "facing=south": {
+            "model": "vehicle:block/industrial_fuel_drum",
+            "y": 180
+        },
+        "facing=west": {
+            "model": "vehicle:block/industrial_fuel_drum",
+            "y": 270
         }
     }
 }

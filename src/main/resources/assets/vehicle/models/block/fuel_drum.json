@@ -1,11 +1,11 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "blocks/hardened_clay_stained_brown",
-        "0": "blocks/concrete_silver",
-        "1": "blocks/hardened_clay_stained_brown",
-        "2": "blocks/iron_block",
-        "3": "blocks/concrete_gray"
+        "particle": "minecraft:block/brown_terracotta",
+        "0": "minecraft:block/light_gray_concrete",
+        "1": "minecraft:block/brown_terracotta",
+        "2": "minecraft:block/iron_block",
+        "3": "minecraft:block/concrete_gray"
     },
     "display": {
         "gui": {

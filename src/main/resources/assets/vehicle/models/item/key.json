@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "cover": "minecraft:blocks/concrete_gray",
-        "key": "minecraft:blocks/concrete_white"
+        "cover": "minecraft:block/gray_concrete",
+        "key": "minecraft:block/white_concrete"
     },
     "display": {
         "gui": {

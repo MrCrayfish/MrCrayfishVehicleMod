@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
     "textures": {
-        "particle": "blocks/iron_block",
-        "iron": "blocks/iron_block"
+        "particle": "minecraft:block/iron_block",
+        "iron": "minecraft:block/iron_block"
     },
     "display": {
         "gui": {
