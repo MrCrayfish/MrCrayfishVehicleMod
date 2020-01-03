@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.item.ItemBoostRamp;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
 import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
@@ -43,17 +44,9 @@ public class ModBlocks
     public static final Block WORKSTATION = register(new BlockWorkstation());
     public static final Block VEHICLE_CRATE = register(new BlockVehicleCrate(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1)));
     public static final Block JACK = register(new BlockJack());
-
-    //public static final Block FUELIUM = null;
-    //public static final Block ENDER_SAP = null;
-    //public static final Block BLAZE_JUICE = null;
-
-    private static void register()
-    {
-        //buildSound(new BlockLiquid(BlockNames.FUELIUM, ModFluids.FUELIUM, Material.WATER, 148, 242, 45), null);
-        //buildSound(new BlockLiquid(BlockNames.ENDER_SAP, ModFluids.ENDER_SAP, Material.WATER, 10, 93, 80), null);
-        //buildSound(new BlockLiquid(BlockNames.BLAZE_JUICE, ModFluids.BLAZE_JUICE, Material.WATER, 254, 198, 0), null);
-    }
+    public static final FlowingFluidBlock FUELIUM = (FlowingFluidBlock) register(new FlowingFluidBlock(() -> ModFluids.FLOWING_FUELIUM, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()).setRegistryName(Reference.MOD_ID, "fuelium"), null);
+    public static final FlowingFluidBlock ENDER_SAP = (FlowingFluidBlock) register(new FlowingFluidBlock(() -> ModFluids.FLOWING_ENDER_SAP, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()).setRegistryName(Reference.MOD_ID, "ender_sap"), null);
+    public static final FlowingFluidBlock BLAZE_JUICE = (FlowingFluidBlock) register(new FlowingFluidBlock(() -> ModFluids.FLOWING_BLAZE_JUICE, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()).setRegistryName(Reference.MOD_ID, "blaze_juice"), null);
 
     private static Block register(Block block)
     {
@@ -78,7 +71,6 @@ public class ModBlocks
     @SubscribeEvent
     public static void registerBlocks(final RegistryEvent.Register<Block> event)
     {
-        ModBlocks.register();
         BLOCKS.forEach(block -> event.getRegistry().register(block));
     }
 

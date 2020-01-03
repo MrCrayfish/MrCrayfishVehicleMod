@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.fluid.BlazeJuice;
 import com.mrcrayfish.vehicle.fluid.EnderSap;
 import com.mrcrayfish.vehicle.fluid.Fuelium;
+import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -19,11 +20,11 @@ import net.minecraftforge.registries.ObjectHolder;
 public class ModFluids
 {
     public static final Fluid FUELIUM = null;
-    public static final Fluid FLOWING_FUELIUM = null;
+    public static final FlowingFluid FLOWING_FUELIUM = null;
     public static final Fluid ENDER_SAP = null;
-    public static final Fluid FLOWING_ENDER_SAP = null;
+    public static final FlowingFluid FLOWING_ENDER_SAP = null;
     public static final Fluid BLAZE_JUICE = null;
-    public static final Fluid FLOWING_BLAZE_JUICE = null;
+    public static final FlowingFluid FLOWING_BLAZE_JUICE = null;
 
     @SubscribeEvent
     @SuppressWarnings("unused")

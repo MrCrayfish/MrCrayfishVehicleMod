@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.fluid;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
+import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
@@ -18,7 +20,7 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 {
     public BlazeJuice()
     {
-        super(new Properties(() -> ModFluids.BLAZE_JUICE, () -> ModFluids.FLOWING_BLAZE_JUICE, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800)));
+        super(new Properties(() -> ModFluids.BLAZE_JUICE, () -> ModFluids.FLOWING_BLAZE_JUICE, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800)).block(() -> ModBlocks.BLAZE_JUICE));
     }
 
     @Override
