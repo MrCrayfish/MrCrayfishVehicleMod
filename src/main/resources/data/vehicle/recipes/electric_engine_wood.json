@@ -10,8 +10,7 @@
             "item": "minecraft:redstone_block"
         },
         "W": {
-            "item": "minecraft:planks",
-            "data": 0
+            "item": "minecraft:oak_planks"
         },
         "I": {
             "item": "minecraft:iron_ingot"
@@ -21,7 +20,6 @@
         }
     },
     "result": {
-        "item": "vehicle:electric_engine",
-        "data": 0
+        "item": "vehicle:wood_electric_engine"
     }
 }

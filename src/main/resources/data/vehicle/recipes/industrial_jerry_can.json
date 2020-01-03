@@ -13,8 +13,7 @@
             "item": "minecraft:iron_block"
         },
         "D": {
-            "item": "minecraft:dye",
-            "data": 2
+            "item": "minecraft:green_dye"
         },
         "H": {
             "item": "minecraft:hopper"

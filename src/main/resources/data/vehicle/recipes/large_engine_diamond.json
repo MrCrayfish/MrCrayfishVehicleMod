@@ -7,15 +7,13 @@
     ],
     "key": {
         "E": {
-            "item": "vehicle:large_engine",
-            "data": 3
+            "item": "vehicle:gold_large_engine"
         },
         "U": {
             "item": "minecraft:diamond"
         }
     },
     "result": {
-        "item": "vehicle:large_engine",
-        "data": 4
+        "item": "vehicle:diamond_large_engine"
     }
 }

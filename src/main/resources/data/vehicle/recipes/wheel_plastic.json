@@ -7,8 +7,7 @@
     ],
     "key": {
         "W": {
-            "item": "minecraft:concrete",
-            "data": 11
+            "item": "minecraft:blue_concrete"
         },
         "L": {
             "item": "minecraft:leather"
@@ -18,8 +17,7 @@
         }
     },
     "result": {
-        "item": "vehicle:wheel",
-        "data": 6,
+        "item": "vehicle:plastic_wheel",
         "count": 1
     }
 }

@@ -7,8 +7,7 @@
     ],
     "key": {
         "W": {
-            "item": "minecraft:wool",
-            "data": 15
+            "item": "minecraft:black_wool"
         },
         "L": {
             "item": "minecraft:leather"
@@ -18,8 +17,7 @@
         }
     },
     "result": {
-        "item": "vehicle:wheel",
-        "data": 0,
+        "item": "vehicle:standard_wheel",
         "count": 1
     }
 }

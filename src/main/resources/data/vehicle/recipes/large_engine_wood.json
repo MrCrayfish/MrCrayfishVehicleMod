@@ -10,8 +10,7 @@
             "item": "minecraft:redstone_block"
         },
         "W": {
-            "item": "minecraft:planks",
-            "data": 0
+            "item": "minecraft:oak_planks"
         },
         "P": {
             "item": "minecraft:piston"
@@ -24,7 +23,6 @@
         }
     },
     "result": {
-        "item": "vehicle:large_engine",
-        "data": 0
+        "item": "vehicle:wood_large_engine"
     }
 }

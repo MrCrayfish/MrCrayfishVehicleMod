@@ -7,15 +7,13 @@
     ],
     "key": {
         "E": {
-            "item": "vehicle:large_engine",
-            "data": 2
+            "item": "vehicle:iron_large_engine"
         },
         "U": {
             "item": "minecraft:gold_ingot"
         }
     },
     "result": {
-        "item": "vehicle:large_engine",
-        "data": 3
+        "item": "vehicle:gold_large_engine"
     }
 }

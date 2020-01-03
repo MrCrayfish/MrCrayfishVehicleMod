@@ -7,15 +7,13 @@
     ],
     "key": {
         "E": {
-            "item": "vehicle:small_engine",
-            "data": 1
+            "item": "vehicle:stone_small_engine"
         },
         "U": {
             "item": "minecraft:iron_ingot"
         }
     },
     "result": {
-        "item": "vehicle:small_engine",
-        "data": 2
+        "item": "vehicle:iron_small_engine"
     }
 }

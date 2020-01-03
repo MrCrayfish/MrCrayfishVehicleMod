@@ -7,18 +7,16 @@
     ],
     "key": {
         "G": {
-            "item": "minecraft:concrete",
-            "data": 5
+            "item": "minecraft:green_concrete"
         },
         "C": {
-            "item": "minecraft:concrete",
-            "data": 15
+            "item": "minecraft:black_concrete"
         },
         "B": {
             "item": "minecraft:blaze_powder"
         },
         "R": {
-            "item": "minecraft:golden_rail"
+            "item": "minecraft:powered_rail"
         },
         "I": {
             "item": "minecraft:iron_ingot"

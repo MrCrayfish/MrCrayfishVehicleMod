@@ -10,8 +10,7 @@
             "item": "minecraft:iron_nugget"
         },
         "C": {
-            "item": "minecraft:concrete",
-            "data": 0
+            "item": "minecraft:white_concrete"
         }
     },
     "result": {

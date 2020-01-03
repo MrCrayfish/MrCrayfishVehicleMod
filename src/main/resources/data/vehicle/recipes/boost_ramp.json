@@ -9,8 +9,7 @@
             "item": "vehicle:boost_pad"
         },
         "C": {
-            "item": "minecraft:concrete",
-            "data": 7
+            "item": "minecraft:gray_concrete"
         }
     },
     "result": {

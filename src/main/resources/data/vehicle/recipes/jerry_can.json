@@ -10,8 +10,7 @@
             "item": "minecraft:iron_ingot"
         },
         "D": {
-            "item": "minecraft:dye",
-            "data": 1
+            "item": "minecraft:red_dye"
         },
         "H": {
             "item": "minecraft:hopper"

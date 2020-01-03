@@ -10,8 +10,7 @@
             "item": "minecraft:iron_ingot"
         },
         "C": {
-            "item": "minecraft:concrete",
-            "data": 7
+            "item": "minecraft:light_gray_concrete"
         }
     },
     "result": {

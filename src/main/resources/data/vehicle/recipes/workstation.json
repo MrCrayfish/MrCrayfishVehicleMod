@@ -7,12 +7,10 @@
     ],
     "key": {
         "T": {
-            "item": "minecraft:concrete",
-            "data": 8
+            "item": "minecraft:light_gray_concrete"
         },
         "S": {
-            "item": "minecraft:concrete",
-            "data": 14
+            "item": "minecraft:red_concrete"
         },
         "W": {
             "item": "minecraft:crafting_table"

@@ -7,12 +7,10 @@
     ],
     "key": {
         "O": {
-            "item": "minecraft:concrete",
-            "data": 1
+            "item": "minecraft:orange_concrete"
         },
         "W": {
-            "item": "minecraft:concrete",
-            "data": 0
+            "item": "minecraft:white_concrete"
         }
     },
     "result": {

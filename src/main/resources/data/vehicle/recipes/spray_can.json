@@ -10,15 +10,13 @@
             "item": "minecraft:iron_ingot"
         },
         "D": {
-            "item": "minecraft:dye",
-            "data": 15
+            "item": "minecraft:white_dye"
         },
         "W": {
             "item": "minecraft:water_bucket"
         }
     },
     "result": {
-        "item": "vehicle:spray_can",
-        "data": 0
+        "item": "vehicle:spray_can"
     }
 }
