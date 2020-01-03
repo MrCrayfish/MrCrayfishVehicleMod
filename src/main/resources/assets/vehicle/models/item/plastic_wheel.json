@@ -1,5 +1,5 @@
 {
-    "parent": "vehicle:item/wheel/standard",
+    "parent": "vehicle:item/standard_wheel",
     "textures": {
         "rubber": "minecraft:block/blue_concrete",
         "rim": "minecraft:block/cyan_concrete"

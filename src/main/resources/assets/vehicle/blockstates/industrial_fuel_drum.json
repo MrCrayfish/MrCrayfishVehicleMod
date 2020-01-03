@@ -1,11 +1,4 @@
 {
-    "defaults": {
-        "model": "vehicle:fuel_drum",
-        "textures": {
-            "particle": "blocks/hardened_clay_stained_green",
-            "1": "blocks/hardened_clay_stained_blue"
-        }
-    },
     "variants": {
         "facing=north": {
             "model": "vehicle:block/industrial_fuel_drum",
