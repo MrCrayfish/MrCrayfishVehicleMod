@@ -5,7 +5,7 @@
         "0": "minecraft:block/light_gray_concrete",
         "1": "minecraft:block/brown_terracotta",
         "2": "minecraft:block/iron_block",
-        "3": "minecraft:block/concrete_gray"
+        "3": "minecraft:block/gray_concrete"
     },
     "display": {
         "gui": {

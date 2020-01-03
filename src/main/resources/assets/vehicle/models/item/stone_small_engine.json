@@ -1,6 +1,6 @@
 {
     "parent": "vehicle:item/small_engine",
     "textures": {
-        "tier": "minecraft:block/stone_slab_top"
+        "tier": "minecraft:block/smooth_stone"
     }
 }

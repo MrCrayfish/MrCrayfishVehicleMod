@@ -7,7 +7,7 @@
         "2": "minecraft:block/iron_block",
         "3": "minecraft:block/light_gray_concrete",
         "4": "minecraft:block/white_concrete",
-        "5": "vehicle:blocks/fuelium_overlay",
+        "5": "vehicle:block/fuelium_overlay",
         "6": "vehicle:model/cray_industries_logo"
     },
     "display": {

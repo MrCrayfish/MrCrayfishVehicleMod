@@ -1,7 +1,7 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "light_gray_concrete": "minecraft:block/light_gray_silver",
+        "light_gray_concrete": "minecraft:block/light_gray_concrete",
         "rubber": "minecraft:block/black_concrete",
         "rim": "minecraft:block/cyan_terracotta",
         "logo": "vehicle:model/cray_industries"
