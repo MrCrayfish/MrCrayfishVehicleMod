@@ -33,7 +33,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
     }
 
     @Override
-    public void func_225628_a_(MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int i, AbstractClientPlayerEntity playerEntity, float v, float v1, float v2, float v3, float v4, float v5)
+    public void func_225628_a_(MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int i, AbstractClientPlayerEntity playerEntity, float v, float v1, float partialTicks, float v3, float v4, float v5)
     {
         CompoundNBT tagCompound = playerEntity.getDataManager().get(CommonEvents.HELD_VEHICLE);
         if(!tagCompound.isEmpty())
@@ -59,7 +59,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                     if(counter != null)
                     {
                         float width = this.cachedEntity.getWidth() / 2;
-                        matrixStack.func_227861_a_(0F, 1F - 1F * counter.getProgress(v), -0.5F * Math.sin(Math.PI * counter.getProgress(v)) - width * (1.0F - counter.getProgress(v)));
+                        matrixStack.func_227861_a_(0F, 1F - 1F * counter.getProgress(partialTicks), -0.5F * Math.sin(Math.PI * counter.getProgress(partialTicks)) - width * (1.0F - counter.getProgress(partialTicks)));
                     }
                     Vec3d heldOffset = this.cachedEntity.getProperties().getHeldOffset();
                     matrixStack.func_227861_a_(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);

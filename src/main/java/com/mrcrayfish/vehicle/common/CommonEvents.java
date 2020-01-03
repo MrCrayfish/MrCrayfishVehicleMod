@@ -26,6 +26,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
@@ -267,7 +268,8 @@ public class CommonEvents
                 if(!player.getDataManager().get(HELD_VEHICLE).isEmpty())
                 {
                     //Vec3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
-                    Vec3d clickedVec = new Vec3d(0.5, 0.5, 0.5);
+                    RayTraceResult result = player.func_213324_a(10.0, 0.0F, false);
+                    Vec3d clickedVec = result.getHitVec();
                     if(clickedVec == null || event.getFace() != Direction.UP)
                     {
                         event.setCanceled(true);

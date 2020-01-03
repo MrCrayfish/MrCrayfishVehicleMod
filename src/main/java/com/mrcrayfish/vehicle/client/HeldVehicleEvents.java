@@ -85,10 +85,10 @@ public class HeldVehicleEvents
         float progress = counter.getProgress(event.getPartialTicks());
         model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
         model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F * progress);
-        model.bipedRightArm.rotationPointY = -1.5F * progress;
+        model.bipedRightArm.rotationPointY = (player.isCrouching() ? 3.0F : -0.5F) * progress;
         model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
         model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(5F * progress);
-        model.bipedLeftArm.rotationPointY = -1.5F * progress;
+        model.bipedLeftArm.rotationPointY = (player.isCrouching() ? 3.0F : -0.5F) * progress;
     }
 
     public static class AnimationCounter

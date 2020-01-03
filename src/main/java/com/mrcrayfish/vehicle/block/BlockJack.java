@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  */
 public class BlockJack extends BlockObject
 {
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 9, 16);
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 9, 15);
 
     public BlockJack()
     {
