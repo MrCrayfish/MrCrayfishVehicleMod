@@ -25,7 +25,6 @@ import java.util.function.Function;
 /**
  * Author: MrCrayfish
  */
-@ObjectHolder(Reference.MOD_ID)
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModEntities
 {
