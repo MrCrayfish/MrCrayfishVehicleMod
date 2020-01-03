@@ -156,17 +156,25 @@ public class RenderUtil
 
     private static void renderQuads(MatrixStack matrixStack, IVertexBuilder vertexBuilder, List<BakedQuad> quads, ItemStack stack, int color, int lightTexture, int overlayTexture)
     {
-        boolean useItemColor = !stack.isEmpty() && color == -1;
+        boolean useItemColor = !stack.isEmpty() && color != -1;
         MatrixStack.Entry entry = matrixStack.func_227866_c_();
         for(BakedQuad quad : quads)
         {
-            if(useItemColor && quad.hasTintIndex())
+            int tintColor = 0xFFFFFF;
+            if(quad.hasTintIndex())
             {
-                color = Minecraft.getInstance().getItemColors().getColor(stack, quad.getTintIndex());
+                if(useItemColor)
+                {
+                    tintColor = Minecraft.getInstance().getItemColors().getColor(stack, quad.getTintIndex());
+                }
+                else
+                {
+                    tintColor = color;
+                }
             }
-            float red = (float) (color >> 16 & 255) / 255.0F;
-            float green = (float) (color >> 8 & 255) / 255.0F;
-            float blue = (float) (color & 255) / 255.0F;
+            float red = (float) (tintColor >> 16 & 255) / 255.0F;
+            float green = (float) (tintColor >> 8 & 255) / 255.0F;
+            float blue = (float) (tintColor & 255) / 255.0F;
             vertexBuilder.func_227889_a_(entry, quad, red, green, blue, lightTexture, overlayTexture);
         }
     }

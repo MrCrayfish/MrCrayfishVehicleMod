@@ -27,9 +27,13 @@ import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -163,7 +167,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }));
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(186, 51, "Show Remaining"));
+        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 186, startY + 51, "Show Remaining"));
         this.checkBoxMaterials.setToggled(WorkstationScreen.showRemaining);
         this.loadVehicle(currentVehicle);
     }
@@ -423,33 +427,6 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         this.drawCenteredString(this.font, this.cachedVehicle[currentVehicle].getName().getFormattedText(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
-        MatrixStack matrixStack = new MatrixStack();
-        matrixStack.func_227861_a_(startX + 88, startY + 90, 100);
-
-        float scale = this.prevVehicleScale + (this.vehicleScale - this.prevVehicleScale) * partialTicks;
-        matrixStack.func_227862_a_(scale, -scale, scale);
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(5F));
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(this.minecraft.player.ticksExisted + partialTicks));
-
-        int vehicleIndex = transitioning ? prevCurrentVehicle : currentVehicle;
-        Class<? extends VehicleEntity> clazz = cachedVehicle[vehicleIndex].getClass();
-        PartPosition position = DISPLAY_PROPERTIES.get(clazz);
-        if(position != null)
-        {
-            //Apply vehicle rotations, translations, and scale
-            matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-            matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
-            matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
-        }
-        RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) this.cachedVehicle[vehicleIndex].getType());
-        if(wrapper != null)
-        {
-            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-            wrapper.render(this.cachedVehicle[vehicleIndex], matrixStack, renderTypeBuffer, Minecraft.getInstance().getRenderPartialTicks());
-        }
-
         this.filteredMaterials = this.getMaterials();
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
@@ -495,6 +472,43 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
             }
         }
+
+        RenderSystem.pushMatrix();
+        RenderSystem.translatef(startX + 88, startY + 90, 1050.0F);
+        RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
+
+        MatrixStack matrixStack = new MatrixStack();
+        matrixStack.func_227861_a_(0.0, 0.0, 1000.0);
+
+        float scale = this.prevVehicleScale + (this.vehicleScale - this.prevVehicleScale) * partialTicks;
+        matrixStack.func_227862_a_(scale, scale, scale);
+        Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-5F);
+        Quaternion quaternion1 = Axis.POSITIVE_Y.func_229187_a_(-(this.minecraft.player.ticksExisted + partialTicks));
+        quaternion.multiply(quaternion1);
+        matrixStack.func_227863_a_(quaternion);
+
+        int vehicleIndex = transitioning ? prevCurrentVehicle : currentVehicle;
+        Class<? extends VehicleEntity> clazz = cachedVehicle[vehicleIndex].getClass();
+        PartPosition position = DISPLAY_PROPERTIES.get(clazz);
+        if(position != null)
+        {
+            //Apply vehicle rotations, translations, and scale
+            matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
+            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
+            matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+            matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
+        }
+
+        EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
+        renderManager.setRenderShadow(false);
+        renderManager.func_229089_a_(quaternion);
+        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
+        renderManager.func_229084_a_(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
+        renderTypeBuffer.func_228461_a_();
+        renderManager.setRenderShadow(true);
+
+        RenderSystem.popMatrix();
     }
 
     private void drawSlot(int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required, boolean applicable)
