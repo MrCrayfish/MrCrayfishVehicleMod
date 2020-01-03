@@ -1,34 +1,34 @@
 {
     "variants": {
-        "facing=north,top=false": {
-            "model": "vehicle:block/gas_pump_top",
-            "y": 0
-        },
-        "facing=east,top=false": {
-            "model": "vehicle:block/gas_pump_top",
-            "y": 90
-        },
-        "facing=south,top=false": {
-            "model": "vehicle:block/gas_pump_top",
-            "y": 180
-        },
-        "facing=west,top=false": {
-            "model": "vehicle:block/gas_pump_top",
-            "y": 270
-        },
         "facing=north,top=true": {
-            "model": "vehicle:block/gas_pump_bottom",
+            "model": "vehicle:block/gas_pump_top",
             "y": 0
         },
         "facing=east,top=true": {
-            "model": "vehicle:block/gas_pump_bottom",
+            "model": "vehicle:block/gas_pump_top",
             "y": 90
         },
         "facing=south,top=true": {
-            "model": "vehicle:block/gas_pump_bottom",
+            "model": "vehicle:block/gas_pump_top",
             "y": 180
         },
         "facing=west,top=true": {
+            "model": "vehicle:block/gas_pump_top",
+            "y": 270
+        },
+        "facing=north,top=false": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 0
+        },
+        "facing=east,top=false": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 90
+        },
+        "facing=south,top=false": {
+            "model": "vehicle:block/gas_pump_bottom",
+            "y": 180
+        },
+        "facing=west,top=false": {
             "model": "vehicle:block/gas_pump_bottom",
             "y": 270
         }
