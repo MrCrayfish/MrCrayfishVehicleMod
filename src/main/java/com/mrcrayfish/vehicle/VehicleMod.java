@@ -54,11 +54,6 @@ public class VehicleMod
         {
             super.fill(items);
 
-            /* Add fluids buckets */
-            items.add(FluidUtil.getFilledBucket(new FluidStack(ModFluids.BLAZE_JUICE, 1000)));
-            items.add(FluidUtil.getFilledBucket(new FluidStack(ModFluids.ENDER_SAP, 1000)));
-            items.add(FluidUtil.getFilledBucket(new FluidStack(ModFluids.FUELIUM, 1000)));
-
             /* Fill all jerry cans to their capacity */
             items.forEach(stack ->
             {

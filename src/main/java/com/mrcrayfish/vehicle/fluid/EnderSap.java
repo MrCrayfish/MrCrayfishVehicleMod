@@ -2,8 +2,10 @@ package com.mrcrayfish.vehicle.fluid;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -17,6 +19,12 @@ public abstract class EnderSap extends ForgeFlowingFluid
     public EnderSap()
     {
         super(new Properties(() -> ModFluids.ENDER_SAP, () -> ModFluids.FLOWING_ENDER_SAP, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/ender_sap_still"), new ResourceLocation(Reference.MOD_ID, "block/ender_sap_flowing")).viscosity(3000)));
+    }
+
+    @Override
+    public Item getFilledBucket()
+    {
+        return ModItems.ENDER_SAP_BUCKET;
     }
 
     public static class Source extends EnderSap

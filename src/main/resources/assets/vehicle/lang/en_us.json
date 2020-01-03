@@ -60,6 +60,9 @@
     "item.vehicle.go_kart_steering_wheel": "Steering Wheel",
     "item.vehicle.handle_bar": "Handle Bars",
     "item.vehicle.hammer": "Hammer",
+    "item.vehicle.fuelium_bucket": "Fuelium Bucket",
+    "item.vehicle.ender_sap_bucket": "Ender Sap Bucket",
+    "item.vehicle.blaze_juice_bucket": "Blaze Juice Bucket",
 
     "block.vehicle.traffic_cone": "Traffic Cone",
     "block.vehicle.boost_pad": "Boost Pad",

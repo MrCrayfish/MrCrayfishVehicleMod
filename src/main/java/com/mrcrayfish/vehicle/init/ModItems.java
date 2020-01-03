@@ -1,12 +1,17 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.item.*;
 import com.mrcrayfish.vehicle.util.Names;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Items;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -47,14 +52,14 @@ public class ModItems
     public static final Item SPRAY_CAN = null;
     public static final Item JERRY_CAN = null;
     public static final Item INDUSTRIAL_JERRY_CAN = null;
-
     public static final Item WRENCH = null;
     public static final Item HAMMER = null;
     public static final Item KEY = null;
-    //public static final Item KEY_HOLE = null;
-    //public static final Item MODELS = null;
-    //public static final Item COUCH_HELICOPTER_ARM = null;
-    //public static final Item COUCH_HELICOPTER_SKID = null;
+    public static final Item FUELIUM_BUCKET = null;
+    public static final Item ENDER_SAP_BUCKET = null;
+    public static final Item BLAZE_JUICE_BUCKET = null;
+
+    //register("water_bucket", );
 
     @SubscribeEvent
     public static void register(RegistryEvent.Register<Item> event)
@@ -89,5 +94,8 @@ public class ModItems
         registry.register(new WrenchItem());
         registry.register(new HammerItem());
         registry.register(new KeyItem());
+        registry.register(new BucketItem(() -> ModFluids.FUELIUM, (new Item.Properties()).containerItem(Items.BUCKET).maxStackSize(1).group(VehicleMod.CREATIVE_TAB)).setRegistryName(Reference.MOD_ID, "fuelium_bucket"));
+        registry.register(new BucketItem(() -> ModFluids.ENDER_SAP, (new Item.Properties()).containerItem(Items.BUCKET).maxStackSize(1).group(VehicleMod.CREATIVE_TAB)).setRegistryName(Reference.MOD_ID, "ender_sap_bucket"));
+        registry.register(new BucketItem(() -> ModFluids.BLAZE_JUICE, (new Item.Properties()).containerItem(Items.BUCKET).maxStackSize(1).group(VehicleMod.CREATIVE_TAB)).setRegistryName(Reference.MOD_ID, "blaze_juice_bucket"));
     }
 }

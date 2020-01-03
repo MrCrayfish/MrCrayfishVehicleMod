@@ -2,8 +2,10 @@ package com.mrcrayfish.vehicle.fluid;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -17,6 +19,12 @@ public abstract class Fuelium extends ForgeFlowingFluid
     public Fuelium()
     {
         super(new Properties(() -> ModFluids.FUELIUM, () -> ModFluids.FLOWING_FUELIUM, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).density(900).viscosity(900)));
+    }
+
+    @Override
+    public Item getFilledBucket()
+    {
+        return ModItems.FUELIUM_BUCKET;
     }
 
     public static class Source extends Fuelium
