@@ -5,7 +5,7 @@
         "piston_side": "minecraft:block/piston_side",
         "support_top": "minecraft:block/light_gray_concrete",
         "support_base": "minecraft:block/anvil",
-        "piston_top": "minecraft:block/piston_top_normal",
+        "piston_top": "minecraft:block/piston_top",
         "base": "minecraft:block/red_concrete"
     },
     "display": {
