@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -31,7 +32,7 @@ public class WheelItem extends PartItem implements IDyeable
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new StringTextComponent(I18n.format("vehicle.wheel_type." + this.wheelType.getId() + ".name")));
+        tooltip.add(new StringTextComponent(TextFormatting.AQUA + I18n.format("vehicle.wheel_type." + this.wheelType.getId() + ".name")));
     }
 
     public WheelType getWheelType()
