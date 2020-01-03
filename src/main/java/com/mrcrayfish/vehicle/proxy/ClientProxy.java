@@ -16,9 +16,10 @@ import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
-import com.mrcrayfish.vehicle.entity.*;
+import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
@@ -110,6 +111,8 @@ public class ClientProxy implements Proxy
             registerVehicleRender(ModEntities.SOFACOPTER, new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
         }
 
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.JACK, com.mrcrayfish.vehicle.client.render.JackRenderer::new);
+
         /* Client Events */
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleEvents());
@@ -119,7 +122,7 @@ public class ClientProxy implements Proxy
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_EXTRACTOR, FluidExtractorRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.FUEL_DRUM, FuelDrumRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.VEHICLE_CRATE, VehicleCrateRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.JACK, JackRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.JACK, com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP, GasPumpRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP_TANK, GasPumpTankRenderer::new);
 

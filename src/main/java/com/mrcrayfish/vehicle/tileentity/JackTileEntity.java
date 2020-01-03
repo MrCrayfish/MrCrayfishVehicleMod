@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class JackTileEntity extends TileEntity implements ITickableTileEntity
+public class JackTileEntity extends TileEntitySynced implements ITickableTileEntity
 {
     public static final int MAX_LIFT_PROGRESS = 20;
 
@@ -57,7 +57,7 @@ public class JackTileEntity extends TileEntity implements ITickableTileEntity
     {
         this.prevLiftProgress = this.liftProgress;
 
-        if(this.world.isRemote && this.jack == null)
+        if(this.jack == null)
         {
             List<EntityJack> jacks = this.world.getEntitiesWithinAABB(EntityJack.class, new AxisAlignedBB(this.pos));
             if(jacks.size() > 0)
@@ -66,7 +66,7 @@ public class JackTileEntity extends TileEntity implements ITickableTileEntity
             }
         }
 
-        if(this.jack != null && (this.jack.getPassengers().isEmpty() || !jack.isAlive()))
+        if(this.jack != null && (this.jack.getPassengers().isEmpty() || !this.jack.isAlive()))
         {
             this.jack = null;
         }
@@ -132,7 +132,7 @@ public class JackTileEntity extends TileEntity implements ITickableTileEntity
 
     public float getProgress()
     {
-        return this.liftProgress / (float) JackTileEntity.MAX_LIFT_PROGRESS;
+        return (float) this.liftProgress / (float) MAX_LIFT_PROGRESS;
     }
 
     @Override

@@ -43,7 +43,6 @@ public class ModBlocks
     public static final Block WORKSTATION = register(new BlockWorkstation());
     public static final Block VEHICLE_CRATE = register(new BlockVehicleCrate(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1)));
     public static final Block JACK = register(new BlockJack());
-    public static final Block JACK_HEAD = register(new BlockObject(Names.Block.JACK_HEAD, Block.Properties.create(Material.WOOD)), null);
 
     //public static final Block FUELIUM = null;
     //public static final Block ENDER_SAP = null;

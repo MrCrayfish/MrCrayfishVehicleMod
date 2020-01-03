@@ -47,6 +47,7 @@ public enum SpecialModel
     FLUID_TRAILER("trailer_fluid_body"),
 
     VEHICLE_CRATE("vehicle_crate_panel"),
+    JACK_PISTON_HEAD("jack_piston_head"),
     SEED_SPIKER("seed_spiker"),
     NOZZLE("nozzle"),
     TOW_BAR("tow_bar"),

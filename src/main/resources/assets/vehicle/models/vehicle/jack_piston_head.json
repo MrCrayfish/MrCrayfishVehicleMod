@@ -1,8 +1,8 @@
 {
     "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "0": "minecraft:block/piston_side",
-        "1": "minecraft:block/piston_top_normal"
+        "piston_side": "minecraft:block/piston_side",
+        "piston_top": "minecraft:block/piston_top"
     },
     "display": {
         "gui": {
@@ -47,12 +47,12 @@
             "from": [ 2.00, 8.00, 2.00 ], 
             "to": [ 14.00, 11.00, 14.00 ], 
             "faces": {
-                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
-                "east": { "texture": "#0", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
-                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
-                "west": { "texture": "#0", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
-                "up": { "texture": "#1", "uv": [ 0.00, 0.00, 16.00, 16.00 ] },
-                "down": { "texture": "#1", "uv": [ 0.00, 0.00, 16.00, 16.00 ] }
+                "north": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
+                "east": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
+                "south": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
+                "west": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 16.00, 4.00 ] },
+                "up": { "texture": "#piston_top", "uv": [ 0.00, 0.00, 16.00, 16.00 ] },
+                "down": { "texture": "#piston_top", "uv": [ 0.00, 0.00, 16.00, 16.00 ] }
             }
         },
         {
@@ -60,10 +60,10 @@
             "from": [ 6.50, 0.00, 6.50 ], 
             "to": [ 9.50, 8.00, 9.50 ], 
             "faces": {
-                "north": { "texture": "#0", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 },
-                "east": { "texture": "#0", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 },
-                "south": { "texture": "#0", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 },
-                "west": { "texture": "#0", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 }
+                "north": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 },
+                "east": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 },
+                "south": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 },
+                "west": { "texture": "#piston_side", "uv": [ 0.00, 0.00, 10.00, 4.00 ], "rotation": 90 }
             }
         }
     ]

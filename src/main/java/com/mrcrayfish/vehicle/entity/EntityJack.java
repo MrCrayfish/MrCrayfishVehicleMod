@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 /**
  * Author: MrCrayfish
@@ -103,7 +104,7 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
     @Override
     public IPacket<?> createSpawnPacket()
     {
-        return new SSpawnObjectPacket(this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
     @Override
