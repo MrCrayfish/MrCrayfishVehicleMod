@@ -239,7 +239,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
                 vehicle = blockEntityTag.getString("Vehicle");
                 if(!Strings.isNullOrEmpty(vehicle))
                 {
-                    vehicle = I18n.format("entity.vehicle." + vehicle.split(":")[1] + ".name");
+                    vehicle = I18n.format("entity.vehicle." + vehicle.split(":")[1]);
                     list.add(new StringTextComponent(TextFormatting.BLUE + vehicle));
                 }
             }
