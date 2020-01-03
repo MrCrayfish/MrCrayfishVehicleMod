@@ -49,7 +49,7 @@ public class BlockWorkstation extends BlockRotatedObject
         Direction direction = state.get(DIRECTION);
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(Block.makeCuboidShape(0, 1, 0, 16, 16, 16));
-        shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 16, 0, 16, 18, 2), Direction.SOUTH))[direction.getHorizontalIndex()]);
+        shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 16, 0, 16, 17.5, 2), Direction.SOUTH))[direction.getHorizontalIndex()]);
         VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
         SHAPES.put(state, shape);
         return shape;
