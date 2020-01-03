@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.tileentity.GasPumpTankTileEntity;
 import com.mrcrayfish.vehicle.tileentity.GasPumpTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
 import com.mrcrayfish.vehicle.util.Names;
+import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -24,6 +25,8 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -34,6 +37,10 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
@@ -42,14 +49,46 @@ public class BlockGasPump extends BlockRotatedObject
 {
     public static final BooleanProperty TOP = BooleanProperty.create("top");
 
-    private static final AxisAlignedBB[] COLLISION_BOXES = new Bounds(3, 0, 0, 13, 15, 16).getRotatedBounds();
-    private static final AxisAlignedBB[] TOP_SELECTION_BOXES = new Bounds(3, -16, 0, 13, 15, 16).getRotatedBounds();
-    private static final AxisAlignedBB[] BOTTOM_SELECTION_BOXES = new Bounds(3, 0, 0, 13, 31, 16).getRotatedBounds();
+    private final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
     public BlockGasPump()
     {
         super(Names.Block.GAS_PUMP, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));
+    }
+
+    private VoxelShape getShape(BlockState state)
+    {
+        if(SHAPES.containsKey(state))
+        {
+            return SHAPES.get(state);
+        }
+        Direction direction = state.get(DIRECTION);
+        boolean top = state.get(TOP);
+        List<VoxelShape> shapes = new ArrayList<>();
+        if(top)
+        {
+            shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(3, -16, 0, 13, 15, 16), Direction.EAST))[direction.getHorizontalIndex()]);
+        }
+        else
+        {
+            shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(3, 0, 0, 13, 31, 16), Direction.EAST))[direction.getHorizontalIndex()]);
+        }
+        VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
+        SHAPES.put(state, shape);
+        return shape;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
+    {
+        return this.getShape(state);
+    }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
+    {
+        return this.getShape(state);
     }
 
     @Override
