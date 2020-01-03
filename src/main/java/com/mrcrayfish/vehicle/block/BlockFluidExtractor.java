@@ -8,7 +8,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,6 +23,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -35,14 +38,14 @@ public class BlockFluidExtractor extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
-            ItemStack stack = player.getHeldItem(hand);
+            ItemStack stack = playerEntity.getHeldItem(hand);
             if(stack.getItem() == Items.BUCKET)
             {
-                FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace());
+                FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace());
                 //if())
                 //{
                     /*TileEntity tileEntity = world.getPipeTileEntity(pos);
@@ -55,9 +58,9 @@ public class BlockFluidExtractor extends BlockRotatedObject
             }
 
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof FluidExtractorTileEntity)
+            if(tileEntity instanceof INamedContainerProvider)
             {
-                player.openContainer((FluidExtractorTileEntity) tileEntity);
+                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 return ActionResultType.SUCCESS;
             }
         }

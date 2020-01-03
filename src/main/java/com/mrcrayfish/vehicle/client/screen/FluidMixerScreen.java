@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
 import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
 import com.mrcrayfish.vehicle.tileentity.FluidMixerTileEntity;
 import com.mrcrayfish.vehicle.util.FluidUtils;
@@ -10,6 +11,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,11 +28,11 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
     private PlayerInventory playerInventory;
     private FluidMixerTileEntity fluidMixerTileEntity;
 
-    public FluidMixerScreen(int windowId, PlayerInventory playerInventory, FluidMixerTileEntity fluidMixerTileEntity)
+    public FluidMixerScreen(FluidMixerContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
-        super(new FluidMixerContainer(windowId, playerInventory, fluidMixerTileEntity), playerInventory, fluidMixerTileEntity.getDisplayName());
+        super(container, playerInventory, title);
         this.playerInventory = playerInventory;
-        this.fluidMixerTileEntity = fluidMixerTileEntity;
+        this.fluidMixerTileEntity = container.getFluidExtractor();
         this.xSize = 176;
         this.ySize = 180;
     }

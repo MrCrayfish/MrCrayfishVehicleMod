@@ -63,6 +63,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -1116,11 +1117,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(player instanceof ServerPlayerEntity)
         {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
+            NetworkHooks.openGui((ServerPlayerEntity) player, this, buffer -> buffer.writeInt(this.getEntityId()));
+            /*ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) player;
             serverPlayerEntity.getNextWindowId();
             serverPlayerEntity.openContainer = new EditVehicleContainer(serverPlayerEntity.currentWindowId, this.getVehicleInventory(), this, player, player.inventory);
             serverPlayerEntity.openContainer.addListener(serverPlayerEntity);
-            PacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new MessageVehicleWindow(serverPlayerEntity.currentWindowId, this.getEntityId()));
+            PacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new MessageVehicleWindow(serverPlayerEntity.currentWindowId, this.getEntityId()));*/
         }
     }
 

@@ -3,10 +3,12 @@ package com.mrcrayfish.vehicle.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
+import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -20,12 +22,12 @@ public class StorageScreen extends ContainerScreen<StorageContainer>
     private final PlayerInventory playerInventory;
     private final int inventoryRows;
 
-    public StorageScreen(int windowId, PlayerInventory playerInventory, StorageInventory storageInventory)
+    public StorageScreen(StorageContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
-        super(new StorageContainer(windowId, playerInventory, storageInventory, playerInventory.player), playerInventory, storageInventory.getDisplayName());
+        super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.passEvents = false;
-        this.inventoryRows = storageInventory.getSizeInventory() / 9;
+        this.inventoryRows = container.getStorageInventory().getSizeInventory() / 9;
         this.ySize = 114 + this.inventoryRows * 18;
     }
 

@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.inventory.container.slot.FuelSlot;
 import com.mrcrayfish.vehicle.tileentity.FluidMixerTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.Slot;
@@ -24,7 +25,7 @@ public class FluidMixerContainer extends Container
 
     private FluidMixerTileEntity fluidExtractor;
 
-    public FluidMixerContainer(int windowId, IInventory playerInventory, FluidMixerTileEntity fluidExtractor)
+    public FluidMixerContainer(int windowId, PlayerInventory playerInventory, FluidMixerTileEntity fluidExtractor)
     {
         super(ModContainers.FLUID_MIXER, windowId);
         this.fluidExtractor = fluidExtractor;
@@ -46,6 +47,11 @@ public class FluidMixerContainer extends Container
         }
 
         this.trackIntArray(fluidExtractor.getFluidMixerData());
+    }
+
+    public FluidMixerTileEntity getFluidExtractor()
+    {
+        return fluidExtractor;
     }
 
     @Override

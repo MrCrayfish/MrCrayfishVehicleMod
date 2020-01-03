@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.crafting.FluidExtract;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
+import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -10,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -26,11 +28,11 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
     private PlayerInventory playerInventory;
     private FluidExtractorTileEntity fluidExtractorTileEntity;
 
-    public FluidExtractorScreen(int windowId, PlayerInventory playerInventory, FluidExtractorTileEntity fluidExtractorTileEntity)
+    public FluidExtractorScreen(FluidExtractorContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
-        super(new FluidExtractorContainer(windowId, playerInventory, fluidExtractorTileEntity), playerInventory, fluidExtractorTileEntity.getDisplayName());
+        super(container, playerInventory, title);
         this.playerInventory = playerInventory;
-        this.fluidExtractorTileEntity = fluidExtractorTileEntity;
+        this.fluidExtractorTileEntity = container.getFluidExtractor();
         this.xSize = 176;
         this.ySize = 166;
     }

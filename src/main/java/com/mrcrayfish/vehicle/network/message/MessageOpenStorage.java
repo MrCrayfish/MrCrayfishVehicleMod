@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import java.util.function.Supplier;
 
@@ -67,7 +68,7 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                                 }
                                 else
                                 {
-                                    player.openContainer(attachableChest.getInventory());
+                                    NetworkHooks.openGui(player, attachableChest.getInventory(),buffer -> buffer.writeInt(message.entityId));
                                 }
                             }
                         }

@@ -15,14 +15,17 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
+import com.mrcrayfish.vehicle.client.screen.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.inventory.container.*;
 import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
@@ -30,6 +33,7 @@ import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -38,6 +42,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.SoundCategory;
@@ -128,6 +133,13 @@ public class ClientProxy implements Proxy
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);
+
+        /* Screen Registration */
+        ScreenManager.registerFactory(ModContainers.FLUID_EXTRACTOR, FluidExtractorScreen::new);
+        ScreenManager.registerFactory(ModContainers.FLUID_MIXER, FluidMixerScreen::new);
+        ScreenManager.registerFactory(ModContainers.EDIT_VEHICLE, EditVehicleScreen::new);
+        ScreenManager.registerFactory(ModContainers.WORKSTATION, WorkstationScreen::new);
+        ScreenManager.registerFactory(ModContainers.STORAGE, StorageScreen::new);
 
         //TODO add custom loader
         //ModelLoaderRegistry.registerLoader(new CustomLoader());

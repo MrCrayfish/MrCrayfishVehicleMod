@@ -8,7 +8,9 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.fluid.IFluidState;
+import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -20,6 +22,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
@@ -34,18 +37,19 @@ public class BlockFluidMixer extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
-            if(!FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace()))
+            if(!FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
             {
                 TileEntity tileEntity = world.getTileEntity(pos);
-                if(tileEntity instanceof FluidMixerTileEntity)
+                if(tileEntity instanceof INamedContainerProvider)
                 {
-                    player.openContainer((FluidMixerTileEntity) tileEntity);
+                    NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 }
             }
+            return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
     }

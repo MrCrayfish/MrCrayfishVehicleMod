@@ -47,6 +47,11 @@ public class FluidExtractorContainer extends Container
         this.trackIntArray(fluidExtractor.getFluidExtractorData());
     }
 
+    public FluidExtractorTileEntity getFluidExtractor()
+    {
+        return fluidExtractor;
+    }
+
     @Override
     public boolean canInteractWith(PlayerEntity playerIn)
     {

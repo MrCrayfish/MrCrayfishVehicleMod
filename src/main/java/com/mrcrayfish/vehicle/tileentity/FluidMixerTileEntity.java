@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.crafting.FluidMixerRecipes;
 import com.mrcrayfish.vehicle.fluid.FluidTankMixerInput;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -492,9 +493,9 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
     @Nullable
     @Override
-    public Container createMenu(int p_createMenu_1_, PlayerInventory p_createMenu_2_, PlayerEntity p_createMenu_3_)
+    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
     {
-        return null; //TODO need to fill this in
+        return new FluidMixerContainer(windowId, playerInventory, this);
     }
 
     public IIntArray getFluidMixerData()

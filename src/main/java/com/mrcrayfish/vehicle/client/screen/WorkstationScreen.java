@@ -40,6 +40,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
@@ -112,11 +113,11 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     private int vehicleScale = 30;
     private int prevVehicleScale = 30;
 
-    public WorkstationScreen(int windowId, PlayerInventory playerInventory, WorkstationTileEntity workstation)
+    public WorkstationScreen(WorkstationContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
-        super(new WorkstationContainer(windowId, playerInventory, workstation), playerInventory, workstation.getDisplayName());
+        super(container, playerInventory, title);
         this.playerInventory = playerInventory;
-        this.workstation = workstation;
+        this.workstation = container.getTileEntity();
         this.xSize = 289;
         this.ySize = 202;
         this.materials = new ArrayList<>();

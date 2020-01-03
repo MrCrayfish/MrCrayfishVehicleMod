@@ -75,6 +75,11 @@ public class EditVehicleContainer extends Container
         return vehicleInventory;
     }
 
+    public PoweredVehicleEntity getVehicle()
+    {
+        return vehicle;
+    }
+
     @Override
     public boolean canInteractWith(PlayerEntity player)
     {

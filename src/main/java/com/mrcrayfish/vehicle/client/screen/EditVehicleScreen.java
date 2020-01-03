@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
+import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -21,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
@@ -47,12 +49,12 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
     private int mouseGrabbedButton;
     private int mouseClickedX, mouseClickedY;
 
-    public EditVehicleScreen(int windowId, IInventory vehicleInventory, PoweredVehicleEntity vehicle, PlayerEntity player)
+    public EditVehicleScreen(EditVehicleContainer container, PlayerInventory playerInventory, ITextComponent title)
     {
-        super(new EditVehicleContainer(windowId, vehicleInventory, vehicle, player, player.inventory), player.inventory, vehicle.getDisplayName());
-        this.playerInventory = player.inventory;
-        this.vehicleInventory = vehicleInventory;
-        this.vehicle = vehicle;
+        super(container, playerInventory, title);
+        this.playerInventory = playerInventory;
+        this.vehicleInventory = container.getVehicleInventory();
+        this.vehicle = container.getVehicle();
         this.ySize = 184;
     }
 
