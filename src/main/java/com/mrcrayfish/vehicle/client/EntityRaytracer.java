@@ -6,9 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -1077,20 +1075,20 @@ public class EntityRaytracer
          */
         public void transform(Matrix4f matrix)
         {
-            Matrix4f temp = new Matrix4f();
+            MatrixStack matrixStack = new MatrixStack();
             switch(type)
             {
                 case ROTATION:
-                    temp.func_226596_a_(new Vector3f(this.x, this.y, this.z).func_229187_a_(this.angle)); //TODO Check if this works
+                    matrixStack.func_227863_a_(new Vector3f(this.x, this.y, this.z).func_229187_a_(this.angle));
                     break;
                 case TRANSLATION:
-                    temp.setTranslation(this.x, this.y, this.z); //TODO test this
+                    matrixStack.func_227861_a_(this.x, this.y, this.z);
                     break;
                 case SCALE:
-                    temp = Matrix4f.func_226593_a_(this.x, this.y, this.z); //TODO test this
+                    matrixStack.func_227862_a_(this.x, this.y, this.z);
                     break;
             }
-            matrix.func_226595_a_(temp);
+            matrix.func_226595_a_(matrixStack.func_227866_c_().func_227870_a_());
         }
     }
 
@@ -1205,7 +1203,7 @@ public class EntityRaytracer
         // Perform raytrace on all raytraceable entities within reach of the player
         RayTraceResultRotated lookObjectPutative;
         double distance;
-        for (Entity entity : Minecraft.getInstance().world.getEntitiesWithinAABB((EntityType<?>) null, box, entity -> entity instanceof IEntityRaytraceable))
+        for (Entity entity : Minecraft.getInstance().world.getEntitiesWithinAABB(VehicleEntity.class, box, entity -> entity instanceof IEntityRaytraceable))
         {
             if (entityRaytraceTrianglesDynamic.containsKey(entity.getType()) || entityRaytraceTrianglesStatic.containsKey(entity.getType()))
             {
@@ -1306,7 +1304,7 @@ public class EntityRaytracer
         // Perform raytrace on the dynamic boxes and triangles of the entity's parts
         lookBox = raytracePartTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, boxesApplicable, false, boxProvider.getDynamicInteractionBoxMap());
         distanceShortest = updateShortestDistance(lookBox, distanceShortest);
-        lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, partsNonApplicable, true, entityRaytraceTrianglesDynamic.get(entity.getClass()));
+        lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, partsNonApplicable, true, entityRaytraceTrianglesDynamic.get(entity.getType()));
         distanceShortest = updateShortestDistance(lookPart, distanceShortest);
 
         boolean isDynamic = lookBox != null || lookPart != null;
@@ -1316,7 +1314,7 @@ public class EntityRaytracer
         {
             lookBox = raytracePartTriangles(entity, pos, eyeVecRotated, lookBox, distanceShortest, eyes, direction, boxesApplicable, false, boxProvider.getStaticInteractionBoxMap());
             distanceShortest = updateShortestDistance(lookBox, distanceShortest);
-            lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, partsNonApplicable, true, entityRaytraceTrianglesStatic.get(entity.getClass()));
+            lookPart = raytracePartTriangles(entity, pos, eyeVecRotated, lookPart, distanceShortest, eyes, direction, partsNonApplicable, true, entityRaytraceTrianglesStatic.get(entity.getType()));
         }
         // Return the result object of hit with hit vector rotated back in the same direction as the entity's rotation yaw, or null it no hit occurred
         if (lookPart != null)
@@ -1428,11 +1426,12 @@ public class EntityRaytracer
             RenderSystem.pushMatrix();
             RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
 
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
-            RenderSystem.lineWidth(2.0F);
+            //RenderSystem.enableBlend();
+            //RenderSystem.defaultBlendFunc();
+            RenderSystem.lineWidth(Math.max(2.0F, (float)Minecraft.getInstance().func_228018_at_().getFramebufferWidth() / 1920.0F * 2.0F));
             RenderSystem.disableTexture();
             RenderSystem.disableLighting();
+            RenderSystem.enableDepthTest();
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
@@ -1442,7 +1441,7 @@ public class EntityRaytracer
 
             RenderSystem.enableLighting();
             RenderSystem.enableTexture();
-            RenderSystem.disableBlend();
+           // RenderSystem.disableBlend();
 
             RenderSystem.popMatrix();
 
@@ -1490,12 +1489,12 @@ public class EntityRaytracer
     public static TriangleRayTraceList boxToTriangles(AxisAlignedBB box, @Nullable BiFunction<RayTracePart, Entity, Matrix4f> matrixFactory)
     {
         List<TriangleRayTrace> triangles = Lists.newArrayList();
-        getTranglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, box.minX, box.minY, box.minZ);
-        getTranglesFromQuadAndAdd(triangles, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.minY, box.maxZ, box.maxX, box.minY, box.minZ);
-        getTranglesFromQuadAndAdd(triangles, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ);
-        getTranglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ);
-        getTranglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.maxY, box.minZ, box.minX, box.maxY, box.minZ);
-        getTranglesFromQuadAndAdd(triangles, box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ);
+        getTrianglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, box.minX, box.minY, box.minZ);
+        getTrianglesFromQuadAndAdd(triangles, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.minY, box.maxZ, box.maxX, box.minY, box.minZ);
+        getTrianglesFromQuadAndAdd(triangles, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ);
+        getTrianglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ);
+        getTrianglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.maxY, box.minZ, box.minX, box.maxY, box.minZ);
+        getTrianglesFromQuadAndAdd(triangles, box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ);
         return new TriangleRayTraceList(triangles, matrixFactory);
     }
 
@@ -1518,7 +1517,7 @@ public class EntityRaytracer
      * @param triangles list of all triangles for the given raytraceable entity class
      * @param data four vertices of a quad
      */
-    private static void getTranglesFromQuadAndAdd(List<TriangleRayTrace> triangles, double... data)
+    private static void getTrianglesFromQuadAndAdd(List<TriangleRayTrace> triangles, double... data)
     {
         int size = 3;
         // Two triangles that represent the BakedQuad
