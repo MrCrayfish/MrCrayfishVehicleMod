@@ -1434,7 +1434,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public enum FuelPortType
     {
         DEFAULT(SpecialModel.FUEL_DOOR_CLOSED, SpecialModel.FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
-        SMALL(SpecialModel.SMALL_FUEL_DOOR_CLOSED, SpecialModel.SMALL_FUEL_DOOR_CLOSED, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
+        SMALL(SpecialModel.SMALL_FUEL_DOOR_CLOSED, SpecialModel.SMALL_FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
 
         private SpecialModel closed;
         private SpecialModel open;

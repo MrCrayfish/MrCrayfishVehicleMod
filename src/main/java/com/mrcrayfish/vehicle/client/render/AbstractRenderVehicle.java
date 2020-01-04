@@ -39,7 +39,7 @@ public abstract class AbstractRenderVehicle<T extends VehicleEntity>
 
     public SpecialModel getKeyHoleModel()
     {
-        return SpecialModel.FUEL_DOOR_OPEN;
+        return SpecialModel.KEY_HOLE;
     }
 
     public abstract void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks);
