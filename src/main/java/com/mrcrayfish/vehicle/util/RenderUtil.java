@@ -41,7 +41,7 @@ public class RenderUtil
     /**
      * Draws a rectangle with a horizontal gradient between the specified colors (ARGB format).
      */
-    public static void drawGradientRectHorizontal(int left, int top, int right, int bottom, int leftColor, int rightColor, double zLevel)
+    public static void drawGradientRectHorizontal(int left, int top, int right, int bottom, int leftColor, int rightColor)
     {
         float redStart = (float)(leftColor >> 24 & 255) / 255.0F;
         float greenStart = (float)(leftColor >> 16 & 255) / 255.0F;
@@ -59,10 +59,10 @@ public class RenderUtil
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.func_225582_a_((double)right, (double)top, zLevel).func_227885_a_(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
-        bufferbuilder.func_225582_a_((double)left, (double)top, zLevel).func_227885_a_(greenStart, blueStart, alphaStart, redStart).endVertex();
-        bufferbuilder.func_225582_a_((double)left, (double)bottom, zLevel).func_227885_a_(greenStart, blueStart, alphaStart, redStart).endVertex();
-        bufferbuilder.func_225582_a_((double)right, (double)bottom, zLevel).func_227885_a_(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
+        bufferbuilder.func_225582_a_((double)right, (double)top, 0).func_227885_a_(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
+        bufferbuilder.func_225582_a_((double)left, (double)top, 0).func_227885_a_(greenStart, blueStart, alphaStart, redStart).endVertex();
+        bufferbuilder.func_225582_a_((double)left, (double)bottom, 0).func_227885_a_(greenStart, blueStart, alphaStart, redStart).endVertex();
+        bufferbuilder.func_225582_a_((double)right, (double)bottom, 0).func_227885_a_(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
         tessellator.draw();
         RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();

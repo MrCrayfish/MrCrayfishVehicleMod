@@ -6,6 +6,8 @@ import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
@@ -22,8 +24,11 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -50,13 +55,15 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             switch(index)
             {
                 case 0:
-                    return FluidExtractorTileEntity.this.extractionProgress;
+                    return extractionProgress;
                 case 1:
-                    return FluidExtractorTileEntity.this.remainingFuel;
+                    return remainingFuel;
                 case 2:
-                    return FluidExtractorTileEntity.this.fuelMaxProgress;
+                    return fuelMaxProgress;
                 case 3:
-                    return FluidExtractorTileEntity.this.tank.getFluidAmount();
+                    return tank.getFluid().getFluid().getRegistryName().hashCode();
+                case 4:
+                    return tank.getFluidAmount();
             }
             return 0;
         }
@@ -66,16 +73,22 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             switch(index)
             {
                 case 0:
-                    FluidExtractorTileEntity.this.extractionProgress = value;
+                    extractionProgress = value;
                     break;
                 case 1:
-                    FluidExtractorTileEntity.this.remainingFuel = value;
+                    remainingFuel = value;
                     break;
                 case 2:
-                    FluidExtractorTileEntity.this.fuelMaxProgress = value;
+                    fuelMaxProgress = value;
                     break;
                 case 3:
-                    FluidExtractorTileEntity.this.tank.getFluid().setAmount(value);
+                    updateFluid(tank, value);
+                    break;
+                case 4:
+                    if(!tank.isEmpty() || tank.getFluid().getRawFluid() != Fluids.EMPTY)
+                    {
+                        tank.getFluid().setAmount(value);
+                    }
                     break;
             }
 
@@ -83,13 +96,13 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
         public int size()
         {
-            return 4;
+            return 5;
         }
     };
 
     public FluidExtractorTileEntity()
     {
-        super(ModTileEntities.FLUID_EXTRACTOR, TANK_CAPACITY, stack -> false);
+        super(ModTileEntities.FLUID_EXTRACTOR, TANK_CAPACITY, stack -> true);
     }
 
     @Override
@@ -124,7 +137,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
                 this.extractionProgress = 0;
             }
 
-            if(this.remainingFuel > 0 && canFillWithFluid(source))
+            if(this.remainingFuel > 0)
             {
                 this.remainingFuel--;
             }
@@ -142,6 +155,12 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             }
         }
         return false;
+    }
+
+    public boolean canExtract()
+    {
+        ItemStack source = this.getStackInSlot(SLOT_FLUID_SOURCE);
+        return !source.isEmpty() && this.canFillWithFluid(source) && this.remainingFuel > 0;
     }
 
     public FluidStack getFluidStackTank()
@@ -251,7 +270,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     public int getFluidLevel()
     {
-        return this.fluidExtractorData.get(3);
+        return this.fluidExtractorData.get(4);
     }
 
     @Override
@@ -336,5 +355,11 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     public IIntArray getFluidExtractorData()
     {
         return fluidExtractorData;
+    }
+
+    public void updateFluid(FluidTank tank, int fluidHash)
+    {
+        Optional<Fluid> optional = ForgeRegistries.FLUIDS.getValues().stream().filter(fluid -> fluid.getRegistryName().hashCode() == fluidHash).findFirst();
+        optional.ifPresent(fluid -> tank.setFluid(new FluidStack(fluid, tank.getFluidAmount())));
     }
 }

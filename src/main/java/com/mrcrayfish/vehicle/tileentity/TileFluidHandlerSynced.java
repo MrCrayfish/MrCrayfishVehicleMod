@@ -10,6 +10,7 @@ import net.minecraftforge.fluids.capability.TileFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public class TileFluidHandlerSynced extends TileFluidHandler
@@ -48,6 +49,19 @@ public class TileFluidHandlerSynced extends TileFluidHandler
             super.write(compound);
             TileEntityUtil.sendUpdatePacket(this, compound);
         }
+    }
+
+    @Override
+    public CompoundNBT getUpdateTag()
+    {
+        return this.write(new CompoundNBT());
+    }
+
+    @Nullable
+    @Override
+    public SUpdateTileEntityPacket getUpdatePacket()
+    {
+        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
     }
 
     @Override

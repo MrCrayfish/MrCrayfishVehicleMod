@@ -79,9 +79,9 @@
     "block.vehicle.workstation": "Workstation",
     "block.vehicle.jack": "Jack",
 
-    "fluid.fuelium": "Fuelium",
-    "fluid.ender_sap": "Ender Sap",
-    "fluid.blaze_juice": "Blaze Juice",
+    "fluid.vehicle.fuelium": "Fuelium",
+    "fluid.vehicle.ender_sap": "Ender Sap",
+    "fluid.vehicle.blaze_juice": "Blaze Juice",
 
     "container.fluid_extractor": "Fluid Extractor",
     "container.fluid_mixer": "Fluid Mixer",

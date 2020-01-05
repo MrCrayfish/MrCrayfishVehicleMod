@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.item.WrenchItem;
 import com.mrcrayfish.vehicle.tileentity.FluidPipeTileEntity;
 import com.mrcrayfish.vehicle.util.Names;
+import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -27,6 +28,9 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -40,10 +44,11 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -61,9 +66,13 @@ public class BlockFluidPipe extends BlockObject
         return directions;
     });
 
-    protected List<AxisAlignedBB> boxes;
-    protected AxisAlignedBB boxCenter;
-    protected String name;
+    public static final VoxelShape CENTER = Block.makeCuboidShape(5, 5, 5, 11, 11, 11);
+    public static final VoxelShape PIPES[] = {
+            Block.makeCuboidShape(5.5, 0, 5.5, 10.5, 5, 10.5), Block.makeCuboidShape(5.5, 11, 5.5, 10.5, 16, 10.5),
+            Block.makeCuboidShape(5.5, 5.5, 0, 10.5, 10.5, 5), Block.makeCuboidShape(5.5, 5.5, 11, 10.5, 10.5, 16),
+            Block.makeCuboidShape(0, 5.5, 5.5, 5, 10.5, 10.5), Block.makeCuboidShape(11, 5.5, 5.5, 16, 10.5, 10.5),
+            CENTER
+    };
 
     public BlockFluidPipe()
     {
@@ -73,18 +82,12 @@ public class BlockFluidPipe extends BlockObject
     public BlockFluidPipe(String name)
     {
         super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(0.5F));
-        this.name = name;
         BlockState defaultState = this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH);
         for(Direction facing : Direction.values())
         {
             defaultState = defaultState.with(CONNECTED_PIPES[facing.getIndex()], false);
         }
         this.setDefaultState(defaultState);
-        this.boxCenter = new AxisAlignedBB(0.3125, 0.3125, 0.3125, 0.6875, 0.6875, 0.6875);
-        this.boxes = Stream.of(new AxisAlignedBB(0.34375, 0, 0.34375, 0.65625, 0.3125, 0.65625), new AxisAlignedBB(0.34375, 0.6875, 0.34375, 0.65625, 1, 0.65625),
-                new AxisAlignedBB(0.34375, 0.34375, 0, 0.65625, 0.65625, 0.3125), new AxisAlignedBB(0.34375, 0.34375, 0.6875, 0.65625, 0.65625, 1),
-                new AxisAlignedBB(0, 0.34375, 0.34375, 0.3125, 0.65625, 0.65625), new AxisAlignedBB(0.6875, 0.34375, 0.34375, 1, 0.65625, 0.65625),
-                this.boxCenter).collect(Collectors.toList());
     }
 
     @Override
@@ -108,35 +111,39 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Nullable
-    public static FluidPipeTileEntity getPipeTileEntity(IWorld world, BlockPos pos)
+    public static FluidPipeTileEntity getPipeTileEntity(IBlockReader world, BlockPos pos)
     {
         TileEntity tileEntity = world.getTileEntity(pos);
         return tileEntity instanceof FluidPipeTileEntity ? (FluidPipeTileEntity) tileEntity : null;
     }
 
-    //TODO redo collisions
-    /*@Override
-    public void addCollisionBoxToList(BlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, @Nullable Entity entity, boolean isActualState)
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        if (!isActualState)
-        {
-            state = state.getActualState(world, pos);
-        }
+        return this.getPipeShape(state, worldIn, pos);
+    }
 
-        boolean[] disabledConnections = FluidPipeTileEntity.getDisabledConnections(getPipeTileEntity(world, pos));
-        for (int i = 0; i < Direction.values().length; i++)
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        return this.getPipeShape(state, worldIn, pos);
+    }
+
+    private VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    {
+        List<VoxelShape> shapes = new ArrayList<>();
+        boolean[] disabledConnections = FluidPipeTileEntity.getDisabledConnections(getPipeTileEntity(worldIn, pos));
+        for(int i = 0; i < Direction.values().length; i++)
         {
-            if (state.getValue(CONNECTED_PIPES[i]) && !disabledConnections[i])
+            if(state.get(CONNECTED_PIPES[i]) && !disabledConnections[i])
             {
-                addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(i));
+                shapes.add(PIPES[i]);
             }
         }
-        for (int i = Direction.values().length; i < boxes.size(); i++)
-        {
-            addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(i));
-        }
-        addCollisionBoxToList(pos, entityBox, collidingBoxes, boxes.get(getCollisionFacing(state).getIndex()));
-    }*/
+        shapes.addAll(Arrays.asList(PIPES).subList(Direction.values().length, PIPES.length));
+        shapes.add(PIPES[this.getCollisionFacing(state).getIndex()]);
+        return VoxelShapeHelper.combineAll(shapes);
+    }
 
     @Override
     public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
@@ -147,7 +154,9 @@ public class BlockFluidPipe extends BlockObject
         {
             Direction face = hit.getRight();
             pipe.setConnectionDisabled(face, !pipe.isConnectionDisabled(face));
-            world.setBlockState(pos, state.with(CONNECTED_PIPES[face.getIndex()], pipe.isConnectionDisabled(face))); //TODO test this
+            BlockState newState = state.with(CONNECTED_PIPES[face.getIndex()], !pipe.isConnectionDisabled(face));
+            world.setBlockState(pos, newState);
+            world.notifyBlockUpdate(pos, state, newState, 3 & 8);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.PASS;
@@ -156,6 +165,7 @@ public class BlockFluidPipe extends BlockObject
     @Nullable
     private Pair<AxisAlignedBB, Direction> getBox(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, Vec3d hitVec, @Nullable FluidPipeTileEntity pipe)
     {
+        hitVec = hitVec.add(-pos.getX(), -pos.getY(), -pos.getZ());
         if(pipe == null || !(player.getHeldItem(hand).getItem() instanceof WrenchItem))
         {
             return null;
@@ -163,7 +173,7 @@ public class BlockFluidPipe extends BlockObject
         for(int i = 0; i < Direction.values().length + 1; i++)
         {
             boolean isCenter = i == Direction.values().length;
-            if((isCenter || state.get(CONNECTED_PIPES[i])) && boxes.get(i).grow(0.001).contains(hitVec))
+            if((isCenter || state.get(CONNECTED_PIPES[i])) && PIPES[i].getBoundingBox().grow(0.001).contains(hitVec))
             {
                 if(!isCenter)
                 {
@@ -182,7 +192,7 @@ public class BlockFluidPipe extends BlockObject
                 }
                 if(world.getBlockState(pos.offset(facing)).getBlock() != Blocks.LEVER && this.getCollisionFacing(state) != facing)
                 {
-                    return new ImmutablePair<>(boxes.get(i).offset(pos), facing);
+                    return new ImmutablePair<>(PIPES[i].getBoundingBox().offset(pos), facing);
                 }
             }
         }
@@ -199,7 +209,7 @@ public class BlockFluidPipe extends BlockObject
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = super.getStateForPlacement(context);
+        BlockState state = super.getStateForPlacement(context).with(DIRECTION, context.getFace().getOpposite());
         return this.getPipeState(state, context.getWorld(), context.getPos(), context.getFace().getOpposite()); //TODO test this
     }
 
@@ -210,6 +220,8 @@ public class BlockFluidPipe extends BlockObject
         {
             if(facing == originalFacing)
                 continue;
+
+            state = state.with(CONNECTED_PIPES[facing.getIndex()], false);
 
             BlockPos adjacentPos = pos.offset(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);

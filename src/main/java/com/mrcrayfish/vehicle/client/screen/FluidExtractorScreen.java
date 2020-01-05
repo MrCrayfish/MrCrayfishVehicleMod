@@ -89,7 +89,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             this.blit(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
-        if(this.fluidExtractorTileEntity.getExtractionProgress() > 0)
+        if(this.fluidExtractorTileEntity.getExtractionProgress() > 0 && this.fluidExtractorTileEntity.canExtract())
         {
             int left = startX + 93 + 1;
             int top = startY + 34;
@@ -101,7 +101,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             {
                 fluidColor = (255 << 24) | FluidUtils.getAverageFluidColor(fluidExtract.getFluid());
             }
-            RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor, 0);
+            RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor);
             this.blit(startX + 93, startY + 34, 176, 14, 23, 16);
             double extractionPercentage = this.fluidExtractorTileEntity.getExtractionProgress() / (double) FluidExtractorTileEntity.FLUID_MAX_PROGRESS;
             int extractionProgress = (int) (22 * extractionPercentage + 1);

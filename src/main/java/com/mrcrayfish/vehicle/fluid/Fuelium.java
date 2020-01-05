@@ -9,6 +9,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
@@ -19,7 +20,7 @@ public abstract class Fuelium extends ForgeFlowingFluid
 {
     public Fuelium()
     {
-        super(new Properties(() -> ModFluids.FUELIUM, () -> ModFluids.FLOWING_FUELIUM, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM));
+        super(new Properties(() -> ModFluids.FUELIUM, () -> ModFluids.FLOWING_FUELIUM, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM));
     }
 
     @Override

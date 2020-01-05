@@ -97,7 +97,7 @@ public class BlockFluidPump extends BlockFluidPipe
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = super.getStateForPlacement(context);
+        BlockState state = super.getStateForPlacement(context).with(DIRECTION, context.getFace());
         return this.getPumpState(context.getWorld(), context.getPos(), state, context.getFace());
     }
 
@@ -107,7 +107,9 @@ public class BlockFluidPump extends BlockFluidPipe
         boolean[] disabledConnections = FluidPipeTileEntity.getDisabledConnections(pipe);
         for(Direction facing : Direction.values())
         {
-            if(facing == originalFacing) continue;
+            if(facing == originalFacing.getOpposite()) continue;
+
+            state = state.with(CONNECTED_PIPES[facing.getIndex()], false);
 
             BlockPos adjacentPos = pos.offset(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);

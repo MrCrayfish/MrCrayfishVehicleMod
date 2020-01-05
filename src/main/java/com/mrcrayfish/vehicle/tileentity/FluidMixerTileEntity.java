@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.fluid.FluidTankMixerInput;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
+import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -19,10 +20,13 @@ import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -35,9 +39,11 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -67,17 +73,23 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             switch(index)
             {
                 case 0:
-                    return FluidMixerTileEntity.this.extractionProgress;
+                    return extractionProgress;
                 case 1:
-                    return FluidMixerTileEntity.this.remainingFuel;
+                    return remainingFuel;
                 case 2:
-                    return FluidMixerTileEntity.this.fuelMaxProgress;
+                    return fuelMaxProgress;
                 case 3:
-                    return FluidMixerTileEntity.this.tankBlaze.getFluidAmount();
+                    return tankBlaze.getFluidAmount();
                 case 4:
-                    return FluidMixerTileEntity.this.tankEnderSap.getFluidAmount();
+                    return tankEnderSap.getFluidAmount();
                 case 5:
-                    return FluidMixerTileEntity.this.tankFuelium.getFluidAmount();
+                    return tankFuelium.getFluidAmount();
+                case 6:
+                    return tankBlaze.getFluid().getFluid().getRegistryName().hashCode();
+                case 7:
+                    return tankEnderSap.getFluid().getFluid().getRegistryName().hashCode();
+                case 8:
+                    return tankFuelium.getFluid().getFluid().getRegistryName().hashCode();
             }
             return 0;
         }
@@ -87,30 +99,47 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             switch(index)
             {
                 case 0:
-                    FluidMixerTileEntity.this.extractionProgress = value;
+                    extractionProgress = value;
                     break;
                 case 1:
-                    FluidMixerTileEntity.this.remainingFuel = value;
+                    remainingFuel = value;
                     break;
                 case 2:
-                    FluidMixerTileEntity.this.fuelMaxProgress = value;
+                    fuelMaxProgress = value;
                     break;
                 case 3:
-                    FluidMixerTileEntity.this.tankBlaze.getFluid().setAmount(value);
+                    if(!tankBlaze.isEmpty() || tankBlaze.getFluid().getRawFluid() != Fluids.EMPTY)
+                    {
+                        tankBlaze.getFluid().setAmount(value);
+                    }
                     break;
                 case 4:
-                    FluidMixerTileEntity.this.tankEnderSap.getFluid().setAmount(value);
+                    if(!tankEnderSap.isEmpty() || tankEnderSap.getFluid().getRawFluid() != Fluids.EMPTY)
+                    {
+                        tankEnderSap.getFluid().setAmount(value);
+                    }
                     break;
                 case 5:
-                    FluidMixerTileEntity.this.tankFuelium.getFluid().setAmount(value);
+                    if(!tankFuelium.isEmpty() || tankFuelium.getFluid().getRawFluid() != Fluids.EMPTY)
+                    {
+                        tankFuelium.getFluid().setAmount(value);
+                    }
+                    break;
+                case 6:
+                    updateFluid(tankBlaze, value);
+                    break;
+                case 7:
+                    updateFluid(tankEnderSap, value);
+                    break;
+                case 8:
+                    updateFluid(tankFuelium, value);
                     break;
             }
-
         }
 
         public int size()
         {
-            return 6;
+            return 9;
         }
     };
 
@@ -261,6 +290,17 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
                 this.remainingFuel--;
             }
         }
+    }
+
+    public boolean canMix()
+    {
+        ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
+        if(!ingredient.isEmpty() && !this.tankBlaze.getFluid().isEmpty() && !this.tankEnderSap.getFluid().isEmpty())
+        {
+            FluidMixerRecipe recipe = FluidMixerRecipes.getInstance().getRecipe(this.tankBlaze.getFluid().getFluid(), this.tankEnderSap.getFluid().getFluid(), ingredient);
+            return recipe != null && this.canMix(recipe) && this.remainingFuel > 0;
+        }
+        return false;
     }
 
     private void shrinkItem(int index)
@@ -501,6 +541,12 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     public IIntArray getFluidMixerData()
     {
         return fluidMixerData;
+    }
+
+    public void updateFluid(FluidTank tank, int fluidHash)
+    {
+        Optional<Fluid> optional = ForgeRegistries.FLUIDS.getValues().stream().filter(fluid -> fluid.getRegistryName().hashCode() == fluidHash).findFirst();
+        optional.ifPresent(fluid -> tank.setFluid(new FluidStack(fluid, tank.getFluidAmount())));
     }
 }
 

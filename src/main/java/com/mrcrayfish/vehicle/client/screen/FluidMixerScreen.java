@@ -120,7 +120,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             this.blit(startX + 9, startY + 31 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
-        if(this.fluidMixerTileEntity.getExtractionProgress() > 0)
+        if(this.fluidMixerTileEntity.getExtractionProgress() > 0 && this.fluidMixerTileEntity.canMix())
         {
             int blazeColorRGB = FluidUtils.getAverageFluidColor(this.fluidMixerTileEntity.getBlazeFluidStack().getFluid());
             int sapColorRGB = FluidUtils.getAverageFluidColor(this.fluidMixerTileEntity.getEnderSapFluidStack().getFluid());
@@ -148,9 +148,9 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             double percentageHorizontal = MathHelper.clamp((extractionPercentage - percentageStart) / (lenghtHorizontal / lenghtTotal), 0, 1);
             int left = startX + 51;
             int top = startY + 27;
-            this.blit(left, top, (int) (left + 12 * percentageHorizontal), top + 8, blazeColor, blazeColor);
+            RenderUtil.drawGradientRectHorizontal(left, top, (int) (left + 12 * percentageHorizontal), top + 8, blazeColor, blazeColor);
             top += 36;
-            this.blit(left, top, (int) (left + 12 * percentageHorizontal), top + 8, sapColor, sapColor);
+            RenderUtil.drawGradientRectHorizontal(left, top, (int) (left + 12 * percentageHorizontal), top + 8, sapColor, sapColor);
             percentageStart += lenghtHorizontal / lenghtTotal;
 
             left += 12;
@@ -160,10 +160,10 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             {
                 int alpha = (int) (130 * MathHelper.clamp((extractionPercentage - percentageStart) / (lenghtNode / lenghtTotal), 0, 1));
                 colorFade = (alpha << 24) | blazeColorRGB;
-                this.blit(left, top, left + 10, top + 10, colorFade, colorFade);
+                RenderUtil.drawGradientRectHorizontal(left, top, left + 10, top + 10, colorFade, colorFade);
                 colorFade = (alpha << 24) | sapColorRGB;
                 top += 36;
-                this.blit(left, top, left + 10, top + 10, colorFade, colorFade);
+                RenderUtil.drawGradientRectHorizontal(left, top, left + 10, top + 10, colorFade, colorFade);
             }
             percentageStart += lenghtNode / lenghtTotal;
 
@@ -172,9 +172,9 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             if (extractionPercentage >= percentageStart)
             {
                 double percentageVerticle = MathHelper.clamp((extractionPercentage - percentageStart) / (lenghtVerticle / lenghtTotal), 0, 1);
-                this.blit(left, top, left + 8, (int) (top + 8 * percentageVerticle), blazeColor, blazeColor);
+                RenderUtil.drawGradientRectHorizontal(left, top, left + 8, (int) (top + 8 * percentageVerticle), blazeColor, blazeColor);
                 top += 26;
-                this.blit(left, (int) (top - 8 * percentageVerticle), left + 8, top, sapColor, sapColor);
+                RenderUtil.drawGradientRectHorizontal(left, (int) (top - 8 * percentageVerticle), left + 8, top, sapColor, sapColor);
             }
             percentageStart += lenghtVerticle / lenghtTotal;
 
@@ -184,7 +184,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             {
                 int alpha = (int) (130 * MathHelper.clamp((extractionPercentage - percentageStart) / (lenghtNode / lenghtTotal), 0, 1));
                 colorFade = (alpha << 24) | statrColorRGB;
-                this.blit(left, top, left + 10, top + 10, colorFade, colorFade);
+                RenderUtil.drawGradientRectHorizontal(left, top, left + 10, top + 10, colorFade, colorFade);
             }
             percentageStart += lenghtNode / lenghtTotal;
 
@@ -195,7 +195,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
                 int right = left + 76;
                 int bottom = top + 26;
                 double percentageItem = MathHelper.clamp((extractionPercentage - percentageStart) / (lenghtItem / lenghtTotal), 0, 1);
-                RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, statrColor, fluidColor, 0);
+                RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, statrColor, fluidColor);
                 this.blit(left, top, 176, 14, 76, 26);
                 int extractionProgress = (int) (76 * percentageItem + 1);
                 this.blit(left + extractionProgress, top, 73 + extractionProgress, 36, 76 - extractionProgress, 26);

@@ -45,25 +45,26 @@ public class FluidUtils
             TextureAtlasSprite sprite = Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
             if(sprite != null)
             {
-                long aveRed = 0;
-                long aveGreen = 0;
-                long aveBlue = 0;
-                long pixelCount = sprite.getWidth() * sprite.getHeight();
+                long totalRed = 0;
+                long totalGreen = 0;
+                long totalBlue = 0;
+                int pixelCount = sprite.getWidth() * sprite.getHeight();
                 int red, green, blue;
                 for(int i = 0; i < sprite.getHeight(); i++)
                 {
                     for(int j = 0; j < sprite.getWidth(); j++)
                     {
                         int color = sprite.getPixelRGBA(0, j, i);
-                        red = color >> 16 & 255;
+                        red = color & 255;
                         green = color >> 8 & 255;
-                        blue = color & 255;
-                        aveRed += red * red;
-                        aveGreen += green * green;
-                        aveBlue += blue * blue;
+                        blue = color >> 16 & 255;
+                        totalRed += red * red;
+                        totalGreen += green * green;
+                        totalBlue += blue * blue;
                     }
                 }
-                fluidColor = (((int) Math.sqrt(aveRed / pixelCount) & 255) << 16) | (((int) Math.sqrt(aveGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(aveBlue / pixelCount) & 255));
+                fluidColor = (((int) Math.sqrt(totalRed / pixelCount) & 255) << 16)
+                        | (((int) Math.sqrt(totalGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(totalBlue / pixelCount) & 255));
             }
             CACHE_FLUID_COLOR.put(fluid.getRegistryName(), fluidColor);
         }
@@ -75,11 +76,11 @@ public class FluidUtils
         FluidStack drained = source.drain(maxAmount, IFluidHandler.FluidAction.SIMULATE);
         if(drained.getAmount() > 0)
         {
-            int filled = target.fill(drained, IFluidHandler.FluidAction.EXECUTE);
+            int filled = target.fill(drained, IFluidHandler.FluidAction.SIMULATE);
             if(filled > 0)
             {
-                drained = source.drain(filled, IFluidHandler.FluidAction.SIMULATE);
-                return target.fill(drained, IFluidHandler.FluidAction.SIMULATE);
+                drained = source.drain(filled, IFluidHandler.FluidAction.EXECUTE);
+                return target.fill(drained, IFluidHandler.FluidAction.EXECUTE);
             }
         }
         return 0;

@@ -14,6 +14,7 @@ public class FluidMixerRecipe
     private Fluid[] fluids;
     private int[] amounts;
     private ItemStack ingredient;
+    private int hashCode;
 
     public FluidMixerRecipe(Fluid fluidOne, int fluidOneAmount, Fluid fluidTwo, int fluidTwoAmount, ItemStack ingredient)
     {
@@ -71,7 +72,11 @@ public class FluidMixerRecipe
     @Override
     public int hashCode()
     {
-        return Objects.hash(this.fluids[0], this.fluids[1], this.ingredient.getItem());
+        if(this.hashCode == 0)
+        {
+            this.hashCode = Objects.hash(this.fluids[0].getRegistryName(), this.fluids[1].getRegistryName(), this.ingredient.getItem().getRegistryName());
+        }
+        return this.hashCode;
     }
 
     public boolean requiresFluid(Fluid fluid)

@@ -39,8 +39,11 @@ public class FluidMixerRecipes
     @Nullable
     public FluidMixerRecipe getRecipe(Fluid fluidOne, Fluid fluidTwo, ItemStack ingredient)
     {
-        int hashCode = Objects.hash(fluidOne, fluidTwo.hashCode(), ingredient.getItem());
-        Optional<FluidMixerRecipe> optional = this.mixingMap.keySet().stream().filter(fluidMixerRecipe -> fluidMixerRecipe.hashCode() == hashCode).findFirst();
+        int hashCode1 = Objects.hash(fluidOne.getRegistryName(), fluidTwo.getRegistryName(), ingredient.getItem().getRegistryName());
+        int hashCode2 = Objects.hash(fluidTwo.getRegistryName(), fluidOne.getRegistryName(), ingredient.getItem().getRegistryName());
+        Optional<FluidMixerRecipe> optional = this.mixingMap.keySet().stream().filter(fluidMixerRecipe -> {
+            return fluidMixerRecipe.hashCode() == hashCode1 || fluidMixerRecipe.hashCode() == hashCode2;
+        }).findFirst();
         return optional.orElse(null);
     }
 

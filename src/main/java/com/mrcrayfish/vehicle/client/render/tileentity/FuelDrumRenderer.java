@@ -52,10 +52,9 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             return;
 
         RenderSystem.pushMatrix();
-        RenderSystem.pushTextureAttributes();
-        RenderSystem.pushLightingAttributes();
+        RenderSystem.enableDepthTest();
         RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
-        RenderSystem.translated(0.5, 0.5, 0.5);
+        RenderSystem.translated(0.5, 1.25, 0.5);
         RenderSystem.rotatef(-Minecraft.getInstance().player.rotationYaw, 0.0F, 1.0F, 0.0F);
         RenderSystem.rotatef(Minecraft.getInstance().player.rotationPitch, 1.0F, 0.0F, 0.0F);
         RenderSystem.scalef(-0.025F, -0.025F, 0.025F);
@@ -95,6 +94,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             tessellator.draw();
 
             RenderSystem.enableTexture();
+            RenderSystem.translated(0, 0, -0.05);
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
             buffer.func_225582_a_(-offsetWidth, -1.0, 0.0).func_225583_a_(minU, maxV).endVertex();
@@ -122,7 +122,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
 
         RenderSystem.enableLighting();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.popAttributes();
+        RenderSystem.disableDepthTest();
         RenderSystem.popMatrix();
     }
 }

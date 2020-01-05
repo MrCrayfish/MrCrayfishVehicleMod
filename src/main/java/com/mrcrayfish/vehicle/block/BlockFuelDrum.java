@@ -3,10 +3,9 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
+import com.mrcrayfish.vehicle.tileentity.TileFluidHandlerSynced;
 import com.mrcrayfish.vehicle.util.Bounds;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -14,6 +13,8 @@ import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,15 +25,20 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.TileFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
@@ -43,9 +49,9 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class BlockFuelDrum extends BlockRotatedObject
+public class BlockFuelDrum extends BlockRotatedObject implements IBucketPickupHandler, ILiquidContainer
 {
-    private static final AxisAlignedBB BOUNDING_BOX = new Bounds(1, 0, 1, 15, 16, 15).toAABB();
+    private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
 
     private int capacity;
 
@@ -53,6 +59,18 @@ public class BlockFuelDrum extends BlockRotatedObject
     {
         super(id, Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
         this.capacity = capacity;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        return SHAPE;
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        return SHAPE;
     }
 
     @Override
@@ -85,7 +103,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                 JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
                 if(jerryCan.isFull(stack))
                 {
-                    return ActionResultType.PASS;
+                    return ActionResultType.SUCCESS;
                 }
 
                 TileEntity tileEntity = world.getTileEntity(pos);
@@ -95,7 +113,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                     FluidTank tank = (FluidTank) handler;
                     if(tank.getFluid().getFluid() != ModFluids.FUELIUM)
                     {
-                        return ActionResultType.PASS;
+                        return ActionResultType.SUCCESS;
                     }
                     FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
                     if(!fluidStack.isEmpty())
@@ -111,7 +129,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                 }
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
@@ -154,5 +172,56 @@ public class BlockFuelDrum extends BlockRotatedObject
             }
         }
         return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
+    }
+
+    @Override
+    public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof TileFluidHandler)
+        {
+            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).orElse(null);
+            if(handler != null)
+            {
+                FluidStack stack = handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
+                if(stack.getAmount() == FluidAttributes.BUCKET_VOLUME)
+                {
+                    stack = handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
+                    return stack.getFluid();
+                }
+            }
+        }
+        return Fluids.EMPTY;
+    }
+
+    @Override
+    public boolean canContainFluid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof TileFluidHandler)
+        {
+            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).orElse(null);
+            if(handler != null)
+            {
+                return handler.isFluidValid(0, new FluidStack(fluidIn, FluidAttributes.BUCKET_VOLUME));
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, IFluidState fluidStateIn)
+    {
+        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        if(tileEntity instanceof TileFluidHandler)
+        {
+            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).orElse(null);
+            if(handler != null)
+            {
+                handler.fill(new FluidStack(fluidStateIn.getFluid(), FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
+                return true;
+            }
+        }
+        return false;
     }
 }

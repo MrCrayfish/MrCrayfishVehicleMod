@@ -10,6 +10,7 @@ import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
@@ -20,7 +21,7 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 {
     public BlazeJuice()
     {
-        super(new Properties(() -> ModFluids.BLAZE_JUICE, () -> ModFluids.FLOWING_BLAZE_JUICE, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800)).block(() -> ModBlocks.BLAZE_JUICE));
+        super(new Properties(() -> ModFluids.BLAZE_JUICE, () -> ModFluids.FLOWING_BLAZE_JUICE, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.BLAZE_JUICE));
     }
 
     @Override
