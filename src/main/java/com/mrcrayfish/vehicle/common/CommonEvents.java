@@ -258,6 +258,7 @@ public class CommonEvents
                             });
                         }
                         event.setCanceled(true);
+                        event.setCancellationResult(ActionResultType.SUCCESS);
                         return;
                     }
                 }
