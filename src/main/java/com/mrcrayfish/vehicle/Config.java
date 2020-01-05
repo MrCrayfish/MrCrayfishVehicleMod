@@ -63,6 +63,8 @@ public class Config
         public final ForgeConfigSpec.IntValue trailerInventorySyncCooldown;
         public final ForgeConfigSpec.BooleanValue pickUpVehicles;
         public final ForgeConfigSpec.DoubleValue maxHoseDistance;
+        public final ForgeConfigSpec.IntValue pipeTransferAmount;
+        public final ForgeConfigSpec.IntValue pumpTransferAmount;
 
         Common(ForgeConfigSpec.Builder builder)
         {
@@ -88,6 +90,12 @@ public class Config
             this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks")
                 .translation(Reference.MOD_ID + ".config.server.max_hose_distance")
                 .defineInRange("maxHoseDistance", 6.0, 1.0, 20.0);
+            this.pipeTransferAmount = builder.comment("The amount of fluid a pipe will transfer each tick")
+                .translation(Reference.MOD_ID + ".config.server.pipe_transfer_amount")
+                .defineInRange("pipeTransferAmount", 50, 1, Integer.MAX_VALUE);
+            this.pumpTransferAmount = builder.comment("The amount of fluid a pump will transfer each tick")
+                .translation(Reference.MOD_ID + ".config.server.pump_transfer_amount")
+                .defineInRange("pumpTransferAmount", 50, 1, Integer.MAX_VALUE);
             builder.pop();
         }
     }

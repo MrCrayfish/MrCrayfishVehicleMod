@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
@@ -27,6 +28,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
     public FluidPumpTileEntity()
     {
         super(ModTileEntities.FLUID_PUMP);
+        this.transferAmount = Config.COMMON.pumpTransferAmount.get();
         this.powerMode = PowerMode.REQUIRES_SIGNAL_ON;
     }
 

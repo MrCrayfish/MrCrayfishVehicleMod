@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
@@ -38,7 +39,7 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     public FluidPipeTileEntity(TileEntityType<?> tileEntityType)
     {
         super(tileEntityType, 500);
-        this.transferAmount = 20; //TODO change to config value
+        this.transferAmount = Config.COMMON.pipeTransferAmount.get();
         this.disabledConnections = new boolean[Direction.values().length];
     }
 
