@@ -64,7 +64,7 @@ public class BlockFluidExtractor extends BlockRotatedObject
                 return ActionResultType.SUCCESS;
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     /*@Override

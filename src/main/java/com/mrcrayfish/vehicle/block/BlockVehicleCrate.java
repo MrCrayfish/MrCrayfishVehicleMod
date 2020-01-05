@@ -161,7 +161,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
             this.openCrate(world, pos, state, playerEntity);
             return ActionResultType.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

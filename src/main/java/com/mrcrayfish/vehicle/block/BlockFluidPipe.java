@@ -159,7 +159,7 @@ public class BlockFluidPipe extends BlockObject
             world.notifyBlockUpdate(pos, state, newState, 3 & 8);
             return ActionResultType.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Nullable

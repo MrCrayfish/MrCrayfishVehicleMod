@@ -128,7 +128,7 @@ public class BlockGasPump extends BlockRotatedObject
                     JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
                     if(jerryCan.isFull(stack))
                     {
-                        return ActionResultType.PASS;
+                        return ActionResultType.SUCCESS;
                     }
 
                     TileEntity tileEntity = world.getTileEntity(pos);
@@ -140,7 +140,7 @@ public class BlockGasPump extends BlockRotatedObject
                             FluidTank tank = (FluidTank) handler;
                             if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
                             {
-                                return ActionResultType.PASS;
+                                return ActionResultType.SUCCESS;
                             }
 
                             FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
@@ -159,7 +159,7 @@ public class BlockGasPump extends BlockRotatedObject
                 }
             }
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override

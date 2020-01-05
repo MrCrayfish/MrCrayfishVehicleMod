@@ -61,7 +61,7 @@ public class BlockFluidPump extends BlockFluidPipe
             }
             return ActionResultType.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Nullable

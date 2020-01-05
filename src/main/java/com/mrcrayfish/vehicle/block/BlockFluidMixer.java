@@ -51,7 +51,7 @@ public class BlockFluidMixer extends BlockRotatedObject
             }
             return ActionResultType.SUCCESS;
         }
-        return ActionResultType.PASS;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
