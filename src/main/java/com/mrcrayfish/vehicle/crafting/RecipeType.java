@@ -10,7 +10,7 @@ import net.minecraft.util.registry.Registry;
  */
 public class RecipeType
 {
-    public static final IRecipeType<FluidMixerRecipe> FLUID_EXTRACTOR = register("vehicle:fluid_mixer");
+    public static final IRecipeType<FluidExtractorRecipe> FLUID_EXTRACTOR = register("vehicle:fluid_extractor");
     public static final IRecipeType<FluidMixerRecipe> FLUID_MIXER = register("vehicle:fluid_mixer");
 
     static <T extends IRecipe<?>> IRecipeType<T> register(final String key)

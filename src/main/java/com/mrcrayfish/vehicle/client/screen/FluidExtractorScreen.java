@@ -94,7 +94,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             int top = startY + 34;
             int right = left + 23 - 1;
             int bottom = top + 16;
-            FluidEntry fluidExtract = this.fluidExtractorTileEntity.getFluidExtractSource();
+            FluidEntry fluidExtract = this.fluidExtractorTileEntity.getCurrentRecipe().getResult();
             int fluidColor = -1;
             if(fluidExtract != null)
             {

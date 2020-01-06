@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipeSerializer;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipeSerializer;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -20,6 +21,7 @@ public class ModRecipeSerializers
 {
     private static final List<IRecipeSerializer> RECIPES = new ArrayList<>();
 
+    public static final FluidExtractorRecipeSerializer FLUID_EXTRACTOR = register("vehicle:fluid_extractor", new FluidExtractorRecipeSerializer());
     public static final FluidMixerRecipeSerializer FLUID_MIXER = register("vehicle:fluid_mixer", new FluidMixerRecipeSerializer());
 
     private static <T extends IRecipeSerializer<? extends IRecipe<?>>> T register(String name, T t)

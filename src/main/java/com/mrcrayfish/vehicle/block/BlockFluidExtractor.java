@@ -46,20 +46,13 @@ public class BlockFluidExtractor extends BlockRotatedObject
             if(stack.getItem() == Items.BUCKET)
             {
                 FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace());
-                //if())
-                //{
-                    /*TileEntity tileEntity = world.getPipeTileEntity(pos);
-                    if(tileEntity instanceof FluidExtractorTileEntity)
-                    {
-                        ((FluidExtractorTileEntity) tileEntity).syncFluidLevelToClients();
-                    }*/
-                //}
                 return ActionResultType.SUCCESS;
             }
 
             TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof INamedContainerProvider)
+            if(tileEntity instanceof FluidExtractorTileEntity)
             {
+                ((FluidExtractorTileEntity) tileEntity).syncFluidToClient();
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 return ActionResultType.SUCCESS;
             }

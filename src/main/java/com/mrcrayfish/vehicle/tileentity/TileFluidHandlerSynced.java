@@ -41,7 +41,7 @@ public class TileFluidHandlerSynced extends TileFluidHandler
         };
     }
 
-    protected void syncFluidToClient()
+    public void syncFluidToClient()
     {
         if(this.world != null && !this.world.isRemote)
         {

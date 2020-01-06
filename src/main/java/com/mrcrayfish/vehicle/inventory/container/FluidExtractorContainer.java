@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.inventory.container;
 
-import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.inventory.container.slot.FuelSlot;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
@@ -78,7 +77,7 @@ public class FluidExtractorContainer extends Container
             }
             else
             {
-                if(FluidExtractorRecipes.getInstance().getRecipeResult(slotStack) != null)
+                if(this.fluidExtractor.isItemValidForSlot(1, slotStack))
                 {
                     if(!this.mergeItemStack(slotStack, 1, 2, false))
                     {

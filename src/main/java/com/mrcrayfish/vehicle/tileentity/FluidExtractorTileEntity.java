@@ -1,9 +1,11 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.crafting.FluidEntry;
-import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
+import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipe;
+import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
+import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.fluid.Fluid;
@@ -20,6 +22,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
@@ -28,7 +32,9 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -40,8 +46,9 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     public static final int TANK_CAPACITY = 1000 * 5;
     public static final int FLUID_MAX_PROGRESS = 20 * 30;
     private static final int SLOT_FUEL_SOURCE = 0;
-    private static final int SLOT_FLUID_SOURCE = 1;
+    public static final int SLOT_FLUID_SOURCE = 1;
 
+    private FluidExtractorRecipe currentRecipe = null;
     private int remainingFuel;
     private int fuelMaxProgress;
     private int extractionProgress;
@@ -112,24 +119,31 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
         {
             ItemStack source = this.getStackInSlot(SLOT_FLUID_SOURCE);
             ItemStack fuel = this.getStackInSlot(SLOT_FUEL_SOURCE);
-            if(!fuel.isEmpty() && !source.isEmpty() && this.remainingFuel == 0 && canFillWithFluid(source))
+
+            if(this.currentRecipe == null && !source.isEmpty())
+            {
+                this.currentRecipe = this.getRecipe().orElse(null);
+            }
+            else if(source.isEmpty())
+            {
+                this.currentRecipe = null;
+            }
+
+            if(!fuel.isEmpty() && this.remainingFuel == 0 && this.canFillWithFluid(source))
             {
                 this.fuelMaxProgress = ForgeHooks.getBurnTime(fuel);
                 this.remainingFuel = this.fuelMaxProgress;
                 this.shrinkItem(SLOT_FUEL_SOURCE);
             }
 
-            if(!source.isEmpty() && this.canFillWithFluid(source) && this.remainingFuel > 0)
+            if(this.remainingFuel > 0 && this.canFillWithFluid(source))
             {
                 if(this.extractionProgress++ == FLUID_MAX_PROGRESS)
                 {
-                    FluidEntry extract = FluidExtractorRecipes.getInstance().getRecipeResult(source);
-                    if(extract != null)
-                    {
-                        this.tank.fill(extract.createStack(), IFluidHandler.FluidAction.EXECUTE);
-                    }
+                    this.tank.fill(this.currentRecipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
                     this.extractionProgress = 0;
                     this.shrinkItem(SLOT_FLUID_SOURCE);
+                    this.currentRecipe = null;
                 }
             }
             else
@@ -146,32 +160,36 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     private boolean canFillWithFluid(ItemStack stack)
     {
-        if(!stack.isEmpty() && this.tank.getFluidAmount() < this.tank.getCapacity())
-        {
-            FluidEntry extract = getFluidExtractSource();
-            if(extract != null)
-            {
-                return this.tank.getFluid().isEmpty() || extract.getFluid() == this.tank.getFluid().getFluid();
-            }
-        }
-        return false;
+        return this.currentRecipe != null && this.tank.getFluidAmount() < this.tank.getCapacity();
     }
 
+    @OnlyIn(Dist.CLIENT)
     public boolean canExtract()
     {
-        ItemStack source = this.getStackInSlot(SLOT_FLUID_SOURCE);
-        return !source.isEmpty() && this.canFillWithFluid(source) && this.remainingFuel > 0;
+        ItemStack ingredient = this.getStackInSlot(SLOT_FLUID_SOURCE);
+        if(!ingredient.isEmpty())
+        {
+            if(this.currentRecipe == null)
+            {
+                this.currentRecipe = this.getRecipe().orElse(null);
+            }
+        }
+        else
+        {
+            this.currentRecipe = null;
+        }
+        return this.canFillWithFluid(ingredient) && this.remainingFuel > 0;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public FluidExtractorRecipe getCurrentRecipe()
+    {
+        return currentRecipe;
     }
 
     public FluidStack getFluidStackTank()
     {
         return this.tank.getFluid();
-    }
-
-    @Nullable
-    public FluidEntry getFluidExtractSource()
-    {
-        return FluidExtractorRecipes.getInstance().getRecipeResult(this.getStackInSlot(SLOT_FLUID_SOURCE));
     }
 
     @Override
@@ -242,7 +260,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
         }
         else if(index == 1)
         {
-            return FluidExtractorRecipes.getInstance().getRecipeResult(stack) != null;
+            return this.isValidIngredient(stack);
         }
         return false;
     }
@@ -361,5 +379,16 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     {
         Optional<Fluid> optional = ForgeRegistries.FLUIDS.getValues().stream().filter(fluid -> fluid.getRegistryName().hashCode() == fluidHash).findFirst();
         optional.ifPresent(fluid -> tank.setFluid(new FluidStack(fluid, tank.getFluidAmount())));
+    }
+
+    public Optional<FluidExtractorRecipe> getRecipe()
+    {
+        return this.world.getRecipeManager().getRecipe(RecipeType.FLUID_EXTRACTOR, this, this.world);
+    }
+
+    public boolean isValidIngredient(ItemStack ingredient)
+    {
+        List<FluidExtractorRecipe> recipes = this.world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_EXTRACTOR).map(recipe -> (FluidExtractorRecipe) recipe).collect(Collectors.toList());
+        return recipes.stream().anyMatch(recipe -> InventoryUtil.areItemStacksEqualIgnoreCount(ingredient, recipe.getIngredient()));
     }
 }
