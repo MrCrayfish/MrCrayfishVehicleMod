@@ -21,25 +21,25 @@ public class FluidExtractorRecipes
         return INSTANCE;
     }
 
-    private final ImmutableMap<ItemStack, FluidExtract> extractingMap;
+    private final ImmutableMap<ItemStack, FluidEntry> extractingMap;
 
     private FluidExtractorRecipes()
     {
-        ImmutableMap.Builder<ItemStack, FluidExtract> builder = new ImmutableMap.Builder<>();
-        builder.put(new ItemStack(Items.ENDER_PEARL), new FluidExtract(ModFluids.ENDER_SAP, 500));
-        builder.put(new ItemStack(Items.BLAZE_ROD), new FluidExtract(ModFluids.BLAZE_JUICE, 350));
+        ImmutableMap.Builder<ItemStack, FluidEntry> builder = new ImmutableMap.Builder<>();
+        builder.put(new ItemStack(Items.ENDER_PEARL), new FluidEntry(ModFluids.ENDER_SAP, 500));
+        builder.put(new ItemStack(Items.BLAZE_ROD), new FluidEntry(ModFluids.BLAZE_JUICE, 350));
         extractingMap = builder.build();
     }
 
-    public ImmutableMap<ItemStack, FluidExtract> getExtractingMap()
+    public ImmutableMap<ItemStack, FluidEntry> getExtractingMap()
     {
         return extractingMap;
     }
 
     @Nullable
-    public FluidExtract getRecipeResult(ItemStack stack)
+    public FluidEntry getRecipeResult(ItemStack stack)
     {
-        for(Map.Entry<ItemStack, FluidExtract> entry : extractingMap.entrySet())
+        for(Map.Entry<ItemStack, FluidEntry> entry : extractingMap.entrySet())
         {
             if(InventoryUtil.areItemStacksEqualIgnoreCount(stack, entry.getKey()))
             {

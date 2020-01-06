@@ -1,9 +1,8 @@
 package com.mrcrayfish.vehicle.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mrcrayfish.vehicle.crafting.FluidExtract;
+import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
-import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -95,7 +94,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             int top = startY + 34;
             int right = left + 23 - 1;
             int bottom = top + 16;
-            FluidExtract fluidExtract = this.fluidExtractorTileEntity.getFluidExtractSource();
+            FluidEntry fluidExtract = this.fluidExtractorTileEntity.getFluidExtractSource();
             int fluidColor = -1;
             if(fluidExtract != null)
             {

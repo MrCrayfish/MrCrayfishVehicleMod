@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.crafting.FluidExtract;
+import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipes;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
@@ -123,7 +123,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             {
                 if(this.extractionProgress++ == FLUID_MAX_PROGRESS)
                 {
-                    FluidExtract extract = FluidExtractorRecipes.getInstance().getRecipeResult(source);
+                    FluidEntry extract = FluidExtractorRecipes.getInstance().getRecipeResult(source);
                     if(extract != null)
                     {
                         this.tank.fill(extract.createStack(), IFluidHandler.FluidAction.EXECUTE);
@@ -148,7 +148,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     {
         if(!stack.isEmpty() && this.tank.getFluidAmount() < this.tank.getCapacity())
         {
-            FluidExtract extract = getFluidExtractSource();
+            FluidEntry extract = getFluidExtractSource();
             if(extract != null)
             {
                 return this.tank.getFluid().isEmpty() || extract.getFluid() == this.tank.getFluid().getFluid();
@@ -169,7 +169,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     }
 
     @Nullable
-    public FluidExtract getFluidExtractSource()
+    public FluidEntry getFluidExtractSource()
     {
         return FluidExtractorRecipes.getInstance().getRecipeResult(this.getStackInSlot(SLOT_FLUID_SOURCE));
     }
