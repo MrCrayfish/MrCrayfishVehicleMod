@@ -88,18 +88,6 @@ public class FluidMixerRecipe implements IRecipe<FluidMixerTileEntity>
         return this.hashCode;
     }
 
-    public boolean requiresFluid(Fluid fluid)
-    {
-        for(FluidEntry entry : this.inputs)
-        {
-            if(entry.getFluid().equals(fluid))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     @Override
     public boolean matches(FluidMixerTileEntity fluidMixer, World worldIn)
     {

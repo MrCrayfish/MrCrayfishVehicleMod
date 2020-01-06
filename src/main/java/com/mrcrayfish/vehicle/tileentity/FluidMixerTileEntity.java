@@ -18,6 +18,7 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
@@ -43,6 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -216,10 +218,6 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         }
         else if(index == 1)
         {
-            if(this.currentRecipe != null)
-            {
-                return InventoryUtil.areItemStacksEqualIgnoreCount(stack, this.currentRecipe.getIngredient());
-            }
             return this.isValidIngredient(stack);
         }
         return false;
@@ -423,25 +421,25 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         return compound;
     }
 
-    /*@Override
-    public CompoundNBT getUpdateTag() //TODO might not need. Commenting out for now
+    @Override
+    public CompoundNBT getUpdateTag()
     {
         CompoundNBT tag = super.write(new CompoundNBT());
 
         CompoundNBT tagTankBlaze = new CompoundNBT();
-        tankBlaze.write(tagTankBlaze);
+        tankBlaze.writeToNBT(tagTankBlaze);
         tag.put("TankBlaze", tagTankBlaze);
 
         CompoundNBT tagTankEnderSap = new CompoundNBT();
-        tankEnderSap.write(tagTankEnderSap);
+        tankEnderSap.writeToNBT(tagTankEnderSap);
         tag.put("TankEnderSap", tagTankEnderSap);
 
         CompoundNBT tagTankFuelium = new CompoundNBT();
-        tankFuelium.write(tagTankFuelium);
+        tankFuelium.writeToNBT(tagTankFuelium);
         tag.put("TankFuelium", tagTankFuelium);
 
         return tag;
-    }*/
+    }
 
     private String getName()
     {
@@ -560,13 +558,13 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
     private boolean isValidIngredient(ItemStack ingredient)
     {
-        List<FluidMixerRecipe> recipes = this.world.getRecipeManager().getRecipes(RecipeType.FLUID_MIXER, this, this.world);
+        List<FluidMixerRecipe> recipes = this.world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_MIXER).map(recipe -> (FluidMixerRecipe) recipe).collect(Collectors.toList());
         return recipes.stream().anyMatch(recipe -> InventoryUtil.areItemStacksEqualIgnoreCount(ingredient, recipe.getIngredient()));
     }
 
     private boolean isValidFluid(FluidStack stack)
     {
-        List<FluidMixerRecipe> recipes = this.world.getRecipeManager().getRecipes(RecipeType.FLUID_MIXER, this, this.world);
+        List<FluidMixerRecipe> recipes = this.world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_MIXER).map(recipe -> (FluidMixerRecipe) recipe).collect(Collectors.toList());
         return recipes.stream().anyMatch(recipe ->
         {
             for(FluidEntry entry : recipe.getInputs())

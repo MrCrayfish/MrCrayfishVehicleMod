@@ -80,7 +80,7 @@ public class FluidMixerContainer extends Container
             }
             else
             {
-                if(fluidExtractor.isItemValidForSlot(1, slotStack))
+                if(this.fluidExtractor.isItemValidForSlot(1, slotStack))
                 {
                     if(!this.mergeItemStack(slotStack, 1, 2, false))
                     {
