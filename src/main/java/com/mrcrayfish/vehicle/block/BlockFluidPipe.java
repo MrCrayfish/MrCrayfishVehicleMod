@@ -66,8 +66,8 @@ public class BlockFluidPipe extends BlockObject
         return directions;
     });
 
-    public static final VoxelShape CENTER = Block.makeCuboidShape(5, 5, 5, 11, 11, 11);
-    public static final VoxelShape PIPES[] = {
+    protected static final VoxelShape CENTER = Block.makeCuboidShape(5, 5, 5, 11, 11, 11);
+    protected static final VoxelShape PIPES[] = {
             Block.makeCuboidShape(5.5, 0, 5.5, 10.5, 5, 10.5), Block.makeCuboidShape(5.5, 11, 5.5, 10.5, 16, 10.5),
             Block.makeCuboidShape(5.5, 5.5, 0, 10.5, 10.5, 5), Block.makeCuboidShape(5.5, 5.5, 11, 10.5, 10.5, 16),
             Block.makeCuboidShape(0, 5.5, 5.5, 5, 10.5, 10.5), Block.makeCuboidShape(11, 5.5, 5.5, 16, 10.5, 10.5),
@@ -129,7 +129,7 @@ public class BlockFluidPipe extends BlockObject
         return this.getPipeShape(state, worldIn, pos);
     }
 
-    private VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    protected VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
     {
         List<VoxelShape> shapes = new ArrayList<>();
         boolean[] disabledConnections = FluidPipeTileEntity.getDisabledConnections(getPipeTileEntity(worldIn, pos));
@@ -159,11 +159,11 @@ public class BlockFluidPipe extends BlockObject
             world.notifyBlockUpdate(pos, state, newState, 3 & 8);
             return ActionResultType.SUCCESS;
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.FAIL;
     }
 
     @Nullable
-    private Pair<AxisAlignedBB, Direction> getBox(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, Vec3d hitVec, @Nullable FluidPipeTileEntity pipe)
+    protected Pair<AxisAlignedBB, Direction> getBox(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, Vec3d hitVec, @Nullable FluidPipeTileEntity pipe)
     {
         hitVec = hitVec.add(-pos.getX(), -pos.getY(), -pos.getZ());
         if(pipe == null || !(player.getHeldItem(hand).getItem() instanceof WrenchItem))
@@ -213,7 +213,7 @@ public class BlockFluidPipe extends BlockObject
         return this.getPipeState(state, context.getWorld(), context.getPos(), context.getFace().getOpposite()); //TODO test this
     }
 
-    private BlockState getPipeState(BlockState state, IWorld world, BlockPos pos, Direction originalFacing)
+    protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos, Direction originalFacing)
     {
         boolean[] disabledConnections = FluidPipeTileEntity.getDisabledConnections(getPipeTileEntity(world, pos));
         for(Direction facing : Direction.values())

@@ -5,6 +5,8 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.FluidPipeTileEntity;
 import com.mrcrayfish.vehicle.tileentity.FluidPumpTileEntity;
 import com.mrcrayfish.vehicle.util.Names;
+import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
@@ -18,12 +20,17 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -31,11 +38,27 @@ import javax.annotation.Nullable;
 public class BlockFluidPump extends BlockFluidPipe
 {
     //TODO add collisions
-    private final AxisAlignedBB[][] boxesHousing = new AxisAlignedBB[][]{{new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 0.1875, 0.8125), new AxisAlignedBB(0.28125, 0.1875, 0.28125, 0.71875, 0.25, 0.71875)}, {new AxisAlignedBB(0.1875, 1, 0.1875, 0.8125, 0.8125, 0.8125), new AxisAlignedBB(0.28125, 0.8125, 0.28125, 0.71875, 0.75, 0.71875)}, {new AxisAlignedBB(0.1875, 0.1875, 0, 0.8125, 0.8125, 0.1875), new AxisAlignedBB(0.28125, 0.28125, 0.1875, 0.71875, 0.71875, 0.25)}, {new AxisAlignedBB(0.1875, 0.1875, 1, 0.8125, 0.8125, 0.8125), new AxisAlignedBB(0.28125, 0.28125, 0.8125, 0.71875, 0.71875, 0.75)}, {new AxisAlignedBB(0, 0.1875, 0.1875, 0.1875, 0.8125, 0.8125), new AxisAlignedBB(0.1875, 0.28125, 0.28125, 0.25, 0.71875, 0.71875)}, {new AxisAlignedBB(1, 0.1875, 0.1875, 0.8125, 0.8125, 0.8125), new AxisAlignedBB(0.8125, 0.28125, 0.28125, 0.75, 0.71875, 0.71875)}};
+    private final VoxelShape[][] PUMP_BOX = new VoxelShape[][]{
+            {Block.makeCuboidShape(3, 0, 3, 13, 3, 13), Block.makeCuboidShape(4.5, 3, 4.5, 11.5, 4, 11.5)},
+            {Block.makeCuboidShape(3, 16, 3, 13, 13, 13), Block.makeCuboidShape(4.5, 13, 4.5, 11.5, 12, 11.5)},
+            {Block.makeCuboidShape(3, 3, 0, 13, 13, 3), Block.makeCuboidShape(4.5, 4.5, 3, 11.5, 11.5, 4)},
+            {Block.makeCuboidShape(3, 3, 16, 13, 13, 13), Block.makeCuboidShape(4.5, 4.5, 13, 11.5, 11.5, 12)},
+            {Block.makeCuboidShape(0, 3, 3, 3, 13, 13), Block.makeCuboidShape(3, 4.5, 4.5, 4, 11.5, 11.5)},
+            {Block.makeCuboidShape(16, 3, 3, 13, 13, 13), Block.makeCuboidShape(13, 4.5, 4.5, 12, 11.5, 11.5)}
+    };
 
     public BlockFluidPump()
     {
         super(Names.Block.FLUID_PUMP);
+    }
+
+    @Override
+    protected VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    {
+        List<VoxelShape> shapes = new ArrayList<>();
+        shapes.add(super.getPipeShape(state, worldIn, pos));
+        Collections.addAll(shapes, PUMP_BOX[this.getCollisionFacing(state).getIndex()]);
+        return VoxelShapeHelper.combineAll(shapes);
     }
 
     @Override
@@ -52,7 +75,7 @@ public class BlockFluidPump extends BlockFluidPipe
             return ActionResultType.SUCCESS;
         }
         FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
-        AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getHitVec(), pipe);
+        AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
         if(pipe != null && housingBox != null)
         {
             if(!world.isRemote)
@@ -72,16 +95,17 @@ public class BlockFluidPump extends BlockFluidPipe
             return null;
         }
 
-        AxisAlignedBB[] boxesHousing = this.boxesHousing[getCollisionFacing(state).getIndex()];
-        for(AxisAlignedBB box : boxesHousing)
+        VoxelShape[] boxesHousing = this.PUMP_BOX[getCollisionFacing(state).getIndex()];
+        for(VoxelShape box : boxesHousing)
         {
-            if(box.grow(0.001).contains(hitVec))
+            AxisAlignedBB boundingBox = box.getBoundingBox();
+            if(boundingBox.grow(0.001).contains(hitVec))
             {
-                for(AxisAlignedBB box2 : boxesHousing)
+                for(VoxelShape box2 : boxesHousing)
                 {
-                    box = box.union(box2);
+                    boundingBox = boundingBox.union(box2.getBoundingBox());
                 }
-                return box.offset(pos);
+                return boundingBox.offset(pos);
             }
         }
         return null;

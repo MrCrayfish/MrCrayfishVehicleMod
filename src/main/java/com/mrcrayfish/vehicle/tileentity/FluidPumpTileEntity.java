@@ -139,7 +139,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
 
         public void notifyPlayerOfChange(PlayerEntity player)
         {
-            player.sendMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(LANG_KEY_CHAT_PREFIX + "." + this.langKeyChat)));
+            player.sendStatusMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(LANG_KEY_CHAT_PREFIX + "." + this.langKeyChat)), true);
         }
 
         @Nullable
