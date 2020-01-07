@@ -23,7 +23,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SAnimateHandPacket;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
 import net.minecraft.util.math.*;
@@ -414,7 +413,13 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     private void tickLerp()
     {
-        if(this.lerpSteps > 0 && !this.canPassengerSteer())
+        if(this.canPassengerSteer())
+        {
+            this.lerpSteps = 0;
+            this.func_213312_b(this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_());
+        }
+
+        if(this.lerpSteps > 0)
         {
             double d0 = this.func_226277_ct_() + (this.lerpX - this.func_226277_ct_()) / (double) this.lerpSteps;
             double d1 = this.func_226278_cu_() + (this.lerpY - this.func_226278_cu_()) / (double) this.lerpSteps;
