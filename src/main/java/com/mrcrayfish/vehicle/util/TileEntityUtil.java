@@ -9,6 +9,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
+import javax.annotation.Nullable;
 import java.util.stream.Stream;
 
 /**
@@ -39,6 +40,34 @@ public class TileEntityUtil
     {
         SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket(tileEntity.getPos(), 0, compound);
         sendUpdatePacket(tileEntity.getWorld(), tileEntity.getPos(), packet);
+    }
+
+    /**
+     * Sends an update packet but only to a specific player. This helps reduce overhead on the network
+     * when you only want to update a tile entity for a single player rather than everyone who is
+     * tracking the tile entity.
+     *
+     * @param tileEntity the tile entity to update
+     * @param player the player to send the update to
+     */
+    public static void sendUpdatePacket(TileEntity tileEntity, ServerPlayerEntity player)
+    {
+        sendUpdatePacket(tileEntity, tileEntity.getUpdateTag(), player);
+    }
+
+    /**
+     * Sends an update packet with a custom nbt compound but only to a specific player. This helps
+     * reduce overhead on the network when you only want to update a tile entity for a single player
+     * rather than everyone who is tracking the tile entity.
+     *
+     * @param tileEntity the tile entity to update
+     * @param compound the update tag to send
+     * @param player the player to send the update to
+     */
+    public static void sendUpdatePacket(TileEntity tileEntity, CompoundNBT compound, ServerPlayerEntity player)
+    {
+        SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket(tileEntity.getPos(), 0, compound);
+        player.connection.sendPacket(packet);
     }
 
     private static void sendUpdatePacket(World world, BlockPos pos, SUpdateTileEntityPacket packet)

@@ -47,7 +47,7 @@ public class BlockFluidMixer extends BlockRotatedObject
                 TileEntity tileEntity = world.getTileEntity(pos);
                 if(tileEntity instanceof INamedContainerProvider)
                 {
-                    TileEntityUtil.sendUpdatePacket(tileEntity);
+                    TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) playerEntity);
                     NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 }
             }

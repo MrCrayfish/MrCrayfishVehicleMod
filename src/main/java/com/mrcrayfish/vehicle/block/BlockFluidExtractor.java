@@ -52,7 +52,6 @@ public class BlockFluidExtractor extends BlockRotatedObject
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof FluidExtractorTileEntity)
             {
-                ((FluidExtractorTileEntity) tileEntity).syncFluidToClient();
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 return ActionResultType.SUCCESS;
             }
@@ -60,12 +59,6 @@ public class BlockFluidExtractor extends BlockRotatedObject
         return ActionResultType.SUCCESS;
     }
 
-    /*@Override
-        //public boolean onBlockActivated(World worldIn, BlockPos pos, BlockState state, PlayerEntity playerIn, Hand hand, Direction facing, float hitX, float hitY, float hitZ)
-        {
-
-        }
-    */
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
     {

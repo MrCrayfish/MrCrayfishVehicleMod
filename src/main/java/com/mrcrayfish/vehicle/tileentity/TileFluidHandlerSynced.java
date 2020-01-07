@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
@@ -42,6 +43,16 @@ public class TileFluidHandlerSynced extends TileFluidHandler
     }
 
     public void syncFluidToClient()
+    {
+        if(this.world != null && !this.world.isRemote)
+        {
+            CompoundNBT compound = new CompoundNBT();
+            super.write(compound);
+            TileEntityUtil.sendUpdatePacket(this, compound);
+        }
+    }
+
+    public void syncFluidToPlayer(ServerPlayerEntity player)
     {
         if(this.world != null && !this.world.isRemote)
         {
