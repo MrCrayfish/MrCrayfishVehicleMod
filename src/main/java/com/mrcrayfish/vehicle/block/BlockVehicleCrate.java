@@ -128,8 +128,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos)
     {
-        return true;
-        //return this.isBelowBlockTopSolid(reader, pos) && this.canOpen(reader, pos);
+        return this.isBelowBlockTopSolid(reader, pos) && this.canOpen(reader, pos);
     }
 
     private boolean canOpen(IWorldReader reader, BlockPos pos)
