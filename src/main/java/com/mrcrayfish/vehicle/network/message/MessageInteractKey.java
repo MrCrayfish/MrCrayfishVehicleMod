@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
@@ -79,7 +80,8 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
                         {
                             if(!stack.isEmpty() && stack.getItem() == ModItems.KEY)
                             {
-                                if(poweredVehicle.getUniqueID().equals(CommonUtils.getOrCreateStackTag(stack).getUniqueId("vehicleId")))
+                                UUID keyUuid = CommonUtils.getOrCreateStackTag(stack).getUniqueId("VehicleId");
+                                if(poweredVehicle.getUniqueID().equals(keyUuid))
                                 {
                                     poweredVehicle.setKeyStack(stack.copy());
                                     player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
