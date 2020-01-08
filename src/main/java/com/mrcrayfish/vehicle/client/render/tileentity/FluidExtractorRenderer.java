@@ -2,13 +2,11 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.block.BlockFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -17,6 +15,9 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ILightReader;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
@@ -38,77 +39,70 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
         Direction direction = tileEntity.getBlockState().get(BlockFluidExtractor.DIRECTION);
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(direction.getHorizontalIndex() * -90F - 90F));
         matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
-        double height = 12.0 * (tileEntity.getFluidLevel() / (double) FluidExtractorTileEntity.TANK_CAPACITY);
+        float height = (float) (12.0 * (tileEntity.getFluidLevel() / (double) FluidExtractorTileEntity.TANK_CAPACITY));
         if(height > 0)
         {
-            drawFluid(tileEntity, matrixStack, 10 * 0.0625, 2 * 0.0625, 0.01 * 0.0625, 5.99 * 0.0625, height * 0.0625, (16 - 0.02) * 0.0625, light);
+            this.drawFluid(tileEntity, matrixStack, typeBuffer, 10F * 0.0625F, 2F * 0.0625F, 0.01F * 0.0625F, 5.99F * 0.0625F, height * 0.0625F, (16 - 0.02F) * 0.0625F);
         }
         matrixStack.func_227865_b_();
     }
 
-    private void drawFluid(FluidExtractorTileEntity te, MatrixStack matrixStack, double x, double y, double z, double width, double height, double depth, int light)
+    private void drawFluid(FluidExtractorTileEntity te, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, float x, float y, float z, float width, float height, float depth)
     {
         Fluid fluid = te.getFluidStackTank().getFluid();
         if(fluid == Fluids.EMPTY) return;
 
-        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
         TextureAtlasSprite sprite = ForgeHooksClient.getFluidSprites(te.getWorld(), te.getPos(), fluid.getDefaultState())[0];
         float minU = sprite.getMinU();
-        float maxU = (float) Math.min(minU + (sprite.getMaxU() - minU) * width, sprite.getMaxU());
+        float maxU = Math.min(minU + (sprite.getMaxU() - minU) * width, sprite.getMaxU());
         float minV = sprite.getMinV();
-        float maxV = (float) Math.min(minV + (sprite.getMaxV() - minV) * height, sprite.getMaxV());
+        float maxV = Math.min(minV + (sprite.getMaxV() - minV) * height, sprite.getMaxV());
         int waterColor = fluid.getAttributes().getColor(te.getWorld(), te.getPos());
         float red = (float) (waterColor >> 16 & 255) / 255.0F;
         float green = (float) (waterColor >> 8 & 255) / 255.0F;
         float blue = (float) (waterColor & 255) / 255.0F;
+        int light = this.getCombinedLight(te.getWorld(), te.getPos());
 
-        RenderSystem.pushMatrix();
-        RenderSystem.pushLightingAttributes();
-        RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
-        RenderSystem.enableBlend();
-        RenderSystem.enableDepthTest();
+        IVertexBuilder buffer = typeBuffer.getBuffer(RenderType.func_228645_f_());
+        Matrix4f matrix = matrixStack.func_227866_c_().func_227870_a_();
 
         //left side
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.func_225582_a_(x + width, y, z).func_225583_a_(maxU, minV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x, y, z).func_225583_a_(minU, minV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x, y + height, z).func_225583_a_(minU, maxV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y + height, z).func_225583_a_(maxU, maxV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        tessellator.draw();
+        buffer.func_227888_a_(matrix, x + width, y, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x, y, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x, y + height, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y + height, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
 
         //right side
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.func_225582_a_(x, y, z + depth).func_225583_a_(maxU, minV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y, z + depth).func_225583_a_(minU, minV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y + height, z + depth).func_225583_a_(minU, maxV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x, y + height, z + depth).func_225583_a_(maxU, maxV).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_227886_a_(light).endVertex();
-        tessellator.draw();
+        buffer.func_227888_a_(matrix, x, y, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y + height, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x, y + height, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
 
         maxU = (float) Math.min(minU + (sprite.getMaxU() - minU) * depth, sprite.getMaxU());
 
         //back side
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.func_225582_a_(x + width, y, z + depth).func_225583_a_(maxU, minV).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y, z).func_225583_a_(minU, minV).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y + height, z).func_225583_a_(minU, maxV).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y + height, z + depth).func_225583_a_(maxU, maxV).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_227886_a_(light).endVertex();
-        tessellator.draw();
+        buffer.func_227888_a_(matrix, x + width, y, z + depth).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y, z).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y + height, z).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y + height, z + depth).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
 
         maxV = (float) Math.min(minV + (sprite.getMaxV() - minV) * width, sprite.getMaxV());
 
         //top
-        buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        buffer.func_225582_a_(x, y + height, z).func_225583_a_(maxU, minV).func_227885_a_(red, green, blue, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x, y + height, z + depth).func_225583_a_(minU, minV).func_227885_a_(red, green, blue, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y + height, z + depth).func_225583_a_(minU, maxV).func_227885_a_(red, green, blue, 1.0F).func_227886_a_(light).endVertex();
-        buffer.func_225582_a_(x + width, y + height, z).func_225583_a_(maxU, maxV).func_227885_a_(red, green, blue, 1.0F).func_227886_a_(light).endVertex();
-        tessellator.draw();
+        buffer.func_227888_a_(matrix, x, y + height, z).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x, y + height, z + depth).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y + height, z + depth).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.func_227888_a_(matrix, x + width, y + height, z).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+    }
 
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
-        RenderSystem.popAttributes();
-        RenderSystem.popMatrix();
+    private int getCombinedLight(ILightReader lightReader, BlockPos pos)
+    {
+        int i = WorldRenderer.func_228421_a_(lightReader, pos);
+        int j = WorldRenderer.func_228421_a_(lightReader, pos.up());
+        int k = i & 255;
+        int l = j & 255;
+        int i1 = i >> 16 & 255;
+        int j1 = j >> 16 & 255;
+        return (k > l ? k : l) | (i1 > j1 ? i1 : j1) << 16;
     }
 }

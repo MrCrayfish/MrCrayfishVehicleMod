@@ -15,29 +15,26 @@ import net.minecraftforge.registries.ObjectHolder;
 /**
  * Author: MrCrayfish
  */
-@ObjectHolder(Reference.MOD_ID)
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModFluids
 {
-    public static final Fluid FUELIUM = null;
-    public static final FlowingFluid FLOWING_FUELIUM = null;
-    public static final Fluid ENDER_SAP = null;
-    public static final FlowingFluid FLOWING_ENDER_SAP = null;
-    public static final Fluid BLAZE_JUICE = null;
-    public static final FlowingFluid FLOWING_BLAZE_JUICE = null;
+    public static final Fluid FUELIUM = new Fuelium.Source();
+    public static final FlowingFluid FLOWING_FUELIUM = new Fuelium.Flowing();
+    public static final Fluid ENDER_SAP = new EnderSap.Source();
+    public static final FlowingFluid FLOWING_ENDER_SAP = new EnderSap.Flowing();
+    public static final Fluid BLAZE_JUICE = new BlazeJuice.Source();
+    public static final FlowingFluid FLOWING_BLAZE_JUICE = new BlazeJuice.Flowing();
 
     @SubscribeEvent
     @SuppressWarnings("unused")
     public static void register(final RegistryEvent.Register<Fluid> event)
     {
-        registerFluid(event.getRegistry(), new Fuelium.Source(), new Fuelium.Flowing());
-        registerFluid(event.getRegistry(), new EnderSap.Source(), new EnderSap.Flowing());
-        registerFluid(event.getRegistry(), new BlazeJuice.Source(), new BlazeJuice.Flowing());
-    }
-
-    private static void registerFluid(IForgeRegistry<Fluid> registry, Fluid still, Fluid flowing)
-    {
-        registry.register(still);
-        registry.register(flowing);
+        IForgeRegistry<Fluid> registry = event.getRegistry();
+        registry.register(FUELIUM);
+        registry.register(FLOWING_FUELIUM);
+        registry.register(ENDER_SAP);
+        registry.register(FLOWING_ENDER_SAP);
+        registry.register(BLAZE_JUICE);
+        registry.register(FLOWING_BLAZE_JUICE);
     }
 }

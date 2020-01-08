@@ -21,10 +21,7 @@ import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.init.ModContainers;
-import com.mrcrayfish.vehicle.init.ModEntities;
-import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.inventory.container.*;
 import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
@@ -82,6 +79,14 @@ public class ClientProxy implements Proxy
         RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, cutoutPredicate);
         RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, cutoutPredicate);
         RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, cutoutPredicate);
+
+        Predicate<RenderType> fluidPredicate = renderType -> renderType == RenderType.func_228645_f_();
+        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, fluidPredicate);
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, fluidPredicate);
+        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, fluidPredicate);
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP, fluidPredicate);
+        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE, fluidPredicate);
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, fluidPredicate);
 
         /* Register Vehicles */
         registerVehicleRender(ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));
