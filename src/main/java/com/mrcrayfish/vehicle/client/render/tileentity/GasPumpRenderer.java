@@ -137,7 +137,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z))));
                         matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) Math.toDegrees(Math.asin(-r.getDir().normalize().y))));
                         matrixStack.func_227862_a_(0.075F, 0.075F, 0.075F);
-                        Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, ItemCameraTransforms.TransformType.NONE, 15728880, OverlayTexture.field_229196_a_,matrixStack, iRenderTypeBuffer);
+                        Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.field_229196_a_, matrixStack, iRenderTypeBuffer);
                         matrixStack.func_227865_b_();
                     }
                 }
@@ -154,7 +154,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
                     matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(90F));
                     matrixStack.func_227862_a_(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, iRenderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, iRenderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
                 }
                 matrixStack.func_227865_b_();
             }
