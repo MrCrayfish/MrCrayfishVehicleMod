@@ -76,7 +76,7 @@ public class ModEntities
     {
         if(ModList.get().isLoaded(modId))
         {
-            EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(id);
+            EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(id);
             type.setRegistryName(id);
             ENTITY_TYPES.add(type);
             BlockVehicleCrate.registerVehicle(id);
