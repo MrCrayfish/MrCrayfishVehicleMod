@@ -335,7 +335,7 @@ public class ClientEvents
                 matrixStack.func_227861_a_(handOffset * f, f1, f2);
                 matrixStack.func_227861_a_(handOffset * 0.65, -0.52 + 0.25, -0.72);
                 matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(45F));
-                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228489_c_();
+                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
                 RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_); //TODO check
                 matrixStack.func_227865_b_();
                 event.setCanceled(true);
