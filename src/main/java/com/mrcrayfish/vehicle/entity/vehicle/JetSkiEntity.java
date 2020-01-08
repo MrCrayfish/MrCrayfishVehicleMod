@@ -21,7 +21,7 @@ public class JetSkiEntity extends BoatEntity implements IEntityRaytraceable
         super(ModEntities.JET_SKI, worldIn);
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(15);
-        this.setFuelConsumption(2.0F);
+        this.setFuelConsumption(0.5F);
     }
 
     @Override

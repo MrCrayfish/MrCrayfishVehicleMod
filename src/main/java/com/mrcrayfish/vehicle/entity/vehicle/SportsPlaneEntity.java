@@ -30,7 +30,7 @@ public class SportsPlaneEntity extends PlaneEntity implements IEntityRaytraceabl
         this.setMaxTurnAngle(25);
         this.setTurnSensitivity(2);
         this.setFuelCapacity(75000F);
-        this.setFuelConsumption(4.0F);
+        this.setFuelConsumption(1.0F);
     }
 
     @Override

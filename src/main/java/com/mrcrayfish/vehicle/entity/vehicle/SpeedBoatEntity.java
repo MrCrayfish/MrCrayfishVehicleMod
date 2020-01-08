@@ -20,7 +20,7 @@ public class SpeedBoatEntity extends BoatEntity implements IEntityRaytraceable
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(15);
         this.setFuelCapacity(25000F);
-        this.setFuelConsumption(3.0F);
+        this.setFuelConsumption(0.75F);
     }
 
     @Override

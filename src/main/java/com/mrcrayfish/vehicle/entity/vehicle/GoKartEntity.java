@@ -20,7 +20,7 @@ public class GoKartEntity extends LandVehicleEntity implements IEntityRaytraceab
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(12);
         this.stepHeight = 0.625F;
-        this.setFuelConsumption(2.0F);
+        this.setFuelConsumption(0.5F);
     }
 
     @Override
