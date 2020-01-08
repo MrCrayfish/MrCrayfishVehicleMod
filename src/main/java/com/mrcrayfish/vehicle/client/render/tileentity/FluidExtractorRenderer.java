@@ -39,7 +39,7 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
         Direction direction = tileEntity.getBlockState().get(BlockFluidExtractor.DIRECTION);
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(direction.getHorizontalIndex() * -90F - 90F));
         matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
-        float height = (float) (12.0 * (tileEntity.getFluidLevel() / (double) FluidExtractorTileEntity.TANK_CAPACITY));
+        float height = (float) (12.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
         if(height > 0)
         {
             this.drawFluid(tileEntity, matrixStack, typeBuffer, 10F * 0.0625F, 2F * 0.0625F, 0.01F * 0.0625F, 5.99F * 0.0625F, height * 0.0625F, (16 - 0.02F) * 0.0625F);

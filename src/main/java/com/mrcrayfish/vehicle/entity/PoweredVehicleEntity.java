@@ -64,7 +64,6 @@ import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -161,7 +160,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.dataManager.register(HAS_ENGINE, false);
         this.dataManager.register(ENGINE_TIER, 0);
         this.dataManager.register(HORN, false);
-        this.dataManager.register(REQUIRES_FUEL, Config.COMMON.fuelEnabled.get());
+        this.dataManager.register(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get());
         this.dataManager.register(CURRENT_FUEL, 0F);
         this.dataManager.register(FUEL_CAPACITY, 15000F);
         this.dataManager.register(NEEDS_KEY, false);
@@ -918,12 +917,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public boolean requiresFuel()
     {
-        return Config.COMMON.fuelEnabled.get() && this.dataManager.get(REQUIRES_FUEL);
+        return Config.SERVER.fuelEnabled.get() && this.dataManager.get(REQUIRES_FUEL);
     }
 
     public void setRequiresFuel(boolean requiresFuel)
     {
-        this.dataManager.set(REQUIRES_FUEL, Config.COMMON.fuelEnabled.get() && requiresFuel);
+        this.dataManager.set(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get() && requiresFuel);
     }
 
     public boolean isFueled()

@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.*;
@@ -39,8 +40,8 @@ public class ModBlocks
     public static final Block GAS_PUMP = register(new BlockGasPump());
     public static final Block FLUID_PIPE = register(new BlockFluidPipe());
     public static final Block FLUID_PUMP = register(new BlockFluidPump());
-    public static final Block FUEL_DRUM = register(new BlockFuelDrum(Names.Block.FUEL_DRUM, 40000));
-    public static final Block INDUSTRIAL_FUEL_DRUM = register(new BlockFuelDrum(Names.Block.INDUSTRIAL_FUEL_DRUM, 75000));
+    public static final Block FUEL_DRUM = register(new BlockFuelDrum());
+    public static final Block INDUSTRIAL_FUEL_DRUM = register(new BlockIndustrialFuelDrum());
     public static final Block WORKSTATION = register(new BlockWorkstation());
     public static final Block VEHICLE_CRATE = register(new BlockVehicleCrate(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1)));
     public static final Block JACK = register(new BlockJack());

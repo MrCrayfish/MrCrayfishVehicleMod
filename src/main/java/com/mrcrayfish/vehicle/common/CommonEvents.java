@@ -134,7 +134,7 @@ public class CommonEvents
 
     public static boolean pickUpVehicle(World world, PlayerEntity player, Hand hand, Entity targetEntity)
     {
-        if(hand == Hand.MAIN_HAND && !world.isRemote && player.isCrouching() && !player.isSpectator() && Config.COMMON.pickUpVehicles.get())
+        if(hand == Hand.MAIN_HAND && !world.isRemote && player.isCrouching() && !player.isSpectator() && Config.SERVER.pickUpVehicles.get())
         {
             if(player.getDataManager().get(HELD_VEHICLE).isEmpty())
             {

@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
@@ -18,7 +19,6 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.Direction;
@@ -33,7 +33,6 @@ import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -53,11 +52,10 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
-    private FluidTank tankBlaze = new FluidTank(FluidAttributes.BUCKET_VOLUME * 5, this::isValidFluid);
-    private FluidTank tankEnderSap = new FluidTank(FluidAttributes.BUCKET_VOLUME * 5, this::isValidFluid);
-    private FluidTank tankFuelium = new FluidTank(FluidAttributes.BUCKET_VOLUME * 10, stack -> stack.getFluid() == ModFluids.FUELIUM);
+    private FluidTank tankBlaze = new FluidTank(Config.SERVER.mixerInputCapacity.get(), this::isValidFluid);
+    private FluidTank tankEnderSap = new FluidTank(Config.SERVER.mixerInputCapacity.get(), this::isValidFluid);
+    private FluidTank tankFuelium = new FluidTank(Config.SERVER.mixerOutputCapacity.get(), stack -> stack.getFluid() == ModFluids.FUELIUM);
 
-    public static final int FLUID_MAX_PROGRESS = 20 * 5;
     private static final int SLOT_FUEL = 0;
     public static final int SLOT_INGREDIENT = 1;
 
@@ -253,7 +251,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
                     if(this.remainingFuel > 0 && this.canMix(this.currentRecipe))
                     {
-                        if(this.extractionProgress++ == FLUID_MAX_PROGRESS)
+                        if(this.extractionProgress++ == Config.SERVER.mixerMixTime.get())
                         {
                             FluidMixerRecipe recipe = this.currentRecipe;
                             this.tankFuelium.fill(recipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
@@ -586,6 +584,11 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     public FluidTank getBlazeTank()
     {
         return tankBlaze;
+    }
+
+    public FluidTank getFueliumTank()
+    {
+        return tankFuelium;
     }
 }
 

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipe;
-import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
@@ -43,8 +43,6 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
-    public static final int TANK_CAPACITY = 1000 * 5;
-    public static final int FLUID_MAX_PROGRESS = 20 * 30;
     private static final int SLOT_FUEL_SOURCE = 0;
     public static final int SLOT_FLUID_SOURCE = 1;
 
@@ -52,6 +50,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     private int remainingFuel;
     private int fuelMaxProgress;
     private int extractionProgress;
+    private int capacity;
 
     private String customName;
 
@@ -109,7 +108,8 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     public FluidExtractorTileEntity()
     {
-        super(ModTileEntities.FLUID_EXTRACTOR, TANK_CAPACITY, stack -> true);
+        super(ModTileEntities.FLUID_EXTRACTOR, Config.SERVER.extractorCapacity.get(), stack -> true);
+        this.capacity = Config.SERVER.extractorCapacity.get();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
             if(this.remainingFuel > 0 && this.canFillWithFluid(source))
             {
-                if(this.extractionProgress++ == FLUID_MAX_PROGRESS)
+                if(this.extractionProgress++ == Config.SERVER.extractorExtractTime.get())
                 {
                     this.tank.fill(this.currentRecipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
                     this.extractionProgress = 0;
@@ -190,6 +190,11 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     public FluidStack getFluidStackTank()
     {
         return this.tank.getFluid();
+    }
+
+    public int getCapacity()
+    {
+        return capacity;
     }
 
     @Override

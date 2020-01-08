@@ -22,6 +22,7 @@ public class ModTileEntities
     public static final TileEntityType<FluidPipeTileEntity> FLUID_PIPE = null;
     public static final TileEntityType<FluidPumpTileEntity> FLUID_PUMP = null;
     public static final TileEntityType<FuelDrumTileEntity> FUEL_DRUM = null;
+    public static final TileEntityType<IndustrialFuelDrumTileEntity> INDUSTRIAL_FUEL_DRUM = null;
     public static final TileEntityType<FluidMixerTileEntity> FLUID_MIXER = null;
     public static final TileEntityType<VehicleCrateTileEntity> VEHICLE_CRATE = null;
     public static final TileEntityType<WorkstationTileEntity> WORKSTATION = null;
@@ -46,7 +47,8 @@ public class ModTileEntities
         registry.register(buildType(Names.TileEntity.FLUID_PIPE, TileEntityType.Builder.create(FluidPipeTileEntity::new, ModBlocks.FLUID_PIPE)));
         registry.register(buildType(Names.TileEntity.FLUID_PUMP, TileEntityType.Builder.create(FluidPumpTileEntity::new, ModBlocks.FLUID_PUMP)));
         registry.register(buildType(Names.TileEntity.FLUID_MIXER, TileEntityType.Builder.create(FluidMixerTileEntity::new, ModBlocks.FLUID_MIXER)));
-        registry.register(buildType(Names.TileEntity.FUEL_DRUM, TileEntityType.Builder.create(FuelDrumTileEntity::new, ModBlocks.FUEL_DRUM, ModBlocks.INDUSTRIAL_FUEL_DRUM)));
+        registry.register(buildType(Names.TileEntity.FUEL_DRUM, TileEntityType.Builder.create(FuelDrumTileEntity::new, ModBlocks.FUEL_DRUM)));
+        registry.register(buildType(Names.TileEntity.INDUSTRIAL_FUEL_DRUM, TileEntityType.Builder.create(IndustrialFuelDrumTileEntity::new, ModBlocks.INDUSTRIAL_FUEL_DRUM)));
         registry.register(buildType(Names.TileEntity.VEHICLE_CRATE, TileEntityType.Builder.create(VehicleCrateTileEntity::new, ModBlocks.VEHICLE_CRATE)));
         registry.register(buildType(Names.TileEntity.WORKSTATION, TileEntityType.Builder.create(WorkstationTileEntity::new, ModBlocks.WORKSTATION)));
         registry.register(buildType(Names.TileEntity.JACK, TileEntityType.Builder.create(JackTileEntity::new, ModBlocks.JACK)));

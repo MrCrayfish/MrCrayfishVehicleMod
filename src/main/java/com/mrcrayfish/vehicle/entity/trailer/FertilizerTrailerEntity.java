@@ -90,7 +90,7 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
     {
         super.tick();
 
-        if(!world.isRemote && Config.COMMON.trailerInventorySyncCooldown.get() > 0 && this.inventoryTimer++ == Config.COMMON.trailerInventorySyncCooldown.get())
+        if(!world.isRemote && Config.SERVER.trailerInventorySyncCooldown.get() > 0 && this.inventoryTimer++ == Config.SERVER.trailerInventorySyncCooldown.get())
         {
             this.inventoryTimer = 0;
             PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new MessageSyncInventory(this.getEntityId(), this.inventory));

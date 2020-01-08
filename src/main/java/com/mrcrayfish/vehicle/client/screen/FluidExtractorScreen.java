@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
@@ -52,7 +53,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             {
                 if(stack.getAmount() > 0)
                 {
-                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + fluidExtractorTileEntity.getFluidLevel() + "/" + FluidExtractorTileEntity.TANK_CAPACITY + " mB"), mouseX, mouseY);
+                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidExtractorTileEntity.getFluidLevel() + "/" + this.fluidExtractorTileEntity.getCapacity() + " mB"), mouseX, mouseY);
                 }
                 else
                 {
@@ -102,12 +103,12 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             }
             RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor);
             this.blit(startX + 93, startY + 34, 176, 14, 23, 16);
-            double extractionPercentage = this.fluidExtractorTileEntity.getExtractionProgress() / (double) FluidExtractorTileEntity.FLUID_MAX_PROGRESS;
+            double extractionPercentage = this.fluidExtractorTileEntity.getExtractionProgress() / (double) Config.SERVER.extractorExtractTime.get();
             int extractionProgress = (int) (22 * extractionPercentage + 1);
             this.blit(startX + 93 + extractionProgress, startY + 34, 93 + extractionProgress, 34, 23 - extractionProgress, 17);
         }
 
-        this.drawFluidTank(this.fluidExtractorTileEntity.getFluidStackTank(), startX + 127, startY + 14, this.fluidExtractorTileEntity.getFluidLevel() / (double) FluidExtractorTileEntity.TANK_CAPACITY, 59);
+        this.drawFluidTank(this.fluidExtractorTileEntity.getFluidStackTank(), startX + 127, startY + 14, this.fluidExtractorTileEntity.getFluidLevel() / (double) this.fluidExtractorTileEntity.getCapacity(), 59);
     }
 
     private void drawFluidTank(FluidStack fluid, int x, int y, double level, int height)

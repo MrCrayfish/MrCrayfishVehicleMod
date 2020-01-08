@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
 import com.mrcrayfish.vehicle.tileentity.TileFluidHandlerSynced;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -44,6 +45,8 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -53,12 +56,14 @@ public class BlockFuelDrum extends BlockRotatedObject implements IBucketPickupHa
 {
     private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
 
-    private int capacity;
+    public BlockFuelDrum()
+    {
+        this(Names.Block.FUEL_DRUM);
+    }
 
-    public BlockFuelDrum(String id, int capacity)
+    public BlockFuelDrum(String id)
     {
         super(id, Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
-        this.capacity = capacity;
     }
 
     @Override
@@ -142,7 +147,7 @@ public class BlockFuelDrum extends BlockRotatedObject implements IBucketPickupHa
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new FuelDrumTileEntity(this.capacity);
+        return new FuelDrumTileEntity();
     }
 
     @Override

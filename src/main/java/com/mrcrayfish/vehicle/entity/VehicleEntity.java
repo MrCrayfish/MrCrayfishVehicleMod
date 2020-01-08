@@ -291,7 +291,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                      * is the fix. */
                     this.dataManager.set(TRAILER, trailer.getEntityId());
                     this.trailer.getDataManager().set(TrailerEntity.PULLING_ENTITY, this.getEntityId());
-                    this.searchDelay = Config.COMMON.trailerSyncCooldown.get();
+                    this.searchDelay = Config.SERVER.trailerSyncCooldown.get();
                 }
                 else
                 {
@@ -347,7 +347,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             }
             else
             {
-                if(Config.COMMON.vehicleDamage.get())
+                if(Config.SERVER.vehicleDamage.get())
                 {
                     this.setTimeSinceHit(10);
                     this.setHealth(this.getHealth() - amount);
@@ -371,7 +371,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public boolean func_225503_b_(float distance, float damageMultiplier)
     {
-        if(Config.COMMON.vehicleDamage.get() && distance >= 4F && this.getMotion().getY() < -1.0F)
+        if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getMotion().getY() < -1.0F)
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);

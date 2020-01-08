@@ -94,7 +94,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
 
         if(!this.world.isRemote && this.fuelingEntity != null)
         {
-            if(Math.sqrt(this.fuelingEntity.getDistanceSq(this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5)) > Config.COMMON.maxHoseDistance.get() || !this.fuelingEntity.isAlive())
+            if(Math.sqrt(this.fuelingEntity.getDistanceSq(this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5)) > Config.SERVER.maxHoseDistance.get() || !this.fuelingEntity.isAlive())
             {
                 if(this.fuelingEntity.isAlive())
                 {

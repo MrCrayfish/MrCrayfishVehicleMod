@@ -86,7 +86,7 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
     public void tick()
     {
         super.tick();
-        if(!this.world.isRemote && Config.COMMON.trailerInventorySyncCooldown.get() > 0 && inventoryTimer++ == Config.COMMON.trailerInventorySyncCooldown.get())
+        if(!this.world.isRemote && Config.SERVER.trailerInventorySyncCooldown.get() > 0 && inventoryTimer++ == Config.SERVER.trailerInventorySyncCooldown.get())
         {
             this.inventoryTimer = 0;
             PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> SeederTrailerEntity.this), new MessageSyncInventory(this.getEntityId(), this.inventory));

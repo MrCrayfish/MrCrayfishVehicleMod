@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.screen;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
 import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
@@ -53,7 +54,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             {
                 if(stack.getAmount() > 0)
                 {
-                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidMixerTileEntity.getBlazeLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
+                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidMixerTileEntity.getBlazeLevel() + "/" + this.fluidMixerTileEntity.getBlazeTank().getCapacity() + " mB"), mouseX, mouseY);
                 }
                 else
                 {
@@ -69,7 +70,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             {
                 if(stack.getAmount() > 0)
                 {
-                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidMixerTileEntity.getEnderSapLevel() + "/" + 5000 + " mB"), mouseX, mouseY);
+                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidMixerTileEntity.getEnderSapLevel() + "/" + this.fluidMixerTileEntity.getEnderSapTank().getCapacity() + " mB"), mouseX, mouseY);
                 }
                 else
                 {
@@ -85,7 +86,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             {
                 if(stack.getAmount() > 0)
                 {
-                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidMixerTileEntity.getFueliumLevel() + "/" + 10000 + " mB"), mouseX, mouseY);
+                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidMixerTileEntity.getFueliumLevel() + "/" + this.fluidMixerTileEntity.getFueliumTank().getCapacity() + " mB"), mouseX, mouseY);
                 }
                 else
                 {
@@ -136,7 +137,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
                     | ((((greenBlaze + greenSap) / 2) & 255) << 8) | ((((blueBlaze + blueSap) / 2) & 255));
             int statrColor = (130 << 24) | statrColorRGB;
             int fluidColor = (130 << 24) | FluidUtils.getAverageFluidColor(ModFluids.FUELIUM); //TODO change to recipe
-            double extractionPercentage = this.fluidMixerTileEntity.getExtractionProgress() / (double) FluidMixerTileEntity.FLUID_MAX_PROGRESS;
+            double extractionPercentage = this.fluidMixerTileEntity.getExtractionProgress() / (double) Config.SERVER.mixerMixTime.get();
 
             double lenghtItem = 76;
             double lenghtHorizontal = 12;
@@ -202,9 +203,9 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             }
         }
 
-        this.drawSmallFluidTank(this.fluidMixerTileEntity.getBlazeFluidStack(), startX + 33, startY + 17, this.fluidMixerTileEntity.getBlazeLevel() / 5000.0);
-        this.drawSmallFluidTank(this.fluidMixerTileEntity.getEnderSapFluidStack(), startX + 33, startY + 52, this.fluidMixerTileEntity.getEnderSapLevel() / 5000.0);
-        this.drawFluidTank(this.fluidMixerTileEntity.getFueliumFluidStack(), startX + 151, startY + 20, this.fluidMixerTileEntity.getFueliumLevel() / 10000.0);
+        this.drawSmallFluidTank(this.fluidMixerTileEntity.getBlazeFluidStack(), startX + 33, startY + 17, this.fluidMixerTileEntity.getBlazeLevel() / (double) this.fluidMixerTileEntity.getBlazeTank().getCapacity());
+        this.drawSmallFluidTank(this.fluidMixerTileEntity.getEnderSapFluidStack(), startX + 33, startY + 52, this.fluidMixerTileEntity.getEnderSapLevel() / (double) this.fluidMixerTileEntity.getEnderSapTank().getCapacity());
+        this.drawFluidTank(this.fluidMixerTileEntity.getFueliumFluidStack(), startX + 151, startY + 20, this.fluidMixerTileEntity.getFueliumLevel() / (double) this.fluidMixerTileEntity.getFueliumTank().getCapacity());
     }
 
     private void drawFluidTank(FluidStack fluid, int x, int y, double level)

@@ -11,7 +11,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
@@ -27,8 +26,8 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
 
     public FluidPumpTileEntity()
     {
-        super(ModTileEntities.FLUID_PUMP);
-        this.transferAmount = Config.COMMON.pumpTransferAmount.get();
+        super(ModTileEntities.FLUID_PUMP, Config.SERVER.pumpCapacity.get());
+        this.transferAmount = Config.SERVER.pumpTransferAmount.get();
         this.powerMode = PowerMode.REQUIRES_SIGNAL_ON;
     }
 

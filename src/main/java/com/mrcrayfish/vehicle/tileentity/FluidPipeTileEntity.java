@@ -15,7 +15,6 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
@@ -33,13 +32,13 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     @SuppressWarnings("ConstantConditions")
     public FluidPipeTileEntity()
     {
-        this(ModTileEntities.FLUID_PIPE);
+        this(ModTileEntities.FLUID_PIPE, Config.SERVER.pipeCapacity.get());
     }
 
-    public FluidPipeTileEntity(TileEntityType<?> tileEntityType)
+    public FluidPipeTileEntity(TileEntityType<?> tileEntityType, int capacity)
     {
-        super(tileEntityType, 500);
-        this.transferAmount = Config.COMMON.pipeTransferAmount.get();
+        super(tileEntityType, capacity);
+        this.transferAmount = Config.SERVER.pipeTransferAmount.get();
         this.disabledConnections = new boolean[Direction.values().length];
     }
 

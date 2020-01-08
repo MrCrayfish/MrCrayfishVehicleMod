@@ -1,12 +1,10 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -60,7 +58,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
         if(this.pullingEntity != null && !this.world.isRemote)
         {
-            if(this.pullingEntity.getDistance(this) > Config.COMMON.trailerDetachThreshold.get())
+            if(this.pullingEntity.getDistance(this) > Config.SERVER.trailerDetachThreshold.get())
             {
                 this.world.playSound(null, this.pullingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 this.pullingEntity = null;

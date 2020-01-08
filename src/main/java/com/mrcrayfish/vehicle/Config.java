@@ -54,7 +54,7 @@ public class Config
         }
     }
 
-    public static class Common
+    public static class Server
     {
         public final ForgeConfigSpec.BooleanValue fuelEnabled;
         public final ForgeConfigSpec.BooleanValue vehicleDamage;
@@ -65,37 +65,68 @@ public class Config
         public final ForgeConfigSpec.DoubleValue maxHoseDistance;
         public final ForgeConfigSpec.IntValue pipeTransferAmount;
         public final ForgeConfigSpec.IntValue pumpTransferAmount;
+        public final ForgeConfigSpec.IntValue gasPumpCapacity;
+        public final ForgeConfigSpec.IntValue pipeCapacity;
+        public final ForgeConfigSpec.IntValue pumpCapacity;
+        public final ForgeConfigSpec.IntValue extractorCapacity;
+        public final ForgeConfigSpec.IntValue extractorExtractTime;
+        public final ForgeConfigSpec.IntValue mixerInputCapacity;
+        public final ForgeConfigSpec.IntValue mixerOutputCapacity;
+        public final ForgeConfigSpec.IntValue mixerMixTime;
+        public final ForgeConfigSpec.IntValue fuelDrumCapacity;
+        public final ForgeConfigSpec.IntValue industrialFuelDrumCapacity;
 
-        Common(ForgeConfigSpec.Builder builder)
+        Server(ForgeConfigSpec.Builder builder)
         {
-            builder.comment("Common configuration settings").push("common");
-            this.fuelEnabled = builder.comment("If true, vehicles will require fuel for them to be driven.")
-                .translation(Reference.MOD_ID + ".config.server.fuel_enabled")
-                .define("fuelEnabled", true);
-            this.vehicleDamage = builder.comment("If true, vehicles will take damage.")
-                .translation(Reference.MOD_ID + ".config.server.vehicle_damage")
-                .define("vehicleDamage", true);
-            this.trailerDetachThreshold = builder.comment("The distance threshold before the trailer detaches from a vehicle")
-                .translation(Reference.MOD_ID + ".config.server.trailer_detach_threshold")
-                .defineInRange("trailerDetachThreshold", 6.0, 1.0, 10.0);
-            this.trailerSyncCooldown = builder.comment("The amount of ticks to wait before syncing data to clients about the trailer connection. This is important for smooth trailer movement on client side.")
-                .translation(Reference.MOD_ID + ".config.server.trailer_sync_cooldown")
-                .defineInRange("trailerSyncCooldown", 100, 1, Integer.MAX_VALUE);
-            this.trailerInventorySyncCooldown = builder.comment("The amount of ticks to wait before syncing trailer inventory to tracking clients. If the value is set to 0 or less, the inventory will not sync and will save on network usage.")
-                .translation(Reference.MOD_ID + ".config.server.trailer_inventory_sync_cooldown")
-                .defineInRange("trailerInventorySyncCooldown", 20, 1, Integer.MAX_VALUE);
-            this.pickUpVehicles = builder.comment("Allows players to pick up vehicles by crouching and right clicking")
-                .translation(Reference.MOD_ID + ".config.server.pick_up_vehicles")
-                .define("pickUpVehicles", true);
-            this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks")
-                .translation(Reference.MOD_ID + ".config.server.max_hose_distance")
-                .defineInRange("maxHoseDistance", 6.0, 1.0, 20.0);
-            this.pipeTransferAmount = builder.comment("The amount of fluid a pipe will transfer each tick")
-                .translation(Reference.MOD_ID + ".config.server.pipe_transfer_amount")
-                .defineInRange("pipeTransferAmount", 50, 1, Integer.MAX_VALUE);
-            this.pumpTransferAmount = builder.comment("The amount of fluid a pump will transfer each tick")
-                .translation(Reference.MOD_ID + ".config.server.pump_transfer_amount")
-                .defineInRange("pumpTransferAmount", 50, 1, Integer.MAX_VALUE);
+            builder.comment("Server configuration settings").push("common");
+            {
+                builder.comment("General configuration options").push("general");
+                this.fuelEnabled = builder.comment("If true, vehicles will require fuel for them to be driven.").translation(Reference.MOD_ID + ".config.server.fuel_enabled").define("fuelEnabled", true);
+                this.vehicleDamage = builder.comment("If true, vehicles will take damage.").translation(Reference.MOD_ID + ".config.server.vehicle_damage").define("vehicleDamage", true);
+                this.pickUpVehicles = builder.comment("Allows players to pick up vehicles by crouching and right clicking").translation(Reference.MOD_ID + ".config.server.pick_up_vehicles").define("pickUpVehicles", true);
+                builder.pop();
+
+                builder.comment("Configuration options for trailers").push("trailer");
+                this.trailerDetachThreshold = builder.comment("The distance threshold before the trailer detaches from a vehicle").translation(Reference.MOD_ID + ".config.server.trailer_detach_threshold").defineInRange("trailerDetachThreshold", 6.0, 1.0, 10.0);
+                this.trailerSyncCooldown = builder.comment("The amount of ticks to wait before syncing data to clients about the trailer connection. This is important for smooth trailer movement on client side.").translation(Reference.MOD_ID + ".config.server.trailer_sync_cooldown").defineInRange("trailerSyncCooldown", 100, 1, Integer.MAX_VALUE);
+                this.trailerInventorySyncCooldown = builder.comment("The amount of ticks to wait before syncing trailer inventory to tracking clients. If the value is set to 0 or less, the inventory will not sync and will save on network usage.").translation(Reference.MOD_ID + ".config.server.trailer_inventory_sync_cooldown").defineInRange("trailerInventorySyncCooldown", 20, 1, Integer.MAX_VALUE);
+                builder.pop();
+
+                builder.comment("Configuration options for blocks").push("blocks");
+                {
+                    builder.comment("Configuration options for Gas Pumps").push("gas_pump");
+                    this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks").translation(Reference.MOD_ID + ".config.server.max_hose_distance").defineInRange("maxHoseDistance", 6.0, 1.0, 20.0);
+                    this.gasPumpCapacity = builder.comment("The fluid capacity of the gas pump in millibuckets").translation(Reference.MOD_ID + ".config.server.gas_pump_capacity").defineInRange("gasPumpCapacity", 50000, 1, Integer.MAX_VALUE);
+                    builder.pop();
+
+                    builder.comment("Configuration options for fluid pipes").push("fluid_pipe");
+                    this.pipeTransferAmount = builder.comment("The amount of fluid a pipe will transfer each tick").translation(Reference.MOD_ID + ".config.server.pipe_transfer_amount").defineInRange("pipeTransferAmount", 50, 1, Integer.MAX_VALUE);
+                    this.pipeCapacity = builder.comment("The fluid capacity of the fluid pipe in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_pipe_capacity").defineInRange("pipeCapacity", 500, 1, Integer.MAX_VALUE);
+                    builder.pop();
+
+                    builder.comment("Configuration options for fluid pumps").push("fluid_pump");
+                    this.pumpTransferAmount = builder.comment("The amount of fluid a pump will transfer each tick").translation(Reference.MOD_ID + ".config.server.pump_transfer_amount").defineInRange("pumpTransferAmount", 50, 1, Integer.MAX_VALUE);
+                    this.pumpCapacity = builder.comment("The fluid capacity of the fluid pump in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_pump_capacity").defineInRange("pumpCapacity", 500, 1, Integer.MAX_VALUE);
+                    builder.pop();
+
+                    builder.comment("Configuration options for fluid extractors").push("fluid_extractor");
+                    this.extractorExtractTime = builder.comment("The amount of ticks before fluid is extracted from an item").translation(Reference.MOD_ID + ".config.server.fluid_extractor_time").defineInRange("extractorExtractTime", 600, 1, Integer.MAX_VALUE);
+                    this.extractorCapacity = builder.comment("The fluid capacity of the fluid extractor in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_extractor_capacity").defineInRange("extractorCapacity", 5000, 1, Integer.MAX_VALUE);
+                    builder.pop();
+
+                    builder.comment("Configuration options for fluid mixers").push("fluid_mixer");
+                    this.mixerMixTime = builder.comment("The amount of ticks to mix fluids together").translation(Reference.MOD_ID + ".config.server.fluid_mixer_time").defineInRange("mixerMixTime", 100, 1, Integer.MAX_VALUE);
+                    this.mixerInputCapacity = builder.comment("The input fluid capacity of the fluid mixer in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_mixer_input_capacity").defineInRange("mixerInputCapacity", 5000, 1, Integer.MAX_VALUE);
+                    this.mixerOutputCapacity = builder.comment("The output fluid capacity of the fluid mixer in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_mixer_output_capacity").defineInRange("mixerOutputCapacity", 10000, 1, Integer.MAX_VALUE);
+                    builder.pop();
+
+                    builder.comment("Configuration options for fuel drums").push("fuel_drum");
+                    this.fuelDrumCapacity = builder.comment("The fluid capacity of the fuel drum in millibuckets").translation(Reference.MOD_ID + ".config.server.fuel_drum_capacity").defineInRange("fuelDrumCapacity", 40000, 1, Integer.MAX_VALUE);
+                    this.industrialFuelDrumCapacity = builder.comment("The fluid capacity of the industrial fuel drum in millibuckets").translation(Reference.MOD_ID + ".config.server.industrial_fuel_drum_capacity").defineInRange("industrialFuelDrumCapacity", 75000, 1, Integer.MAX_VALUE);
+                    builder.pop();
+                }
+                builder.pop();
+            }
             builder.pop();
         }
     }
@@ -103,8 +134,8 @@ public class Config
     static final ForgeConfigSpec clientSpec;
     public static final Config.Client CLIENT;
 
-    static final ForgeConfigSpec commonSpec;
-    public static final Config.Common COMMON;
+    static final ForgeConfigSpec serverSpec;
+    public static final Server SERVER;
 
     static
     {
@@ -112,8 +143,8 @@ public class Config
         clientSpec = clientSpecPair.getRight();
         CLIENT = clientSpecPair.getLeft();
 
-        final Pair<Common, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Config.Common::new);
-        commonSpec = commonSpecPair.getRight();
-        COMMON = commonSpecPair.getLeft();
+        final Pair<Server, ForgeConfigSpec> commonSpecPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = commonSpecPair.getRight();
+        SERVER = commonSpecPair.getLeft();
     }
 }
