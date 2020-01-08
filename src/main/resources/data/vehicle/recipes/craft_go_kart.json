@@ -1,0 +1,14 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:go_kart",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 36
+        },
+        {
+            "item": "vehicle:panel",
+            "count": 4
+        }
+    ]
+}

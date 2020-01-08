@@ -1,0 +1,14 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:seeder",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 42
+        },
+        {
+            "item": "vehicle:panel",
+            "count": 8
+        }
+    ]
+}

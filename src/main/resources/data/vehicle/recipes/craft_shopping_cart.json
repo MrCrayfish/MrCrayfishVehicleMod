@@ -1,0 +1,14 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:shopping_cart",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 8
+        },
+        {
+            "item": "minecraft:iron_bars",
+            "count": 4
+        }
+    ]
+}

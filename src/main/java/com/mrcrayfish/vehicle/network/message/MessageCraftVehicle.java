@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.*;
@@ -81,7 +82,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                 if(entityType == null)
                     return;
 
-                VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(entityType);
+                VehicleRecipe recipe = VehicleRecipes.getRecipe(entityType, world);
                 if(recipe == null)
                     return;
 
@@ -121,7 +122,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                     if(entityPoweredVehicle.canChangeWheels())
                     {
                         ItemStack wheel = workstationTileEntity.getInventory().get(2);
-                        if(wheel.getItem() != ModItems.STANDARD_WHEEL)
+                        if(!(wheel.getItem() instanceof WheelItem))
                         {
                             return;
                         }
@@ -170,7 +171,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                 ItemStack wheel = workstationTileEntity.getInventory().get(2);
                 if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).canChangeWheels())
                 {
-                    if(wheel.getItem() == ModItems.STANDARD_WHEEL)
+                    if(wheel.getItem() instanceof WheelItem)
                     {
                         WheelItem wheelItem = (WheelItem) wheel.getItem();
                         wheelType = wheelItem.getWheelType();

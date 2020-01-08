@@ -1,0 +1,14 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:sofa",
+    "materials": [
+        {
+            "item": "cfm:rainbow_sofa",
+            "count": 1
+        },
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 8
+        }
+    ]
+}

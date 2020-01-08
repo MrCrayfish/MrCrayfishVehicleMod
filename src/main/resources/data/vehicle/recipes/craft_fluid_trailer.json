@@ -1,0 +1,14 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:fluid_trailer",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 48
+        },
+        {
+            "item": "vehicle:panel",
+            "count": 8
+        }
+    ]
+}

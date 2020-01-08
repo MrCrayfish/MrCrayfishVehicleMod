@@ -260,7 +260,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     public static ItemStack create(ResourceLocation entityId, int color, @Nullable EngineTier engineTier, @Nullable WheelType wheelType, int wheelColor)
     {
         CompoundNBT blockEntityTag = new CompoundNBT();
-        blockEntityTag.putString("VehicleId", entityId.toString());
+        blockEntityTag.putString("Vehicle", entityId.toString());
         blockEntityTag.putInt("Color", color);
 
         if(engineTier != null)

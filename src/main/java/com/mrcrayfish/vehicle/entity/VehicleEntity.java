@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -387,7 +388,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
         if(!isCreativeMode && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
         {
-            VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getType());
+            VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getType(), this.world);
             if(recipe != null)
             {
                 List<ItemStack> materials = recipe.getMaterials();

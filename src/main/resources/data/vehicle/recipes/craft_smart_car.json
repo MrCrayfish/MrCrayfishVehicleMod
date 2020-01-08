@@ -1,0 +1,26 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:smart_car",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 80
+        },
+        {
+            "item": "minecraft:black_wool",
+            "count": 8
+        },
+        {
+            "item": "minecraft:glass_pane",
+            "count": 6
+        },
+        {
+            "item": "minecraft:redstone",
+            "count": 8
+        },
+        {
+            "item": "vehicle:panel",
+            "count": 16
+        }
+    ]
+}

@@ -1,0 +1,18 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:bumper_car",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 36
+        },
+        {
+            "item": "minecraft:redstone",
+            "count": 8
+        },
+        {
+            "item": "vehicle:panel",
+            "count": 8
+        }
+    ]
+}

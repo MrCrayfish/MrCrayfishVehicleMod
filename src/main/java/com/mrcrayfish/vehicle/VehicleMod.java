@@ -97,7 +97,6 @@ public class VehicleMod
         CustomDataSerializers.register();
         HeldVehicleDataHandler.register();
         VehicleProperties.register();
-        VehicleRecipes.register();
         ItemLookup.init();
     }
 

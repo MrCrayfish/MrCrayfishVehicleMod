@@ -100,4 +100,9 @@ public class ModEntities
         IForgeRegistry<EntityType<?>> registry = event.getRegistry();
         ENTITY_TYPES.forEach(registry::register);
     }
+
+    public static List<EntityType<?>> getEntityTypes()
+    {
+        return ENTITY_TYPES;
+    }
 }

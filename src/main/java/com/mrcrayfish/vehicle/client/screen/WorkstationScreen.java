@@ -10,12 +10,14 @@ import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.item.WheelItem;
@@ -61,39 +63,39 @@ import java.util.stream.Collectors;
  */
 public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 {
-    private static final ImmutableList<Class<? extends VehicleEntity>> VEHICLES;
-    public static final ImmutableMap<Class<? extends VehicleEntity>, PartPosition> DISPLAY_PROPERTIES;
+    private static final ImmutableList<EntityType<?>> VEHICLES;
+    public static final ImmutableMap<EntityType<?>, PartPosition> DISPLAY_PROPERTIES;
 
     static
     {
-        ImmutableMap.Builder<Class<? extends VehicleEntity>, PartPosition> builder = ImmutableMap.builder();
-        builder.put(AluminumBoatEntity.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-        builder.put(ATVEntity.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(BumperCarEntity.class, new PartPosition(0.0F, 0.0F, -0.4F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(DuneBuggyEntity.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.75F));
-        builder.put(GoKartEntity.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(GolfCartEntity.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
-        builder.put(JetSkiEntity.class, new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(LawnMowerEntity.class, new PartPosition(0.0F, 0.0F, -0.7F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(MiniBikeEntity.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(MopedEntity.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(OffRoaderEntity.class, new PartPosition(0.0F, 0.0F, 0.1F, 0.0F, 0.0F, 0.0F, 1.0F));
-        builder.put(ShoppingCartEntity.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.45F));
-        builder.put(SmartCarEntity.class, new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(SpeedBoatEntity.class, new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F));
-        builder.put(SportsPlaneEntity.class, new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
-        builder.put(TractorEntity.class, new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.25F));
-        builder.put(VehicleEntityTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(StorageTrailerEntity.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(SeederTrailerEntity.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(FertilizerTrailerEntity.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(FluidTrailerEntity.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
+        ImmutableMap.Builder<EntityType<?>, PartPosition> builder = ImmutableMap.builder();
+        builder.put(ModEntities.ALUMINUM_BOAT, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+        builder.put(ModEntities.ATV, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.BUMPER_CAR, new PartPosition(0.0F, 0.0F, -0.4F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.DUNE_BUGGY, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.75F));
+        builder.put(ModEntities.GO_KART, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.GOLF_CART, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
+        builder.put(ModEntities.JET_SKI, new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.LAWN_MOWER, new PartPosition(0.0F, 0.0F, -0.7F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.MINI_BIKE, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.MOPED, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+        builder.put(ModEntities.OFF_ROADER, new PartPosition(0.0F, 0.0F, 0.1F, 0.0F, 0.0F, 0.0F, 1.0F));
+        builder.put(ModEntities.SHOPPING_CART, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.45F));
+        builder.put(ModEntities.SMART_CAR, new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.35F));
+        builder.put(ModEntities.SPEED_BOAT, new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F));
+        builder.put(ModEntities.SPORTS_PLANE, new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
+        builder.put(ModEntities.TRACTOR, new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.25F));
+        builder.put(ModEntities.VEHICLE_TRAILER, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
+        builder.put(ModEntities.STORAGE_TRAILER, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
+        builder.put(ModEntities.SEEDER, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
+        builder.put(ModEntities.FERTILIZER, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
+        builder.put(ModEntities.FLUID_TRAILER, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
 
         if(ModList.get().isLoaded("cfm"))
         {
-            builder.put(BathEntity.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-            builder.put(CouchEntity.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-            builder.put(SofacopterEntity.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
+            builder.put(ModEntities.BATH, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+            builder.put(ModEntities.SOFA, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+            builder.put(ModEntities.SOFACOPTER, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
         }
 
         DISPLAY_PROPERTIES = builder.build();
@@ -303,37 +305,32 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     {
         prevCurrentVehicle = currentVehicle;
 
-        try
+        if(this.cachedVehicle[index] == null)
         {
-            if(this.cachedVehicle[index] == null)
+            VehicleEntity vehicle = (VehicleEntity) VEHICLES.get(index).create(this.minecraft.world);
+            java.util.List<EntityDataManager.DataEntry<?>> entryList = vehicle.getDataManager().getAll();
+            if(entryList != null)
             {
-                VehicleEntity vehicle = VEHICLES.get(index).getDeclaredConstructor(World.class).newInstance(Minecraft.getInstance().world);
-                java.util.List<EntityDataManager.DataEntry<?>> entryList = vehicle.getDataManager().getAll();
-                if(entryList != null)
-                {
-                    entryList.forEach(dataEntry -> vehicle.notifyDataManagerChange(dataEntry.getKey()));
-                }
-
-                if(vehicle instanceof PoweredVehicleEntity)
-                {
-                    ((PoweredVehicleEntity) vehicle).setEngine(false);
-                    ((PoweredVehicleEntity) vehicle).setWheels(false);
-                }
-                this.cachedVehicle[index] = vehicle;
+                entryList.forEach(dataEntry -> vehicle.notifyDataManagerChange(dataEntry.getKey()));
             }
-        }
-        catch(InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e)
-        {
-            e.printStackTrace();
+            if(vehicle instanceof PoweredVehicleEntity)
+            {
+                ((PoweredVehicleEntity) vehicle).setEngine(false);
+                ((PoweredVehicleEntity) vehicle).setWheels(false);
+            }
+            this.cachedVehicle[index] = vehicle;
         }
 
         this.materials.clear();
-        VehicleRecipes.VehicleRecipe recipe = VehicleRecipes.getRecipe(this.cachedVehicle[index].getType());
-        for(int i = 0; i < recipe.getMaterials().size(); i++)
+        VehicleRecipe recipe = VehicleRecipes.getRecipe(this.cachedVehicle[index].getType(), this.minecraft.world);
+        if(recipe != null)
         {
-            MaterialItem item = new MaterialItem(recipe.getMaterials().get(i));
-            item.update();
-            materials.add(item);
+            for(int i = 0; i < recipe.getMaterials().size(); i++)
+            {
+                MaterialItem item = new MaterialItem(recipe.getMaterials().get(i).copy());
+                item.update();
+                materials.add(item);
+            }
         }
 
         currentVehicle = index;

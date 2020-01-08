@@ -1,0 +1,18 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:sofacopter",
+    "materials": [
+        {
+            "item": "cfm:red_sofa",
+            "count": 1
+        },
+        {
+            "item": "cfm:ceiling_fan",
+            "count": 1
+        },
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 16
+        }
+    ]
+}

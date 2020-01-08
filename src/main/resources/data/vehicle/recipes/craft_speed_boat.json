@@ -1,0 +1,22 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:speed_boat",
+    "materials": [
+        {
+            "item": "minecraft:iron_ingot",
+            "count": 80
+        },
+        {
+            "item": "minecraft:black_wool",
+            "count": 8
+        },
+        {
+            "item": "minecraft:glass_pane",
+            "count": 4
+        },
+        {
+            "item": "vehicle:panel",
+            "count": 10
+        }
+    ]
+}

@@ -1,0 +1,14 @@
+{
+    "type": "vehicle:crafting",
+    "vehicle": "vehicle:bath",
+    "materials": [
+        {
+            "item": "cfm:bath",
+            "count": 1
+        },
+        {
+            "item": "minecraft:nether_star",
+            "count": 1
+        }
+    ]
+}
