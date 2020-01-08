@@ -40,7 +40,7 @@ public class VehicleProperties
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.0, 0.2, 1.1));
         properties.setFuelPortPosition(new PartPosition(-16.25, 3, -18.5, 0.0, -90.0, 0.0, 0.25));
-        properties.setHeldOffset(new Vec3d(36.0, 0.0, 0.0));
+        properties.setHeldOffset(new Vec3d(0.0, 0.0, 0.0));
         VehicleProperties.setProperties(ModEntities.ALUMINUM_BOAT, properties);
 
         /* ATV */
