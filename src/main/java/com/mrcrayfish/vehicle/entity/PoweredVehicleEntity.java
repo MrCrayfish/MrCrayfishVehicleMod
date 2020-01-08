@@ -431,7 +431,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
             float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
             float currentFuel = this.getCurrentFuel();
-            currentFuel -= this.fuelConsumption * normalSpeed;
+            currentFuel -= this.fuelConsumption * normalSpeed * Config.SERVER.fuelConsumptionFactor.get();
             if(currentFuel < 0F) currentFuel = 0F;
             this.setCurrentFuel(currentFuel);
         }

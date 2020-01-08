@@ -21,35 +21,26 @@ public class Config
         Client(ForgeConfigSpec.Builder builder)
         {
             builder.comment("Client configuration settings").push("client");
-            builder.comment("Configuration options for debugging vehicles").push("debug");
-            this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.")
-                .translation(Reference.MOD_ID + ".config.client.debug.render_outlines")
-                .define("renderOutlines", false);
-            this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.")
-                .translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload")
-                .define("reloadRaytracerEachTick", false);
-            builder.pop();
-            builder.comment("Configuration options for vehicle interaction").push("interaction");
-            this.enabledLeftClick = builder.comment("If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.")
-                .translation(Reference.MOD_ID + ".config.client.interaction.left_click")
-                .define("enabledLeftClick", true);
-            builder.pop();
-            builder.comment("Configuration for display related options").push("display");
-            this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle")
-                .translation(Reference.MOD_ID + ".config.client.display.speedometer")
-                .define("enabledSpeedometer", true);
-            this.autoPerspective = builder.comment("If true, automatically switches to third person when mounting vehicles")
-                .translation(Reference.MOD_ID + ".config.client.display.auto_perspective")
-                .define("autoPerspective", true);
-            this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation")
-                .translation(Reference.MOD_ID + ".config.client.display.workstation_animation")
-                .define("workstationAnimation", true);
-            builder.pop();
-            builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
-            this.useTriggers = builder.comment("If true, will use the triggers on controller to control the acceleration of the vehicle.")
-                    .translation(Reference.MOD_ID + ".config.client.controller.use_triggers")
-                    .define("useTriggers", false);
-            builder.pop();
+            {
+                builder.comment("Configuration options for debugging vehicles").push("debug");
+                this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.").translation(Reference.MOD_ID + ".config.client.debug.render_outlines").define("renderOutlines", false);
+                this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
+                builder.pop();
+
+                builder.comment("Configuration options for vehicle interaction").push("interaction");
+                this.enabledLeftClick = builder.comment("If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.").translation(Reference.MOD_ID + ".config.client.interaction.left_click").define("enabledLeftClick", true);
+                builder.pop();
+
+                builder.comment("Configuration for display related options").push("display");
+                this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle").translation(Reference.MOD_ID + ".config.client.display.speedometer").define("enabledSpeedometer", true);
+                this.autoPerspective = builder.comment("If true, automatically switches to third person when mounting vehicles").translation(Reference.MOD_ID + ".config.client.display.auto_perspective").define("autoPerspective", true);
+                this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation").translation(Reference.MOD_ID + ".config.client.display.workstation_animation").define("workstationAnimation", true);
+                builder.pop();
+
+                builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
+                this.useTriggers = builder.comment("If true, will use the triggers on controller to control the acceleration of the vehicle.").translation(Reference.MOD_ID + ".config.client.controller.use_triggers").define("useTriggers", false);
+                builder.pop();
+            }
             builder.pop();
         }
     }
@@ -75,6 +66,7 @@ public class Config
         public final ForgeConfigSpec.IntValue mixerMixTime;
         public final ForgeConfigSpec.IntValue fuelDrumCapacity;
         public final ForgeConfigSpec.IntValue industrialFuelDrumCapacity;
+        public final ForgeConfigSpec.DoubleValue fuelConsumptionFactor;
 
         Server(ForgeConfigSpec.Builder builder)
         {
@@ -84,6 +76,7 @@ public class Config
                 this.fuelEnabled = builder.comment("If true, vehicles will require fuel for them to be driven.").translation(Reference.MOD_ID + ".config.server.fuel_enabled").define("fuelEnabled", true);
                 this.vehicleDamage = builder.comment("If true, vehicles will take damage.").translation(Reference.MOD_ID + ".config.server.vehicle_damage").define("vehicleDamage", true);
                 this.pickUpVehicles = builder.comment("Allows players to pick up vehicles by crouching and right clicking").translation(Reference.MOD_ID + ".config.server.pick_up_vehicles").define("pickUpVehicles", true);
+                this.fuelConsumptionFactor = builder.comment("Change the amount of fuel vehicles consumes by multiplying the consumption rate by this factor").translation(Reference.MOD_ID + ".config.server.fuel_consumption_modifier").defineInRange("fuelConsumptionModifier", 1.0, 0.0, Double.MAX_VALUE);
                 builder.pop();
 
                 builder.comment("Configuration options for trailers").push("trailer");
