@@ -57,7 +57,7 @@ public class SprayCanItem extends Item implements IDyeable
 
     public static CompoundNBT getStackTag(ItemStack stack)
     {
-        if(stack.getTag() != null)
+        if(stack.getTag() == null)
         {
             stack.setTag(new CompoundNBT());
         }
@@ -122,9 +122,6 @@ public class SprayCanItem extends Item implements IDyeable
     public void refill(ItemStack stack)
     {
         CompoundNBT compound = getStackTag(stack);
-        if(compound != null)
-        {
-            compound.putInt("RemainingSprays", this.getCapacity(stack));
-        }
+        compound.putInt("RemainingSprays", this.getCapacity(stack));
     }
 }

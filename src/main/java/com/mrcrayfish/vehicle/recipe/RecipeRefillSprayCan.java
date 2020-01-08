@@ -104,18 +104,6 @@ public class RecipeRefillSprayCan extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getRecipeOutput()
-    {
-        return ItemStack.EMPTY;
-    }
-
-    @Override
-    public boolean isDynamic()
-    {
-        return true;
-    }
-
-    @Override
     public IRecipeSerializer<?> getSerializer()
     {
         return ModRecipes.REFILL_SPRAY_CAN;

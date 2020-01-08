@@ -7,6 +7,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.item.crafting.SpecialRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -94,12 +95,6 @@ public class RecipeColorSprayCan extends SpecialRecipe
     public boolean canFit(int width, int height)
     {
         return width * height >= 2;
-    }
-
-    @Override
-    public boolean isDynamic()
-    {
-        return true;
     }
 
     @Override
