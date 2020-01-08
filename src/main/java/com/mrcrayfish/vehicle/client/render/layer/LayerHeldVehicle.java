@@ -65,7 +65,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                     matrixStack.func_227861_a_(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
                     matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(180F));
                     matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(-90F));
-                    matrixStack.func_227861_a_(0F, playerEntity.isCrouching() ? 0.3F : 0.5F, 0F);
+                    matrixStack.func_227861_a_(0F, playerEntity.isCrouching() ? 0.3125F : 0.5625F, 0F);
                     EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getRenderManager().renderers.get(this.cachedType);
                     render.func_225623_a_(this.cachedEntity, 0.0F, 0.0F, matrixStack, renderTypeBuffer, i);
                 }
