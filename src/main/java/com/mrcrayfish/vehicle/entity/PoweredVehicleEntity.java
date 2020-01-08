@@ -625,11 +625,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             this.setEngine(compound.getBoolean("HasEngine"));
         }
-        if(compound.contains("EngineType", Constants.NBT.TAG_INT)) //TODO: Remove after release
-        {
-            this.setEngine(true);
-            this.setEngineTier(EngineTier.getType(compound.getInt("EngineTier")));
-        }
         if(compound.contains("EngineTier", Constants.NBT.TAG_INT))
         {
             this.setEngineTier(EngineTier.getType(compound.getInt("EngineTier")));
