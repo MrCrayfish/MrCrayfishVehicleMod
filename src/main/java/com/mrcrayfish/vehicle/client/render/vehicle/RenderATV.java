@@ -8,7 +8,6 @@ import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -32,10 +31,10 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
     }
 
     @Override
-    public void render(ATVEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(ATVEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Body
-        this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Handle bar transformations
         matrixStack.func_227860_a_();
@@ -48,7 +47,7 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         float turnRotation = wheelAngleNormal * 15F;
         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
 
         matrixStack.func_227865_b_();
     }

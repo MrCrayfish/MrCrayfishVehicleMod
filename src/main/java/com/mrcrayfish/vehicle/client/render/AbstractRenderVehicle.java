@@ -42,7 +42,7 @@ public abstract class AbstractRenderVehicle<T extends VehicleEntity>
         return SpecialModel.KEY_HOLE;
     }
 
-    public abstract void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks);
+    public abstract void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light);
 
     public void applyPlayerModel(T entity, PlayerEntity player, PlayerModel<AbstractClientPlayerEntity> model, float partialTicks) {}
 
@@ -53,29 +53,29 @@ public abstract class AbstractRenderVehicle<T extends VehicleEntity>
         return true;
     }
 
-    protected void renderDamagedPart(VehicleEntity vehicle, ItemStack part, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer)
+    protected void renderDamagedPart(VehicleEntity vehicle, ItemStack part, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        renderDamagedPart(vehicle, RenderUtil.getModel(part), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(vehicle, RenderUtil.getModel(part), matrixStack, renderTypeBuffer, light);
     }
 
-    protected void renderDamagedPart(VehicleEntity vehicle, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer)
+    protected void renderDamagedPart(VehicleEntity vehicle, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, false);
-        renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, true);
+        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, false, light);
+        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, true, light);
     }
 
-    private void renderDamagedPart(VehicleEntity vehicle, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, boolean renderDamage)
+    private void renderDamagedPart(VehicleEntity vehicle, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, boolean renderDamage, int light)
     {
         if(renderDamage)
         {
             int stage = vehicle.getDestroyedStage();
             if(stage <= 0)
                 return;
-            RenderUtil.renderDamagedVehicleModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, stage, vehicle.getColor(), 15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderDamagedVehicleModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, stage, vehicle.getColor(), light, OverlayTexture.field_229196_a_);
         }
         else
         {
-            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getColor(), 15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.field_229196_a_);
         }
     }
 }

@@ -89,7 +89,7 @@ public class RenderUtil
         matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
         if(!model.isBuiltInRenderer())
         {
-            IVertexBuilder vertexBuilder = ItemRenderer.func_229113_a_(renderTypeBuffer, Atlases.func_228784_i_(), true, false);
+            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.func_228783_h_());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
         matrixStack.func_227865_b_();

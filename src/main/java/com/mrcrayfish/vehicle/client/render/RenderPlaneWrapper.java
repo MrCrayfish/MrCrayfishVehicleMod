@@ -23,7 +23,7 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
         super(renderVehicle);
     }
 
-    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         if(!entity.isAlive())
             return;
@@ -60,13 +60,13 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
         matrixStack.func_227861_a_(0.0, properties.getWheelOffset() * 0.0625, 0.0);
 
         //Render body
-        renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks);
+        renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
 
         //Render the engine if the vehicle has explicitly stated it should
         if(entity.shouldRenderEngine() && entity.hasEngine())
         {
             IBakedModel engineModel = this.getEngineModel(entity);
-            this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer);
+            this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
         }
 
         //Render the fuel port of the vehicle
@@ -76,7 +76,7 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
             EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
                 if(renderVehicle.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -85,17 +85,17 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
             }
             else
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
                 entity.playFuelPortCloseSound();
             }
         }
 
         if(entity.isKeyNeeded())
         {
-            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
             if(!entity.getKeyStack().isEmpty())
             {
-                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
             }
         }
 

@@ -37,7 +37,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         return renderVehicle;
     }
 
-    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         if(!entity.isAlive())
             return;
@@ -56,7 +56,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
             matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
             Vec3d towBarOffset = properties.getTowBarPosition();
             matrixStack.func_227861_a_(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-            RenderUtil.renderColoredModel(SpecialModel.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(SpecialModel.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
             matrixStack.func_227865_b_();
         }
 
@@ -65,7 +65,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         matrixStack.func_227861_a_(0.0, 0.5, 0.0);
         matrixStack.func_227861_a_(0.0, properties.getAxleOffset() * 0.0625, 0.0);
         matrixStack.func_227861_a_(0.0, properties.getWheelOffset() * 0.0625, 0.0);
-        this.renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks);
+        this.renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
 
         matrixStack.func_227865_b_();
     }
@@ -124,9 +124,8 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
      * subtle shake to the render to simulate it being powered.
      *
      * @param position the render definitions to apply to the part
-     * @param part the part to render onto the vehicle
      */
-    protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer)
+    protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
     {
         if(entity.isFueled() && entity.getControllingPassenger() != null)
         {
@@ -134,7 +133,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
             matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
             matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-0.5F * (entity.ticksExisted % 2)));
         }
-        this.renderPart(position, model, matrixStack, buffer, -1, 15728880, OverlayTexture.field_229196_a_);
+        this.renderPart(position, model, matrixStack, buffer, -1, light, OverlayTexture.field_229196_a_);
     }
 
     protected IBakedModel getWheelModel(PoweredVehicleEntity entity)

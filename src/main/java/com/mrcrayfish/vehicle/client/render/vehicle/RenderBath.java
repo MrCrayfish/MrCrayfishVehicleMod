@@ -22,10 +22,10 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     }
 
     @Override
-    public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
-        this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
     @Override

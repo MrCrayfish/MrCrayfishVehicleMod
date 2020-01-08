@@ -22,10 +22,10 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
     }
 
     @Override
-    public void render(JetSkiEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(JetSkiEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModel.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.func_227860_a_();
@@ -39,7 +39,7 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         float turnRotation = wheelAngleNormal * 15F;
         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        this.renderDamagedPart(entity, SpecialModel.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.func_227865_b_();
     }

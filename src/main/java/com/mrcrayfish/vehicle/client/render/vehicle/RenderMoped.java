@@ -54,9 +54,9 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
     }
 
     @Override
-    public void render(MopedEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(MopedEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.func_227860_a_();
 
@@ -75,7 +75,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
         matrixStack.func_227860_a_();
         matrixStack.func_227861_a_(0, 0.835, 0.525);
         matrixStack.func_227862_a_(0.8F, 0.8F, 0.8F);
-        this.renderDamagedPart(entity, SpecialModel.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
 
         //Render front bar and mud guard
@@ -84,7 +84,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
             matrixStack.func_227861_a_(0, -0.12, 0.785);
             matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-22.5F));
             matrixStack.func_227862_a_(0.9F, 0.9F, 0.9F);
-            this.renderDamagedPart(entity, SpecialModel.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(entity, SpecialModel.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.func_227865_b_();
 
@@ -99,7 +99,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
                 matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
             }
             matrixStack.func_227862_a_(1.3F, 1.3F, 1.3F);
-            RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1,15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
             matrixStack.func_227865_b_();
         }
 

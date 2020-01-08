@@ -25,9 +25,9 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
     }
 
     @Override
-    public void render(FertilizerTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(FertilizerTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.FERTILIZER_TRAILER.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.FERTILIZER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
@@ -60,7 +60,7 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
                             matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(47F * index));
                             matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(2F * layerIndex));
                             matrixStack.func_227861_a_(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                            Minecraft.getInstance().getItemRenderer().func_229111_a_(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, 15728880, OverlayTexture.field_229196_a_, RenderUtil.getModel(stack));
+                            Minecraft.getInstance().getItemRenderer().func_229111_a_(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.field_229196_a_, RenderUtil.getModel(stack));
                         }
                         matrixStack.func_227865_b_();
                         index++;
@@ -82,7 +82,7 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
             float wheelRotation = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
             matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-wheelRotation));
             matrixStack.func_227862_a_((float) 1.25, (float) 1.25, (float) 1.25);
-            RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
         }
         matrixStack.func_227865_b_();
     }

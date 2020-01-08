@@ -21,9 +21,9 @@ public class RenderTractor extends AbstractRenderVehicle<TractorEntity>
     }
 
     @Override
-    public void render(TractorEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(TractorEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.TRACTOR.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.TRACTOR.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.func_227860_a_();
@@ -35,7 +35,7 @@ public class RenderTractor extends AbstractRenderVehicle<TractorEntity>
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
     }
 

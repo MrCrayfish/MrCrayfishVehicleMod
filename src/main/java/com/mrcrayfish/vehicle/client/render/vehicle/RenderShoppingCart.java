@@ -20,9 +20,9 @@ public class RenderShoppingCart extends AbstractRenderVehicle<ShoppingCartEntity
     }
 
     @Override
-    public void render(ShoppingCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(ShoppingCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity,SpecialModel.SHOPPING_CART_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity,SpecialModel.SHOPPING_CART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
     @Override

@@ -26,9 +26,9 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
     }
 
     @Override
-    public void render(MiniBikeEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(MiniBikeEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.func_227860_a_();
@@ -45,7 +45,7 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
         matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(22.5F));
         matrixStack.func_227861_a_(0.0, 0.0, -10.5 * 0.0625);
 
-        this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {
@@ -58,7 +58,7 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
             }
             matrixStack.func_227862_a_(wheelScale, wheelScale, wheelScale);
             matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
-            RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1,15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
             matrixStack.func_227865_b_();
         }
 

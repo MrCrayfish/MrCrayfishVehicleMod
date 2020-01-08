@@ -21,10 +21,10 @@ public class RenderGolfCart extends AbstractRenderVehicle<GolfCartEntity>
     }
 
     @Override
-    public void render(GolfCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(GolfCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModel.GOLF_CART_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.GOLF_CART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.func_227860_a_();
@@ -41,7 +41,7 @@ public class RenderGolfCart extends AbstractRenderVehicle<GolfCartEntity>
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.func_227865_b_();
     }

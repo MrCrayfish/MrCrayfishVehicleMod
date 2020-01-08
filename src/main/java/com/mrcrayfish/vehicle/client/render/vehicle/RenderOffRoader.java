@@ -27,9 +27,9 @@ public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
     }
 
     @Override
-    public void render(OffRoaderEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(OffRoaderEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.func_227860_a_();
@@ -45,7 +45,7 @@ public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
 
         matrixStack.func_227865_b_();
     }

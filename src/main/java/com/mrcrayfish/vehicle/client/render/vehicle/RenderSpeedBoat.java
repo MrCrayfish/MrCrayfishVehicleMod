@@ -25,10 +25,10 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
     }
 
     @Override
-    public void render(SpeedBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(SpeedBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModel.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.func_227860_a_();
         matrixStack.func_227861_a_(0, 0.215, -0.125);
@@ -38,7 +38,7 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
         matrixStack.func_227865_b_();
     }
 

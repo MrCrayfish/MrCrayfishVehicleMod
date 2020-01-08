@@ -24,10 +24,10 @@ public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
     }
 
     @Override
-    public void render(BumperCarEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(BumperCarEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render body
-        this.renderDamagedPart(entity, SpecialModel.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.func_227860_a_();
@@ -41,7 +41,7 @@ public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
 
         matrixStack.func_227865_b_();
     }

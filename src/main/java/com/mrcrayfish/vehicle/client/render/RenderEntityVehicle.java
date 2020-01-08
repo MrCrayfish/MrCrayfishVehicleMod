@@ -31,7 +31,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
     }
 
     @Override
-    public void func_225623_a_(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int p_225623_6_)
+    public void func_225623_a_(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(!entity.isAlive())
             return;
@@ -43,7 +43,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
         wrapper.applyPreRotations(entity, matrixStack, partialTicks);
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
         this.setupBreakAnimation(entity, matrixStack, partialTicks);
-        wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks);
+        wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
         matrixStack.func_227865_b_();
 
         EntityRaytracer.renderRaytraceElements(entity, matrixStack, entityYaw);

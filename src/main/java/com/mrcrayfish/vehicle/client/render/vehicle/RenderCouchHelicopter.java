@@ -22,16 +22,16 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
     }
 
     @Override
-    public void render(SofacopterEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(SofacopterEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.func_227860_a_();
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
 
         matrixStack.func_227860_a_();
         matrixStack.func_227861_a_(0.0, 8 * 0.0625, 0.0);
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
 
         matrixStack.func_227860_a_();
@@ -39,7 +39,7 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
         float bladeRotation = entity.prevBladeRotation + (entity.bladeRotation - entity.prevBladeRotation) * partialTicks;
         matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(bladeRotation));
         matrixStack.func_227862_a_(1.5F, 1.5F, 1.5F);
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
 
        /* GlStateManager.pushMatrix();

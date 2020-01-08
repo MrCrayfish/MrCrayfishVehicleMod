@@ -27,7 +27,7 @@ public abstract class AbstractRenderTrailer<T extends TrailerEntity> extends Abs
         float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
         matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(right ? wheelRotation : -wheelRotation));
         matrixStack.func_227862_a_(wheelScale, wheelScale, wheelScale);
-        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1,15728880, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
         matrixStack.func_227865_b_();
     }
 }

@@ -27,9 +27,9 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
     }
 
     @Override
-    public void render(SportsPlaneEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(SportsPlaneEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.func_227860_a_();
         {
@@ -37,7 +37,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.func_227861_a_(8 * 0.0625, 0, 0);
             matrixStack.func_227861_a_(6 * 0.0625, 0, 0);
             matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-5F));
-            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.func_227865_b_();
 
@@ -48,7 +48,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.func_227861_a_(8 * 0.0625, 0.0625, 0);
             matrixStack.func_227861_a_(6 * 0.0625, 0, 0);
             matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(5F));
-            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.func_227865_b_();
 
@@ -56,9 +56,9 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
         {
             matrixStack.func_227861_a_(0, -0.5, 0);
             matrixStack.func_227862_a_(0.85F, 0.85F, 0.85F);
-            renderWheel(entity, matrixStack, renderTypeBuffer, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks);
-            renderWheel(entity, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks);
-            renderWheel(entity, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks);
+            renderWheel(entity, matrixStack, renderTypeBuffer, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks, light);
+            renderWheel(entity, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks, light);
+            renderWheel(entity, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks, light);
         }
         matrixStack.func_227865_b_();
 
@@ -67,17 +67,17 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             float propellerRotation = entity.prevPropellerRotation + (entity.propellerRotation - entity.prevPropellerRotation) * partialTicks;
             matrixStack.func_227861_a_(0, -1.5 * 0.0625, 22.2 * 0.0625);
             matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_(propellerRotation));
-            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.func_227865_b_();
     }
 
-    private void renderWheel(SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks)
+    private void renderWheel(SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks, int light)
     {
         matrixStack.func_227860_a_();
         {
             matrixStack.func_227861_a_(offsetX, offsetY, offsetZ);
-            this.renderDamagedPart(vehicle, SpecialModel.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(vehicle, SpecialModel.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer, light);
 
             matrixStack.func_227860_a_();
             {
@@ -90,14 +90,14 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
                         matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
                     }
                     matrixStack.func_227862_a_(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1,15728880, OverlayTexture.field_229196_a_);
+                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
                 }
                 matrixStack.func_227865_b_();
             }
             matrixStack.func_227865_b_();
 
             matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(legRotation));
-            this.renderDamagedPart(vehicle, SpecialModel.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(vehicle, SpecialModel.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.func_227865_b_();
     }

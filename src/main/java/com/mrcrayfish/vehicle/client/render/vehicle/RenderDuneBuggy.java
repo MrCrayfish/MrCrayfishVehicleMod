@@ -23,9 +23,9 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
     }
 
     @Override
-    public void render(DuneBuggyEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(DuneBuggyEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.DUNE_BUGGY_BODY.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.DUNE_BUGGY_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         double wheelScale = 1.0F;
@@ -41,7 +41,7 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
         matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(22.5F));
         matrixStack.func_227861_a_(0.0, 0.0, -0.2);
 
-        this.renderDamagedPart(entity, SpecialModel.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer);
+        this.renderDamagedPart(entity, SpecialModel.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {
@@ -54,7 +54,7 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
             }
             matrixStack.func_227862_a_((float) wheelScale, (float) wheelScale, (float) wheelScale);
             matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
-            this.renderDamagedPart(entity, RenderUtil.getModel(ItemLookup.getWheel(entity)), matrixStack, renderTypeBuffer);
+            this.renderDamagedPart(entity, RenderUtil.getModel(ItemLookup.getWheel(entity)), matrixStack, renderTypeBuffer, light);
             matrixStack.func_227865_b_();
         }
 

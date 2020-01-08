@@ -26,7 +26,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         super(renderVehicle);
     }
 
-    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks)
+    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         if(!entity.isAlive())
             return;
@@ -50,7 +50,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
             Vec3d towBarOffset = properties.getTowBarPosition();
             matrixStack.func_227861_a_(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-            RenderUtil.renderColoredModel(SpecialModel.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(SpecialModel.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
             matrixStack.func_227865_b_();
         }
 
@@ -58,7 +58,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         matrixStack.func_227861_a_(0.0, 0.5, 0.0);
         matrixStack.func_227861_a_(0.0, properties.getAxleOffset() * 0.0625, 0.0);
         matrixStack.func_227861_a_(0.0, properties.getWheelOffset() * 0.0625, 0.0);
-        renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks);
+        renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
 
         if(entity.hasWheels())
         {
@@ -66,7 +66,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             matrixStack.func_227861_a_(0.0, -8 * 0.0625, 0.0);
             matrixStack.func_227861_a_(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
             IBakedModel wheelModel = this.getWheelModel(entity);
-            properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer));
+            properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
             matrixStack.func_227865_b_();
         }
 
@@ -74,7 +74,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         if(entity.shouldRenderEngine() && entity.hasEngine())
         {
             IBakedModel engineModel = this.getEngineModel(entity);
-            this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer);
+            this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
         }
 
         //Render the fuel port of the vehicle
@@ -84,7 +84,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
                 if(renderVehicle.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -93,24 +93,24 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             }
             else
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
                 entity.playFuelPortCloseSound();
             }
         }
 
         if(entity.isKeyNeeded())
         {
-            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), 15728880, OverlayTexture.field_229196_a_);
+            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
             if(!entity.getKeyStack().isEmpty())
             {
-                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.field_229196_a_);
+                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
             }
         }
 
         matrixStack.func_227865_b_();
     }
 
-    protected void renderWheel(LandVehicleEntity vehicle, Wheel wheel, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer)
+    protected void renderWheel(LandVehicleEntity vehicle, Wheel wheel, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(!wheel.shouldRender())
             return;
@@ -132,7 +132,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         {
             matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(180F));
         }
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getWheelColor(), 15728880, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getWheelColor(), light, OverlayTexture.field_229196_a_);
         matrixStack.func_227865_b_();
     }
 }
