@@ -31,9 +31,9 @@ public class ModBlocks
     private static final List<Item> ITEMS = new LinkedList<>();
 
     public static final Block TRAFFIC_CONE = register(new BlockTrafficCone(), ItemTrafficCone::new);
-    public static final Block BOOST_PAD = register(new BlockBoostPad());
-    public static final Block BOOST_RAMP = register(new BlockBoostRamp(), ItemBoostRamp::new);
-    public static final Block STEEP_BOOST_RAMP = register(new BlockSteepBoostRamp());
+    public static final Block BOOST_PAD = register(new BlockBoostPad(), null);
+    public static final Block BOOST_RAMP = register(new BlockBoostRamp(), null); //ItemBoostRamp::new
+    public static final Block STEEP_BOOST_RAMP = register(new BlockSteepBoostRamp(), null);
     public static final Block FLUID_EXTRACTOR = register(new BlockFluidExtractor());
     public static final Block FLUID_MIXER = register(new BlockFluidMixer());
     public static final Block GAS_PUMP = register(new BlockGasPump());
