@@ -329,10 +329,7 @@ public class ClientEvents
                 boolean mainHand = event.getHand() == Hand.MAIN_HAND;
                 HandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                 float f = -0.6F * MathHelper.sin(MathHelper.sqrt(event.getSwingProgress()) * (float) Math.PI);
-                float f1 = 0.2F * MathHelper.sin(MathHelper.sqrt(event.getSwingProgress()) * ((float) Math.PI * 2F));
-                float f2 = -0.2F * MathHelper.sin(event.getSwingProgress() * (float) Math.PI);
                 int handOffset = handSide == HandSide.RIGHT ? 1 : -1;
-                matrixStack.func_227861_a_(handOffset * f, f1, f2);
                 matrixStack.func_227861_a_(handOffset * 0.65, -0.52 + 0.25, -0.72);
                 matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(45F));
                 IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
