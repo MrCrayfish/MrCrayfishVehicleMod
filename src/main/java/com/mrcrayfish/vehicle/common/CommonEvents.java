@@ -312,6 +312,7 @@ public class CommonEvents
                                     world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 });
                                 event.setCanceled(true);
+                                event.setCancellationResult(ActionResultType.SUCCESS);
                             }
                         }
                     });
@@ -327,7 +328,8 @@ public class CommonEvents
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent event)
     {
-        if(event.getHand() == Hand.OFF_HAND) return;
+        if(event.getHand() == Hand.OFF_HAND)
+            return;
 
         World world = event.getWorld();
         if(world.isRemote)
@@ -335,6 +337,12 @@ public class CommonEvents
             if(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.RightClickItem)
             {
                 PlayerEntity player = event.getPlayer();
+                float reach = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+                reach = player.isCreative() ? reach : reach - 0.5F;
+                RayTraceResult result = player.func_213324_a(reach, 0.0F, false);
+                if(result.getType() == RayTraceResult.Type.BLOCK)
+                    return;
+
                 if(!player.getDataManager().get(HELD_VEHICLE).isEmpty())
                 {
                     if(player.isCrouching())
@@ -344,6 +352,7 @@ public class CommonEvents
                     if(event.isCancelable())
                     {
                         event.setCanceled(true);
+                        event.setCancellationResult(ActionResultType.SUCCESS);
                     }
                 }
             }

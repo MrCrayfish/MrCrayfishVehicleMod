@@ -51,6 +51,8 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
                 Entity entity = entityType.create(player.world);
                 if(entity instanceof VehicleEntity)
                 {
+                    entity.read(heldTag);
+
                     //Updates the DataParameter
                     CompoundNBT tag = new CompoundNBT();
                     player.getDataManager().set(CommonEvents.HELD_VEHICLE, tag);
