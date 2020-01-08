@@ -1,129 +1,82 @@
 {
-    "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
+    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
     "textures": {
-        "particle": "minecraft:block/iron_block",
-        "iron": "minecraft:block/iron_block"
-    },
-    "display": {
-        "gui": {
-            "rotation": [ 30, 225, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.625, 0.625, 0.625 ]
-        },
-        "ground": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 3, 0 ],
-            "scale": [ 0.25, 0.25, 0.25 ]
-        },
-        "fixed": {
-            "rotation": [ 0, 0, 0 ],
-            "translation": [ 0, 0, 0 ],
-            "scale": [ 0.5, 0.5, 0.5 ]
-        },
-        "thirdperson_righthand": {
-            "rotation": [ 75, 45, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.375, 0.375, 0.375 ]
-        },
-        "thirdperson_lefthand": {
-            "rotation": [ 75, 255, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.375, 0.375, 0.375 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 45, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.4, 0.4, 0.4 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 225, 0 ],
-            "translation": [ 0, 2.5, 0 ],
-            "scale": [ 0.4, 0.4, 0.4 ]
-        }
+        "iron_block": "minecraft:block/iron_block"
     },
     "elements": [
         {
-            "name": "tube_base_1",
-            "from": [ 6.5, 5.5, 0.0 ], 
-            "to": [ 9.5, 6.5, 5.0 ], 
+            "from": [ 6.5, 5.5, 0 ], 
+            "to": [ 9.5, 6.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 1.0, 1.0, 4.0, 6.0 ] },
-                "down": { "texture": "#iron", "uv": [ 6.0, 12.0, 9.0, 15.0 ], "rotation": 90 }
+                "north": { "texture": "#iron_block", "uv": [ 1, 15, 4, 16 ] },
+                "down": { "texture": "#iron_block", "uv": [ 6, 12, 9, 15 ], "rotation": 270 }
             }
         },
         {
-            "name": "tube_base_2",
-            "from": [ 9.5, 6.5, 0.0 ], 
-            "to": [ 10.5, 9.5, 5.0 ], 
+            "from": [ 9.5, 6.5, 0 ], 
+            "to": [ 10.5, 9.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 1.0, 1.0, 6.0, 4.0 ] },
-                "east": { "texture": "#iron", "uv": [ 1.0, 1.0, 6.0, 4.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 0, 13, 1, 16 ] },
+                "east": { "texture": "#iron_block", "uv": [ 1, 1, 6, 4 ] }
             }
         },
         {
-            "name": "tube_base_3",
-            "from": [ 5.5, 6.5, 0.0 ], 
-            "to": [ 6.5, 9.5, 5.0 ], 
+            "from": [ 5.5, 6.5, 0 ], 
+            "to": [ 6.5, 9.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 1.0, 1.0, 6.0, 4.0 ] },
-                "west": { "texture": "#iron", "uv": [ 1.0, 1.0, 6.0, 4.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 0, 13, 1, 16 ] },
+                "west": { "texture": "#iron_block", "uv": [ 1, 1, 6, 4 ] }
             }
         },
         {
-            "name": "tube_base_4",
-            "from": [ 6.5, 9.5, 0.0 ], 
-            "to": [ 9.5, 10.5, 5.0 ], 
+            "from": [ 6.5, 9.5, 0 ], 
+            "to": [ 9.5, 10.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 1.0, 1.0, 4.0, 6.0 ] },
-                "up": { "texture": "#iron", "uv": [ 6.0, 12.0, 9.0, 15.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 1, 15, 4, 16 ] },
+                "up": { "texture": "#iron_block", "uv": [ 6, 12, 9, 15 ], "rotation": 270 }
             }
         },
         {
-            "name": "tube_border_1",
-            "from": [ 5.5, 9.5, 0.0 ], 
-            "to": [ 6.5, 10.5, 5.0 ], 
+            "from": [ 5.5, 9.5, 0 ], 
+            "to": [ 6.5, 10.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "west": { "texture": "#iron", "uv": [ 0.0, 0.0, 5.0, 1.0 ] },
-                "up": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 5.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
+                "west": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
+                "up": { "texture": "#iron_block", "uv": [ 0, 0, 1, 5 ] }
             }
         },
         {
-            "name": "tube_border_2",
-            "from": [ 9.5, 9.5, 0.0 ], 
-            "to": [ 10.5, 10.5, 5.0 ], 
+            "from": [ 9.5, 9.5, 0 ], 
+            "to": [ 10.5, 10.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "east": { "texture": "#iron", "uv": [ 0.0, 0.0, 5.0, 1.0 ] },
-                "up": { "texture": "#iron", "uv": [ 0.0, 5.0, 1.0, 10.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
+                "east": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
+                "up": { "texture": "#iron_block", "uv": [ 0, 5, 1, 10 ] }
             }
         },
         {
-            "name": "tube_border_3",
-            "from": [ 9.5, 5.5, 0.0 ], 
-            "to": [ 10.5, 6.5, 5.0 ], 
+            "from": [ 9.5, 5.5, 0 ], 
+            "to": [ 10.5, 6.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "east": { "texture": "#iron", "uv": [ 0.0, 0.0, 5.0, 1.0 ] },
-                "down": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 5.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
+                "east": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
+                "down": { "texture": "#iron_block", "uv": [ 0, 0, 1, 5 ] }
             }
         },
         {
-            "name": "tube_border_4",
-            "from": [ 5.5, 5.5, 0.0 ], 
-            "to": [ 6.5, 6.5, 5.0 ], 
+            "from": [ 5.5, 5.5, 0 ], 
+            "to": [ 6.5, 6.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 1.0 ] },
-                "west": { "texture": "#iron", "uv": [ 0.0, 0.0, 5.0, 1.0 ] },
-                "down": { "texture": "#iron", "uv": [ 0.0, 0.0, 1.0, 5.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
+                "west": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
+                "down": { "texture": "#iron_block", "uv": [ 0, 0, 1, 5 ] }
             }
         },
         {
-            "name": "tube_center",
             "from": [ 6.5, 6.5, 0 ], 
             "to": [ 9.5, 9.5, 5 ], 
             "faces": {
-                "north": { "texture": "#iron", "uv": [ 1.0, 1.0, 4.0, 6.0 ] }
+                "north": { "texture": "#iron_block", "uv": [ 1, 1, 4, 4 ] }
             }
         }
     ]
