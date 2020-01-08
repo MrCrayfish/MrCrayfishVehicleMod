@@ -86,43 +86,13 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof VehicleCrateTileEntity)
-        {
-            if(((VehicleCrateTileEntity) tileEntity).isOpened())
-            {
-                return VoxelShapes.empty();
-            }
-        }
-        return super.getCollisionShape(state, worldIn, pos, context);
-    }
-
-    @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof VehicleCrateTileEntity)
-        {
-            if(((VehicleCrateTileEntity) tileEntity).isOpened())
-            {
-                return VoxelShapes.empty();
-            }
-        }
-        return VoxelShapes.empty();
+        return VoxelShapes.fullCube();
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof VehicleCrateTileEntity)
-        {
-            if(((VehicleCrateTileEntity) tileEntity).isOpened())
-            {
-                return VoxelShapes.empty();
-            }
-        }
-        return VoxelShapes.empty();
+        return VoxelShapes.fullCube();
     }
 
     @Override
