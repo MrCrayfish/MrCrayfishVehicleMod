@@ -9,6 +9,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -16,7 +18,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
 {
     protected State state;
     protected State previousState;
-    private float waterLevel;
+    private double waterLevel;
 
     public BoatEntity(EntityType<?> entityType, World worldIn)
     {
@@ -33,11 +35,11 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
-        if(this.state == State.ON_WATER || this.state == State.UNDER_WATER)
+        if(this.state == State.IN_WATER || this.state == State.UNDER_WATER)
         {
             if(this.state == State.UNDER_WATER)
             {
-                this.getMotion().add(0, 0.12, 0);
+                this.setMotion(this.getMotion().add(0, 0.08, 0));
             }
             else
             {
@@ -60,7 +62,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
         else if(this.state == State.IN_AIR)
         {
             this.setMotion(this.getMotion().add(0, -0.08, 0));
-            if(this.previousState == State.UNDER_WATER || this.previousState == State.ON_WATER)
+            if(this.previousState == State.UNDER_WATER || this.previousState == State.IN_WATER)
             {
                 this.setMotion(new Vec3d(this.vehicleMotionX, this.getMotion().y, this.vehicleMotionZ));
                 this.vehicleMotionX = 0;
@@ -77,144 +79,101 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicle()
     {
-        previousState = state;
-        state = getState();
-        if(state == State.IN_AIR)
+        this.previousState = this.state;
+        this.state = this.getState();
+        if( this.state == State.IN_AIR)
         {
-            deltaYaw *= 2;
+            this.deltaYaw *= 2;
         }
     }
 
     private boolean checkInWater()
     {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.minY);
-        int l = MathHelper.ceil(axisalignedbb.minY + 0.001D);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
-        boolean flag = false;
-        this.waterLevel = Float.MIN_VALUE;
+        AxisAlignedBB boundingBox = this.getBoundingBox();
+        int minX = MathHelper.floor(boundingBox.minX);
+        int maxX = MathHelper.ceil(boundingBox.maxX);
+        int minY = MathHelper.floor(boundingBox.minY);
+        int maxY = MathHelper.ceil(boundingBox.minY + 0.001D);
+        int minZ = MathHelper.floor(boundingBox.minZ);
+        int maxZ = MathHelper.ceil(boundingBox.maxZ);
+        boolean inWater = false;
+        this.waterLevel = Double.MIN_VALUE;
 
         try(BlockPos.PooledMutable pooledMutable = BlockPos.PooledMutable.retain())
         {
-            for(int k1 = i; k1 < j; ++k1)
+            for(int x = minX; x < maxX; x++)
             {
-                for(int l1 = k; l1 < l; ++l1)
+                for(int y = minY; y < maxY; y++)
                 {
-                    for(int i2 = i1; i2 < j1; ++i2)
+                    for(int z = minZ; z < maxZ; z++)
                     {
-                        pooledMutable.setPos(k1, l1, i2);
-                        IFluidState ifluidstate = this.world.getFluidState(pooledMutable);
-                        if(ifluidstate.isTagged(FluidTags.WATER))
+                        pooledMutable.setPos(x, y, z);
+                        IFluidState fluidState = this.world.getFluidState(pooledMutable);
+                        if(fluidState.isTagged(FluidTags.WATER))
                         {
-                            float f = (float) l1 + ifluidstate.func_215679_a(this.world, pooledMutable);
-                            this.waterLevel = Math.max(f, this.waterLevel);
-                            flag |= axisalignedbb.minY < (double) f;
+                            float waterLevel = (float) y + fluidState.func_215679_a(this.world, pooledMutable);
+                            this.waterLevel = Math.max((double) waterLevel, this.waterLevel);
+                            inWater |= boundingBox.minY < (double) waterLevel;
                         }
                     }
                 }
             }
         }
 
-        return flag;
-    }
-
-    private boolean isOnWater()
-    {
-        this.waterLevel = Float.MIN_VALUE;
-
-        AxisAlignedBB axisAligned = this.getBoundingBox();
-        int minX = MathHelper.floor(axisAligned.minX);
-        int maxX = MathHelper.ceil(axisAligned.maxX);
-        int minY = MathHelper.floor(axisAligned.minY);
-        int maxY = MathHelper.ceil(axisAligned.minY + 0.01D);
-        int minZ = MathHelper.floor(axisAligned.minZ);
-        int maxZ = MathHelper.ceil(axisAligned.maxZ);
-
-        boolean inWater = false;
-        try(BlockPos.PooledMutable mutableBlockPos = BlockPos.PooledMutable.retain())
-        {
-            for(int x = minX; x < maxX; ++x)
-            {
-                for(int y = minY; y < maxY; ++y)
-                {
-                    for(int z = minZ; z < maxZ; ++z)
-                    {
-                        mutableBlockPos.setPos(x, y, z);
-                        IFluidState fluidState = this.world.getFluidState(mutableBlockPos);
-                        if (fluidState.isTagged(FluidTags.WATER))
-                        {
-                            this.waterLevel = Math.max(this.waterLevel, fluidState.func_215679_a(this.world, mutableBlockPos));
-                            return axisAligned.minY < (double) this.waterLevel;
-                        }
-                        /*BlockState state = this.world.getBlockState(mutableBlockPos);
-                        if(state.getMaterial() == Material.WATER)
-                        {
-                            float liquidHeight = BlockLiquid.getLiquidHeight(state, world, mutableBlockPos);
-                            this.waterLevel = Math.max(liquidHeight, this.waterLevel);
-                            return axisAligned.minY < (double) liquidHeight;
-                        }*/
-                    }
-                }
-            }
-        }
         return inWater;
     }
 
-    private boolean isUnderWater()
+    @Nullable
+    private State getUnderwaterState()
     {
-        AxisAlignedBB axisAligned = this.getBoundingBox();
-        double height = axisAligned.minY + 0.001D;
-        int minX = MathHelper.floor(axisAligned.minX);
-        int maxX = MathHelper.ceil(axisAligned.maxX);
-        int minY = MathHelper.floor(axisAligned.minY);
+        AxisAlignedBB axisalignedbb = this.getBoundingBox();
+        double height = axisalignedbb.maxY + 0.001D;
+        int minX = MathHelper.floor(axisalignedbb.minX);
+        int maxX = MathHelper.ceil(axisalignedbb.maxX);
+        int minY = MathHelper.floor(axisalignedbb.maxY);
         int maxY = MathHelper.ceil(height);
-        int minZ = MathHelper.floor(axisAligned.minZ);
-        int maxZ = MathHelper.ceil(axisAligned.maxZ);
+        int minZ = MathHelper.floor(axisalignedbb.minZ);
+        int maxZ = MathHelper.ceil(axisalignedbb.maxZ);
+        boolean underWater = false;
 
-        boolean flag = false;
-        try(BlockPos.PooledMutable mutableBlockPos = BlockPos.PooledMutable.retain())
+        try(BlockPos.PooledMutable pooledMutable = BlockPos.PooledMutable.retain())
         {
-            for (int x = minX; x < maxX; ++x)
+            for(int x = minX; x < maxX; x++)
             {
-                for (int y = minY; y < maxY; ++y)
+                for(int y = minY; y < maxY; y++)
                 {
-                    for (int z = minZ; z < maxZ; ++z)
+                    for(int z = minZ; z < maxZ; z++)
                     {
-                        mutableBlockPos.setPos(x, y + 1, z);
-
-                        IFluidState fluidState = this.world.getFluidState(mutableBlockPos);
-                        if (fluidState.isTagged(FluidTags.WATER))
+                        pooledMutable.setPos(x, y, z);
+                        IFluidState fluidState = this.world.getFluidState(pooledMutable);
+                        if(fluidState.isTagged(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.func_215679_a(this.world, pooledMutable)))
                         {
-                            if(height < (double) fluidState.func_215679_a(this.world, mutableBlockPos))
+                            if(!fluidState.isSource())
                             {
-                                if(fluidState.getLevel() != 0)
-                                {
-                                    return true;
-                                }
-                                flag = true;
+                                return State.UNDER_FLOWING_WATER;
                             }
+                            underWater = true;
                         }
                     }
                 }
             }
         }
-        return flag;
+
+        return underWater ? State.UNDER_WATER : null;
     }
 
     protected State getState()
     {
-        if(isUnderWater())
+        State state = this.getUnderwaterState();
+        if(state != null)
         {
-            return State.UNDER_WATER;
+            return state;
         }
-        else if(isOnWater())
+        else if(this.checkInWater())
         {
-            return State.ON_WATER;
+            return State.IN_WATER;
         }
-        else if(onGround)
+        else if(this.onGround)
         {
             return State.ON_LAND;
         }
@@ -227,11 +186,15 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     @Override
     protected void updateGroundState()
     {
-        this.wheelsOnGround = this.getState() == State.ON_WATER || this.getState() == State.UNDER_WATER;
+        this.wheelsOnGround = this.getState() == State.IN_WATER || this.getState() == State.UNDER_WATER;
     }
 
     protected enum State
     {
-        ON_WATER, UNDER_WATER, IN_AIR, ON_LAND
+        IN_WATER,
+        UNDER_WATER,
+        UNDER_FLOWING_WATER,
+        ON_LAND,
+        IN_AIR;
     }
 }

@@ -26,7 +26,7 @@ public class SpeedBoatEntity extends BoatEntity implements IEntityRaytraceable
     @Override
     public void createParticles()
     {
-        if(state == State.ON_WATER)
+        if(state == State.IN_WATER)
         {
             if(this.getAcceleration() == AccelerationDirection.FORWARD)
             {

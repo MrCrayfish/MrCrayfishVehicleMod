@@ -35,7 +35,7 @@ public class AluminumBoatEntity extends BoatEntity implements IEntityRaytraceabl
     @Override
     public void createParticles()
     {
-        if(state == State.ON_WATER)
+        if(state == State.IN_WATER)
         {
             if(this.getAcceleration() == AccelerationDirection.FORWARD)
             {
