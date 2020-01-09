@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.util.EntityUtil;
 import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
@@ -65,10 +66,8 @@ public class ModEntities
 
     private static <T extends Entity> EntityType<T> buildVehicleType(String id, Function<World, T> function, float width, float height)
     {
-        EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(id);
-        type.setRegistryName(id);
+        EntityType<T> type = EntityUtil.buildVehicleType(id, function, width, height);
         ENTITY_TYPES.add(type);
-        BlockVehicleCrate.registerVehicle(id);
         return type;
     }
 
