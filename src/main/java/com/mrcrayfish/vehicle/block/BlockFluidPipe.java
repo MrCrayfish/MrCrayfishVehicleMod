@@ -20,10 +20,7 @@ import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -157,6 +154,7 @@ public class BlockFluidPipe extends BlockObject
             BlockState newState = state.with(CONNECTED_PIPES[face.getIndex()], !pipe.isConnectionDisabled(face));
             world.setBlockState(pos, newState);
             world.notifyBlockUpdate(pos, state, newState, 3 & 8);
+            world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.ENTITY_IRON_GOLEM_STEP, SoundCategory.BLOCKS, 1.0F, 2.0F);
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.FAIL;
