@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -39,10 +39,10 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
             if(player != null && player.isCrouching())
             {
                 //Spawns the vehicle and plays the placing sound
-                if(player.getDataManager().get(CommonEvents.HELD_VEHICLE).isEmpty())
+                if(player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
                     return;
 
-                CompoundNBT heldTag = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
+                CompoundNBT heldTag = player.getDataManager().get(CustomDataParameters.HELD_VEHICLE);
                 Optional<EntityType<?>> optional = EntityType.byKey(heldTag.getString("id"));
                 if(!optional.isPresent())
                     return;
@@ -55,7 +55,7 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
 
                     //Updates the DataParameter
                     CompoundNBT tag = new CompoundNBT();
-                    player.getDataManager().set(CommonEvents.HELD_VEHICLE, tag);
+                    player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, tag);
 
                     //Updates the player capability
                     HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -60,13 +60,13 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
                 if(pusher == player)
                 {
                     pusher = null;
-                    player.getDataManager().set(CommonEvents.PUSHING_CART, false);
+                    player.getDataManager().set(CustomDataParameters.PUSHING_CART, false);
                     return true;
                 }
                 else if(pusher == null)
                 {
                     pusher = player;
-                    player.getDataManager().set(CommonEvents.PUSHING_CART, true);
+                    player.getDataManager().set(CustomDataParameters.PUSHING_CART, true);
                 }
             }
             else if(pusher != player)

@@ -2,15 +2,13 @@ package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.vehicle.client.render.layer.LayerHeldVehicle;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -57,7 +55,7 @@ public class HeldVehicleEvents
         PlayerModel model = event.getModelPlayer();
         PlayerEntity player = event.getPlayer();
 
-        boolean holdingVehicle = !player.getDataManager().get(CommonEvents.HELD_VEHICLE).isEmpty();
+        boolean holdingVehicle = !player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty();
         if(holdingVehicle && !idToCounter.containsKey(player.getUniqueID()))
         {
             idToCounter.put(player.getUniqueID(), new AnimationCounter(40));

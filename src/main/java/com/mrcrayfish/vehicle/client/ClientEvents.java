@@ -8,7 +8,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -30,7 +30,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -105,7 +104,7 @@ public class ClientEvents
         if(Config.CLIENT.enabledSpeedometer.get() && event.phase == TickEvent.Phase.END)
         {
             Minecraft mc = Minecraft.getInstance();
-            if(mc.isGameFocused())
+            if(mc.isGameFocused() && !mc.gameSettings.hideGUI)
             {
                 PlayerEntity player = mc.player;
                 if(player != null)
@@ -170,7 +169,7 @@ public class ClientEvents
         Entity ridingEntity = player.getRidingEntity();
         PlayerModel model = event.getModelPlayer();
 
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(player.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
             if(rightHanded)
@@ -205,7 +204,7 @@ public class ClientEvents
             }
         }
 
-        if(player.getDataManager().get(CommonEvents.PUSHING_CART))
+        if(player.getDataManager().get(CustomDataParameters.PUSHING_CART))
         {
             player.renderYawOffset = player.rotationYawHead;
             model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-90F);
@@ -316,7 +315,7 @@ public class ClientEvents
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(player.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             if(event.getSwingProgress() > 0)
             {
@@ -348,7 +347,7 @@ public class ClientEvents
     public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
     {
         Entity entity = event.getEntity();
-        if(entity instanceof PlayerEntity && entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(entity instanceof PlayerEntity && entity.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
             return;
@@ -368,7 +367,7 @@ public class ClientEvents
     {
         MatrixStack matrixStack = event.getMatrixStack();
         PlayerEntity entity = event.getPlayer();
-        if(entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(entity.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             matrixStack.func_227860_a_();
             {

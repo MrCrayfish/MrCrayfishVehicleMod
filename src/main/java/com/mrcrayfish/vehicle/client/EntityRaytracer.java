@@ -7,7 +7,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -152,7 +152,7 @@ public class EntityRaytracer
     public static final Function<RayTraceResultRotated, Hand> FUNCTION_FUELING = (rayTraceResult) ->
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent() && ControllerEvents.isRightClicking())
+        if(player.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent() && ControllerEvents.isRightClicking())
         {
             Entity entity = rayTraceResult.getEntity();
             if(entity instanceof PoweredVehicleEntity)

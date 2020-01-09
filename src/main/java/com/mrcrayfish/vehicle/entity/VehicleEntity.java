@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
@@ -103,7 +103,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         if(!world.isRemote && !player.isCrouching())
         {
-            int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
+            int trailerId = player.getDataManager().get(CustomDataParameters.TRAILER);
             if(trailerId != -1)
             {
                 if(this.getRidingEntity() == null && this.canTowTrailer() && this.getTrailer() == null)
@@ -113,7 +113,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     {
                         TrailerEntity trailer = (TrailerEntity) entity;
                         this.setTrailer(trailer);
-                        player.getDataManager().set(CommonEvents.TRAILER, -1);
+                        player.getDataManager().set(CustomDataParameters.TRAILER, -1);
                     }
                 }
                 return true;

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.entity.Entity;
@@ -55,14 +55,14 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
         {
             if(this.fuelingEntity != null)
             {
-                this.fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.empty());
+                this.fuelingEntity.getDataManager().set(CustomDataParameters.GAS_PUMP, Optional.empty());
             }
             this.fuelingEntity = null;
             this.fuelingEntityId = -1;
             if(entity != null)
             {
                 this.fuelingEntityId = entity.getEntityId();
-                entity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.of(this.getPos()));
+                entity.getDataManager().set(CustomDataParameters.GAS_PUMP, Optional.of(this.getPos()));
             }
             this.syncToClient();
         }
@@ -100,7 +100,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
                 {
                     this.world.playSound(null, this.fuelingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
-                this.fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.empty());
+                this.fuelingEntity.getDataManager().set(CustomDataParameters.GAS_PUMP, Optional.empty());
                 this.fuelingEntityId = -1;
                 this.fuelingEntity = null;
                 this.syncFuelingEntity();

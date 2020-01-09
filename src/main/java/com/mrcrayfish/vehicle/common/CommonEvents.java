@@ -19,9 +19,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -46,11 +43,6 @@ import java.util.Optional;
  */
 public class CommonEvents
 {
-    public static final DataParameter<Boolean> PUSHING_CART = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.BOOLEAN);
-    public static final DataParameter<CompoundNBT> HELD_VEHICLE = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.COMPOUND_NBT);
-    public static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.VARINT);
-    public static final DataParameter<Optional<BlockPos>> GAS_PUMP = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);
-
     private static final List<String> IGNORE_ITEMS;
     private static final List<String> IGNORE_SOUNDS;
     private static final List<String> IGNORE_ENTITIES;
@@ -116,10 +108,10 @@ public class CommonEvents
     {
         if(event.getEntity() instanceof PlayerEntity)
         {
-            event.getEntity().getDataManager().register(PUSHING_CART, false);
-            event.getEntity().getDataManager().register(HELD_VEHICLE, new CompoundNBT());
-            event.getEntity().getDataManager().register(TRAILER, -1);
-            event.getEntity().getDataManager().register(GAS_PUMP, Optional.empty());
+            event.getEntity().getDataManager().register(CustomDataParameters.PUSHING_CART, false);
+            event.getEntity().getDataManager().register(CustomDataParameters.HELD_VEHICLE, new CompoundNBT());
+            event.getEntity().getDataManager().register(CustomDataParameters.TRAILER, -1);
+            event.getEntity().getDataManager().register(CustomDataParameters.GAS_PUMP, Optional.empty());
         }
     }
 
@@ -136,7 +128,7 @@ public class CommonEvents
     {
         if(hand == Hand.MAIN_HAND && !world.isRemote && player.isCrouching() && !player.isSpectator() && Config.SERVER.pickUpVehicles.get())
         {
-            if(player.getDataManager().get(HELD_VEHICLE).isEmpty())
+            if(player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
             {
                 if(targetEntity instanceof VehicleEntity && !targetEntity.isBeingRidden() && targetEntity.isAlive())
                 {
@@ -148,7 +140,7 @@ public class CommonEvents
 
                         tagCompound.putString("id", id);
                         targetEntity.writeWithoutTypeId(tagCompound);
-                        player.getDataManager().set(HELD_VEHICLE, tagCompound);
+                        player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, tagCompound);
 
                         //Updates the held vehicle capability
                         HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
@@ -169,7 +161,7 @@ public class CommonEvents
             }
             else if(targetEntity instanceof TrailerEntity && !targetEntity.isBeingRidden() && targetEntity.isAlive())
             {
-                CompoundNBT tagCompound = player.getDataManager().get(HELD_VEHICLE);
+                CompoundNBT tagCompound = player.getDataManager().get(CustomDataParameters.HELD_VEHICLE);
                 Optional<EntityType<?>> optional = EntityType.byKey(tagCompound.getString("id"));
                 if(optional.isPresent())
                 {
@@ -182,7 +174,7 @@ public class CommonEvents
 
                         //Updates the DataParameter
                         CompoundNBT tag = new CompoundNBT();
-                        player.getDataManager().set(HELD_VEHICLE, tag);
+                        player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, tag);
 
                         //Updates the player capability
                         HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
@@ -215,7 +207,7 @@ public class CommonEvents
         {
             if(event.getFace() == Direction.UP)
             {
-                if(!player.getDataManager().get(HELD_VEHICLE).isEmpty())
+                if(!player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
                 {
                     BlockPos pos = event.getPos();
                     TileEntity tileEntity = event.getWorld().getTileEntity(pos);
@@ -224,7 +216,7 @@ public class CommonEvents
                         JackTileEntity jack = (JackTileEntity) tileEntity;
                         if(jack.getJack() == null)
                         {
-                            CompoundNBT tagCompound = player.getDataManager().get(HELD_VEHICLE);
+                            CompoundNBT tagCompound = player.getDataManager().get(CustomDataParameters.HELD_VEHICLE);
                             EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
                             {
                                 Entity entity = entityType.create(world);
@@ -233,7 +225,7 @@ public class CommonEvents
                                     entity.read(tagCompound);
 
                                     CompoundNBT tag = new CompoundNBT();
-                                    player.getDataManager().set(HELD_VEHICLE, tag);
+                                    player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, tag);
 
                                     //Updates the player capability
                                     HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
@@ -266,7 +258,7 @@ public class CommonEvents
 
             if(player.isCrouching())
             {
-                if(!player.getDataManager().get(HELD_VEHICLE).isEmpty())
+                if(!player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
                 {
                     //Vec3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
                     RayTraceResult result = player.func_213324_a(10.0, 0.0F, false);
@@ -277,7 +269,7 @@ public class CommonEvents
                         return;
                     }
 
-                    CompoundNBT tagCompound = player.getDataManager().get(HELD_VEHICLE);
+                    CompoundNBT tagCompound = player.getDataManager().get(CustomDataParameters.HELD_VEHICLE);
                     EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
                     {
                         Entity entity = entityType.create(player.world);
@@ -291,7 +283,7 @@ public class CommonEvents
                                 {
                                     //Updates the DataParameter
                                     CompoundNBT tag = new CompoundNBT();
-                                    player.getDataManager().set(HELD_VEHICLE, tag);
+                                    player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, tag);
 
                                     //Updates the player capability
                                     HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
@@ -319,7 +311,7 @@ public class CommonEvents
                 }
             }
         }
-        else if(!player.getDataManager().get(HELD_VEHICLE).isEmpty())
+        else if(!player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
         {
             event.setCanceled(true);
         }
@@ -343,7 +335,7 @@ public class CommonEvents
                 if(result.getType() == RayTraceResult.Type.BLOCK)
                     return;
 
-                if(!player.getDataManager().get(HELD_VEHICLE).isEmpty())
+                if(!player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
                 {
                     if(player.isCrouching())
                     {
@@ -373,7 +365,7 @@ public class CommonEvents
         HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
         if(heldVehicle != null)
         {
-            player.getDataManager().set(CommonEvents.HELD_VEHICLE, heldVehicle.getVehicleTag());
+            player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, heldVehicle.getVehicleTag());
         }
     }
 
@@ -390,7 +382,7 @@ public class CommonEvents
 
     private void dropVehicle(PlayerEntity player)
     {
-        CompoundNBT tagCompound = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
+        CompoundNBT tagCompound = player.getDataManager().get(CustomDataParameters.HELD_VEHICLE);
         if(!tagCompound.isEmpty())
         {
             CompoundNBT blankTag = new CompoundNBT();
@@ -399,7 +391,7 @@ public class CommonEvents
             {
                 heldVehicle.setVehicleTag(blankTag);
             }
-            player.getDataManager().set(CommonEvents.HELD_VEHICLE, blankTag);
+            player.getDataManager().set(CustomDataParameters.HELD_VEHICLE, blankTag);
 
             EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
             {
@@ -425,7 +417,7 @@ public class CommonEvents
             World world = player.world;
             if(player.isCrouching())
             {
-                int trailerId = player.getDataManager().get(TRAILER);
+                int trailerId = player.getDataManager().get(CustomDataParameters.TRAILER);
                 if(trailerId != -1)
                 {
                     Entity entity = world.getEntityByID(trailerId);
@@ -433,7 +425,7 @@ public class CommonEvents
                     {
                         ((TrailerEntity) entity).setPullingEntity(null);
                     }
-                    player.getDataManager().set(TRAILER, -1);
+                    player.getDataManager().set(CustomDataParameters.TRAILER, -1);
                 }
             }
             if(!world.isRemote && player.isSpectator())
@@ -446,7 +438,7 @@ public class CommonEvents
     @SubscribeEvent
     public void onRightClick(PlayerInteractEvent.RightClickItem event)
     {
-        if(event.getPlayer().getDataManager().get(GAS_PUMP).isPresent())
+        if(event.getPlayer().getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
         }
@@ -456,7 +448,7 @@ public class CommonEvents
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
     {
         BlockState state = event.getWorld().getBlockState(event.getPos());
-        if(state.getBlock() != ModBlocks.GAS_PUMP && event.getPlayer().getDataManager().get(GAS_PUMP).isPresent())
+        if(state.getBlock() != ModBlocks.GAS_PUMP && event.getPlayer().getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
         }
