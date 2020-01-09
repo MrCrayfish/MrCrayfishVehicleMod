@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -116,16 +117,19 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(135F));
             matrixStack.func_227862_a_(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
             matrixStack.func_227862_a_(-22F, -22F, -22F);
-            PartPosition position = WorkstationScreen.DISPLAY_PROPERTIES.get(vehicle.getClass());
-            if(position != null)
+
+            VehicleProperties properties = VehicleProperties.getProperties(vehicle.getType());
+            PartPosition position = PartPosition.DEFAULT;
+            if(properties != null)
             {
-                //Apply vehicle rotations, translations, and scale
-                matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-                matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-                matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-                matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
-                matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
+                position = properties.getDisplayPosition();
             }
+            matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
+            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
+            matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+            matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
+
             IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
             wrapper.render(vehicle, matrixStack, renderTypeBuffer, Minecraft.getInstance().getRenderPartialTicks(), 15728880);
             GL11.glDisable(GL11.GL_SCISSOR_TEST);

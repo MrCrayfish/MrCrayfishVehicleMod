@@ -15,6 +15,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -41,12 +42,12 @@ public class VehicleRecipeSerializer extends net.minecraftforge.registries.Forge
             throw new com.google.gson.JsonSyntaxException("Missing vehicle entry");
         }
         ResourceLocation vehicle = new ResourceLocation(JSONUtils.getString(json, "vehicle"));
-        EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(vehicle);
-        if(entityType == null)
+        Optional<EntityType<?>> optional = EntityType.byKey(JSONUtils.getString(json, "vehicle"));
+        if(!optional.isPresent())
         {
             throw new com.google.gson.JsonSyntaxException("Invalid vehicle entity: " + vehicle.toString());
         }
-        return new VehicleRecipe(recipeId, entityType, builder.build());
+        return new VehicleRecipe(recipeId, optional.get(), builder.build());
     }
 
     @Nullable
