@@ -1,4 +1,10 @@
 {
+    "conditions": [
+        {
+            "type": "forge:mod_loaded",
+            "modid": "cfm"
+        }
+    ],
     "type": "vehicle:crafting",
     "vehicle": "vehicle:bath",
     "materials": [
