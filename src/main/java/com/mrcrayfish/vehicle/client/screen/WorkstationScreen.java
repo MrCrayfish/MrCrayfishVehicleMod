@@ -46,6 +46,7 @@ import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -81,13 +82,17 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         this.ySize = 202;
         this.materials = new ArrayList<>();
         this.vehicleTypes = this.getVehicleTypes(playerInventory.player.world);
+        this.vehicleTypes.sort(Comparator.comparing(type -> type.getRegistryName().getPath()));
         this.cachedVehicle = new VehicleEntity[this.vehicleTypes.size()];
-        this.vehicleTypes.forEach(entityType -> System.out.println(entityType.getRegistryName()));
     }
 
     private List<EntityType<?>> getVehicleTypes(World world)
     {
-        return world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTING).map(recipe -> (VehicleRecipe) recipe).map(VehicleRecipe::getVehicle).collect(Collectors.toList());
+        return world.getRecipeManager().getRecipes().stream()
+            .filter(recipe -> recipe.getType() == RecipeType.CRAFTING)
+            .map(recipe -> (VehicleRecipe) recipe)
+            .map(VehicleRecipe::getVehicle)
+            .collect(Collectors.toList());
     }
 
     @Override
