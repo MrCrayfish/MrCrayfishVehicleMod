@@ -942,7 +942,7 @@ public class EntityRaytracer
     {
         for(BakedQuad quad : list)
         {
-            int size = quad.getFormat().getIntegerSize();
+            int size = DefaultVertexFormats.BLOCK.getIntegerSize();
             int[] data = quad.getVertexData();
             // Two triangles that represent the BakedQuad
             float[] triangle1 = new float[9];
@@ -1149,17 +1149,21 @@ public class EntityRaytracer
     @SubscribeEvent
     public static void onMouseEvent(InputEvent.RawMouseEvent event)
     {
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.loadingGui != null || mc.currentScreen != null)
+        {
+            return;
+        }
+
         // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
         //boolean rightClick = Minecraft.getInstance().gameSettings.keyBindUseItem.getKeyCode() + 100 == event.getButton();
         boolean rightClick = event.getButton() == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
         boolean leftClick = event.getButton() == GLFW.GLFW_MOUSE_BUTTON_LEFT;
-        if ((!rightClick && (!Config.CLIENT.enabledLeftClick.get()
-                || !leftClick))
-                || event.getAction() == GLFW.GLFW_RELEASE)
+        if((!rightClick && (!Config.CLIENT.enabledLeftClick.get() || !leftClick)) || event.getAction() == GLFW.GLFW_RELEASE)
         {
             return;
         }
-        if (performRayTrace(rightClick))
+        if(performRayTrace(rightClick))
         {
             // Cancel click
             event.setCanceled(true);

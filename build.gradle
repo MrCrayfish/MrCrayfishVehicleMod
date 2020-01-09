@@ -65,7 +65,7 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.18'
+    minecraft 'net.minecraftforge:forge:1.15.1-30.0.32'
     compile 'obfuscate:Obfuscate-0.3.4:1.15.1:deobf'
     compile 'controllable:Controllable-1.15:0.7.1:deobf'
 }
