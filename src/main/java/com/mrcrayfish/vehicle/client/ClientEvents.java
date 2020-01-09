@@ -86,7 +86,7 @@ public class ClientEvents
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event)
     {
-        if(Config.CLIENT.autoPerspective.get())
+        if(Config.CLIENT.autoPerspective.get() && Minecraft.getInstance().player != null)
         {
             Entity entity = Minecraft.getInstance().player.getRidingEntity();
             if(entity instanceof VehicleEntity)
