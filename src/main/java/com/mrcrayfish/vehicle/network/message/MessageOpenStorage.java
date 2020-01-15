@@ -68,7 +68,7 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                                 }
                                 else
                                 {
-                                    NetworkHooks.openGui(player, attachableChest.getInventory(),buffer -> buffer.writeInt(message.entityId));
+                                    NetworkHooks.openGui(player, attachableChest.getInventory(), buffer -> buffer.writeInt(message.entityId));
                                 }
                             }
                         }

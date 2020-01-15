@@ -34,6 +34,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.HashMap;
@@ -79,7 +80,7 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
         ItemStack heldItem = player.getHeldItem(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof SprayCanItem)) && player instanceof ServerPlayerEntity)
         {
-            player.openContainer(this);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
             return true;
         }
         return super.processInitialInteract(player, hand);
@@ -102,18 +103,21 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
     {
         super.onUpdateVehicle();
 
-        ItemStack fertilizer = this.getFertilizer();
-        if(fertilizer.isEmpty() && this.getPullingEntity() instanceof StorageTrailerEntity)
+        if(!world.isRemote)
         {
-            fertilizer = this.getFertilizerFromStorage((StorageTrailerEntity) this.getPullingEntity());
-        }
-        if(!fertilizer.isEmpty())
-        {
-            Vec3d lookVec = this.getLookVec();
-            boolean applied = this.applyFertilizer(lookVec.rotateYaw((float) Math.toRadians(90F)), 0);
-            applied |= this.applyFertilizer(Vec3d.ZERO, 1);
-            applied |= this.applyFertilizer(lookVec.rotateYaw((float) Math.toRadians(-90F)), 2);
-            if(applied) fertilizer.shrink(1);
+            ItemStack fertilizer = this.getFertilizer();
+            if(fertilizer.isEmpty() && this.getPullingEntity() instanceof StorageTrailerEntity)
+            {
+                fertilizer = this.getFertilizerFromStorage((StorageTrailerEntity) this.getPullingEntity());
+            }
+            if(!fertilizer.isEmpty())
+            {
+                Vec3d lookVec = this.getLookVec();
+                boolean applied = this.applyFertilizer(lookVec.rotateYaw((float) Math.toRadians(90F)), 0);
+                applied |= this.applyFertilizer(Vec3d.ZERO, 1);
+                applied |= this.applyFertilizer(lookVec.rotateYaw((float) Math.toRadians(-90F)), 2);
+                if(applied) fertilizer.shrink(1);
+            }
         }
     }
 

@@ -29,8 +29,10 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -76,7 +78,7 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
         ItemStack heldItem = player.getHeldItem(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof SprayCanItem)) && player instanceof ServerPlayerEntity)
         {
-            player.openContainer(this);
+            NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
             return true;
         }
         return super.processInitialInteract(player, hand);
@@ -263,6 +265,6 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
     @Override
     public boolean isStorageItem(ItemStack stack)
     {
-        return !stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable;
+        return !stack.isEmpty() && stack.getItem().isIn(Tags.Items.SEEDS);
     }
 }

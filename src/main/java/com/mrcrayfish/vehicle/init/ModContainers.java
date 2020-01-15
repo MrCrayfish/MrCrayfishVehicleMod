@@ -40,7 +40,7 @@ public class ModContainers
         return new WorkstationContainer(windowId, playerInventory, workstation);
     });
     public static final ContainerType<StorageContainer> STORAGE = build(Names.Container.STORAGE, (IContainerFactory<StorageContainer>) (windowId, playerInventory, data) -> {
-        IStorage storage = (IStorage) playerInventory.player.world.getEntityByID(data.readInt());
+        IStorage storage = (IStorage) playerInventory.player.world.getEntityByID(data.readVarInt());
         return new StorageContainer(windowId, playerInventory, storage.getInventory(), playerInventory.player);
     });
 

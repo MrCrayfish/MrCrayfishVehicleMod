@@ -68,12 +68,6 @@ public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer
     }
 
     @Override
-    protected boolean canBeRidden(Entity entityIn)
-    {
-        return false;
-    }
-
-    @Override
     public boolean processInitialInteract(PlayerEntity player, Hand hand)
     {
         if(!world.isRemote && !player.isCrouching())

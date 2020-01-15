@@ -199,4 +199,10 @@ public abstract class TrailerEntity extends VehicleEntity
     }
 
     public abstract double getHitchOffset();
+
+    @Override
+    protected boolean canBeRidden(Entity entityIn)
+    {
+        return false;
+    }
 }

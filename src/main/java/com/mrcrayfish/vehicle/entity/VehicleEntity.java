@@ -140,6 +140,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                         }
                     }
                 }
+                return true;
             }
             else if(heldItem.getItem() == ModItems.HAMMER && this.getRidingEntity() instanceof EntityJack)
             {
@@ -183,6 +184,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             else if(this.canBeRidden(player))
             {
                 player.startRiding(this);
+                return true;
             }
         }
         return true;
