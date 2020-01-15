@@ -3,8 +3,14 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
+import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
+import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Calendar;
@@ -38,6 +44,13 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<StorageTrailerEn
         this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
+        matrixStack.func_227860_a_();
+        matrixStack.func_227861_a_(0, 0.0625, 0);
+        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
+        matrixStack.func_227862_a_(0.9F, 0.9F, 0.9F);
+        ItemStack chest = new ItemStack(Blocks.CHEST);
+        RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.field_229196_a_, RenderUtil.getModel(chest));
+        matrixStack.func_227865_b_();
         /*//Render chest
         GlStateManager.pushMatrix(); //TODO add this back once I create a model class for chest
         {
