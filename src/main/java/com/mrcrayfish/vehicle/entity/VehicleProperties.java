@@ -312,7 +312,7 @@ public class VehicleProperties
             /* Sofacopter */
             properties = new VehicleProperties();
             properties.setBodyPosition(new PartPosition(0, 0, 0.0625, 0, 0, 0, 1));
-            properties.setFuelPortPosition(new PartPosition(-2, 1.75, 8.25, 0, 0, 0, 0.45));
+            properties.setFuelPortPosition(new PartPosition(0.0, 3.0, 8.0, 0, 0, 0, 0.45));
             properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
             VehicleProperties.setProperties(ModEntities.SOFACOPTER, properties);
