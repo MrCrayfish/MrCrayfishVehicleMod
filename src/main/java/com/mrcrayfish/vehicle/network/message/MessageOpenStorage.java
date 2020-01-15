@@ -53,6 +53,7 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                 Entity targetEntity = world.getEntityByID(message.entityId);
                 if(targetEntity instanceof IStorage)
                 {
+                    IStorage storage = (IStorage) targetEntity;
                     float reachDistance = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
                     if(player.getDistance(targetEntity) < reachDistance)
                     {
@@ -68,13 +69,13 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                                 }
                                 else
                                 {
-                                    NetworkHooks.openGui(player, attachableChest.getInventory(), buffer -> buffer.writeVarInt(message.entityId));
+                                    NetworkHooks.openGui(player, storage.getStorageContainerProvider(), buffer -> buffer.writeVarInt(message.entityId));
                                 }
                             }
                         }
                         else
                         {
-                            NetworkHooks.openGui(player, (IStorage) targetEntity, buffer -> buffer.writeVarInt(message.entityId));
+                            NetworkHooks.openGui(player, storage.getStorageContainerProvider(), buffer -> buffer.writeVarInt(message.entityId));
                         }
                     }
                 }

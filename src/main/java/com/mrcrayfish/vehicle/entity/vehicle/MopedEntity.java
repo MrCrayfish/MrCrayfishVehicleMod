@@ -36,6 +36,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -308,5 +309,11 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
     public boolean isLockable()
     {
         return false;
+    }
+
+    @Override
+    public ITextComponent getStorageName()
+    {
+        return this.getDisplayName();
     }
 }

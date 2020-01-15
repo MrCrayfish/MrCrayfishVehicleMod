@@ -8,15 +8,17 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
  */
-public interface IStorage extends IInventory, INamedContainerProvider
+public interface IStorage extends IInventory
 {
     StorageInventory getInventory();
 
@@ -126,10 +128,10 @@ public interface IStorage extends IInventory, INamedContainerProvider
         return true;
     }
 
-    @Nullable
-    @Override
-    default Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
+    ITextComponent getStorageName();
+
+    default INamedContainerProvider getStorageContainerProvider()
     {
-        return new StorageContainer(i, playerInventory, this, playerEntity);
+        return new SimpleNamedContainerProvider((windowId, playerInventory, playerEntity) -> new StorageContainer(windowId, playerInventory, this, playerEntity), this.getStorageName());
     }
 }

@@ -1,9 +1,7 @@
 package com.mrcrayfish.vehicle.common.inventory;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -36,14 +34,14 @@ public class StorageInventory extends Inventory implements INamedContainerProvid
     @Override
     public ITextComponent getDisplayName()
     {
-        return this.wrapper.getDisplayName();
+        return this.wrapper.getStorageName();
     }
 
     @Nullable
     @Override
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
     {
-        return this.wrapper.createMenu(windowId, playerInventory, playerEntity);
+        return this.wrapper.getStorageContainerProvider().createMenu(windowId, playerInventory, playerEntity);
     }
 
     public CompoundNBT write()

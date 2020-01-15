@@ -323,7 +323,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             {
                 if(player.getUniqueID().equals(owner))
                 {
-                    this.openInventory(player);
+                    this.openEditInventory(player);
                 }
                 else
                 {
@@ -1107,7 +1107,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return false;
     }
 
-    private void openInventory(PlayerEntity player)
+    private void openEditInventory(PlayerEntity player)
     {
         if(player instanceof ServerPlayerEntity)
         {

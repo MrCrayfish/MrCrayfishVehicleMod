@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -184,5 +185,11 @@ public class StorageTrailerEntity extends TrailerEntity implements EntityRaytrac
     public void openInventory(PlayerEntity player)
     {
         this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5F, 0.9F);
+    }
+
+    @Override
+    public ITextComponent getStorageName()
+    {
+        return this.getDisplayName();
     }
 }

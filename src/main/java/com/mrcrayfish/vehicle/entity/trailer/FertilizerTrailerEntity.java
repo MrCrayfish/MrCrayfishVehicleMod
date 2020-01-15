@@ -28,6 +28,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
@@ -290,5 +291,11 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
     public boolean isStorageItem(ItemStack stack)
     {
         return !stack.isEmpty() && stack.getItem() instanceof BoneMealItem;
+    }
+
+    @Override
+    public ITextComponent getStorageName()
+    {
+        return this.getDisplayName();
     }
 }
