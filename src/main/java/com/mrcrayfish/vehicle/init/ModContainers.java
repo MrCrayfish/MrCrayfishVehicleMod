@@ -41,7 +41,7 @@ public class ModContainers
     });
     public static final ContainerType<StorageContainer> STORAGE = build(Names.Container.STORAGE, (IContainerFactory<StorageContainer>) (windowId, playerInventory, data) -> {
         IStorage storage = (IStorage) playerInventory.player.world.getEntityByID(data.readVarInt());
-        return new StorageContainer(windowId, playerInventory, storage.getInventory(), playerInventory.player);
+        return new StorageContainer(windowId, playerInventory, storage, playerInventory.player);
     });
 
     private static <T extends Container> ContainerType<T> build(String key, ContainerType.IFactory<T> factory)

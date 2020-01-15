@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.inventory.container;
 
+import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.common.slot.SlotStorage;
 import com.mrcrayfish.vehicle.init.ModContainers;
@@ -15,10 +16,10 @@ import net.minecraft.item.ItemStack;
  */
 public class StorageContainer extends Container
 {
-    private final IInventory storageInventory;
+    private final IStorage storageInventory;
     private final int numRows;
 
-    public StorageContainer(int windowId, IInventory playerInventory, StorageInventory storageInventory, PlayerEntity player)
+    public StorageContainer(int windowId, IInventory playerInventory, IStorage storageInventory, PlayerEntity player)
     {
         super(ModContainers.STORAGE, windowId);
         this.storageInventory = storageInventory;
@@ -30,7 +31,7 @@ public class StorageContainer extends Container
         {
             for(int j = 0; j < 9; j++)
             {
-                this.addSlot(new SlotStorage(storageInventory, j + i * 9, 8 + j * 18, 18 + i * 18));
+                this.addSlot(new SlotStorage(storageInventory.getInventory(), j + i * 9, 8 + j * 18, 18 + i * 18));
             }
         }
 

@@ -130,6 +130,6 @@ public interface IStorage extends IInventory, INamedContainerProvider
     @Override
     default Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
     {
-        return new StorageContainer(i, playerInventory, this.getInventory(), playerEntity);
+        return new StorageContainer(i, playerInventory, this, playerEntity);
     }
 }
