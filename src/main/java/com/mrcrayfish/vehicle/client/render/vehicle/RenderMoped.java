@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -105,30 +106,16 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
 
         matrixStack.func_227865_b_();
 
-        /*if(entity.hasChest())
+        if(entity.hasChest())
         {
-            //Render chest
-            GlStateManager.pushMatrix();
-            {
-                GlStateManager.translate(0, 0.3, -0.675);
-                GlStateManager.rotate(180F, 0, 1, 0);
-                GlStateManager.scale(1.0F, -1.0F, -1.0F);
-                GlStateManager.scale(0.6F, 0.6F, 0.6F);
-                GlStateManager.translate(-0.5F, -0.5F, -0.5F);
-
-                if(this.isChristmas)
-                {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE_CHRISTMAS);
-                }
-                else
-                {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(TEXTURE_NORMAL);
-                }
-                MOPED_CHEST.renderAll();
-                this.renderChest(matrixStack, ivertexbuilder, this.field_228862_a_, this.field_228864_d_, this.field_228863_c_, f1, i, p_225616_6_);
-            }
-            GlStateManager.popMatrix();
-        }*/
+            matrixStack.func_227860_a_();
+            matrixStack.func_227861_a_(0, 0.25, -0.65);
+            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
+            matrixStack.func_227862_a_(0.5F, 0.5F, 0.5F);
+            ItemStack chest = new ItemStack(Blocks.CHEST);
+            RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.field_229196_a_, RenderUtil.getModel(chest));
+            matrixStack.func_227865_b_();
+        }
     }
 
     @Override
