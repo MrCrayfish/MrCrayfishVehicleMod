@@ -17,7 +17,7 @@ public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
     @Override
     public SpecialModel getBodyModel()
     {
-        return SpecialModel.ATV_BODY;
+        return SpecialModel.RAINBOW_SOFA;
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
     {
         matrixStack.func_227860_a_();
         matrixStack.func_227861_a_(0.0, 0.0625, 0.0);
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
+        //matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
         this.renderDamagedPart(entity, this.getBodyModel().getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
     }

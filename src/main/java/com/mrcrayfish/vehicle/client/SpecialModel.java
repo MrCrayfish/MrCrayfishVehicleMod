@@ -61,7 +61,8 @@ public enum SpecialModel
     SOFA_HELICOPTER_SKID("sofa_helicopter_skid"),
 
     /* Mod dependent models */
-    RED_SOFA(new ModelResourceLocation("cfm:red_sofa", "inventory"), false);
+    RED_SOFA(new ModelResourceLocation("cfm:red_sofa", "inventory"), false),
+    RAINBOW_SOFA(new ModelResourceLocation("cfm:rainbow_sofa", "inventory"), false);
 
     // Add spray can lid
     /**
