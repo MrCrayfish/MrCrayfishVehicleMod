@@ -235,7 +235,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         //TODO make it save the entity
         if(this.trailerId != null)
         {
-            compound.putUniqueId("trailer", trailerId);
+            compound.putUniqueId("Trailer", this.trailerId);
         }
     }
 
