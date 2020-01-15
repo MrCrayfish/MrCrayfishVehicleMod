@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.vehicle.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -57,14 +58,21 @@ public enum SpecialModel
     SMALL_FUEL_DOOR_OPEN("small_fuel_door_open"),
     KEY_HOLE("key_hole"),
     SOFA_HELICOPTER_ARM("sofa_helicopter_arm"),
-    SOFA_HELICOPTER_SKID("sofa_helicopter_skid");
+    SOFA_HELICOPTER_SKID("sofa_helicopter_skid"),
+
+    /* Mod dependent models */
+    RED_SOFA(new ModelResourceLocation("cfm:red_sofa", "inventory"), false);
 
     // Add spray can lid
-
     /**
      * The location of an item model in the [MOD_ID]/models/vehicle/[NAME] folder
      */
     private ResourceLocation modelLocation;
+
+    /**
+     * Determines if the model should be loaded as a special model
+     */
+    private boolean specialModel;
 
     /**
      * Cached model
@@ -79,7 +87,18 @@ public enum SpecialModel
      */
     SpecialModel(String modelName)
     {
-        modelLocation = new ResourceLocation(Reference.MOD_ID, "vehicle/" + modelName);
+        this(new ResourceLocation(Reference.MOD_ID, "vehicle/" + modelName), true);
+    }
+
+    /**
+     * Sets the model's location
+     *
+     * @param resource name of the model file
+     */
+    SpecialModel(ResourceLocation resource, boolean specialModel)
+    {
+        this.modelLocation = resource;
+        this.specialModel = specialModel;
     }
 
     /**
@@ -108,7 +127,10 @@ public enum SpecialModel
     {
         for(SpecialModel model : values())
         {
-            ModelLoader.addSpecialModel(model.modelLocation);
+            if(model.specialModel)
+            {
+                ModelLoader.addSpecialModel(model.modelLocation);
+            }
         }
     }
 }

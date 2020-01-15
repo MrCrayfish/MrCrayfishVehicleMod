@@ -81,7 +81,7 @@ public class Names
         public static final String BATH = PREFIX + "bath";
 
         /* Special Vehicles */
-        public static final String COUCH = PREFIX + "couch";
+        public static final String SOFA = PREFIX + "sofa";
         public static final String FERTILIZER = PREFIX + "fertilizer";
         public static final String SEEDER = PREFIX + "seeder";
         public static final String FLUID_TRAILER = PREFIX + "fluid_trailer";

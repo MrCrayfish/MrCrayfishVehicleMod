@@ -18,20 +18,19 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
     @Override
     public SpecialModel getBodyModel()
     {
-        return SpecialModel.ALUMINUM_BOAT_BODY;
+        return SpecialModel.RED_SOFA;
     }
 
     @Override
     public void render(SofacopterEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.func_227860_a_();
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModel.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
 
         matrixStack.func_227860_a_();
         matrixStack.func_227861_a_(0.0, 8 * 0.0625, 0.0);
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModel.SOFA_HELICOPTER_ARM.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.func_227865_b_();
 
         matrixStack.func_227860_a_();

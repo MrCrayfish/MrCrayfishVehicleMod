@@ -10,14 +10,12 @@ import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.Util;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +55,7 @@ public class ModEntities
     public static final EntityType<FertilizerTrailerEntity> FERTILIZER = buildVehicleType(Names.Entity.FERTILIZER, FertilizerTrailerEntity::new, 1.5F, 1.5F);
 
     /* Special Vehicles */
-    public static final EntityType<CouchEntity> SOFA = buildDependentVehicleType("cfm", Names.Entity.COUCH, CouchEntity::new, 1.0F, 1.0F);
+    public static final EntityType<CouchEntity> SOFA = buildDependentVehicleType("cfm", Names.Entity.SOFA, CouchEntity::new, 1.0F, 1.0F);
     public static final EntityType<BathEntity> BATH = buildDependentVehicleType("cfm", Names.Entity.BATH, BathEntity::new, 1.0F, 1.0F);
     public static final EntityType<SofacopterEntity> SOFACOPTER = buildDependentVehicleType("cfm", Names.Entity.SOFACOPTER, SofacopterEntity::new, 1.0F, 1.0F);
 
