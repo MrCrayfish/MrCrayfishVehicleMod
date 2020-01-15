@@ -27,6 +27,7 @@ public class DuneBuggyEntity extends LandVehicleEntity implements IEntityRaytrac
     {
         super.registerData();
         this.dataManager.set(WHEEL_TYPE, WheelType.PLASTIC.ordinal());
+        this.dataManager.set(COLOR, 0xF2B116);
     }
 
     @Override
