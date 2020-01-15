@@ -91,4 +91,10 @@ public class SpeedBoatEntity extends BoatEntity implements IEntityRaytraceable
     {
         return false;
     }
+
+    @Override
+    public FuelPortType getFuelPortType()
+    {
+        return FuelPortType.SMALL;
+    }
 }
