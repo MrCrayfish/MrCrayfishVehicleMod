@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
@@ -314,5 +314,12 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
     public ITextComponent getStorageName()
     {
         return this.getDisplayName();
+    }
+
+    @Override
+    public void openInventory(PlayerEntity player)
+    {
+        Vec3d target = new Vec3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(getPositionVector());
+        this.world.playSound(null, target.x, target.y, target.z, SoundEvents.BLOCK_CHEST_OPEN, this.getSoundCategory(), 0.5F, 0.9F);
     }
 }
