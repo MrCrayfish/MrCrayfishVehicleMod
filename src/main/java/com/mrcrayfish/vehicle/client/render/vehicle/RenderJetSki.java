@@ -30,9 +30,8 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         //Render the handles bars
         matrixStack.func_227860_a_();
 
-        matrixStack.func_227861_a_(0, 0.375, 0.25);
+        matrixStack.func_227861_a_(0, 0.355, 0.225);
         matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0, 0.02, 0);
 
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
