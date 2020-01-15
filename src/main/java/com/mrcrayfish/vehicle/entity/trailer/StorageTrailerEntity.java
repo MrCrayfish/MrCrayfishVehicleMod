@@ -114,6 +114,7 @@ public class StorageTrailerEntity extends TrailerEntity implements EntityRaytrac
             else if(result.getPartHit() == CHEST_BOX)
             {
                 PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getEntityId()));
+                Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
                 return true;
             }
         }
