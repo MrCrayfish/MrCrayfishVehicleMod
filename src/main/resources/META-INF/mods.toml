@@ -24,3 +24,9 @@ description="A mod that adds vehicles into Minecraft!"
     versionRange="[1.15.1,)"
     ordering="NONE"
     side="BOTH"
+[[dependencies.vehicle]]
+    modId="obfuscate"
+    mandatory=true
+    versionRange="[0.3.4,)"
+    ordering="AFTER"
+    side="BOTH"
