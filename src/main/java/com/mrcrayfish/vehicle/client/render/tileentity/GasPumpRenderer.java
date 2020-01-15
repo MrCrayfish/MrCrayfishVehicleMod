@@ -40,7 +40,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     }
 
     @Override
-    public void func_225616_a_(GasPumpTileEntity gasPump, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int light, int overlay)
+    public void func_225616_a_(GasPumpTileEntity gasPump, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
         BlockPos blockPos = gasPump.getPos();
         BlockState state = gasPump.getWorld().getBlockState(blockPos);
@@ -137,7 +137,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z))));
                         matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) Math.toDegrees(Math.asin(-r.getDir().normalize().y))));
                         matrixStack.func_227862_a_(0.075F, 0.075F, 0.075F);
-                        Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.field_229196_a_, matrixStack, iRenderTypeBuffer);
+                        Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.field_229196_a_, matrixStack, renderTypeBuffer);
                         matrixStack.func_227865_b_();
                     }
                 }
@@ -154,7 +154,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
                     matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(90F));
                     matrixStack.func_227862_a_(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, iRenderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
+                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
                 }
                 matrixStack.func_227865_b_();
             }
@@ -172,20 +172,14 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 matrixStack.func_227860_a_();
                 {
                     matrixStack.func_227862_a_(0.015F, -0.015F, 0.015F);
-                    RenderSystem.pushMatrix();
-                    RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
-                    //GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
-                    RenderSystem.depthMask(false);
                     FontRenderer fontRenderer = this.field_228858_b_.fontRenderer;
                     if(gasPump.getTank() != null)
                     {
                         int amount = (int) Math.ceil(100 * (gasPump.getTank().getFluidAmount() / (double) gasPump.getTank().getCapacity()));
                         String percent = String.format("%d%%", amount);
                         int width = fontRenderer.getStringWidth(percent);
-                        fontRenderer.drawString(percent, -width / 2, 10, 16777215);
+                        fontRenderer.func_228079_a_(percent, -width / 2, 10, 16777215, false, matrixStack.func_227866_c_().func_227870_a_(), renderTypeBuffer, false, 0, light);
                     }
-                    RenderSystem.depthMask(true);
-                    RenderSystem.popMatrix();
                 }
                 matrixStack.func_227865_b_();
 
@@ -193,15 +187,9 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 {
                     matrixStack.func_227861_a_(0, 1 * 0.0625, 0);
                     matrixStack.func_227862_a_(0.01F, -0.01F, 0.01F);
-                    RenderSystem.pushMatrix();
-                    RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
-                    //GlStateManager.glNormal3f(0.0F, 0.0F, -0.010416667F);
-                    RenderSystem.depthMask(false);
                     FontRenderer fontRenderer = this.field_228858_b_.fontRenderer;
                     int width = fontRenderer.getStringWidth("Fuelium");
-                    fontRenderer.drawString("Fuelium", -width / 2, 10, 9761325);
-                    RenderSystem.depthMask(true);
-                    RenderSystem.popMatrix();
+                    fontRenderer.func_228079_a_("Fuelium", -width / 2, 10, 9761325, false, matrixStack.func_227866_c_().func_227870_a_(), renderTypeBuffer, false, 0, light);
                 }
                 matrixStack.func_227865_b_();
             }
