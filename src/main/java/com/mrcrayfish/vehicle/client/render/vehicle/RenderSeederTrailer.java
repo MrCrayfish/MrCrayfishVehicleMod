@@ -30,8 +30,8 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
     {
         //Render the body
         this.renderDamagedPart(entity, SpecialModel.SEEDER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderWheel(entity, matrixStack, renderTypeBuffer, true, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
-        this.renderWheel(entity, matrixStack, renderTypeBuffer, false, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, true, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
+        this.renderWheel(entity, matrixStack, renderTypeBuffer, false, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
 
         StorageInventory inventory = entity.getInventory();
         if(inventory != null)
