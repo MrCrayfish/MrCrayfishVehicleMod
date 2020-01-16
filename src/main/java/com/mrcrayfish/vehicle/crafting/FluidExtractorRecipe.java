@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.crafting;
 
+import com.mrcrayfish.vehicle.init.ModRecipeSerializers;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.fluid.Fluid;
@@ -70,7 +71,7 @@ public class FluidExtractorRecipe implements IRecipe<FluidExtractorTileEntity>
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return null;
+        return ModRecipeSerializers.FLUID_EXTRACTOR;
     }
 
     @Override
