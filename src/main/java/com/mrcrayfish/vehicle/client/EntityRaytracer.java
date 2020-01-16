@@ -1890,7 +1890,7 @@ public class EntityRaytracer
                     mc.playerController.attackEntity(player, (Entity) this);
                     return true;
                 }
-                if(result.getPartHit().model != null)
+                if(result.getPartHit().model != null || result.getPartHit().partStack != null)
                 {
                     if(notRiding)
                     {
