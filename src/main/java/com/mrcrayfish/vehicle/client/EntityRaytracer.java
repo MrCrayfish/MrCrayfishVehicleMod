@@ -441,7 +441,7 @@ public class EntityRaytracer
             List<MatrixTransformation> couchTransformGlobal = Lists.newArrayList();
             createBodyTransforms(couchTransformGlobal, ModEntities.SOFA);
             HashMap<RayTracePart, List<MatrixTransformation>> couchParts = Maps.newHashMap();
-            createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:rainbow_sofa")), couchParts, couchTransformGlobal,
+            createTransformListForPart(SpecialModel.RAINBOW_SOFA, couchParts, couchTransformGlobal,
                     MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F),
                     MatrixTransformation.createTranslation(0.0F, 0.0625F, 0.0F));
             registerEntityStatic(ModEntities.SOFA, couchParts);
@@ -450,7 +450,7 @@ public class EntityRaytracer
             List<MatrixTransformation> sofacopterTransformGlobal = Lists.newArrayList();
             createBodyTransforms(sofacopterTransformGlobal, ModEntities.SOFACOPTER);
             HashMap<RayTracePart, List<MatrixTransformation>> sofacopterParts = Maps.newHashMap();
-            createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:sofa")), sofacopterParts, sofacopterTransformGlobal,
+            createTransformListForPart(SpecialModel.RED_SOFA, sofacopterParts, sofacopterTransformGlobal,
                     MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
             createTransformListForPart(SpecialModel.SOFA_HELICOPTER_ARM, sofacopterParts, sofacopterTransformGlobal,
                     MatrixTransformation.createTranslation(0.0F, 8 * 0.0625F, 0.0F));
