@@ -16,6 +16,8 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -23,6 +25,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -103,20 +106,29 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(wrapper != null)
         {
-            int i = (this.width - this.xSize) / 2;
-            int j = (this.height - this.ySize) / 2;
+            int startX = (this.width - this.xSize) / 2;
+            int startY = (this.height - this.ySize) / 2;
+
+            RenderSystem.pushMatrix();
+            RenderSystem.translatef(96, 78, 1050.0F);
+            RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
+
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            RenderUtil.scissor(i + 26, j + 17, 142, 70);
+            RenderUtil.scissor(startX + 26, startY + 17, 142, 70);
+
             MatrixStack matrixStack = new MatrixStack();
-            matrixStack.func_227861_a_(96, 78, 100);
-            matrixStack.func_227861_a_(windowX + (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
-            matrixStack.func_227861_a_(0, windowY + (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-10F));
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0)));
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0)));
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(135F));
+            matrixStack.func_227861_a_(0.0, 0.0, 1000.0);
+            matrixStack.func_227861_a_(windowX - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
+            matrixStack.func_227861_a_(0, windowY - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
+
+            Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-10F);
+            quaternion.multiply(Axis.POSITIVE_X.func_229187_a_(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0)));
+            quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0)));
+            quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(135F));
+            matrixStack.func_227863_a_(quaternion);
+
             matrixStack.func_227862_a_(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
-            matrixStack.func_227862_a_(-22F, -22F, -22F);
+            matrixStack.func_227862_a_(22F, 22F, 22F);
 
             VehicleProperties properties = VehicleProperties.getProperties(vehicle.getType());
             PartPosition position = PartPosition.DEFAULT;
@@ -130,9 +142,16 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
             matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
 
+            EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
+            renderManager.setRenderShadow(false);
+            renderManager.func_229089_a_(quaternion);
             IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
             wrapper.render(vehicle, matrixStack, renderTypeBuffer, Minecraft.getInstance().getRenderPartialTicks(), 15728880);
+            renderTypeBuffer.func_228461_a_();
+            renderManager.setRenderShadow(true);
+
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
+            RenderSystem.popMatrix();
         }
 
         if(showHelp)
@@ -160,17 +179,50 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             {
                 this.windowZoom++;
             }
+        }
+        return false;
+    }
 
-            if(!this.mouseGrabbed && (this.minecraft.mouseHelper.isLeftDown() || this.minecraft.mouseHelper.isRightDown()))
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button)
+    {
+        int startX = (this.width - this.xSize) / 2;
+        int startY = (this.height - this.ySize) / 2;
+
+        if(CommonUtils.isMouseWithin((int) mouseX, (int) mouseY, startX + 26, startY + 17, 142, 70))
+        {
+            if(!this.mouseGrabbed && (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT))
             {
                 this.mouseGrabbed = true;
-                this.mouseGrabbedButton = this.minecraft.mouseHelper.isRightDown() ? 1 : 0;
+                this.mouseGrabbedButton = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT ? 1 : 0;
                 this.mouseClickedX = (int) mouseX;
                 this.mouseClickedY = (int) mouseY;
                 this.showHelp = false;
+                return true;
             }
         }
-        return false;
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button)
+    {
+        if(this.mouseGrabbed)
+        {
+            if(this.mouseGrabbedButton == 0 && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
+            {
+                this.mouseGrabbed = false;
+                this.windowX -= (mouseX - this.mouseClickedX);
+                this.windowY -= (mouseY - this.mouseClickedY);
+            }
+            else if(mouseGrabbedButton == 1 && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
+            {
+                this.mouseGrabbed = false;
+                this.windowRotationX += (mouseX - this.mouseClickedX);
+                this.windowRotationY -= (mouseY - this.mouseClickedY);
+            }
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
     }
 
     @Override
@@ -182,22 +234,6 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
 
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
-
-        if(this.mouseGrabbed)
-        {
-            if(this.mouseGrabbedButton == 0 && !this.minecraft.mouseHelper.isLeftDown())
-            {
-                this.mouseGrabbed = false;
-                this.windowX += (mouseX - this.mouseClickedX);
-                this.windowY += (mouseY - this.mouseClickedY);
-            }
-            else if(mouseGrabbedButton == 1 && !this.minecraft.mouseHelper.isRightDown())
-            {
-                this.mouseGrabbed = false;
-                this.windowRotationX += (mouseX - this.mouseClickedX);
-                this.windowRotationY -= (mouseY - this.mouseClickedY);
-            }
-        }
 
         if(this.vehicleInventory.getStackInSlot(0).isEmpty())
         {
