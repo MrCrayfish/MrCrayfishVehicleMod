@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.common;
 
-import com.mrcrayfish.vehicle.entity.*;
+import com.mrcrayfish.vehicle.entity.EngineTier;
+import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.item.WheelItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;

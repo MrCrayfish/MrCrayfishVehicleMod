@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.google.common.base.Strings;
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;

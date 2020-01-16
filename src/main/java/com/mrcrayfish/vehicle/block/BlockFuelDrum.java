@@ -3,8 +3,6 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
-import com.mrcrayfish.vehicle.tileentity.TileFluidHandlerSynced;
-import com.mrcrayfish.vehicle.util.Bounds;
 import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
@@ -23,7 +21,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -45,8 +42,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**

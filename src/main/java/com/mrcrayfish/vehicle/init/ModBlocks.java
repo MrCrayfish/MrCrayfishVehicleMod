@@ -1,12 +1,9 @@
 package com.mrcrayfish.vehicle.init;
 
-import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.*;
-import com.mrcrayfish.vehicle.item.ItemBoostRamp;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
-import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.block.material.Material;
@@ -15,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ObjectHolder;
 
 import javax.annotation.Nullable;
 import java.util.LinkedList;

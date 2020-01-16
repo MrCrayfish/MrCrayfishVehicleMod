@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.init;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.recipe.RecipeColorSprayCan;
 import com.mrcrayfish.vehicle.recipe.RecipeRefillSprayCan;
-import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.util.ResourceLocation;
@@ -11,9 +10,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.ObjectHolder;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Author: MrCrayfish

@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
 import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.client.render.Axis;
