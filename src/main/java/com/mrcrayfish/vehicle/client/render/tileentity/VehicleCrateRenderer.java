@@ -14,6 +14,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelBakery;
@@ -23,6 +24,9 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ILightReader;
+import net.minecraft.world.LightType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Random;
@@ -54,6 +58,8 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
         this.field_228858_b_.textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
         matrixStack.func_227860_a_();
+
+        light = WorldRenderer.func_228421_a_(crate.getWorld(), crate.getPos().up()); //TODO figure out the correct way to calculate light
 
         if(crate.isOpened() && crate.getTimer() > 150)
         {
