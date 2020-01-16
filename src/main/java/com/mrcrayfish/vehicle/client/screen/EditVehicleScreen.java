@@ -157,7 +157,6 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         if(showHelp)
         {
             RenderSystem.pushMatrix();
-            RenderSystem.translatef(0, 0, 1000);
             RenderSystem.scalef(0.5F, 0.5F, 0.5F);
             minecraft.fontRenderer.drawString(I18n.format("container.edit_vehicle.window_help"), 56, 38, Color.WHITE.getRGB());
             RenderSystem.popMatrix();
@@ -173,10 +172,12 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         {
             if(scroll < 0 && this.windowZoom > 0)
             {
+                this.showHelp = false;
                 this.windowZoom--;
             }
             else if(scroll > 0)
             {
+                this.showHelp = false;
                 this.windowZoom++;
             }
         }
