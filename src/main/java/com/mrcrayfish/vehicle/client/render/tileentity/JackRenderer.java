@@ -35,43 +35,43 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
     }
 
     @Override
-    public void func_225616_a_(JackTileEntity jack, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int i1)
+    public void render(JackTileEntity jack, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int i1)
     {
         if(!jack.hasWorld())
             return;
 
-        matrixStack.func_227860_a_();
+        matrixStack.push();
 
         BlockPos pos = jack.getPos();
         BlockState state = jack.getWorld().getBlockState(pos);
 
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         {
-            matrixStack.func_227861_a_(0.5, 0.0, 0.5);
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
-            matrixStack.func_227861_a_(-0.5, 0.0, -0.5);
+            matrixStack.translate(0.5, 0.0, 0.5);
+            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+            matrixStack.translate(-0.5, 0.0, -0.5);
             BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
             IBakedModel model = dispatcher.getModelForState(state);
-            IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.func_228643_e_());
-            dispatcher.getBlockModelRenderer().func_228802_a_(jack.getWorld(), model, state, pos, matrixStack, builder, true, new Random(), state.getPositionRandom(pos), OverlayTexture.field_229196_a_);
+            IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.cutout());
+            dispatcher.getBlockModelRenderer().renderModel(jack.getWorld(), model, state, pos, matrixStack, builder, true, new Random(), state.getPositionRandom(pos), OverlayTexture.DEFAULT_LIGHT);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
 
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         {
-            matrixStack.func_227861_a_(0, -2 * 0.0625, 0);
+            matrixStack.translate(0, -2 * 0.0625, 0);
             float progress = (jack.prevLiftProgress + (jack.liftProgress - jack.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
-            matrixStack.func_227861_a_(0, 0.5 * progress, 0);
+            matrixStack.translate(0, 0.5 * progress, 0);
 
             //Render the head
             BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
             IBakedModel model = SpecialModel.JACK_PISTON_HEAD.getModel();
-            IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.func_228643_e_());
-            dispatcher.getBlockModelRenderer().func_228805_b_(jack.getWorld(), model, state, pos, matrixStack, builder, false, new Random(), state.getPositionRandom(pos), OverlayTexture.field_229196_a_);
+            IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.cutout());
+            dispatcher.getBlockModelRenderer().renderModel(jack.getWorld(), model, state, pos, matrixStack, builder, false, new Random(), state.getPositionRandom(pos), OverlayTexture.DEFAULT_LIGHT);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
 
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         {
             Entity jackEntity = jack.getJack();
             if(jackEntity != null && jackEntity.getPassengers().size() > 0)
@@ -79,15 +79,15 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                 Entity passenger = jackEntity.getPassengers().get(0);
                 if(passenger instanceof VehicleEntity && passenger.isAlive())
                 {
-                    matrixStack.func_227861_a_(0.5, 0.5, 0.5);
-                    matrixStack.func_227861_a_(0, -1 * 0.0625, 0);
+                    matrixStack.translate(0.5, 0.5, 0.5);
+                    matrixStack.translate(0, -1 * 0.0625, 0);
                     float progress = (jack.prevLiftProgress + (jack.liftProgress - jack.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
-                    matrixStack.func_227861_a_(0, 0.5 * progress, 0);
+                    matrixStack.translate(0, 0.5 * progress, 0);
 
                     VehicleEntity vehicle = (VehicleEntity) passenger;
                     Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
-                    matrixStack.func_227861_a_(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
-                    matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(-passenger.rotationYaw));
+                    matrixStack.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
+                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(-passenger.rotationYaw));
 
                     RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
                     if(wrapper != null)
@@ -97,8 +97,8 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                 }
             }
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 }

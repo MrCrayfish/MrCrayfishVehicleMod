@@ -153,7 +153,7 @@ public class CommonEvents
                         targetEntity.remove();
 
                         //Plays pick up sound
-                        world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         return true;
                     }
@@ -170,7 +170,7 @@ public class CommonEvents
                     if(vehicle instanceof VehicleEntity && ((VehicleEntity) vehicle).canMountTrailer())
                     {
                         vehicle.read(tagCompound);
-                        vehicle.setPositionAndRotation(targetEntity.func_226277_ct_(), targetEntity.func_226278_cu_(), targetEntity.func_226281_cx_(), targetEntity.rotationYaw, targetEntity.rotationPitch);
+                        vehicle.setPositionAndRotation(targetEntity.getPosX(), targetEntity.getPosY(), targetEntity.getPosZ(), targetEntity.rotationYaw, targetEntity.rotationPitch);
 
                         //Updates the DataParameter
                         CompoundNBT tag = new CompoundNBT();
@@ -185,7 +185,7 @@ public class CommonEvents
 
                         //Plays place sound
                         world.addEntity(vehicle);
-                        world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         vehicle.startRiding(targetEntity);
 
                         return true;
@@ -242,10 +242,10 @@ public class CommonEvents
                                     {
                                         EntityJack entityJack = jack.getJack();
                                         entityJack.updateRidden();
-                                        entity.setLocationAndAngles(entity.func_226277_ct_(), entity.func_226278_cu_(), entity.func_226281_cx_(), entity.rotationYaw, entity.rotationPitch);
+                                        entity.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
                                     }
                                     world.addEntity(entity);
-                                    world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 }
                             });
                         }
@@ -261,7 +261,7 @@ public class CommonEvents
                 if(!player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
                 {
                     //Vec3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
-                    RayTraceResult result = player.func_213324_a(10.0, 0.0F, false);
+                    RayTraceResult result = player.pick(10.0, 0.0F, false);
                     Vec3d clickedVec = result.getHitVec();
                     if(clickedVec == null || event.getFace() != Direction.UP)
                     {
@@ -301,7 +301,7 @@ public class CommonEvents
 
                                     //Plays place sound
                                     world.addEntity(entity);
-                                    world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 });
                                 event.setCanceled(true);
                                 event.setCancellationResult(ActionResultType.SUCCESS);
@@ -331,7 +331,7 @@ public class CommonEvents
                 PlayerEntity player = event.getPlayer();
                 float reach = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
                 reach = player.isCreative() ? reach : reach - 0.5F;
-                RayTraceResult result = player.func_213324_a(reach, 0.0F, false);
+                RayTraceResult result = player.pick(reach, 0.0F, false);
                 if(result.getType() == RayTraceResult.Type.BLOCK)
                     return;
 
@@ -401,7 +401,7 @@ public class CommonEvents
                     vehicle.read(tagCompound);
                     float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
                     Vec3d heldOffset = ((PoweredVehicleEntity) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
-                    vehicle.setPositionAndRotation(player.func_226277_ct_() + heldOffset.x * 0.0625D, player.func_226278_cu_() + player.getEyeHeight() + heldOffset.y * 0.0625D, player.func_226281_cx_() + heldOffset.z * 0.0625D, rotation, 0F);
+                    vehicle.setPositionAndRotation(player.getPosX() + heldOffset.x * 0.0625D, player.getPosY() + player.getEyeHeight() + heldOffset.y * 0.0625D, player.getPosZ() + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.addEntity(vehicle);
                 }
             });

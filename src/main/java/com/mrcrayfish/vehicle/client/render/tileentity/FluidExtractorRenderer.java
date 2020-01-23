@@ -26,19 +26,19 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
     }
 
     @Override
-    public void func_225616_a_(FluidExtractorTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, int light, int p_225616_6_)
+    public void render(FluidExtractorTileEntity tileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, int light, int p_225616_6_)
     {
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(0.5, 0.5, 0.5);
+        matrixStack.push();
+        matrixStack.translate(0.5, 0.5, 0.5);
         Direction direction = tileEntity.getBlockState().get(BlockFluidExtractor.DIRECTION);
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(direction.getHorizontalIndex() * -90F - 90F));
-        matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
+        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(direction.getHorizontalIndex() * -90F - 90F));
+        matrixStack.translate(-0.5, -0.5, -0.5);
         float height = (float) (12.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
         if(height > 0)
         {
             this.drawFluid(tileEntity, matrixStack, typeBuffer, 10F * 0.0625F, 2F * 0.0625F, 0.01F * 0.0625F, 5.99F * 0.0625F, height * 0.0625F, (16 - 0.02F) * 0.0625F);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     private void drawFluid(FluidExtractorTileEntity te, MatrixStack matrixStack, IRenderTypeBuffer typeBuffer, float x, float y, float z, float width, float height, float depth)
@@ -57,42 +57,42 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
         float blue = (float) (waterColor & 255) / 255.0F;
         int light = this.getCombinedLight(te.getWorld(), te.getPos());
 
-        IVertexBuilder buffer = typeBuffer.getBuffer(RenderType.func_228645_f_());
-        Matrix4f matrix = matrixStack.func_227866_c_().func_227870_a_();
+        IVertexBuilder buffer = typeBuffer.getBuffer(RenderType.translucent());
+        Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
 
         //left side
-        buffer.func_227888_a_(matrix, x + width, y, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x, y, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x, y + height, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y + height, z).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
 
         //right side
-        buffer.func_227888_a_(matrix, x, y, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y + height, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x, y + height, z + depth).func_227885_a_(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
 
         maxU = (float) Math.min(minU + (sprite.getMaxU() - minU) * depth, sprite.getMaxU());
 
         //back side
-        buffer.func_227888_a_(matrix, x + width, y, z + depth).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y, z).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y + height, z).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y + height, z + depth).func_227885_a_(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y, z + depth).color(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y, z).color(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z).color(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z + depth).color(red - 0.15F, green - 0.15F, blue - 0.15F, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
 
         maxV = (float) Math.min(minV + (sprite.getMaxV() - minV) * width, sprite.getMaxV());
 
         //top
-        buffer.func_227888_a_(matrix, x, y + height, z).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(maxU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x, y + height, z + depth).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(minU, minV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y + height, z + depth).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(minU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.func_227888_a_(matrix, x + width, y + height, z).func_227885_a_(red, green, blue, 1.0F).func_225583_a_(maxU, maxV).func_227886_a_(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z).color(red, green, blue, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z).color(red, green, blue, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
     }
 
     private int getCombinedLight(ILightReader lightReader, BlockPos pos)
     {
-        int i = WorldRenderer.func_228421_a_(lightReader, pos);
-        int j = WorldRenderer.func_228421_a_(lightReader, pos.up());
+        int i = WorldRenderer.getCombinedLight(lightReader, pos);
+        int j = WorldRenderer.getCombinedLight(lightReader, pos.up());
         int k = i & 255;
         int l = j & 255;
         int i1 = i >> 16 & 255;

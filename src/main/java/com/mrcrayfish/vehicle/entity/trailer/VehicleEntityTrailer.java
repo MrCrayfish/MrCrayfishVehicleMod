@@ -63,7 +63,7 @@ public class VehicleEntityTrailer extends TrailerEntity implements EntityRaytrac
         if(passenger instanceof VehicleEntity)
         {
             Vec3d offset = ((VehicleEntity) passenger).getProperties().getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-            passenger.setPosition(this.func_226277_ct_() + offset.x, this.func_226278_cu_() + getMountedYOffset() + offset.y, this.func_226281_cx_() + offset.z);
+            passenger.setPosition(this.getPosX() + offset.x, this.getPosY() + getMountedYOffset() + offset.y, this.getPosZ() + offset.z);
             passenger.prevRotationYaw = this.prevRotationYaw;
             passenger.rotationYaw = this.rotationYaw;
         }

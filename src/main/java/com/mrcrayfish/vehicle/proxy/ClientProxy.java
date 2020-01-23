@@ -73,12 +73,12 @@ public class ClientProxy implements Proxy
     @Override
     public void setupClient()
     {
-        Predicate<RenderType> cutoutPredicate = renderType -> renderType == RenderType.func_228643_e_();
+        Predicate<RenderType> cutoutPredicate = renderType -> renderType == RenderType.cutout();
         RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, cutoutPredicate);
         RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, cutoutPredicate);
         RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, cutoutPredicate);
 
-        Predicate<RenderType> fluidPredicate = renderType -> renderType == RenderType.func_228645_f_();
+        Predicate<RenderType> fluidPredicate = renderType -> renderType == RenderType.translucent();
         RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, fluidPredicate);
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, fluidPredicate);
         RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, fluidPredicate);

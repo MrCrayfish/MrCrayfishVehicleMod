@@ -117,18 +117,18 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             RenderUtil.scissor(startX + 26, startY + 17, 142, 70);
 
             MatrixStack matrixStack = new MatrixStack();
-            matrixStack.func_227861_a_(0.0, 0.0, 1000.0);
-            matrixStack.func_227861_a_(windowX - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
-            matrixStack.func_227861_a_(0, windowY - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
+            matrixStack.translate(0.0, 0.0, 1000.0);
+            matrixStack.translate(windowX - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
+            matrixStack.translate(0, windowY - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
 
             Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-10F);
             quaternion.multiply(Axis.POSITIVE_X.func_229187_a_(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0)));
             quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0)));
             quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(135F));
-            matrixStack.func_227863_a_(quaternion);
+            matrixStack.rotate(quaternion);
 
-            matrixStack.func_227862_a_(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
-            matrixStack.func_227862_a_(22F, 22F, 22F);
+            matrixStack.scale(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
+            matrixStack.scale(22F, 22F, 22F);
 
             VehicleProperties properties = VehicleProperties.getProperties(vehicle.getType());
             PartPosition position = PartPosition.DEFAULT;
@@ -136,11 +136,11 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             {
                 position = properties.getDisplayPosition();
             }
-            matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-            matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
-            matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
+            matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
+            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
+            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+            matrixStack.translate(position.getX(), position.getY(), position.getZ());
 
             EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
             renderManager.setRenderShadow(false);

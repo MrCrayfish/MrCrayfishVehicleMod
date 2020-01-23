@@ -254,7 +254,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         if(this.isPassenger(passenger))
         {
-            passenger.setPosition(this.func_226277_ct_(), this.func_226278_cu_() + this.getMountedYOffset() + passenger.getYOffset(), this.func_226281_cx_());
+            passenger.setPosition(this.getPosX(), this.getPosY() + this.getMountedYOffset() + passenger.getYOffset(), this.getPosZ());
         }
     }
 

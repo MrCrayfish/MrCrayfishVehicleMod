@@ -30,16 +30,16 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
         //Render the body
         this.renderDamagedPart(entity, SpecialModel.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(0, 0.215, -0.125);
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0, 0.02, 0);
+        matrixStack.push();
+        matrixStack.translate(0, 0.215, -0.125);
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.translate(0, 0.02, 0);
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
-        matrixStack.func_227865_b_();
+        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        matrixStack.pop();
     }
 
     @Override
@@ -63,12 +63,12 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
     public void applyPlayerRender(SpeedBoatEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
-        matrixStack.func_227861_a_(0, offset, 0);
+        matrixStack.translate(0, offset, 0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-        matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
-        matrixStack.func_227861_a_(0, -offset, 0);
+        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+        matrixStack.translate(0, -offset, 0);
     }
 
     @Override

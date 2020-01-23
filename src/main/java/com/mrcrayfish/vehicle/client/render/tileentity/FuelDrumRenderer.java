@@ -30,16 +30,16 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
     }
 
     @Override
-    public void func_225616_a_(FuelDrumTileEntity fuelDrumTileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int lightTexture, int overlayTexture)
+    public void render(FuelDrumTileEntity fuelDrumTileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int lightTexture, int overlayTexture)
     {
         if(Minecraft.getInstance().player.isCrouching())
         {
-            if(fuelDrumTileEntity.hasFluid() && this.field_228858_b_.cameraHitResult != null && this.field_228858_b_.cameraHitResult.getType() == RayTraceResult.Type.BLOCK)
+            if(fuelDrumTileEntity.hasFluid() && this.renderDispatcher.cameraHitResult != null && this.renderDispatcher.cameraHitResult.getType() == RayTraceResult.Type.BLOCK)
             {
-                BlockRayTraceResult result = (BlockRayTraceResult) this.field_228858_b_.cameraHitResult;
+                BlockRayTraceResult result = (BlockRayTraceResult) this.renderDispatcher.cameraHitResult;
                 if(result.getPos().equals(fuelDrumTileEntity.getPos()))
                 {
-                    this.drawFluidLabel(this.field_228858_b_.fontRenderer, fuelDrumTileEntity.getFluidTank(), matrixStack);
+                    this.drawFluidLabel(this.renderDispatcher.fontRenderer, fuelDrumTileEntity.getFluidTank(), matrixStack);
                     //this.drawFluidLabel(getFontRenderer(), te.getFluidTank(), (float) x + 0.5F, (float) y + 1.25F, (float) z + 0.5F);
                 }
             }
@@ -53,7 +53,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
 
         RenderSystem.pushMatrix();
         RenderSystem.enableDepthTest();
-        RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
+        RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
         RenderSystem.translated(0.5, 1.25, 0.5);
         RenderSystem.rotatef(-Minecraft.getInstance().player.rotationYaw, 0.0F, 1.0F, 0.0F);
         RenderSystem.rotatef(Minecraft.getInstance().player.rotationPitch, 1.0F, 0.0F, 0.0F);
@@ -67,7 +67,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
         double offsetWidth = width / 2.0;
 
         FluidStack stack = tank.getFluid();
-        TextureAtlasSprite sprite = Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
             float minU = sprite.getMinU();
@@ -87,29 +87,29 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             BufferBuilder buffer = tessellator.getBuffer();
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-            buffer.func_225582_a_(-offsetWidth - 1, -2.0, -0.01).func_227885_a_(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
-            buffer.func_225582_a_(-offsetWidth - 1, 5.0, -0.01).func_227885_a_(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
-            buffer.func_225582_a_(-offsetWidth + width + 1, 5.0, -0.01).func_227885_a_(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
-            buffer.func_225582_a_(-offsetWidth + width + 1, -2.0, -0.01).func_227885_a_(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth - 1, -2.0, -0.01).color(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth - 1, 5.0, -0.01).color(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + width + 1, 5.0, -0.01).color(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + width + 1, -2.0, -0.01).color(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
             tessellator.draw();
 
             RenderSystem.enableTexture();
             RenderSystem.translated(0, 0, -0.05);
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            buffer.func_225582_a_(-offsetWidth, -1.0, 0.0).func_225583_a_(minU, maxV).endVertex();
-            buffer.func_225582_a_(-offsetWidth, 4.0, 0.0).func_225583_a_(minU, minV).endVertex();
-            buffer.func_225582_a_(-offsetWidth + fuelWidth, 4.0, 0.0).func_225583_a_(maxU, minV).endVertex();
-            buffer.func_225582_a_(-offsetWidth + fuelWidth, -1.0, 0.0).func_225583_a_(maxU, maxV).endVertex();
+            buffer.pos(-offsetWidth, -1.0, 0.0).tex(minU, maxV).endVertex();
+            buffer.pos(-offsetWidth, 4.0, 0.0).tex(minU, minV).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth, 4.0, 0.0).tex(maxU, minV).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth, -1.0, 0.0).tex(maxU, maxV).endVertex();
             tessellator.draw();
 
             RenderSystem.disableTexture();
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-            buffer.func_225582_a_(-offsetWidth + fuelWidth, -1.0, 0.0).func_227885_a_(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
-            buffer.func_225582_a_(-offsetWidth + fuelWidth, 4.0, 0.0).func_227885_a_(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
-            buffer.func_225582_a_(-offsetWidth + fuelWidth + remainingWidth, 4.0, 0.0).func_227885_a_(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
-            buffer.func_225582_a_(-offsetWidth + fuelWidth + remainingWidth, -1.0, 0.0).func_227885_a_(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth, -1.0, 0.0).color(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth, 4.0, 0.0).color(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth + remainingWidth, 4.0, 0.0).color(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth + remainingWidth, -1.0, 0.0).color(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
             tessellator.draw();
         }
 

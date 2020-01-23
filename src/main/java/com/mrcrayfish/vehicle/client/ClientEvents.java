@@ -283,8 +283,8 @@ public class ClientEvents
         MatrixStack matrixStack = event.getMatrixStack();
         if (event.getHand() == Hand.OFF_HAND && fuelingHandOffset > -1)
         {
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(25F));
-            matrixStack.func_227861_a_(0, -0.35 - fuelingHandOffset, 0.2);
+            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(25F));
+            matrixStack.translate(0, -0.35 - fuelingHandOffset, 0.2);
         }
 
         if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof SprayCanItem)
@@ -306,8 +306,8 @@ public class ClientEvents
             }
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;
-            matrixStack.func_227861_a_(0, 0.35 + offset, -0.2);
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-25F));
+            matrixStack.translate(0, 0.35 + offset, -0.2);
+            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-25F));
             if (event.getHand() == Hand.MAIN_HAND)
             {
                 fuelingHandOffset = offset;
@@ -324,16 +324,16 @@ public class ClientEvents
             if(event.getHand() == Hand.MAIN_HAND && shouldRenderNozzle)
             {
                 if(event.getSwingProgress() > 0 && event.getSwingProgress() <= 0.25) return;
-                matrixStack.func_227860_a_();
+                matrixStack.push();
                 boolean mainHand = event.getHand() == Hand.MAIN_HAND;
                 HandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                 int handOffset = handSide == HandSide.RIGHT ? 1 : -1;
-                matrixStack.func_227861_a_(handOffset * 0.65, -0.52 + 0.25, -0.72);
-                matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(45F));
+                matrixStack.translate(handOffset * 0.65, -0.52 + 0.25, -0.72);
+                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(45F));
                 IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
                 int light = Minecraft.getInstance().getRenderManager().func_229085_a_(player, event.getPartialTicks());
-                RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_); //TODO check
-                matrixStack.func_227865_b_();
+                RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT); //TODO check
+                matrixStack.pop();
                 event.setCanceled(true);
             }
         }
@@ -369,31 +369,31 @@ public class ClientEvents
         PlayerEntity entity = event.getPlayer();
         if(entity.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
-            matrixStack.func_227860_a_();
+            matrixStack.push();
             {
                 if(event.getModelPlayer().isChild)
                 {
-                    matrixStack.func_227861_a_(0.0, 0.75, 0.0);
-                    matrixStack.func_227862_a_(0.5F, 0.5F, 0.5F);
+                    matrixStack.translate(0.0, 0.75, 0.0);
+                    matrixStack.scale(0.5F, 0.5F, 0.5F);
                 }
-                matrixStack.func_227860_a_();
+                matrixStack.push();
                 {
                     if(entity.isCrouching())
                     {
-                        matrixStack.func_227861_a_(0.0, 0.2, 0.0);
+                        matrixStack.translate(0.0, 0.2, 0.0);
                     }
                     //event.getModelPlayer().postRenderArm(0.0625F, entity.getPrimaryHand()); //TODO find out what this is
-                    matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(180F));
-                    matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
+                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(180F));
+                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
                     boolean leftHanded = entity.getPrimaryHand() == HandSide.LEFT;
-                    matrixStack.func_227861_a_((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
-                    matrixStack.func_227861_a_(0, -9 * 0.0625F, 5.75 * 0.0625F);
+                    matrixStack.translate((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
+                    matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
                     //TODO figure this out. Missing mappings is making this difficult
-                    //RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.field_229196_a_);
+                    //RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
                 }
-                matrixStack.func_227865_b_();
+                matrixStack.pop();
             }
-            matrixStack.func_227865_b_();
+            matrixStack.pop();
         }
     }
 
@@ -409,9 +409,9 @@ public class ClientEvents
             return;
         }
 
-        double dx = player.lastTickPosX + (player.func_226277_ct_() - player.lastTickPosX) * event.getPartialTicks();
-        double dy = player.lastTickPosY + (player.func_226278_cu_() - player.lastTickPosY) * event.getPartialTicks();
-        double dz = player.lastTickPosZ + (player.func_226281_cx_() - player.lastTickPosZ) * event.getPartialTicks();
+        double dx = player.lastTickPosX + (player.getPosX() - player.lastTickPosX) * event.getPartialTicks();
+        double dy = player.lastTickPosY + (player.getPosY() - player.lastTickPosY) * event.getPartialTicks();
+        double dz = player.lastTickPosZ + (player.getPosZ() - player.lastTickPosZ) * event.getPartialTicks();
 
         BlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof BlockFuelDrum)

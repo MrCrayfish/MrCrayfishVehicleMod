@@ -22,11 +22,11 @@ public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
     @Override
     public void render(CouchEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(0.0, 0.0625, 0.0);
-        //matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
+        matrixStack.push();
+        matrixStack.translate(0.0, 0.0625, 0.0);
+        //matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
         this.renderDamagedPart(entity, this.getBodyModel().getModel(), matrixStack, renderTypeBuffer, light);
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override

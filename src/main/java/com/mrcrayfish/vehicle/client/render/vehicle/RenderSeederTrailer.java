@@ -43,31 +43,31 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
                 ItemStack stack = inventory.getStackInSlot(i);
                 if(!stack.isEmpty())
                 {
-                    matrixStack.func_227860_a_();
+                    matrixStack.push();
                     {
-                        matrixStack.func_227861_a_(-10.5 * 0.0625, -3 * 0.0625, -2 * 0.0625);
-                        matrixStack.func_227862_a_(0.45F, 0.45F, 0.45F);
+                        matrixStack.translate(-10.5 * 0.0625, -3 * 0.0625, -2 * 0.0625);
+                        matrixStack.scale(0.45F, 0.45F, 0.45F);
 
                         int count = Math.max(1, stack.getCount() / 16);
                         int width = 4;
                         int maxLayerCount = 8;
                         for(int j = 0; j < count; j++)
                         {
-                            matrixStack.func_227860_a_();
+                            matrixStack.push();
                             {
                                 int layerIndex = index % maxLayerCount;
                                 //double yOffset = Math.sin(Math.PI * (((layerIndex + 0.5) % (double) width) / (double) width)) * 0.1;
                                 //GlStateManager.translate(0, yOffset * ((double) layer / inventory.getSizeInventory()), 0);
-                                matrixStack.func_227861_a_(0, layer * 0.05, 0);
-                                matrixStack.func_227861_a_((layerIndex % width) * 0.75, 0, (float) (layerIndex / width) * 0.5);
-                                matrixStack.func_227861_a_(0.7 * (layer % 2), 0, 0);
-                                matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(90F));
-                                matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_(47F * index));
-                                matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(2F * layerIndex));
-                                matrixStack.func_227861_a_(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                                Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.field_229196_a_, matrixStack, renderTypeBuffer);
+                                matrixStack.translate(0, layer * 0.05, 0);
+                                matrixStack.translate((layerIndex % width) * 0.75, 0, (float) (layerIndex / width) * 0.5);
+                                matrixStack.translate(0.7 * (layer % 2), 0, 0);
+                                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
+                                matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(47F * index));
+                                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(2F * layerIndex));
+                                matrixStack.translate(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
+                                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.DEFAULT_LIGHT, matrixStack, renderTypeBuffer);
                             }
-                            matrixStack.func_227865_b_();
+                            matrixStack.pop();
                             index++;
                             if(index % maxLayerCount == 0)
                             {
@@ -75,7 +75,7 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
                             }
                         }
                     }
-                    matrixStack.func_227865_b_();
+                    matrixStack.pop();
                 }
             }
         }
@@ -91,12 +91,12 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
 
     private void renderSpike(TrailerEntity trailer, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, double offsetX, float partialTicks, int light)
     {
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(offsetX, -0.65, 0.0);
+        matrixStack.push();
+        matrixStack.translate(offsetX, -0.65, 0.0);
         float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
-        matrixStack.func_227862_a_(0.75F, 0.75F, 0.75F);
-        RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
-        matrixStack.func_227865_b_();
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
+        matrixStack.scale(0.75F, 0.75F, 0.75F);
+        RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        matrixStack.pop();
     }
 }

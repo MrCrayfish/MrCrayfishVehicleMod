@@ -31,10 +31,10 @@ public class RenderUtil
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.func_225582_a_(x, y + height, 0).func_225583_a_(((float) textureX * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
-        bufferbuilder.func_225582_a_(x + width, y + height, 0).func_225583_a_(((float) (textureX + width) * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
-        bufferbuilder.func_225582_a_(x + width, y, 0).func_225583_a_(((float) (textureX + width) * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
-        bufferbuilder.func_225582_a_(x + 0, y, 0).func_225583_a_(((float) textureX * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
+        bufferbuilder.pos(x, y + height, 0).tex(((float) textureX * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.pos(x + width, y + height, 0).tex(((float) (textureX + width) * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.pos(x + width, y, 0).tex(((float) (textureX + width) * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
+        bufferbuilder.pos(x + 0, y, 0).tex(((float) textureX * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
         tessellator.draw();
     }
 
@@ -59,10 +59,10 @@ public class RenderUtil
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.func_225582_a_((double)right, (double)top, 0).func_227885_a_(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
-        bufferbuilder.func_225582_a_((double)left, (double)top, 0).func_227885_a_(greenStart, blueStart, alphaStart, redStart).endVertex();
-        bufferbuilder.func_225582_a_((double)left, (double)bottom, 0).func_227885_a_(greenStart, blueStart, alphaStart, redStart).endVertex();
-        bufferbuilder.func_225582_a_((double)right, (double)bottom, 0).func_227885_a_(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
+        bufferbuilder.pos((double)right, (double)top, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
+        bufferbuilder.pos((double)left, (double)top, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
+        bufferbuilder.pos((double)left, (double)bottom, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
+        bufferbuilder.pos((double)right, (double)bottom, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
         tessellator.draw();
         RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();
@@ -73,8 +73,8 @@ public class RenderUtil
     public static void scissor(int x, int y, int width, int height) //TODO might need fixing. I believe I rewrote this in a another mod
     {
         Minecraft mc = Minecraft.getInstance();
-        int scale = (int) mc.func_228018_at_().getGuiScaleFactor();
-        GL11.glScissor(x * scale, mc.func_228018_at_().getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
+        int scale = (int) mc.getMainWindow().getGuiScaleFactor();
+        GL11.glScissor(x * scale, mc.getMainWindow().getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
     }
 
     public static IBakedModel getModel(ItemStack stack)
@@ -84,36 +84,36 @@ public class RenderUtil
 
     public static void renderColoredModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int color, int lightTexture, int overlayTexture)
     {
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
-        matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
+        matrixStack.translate(-0.5, -0.5, -0.5);
         if(!model.isBuiltInRenderer())
         {
             IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.func_228783_h_());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     public static void renderDamagedVehicleModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, int stage, int color, int lightTexture, int overlayTexture)
     {
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
-        matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
+        matrixStack.translate(-0.5, -0.5, -0.5);
         if(!model.isBuiltInRenderer())
         {
             Minecraft mc = Minecraft.getInstance();
-            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.func_228019_au_().func_228489_c_().getBuffer(ModelBakery.field_229320_k_.get(stage)), matrixStack.func_227866_c_());
+            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.func_228019_au_().func_228489_c_().getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(stage)), matrixStack.getLast());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int lightTexture, int overlayTexture, IBakedModel model)
     {
         if(!stack.isEmpty())
         {
-            matrixStack.func_227860_a_();
+            matrixStack.push();
             boolean isGui = transformType == ItemCameraTransforms.TransformType.GUI;
             boolean tridentFlag = isGui || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
             if(stack.getItem() == Items.TRIDENT && tridentFlag)
@@ -122,7 +122,7 @@ public class RenderUtil
             }
 
             net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
-            matrixStack.func_227861_a_(-0.5, -0.5, -0.5);
+            matrixStack.translate(-0.5, -0.5, -0.5);
             if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
             {
                 RenderType renderType = RenderTypeLookup.func_228389_a_(stack);
@@ -135,10 +135,10 @@ public class RenderUtil
             }
             else
             {
-                stack.getItem().getTileEntityItemStackRenderer().func_228364_a_(stack, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
+                stack.getItem().getItemStackTileEntityRenderer().render(stack, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
             }
 
-            matrixStack.func_227865_b_();
+            matrixStack.pop();
         }
     }
 
@@ -157,7 +157,7 @@ public class RenderUtil
     private static void renderQuads(MatrixStack matrixStack, IVertexBuilder vertexBuilder, List<BakedQuad> quads, ItemStack stack, int color, int lightTexture, int overlayTexture)
     {
         boolean useItemColor = !stack.isEmpty() && color != -1;
-        MatrixStack.Entry entry = matrixStack.func_227866_c_();
+        MatrixStack.Entry entry = matrixStack.getLast();
         for(BakedQuad quad : quads)
         {
             int tintColor = 0xFFFFFF;
@@ -175,7 +175,7 @@ public class RenderUtil
             float red = (float) (tintColor >> 16 & 255) / 255.0F;
             float green = (float) (tintColor >> 8 & 255) / 255.0F;
             float blue = (float) (tintColor & 255) / 255.0F;
-            vertexBuilder.func_227889_a_(entry, quad, red, green, blue, lightTexture, overlayTexture);
+            vertexBuilder.addVertexData(entry, quad, red, green, blue, lightTexture, overlayTexture);
         }
     }
 }

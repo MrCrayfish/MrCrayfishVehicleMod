@@ -142,7 +142,7 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
             {
                 if(growable.canUseBonemeal(world, rand, pos, state))
                 {
-                    growable.func_225535_a_((ServerWorld) world, rand, pos, state);
+                    growable.grow((ServerWorld) world, rand, pos, state);
                     world.playEvent(2005, pos, 0);
                     return true;
                 }

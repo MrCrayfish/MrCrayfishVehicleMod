@@ -24,7 +24,7 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     @Override
     public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(90F));
+        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
         this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
@@ -32,12 +32,12 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     public void applyPlayerRender(BathEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         double offsetY = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset() - 0.5;//TODO make this last variable a variable in entity plane
-        matrixStack.func_227861_a_(0.0, offsetY, 0.0);
+        matrixStack.translate(0.0, offsetY, 0.0);
         float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
         float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-bodyPitch));
-        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(bodyRoll));
-        matrixStack.func_227861_a_(0.0, -offsetY, 0.0);
+        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-bodyPitch));
+        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(bodyRoll));
+        matrixStack.translate(0.0, -offsetY, 0.0);
     }
 
     @Override

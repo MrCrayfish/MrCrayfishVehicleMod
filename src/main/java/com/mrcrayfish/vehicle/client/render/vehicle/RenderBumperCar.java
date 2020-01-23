@@ -30,20 +30,20 @@ public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
         this.renderDamagedPart(entity, SpecialModel.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(0, 0.2, 0);
-        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0, -0.02, 0);
-        matrixStack.func_227862_a_(0.9F, 0.9F, 0.9F);
+        matrixStack.push();
+        matrixStack.translate(0, 0.2, 0);
+        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-45F));
+        matrixStack.translate(0, -0.02, 0);
+        matrixStack.scale(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override

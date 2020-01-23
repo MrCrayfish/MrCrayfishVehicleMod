@@ -62,7 +62,7 @@ public class MessageAttachChest implements IMessage<MessageAttachChest>
                             if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
                             {
                                 attachableChest.attachChest(stack);
-                                world.playSound(null, targetEntity.func_226277_ct_(), targetEntity.func_226278_cu_(), targetEntity.func_226281_cx_(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                world.playSound(null, targetEntity.getPosX(), targetEntity.getPosY(), targetEntity.getPosZ(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                             }
                         }
                     }

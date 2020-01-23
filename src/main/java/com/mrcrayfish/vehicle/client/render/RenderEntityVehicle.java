@@ -31,7 +31,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
     }
 
     @Override
-    public void func_225623_a_(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(!entity.isAlive())
             return;
@@ -39,12 +39,12 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
         if(entity.getRidingEntity() instanceof EntityJack)
             return;
 
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         wrapper.applyPreRotations(entity, matrixStack, partialTicks);
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
+        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
         this.setupBreakAnimation(entity, matrixStack, partialTicks);
         wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
 
         EntityRaytracer.renderRaytraceElements(entity, matrixStack, entityYaw);
     }
@@ -54,7 +54,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         if(timeSinceHit > 0.0F)
         {
-            matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(MathHelper.sin(timeSinceHit) * timeSinceHit));
+            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(MathHelper.sin(timeSinceHit) * timeSinceHit));
         }
     }
 }

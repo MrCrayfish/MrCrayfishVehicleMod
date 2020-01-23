@@ -11,14 +11,14 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 
-version = "0.42.4-1.15.1"
+version = "0.42.4-1.15.2"
 group = "com.mrcrayfish"
 archivesBaseName = "vehicle-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20190719-1.14.3'
+    mappings channel: 'snapshot', version: '20200122-1.15.1'
 
     runs {
         client {
@@ -65,8 +65,8 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.15.1-30.0.41'
-    compile 'obfuscate:Obfuscate-0.3.4:1.15.1:deobf'
+    minecraft 'net.minecraftforge:forge:1.15.2-31.0.0'
+    compile 'obfuscate:Obfuscate-0.3.4:1.15.2:deobf'
     compileOnly 'controllable:Controllable-1.15:0.7.1:deobf'
 }
 

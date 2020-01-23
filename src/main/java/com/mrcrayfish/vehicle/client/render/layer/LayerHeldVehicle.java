@@ -53,23 +53,23 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
             }
             if(this.cachedEntity != null && this.cachedType != null)
             {
-                matrixStack.func_227860_a_();
+                matrixStack.push();
                 {
                     HeldVehicleEvents.AnimationCounter counter = HeldVehicleEvents.idToCounter.get(playerEntity.getUniqueID());
                     if(counter != null)
                     {
                         float width = this.cachedEntity.getWidth() / 2;
-                        matrixStack.func_227861_a_(0F, 1F - 1F * counter.getProgress(partialTicks), -0.5F * Math.sin(Math.PI * counter.getProgress(partialTicks)) - width * (1.0F - counter.getProgress(partialTicks)));
+                        matrixStack.translate(0F, 1F - 1F * counter.getProgress(partialTicks), -0.5F * Math.sin(Math.PI * counter.getProgress(partialTicks)) - width * (1.0F - counter.getProgress(partialTicks)));
                     }
                     Vec3d heldOffset = this.cachedEntity.getProperties().getHeldOffset();
-                    matrixStack.func_227861_a_(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
-                    matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(180F));
-                    matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(-90F));
-                    matrixStack.func_227861_a_(0F, playerEntity.isCrouching() ? 0.3125F : 0.5625F, 0F);
+                    matrixStack.translate(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
+                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(180F));
+                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(-90F));
+                    matrixStack.translate(0F, playerEntity.isCrouching() ? 0.3125F : 0.5625F, 0F);
                     EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getRenderManager().renderers.get(this.cachedType);
-                    render.func_225623_a_(this.cachedEntity, 0.0F, 0.0F, matrixStack, renderTypeBuffer, i);
+                    render.render(this.cachedEntity, 0.0F, 0.0F, matrixStack, renderTypeBuffer, i);
                 }
-                matrixStack.func_227865_b_();
+                matrixStack.pop();
             }
         }
         else

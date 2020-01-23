@@ -42,7 +42,7 @@ public class FluidUtils
         }
         else
         {
-            TextureAtlasSprite sprite = Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
             if(sprite != null)
             {
                 long totalRed = 0;
@@ -92,7 +92,7 @@ public class FluidUtils
         if(fluid == null || fluid.isEmpty())
             return;
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().func_228015_a_(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
             float minU = sprite.getMinU();
@@ -122,10 +122,10 @@ public class FluidUtils
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buffer.func_225582_a_(x, y + height, 0).func_225583_a_(minU, maxV).endVertex();
-        buffer.func_225582_a_(x + width, y + height, 0).func_225583_a_(maxU, maxV).endVertex();
-        buffer.func_225582_a_(x + width, y, 0).func_225583_a_(maxU, minV).endVertex();
-        buffer.func_225582_a_(x, y, 0).func_225583_a_(minU, minV).endVertex();
+        buffer.pos(x, y + height, 0).tex(minU, maxV).endVertex();
+        buffer.pos(x + width, y + height, 0).tex(maxU, maxV).endVertex();
+        buffer.pos(x + width, y, 0).tex(maxU, minV).endVertex();
+        buffer.pos(x, y, 0).tex(minU, minV).endVertex();
         tessellator.draw();
     }
 }

@@ -91,12 +91,12 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         super.addPassenger(passenger);
         if(this.getPassengers().contains(passenger))
         {
-            passenger.prevPosX = this.func_226277_ct_();
-            passenger.prevPosY = this.func_226278_cu_();
-            passenger.prevPosZ = this.func_226281_cx_();
-            passenger.lastTickPosX = this.func_226277_ct_();
-            passenger.lastTickPosY = this.func_226278_cu_();
-            passenger.lastTickPosZ = this.func_226281_cx_();
+            passenger.prevPosX = this.getPosX();
+            passenger.prevPosY = this.getPosY();
+            passenger.prevPosZ = this.getPosZ();
+            passenger.lastTickPosX = this.getPosX();
+            passenger.lastTickPosY = this.getPosY();
+            passenger.lastTickPosZ = this.getPosZ();
         }
     }
 
@@ -113,7 +113,7 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         {
             VehicleEntity vehicle = (VehicleEntity) passenger;
             Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
-            vehicle.setPosition(this.func_226277_ct_() - heldOffset.z * 0.0625, this.func_226278_cu_() - heldOffset.y * 0.0625 - 2 * 0.0625, this.func_226281_cx_() - heldOffset.x * 0.0625);
+            vehicle.setPosition(this.getPosX() - heldOffset.z * 0.0625, this.getPosY() - heldOffset.y * 0.0625 - 2 * 0.0625, this.getPosZ() - heldOffset.x * 0.0625);
         }
     }
 

@@ -24,5 +24,5 @@ public class JackRenderer extends EntityRenderer<EntityJack>
     }
 
     @Override
-    public void func_225623_a_(EntityJack jack, float p_225623_2_, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light) {}
+    public void render(EntityJack jack, float p_225623_2_, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light) {}
 }

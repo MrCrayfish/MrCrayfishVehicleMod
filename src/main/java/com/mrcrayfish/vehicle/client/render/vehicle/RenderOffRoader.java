@@ -32,22 +32,22 @@ public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
         this.renderDamagedPart(entity, SpecialModel.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.func_227860_a_();
+        matrixStack.push();
             // Positions the steering wheel in the correct position
-        matrixStack.func_227861_a_(-0.3125, 0.35, 0.2);
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0, -0.02, 0);
-        matrixStack.func_227862_a_(0.75F, 0.75F, 0.75F);
+        matrixStack.translate(-0.3125, 0.35, 0.2);
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.translate(0, -0.02, 0);
+        matrixStack.scale(0.75F, 0.75F, 0.75F);
 
         // Rotates the steering wheel based on the wheel angle
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override

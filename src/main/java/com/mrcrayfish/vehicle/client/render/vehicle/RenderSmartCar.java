@@ -29,21 +29,21 @@ public class RenderSmartCar extends AbstractRenderVehicle<SmartCarEntity>
         this.renderDamagedPart(entity, SpecialModel.SMART_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         {
-            matrixStack.func_227861_a_(0, 0.2, 0.3);
-            matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-67.5F));
-            matrixStack.func_227861_a_(0, -0.02, 0);
-            matrixStack.func_227862_a_(0.9F, 0.9F, 0.9F);
+            matrixStack.translate(0, 0.2, 0.3);
+            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-67.5F));
+            matrixStack.translate(0, -0.02, 0);
+            matrixStack.scale(0.9F, 0.9F, 0.9F);
 
             float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-            RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
+            RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override

@@ -142,7 +142,7 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
         Pair<AxisAlignedBB, Direction> hit = this.getBox(world, pos, state, player, hand, result.getFace(), result.getHitVec(), pipe);

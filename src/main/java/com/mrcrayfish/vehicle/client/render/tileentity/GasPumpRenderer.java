@@ -39,7 +39,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     }
 
     @Override
-    public void func_225616_a_(GasPumpTileEntity gasPump, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
+    public void render(GasPumpTileEntity gasPump, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
         BlockPos blockPos = gasPump.getPos();
         BlockState state = gasPump.getWorld().getBlockState(blockPos);
@@ -75,16 +75,16 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
         Vec3d fuelRot = Vec3d.fromPitchYaw((float) position.getRotX(), (float) position.getRotY());
         fuelRot = fuelRot.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)).normalize();*/
        
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         {
             HermiteInterpolator.Point destPoint;
             if(gasPump.getFuelingEntity() != null)
             {
                 PlayerEntity entity = gasPump.getFuelingEntity();
                 double side = entity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
-                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.func_226277_ct_() - entity.prevPosX) * partialTicks);
-                double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.func_226278_cu_() - entity.prevPosY) * partialTicks);
-                double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.func_226281_cx_() - entity.prevPosZ) * partialTicks);
+                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * partialTicks);
+                double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * partialTicks);
+                double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * partialTicks);
                 float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
                 Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
                 Vec3d hoseVec = new Vec3d(-0.35 * side, 0.01, 0.0625);
@@ -122,7 +122,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             ItemStack stack = new ItemStack(Blocks.BLACK_CONCRETE);
             IBakedModel model = RenderUtil.getModel(stack);
 
-            matrixStack.func_227860_a_();
+            matrixStack.push();
             {
                 int steps = 100;
                 for(int i = 0; i < spline.getSize() - 1; i++)
@@ -131,69 +131,69 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     {
                         float percent = j / (float) steps;
                         HermiteInterpolator.Result r = spline.get(i, percent);
-                        matrixStack.func_227860_a_();
-                        matrixStack.func_227861_a_(r.getPoint().x, r.getPoint().y, r.getPoint().z);
-                        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z))));
-                        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) Math.toDegrees(Math.asin(-r.getDir().normalize().y))));
-                        matrixStack.func_227862_a_(0.075F, 0.075F, 0.075F);
-                        Minecraft.getInstance().getItemRenderer().func_229110_a_(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.field_229196_a_, matrixStack, renderTypeBuffer);
-                        matrixStack.func_227865_b_();
+                        matrixStack.push();
+                        matrixStack.translate(r.getPoint().x, r.getPoint().y, r.getPoint().z);
+                        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z))));
+                        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) Math.toDegrees(Math.asin(-r.getDir().normalize().y))));
+                        matrixStack.scale(0.075F, 0.075F, 0.075F);
+                        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.DEFAULT_LIGHT, matrixStack, renderTypeBuffer);
+                        matrixStack.pop();
                     }
                 }
             }
-            matrixStack.func_227865_b_();
+            matrixStack.pop();
 
             if(gasPump.getFuelingEntity() == null)
             {
-                matrixStack.func_227860_a_();
+                matrixStack.push();
                 {
                     double[] destPos = CollisionHelper.fixRotation(facing, 0.29, 1.06, 0.29, 1.06);
-                    matrixStack.func_227861_a_(destPos[0], 0.5, destPos[1]);
-                    matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
-                    matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
-                    matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(90F));
-                    matrixStack.func_227862_a_(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
+                    matrixStack.translate(destPos[0], 0.5, destPos[1]);
+                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
+                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
+                    matrixStack.scale(0.8F, 0.8F, 0.8F);
+                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
                 }
-                matrixStack.func_227865_b_();
+                matrixStack.pop();
             }
 
-            matrixStack.func_227860_a_();
+            matrixStack.push();
             {
-                matrixStack.func_227861_a_(0.5, 0, 0.5);
-                matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
-                matrixStack.func_227861_a_(-0.5, 0, -0.5);
-                matrixStack.func_227861_a_(0.5, 11 * 0.0625, 3 * 0.0625);
-                matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
+                matrixStack.translate(0.5, 0, 0.5);
+                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
+                matrixStack.translate(-0.5, 0, -0.5);
+                matrixStack.translate(0.5, 11 * 0.0625, 3 * 0.0625);
+                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
 
-                matrixStack.func_227861_a_(0F, 0F, 0.01F);
+                matrixStack.translate(0F, 0F, 0.01F);
 
-                matrixStack.func_227860_a_();
+                matrixStack.push();
                 {
-                    matrixStack.func_227862_a_(0.015F, -0.015F, 0.015F);
-                    FontRenderer fontRenderer = this.field_228858_b_.fontRenderer;
+                    matrixStack.scale(0.015F, -0.015F, 0.015F);
+                    FontRenderer fontRenderer = this.renderDispatcher.fontRenderer;
                     if(gasPump.getTank() != null)
                     {
                         int amount = (int) Math.ceil(100 * (gasPump.getTank().getFluidAmount() / (double) gasPump.getTank().getCapacity()));
                         String percent = String.format("%d%%", amount);
                         int width = fontRenderer.getStringWidth(percent);
-                        fontRenderer.func_228079_a_(percent, -width / 2, 10, 16777215, false, matrixStack.func_227866_c_().func_227870_a_(), renderTypeBuffer, false, 0, light);
+                        fontRenderer.renderString(percent, -width / 2, 10, 16777215, false, matrixStack.getLast().getPositionMatrix(), renderTypeBuffer, false, 0, light);
                     }
                 }
-                matrixStack.func_227865_b_();
+                matrixStack.pop();
 
-                matrixStack.func_227860_a_();
+                matrixStack.push();
                 {
-                    matrixStack.func_227861_a_(0, 1 * 0.0625, 0);
-                    matrixStack.func_227862_a_(0.01F, -0.01F, 0.01F);
-                    FontRenderer fontRenderer = this.field_228858_b_.fontRenderer;
+                    matrixStack.translate(0, 1 * 0.0625, 0);
+                    matrixStack.scale(0.01F, -0.01F, 0.01F);
+                    FontRenderer fontRenderer = this.renderDispatcher.fontRenderer;
                     int width = fontRenderer.getStringWidth("Fuelium");
-                    fontRenderer.func_228079_a_("Fuelium", -width / 2, 10, 9761325, false, matrixStack.func_227866_c_().func_227870_a_(), renderTypeBuffer, false, 0, light);
+                    fontRenderer.renderString("Fuelium", -width / 2, 10, 9761325, false, matrixStack.getLast().getPositionMatrix(), renderTypeBuffer, false, 0, light);
                 }
-                matrixStack.func_227865_b_();
+                matrixStack.pop();
             }
-            matrixStack.func_227865_b_();
+            matrixStack.pop();
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 }

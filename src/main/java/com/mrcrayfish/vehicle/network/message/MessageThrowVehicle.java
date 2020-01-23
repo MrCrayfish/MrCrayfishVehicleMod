@@ -70,9 +70,9 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
 
                     //Gets the clicked vec if it was a right click block event
                     Vec3d lookVec = player.getLookVec();
-                    double posX = player.func_226277_ct_();
-                    double posY = player.func_226278_cu_() + player.getEyeHeight();
-                    double posZ = player.func_226281_cx_();
+                    double posX = player.getPosX();
+                    double posY = player.getPosY() + player.getEyeHeight();
+                    double posZ = player.getPosZ();
                     entity.setPositionAndRotation(posX + heldOffset.x * 0.0625D, posY + heldOffset.y * 0.0625D, posZ + heldOffset.z * 0.0625D, rotation, 0F);
 
                     Vec3d motion = entity.getMotion();
@@ -80,7 +80,7 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
                     entity.fallDistance = 0.0F;
 
                     player.world.addEntity(entity);
-                    player.world.playSound(null, player.func_226277_ct_(), player.func_226278_cu_(), player.func_226281_cx_(), ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
             }
         });

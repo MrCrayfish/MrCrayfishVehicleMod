@@ -440,14 +440,14 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
 
         MatrixStack matrixStack = new MatrixStack();
-        matrixStack.func_227861_a_(0.0, 0.0, 1000.0);
+        matrixStack.translate(0.0, 0.0, 1000.0);
 
         float scale = this.prevVehicleScale + (this.vehicleScale - this.prevVehicleScale) * partialTicks;
-        matrixStack.func_227862_a_(scale, scale, scale);
+        matrixStack.scale(scale, scale, scale);
         Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-5F);
         Quaternion quaternion1 = Axis.POSITIVE_Y.func_229187_a_(-(this.minecraft.player.ticksExisted + partialTicks));
         quaternion.multiply(quaternion1);
-        matrixStack.func_227863_a_(quaternion);
+        matrixStack.rotate(quaternion);
 
         int vehicleIndex = this.transitioning ? prevCurrentVehicle : currentVehicle;
         VehicleProperties properties = VehicleProperties.getProperties(this.cachedVehicle[vehicleIndex].getType());
@@ -457,11 +457,11 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             position = properties.getDisplayPosition();
         }
 
-        matrixStack.func_227862_a_((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-        matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
-        matrixStack.func_227861_a_(position.getX(), position.getY(), position.getZ());
+        matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
+        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
+        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+        matrixStack.translate(position.getX(), position.getY(), position.getZ());
 
         EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
         renderManager.setRenderShadow(false);

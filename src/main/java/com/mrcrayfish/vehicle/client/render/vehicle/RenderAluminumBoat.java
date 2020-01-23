@@ -23,11 +23,11 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
 
     public RenderAluminumBoat()
     {
-        this.noWater = (new ModelRenderer(new Model(resource -> RenderType.func_228643_e_()){
+        this.noWater = (new ModelRenderer(new Model(resource -> RenderType.waterMask()){
             @Override
-            public void func_225598_a_(MatrixStack matrixStack, IVertexBuilder iVertexBuilder, int i, int i1, float v, float v1, float v2, float v3) {}
+            public void render(MatrixStack p_225598_1_, IVertexBuilder p_225598_2_, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float p_225598_8_) {}
         }, 0, 0)).setTextureSize(128, 64);
-        this.noWater.func_228301_a_(-15F, -6F, -21F, 30, 8, 35, 0.0F);
+        this.noWater.addBox(-15F, -6F, -21F, 30, 8, 35, 0.0F);
     }
 
     @Override
@@ -40,8 +40,8 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
     public void render(AluminumBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.func_228651_i_());
-        this.noWater.func_228308_a_(matrixStack, buffer, light, OverlayTexture.field_229196_a_);
+        IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.waterMask());
+        this.noWater.render(matrixStack, buffer, light, OverlayTexture.DEFAULT_LIGHT);
     }
 
     @Override
@@ -67,41 +67,11 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
             offsetZ += (index / 2F) * 1.2F;
         }
 
-        matrixStack.func_227861_a_(offsetX, offsetY, offsetZ);
+        matrixStack.translate(offsetX, offsetY, offsetZ);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-        matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
-        matrixStack.func_227861_a_(-offsetX, -offsetY, -offsetZ);
+        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
+        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+        matrixStack.translate(-offsetX, -offsetY, -offsetZ);
     }
-
-    //TODO fix this
-    /*@Override
-    public void renderMultipass(AluminumBoatEntity entity, double x, double y, double z, float currentYaw, float partialTicks)
-    {
-        GlStateManager.pushMatrix();
-        {
-            GlStateManager.translate(x, y, z);
-            GlStateManager.rotate(-currentYaw, 0, 1, 0);
-            GlStateManager.scale(1.1, 1.1, 1.1);
-            GlStateManager.translate(0, 0.5, 0.2);
-
-            float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * -15F, 0, 0, 1);
-            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-
-            Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            GlStateManager.colorMask(false, false, false, false);
-            this.noWater.render(0.0625F);
-            GlStateManager.colorMask(true, true, true, true);
-        }
-        GlStateManager.popMatrix();
-    }
-
-    @Override
-    public boolean isMultipass()
-    {
-        return true;
-    }*/
 }

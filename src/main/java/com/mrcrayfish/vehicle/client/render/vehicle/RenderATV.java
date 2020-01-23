@@ -37,19 +37,19 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Handle bar transformations
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(0.0, 0.3375, 0.25);
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0.0, -0.025, 0);
+        matrixStack.push();
+        matrixStack.translate(0.0, 0.3375, 0.25);
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.translate(0.0, -0.025, 0);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.field_229196_a_);
+        RenderUtil.renderColoredModel(SpecialModel.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override

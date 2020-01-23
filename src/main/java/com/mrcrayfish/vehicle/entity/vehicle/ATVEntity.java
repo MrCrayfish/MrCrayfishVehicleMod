@@ -89,7 +89,7 @@ public class ATVEntity extends LandVehicleEntity implements IEntityRaytraceable
             }
 
             Vec3d vec3d = (new Vec3d((double) offset, 0.0D, 0.0D)).rotateYaw(-(this.rotationYaw - additionalYaw) * 0.017453292F - ((float) Math.PI / 2F));
-            passenger.setPosition(this.func_226277_ct_() + vec3d.x, this.func_226278_cu_() + (double) yOffset, this.func_226281_cx_() + vec3d.z);
+            passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double) yOffset, this.getPosZ() + vec3d.z);
             passenger.rotationYaw -= deltaYaw;
             passenger.setRotationYawHead(passenger.rotationYaw);
             this.applyYawToEntity(passenger);

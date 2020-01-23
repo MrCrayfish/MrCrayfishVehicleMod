@@ -551,15 +551,15 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     double wheelX = this.wheelPositions[i * 3];
                     double wheelY = this.wheelPositions[i * 3 + 1];
                     double wheelZ = this.wheelPositions[i * 3 + 2];
-                    int x = MathHelper.floor(this.func_226277_ct_() + wheelX);
-                    int y = MathHelper.floor(this.func_226278_cu_() + wheelY - 0.2D);
-                    int z = MathHelper.floor(this.func_226281_cx_() + wheelZ);
+                    int x = MathHelper.floor(this.getPosX() + wheelX);
+                    int y = MathHelper.floor(this.getPosY() + wheelY - 0.2D);
+                    int z = MathHelper.floor(this.getPosZ() + wheelZ);
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = this.world.getBlockState(pos);
                     if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
                     {
                         Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F);
-                        this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), this.func_226277_ct_() + wheelX, this.func_226278_cu_() + wheelY, this.func_226281_cx_() + wheelZ, dirVec.x, dirVec.y, dirVec.z);
+                        this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), this.getPosX() + wheelX, this.getPosY() + wheelY, this.getPosZ() + wheelZ, dirVec.x, dirVec.y, dirVec.z);
                     }
                 }
             }
@@ -568,7 +568,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         if(this.shouldShowEngineSmoke()&& this.canDrive() && this.ticksExisted % 2 == 0)
         {
             Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
-            this.world.addParticle(ParticleTypes.SMOKE, this.func_226277_ct_() + smokePosition.x, this.func_226278_cu_() + smokePosition.y, this.func_226281_cx_() + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
+            this.world.addParticle(ParticleTypes.SMOKE, this.getPosX() + smokePosition.x, this.getPosY() + smokePosition.y, this.getPosZ() + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
         }
     }
 
@@ -777,7 +777,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public double getKilometersPreHour()
     {
-        return Math.sqrt(Math.pow(this.func_226277_ct_() - this.prevPosX, 2) + Math.pow(this.func_226278_cu_() - this.prevPosY, 2) + Math.pow(this.func_226281_cx_() - this.prevPosZ, 2)) * 20;
+        return Math.sqrt(Math.pow(this.getPosX() - this.prevPosX, 2) + Math.pow(this.getPosY() - this.prevPosY, 2) + Math.pow(this.getPosZ() - this.prevPosZ, 2)) * 20;
     }
 
     public void setTurnDirection(TurnDirection turnDirection)
@@ -1186,7 +1186,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 }
                 else
                 {
-                    this.world.playSound(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 0.8F);
+                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 0.8F);
                     this.setWheels(false);
                     this.setWheelColor(-1);
                 }
@@ -1211,7 +1211,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             ItemStack engine = ItemLookup.getEngine(this);
             if(this.getEngineType() != EngineType.NONE && !engine.isEmpty())
             {
-                InventoryUtil.spawnItemStack(this.world, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), engine);
+                InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), engine);
             }
 
             // Spawns the key and removes the associated vehicle uuid
@@ -1219,14 +1219,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(!key.isEmpty())
             {
                 CommonUtils.getOrCreateStackTag(key).remove("VehicleId");
-                InventoryUtil.spawnItemStack(this.world, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), key);
+                InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), key);
             }
 
             // Spawns wheels if the vehicle has any
             ItemStack wheel = ItemLookup.getWheel(this);
             if(this.canChangeWheels() && !wheel.isEmpty())
             {
-                InventoryUtil.spawnItemStack(this.world, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), wheel);
+                InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), wheel);
             }
         }
     }
@@ -1288,9 +1288,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 double wheelX = this.wheelPositions[i * 3];
                 double wheelY = this.wheelPositions[i * 3 + 1];
                 double wheelZ = this.wheelPositions[i * 3 + 2];
-                int x = MathHelper.floor(this.func_226277_ct_() + wheelX);
-                int y = MathHelper.floor(this.func_226278_cu_() + wheelY - 0.2D);
-                int z = MathHelper.floor(this.func_226281_cx_() + wheelZ);
+                int x = MathHelper.floor(this.getPosX() + wheelX);
+                int y = MathHelper.floor(this.getPosY() + wheelY - 0.2D);
+                int z = MathHelper.floor(this.getPosZ() + wheelZ);
                 BlockPos pos = new BlockPos(x, y, z);
                 BlockState state = this.world.getBlockState(pos);
                 if(state.getMaterial() != Material.AIR)
@@ -1331,9 +1331,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     double wheelX = this.wheelPositions[i * 3];
                     double wheelY = this.wheelPositions[i * 3 + 1];
                     double wheelZ = this.wheelPositions[i * 3 + 2];
-                    int x = MathHelper.floor(this.func_226277_ct_() + wheelX);
-                    int y = MathHelper.floor(this.func_226278_cu_() + wheelY - 0.2D);
-                    int z = MathHelper.floor(this.func_226281_cx_() + wheelZ);
+                    int x = MathHelper.floor(this.getPosX() + wheelX);
+                    int y = MathHelper.floor(this.getPosY() + wheelY - 0.2D);
+                    int z = MathHelper.floor(this.getPosZ() + wheelZ);
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = this.world.getBlockState(pos);
                     if(!state.getCollisionShape(this.world, pos).isEmpty())

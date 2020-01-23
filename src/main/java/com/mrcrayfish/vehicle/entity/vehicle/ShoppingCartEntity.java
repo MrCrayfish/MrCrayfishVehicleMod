@@ -33,15 +33,15 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
         if(this.pusher != null)
         {
             this.prevRotationYaw = this.rotationYaw;
-            this.prevPosX = this.func_226277_ct_();
-            this.prevPosY = this.func_226278_cu_();
-            this.prevPosZ = this.func_226281_cx_();
+            this.prevPosX = this.getPosX();
+            this.prevPosY = this.getPosY();
+            this.prevPosZ = this.getPosZ();
             float x = MathHelper.sin(-pusher.rotationYaw * 0.017453292F) * 1.3F;
             float z = MathHelper.cos(-pusher.rotationYaw * 0.017453292F) * 1.3F;
-            this.setPosition(pusher.func_226277_ct_() + x, pusher.func_226278_cu_(), pusher.func_226281_cx_() + z);
-            this.lastTickPosX = this.func_226277_ct_();
-            this.lastTickPosY = this.func_226278_cu_();
-            this.lastTickPosZ = this.func_226281_cx_();
+            this.setPosition(pusher.getPosX() + x, pusher.getPosY(), pusher.getPosZ() + z);
+            this.lastTickPosX = this.getPosX();
+            this.lastTickPosY = this.getPosY();
+            this.lastTickPosZ = this.getPosZ();
             this.rotationYaw = pusher.rotationYaw;
         }
         else

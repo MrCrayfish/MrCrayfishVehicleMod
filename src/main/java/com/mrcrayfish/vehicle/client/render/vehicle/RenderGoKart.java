@@ -26,20 +26,20 @@ public class RenderGoKart extends AbstractRenderVehicle<GoKartEntity>
         this.renderDamagedPart(entity, SpecialModel.GO_KART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.func_227860_a_();
-        matrixStack.func_227861_a_(0, 0.09, 0.49);
-        matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-45F));
-        matrixStack.func_227861_a_(0, -0.02, 0);
-        matrixStack.func_227862_a_(0.9F, 0.9F, 0.9F);
+        matrixStack.push();
+        matrixStack.translate(0, 0.09, 0.49);
+        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-45F));
+        matrixStack.translate(0, -0.02, 0);
+        matrixStack.scale(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override

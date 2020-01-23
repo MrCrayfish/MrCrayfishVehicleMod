@@ -43,11 +43,11 @@ public abstract class BoatEntity extends PoweredVehicleEntity
             }
             else
             {
-                double floatingY = ((this.waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - this.func_226278_cu_())) / (double) this.getHeight();
+                double floatingY = ((this.waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - this.getPosY())) / (double) this.getHeight();
                 this.setMotion(this.getMotion().add(0, floatingY * 0.05, 0));
                 if(Math.abs(floatingY) < 0.1 && this.getMotion().y > 0 && Math.abs(this.getMotion().y) < 0.1)
                 {
-                    this.setPosition(this.func_226277_ct_(), this.waterLevel - 0.35 + (0.25 * Math.min(1.0F, getNormalSpeed())), this.func_226281_cx_());
+                    this.setPosition(this.getPosX(), this.waterLevel - 0.35 + (0.25 * Math.min(1.0F, getNormalSpeed())), this.getPosZ());
                     this.setMotion(this.getMotion().mul(1.0, 0.0, 1.0));
                 }
                 this.setMotion(this.getMotion().mul(1.0, 0.75, 1.0));
@@ -111,7 +111,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
                         IFluidState fluidState = this.world.getFluidState(pooledMutable);
                         if(fluidState.isTagged(FluidTags.WATER))
                         {
-                            float waterLevel = (float) y + fluidState.func_215679_a(this.world, pooledMutable);
+                            float waterLevel = (float) y + fluidState.getActualHeight(this.world, pooledMutable);
                             this.waterLevel = Math.max((double) waterLevel, this.waterLevel);
                             inWater |= boundingBox.minY < (double) waterLevel;
                         }
@@ -146,7 +146,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
                     {
                         pooledMutable.setPos(x, y, z);
                         IFluidState fluidState = this.world.getFluidState(pooledMutable);
-                        if(fluidState.isTagged(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.func_215679_a(this.world, pooledMutable)))
+                        if(fluidState.isTagged(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.getActualHeight(this.world, pooledMutable)))
                         {
                             if(!fluidState.isSource())
                             {

@@ -837,7 +837,7 @@ public class EntityRaytracer
 
             // Generate part-specific matrix
             Matrix4f matrix = new Matrix4f();
-            matrix.func_226591_a_();
+            matrix.identity();
             for (MatrixTransformation tranform : entryPart.getValue())
                 tranform.transform(matrix);
 
@@ -1079,16 +1079,16 @@ public class EntityRaytracer
             switch(type)
             {
                 case ROTATION:
-                    matrixStack.func_227863_a_(new Vector3f(this.x, this.y, this.z).func_229187_a_(this.angle));
+                    matrixStack.rotate(new Vector3f(this.x, this.y, this.z).func_229187_a_(this.angle));
                     break;
                 case TRANSLATION:
-                    matrixStack.func_227861_a_(this.x, this.y, this.z);
+                    matrixStack.translate(this.x, this.y, this.z);
                     break;
                 case SCALE:
-                    matrixStack.func_227862_a_(this.x, this.y, this.z);
+                    matrixStack.scale(this.x, this.y, this.z);
                     break;
             }
-            matrix.func_226595_a_(matrixStack.func_227866_c_().func_227870_a_());
+            matrix.multiply(matrixStack.getLast().getPositionMatrix());
         }
     }
 
@@ -1424,15 +1424,15 @@ public class EntityRaytracer
     {
         if(Config.CLIENT.renderOutlines.get())
         {
-            matrixStack.func_227860_a_();
-            matrixStack.func_227863_a_(Vector3f.field_229181_d_.func_229187_a_(-yaw));
+            matrixStack.push();
+            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-yaw));
 
             RenderSystem.pushMatrix();
-            RenderSystem.multMatrix(matrixStack.func_227866_c_().func_227870_a_());
+            RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
 
             //RenderSystem.enableBlend();
             //RenderSystem.defaultBlendFunc();
-            RenderSystem.lineWidth(Math.max(2.0F, (float)Minecraft.getInstance().func_228018_at_().getFramebufferWidth() / 1920.0F * 2.0F));
+            RenderSystem.lineWidth(Math.max(2.0F, (float)Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
             RenderSystem.disableTexture();
             RenderSystem.disableLighting();
             RenderSystem.enableDepthTest();
@@ -1449,7 +1449,7 @@ public class EntityRaytracer
 
             RenderSystem.popMatrix();
 
-            matrixStack.func_227865_b_();
+            matrixStack.pop();
         }
     }
 
@@ -1571,9 +1571,9 @@ public class EntityRaytracer
         public void draw(Tessellator tessellator, BufferBuilder buffer, float red, float green, float blue, float alpha)
         {
             buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
-            buffer.func_225582_a_(data[6], data[7], data[8]).func_227885_a_(red, green, blue, alpha).endVertex();
-            buffer.func_225582_a_(data[0], data[1], data[2]).func_227885_a_(red, green, blue, alpha).endVertex();
-            buffer.func_225582_a_(data[3], data[4], data[5]).func_227885_a_(red, green, blue, alpha).endVertex();
+            buffer.pos(data[6], data[7], data[8]).color(red, green, blue, alpha).endVertex();
+            buffer.pos(data[0], data[1], data[2]).color(red, green, blue, alpha).endVertex();
+            buffer.pos(data[3], data[4], data[5]).color(red, green, blue, alpha).endVertex();
             tessellator.draw();
         }
     }

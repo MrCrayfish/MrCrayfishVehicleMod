@@ -31,38 +31,38 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
         this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.func_227860_a_();
+        matrixStack.push();
 
-        matrixStack.func_227861_a_(0.0, 0.0, 10.5 * 0.0625);
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-22.5F));
+        matrixStack.translate(0.0, 0.0, 10.5 * 0.0625);
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-22.5F));
 
         float wheelScale = 1.65F;
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
 
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(22.5F));
-        matrixStack.func_227861_a_(0.0, 0.0, -10.5 * 0.0625);
+        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(22.5F));
+        matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
 
         this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {
-            matrixStack.func_227860_a_();
-            matrixStack.func_227861_a_(0, -0.5 + 1.7 * 0.0625, 13 * 0.0625);
+            matrixStack.push();
+            matrixStack.translate(0, -0.5 + 1.7 * 0.0625, 13 * 0.0625);
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             if(entity.isMoving())
             {
-                matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
+                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
             }
-            matrixStack.func_227862_a_(wheelScale, wheelScale, wheelScale);
-            matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(180F));
-            RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
-            matrixStack.func_227865_b_();
+            matrixStack.scale(wheelScale, wheelScale, wheelScale);
+            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+            RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            matrixStack.pop();
         }
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override
@@ -85,10 +85,10 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
     public void applyPlayerRender(MiniBikeEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
-        matrixStack.func_227861_a_(0.0, offset, 0.0);
+        matrixStack.translate(0.0, offset, 0.0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-        matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 20F));
-        matrixStack.func_227861_a_(0.0, -offset, 0.0);
+        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 20F));
+        matrixStack.translate(0.0, -offset, 0.0);
     }
 }

@@ -108,7 +108,7 @@ public class TractorEntity extends LandVehicleEntity implements EntityRaytracer.
             float yOffset = (float) ((!this.isAlive() ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
             float zOffset = -10F * 0.0625F;
             Vec3d vec3d = new Vec3d(zOffset, yOffset, 0).rotateYaw(-(this.rotationYaw - additionalYaw) * 0.017453292F - ((float) Math.PI / 2F));
-            passenger.setPosition(this.func_226277_ct_() + vec3d.x, this.func_226278_cu_() + vec3d.y, this.func_226281_cx_() + vec3d.z);
+            passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + vec3d.y, this.getPosZ() + vec3d.z);
             passenger.rotationYaw -= deltaYaw;
             passenger.setRotationYawHead(passenger.rotationYaw);
             this.applyYawToEntity(passenger);

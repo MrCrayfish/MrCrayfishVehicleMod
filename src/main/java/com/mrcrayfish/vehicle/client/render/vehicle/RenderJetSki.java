@@ -28,19 +28,19 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         this.renderDamagedPart(entity, SpecialModel.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.func_227860_a_();
+        matrixStack.push();
 
-        matrixStack.func_227861_a_(0, 0.355, 0.225);
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.translate(0, 0.355, 0.225);
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
 
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.func_227863_a_(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModel.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 
     @Override
@@ -74,12 +74,12 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
     public void applyPlayerRender(JetSkiEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
         double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
-        matrixStack.func_227861_a_(0, offset, 0);
+        matrixStack.translate(0, offset, 0);
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-        matrixStack.func_227863_a_(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-        matrixStack.func_227863_a_(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
-        matrixStack.func_227861_a_(0, -offset, 0);
+        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
+        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+        matrixStack.translate(0, -offset, 0);
     }
 
     @Override

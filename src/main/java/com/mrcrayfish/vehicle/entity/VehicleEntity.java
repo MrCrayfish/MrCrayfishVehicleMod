@@ -134,7 +134,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                             if(this.getColor() != color)
                             {
                                 this.setColor(compound.getInt("Color"));
-                                player.world.playSound(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                player.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 compound.putInt("RemainingSprays", remainingSprays - 1);
                             }
                         }
@@ -148,7 +148,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 {
                     heldItem.damageItem(1, player, playerEntity -> player.sendBreakAnimation(hand));
                     this.setHealth(this.getHealth() + 5F);
-                    this.world.playSound(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), ModSounds.VEHICLE_THUD, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
+                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_THUD, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
                     player.swingArm(hand);
                     if(player instanceof ServerPlayerEntity)
                     {
@@ -166,9 +166,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                                 double height = this.getHeight() * 1.5;
 
                                 Vec3d heldOffset = this.getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-                                double x = this.func_226277_ct_() + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
-                                double y = this.func_226278_cu_() + height * rand.nextFloat();
-                                double z = this.func_226281_cx_() + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
+                                double x = this.getPosX() + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
+                                double y = this.getPosY() + height * rand.nextFloat();
+                                double z = this.getPosZ() + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
 
                                 double d0 = rand.nextGaussian() * 0.02D;
                                 double d1 = rand.nextGaussian() * 0.02D;
@@ -176,7 +176,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                                 ((ServerWorld) this.world).spawnParticle(ParticleTypes.HAPPY_VILLAGER, x, y, z, 1, d0, d1, d2, 1.0);
                             }
                         }
-                        this.world.playSound(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
+                        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
                     }
                 }
                 return true;
@@ -279,9 +279,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
 
-        this.prevPosX = this.func_226277_ct_();
-        this.prevPosY = this.func_226278_cu_();
-        this.prevPosZ = this.func_226281_cx_();
+        this.prevPosX = this.getPosX();
+        this.prevPosY = this.getPosY();
+        this.prevPosZ = this.getPosZ();
 
         if(!this.world.isRemote)
         {
@@ -378,14 +378,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
-            this.world.playSound(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), ModSounds.VEHICLE_IMPACT, SoundCategory.AMBIENT, 1.0F, 1.0F);
+            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_IMPACT, SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
         return true;
     }
 
     protected void onVehicleDestroyed(LivingEntity entity)
     {
-        this.world.playSound(null, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), ModSounds.VEHICLE_DESTROYED, SoundCategory.AMBIENT, 1.0F, 0.5F);
+        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_DESTROYED, SoundCategory.AMBIENT, 1.0F, 0.5F);
 
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
         if(!isCreativeMode && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
@@ -400,7 +400,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     int shrink = copy.getCount() / 2;
                     if(shrink > 0)
                         copy.shrink(this.rand.nextInt(shrink + 1));
-                    InventoryUtil.spawnItemStack(this.world, this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_(), copy);
+                    InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), copy);
                 }
             }
         }
@@ -419,14 +419,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         if(this.canPassengerSteer())
         {
             this.lerpSteps = 0;
-            this.func_213312_b(this.func_226277_ct_(), this.func_226278_cu_(), this.func_226281_cx_());
+            this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
         }
 
         if(this.lerpSteps > 0)
         {
-            double d0 = this.func_226277_ct_() + (this.lerpX - this.func_226277_ct_()) / (double) this.lerpSteps;
-            double d1 = this.func_226278_cu_() + (this.lerpY - this.func_226278_cu_()) / (double) this.lerpSteps;
-            double d2 = this.func_226281_cx_() + (this.lerpZ - this.func_226281_cx_()) / (double) this.lerpSteps;
+            double d0 = this.getPosX() + (this.lerpX - this.getPosX()) / (double) this.lerpSteps;
+            double d1 = this.getPosY() + (this.lerpY - this.getPosY()) / (double) this.lerpSteps;
+            double d2 = this.getPosZ() + (this.lerpZ - this.getPosZ()) / (double) this.lerpSteps;
             double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
             this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
             this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
@@ -604,9 +604,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         partVec = partVec.add(0, 0.5, 0);
         partVec = partVec.add(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
         partVec = partVec.rotateYaw(-(this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks) * 0.017453292F);
-        partVec = partVec.add(this.prevPosX + (this.func_226277_ct_() - this.prevPosX) * partialTicks, 0, 0);
-        partVec = partVec.add(0, this.prevPosY + (this.func_226278_cu_() - this.prevPosY) * partialTicks, 0);
-        partVec = partVec.add(0, 0, this.prevPosZ + (this.func_226281_cx_() - this.prevPosZ) * partialTicks);
+        partVec = partVec.add(this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks, 0, 0);
+        partVec = partVec.add(0, this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks, 0);
+        partVec = partVec.add(0, 0, this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks);
         return partVec;
     }
 

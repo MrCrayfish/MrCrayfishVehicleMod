@@ -65,9 +65,9 @@ public class BlockFluidPump extends BlockFluidPipe
     }
 
     @Override
-    public ActionResultType func_225533_a_(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(super.func_225533_a_(state, world, pos, player, hand, result) == ActionResultType.SUCCESS)
+        if(super.onBlockActivated(state, world, pos, player, hand, result) == ActionResultType.SUCCESS)
         {
             return ActionResultType.SUCCESS;
         }

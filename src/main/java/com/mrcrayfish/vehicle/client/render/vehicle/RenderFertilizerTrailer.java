@@ -41,49 +41,49 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
                 ItemStack stack = inventory.getStackInSlot(i);
                 if(!stack.isEmpty())
                 {
-                    matrixStack.func_227860_a_();
-                    matrixStack.func_227861_a_(-5.5 * 0.0625, -3 * 0.0625, -3 * 0.0625);
-                    matrixStack.func_227862_a_(0.45F, 0.45F, 0.45F);
+                    matrixStack.push();
+                    matrixStack.translate(-5.5 * 0.0625, -3 * 0.0625, -3 * 0.0625);
+                    matrixStack.scale(0.45F, 0.45F, 0.45F);
 
                     int count = Math.max(1, stack.getCount() / 32);
                     int width = 3;
                     int maxLayerCount = 6;
                     for(int j = 0; j < count; j++)
                     {
-                        matrixStack.func_227860_a_();
+                        matrixStack.push();
                         {
                             int layerIndex = index % maxLayerCount;
-                            matrixStack.func_227861_a_(0, layer * 0.1 + j * 0.0625, 0);
-                            matrixStack.func_227861_a_((layerIndex % width) * 0.5, 0, (float) (layerIndex / width) * 0.75);
-                            matrixStack.func_227861_a_(0.5 * (layer % 2), 0, 0);
-                            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(90F));
-                            matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(47F * index));
-                            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(2F * layerIndex));
-                            matrixStack.func_227861_a_(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                            Minecraft.getInstance().getItemRenderer().func_229111_a_(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.field_229196_a_, RenderUtil.getModel(stack));
+                            matrixStack.translate(0, layer * 0.1 + j * 0.0625, 0);
+                            matrixStack.translate((layerIndex % width) * 0.5, 0, (float) (layerIndex / width) * 0.75);
+                            matrixStack.translate(0.5 * (layer % 2), 0, 0);
+                            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(90F));
+                            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(47F * index));
+                            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(2F * layerIndex));
+                            matrixStack.translate(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
+                            Minecraft.getInstance().getItemRenderer().func_229111_a_(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.DEFAULT_LIGHT, RenderUtil.getModel(stack));
                         }
-                        matrixStack.func_227865_b_();
+                        matrixStack.pop();
                         index++;
                         if(index % maxLayerCount == 0)
                         {
                             layer++;
                         }
                     }
-                    matrixStack.func_227865_b_();
+                    matrixStack.pop();
                 }
             }
         }
 
         /* Renders the spike */
-        matrixStack.func_227860_a_();
+        matrixStack.push();
         {
-            matrixStack.func_227861_a_(0, -0.5, -0.4375);
-            matrixStack.func_227863_a_(Vector3f.field_229183_f_.func_229187_a_(90F));
+            matrixStack.translate(0, -0.5, -0.4375);
+            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(90F));
             float wheelRotation = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
-            matrixStack.func_227863_a_(Vector3f.field_229179_b_.func_229187_a_(-wheelRotation));
-            matrixStack.func_227862_a_((float) 1.25, (float) 1.25, (float) 1.25);
-            RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.field_229196_a_);
+            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-wheelRotation));
+            matrixStack.scale((float) 1.25, (float) 1.25, (float) 1.25);
+            RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
         }
-        matrixStack.func_227865_b_();
+        matrixStack.pop();
     }
 }
