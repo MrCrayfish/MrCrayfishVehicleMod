@@ -279,9 +279,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
 
-        this.prevPosX = this.getPosX();
+        /*this.prevPosX = this.getPosX();
         this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();
+        this.prevPosZ = this.getPosZ();*/
 
         if(!this.world.isRemote)
         {
@@ -419,7 +419,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         if(this.canPassengerSteer())
         {
             this.lerpSteps = 0;
-            this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+            this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
         }
 
         if(this.lerpSteps > 0)
