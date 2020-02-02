@@ -278,7 +278,7 @@ public class ClientEvents
     }
 
     @SubscribeEvent
-    public void onRenderHand(RenderSpecificHandEvent event)
+    public void onRenderHand(RenderHandEvent event)
     {
         MatrixStack matrixStack = event.getMatrixStack();
         if (event.getHand() == Hand.OFF_HAND && fuelingHandOffset > -1)
