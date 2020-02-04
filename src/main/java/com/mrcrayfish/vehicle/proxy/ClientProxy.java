@@ -73,18 +73,16 @@ public class ClientProxy implements Proxy
     @Override
     public void setupClient()
     {
-        Predicate<RenderType> cutoutPredicate = renderType -> renderType == RenderType.cutout();
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, cutoutPredicate);
-        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, cutoutPredicate);
-        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, cutoutPredicate);
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, RenderType.cutout());
 
-        Predicate<RenderType> fluidPredicate = renderType -> renderType == RenderType.translucent();
-        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, fluidPredicate);
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, fluidPredicate);
-        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, fluidPredicate);
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP, fluidPredicate);
-        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE, fluidPredicate);
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, fluidPredicate);
+        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, RenderType.translucent());
 
         /* Register Vehicles */
         registerVehicleRender(ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));

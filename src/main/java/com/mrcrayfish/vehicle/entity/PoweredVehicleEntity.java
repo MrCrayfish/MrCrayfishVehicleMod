@@ -93,7 +93,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.createKey(PoweredVehicleEntity.class, DataSerializers.ITEMSTACK);
     protected static final DataParameter<Boolean> HAS_WHEELS = EntityDataManager.createKey(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Integer> WHEEL_TYPE = EntityDataManager.createKey(PoweredVehicleEntity.class, DataSerializers.VARINT);
-    public  static final DataParameter<Integer> WHEEL_COLOR = EntityDataManager.createKey(PoweredVehicleEntity.class, DataSerializers.VARINT);
+    public static final DataParameter<Integer> WHEEL_COLOR = EntityDataManager.createKey(PoweredVehicleEntity.class, DataSerializers.VARINT);
 
     public float prevCurrentSpeed;
     public float currentSpeed;
@@ -1182,6 +1182,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         this.world.playSound(null, getPosition(), ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 1.1F);
                         this.setWheels(true);
                         this.setWheelType(wheelItem.getWheelType());
+                        if(wheelItem.hasColor(wheel))
+                        {
+                            this.setWheelColor(wheelItem.getColor(wheel));
+                        }
                     }
                 }
                 else
