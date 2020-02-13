@@ -330,14 +330,12 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         if(this.tankEnderSap.getFluid().isEmpty())
             return false;
         if(this.tankBlaze.getFluidAmount() < recipe.getFluidAmount(this.tankBlaze.getFluid().getFluid()))
-        {
             return false;
-        }
         if(this.tankEnderSap.getFluidAmount() < recipe.getFluidAmount(this.tankEnderSap.getFluid().getFluid()))
-        {
             return false;
-        }
-        return this.tankFuelium.getFluidAmount() < this.tankFuelium.getCapacity();
+        if(this.tankFuelium.getFluidAmount() >= this.tankFuelium.getCapacity())
+            return false;
+        return this.tankFuelium.getFluidAmount() + recipe.getResult().getAmount() <= this.tankFuelium.getCapacity();
     }
 
     @Override
