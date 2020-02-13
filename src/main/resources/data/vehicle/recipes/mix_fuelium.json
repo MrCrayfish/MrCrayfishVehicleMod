@@ -3,11 +3,11 @@
     "input": [
         {
             "fluid": "vehicle:ender_sap",
-            "amount": 100
+            "amount": 200
         },
         {
             "fluid": "vehicle:blaze_juice",
-            "amount": 100
+            "amount": 200
         }
     ],
     "ingredient": {
@@ -15,6 +15,6 @@
     },
     "result": {
         "fluid": "vehicle:fuelium",
-        "amount": 200
+        "amount": 400
     }
 }
