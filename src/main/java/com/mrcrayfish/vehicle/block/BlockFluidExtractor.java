@@ -4,17 +4,14 @@ import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
@@ -60,38 +57,18 @@ public class BlockFluidExtractor extends BlockRotatedObject
     }
 
     @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
     {
-        if(!world.isRemote && !player.isCreative())
+        if(state.getBlock() != newState.getBlock())
         {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof FluidExtractorTileEntity)
+            TileEntity tileentity = worldIn.getTileEntity(pos);
+            if(tileentity instanceof IInventory)
             {
-                FluidExtractorTileEntity fluidExtractor = (FluidExtractorTileEntity) tileEntity;
-                CompoundNBT tileEntityTag = new CompoundNBT();
-                tileEntity.write(tileEntityTag);
-                tileEntityTag.remove("x");
-                tileEntityTag.remove("y");
-                tileEntityTag.remove("z");
-                tileEntityTag.remove("id");
-                tileEntityTag.remove("RemainingFuel");
-                tileEntityTag.remove("FuelMaxProgress");
-                tileEntityTag.remove("ExtractionProgress");
-
-                CompoundNBT compound = new CompoundNBT();
-                compound.put("BlockEntityTag", tileEntityTag);
-
-                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-                drop.setTag(compound);
-                if(fluidExtractor.hasCustomName())
-                {
-                    drop.setDisplayName(fluidExtractor.getDisplayName());
-                }
-                world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-                return world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) tileentity);
+                worldIn.updateComparatorOutputLevel(pos, this);
             }
+            super.onReplaced(state, worldIn, pos, newState, isMoving);
         }
-        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
     }
 
     @Override

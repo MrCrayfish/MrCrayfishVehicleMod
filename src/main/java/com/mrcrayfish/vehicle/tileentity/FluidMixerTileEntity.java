@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class FluidMixerTileEntity extends TileEntitySynced implements IInventory, ITickableTileEntity, INamedContainerProvider
+public class FluidMixerTileEntity extends TileEntitySynced implements IInventory, ITickableTileEntity, INamedContainerProvider, IFluidTankWriter
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -387,31 +387,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             compound.putString("CustomName", this.customName);
         }
 
-        CompoundNBT tagTankBlaze = new CompoundNBT();
-        this.tankBlaze.writeToNBT(tagTankBlaze);
-        compound.put("TankBlaze", tagTankBlaze);
-
-        CompoundNBT tagTankEnderSap = new CompoundNBT();
-        this.tankEnderSap.writeToNBT(tagTankEnderSap);
-        compound.put("TankEnderSap", tagTankEnderSap);
-
-        CompoundNBT tagTankFuelium = new CompoundNBT();
-        this.tankFuelium.writeToNBT(tagTankFuelium);
-        compound.put("TankFuelium", tagTankFuelium);
-
-        /*
-        if(compound.contains("RemainingFuel", Constants.NBT.TAG_INT))
-        {
-            remainingFuel = compound.getInteger("RemainingFuel");
-        }
-        if(compound.contains("FuelMaxProgress", Constants.NBT.TAG_INT))
-        {
-            fuelMaxProgress = compound.getInteger("FuelMaxProgress");
-        }
-        if(compound.contains("ExtractionProgress", Constants.NBT.TAG_INT))
-        {
-            extractionProgress = compound.getInteger("ExtractionProgress");
-        }*/
+        this.writeTanks(compound);
 
         compound.putInt("RemainingFuel", this.remainingFuel);
         compound.putInt("FuelMaxProgress", this.fuelMaxProgress);
@@ -423,20 +399,30 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     public CompoundNBT getUpdateTag()
     {
         CompoundNBT tag = super.write(new CompoundNBT());
+        this.writeTanks(tag);
+        return tag;
+    }
 
+    @Override
+    public void writeTanks(CompoundNBT compound)
+    {
         CompoundNBT tagTankBlaze = new CompoundNBT();
-        tankBlaze.writeToNBT(tagTankBlaze);
-        tag.put("TankBlaze", tagTankBlaze);
+        this.tankBlaze.writeToNBT(tagTankBlaze);
+        compound.put("TankBlaze", tagTankBlaze);
 
         CompoundNBT tagTankEnderSap = new CompoundNBT();
-        tankEnderSap.writeToNBT(tagTankEnderSap);
-        tag.put("TankEnderSap", tagTankEnderSap);
+        this.tankEnderSap.writeToNBT(tagTankEnderSap);
+        compound.put("TankEnderSap", tagTankEnderSap);
 
         CompoundNBT tagTankFuelium = new CompoundNBT();
-        tankFuelium.writeToNBT(tagTankFuelium);
-        tag.put("TankFuelium", tagTankFuelium);
+        this.tankFuelium.writeToNBT(tagTankFuelium);
+        compound.put("TankFuelium", tagTankFuelium);
+    }
 
-        return tag;
+    @Override
+    public boolean areTanksEmpty()
+    {
+        return this.tankBlaze.isEmpty() && this.tankEnderSap.isEmpty() && this.tankFuelium.isEmpty();
     }
 
     private String getName()
@@ -453,34 +439,6 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     public ITextComponent getDisplayName()
     {
         return this.hasCustomName() ? new StringTextComponent(this.getName()) : new TranslationTextComponent(this.getName());
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction facing)
-    {
-        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-        {
-            BlockState state = this.world.getBlockState(this.pos);
-            if(state.getProperties().contains(BlockRotatedObject.DIRECTION))
-            {
-                Direction direction = state.get(BlockRotatedObject.DIRECTION);
-                if(facing == direction.rotateYCCW())
-                {
-                    return LazyOptional.of(() -> this.tankBlaze).cast();
-                }
-                if(facing == direction)
-                {
-                    return LazyOptional.of(() -> this.tankEnderSap).cast();
-                }
-                if(facing == direction.rotateY())
-                {
-                    return LazyOptional.of(() -> this.tankFuelium).cast();
-                }
-            }
-            return LazyOptional.empty();
-        }
-        return super.getCapability(cap, facing);
     }
 
     @Nullable
@@ -589,6 +547,46 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     public FluidTank getFueliumTank()
     {
         return tankFuelium;
+    }
+
+    private final net.minecraftforge.common.util.LazyOptional<?> itemHandler = net.minecraftforge.common.util.LazyOptional.of(this::createUnSidedHandler);
+
+    @Nonnull
+    protected net.minecraftforge.items.IItemHandler createUnSidedHandler()
+    {
+        return new net.minecraftforge.items.wrapper.InvWrapper(this);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction facing)
+    {
+        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            BlockState state = this.world.getBlockState(this.pos);
+            if(state.getProperties().contains(BlockRotatedObject.DIRECTION))
+            {
+                Direction direction = state.get(BlockRotatedObject.DIRECTION);
+                if(facing == direction.rotateYCCW())
+                {
+                    return LazyOptional.of(() -> this.tankBlaze).cast();
+                }
+                if(facing == direction)
+                {
+                    return LazyOptional.of(() -> this.tankEnderSap).cast();
+                }
+                if(facing == direction.rotateY())
+                {
+                    return LazyOptional.of(() -> this.tankFuelium).cast();
+                }
+            }
+            return LazyOptional.empty();
+        }
+        else if(!this.removed && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            return this.itemHandler.cast();
+        }
+        return super.getCapability(cap, facing);
     }
 }
 

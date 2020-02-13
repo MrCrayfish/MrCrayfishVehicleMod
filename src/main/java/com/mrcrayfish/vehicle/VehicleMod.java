@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.init.ModLootFunctions;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -97,6 +98,7 @@ public class VehicleMod
         HeldVehicleDataHandler.register();
         VehicleProperties.register();
         ItemLookup.init();
+        ModLootFunctions.register();
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
