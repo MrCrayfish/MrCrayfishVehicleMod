@@ -6,7 +6,12 @@
             "entries": [
                 {
                     "type": "minecraft:item",
-                    "name": "vehicle:industrial_fuel_drum"
+                    "name": "vehicle:industrial_fuel_drum",
+                    "functions": [
+                        {
+                            "function": "vehicle:copy_fluid_tanks"
+                        }
+                    ]
                 }
             ],
             "conditions": [

@@ -48,7 +48,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class FluidMixerTileEntity extends TileEntitySynced implements IInventory, ITickableTileEntity, INamedContainerProvider
+public class FluidMixerTileEntity extends TileEntitySynced implements IInventory, ITickableTileEntity, INamedContainerProvider, IFluidTankWriter
 {
     private NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
 
@@ -387,31 +387,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             compound.putString("CustomName", this.customName);
         }
 
-        CompoundNBT tagTankBlaze = new CompoundNBT();
-        this.tankBlaze.writeToNBT(tagTankBlaze);
-        compound.put("TankBlaze", tagTankBlaze);
-
-        CompoundNBT tagTankEnderSap = new CompoundNBT();
-        this.tankEnderSap.writeToNBT(tagTankEnderSap);
-        compound.put("TankEnderSap", tagTankEnderSap);
-
-        CompoundNBT tagTankFuelium = new CompoundNBT();
-        this.tankFuelium.writeToNBT(tagTankFuelium);
-        compound.put("TankFuelium", tagTankFuelium);
-
-        /*
-        if(compound.contains("RemainingFuel", Constants.NBT.TAG_INT))
-        {
-            remainingFuel = compound.getInteger("RemainingFuel");
-        }
-        if(compound.contains("FuelMaxProgress", Constants.NBT.TAG_INT))
-        {
-            fuelMaxProgress = compound.getInteger("FuelMaxProgress");
-        }
-        if(compound.contains("ExtractionProgress", Constants.NBT.TAG_INT))
-        {
-            extractionProgress = compound.getInteger("ExtractionProgress");
-        }*/
+        this.writeTanks(compound);
 
         compound.putInt("RemainingFuel", this.remainingFuel);
         compound.putInt("FuelMaxProgress", this.fuelMaxProgress);
@@ -423,20 +399,30 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     public CompoundNBT getUpdateTag()
     {
         CompoundNBT tag = super.write(new CompoundNBT());
+        this.writeTanks(tag);
+        return tag;
+    }
 
+    @Override
+    public void writeTanks(CompoundNBT compound)
+    {
         CompoundNBT tagTankBlaze = new CompoundNBT();
-        tankBlaze.writeToNBT(tagTankBlaze);
-        tag.put("TankBlaze", tagTankBlaze);
+        this.tankBlaze.writeToNBT(tagTankBlaze);
+        compound.put("TankBlaze", tagTankBlaze);
 
         CompoundNBT tagTankEnderSap = new CompoundNBT();
-        tankEnderSap.writeToNBT(tagTankEnderSap);
-        tag.put("TankEnderSap", tagTankEnderSap);
+        this.tankEnderSap.writeToNBT(tagTankEnderSap);
+        compound.put("TankEnderSap", tagTankEnderSap);
 
         CompoundNBT tagTankFuelium = new CompoundNBT();
-        tankFuelium.writeToNBT(tagTankFuelium);
-        tag.put("TankFuelium", tagTankFuelium);
+        this.tankFuelium.writeToNBT(tagTankFuelium);
+        compound.put("TankFuelium", tagTankFuelium);
+    }
 
-        return tag;
+    @Override
+    public boolean areTanksEmpty()
+    {
+        return this.tankBlaze.isEmpty() && this.tankEnderSap.isEmpty() && this.tankFuelium.isEmpty();
     }
 
     private String getName()

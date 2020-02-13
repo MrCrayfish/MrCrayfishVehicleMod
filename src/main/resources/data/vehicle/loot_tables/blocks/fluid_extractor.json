@@ -6,7 +6,16 @@
             "entries": [
                 {
                     "type": "minecraft:item",
-                    "name": "vehicle:fluid_extractor"
+                    "name": "vehicle:fluid_extractor",
+                    "functions": [
+                        {
+                            "function": "minecraft:copy_name",
+                            "source": "block_entity"
+                        },
+                        {
+                            "function": "vehicle:copy_fluid_tanks"
+                        }
+                    ]
                 }
             ],
             "conditions": [

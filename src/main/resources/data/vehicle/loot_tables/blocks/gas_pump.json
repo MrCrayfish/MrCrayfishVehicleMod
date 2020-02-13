@@ -6,7 +6,12 @@
             "entries": [
                 {
                     "type": "minecraft:item",
-                    "name": "vehicle:gas_pump"
+                    "name": "vehicle:gas_pump",
+                    "functions": [
+                        {
+                            "function": "vehicle:copy_fluid_tanks"
+                        }
+                    ]
                 }
             ],
             "conditions": [
