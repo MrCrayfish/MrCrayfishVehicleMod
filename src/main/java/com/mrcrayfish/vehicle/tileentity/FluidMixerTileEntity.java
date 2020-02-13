@@ -322,6 +322,9 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     {
         if(recipe == null)
             return false;
+        ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
+        if(ingredient.getItem() != recipe.getIngredient().getItem())
+            return false;
         if(this.tankBlaze.getFluid().isEmpty())
             return false;
         if(this.tankEnderSap.getFluid().isEmpty())
