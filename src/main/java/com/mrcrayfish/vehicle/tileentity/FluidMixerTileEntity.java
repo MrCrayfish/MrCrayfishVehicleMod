@@ -455,34 +455,6 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         return this.hasCustomName() ? new StringTextComponent(this.getName()) : new TranslationTextComponent(this.getName());
     }
 
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction facing)
-    {
-        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-        {
-            BlockState state = this.world.getBlockState(this.pos);
-            if(state.getProperties().contains(BlockRotatedObject.DIRECTION))
-            {
-                Direction direction = state.get(BlockRotatedObject.DIRECTION);
-                if(facing == direction.rotateYCCW())
-                {
-                    return LazyOptional.of(() -> this.tankBlaze).cast();
-                }
-                if(facing == direction)
-                {
-                    return LazyOptional.of(() -> this.tankEnderSap).cast();
-                }
-                if(facing == direction.rotateY())
-                {
-                    return LazyOptional.of(() -> this.tankFuelium).cast();
-                }
-            }
-            return LazyOptional.empty();
-        }
-        return super.getCapability(cap, facing);
-    }
-
     @Nullable
     public FluidStack getBlazeFluidStack()
     {
@@ -590,8 +562,47 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     {
         return tankFuelium;
     }
-}
 
+    private final net.minecraftforge.common.util.LazyOptional<?> itemHandler = net.minecraftforge.common.util.LazyOptional.of(this::createUnSidedHandler);
+
+    @Nonnull
+    protected net.minecraftforge.items.IItemHandler createUnSidedHandler()
+    {
+        return new net.minecraftforge.items.wrapper.InvWrapper(this);
+    }
+
+    @Nonnull
+    @Override
+    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, Direction facing)
+    {
+        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        {
+            BlockState state = this.world.getBlockState(this.pos);
+            if(state.getProperties().contains(BlockRotatedObject.DIRECTION))
+            {
+                Direction direction = state.get(BlockRotatedObject.DIRECTION);
+                if(facing == direction.rotateYCCW())
+                {
+                    return LazyOptional.of(() -> this.tankBlaze).cast();
+                }
+                if(facing == direction)
+                {
+                    return LazyOptional.of(() -> this.tankEnderSap).cast();
+                }
+                if(facing == direction.rotateY())
+                {
+                    return LazyOptional.of(() -> this.tankFuelium).cast();
+                }
+            }
+            return LazyOptional.empty();
+        }
+        else if(!this.removed && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        {
+            return this.itemHandler.cast();
+        }
+        return super.getCapability(cap, facing);
+    }
+}
 
 
 
