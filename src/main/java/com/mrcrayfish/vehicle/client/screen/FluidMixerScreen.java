@@ -114,13 +114,13 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
         this.minecraft.getTextureManager().bindTexture(GUI);
         this.blit(startX, startY, 0, 0, this.xSize, this.ySize);
 
-        if(this.fluidMixerTileEntity.getRemainingFuel() > 0)
+        if(this.fluidMixerTileEntity.getRemainingFuel() >= 0)
         {
             int remainingFuel = (int) (14 * (this.fluidMixerTileEntity.getRemainingFuel() / (double) this.fluidMixerTileEntity.getFuelMaxProgress()));
             this.blit(startX + 9, startY + 31 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
-        if(this.fluidMixerTileEntity.getExtractionProgress() > 0 && this.fluidMixerTileEntity.canMix())
+        if(this.fluidMixerTileEntity.canMix())
         {
             int blazeColorRGB = FluidUtils.getAverageFluidColor(this.fluidMixerTileEntity.getBlazeFluidStack().getFluid());
             int sapColorRGB = FluidUtils.getAverageFluidColor(this.fluidMixerTileEntity.getEnderSapFluidStack().getFluid());

@@ -233,38 +233,33 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         if(!this.world.isRemote)
         {
             ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
-            if(!this.tankBlaze.getFluid().isEmpty() && !this.tankEnderSap.getFluid().isEmpty() && !ingredient.isEmpty())
-            {
-                if(this.currentRecipe == null)
-                {
-                    this.currentRecipe = this.getRecipe().orElse(null);
-                }
-                if(this.currentRecipe != null && this.canMix(this.currentRecipe))
-                {
-                    ItemStack fuel = this.getStackInSlot(SLOT_FUEL);
-                    if(!fuel.isEmpty() && ForgeHooks.getBurnTime(fuel) > 0 && this.remainingFuel == 0)
-                    {
-                        this.fuelMaxProgress = ForgeHooks.getBurnTime(fuel);
-                        this.remainingFuel = this.fuelMaxProgress;
-                        this.shrinkItem(SLOT_FUEL);
-                    }
+            ItemStack fuel = this.getStackInSlot(SLOT_FUEL);
 
-                    if(this.remainingFuel > 0 && this.canMix(this.currentRecipe))
+            if(this.currentRecipe == null && !ingredient.isEmpty())
+            {
+                this.currentRecipe = this.getRecipe().orElse(null);
+            }
+            else if(!this.canMix(this.currentRecipe))
+            {
+                this.currentRecipe = null;
+                this.extractionProgress = 0;
+            }
+
+            if(this.canMix(this.currentRecipe))
+            {
+                this.updateFuel(fuel);
+
+                if(this.remainingFuel > 0)
+                {
+                    if(this.extractionProgress++ == Config.SERVER.mixerMixTime.get())
                     {
-                        if(this.extractionProgress++ == Config.SERVER.mixerMixTime.get())
-                        {
-                            FluidMixerRecipe recipe = this.currentRecipe;
-                            this.tankFuelium.fill(recipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
-                            this.tankBlaze.drain(recipe.getFluidAmount(this.tankBlaze.getFluid().getFluid()), IFluidHandler.FluidAction.EXECUTE);
-                            this.tankEnderSap.drain(recipe.getFluidAmount(this.tankEnderSap.getFluid().getFluid()), IFluidHandler.FluidAction.EXECUTE);
-                            this.shrinkItem(SLOT_INGREDIENT);
-                            this.extractionProgress = 0;
-                            this.currentRecipe = null;
-                        }
-                    }
-                    else
-                    {
+                        FluidMixerRecipe recipe = this.currentRecipe;
+                        this.tankFuelium.fill(recipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
+                        this.tankBlaze.drain(recipe.getFluidAmount(this.tankBlaze.getFluid().getFluid()), IFluidHandler.FluidAction.EXECUTE);
+                        this.tankEnderSap.drain(recipe.getFluidAmount(this.tankEnderSap.getFluid().getFluid()), IFluidHandler.FluidAction.EXECUTE);
+                        this.shrinkItem(SLOT_INGREDIENT);
                         this.extractionProgress = 0;
+                        this.currentRecipe = null;
                     }
                 }
                 else
@@ -275,13 +270,23 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             else
             {
                 this.extractionProgress = 0;
-                this.currentRecipe = null;
             }
 
             if(this.remainingFuel > 0)
             {
                 this.remainingFuel--;
+                this.updateFuel(fuel);
             }
+        }
+    }
+
+    private void updateFuel(ItemStack fuel)
+    {
+        if(!fuel.isEmpty() && ForgeHooks.getBurnTime(fuel) > 0 && this.remainingFuel == 0 && this.canMix(this.currentRecipe))
+        {
+            this.fuelMaxProgress = ForgeHooks.getBurnTime(fuel);
+            this.remainingFuel = this.fuelMaxProgress;
+            this.shrinkItem(SLOT_FUEL);
         }
     }
 
@@ -300,7 +305,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         {
             this.currentRecipe = null;
         }
-        return this.currentRecipe != null && this.canMix(this.currentRecipe) && this.remainingFuel > 0;
+        return this.currentRecipe != null && this.canMix(this.currentRecipe) && this.remainingFuel >= 0;
     }
 
     private void shrinkItem(int index)
@@ -313,8 +318,10 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         }
     }
 
-    public boolean canMix(FluidMixerRecipe recipe)
+    private boolean canMix(@Nullable FluidMixerRecipe recipe)
     {
+        if(recipe == null)
+            return false;
         if(this.tankBlaze.getFluid().isEmpty())
             return false;
         if(this.tankEnderSap.getFluid().isEmpty())

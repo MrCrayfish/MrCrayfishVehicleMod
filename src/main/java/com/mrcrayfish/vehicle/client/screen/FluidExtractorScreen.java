@@ -83,13 +83,13 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
         this.minecraft.getTextureManager().bindTexture(GUI);
         this.blit(startX, startY, 0, 0, this.xSize, this.ySize);
 
-        if(this.fluidExtractorTileEntity.getRemainingFuel() > 0)
+        if(this.fluidExtractorTileEntity.getRemainingFuel() >= 0)
         {
             int remainingFuel = (int) (14 * (this.fluidExtractorTileEntity.getRemainingFuel() / (double) this.fluidExtractorTileEntity.getFuelMaxProgress()));
             this.blit(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
-        if(this.fluidExtractorTileEntity.getExtractionProgress() > 0 && this.fluidExtractorTileEntity.canExtract())
+        if(this.fluidExtractorTileEntity.canExtract())
         {
             int left = startX + 93 + 1;
             int top = startY + 34;

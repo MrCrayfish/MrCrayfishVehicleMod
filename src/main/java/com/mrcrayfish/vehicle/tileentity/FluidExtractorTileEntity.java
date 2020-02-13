@@ -134,12 +134,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
                 this.currentRecipe = null;
             }
 
-            if(!fuel.isEmpty() && this.remainingFuel == 0 && this.canFillWithFluid(source))
-            {
-                this.fuelMaxProgress = ForgeHooks.getBurnTime(fuel);
-                this.remainingFuel = this.fuelMaxProgress;
-                this.shrinkItem(SLOT_FUEL_SOURCE);
-            }
+            this.updateFuel(source, fuel);
 
             if(this.remainingFuel > 0 && this.canFillWithFluid(source))
             {
@@ -159,7 +154,18 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             if(this.remainingFuel > 0)
             {
                 this.remainingFuel--;
+                this.updateFuel(source, fuel);
             }
+        }
+    }
+
+    private void updateFuel(ItemStack source, ItemStack fuel)
+    {
+        if(!fuel.isEmpty() && this.remainingFuel == 0 && this.canFillWithFluid(source))
+        {
+            this.fuelMaxProgress = ForgeHooks.getBurnTime(fuel);
+            this.remainingFuel = this.fuelMaxProgress;
+            this.shrinkItem(SLOT_FUEL_SOURCE);
         }
     }
 
@@ -183,7 +189,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
         {
             this.currentRecipe = null;
         }
-        return this.canFillWithFluid(ingredient) && this.remainingFuel > 0;
+        return this.canFillWithFluid(ingredient) && this.remainingFuel >= 0;
     }
 
     @OnlyIn(Dist.CLIENT)
