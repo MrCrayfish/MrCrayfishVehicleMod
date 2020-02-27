@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -8,13 +9,18 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -107,6 +113,84 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             }
         }
 
+        if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
+        {
+            matrixStack.push();
+            {
+                matrixStack.translate(0.0, -0.5, 0.0);
+                matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
+                matrixStack.translate(0.0, -properties.getWheelOffset() * 0.0625, 0.0);
+
+                matrixStack.push();
+                {
+                    Vec3d frontAxelVec = properties.getFrontAxelVec();
+                    frontAxelVec = frontAxelVec.scale(0.0625);
+                    matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
+
+                    RenderSystem.disableTexture();
+                    RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
+                    RenderSystem.enableDepthTest();
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder buffer = tessellator.getBuffer();
+
+                    buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                    tessellator.draw();
+
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.enableTexture();
+                }
+                matrixStack.pop();
+
+                matrixStack.push();
+                {
+                    Vec3d frontAxelVec = properties.getFrontAxelVec();
+                    frontAxelVec = frontAxelVec.scale(0.0625);
+                    Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
+                    frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
+                    matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
+
+                    RenderSystem.disableTexture();
+                    RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
+                    RenderSystem.enableDepthTest();
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder buffer = tessellator.getBuffer();
+
+                    buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                    tessellator.draw();
+
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.enableTexture();
+                }
+                matrixStack.pop();
+
+                matrixStack.push();
+                {
+                    Vec3d rearAxelVec = properties.getRearAxelVec();
+                    rearAxelVec = rearAxelVec.scale(0.0625);
+                    matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
+
+                    RenderSystem.disableTexture();
+                    RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
+                    RenderSystem.enableDepthTest();
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder buffer = tessellator.getBuffer();
+
+                    buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                    tessellator.draw();
+
+                    RenderSystem.disableDepthTest();
+                    RenderSystem.enableTexture();
+                }
+                matrixStack.pop();
+            }
+            matrixStack.pop();
+        }
         matrixStack.pop();
     }
 
@@ -120,7 +204,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         if(wheel.getPosition() == Wheel.Position.FRONT)
         {
             float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(wheelAngle / 2.0F));
+            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(wheelAngle));
         }
         if(vehicle.isMoving())
         {

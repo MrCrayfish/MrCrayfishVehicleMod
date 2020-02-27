@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
@@ -87,14 +89,40 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         /* Applies the speed multiplier to the current speed */
         currentSpeed = currentSpeed + (currentSpeed * this.speedMultiplier);
 
-        float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
-        float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
-        this.vehicleMotionX = (-currentSpeed * f1);
-        if(!launching)
+        VehicleProperties properties = this.getProperties();
+        if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
         {
-            this.setMotion(this.getMotion().add(0, -0.08, 0));
+            PartPosition bodyPosition = properties.getBodyPosition();
+            Vec3d frontAxelVec = properties.getFrontAxelVec().scale(bodyPosition.getScale());
+            frontAxelVec = frontAxelVec.scale(0.0625);
+            Vec3d nextFrontAxelVec = new Vec3d(0, 0, currentSpeed / 20F).rotateYaw(this.wheelAngle * 0.017453292F);
+            frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
+            Vec3d rearAxelVec = properties.getRearAxelVec().scale(bodyPosition.getScale());
+            rearAxelVec = rearAxelVec.scale(0.0625);
+            double angle = Math.atan2(rearAxelVec.z - frontAxelVec.z, rearAxelVec.x - frontAxelVec.x);
+            angle = Math.toDegrees(angle) + 90.0;
+            this.rotationYaw += angle;
+
+            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
+            float f2 = MathHelper.cos((this.rotationYaw) * 0.017453292F) / 20F;
+            this.vehicleMotionX = (-currentSpeed * f1);
+            if(!launching)
+            {
+                this.setMotion(this.getMotion().add(0, -0.08, 0));
+            }
+            this.vehicleMotionZ = (currentSpeed * f2);
         }
-        this.vehicleMotionZ = (currentSpeed * f2);
+        else
+        {
+            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
+            float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
+            this.vehicleMotionX = (-currentSpeed * f1);
+            if(!launching)
+            {
+                this.setMotion(this.getMotion().add(0, -0.08, 0));
+            }
+            this.vehicleMotionZ = (currentSpeed * f2);
+        }
     }
 
     @Override
@@ -138,7 +166,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
     public void updateWheels()
     {
-        VehicleProperties properties = VehicleProperties.getProperties(this.getType());
+        VehicleProperties properties = this.getProperties();
         double wheelCircumference = 16.0;
         double vehicleScale = properties.getBodyPosition().getScale();
         double speed = this.getSpeed();

@@ -60,6 +60,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F, true, true);
+        properties.setFrontAxelVec(0, 10.5);
+        properties.setRearAxelVec(0, -10.5);
         VehicleProperties.setProperties(ModEntities.ATV, properties);
 
         /* Bumper Car */
@@ -332,6 +334,8 @@ public class VehicleProperties
     private PartPosition keyPortPosition;
     private PartPosition keyPosition;
     private PartPosition displayPosition = PartPosition.DEFAULT;
+    private Vec3d frontAxelVec = null;
+    private Vec3d rearAxelVec = null;
 
     public void setAxleOffset(float axleOffset)
     {
@@ -492,5 +496,27 @@ public class VehicleProperties
     public PartPosition getDisplayPosition()
     {
         return displayPosition;
+    }
+
+    public void setFrontAxelVec(double x, double z)
+    {
+        this.frontAxelVec = new Vec3d(x, 0, z);
+    }
+
+    @Nullable
+    public Vec3d getFrontAxelVec()
+    {
+        return frontAxelVec;
+    }
+
+    public void setRearAxelVec(double x, double z)
+    {
+        this.rearAxelVec = new Vec3d(x, 0, z);
+    }
+
+    @Nullable
+    public Vec3d getRearAxelVec()
+    {
+        return rearAxelVec;
     }
 }
