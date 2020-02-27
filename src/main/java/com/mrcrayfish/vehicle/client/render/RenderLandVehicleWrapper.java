@@ -152,6 +152,17 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
                         this.renderSteeringLine(matrixStack, 0xFFFFFF);
                     }
                     matrixStack.pop();
+
+                    matrixStack.push();
+                    {
+                        Vec3d rearAxelVec = properties.getRearAxelVec();
+                        rearAxelVec = rearAxelVec.scale(0.0625);
+                        Vec3d nextRearAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F);
+                        rearAxelVec = rearAxelVec.add(nextRearAxelVec);
+                        matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
+                        this.renderSteeringLine(matrixStack, 0xFFDD00);
+                    }
+                    matrixStack.pop();
                 }
                 matrixStack.pop();
             }

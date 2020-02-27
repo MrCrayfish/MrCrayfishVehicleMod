@@ -99,6 +99,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
             Vec3d rearAxelVec = properties.getRearAxelVec().scale(bodyPosition.getScale());
             rearAxelVec = rearAxelVec.scale(0.0625);
+            Vec3d nextRearAxelVec = new Vec3d(0, 0, currentSpeed / 20F);
+            rearAxelVec = rearAxelVec.add(nextRearAxelVec);
             double angle = Math.atan2(rearAxelVec.z - frontAxelVec.z, rearAxelVec.x - frontAxelVec.x);
             angle = Math.toDegrees(angle) + 90.0;
             this.rotationYaw += angle;
