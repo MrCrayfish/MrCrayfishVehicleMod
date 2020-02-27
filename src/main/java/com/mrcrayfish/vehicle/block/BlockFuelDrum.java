@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class BlockFuelDrum extends BlockRotatedObject implements IBucketPickupHandler, ILiquidContainer
+public class BlockFuelDrum extends BlockRotatedObject
 {
     private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
 
@@ -172,56 +172,5 @@ public class BlockFuelDrum extends BlockRotatedObject implements IBucketPickupHa
             }
         }
         return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
-    }
-
-    @Override
-    public Fluid pickupFluid(IWorld worldIn, BlockPos pos, BlockState state)
-    {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof TileFluidHandler)
-        {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).orElse(null);
-            if(handler != null)
-            {
-                FluidStack stack = handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.SIMULATE);
-                if(stack.getAmount() == FluidAttributes.BUCKET_VOLUME)
-                {
-                    stack = handler.drain(FluidAttributes.BUCKET_VOLUME, IFluidHandler.FluidAction.EXECUTE);
-                    return stack.getFluid();
-                }
-            }
-        }
-        return Fluids.EMPTY;
-    }
-
-    @Override
-    public boolean canContainFluid(IBlockReader worldIn, BlockPos pos, BlockState state, Fluid fluidIn)
-    {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof TileFluidHandler)
-        {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).orElse(null);
-            if(handler != null)
-            {
-                return handler.isFluidValid(0, new FluidStack(fluidIn, FluidAttributes.BUCKET_VOLUME));
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean receiveFluid(IWorld worldIn, BlockPos pos, BlockState state, IFluidState fluidStateIn)
-    {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
-        if(tileEntity instanceof TileFluidHandler)
-        {
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, null).orElse(null);
-            if(handler != null)
-            {
-                handler.fill(new FluidStack(fluidStateIn.getFluid(), FluidAttributes.BUCKET_VOLUME), IFluidHandler.FluidAction.EXECUTE);
-                return true;
-            }
-        }
-        return false;
     }
 }
