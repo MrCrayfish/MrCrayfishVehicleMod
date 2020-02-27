@@ -11,6 +11,7 @@ public class Config
     public static class Client
     {
         public final ForgeConfigSpec.BooleanValue renderOutlines;
+        public final ForgeConfigSpec.BooleanValue renderSteeringDebug;
         public final ForgeConfigSpec.BooleanValue reloadRayTracerEachTick;
         public final ForgeConfigSpec.BooleanValue enabledLeftClick;
         public final ForgeConfigSpec.BooleanValue enabledSpeedometer;
@@ -24,6 +25,7 @@ public class Config
             {
                 builder.comment("Configuration options for debugging vehicles").push("debug");
                 this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.").translation(Reference.MOD_ID + ".config.client.debug.render_outlines").define("renderOutlines", false);
+                this.renderSteeringDebug = builder.comment("If true, renders lines to help visualise steering direction and target position.").translation(Reference.MOD_ID + ".config.client.debug.render_steering_debug").define("renderSteeringDebug", false);
                 this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
                 builder.pop();
 

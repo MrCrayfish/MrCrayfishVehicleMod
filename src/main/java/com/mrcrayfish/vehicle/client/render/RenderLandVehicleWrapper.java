@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.SpecialModel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -113,85 +114,67 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             }
         }
 
-        if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
+        if(Config.CLIENT.renderSteeringDebug.get())
         {
-            matrixStack.push();
+            if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
             {
-                matrixStack.translate(0.0, -0.5, 0.0);
-                matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
-                matrixStack.translate(0.0, -properties.getWheelOffset() * 0.0625, 0.0);
-
                 matrixStack.push();
                 {
-                    Vec3d frontAxelVec = properties.getFrontAxelVec();
-                    frontAxelVec = frontAxelVec.scale(0.0625);
-                    matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
+                    matrixStack.translate(0.0, -0.5, 0.0);
+                    matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
+                    matrixStack.translate(0.0, -properties.getWheelOffset() * 0.0625, 0.0);
 
-                    RenderSystem.disableTexture();
-                    RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
-                    RenderSystem.enableDepthTest();
-                    Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder buffer = tessellator.getBuffer();
+                    matrixStack.push();
+                    {
+                        Vec3d frontAxelVec = properties.getFrontAxelVec();
+                        frontAxelVec = frontAxelVec.scale(0.0625);
+                        matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
+                        this.renderSteeringLine(matrixStack, 0xFFFFFF);
+                    }
+                    matrixStack.pop();
 
-                    buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                    tessellator.draw();
+                    matrixStack.push();
+                    {
+                        Vec3d frontAxelVec = properties.getFrontAxelVec();
+                        frontAxelVec = frontAxelVec.scale(0.0625);
+                        Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
+                        frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
+                        matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
+                        this.renderSteeringLine(matrixStack, 0xFFDD00);
+                    }
+                    matrixStack.pop();
 
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.enableTexture();
-                }
-                matrixStack.pop();
-
-                matrixStack.push();
-                {
-                    Vec3d frontAxelVec = properties.getFrontAxelVec();
-                    frontAxelVec = frontAxelVec.scale(0.0625);
-                    Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
-                    frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
-                    matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
-
-                    RenderSystem.disableTexture();
-                    RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
-                    RenderSystem.enableDepthTest();
-                    Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder buffer = tessellator.getBuffer();
-
-                    buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                    tessellator.draw();
-
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.enableTexture();
-                }
-                matrixStack.pop();
-
-                matrixStack.push();
-                {
-                    Vec3d rearAxelVec = properties.getRearAxelVec();
-                    rearAxelVec = rearAxelVec.scale(0.0625);
-                    matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
-
-                    RenderSystem.disableTexture();
-                    RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
-                    RenderSystem.enableDepthTest();
-                    Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder buffer = tessellator.getBuffer();
-
-                    buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                    buffer.pos(matrixStack.getLast().getPositionMatrix(), 0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                    tessellator.draw();
-
-                    RenderSystem.disableDepthTest();
-                    RenderSystem.enableTexture();
+                    matrixStack.push();
+                    {
+                        Vec3d rearAxelVec = properties.getRearAxelVec();
+                        rearAxelVec = rearAxelVec.scale(0.0625);
+                        matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
+                        this.renderSteeringLine(matrixStack, 0xFFFFFF);
+                    }
+                    matrixStack.pop();
                 }
                 matrixStack.pop();
             }
             matrixStack.pop();
         }
-        matrixStack.pop();
+    }
+
+    private void renderSteeringLine(MatrixStack stack, int color)
+    {
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float green = (float) (color >> 8 & 255) / 255.0F;
+        float blue = (float) (color & 255) / 255.0F;
+        RenderSystem.disableTexture();
+        RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
+        RenderSystem.enableDepthTest();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, 0).color(red, green, blue, 1.0F).endVertex();
+        buffer.pos(stack.getLast().getPositionMatrix(), 0, 1, 0).color(red, green, blue, 1.0F).endVertex();
+        tessellator.draw();
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableTexture();
     }
 
     protected void renderWheel(LandVehicleEntity vehicle, Wheel wheel, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
