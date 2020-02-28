@@ -718,9 +718,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void updatePassenger(Entity passenger)
     {
         super.updatePassenger(passenger);
-        //TODO change to config option
-        passenger.rotationYaw -= this.deltaYaw;
-        passenger.setRotationYawHead(passenger.rotationYaw);
+        if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
+        {
+            passenger.rotationYaw -= this.deltaYaw;
+            passenger.setRotationYawHead(passenger.rotationYaw);
+        }
         super.applyYawToEntity(passenger);
     }
 

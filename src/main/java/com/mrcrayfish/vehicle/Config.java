@@ -18,6 +18,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue autoPerspective;
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
         public final ForgeConfigSpec.BooleanValue useTriggers;
+        public final ForgeConfigSpec.BooleanValue rotateCameraWithVehicle;
 
         Client(ForgeConfigSpec.Builder builder)
         {
@@ -37,6 +38,7 @@ public class Config
                 this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle").translation(Reference.MOD_ID + ".config.client.display.speedometer").define("enabledSpeedometer", true);
                 this.autoPerspective = builder.comment("If true, automatically switches to third person when mounting vehicles").translation(Reference.MOD_ID + ".config.client.display.auto_perspective").define("autoPerspective", true);
                 this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation").translation(Reference.MOD_ID + ".config.client.display.workstation_animation").define("workstationAnimation", true);
+                this.rotateCameraWithVehicle = builder.comment("If true, automatically rotates the camera when turning in a vehicle").translation(Reference.MOD_ID + ".config.client.display.rotate_camera").define("rotateCameraWithVehicle", true);
                 builder.pop();
 
                 builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");

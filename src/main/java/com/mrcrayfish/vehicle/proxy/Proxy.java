@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.proxy;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -79,5 +80,10 @@ public interface Proxy
     default float getPower(PoweredVehicleEntity vehicle)
     {
         return 1.0F;
+    }
+
+    default boolean canApplyVehicleYaw(Entity passenger)
+    {
+        return false;
     }
 }

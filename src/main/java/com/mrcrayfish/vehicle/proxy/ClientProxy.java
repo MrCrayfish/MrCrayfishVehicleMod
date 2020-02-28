@@ -565,4 +565,14 @@ public class ClientProxy implements Proxy
             }
         });
     }
+
+    @Override
+    public boolean canApplyVehicleYaw(Entity passenger)
+    {
+        if(passenger.equals(Minecraft.getInstance().player))
+        {
+            return Config.CLIENT.rotateCameraWithVehicle.get();
+        }
+        return false;
+    }
 }
