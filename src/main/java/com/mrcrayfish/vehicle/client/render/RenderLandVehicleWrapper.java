@@ -162,6 +162,10 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
                         Vec3d rearAxelVec = properties.getRearAxelVec();
                         rearAxelVec = rearAxelVec.scale(0.0625);
                         double deltaYaw = Math.toDegrees(Math.atan2(rearAxelVec.z - frontAxelVec.z, rearAxelVec.x - frontAxelVec.x)) + 90;
+                        if(entity.isRearWheelSteering())
+                        {
+                            deltaYaw += 180;
+                        }
                         rearAxelVec = rearAxelVec.add(Vec3d.fromPitchYaw(0, (float) deltaYaw).scale(entity.getSpeed() / 20F));
                         matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFDD00);

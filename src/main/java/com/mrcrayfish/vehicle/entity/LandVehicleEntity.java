@@ -98,6 +98,10 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             Vec3d nextRearAxelVec = new Vec3d(0, 0, currentSpeed / 20F);
             nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
             double deltaYaw = Math.toDegrees(Math.atan2(nextRearAxelVec.z - nextFrontAxelVec.z, nextRearAxelVec.x - nextFrontAxelVec.x)) + 90;
+            if(this.isRearWheelSteering())
+            {
+                deltaYaw -= 180;
+            }
             this.rotationYaw += deltaYaw;
             this.deltaYaw = (float) -deltaYaw;
 
@@ -259,5 +263,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public float getModifiedRotationYaw()
     {
         return this.rotationYaw - this.additionalYaw;
+    }
+
+    public boolean isRearWheelSteering()
+    {
+        VehicleProperties properties = this.getProperties();
+        return properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null && properties.getFrontAxelVec().z < properties.getRearAxelVec().z;
     }
 }
