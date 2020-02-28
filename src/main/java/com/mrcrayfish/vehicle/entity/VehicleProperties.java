@@ -77,6 +77,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F, false, true);
+        properties.setFrontAxelVec(0, 8.5);
+        properties.setRearAxelVec(0, -8.5);
         VehicleProperties.setProperties(ModEntities.BUMPER_CAR, properties);
 
         /* Dune Buggy */
@@ -90,6 +92,8 @@ public class VehicleProperties
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.75F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 2.4F, -5.7F, 1.0F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 2.4F, -5.7F, 1.0F, true, true);
+        properties.setFrontAxelVec(0, 5.3);
+        properties.setRearAxelVec(0, -5.7);
         VehicleProperties.setProperties(ModEntities.DUNE_BUGGY, properties);
 
         /* Go Kart */
@@ -122,6 +126,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.75F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F, true, true);
+        properties.setFrontAxelVec(0, 16.0);
+        properties.setRearAxelVec(0, -12.5);
         VehicleProperties.setProperties(ModEntities.GOLF_CART, properties);
 
         /* Jet Ski */
@@ -149,6 +155,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.15F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 1.55F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 1.55F, true, true);
+        properties.setFrontAxelVec(0, 13.5);
+        properties.setRearAxelVec(0, -10.7);
         VehicleProperties.setProperties(ModEntities.LAWN_MOWER, properties);
 
         /* Mini Bike */
@@ -177,6 +185,8 @@ public class VehicleProperties
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.5F, true, true);
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.4F, 14.5F, 1.3F, true, false);
+        properties.setFrontAxelVec(0, 14.5);
+        properties.setRearAxelVec(0, -6.7);
         VehicleProperties.setProperties(ModEntities.MOPED, properties);
 
         /* Off Roader */
@@ -208,6 +218,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F, false, true);
+        properties.setFrontAxelVec(0, 9.5);
+        properties.setRearAxelVec(0, -10.5);
         VehicleProperties.setProperties(ModEntities.SHOPPING_CART, properties);
 
         /* Smart Car */
@@ -223,6 +235,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 12F, 1.5F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, -12F, 1.5F, false, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7F, -12F, 1.5F, false, true);
+        properties.setFrontAxelVec(0, 12);
+        properties.setRearAxelVec(0, -12);
         VehicleProperties.setProperties(ModEntities.SMART_CAR, properties);
 
         /* Speed Boat */
@@ -258,6 +272,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 1.5F, 2.25F, 2.25F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 3.0F, 4.5F, 4.5F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 3.0F, 4.5F, 4.5F, true, true);
+        properties.setFrontAxelVec(0, 14.0);
+        properties.setRearAxelVec(0, -14.5);
         VehicleProperties.setProperties(ModEntities.TRACTOR, properties);
 
         /* Fertilizer Trailer */
@@ -315,6 +331,8 @@ public class VehicleProperties
             properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0625F, 7.0F, 1.75F, false, true);
             properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F, true, true);
             properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F, true, true);
+            properties.setFrontAxelVec(0, 7.0);
+            properties.setRearAxelVec(0, -7.0);
             VehicleProperties.setProperties(ModEntities.SOFA, properties);
 
             /* Sofacopter */
