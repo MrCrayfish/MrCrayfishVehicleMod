@@ -178,19 +178,23 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
                         nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
                         nextVehicleVec = nextVehicleVec.scale(bodyPosition.getScale());
                         matrixStack.push();
-                        this.renderSteeringLine(matrixStack, 0xFFFFFF);
+                        {
+                            this.renderSteeringLine(matrixStack, 0xFFFFFF);
+                        }
                         matrixStack.pop();
                         matrixStack.push();
-                        matrixStack.translate(nextVehicleVec.x, 0, nextVehicleVec.z);
-                        this.renderSteeringLine(matrixStack, 0xFFDD00);
+                        {
+                            matrixStack.translate(nextVehicleVec.x, 0, nextVehicleVec.z);
+                            this.renderSteeringLine(matrixStack, 0xFFDD00);
+                        }
                         matrixStack.pop();
                     }
                     matrixStack.pop();
                 }
                 matrixStack.pop();
             }
-            matrixStack.pop();
         }
+        matrixStack.pop();
     }
 
     private void renderSteeringLine(MatrixStack stack, int color)
