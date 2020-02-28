@@ -155,12 +155,35 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
 
                     matrixStack.push();
                     {
+                        Vec3d frontAxelVec = properties.getFrontAxelVec();
+                        frontAxelVec = frontAxelVec.scale(0.0625);
+                        Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
+                        frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
                         Vec3d rearAxelVec = properties.getRearAxelVec();
                         rearAxelVec = rearAxelVec.scale(0.0625);
-                        Vec3d nextRearAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F);
-                        rearAxelVec = rearAxelVec.add(nextRearAxelVec);
+                        double deltaYaw = Math.toDegrees(Math.atan2(rearAxelVec.z - frontAxelVec.z, rearAxelVec.x - frontAxelVec.x)) + 90;
+                        rearAxelVec = rearAxelVec.add(Vec3d.fromPitchYaw(0, (float) deltaYaw).scale(entity.getSpeed() / 20F));
                         matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFDD00);
+                    }
+                    matrixStack.pop();
+
+                    matrixStack.push();
+                    {
+                        Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.wheelAngle * 0.017453292F);
+                        nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
+                        Vec3d nextRearAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F);
+                        nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
+                        Vec3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5).add(bodyPosition.getTranslate());
+                        nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
+                        nextVehicleVec = nextVehicleVec.scale(bodyPosition.getScale());
+                        matrixStack.push();
+                        this.renderSteeringLine(matrixStack, 0xFFFFFF);
+                        matrixStack.pop();
+                        matrixStack.push();
+                        matrixStack.translate(nextVehicleVec.x, 0, nextVehicleVec.z);
+                        this.renderSteeringLine(matrixStack, 0xFFDD00);
+                        matrixStack.pop();
                     }
                     matrixStack.pop();
                 }
@@ -182,7 +205,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, 0).color(red, green, blue, 1.0F).endVertex();
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 1, 0).color(red, green, blue, 1.0F).endVertex();
+        buffer.pos(stack.getLast().getPositionMatrix(), 0, 2, 0).color(red, green, blue, 1.0F).endVertex();
         tessellator.draw();
         RenderSystem.disableDepthTest();
         RenderSystem.enableTexture();

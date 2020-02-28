@@ -363,7 +363,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.setSpeed(this.currentSpeed);
 
         /* Updates the direction of the vehicle */
-        this.rotationYaw -= this.deltaYaw;
+        VehicleProperties properties = this.getProperties();
+        if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
+        {
+            this.rotationYaw -= this.deltaYaw;
+        }
 
         /* Updates the vehicle motion and applies it on top of the normal motion */
         this.updateVehicleMotion();
@@ -715,7 +719,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         super.updatePassenger(passenger);
         //TODO change to config option
-        passenger.rotationYaw -= deltaYaw;
+        passenger.rotationYaw -= this.deltaYaw;
         passenger.setRotationYawHead(passenger.rotationYaw);
         super.applyYawToEntity(passenger);
     }

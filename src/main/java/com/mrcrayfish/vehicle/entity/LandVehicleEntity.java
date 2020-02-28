@@ -93,20 +93,21 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
         {
             PartPosition bodyPosition = properties.getBodyPosition();
-            Vec3d frontAxelVec = properties.getFrontAxelVec().scale(bodyPosition.getScale());
-            frontAxelVec = frontAxelVec.scale(0.0625);
             Vec3d nextFrontAxelVec = new Vec3d(0, 0, currentSpeed / 20F).rotateYaw(this.wheelAngle * 0.017453292F);
-            frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
-            Vec3d rearAxelVec = properties.getRearAxelVec().scale(bodyPosition.getScale());
-            rearAxelVec = rearAxelVec.scale(0.0625);
+            nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
             Vec3d nextRearAxelVec = new Vec3d(0, 0, currentSpeed / 20F);
-            rearAxelVec = rearAxelVec.add(nextRearAxelVec);
-            double angle = Math.atan2(rearAxelVec.z - frontAxelVec.z, rearAxelVec.x - frontAxelVec.x);
-            angle = Math.toDegrees(angle) + 90.0;
-            this.rotationYaw += angle;
+            nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
+            double deltaYaw = Math.toDegrees(Math.atan2(nextRearAxelVec.z - nextFrontAxelVec.z, nextRearAxelVec.x - nextFrontAxelVec.x)) + 90;
+            this.rotationYaw += deltaYaw;
+            this.deltaYaw = (float) -deltaYaw;
 
-            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
-            float f2 = MathHelper.cos((this.rotationYaw) * 0.017453292F) / 20F;
+            Vec3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5).add(bodyPosition.getTranslate());
+            nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
+            nextVehicleVec = nextVehicleVec.scale(bodyPosition.getScale()).rotateYaw((-this.rotationYaw + 90) * 0.017453292F);
+
+            float targetRotation = (float) Math.toDegrees(Math.atan2(nextVehicleVec.z, nextVehicleVec.x));
+            float f1 = MathHelper.sin(targetRotation * 0.017453292F) / 20F * (currentSpeed > 0 ? 1 : -1);
+            float f2 = MathHelper.cos(targetRotation * 0.017453292F) / 20F * (currentSpeed > 0 ? 1 : -1);
             this.vehicleMotionX = (-currentSpeed * f1);
             if(!launching)
             {
@@ -116,7 +117,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
         else
         {
-            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
+            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F;
             float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
             this.vehicleMotionX = (-currentSpeed * f1);
             if(!launching)
@@ -131,8 +132,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     protected void updateTurning()
     {
         this.turnAngle = VehicleMod.PROXY.getTargetTurnAngle(this, this.isDrifting());
-        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
-        this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
+        this.wheelAngle = this.turnAngle * Math.max(0.1F, 1.0F - Math.abs(currentSpeed / this.getMaxSpeed()));
+
+        VehicleProperties properties = this.getProperties();
+        if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
+        {
+            this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
+        }
 
         if(world.isRemote)
         {
