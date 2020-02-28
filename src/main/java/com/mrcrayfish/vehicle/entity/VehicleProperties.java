@@ -105,6 +105,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 1.4F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F, true, true);
+        properties.setFrontAxelVec(0, 13.5);
+        properties.setRearAxelVec(0, -8.5);
         VehicleProperties.setProperties(ModEntities.GO_KART, properties);
 
         /* Golf Cart */
@@ -160,6 +162,8 @@ public class VehicleProperties
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.65F, true, true);
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.5F + 1.7F * 0.0625F, 13.0F, 1.65F, true, false);
+        properties.setFrontAxelVec(0, 13);
+        properties.setRearAxelVec(0, -6.7);
         VehicleProperties.setProperties(ModEntities.MINI_BIKE, properties);
 
         /* Moped */
@@ -179,7 +183,7 @@ public class VehicleProperties
         properties = new VehicleProperties();
         properties.setAxleOffset(-1.0F);
         properties.setWheelOffset(5.4F);
-        properties.setBodyPosition(new PartPosition(0, 0, -0.125, 0, 0, 0, 1.4));
+        properties.setBodyPosition(new PartPosition(0, 0, 0, 0, 0, 0, 1.4));
         properties.setFuelPortPosition(new PartPosition(-12.0, 8.5, -6.5, 0, -90, 0, 0.25));
         properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
@@ -188,6 +192,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 10.0F, 14.5F, 2.25F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F, true, true);
+        properties.setFrontAxelVec(0, 14.5);
+        properties.setRearAxelVec(0, -14.5);
         VehicleProperties.setProperties(ModEntities.OFF_ROADER, properties);
 
         /* Shopping Cart */
