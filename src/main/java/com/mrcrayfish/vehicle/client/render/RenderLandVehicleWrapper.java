@@ -178,9 +178,8 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
                         nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
                         Vec3d nextRearAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F);
                         nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
-                        Vec3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5).add(bodyPosition.getTranslate());
+                        Vec3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5);
                         nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
-                        nextVehicleVec = nextVehicleVec.scale(bodyPosition.getScale());
                         matrixStack.push();
                         {
                             this.renderSteeringLine(matrixStack, 0xFFFFFF);
