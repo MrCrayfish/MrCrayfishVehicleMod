@@ -9,6 +9,9 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 
 /**
@@ -54,7 +57,8 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
             }
             matrixStack.scale((float) wheelScale, (float) wheelScale, (float) wheelScale);
             matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
-            this.renderDamagedPart(entity, RenderUtil.getModel(ItemLookup.getWheel(entity)), matrixStack, renderTypeBuffer, light);
+            IBakedModel wheelModel = RenderUtil.getWheelModel(entity);
+            RenderUtil.renderColoredModel(wheelModel, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getWheelColor(), light, OverlayTexture.DEFAULT_LIGHT);
             matrixStack.pop();
         }
 

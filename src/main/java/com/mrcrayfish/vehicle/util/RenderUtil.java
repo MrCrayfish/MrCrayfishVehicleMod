@@ -4,6 +4,8 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
+import com.mrcrayfish.vehicle.common.ItemLookup;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.*;
@@ -13,6 +15,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
 import org.lwjgl.opengl.GL11;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -177,5 +180,41 @@ public class RenderUtil
             float blue = (float) (tintColor & 255) / 255.0F;
             vertexBuilder.addVertexData(entry, quad, red, green, blue, lightTexture, overlayTexture);
         }
+    }
+
+    /**
+     * Gets an IBakedModel of the wheel currently on a powered vehicle.
+     * If there are no wheels installed on the vehicle, a null model will be returned.
+     *
+     * @param entity the powered vehicle to get the wheel model from
+     * @return an IBakedModel of the wheel or null if wheels are not present
+     */
+    @Nullable
+    public static IBakedModel getWheelModel(PoweredVehicleEntity entity)
+    {
+        ItemStack stack = ItemLookup.getWheel(entity);
+        if(!stack.isEmpty())
+        {
+            return RenderUtil.getModel(stack);
+        }
+        return null;
+    }
+
+    /**
+     * Gets an IBakedModel of the engine currently on a powered vehicle.
+     * If there is no engine installed in the vehicle, a null model will be returned.
+     *
+     * @param entity the powered vehicle to get the engine model from
+     * @return an IBakedModel of the engine or null if the engine is not present
+     */
+    @Nullable
+    public static IBakedModel getEngineModel(PoweredVehicleEntity entity)
+    {
+        ItemStack stack = ItemLookup.getEngine(entity);
+        if(!stack.isEmpty())
+        {
+            return RenderUtil.getModel(stack);
+        }
+        return null;
     }
 }
