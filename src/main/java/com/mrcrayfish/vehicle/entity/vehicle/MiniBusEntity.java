@@ -4,61 +4,53 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
-import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Author: MrCrayfish
  */
-public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
+public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
 {
-    public OffRoaderEntity(World worldIn)
+    public MiniBusEntity(World worldIn)
     {
-        super(ModEntities.OFF_ROADER, worldIn);
-        this.setMaxSpeed(18F);
-        this.setFuelCapacity(25000F);
+        super(ModEntities.MINI_BUS, worldIn);
+        this.setMaxSpeed(15F);
+        this.setTurnSensitivity(2);
+        this.setFuelCapacity(30000F);
+        this.setFuelConsumption(0.375F);
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO;
+        return null;
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+        return null;
     }
 
     @Override
     public EngineType getEngineType()
     {
-        return EngineType.LARGE_MOTOR;
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.6F;
+        return null;
     }
 
     @Override
     public double getMountedYOffset()
     {
-        return 12 * 0.0625;
+        return 0.625;
+    }
+
+    @Override
+    public boolean canBeColored()
+    {
+        return true;
     }
 
     @Override
@@ -66,7 +58,7 @@ public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytrace
     {
         if (this.isPassenger(passenger))
         {
-            float xOffset = -0.3875F;
+            float xOffset = 0.9F;
             float yOffset = (float)((!this.isAlive() ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
             float zOffset = 0.4F;
 
@@ -79,15 +71,6 @@ public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytrace
                     zOffset -= (index % 2) * 0.8125F;
                 }
 
-                if(index == 2)
-                {
-                    yOffset += 0.625F;
-                }
-                else if(index == 3)
-                {
-                    xOffset -= 0.4375F;
-                }
-
                 Vec3d vec3d = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-(this.rotationYaw - additionalYaw) * 0.017453292F - ((float)Math.PI / 2F));
                 passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double)yOffset, this.getPosZ() + vec3d.z);
                 passenger.rotationYaw -= deltaYaw;
@@ -97,28 +80,4 @@ public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytrace
         }
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void applyOrientationToEntity(Entity entityToUpdate)
-    {
-        this.applyYawToEntity(entityToUpdate);
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return this.getPassengers().size() < 4;
-    }
-
-    @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
-    }
 }

@@ -19,6 +19,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
         public final ForgeConfigSpec.BooleanValue useTriggers;
         public final ForgeConfigSpec.BooleanValue rotateCameraWithVehicle;
+        public final ForgeConfigSpec.BooleanValue reloadVehiclePropertiesEachTick;
 
         Client(ForgeConfigSpec.Builder builder)
         {
@@ -28,6 +29,7 @@ public class Config
                 this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.").translation(Reference.MOD_ID + ".config.client.debug.render_outlines").define("renderOutlines", false);
                 this.renderSteeringDebug = builder.comment("If true, renders lines to help visualise steering direction and target position.").translation(Reference.MOD_ID + ".config.client.debug.render_steering_debug").define("renderSteeringDebug", false);
                 this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
+                this.reloadVehiclePropertiesEachTick = builder.comment("If true, the vehicle properties will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.properties.continuous_reload").define("reloadVehiclePropertiesEachTick", false);
                 builder.pop();
 
                 builder.comment("Configuration options for vehicle interaction").push("interaction");

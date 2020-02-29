@@ -68,18 +68,20 @@ public class Names
     {
         /* Other */
         public static final String JACK = PREFIX + "jack";
-        public static final String SOFACOPTER = PREFIX + "sofacopter";
-        public static final String BATH = PREFIX + "bath";
 
         /* Special Vehicles */
         public static final String SOFA = PREFIX + "couch";
+        public static final String SOFACOPTER = PREFIX + "sofacopter";
+        public static final String BATH = PREFIX + "bath";
+
+        /* Trailers */
+        public static final String VEHICLE_TRAILER = PREFIX + "vehicle_trailer";
         public static final String FERTILIZER = PREFIX + "fertilizer";
         public static final String SEEDER = PREFIX + "seeder";
         public static final String FLUID_TRAILER = PREFIX + "fluid_trailer";
         public static final String STORAGE_TRAILER = PREFIX + "storage_trailer";
 
-        /* Trailers */
-        public static final String VEHICLE_TRAILER = PREFIX + "vehicle_trailer";
+        public static final String MINI_BUS = PREFIX + "mini_bus";
         public static final String TRACTOR = PREFIX + "tractor";
         public static final String OFF_ROADER = PREFIX + "off_roader";
         public static final String GOLF_CART = PREFIX + "golf_cart";

@@ -46,6 +46,7 @@ public class ModEntities
     public static final EntityType<GolfCartEntity> GOLF_CART = buildVehicleType(Names.Entity.GOLF_CART, GolfCartEntity::new, 2.0F, 1.0F);
     public static final EntityType<OffRoaderEntity> OFF_ROADER = buildVehicleType(Names.Entity.OFF_ROADER, OffRoaderEntity::new, 2.0F, 1.0F);
     public static final EntityType<TractorEntity> TRACTOR = buildVehicleType(Names.Entity.TRACTOR, TractorEntity::new, 1.5F, 1.5F);
+    public static final EntityType<MiniBusEntity> MINI_BUS = buildVehicleType(Names.Entity.MINI_BUS, MiniBusEntity::new, 2.0F, 2.0F);
 
     /* Trailers */
     public static final EntityType<VehicleEntityTrailer> VEHICLE_TRAILER = buildVehicleType(Names.Entity.VEHICLE_TRAILER, VehicleEntityTrailer::new, 1.5F, 1.5F);

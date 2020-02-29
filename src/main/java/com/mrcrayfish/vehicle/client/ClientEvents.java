@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -243,6 +244,11 @@ public class ClientEvents
         PlayerEntity player = Minecraft.getInstance().player;
         if(event.phase == TickEvent.Phase.END && player != null)
         {
+            if(Config.CLIENT.reloadVehiclePropertiesEachTick.get())
+            {
+                VehicleProperties.register();
+            }
+
             int slot = player.inventory.currentItem;
             if(this.lastSlot != slot)
             {
