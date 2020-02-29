@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.SpeedBoatEntity;
@@ -19,16 +20,16 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.SPEED_BOAT_BODY;
+        return SpecialModels.SPEED_BOAT_BODY;
     }
 
     @Override
     public void render(SpeedBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModel.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.push();
         matrixStack.translate(0, 0.215, -0.125);
@@ -38,7 +39,7 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
         matrixStack.pop();
     }
 

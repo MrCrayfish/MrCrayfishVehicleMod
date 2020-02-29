@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.SofacopterEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -16,21 +17,21 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.RED_SOFA;
+        return SpecialModels.RED_SOFA;
     }
 
     @Override
     public void render(SofacopterEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.push();
-        this.renderDamagedPart(entity, SpecialModel.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
 
         matrixStack.push();
         matrixStack.translate(0.0, 8 * 0.0625, 0.0);
-        this.renderDamagedPart(entity, SpecialModel.SOFA_HELICOPTER_ARM.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.SOFA_HELICOPTER_ARM.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
 
         matrixStack.push();
@@ -38,7 +39,7 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
         float bladeRotation = entity.prevBladeRotation + (entity.bladeRotation - entity.prevBladeRotation) * partialTicks;
         matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(bladeRotation));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
 
        /* GlStateManager.pushMatrix();

@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
@@ -49,15 +50,15 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
     }
 
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.MOPED_BODY;
+        return SpecialModels.MOPED_BODY;
     }
 
     @Override
     public void render(MopedEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.push();
 
@@ -76,7 +77,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
         matrixStack.push();
         matrixStack.translate(0, 0.835, 0.525);
         matrixStack.scale(0.8F, 0.8F, 0.8F);
-        this.renderDamagedPart(entity, SpecialModel.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
 
         //Render front bar and mud guard
@@ -85,7 +86,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
             matrixStack.translate(0, -0.12, 0.785);
             matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-22.5F));
             matrixStack.scale(0.9F, 0.9F, 0.9F);
-            this.renderDamagedPart(entity, SpecialModel.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(entity, SpecialModels.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
 

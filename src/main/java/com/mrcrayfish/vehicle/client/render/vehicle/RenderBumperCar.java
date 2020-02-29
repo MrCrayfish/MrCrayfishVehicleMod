@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -18,16 +19,16 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.BUMPER_CAR_BODY;
+        return SpecialModels.BUMPER_CAR_BODY;
     }
 
     @Override
     public void render(BumperCarEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render body
-        this.renderDamagedPart(entity, SpecialModel.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.push();
@@ -41,7 +42,7 @@ public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
 
         matrixStack.pop();
     }

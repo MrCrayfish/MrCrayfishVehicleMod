@@ -1,9 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.entity.vehicle.DuneBuggyEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -20,15 +20,15 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.DUNE_BUGGY_BODY;
+        return SpecialModels.DUNE_BUGGY_BODY;
     }
 
     @Override
     public void render(DuneBuggyEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.DUNE_BUGGY_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         double wheelScale = 1.0F;
@@ -44,7 +44,7 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
         matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(22.5F));
         matrixStack.translate(0.0, 0.0, -0.2);
 
-        this.renderDamagedPart(entity, SpecialModel.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {

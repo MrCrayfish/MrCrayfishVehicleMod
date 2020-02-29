@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
@@ -65,7 +65,7 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
 
             //Render the head
             BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-            IBakedModel model = SpecialModel.JACK_PISTON_HEAD.getModel();
+            IBakedModel model = SpecialModels.JACK_PISTON_HEAD.getModel();
             IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.cutout());
             dispatcher.getBlockModelRenderer().renderModel(jack.getWorld(), model, state, pos, matrixStack, builder, false, new Random(), state.getPositionRandom(pos), OverlayTexture.DEFAULT_LIGHT);
         }

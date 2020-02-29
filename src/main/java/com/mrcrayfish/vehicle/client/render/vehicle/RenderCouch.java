@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.CouchEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -14,9 +15,9 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.RAINBOW_SOFA;
+        return SpecialModels.RAINBOW_SOFA;
     }
 
     @Override

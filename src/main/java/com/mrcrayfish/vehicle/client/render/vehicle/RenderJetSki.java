@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.JetSkiEntity;
@@ -16,16 +17,16 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.JET_SKI_BODY;
+        return SpecialModels.JET_SKI_BODY;
     }
 
     @Override
     public void render(JetSkiEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModel.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.push();
@@ -38,7 +39,7 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         float turnRotation = wheelAngleNormal * 15F;
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        this.renderDamagedPart(entity, SpecialModel.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.pop();
     }

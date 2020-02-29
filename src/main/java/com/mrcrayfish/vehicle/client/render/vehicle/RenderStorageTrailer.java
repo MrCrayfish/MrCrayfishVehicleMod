@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
@@ -32,15 +33,15 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<StorageTrailerEn
     }
 
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.STORAGE_TRAILER;
+        return SpecialModels.STORAGE_TRAILER;
     }
 
     @Override
     public void render(StorageTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
 

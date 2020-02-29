@@ -332,7 +332,7 @@ public class ClientEvents
                 matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(45F));
                 IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
                 int light = Minecraft.getInstance().getRenderManager().func_229085_a_(player, event.getPartialTicks());
-                RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT); //TODO check
+                RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT); //TODO check
                 matrixStack.pop();
                 event.setCanceled(true);
             }
@@ -389,7 +389,7 @@ public class ClientEvents
                     matrixStack.translate((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
                     matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
                     //TODO figure this out. Missing mappings is making this difficult
-                    //RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
+                    //RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
                 }
                 matrixStack.pop();
             }

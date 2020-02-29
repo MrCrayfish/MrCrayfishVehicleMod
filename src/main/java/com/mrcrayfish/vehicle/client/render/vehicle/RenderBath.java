@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.BathEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -16,16 +17,16 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderBath extends AbstractRenderVehicle<BathEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.ATV_BODY;
+        return SpecialModels.ATV_BODY;
     }
 
     @Override
     public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
-        this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
     @Override

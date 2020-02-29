@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.FluidTrailerEntity;
 import net.minecraft.client.Minecraft;
@@ -21,15 +22,15 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class RenderFluidTrailer extends AbstractRenderTrailer<FluidTrailerEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.FLUID_TRAILER;
+        return SpecialModels.FLUID_TRAILER;
     }
 
     @Override
     public void render(FluidTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.FLUID_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.FLUID_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 2.0F, partialTicks, light);
 

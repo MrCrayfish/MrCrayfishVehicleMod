@@ -3,7 +3,8 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.common.ItemLookup;
@@ -1437,11 +1438,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public enum FuelPortType
     {
-        DEFAULT(SpecialModel.FUEL_DOOR_CLOSED, SpecialModel.FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
-        SMALL(SpecialModel.SMALL_FUEL_DOOR_CLOSED, SpecialModel.SMALL_FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
+        DEFAULT(SpecialModels.FUEL_DOOR_CLOSED, SpecialModels.FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
+        SMALL(SpecialModels.SMALL_FUEL_DOOR_CLOSED, SpecialModels.SMALL_FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
 
-        private SpecialModel closed;
-        private SpecialModel open;
+        private ISpecialModel closed;
+        private ISpecialModel open;
         private SoundEvent openSound;
         private SoundEvent closeSound;
         private float openVolume;
@@ -1449,7 +1450,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         private float openPitch;
         private float closePitch;
 
-        FuelPortType(SpecialModel closed, SpecialModel open, SoundEvent openSound, float openVolume, float openPitch, SoundEvent closeCount, float closeVolume, float closePitch)
+        FuelPortType(ISpecialModel closed, ISpecialModel open, SoundEvent openSound, float openVolume, float openPitch, SoundEvent closeCount, float closeVolume, float closePitch)
         {
             this.closed = closed;
             this.open = open;
@@ -1461,12 +1462,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.closePitch = closePitch;
         }
 
-        public SpecialModel getClosedModel()
+        public ISpecialModel getClosedModel()
         {
             return closed;
         }
 
-        public SpecialModel getOpenModel()
+        public ISpecialModel getOpenModel()
         {
             return open;
         }

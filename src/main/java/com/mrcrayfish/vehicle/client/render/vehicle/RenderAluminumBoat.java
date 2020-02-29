@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.AluminumBoatEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -31,15 +32,15 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
     }
 
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.ALUMINUM_BOAT_BODY;
+        return SpecialModels.ALUMINUM_BOAT_BODY;
     }
 
     @Override
     public void render(AluminumBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.waterMask());
         this.noWater.render(matrixStack, buffer, light, OverlayTexture.DEFAULT_LIGHT);
     }

@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -13,7 +14,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,23 +23,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractRenderVehicle<T extends VehicleEntity>
 {
-    protected static final ResourceLocation[] DESTROY_STAGES = new ResourceLocation[]{
-            new ResourceLocation("textures/blocks/destroy_stage_0.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_1.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_2.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_3.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_4.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_5.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_6.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_7.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_8.png"),
-            new ResourceLocation("textures/blocks/destroy_stage_9.png")};
+    public abstract ISpecialModel getBodyModel();
 
-    public abstract SpecialModel getBodyModel();
-
-    public SpecialModel getKeyHoleModel()
+    public ISpecialModel getKeyHoleModel()
     {
-        return SpecialModel.KEY_HOLE;
+        return SpecialModels.KEY_HOLE;
     }
 
     public abstract void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light);

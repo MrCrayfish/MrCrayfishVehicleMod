@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.OffRoaderEntity;
@@ -21,15 +22,15 @@ import java.util.List;
 public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.OFF_ROADER_BODY;
+        return SpecialModels.OFF_ROADER_BODY;
     }
 
     @Override
     public void render(OffRoaderEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.push();
@@ -45,7 +46,7 @@ public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
 
         matrixStack.pop();
     }

@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
@@ -25,16 +26,16 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
     }
 
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.ATV_BODY;
+        return SpecialModels.ATV_BODY;
     }
 
     @Override
     public void render(ATVEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Body
-        this.renderDamagedPart(entity, SpecialModel.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Handle bar transformations
         matrixStack.push();
@@ -47,7 +48,7 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         float turnRotation = wheelAngleNormal * 15F;
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModel.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
 
         matrixStack.pop();
     }

@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.init.ModBlocks;
@@ -153,7 +153,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
                     matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(SpecialModel.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
                 }
                 matrixStack.pop();
             }

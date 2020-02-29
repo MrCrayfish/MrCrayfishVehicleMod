@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.LawnMowerEntity;
@@ -15,16 +16,16 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.LAWN_MOWER_BODY;
+        return SpecialModels.LAWN_MOWER_BODY;
     }
 
     @Override
     public void render(LawnMowerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Body
-        this.renderDamagedPart(entity, SpecialModel.LAWN_MOWER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.LAWN_MOWER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.push();
@@ -38,7 +39,7 @@ public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
         float turnRotation = wheelAngleNormal * 25F;
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
 
-        this.renderDamagedPart(entity, SpecialModel.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.pop();
     }

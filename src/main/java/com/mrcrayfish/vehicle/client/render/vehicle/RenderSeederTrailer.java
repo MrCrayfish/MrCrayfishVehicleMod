@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
@@ -20,16 +21,16 @@ import net.minecraft.item.ItemStack;
 public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.SEEDER_TRAILER;
+        return SpecialModels.SEEDER_TRAILER;
     }
 
     @Override
     public void render(SeederTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModel.SEEDER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.SEEDER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, true, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, false, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
 
@@ -96,7 +97,7 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
         float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
         matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
         matrixStack.scale(0.75F, 0.75F, 0.75F);
-        RenderUtil.renderColoredModel(SpecialModel.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
         matrixStack.pop();
     }
 }

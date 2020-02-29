@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.ItemLookup;
@@ -20,15 +21,15 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.MINI_BIKE_BODY;
+        return SpecialModels.MINI_BIKE_BODY;
     }
 
     @Override
     public void render(MiniBikeEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.push();
@@ -45,7 +46,7 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
         matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(22.5F));
         matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
 
-        this.renderDamagedPart(entity, SpecialModel.MINI_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {

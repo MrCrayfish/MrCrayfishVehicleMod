@@ -13,7 +13,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public enum SpecialModel
+public enum SpecialModels implements ISpecialModel
 {
     ATV_BODY("atv_body"),
     ATV_HANDLES("atv_handles"),
@@ -86,7 +86,7 @@ public enum SpecialModel
      *
      * @param modelName name of the model file
      */
-    SpecialModel(String modelName)
+    SpecialModels(String modelName)
     {
         this(new ResourceLocation(Reference.MOD_ID, "vehicle/" + modelName), true);
     }
@@ -96,7 +96,7 @@ public enum SpecialModel
      *
      * @param resource name of the model file
      */
-    SpecialModel(ResourceLocation resource, boolean specialModel)
+    SpecialModels(ResourceLocation resource, boolean specialModel)
     {
         this.modelLocation = resource;
         this.specialModel = specialModel;
@@ -107,6 +107,7 @@ public enum SpecialModel
      *
      * @return isolated model
      */
+    @Override
     @OnlyIn(Dist.CLIENT)
     public IBakedModel getModel()
     {
@@ -126,7 +127,7 @@ public enum SpecialModel
     @OnlyIn(Dist.CLIENT)
     public static void register(ModelRegistryEvent event)
     {
-        for(SpecialModel model : values())
+        for(SpecialModels model : values())
         {
             if(model.specialModel)
             {

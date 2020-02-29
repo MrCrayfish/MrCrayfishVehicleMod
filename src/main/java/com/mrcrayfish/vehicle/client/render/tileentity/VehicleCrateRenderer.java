@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
@@ -75,7 +75,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
             }
             matrixStack.translate(0.0, 0.5, 0.0);
             matrixStack.translate(0, 0, -2 * 0.0625);
-            RenderUtil.renderColoredModel(SpecialModel.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
             matrixStack.pop();
         }
 
@@ -87,7 +87,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
             matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-90F));
             matrixStack.scale(1.005F, 1.005F, 1.005F);
             matrixStack.translate(0, 0, (6 * 0.0625) * 0.998);
-            RenderUtil.renderColoredModel(SpecialModel.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
             matrixStack.pop();
         }
 
@@ -97,7 +97,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
         matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
         matrixStack.scale(1.001F, 1.001F, 1.001F);
         matrixStack.translate(0, 0, (6 * 0.0625) * 0.998);
-        RenderUtil.renderColoredModel(SpecialModel.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
         matrixStack.pop();
 
         matrixStack.pop();

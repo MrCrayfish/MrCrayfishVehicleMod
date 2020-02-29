@@ -2,7 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModel;
+import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
@@ -21,15 +22,15 @@ import net.minecraft.item.ItemStack;
 public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
 {
     @Override
-    public SpecialModel getBodyModel()
+    public ISpecialModel getBodyModel()
     {
-        return SpecialModel.SPORTS_PLANE;
+        return SpecialModels.SPORTS_PLANE;
     }
 
     @Override
     public void render(SportsPlaneEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.push();
         {
@@ -37,7 +38,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.translate(8 * 0.0625, 0, 0);
             matrixStack.translate(6 * 0.0625, 0, 0);
             matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-5F));
-            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
 
@@ -48,7 +49,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.translate(8 * 0.0625, 0.0625, 0);
             matrixStack.translate(6 * 0.0625, 0, 0);
             matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(5F));
-            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
 
@@ -67,7 +68,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             float propellerRotation = entity.prevPropellerRotation + (entity.propellerRotation - entity.prevPropellerRotation) * partialTicks;
             matrixStack.translate(0, -1.5 * 0.0625, 22.2 * 0.0625);
             matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(propellerRotation));
-            this.renderDamagedPart(entity, SpecialModel.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
     }
@@ -77,7 +78,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
         matrixStack.push();
         {
             matrixStack.translate(offsetX, offsetY, offsetZ);
-            this.renderDamagedPart(vehicle, SpecialModel.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer, light);
 
             matrixStack.push();
             {
@@ -97,7 +98,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.pop();
 
             matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(legRotation));
-            this.renderDamagedPart(vehicle, SpecialModel.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
     }
