@@ -30,6 +30,11 @@ public abstract class AbstractRenderVehicle<T extends VehicleEntity>
         return SpecialModels.KEY_HOLE;
     }
 
+    public ISpecialModel getTowBarModel()
+    {
+        return SpecialModels.TOW_BAR;
+    }
+
     public abstract void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light);
 
     public void applyPlayerModel(T entity, PlayerEntity player, PlayerModel<AbstractClientPlayerEntity> model, float partialTicks) {}

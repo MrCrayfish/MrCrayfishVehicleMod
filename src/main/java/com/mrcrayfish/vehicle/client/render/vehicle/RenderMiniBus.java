@@ -29,6 +29,12 @@ public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
     }
 
     @Override
+    public ISpecialModel getTowBarModel()
+    {
+        return SpecialModels.BIG_TOW_BAR;
+    }
+
+    @Override
     public void render(MiniBusEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.MINI_BUS_BODY.getModel(), matrixStack, renderTypeBuffer, light);

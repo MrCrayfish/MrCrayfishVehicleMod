@@ -53,6 +53,7 @@ public enum SpecialModels implements ISpecialModel
     SEED_SPIKER("seed_spiker"),
     NOZZLE("nozzle"),
     TOW_BAR("tow_bar"),
+    BIG_TOW_BAR("big_tow_bar"),
     FUEL_DOOR_CLOSED("fuel_door_closed"),
     FUEL_DOOR_OPEN("fuel_door_open"),
     SMALL_FUEL_DOOR_CLOSED("small_fuel_door_closed"),
