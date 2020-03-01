@@ -180,8 +180,8 @@ public class VehicleProperties
         properties.setAxleOffset(1.0F);
         properties.setWheelOffset(4.5F);
         properties.setBodyPosition(new PartPosition(0, 0, 0, 0, 0, 0, 1.3));
-        properties.setFuelPortPosition(new PartPosition(-12.0, 8.5, -6.5, 0, -90, 0, 0.25));
-        properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
+        properties.setFuelPortPosition(new PartPosition(-12.0, 8.0, -8.75, 0, -90, 0, 0.25));
+        properties.setKeyPortPosition(new PartPosition(0, 6.75, 19.5, -67.5, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.1F, 0.0F, 0.0F, 0.0F, 1.0F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 1.5F, 1.9F, 1.9F, true, true);
