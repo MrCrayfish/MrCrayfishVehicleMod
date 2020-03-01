@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -26,19 +27,31 @@ public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.
     @Override
     public SoundEvent getMovingSound()
     {
-        return null;
-    }
+        return ModSounds.MINI_BUS_ENGINE_MONO;
+}
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return null;
+        return ModSounds.MINI_BUS_ENGINE_STEREO;
+    }
+
+    @Override
+    public float getMinEnginePitch()
+    {
+        return 0.75F;
+    }
+
+    @Override
+    public float getMaxEnginePitch()
+    {
+        return 1.25F;
     }
 
     @Override
     public EngineType getEngineType()
     {
-        return null;
+        return EngineType.LARGE_MOTOR;
     }
 
     @Override

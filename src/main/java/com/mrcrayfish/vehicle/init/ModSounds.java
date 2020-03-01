@@ -52,6 +52,8 @@ public class ModSounds
     public static final SoundEvent TRACTOR_ENGINE_STEREO = null;
     public static final SoundEvent NOZZLE_PICK_UP = null;
     public static final SoundEvent NOZZLE_PUT_DOWN = null;
+    public static final SoundEvent MINI_BUS_ENGINE_MONO = null;
+    public static final SoundEvent MINI_BUS_ENGINE_STEREO = null;
 
     private static SoundEvent buildSound(String soundNameIn)
     {
@@ -98,5 +100,7 @@ public class ModSounds
         registry.register(buildSound(Names.Sound.TRACTOR_ENGINE_STEREO));
         registry.register(buildSound(Names.Sound.NOZZLE_PICK_UP));
         registry.register(buildSound(Names.Sound.NOZZLE_PUT_DOWN));
+        registry.register(buildSound(Names.Sound.MINI_BUS_ENGINE_MONO));
+        registry.register(buildSound(Names.Sound.MINI_BUS_ENGINE_STEREO));
     }
 }

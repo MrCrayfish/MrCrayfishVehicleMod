@@ -104,6 +104,8 @@ public class Names
 
     public static class Sound
     {
+        public static final String MINI_BUS_ENGINE_STEREO = PREFIX + "mini_bus_engine_stereo";
+        public static final String MINI_BUS_ENGINE_MONO = PREFIX + "mini_bus_engine_mono";
         public static final String NOZZLE_PUT_DOWN = PREFIX + "nozzle_put_down";
         public static final String NOZZLE_PICK_UP = PREFIX + "nozzle_pick_up";
         public static final String TRACTOR_ENGINE_STEREO = PREFIX + "tractor_engine_stereo";
