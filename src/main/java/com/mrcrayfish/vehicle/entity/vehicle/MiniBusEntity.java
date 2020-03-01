@@ -67,6 +67,12 @@ public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.
     }
 
     @Override
+    public boolean canTowTrailer()
+    {
+        return true;
+    }
+
+    @Override
     public void updatePassenger(Entity passenger)
     {
         if (this.isPassenger(passenger))
