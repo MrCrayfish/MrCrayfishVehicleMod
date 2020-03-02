@@ -71,32 +71,4 @@ public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.
     {
         return true;
     }
-
-    @Override
-    public void updatePassenger(Entity passenger)
-    {
-        if (this.isPassenger(passenger))
-        {
-            float xOffset = 0.9F;
-            float yOffset = (float)((!this.isAlive() ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
-            float zOffset = 0.4F;
-
-            if (this.getPassengers().size() > 0)
-            {
-                int index = this.getPassengers().indexOf(passenger);
-                if (index > 0)
-                {
-                    xOffset -= (index / 2) * 1.0F;
-                    zOffset -= (index % 2) * 0.8125F;
-                }
-
-                Vec3d vec3d = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-(this.rotationYaw - additionalYaw) * 0.017453292F - ((float)Math.PI / 2F));
-                passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double)yOffset, this.getPosZ() + vec3d.z);
-                passenger.rotationYaw -= deltaYaw;
-                passenger.setRotationYawHead(passenger.rotationYaw);
-                this.applyYawToEntity(passenger);
-            }
-        }
-    }
-
 }

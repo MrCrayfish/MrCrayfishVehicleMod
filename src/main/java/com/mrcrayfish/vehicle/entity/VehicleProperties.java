@@ -1,6 +1,9 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.entity.EntityType;
@@ -22,7 +25,7 @@ public class VehicleProperties
 
     public static void setProperties(EntityType<? extends VehicleEntity> entityType, VehicleProperties properties)
     {
-        //if(!PROPERTIES_MAP.containsKey(entityType))
+        if(!PROPERTIES_MAP.containsKey(entityType) || Config.CLIENT.reloadVehiclePropertiesEachTick.get())
         {
             PROPERTIES_MAP.put(entityType, properties);
         }
@@ -191,6 +194,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 0.0F, -13.5F, 1.5F, 1.9F, 1.9F, true, true);
         properties.setFrontAxelVec(0, 14.5);
         properties.setRearAxelVec(0, -14.5);
+        properties.addSeat(new Seat(new Vec3d(4.5, 3.25, 11), true));
         VehicleProperties.setProperties(ModEntities.MINI_BUS, properties);
 
         /* Moped */
@@ -379,6 +383,7 @@ public class VehicleProperties
     private PartPosition displayPosition = PartPosition.DEFAULT;
     private Vec3d frontAxelVec = null;
     private Vec3d rearAxelVec = null;
+    private List<Seat> seats = new ArrayList<>();
 
     public void setAxleOffset(float axleOffset)
     {
@@ -387,7 +392,7 @@ public class VehicleProperties
 
     public float getAxleOffset()
     {
-        return axleOffset;
+        return this.axleOffset;
     }
 
     public void setWheelOffset(float wheelOffset)
@@ -397,7 +402,7 @@ public class VehicleProperties
 
     public float getWheelOffset()
     {
-        return wheelOffset;
+        return this.wheelOffset;
     }
 
     public void setHeldOffset(Vec3d heldOffset)
@@ -407,7 +412,7 @@ public class VehicleProperties
 
     public Vec3d getHeldOffset()
     {
-        return heldOffset;
+        return this.heldOffset;
     }
 
     public void setTowBarPosition(Vec3d towBarVec)
@@ -417,7 +422,7 @@ public class VehicleProperties
 
     public Vec3d getTowBarPosition()
     {
-        return towBarVec;
+        return this.towBarVec;
     }
 
     public void setTrailerOffset(Vec3d trailerOffset)
@@ -427,39 +432,39 @@ public class VehicleProperties
 
     public Vec3d getTrailerOffset()
     {
-        return trailerOffset;
+        return this.trailerOffset;
     }
 
     public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetZ, float scale, boolean particles, boolean render)
     {
-        wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, 0F, offsetZ, particles, render));
+        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, 0F, offsetZ, particles, render));
     }
 
     public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scale, boolean particles, boolean render)
     {
-        wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, offsetY, offsetZ, particles, render));
+        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, offsetY, offsetZ, particles, render));
     }
 
     public void addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scaleX, float scaleY, float scaleZ, boolean particles, boolean render)
     {
-        wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, particles, render));
+        this.wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, particles, render));
     }
 
     public List<Wheel> getWheels()
     {
-        return wheels;
+        return this.wheels;
     }
 
     @Nullable
     public Wheel getFirstFrontWheel()
     {
-        return wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.FRONT).findFirst().orElse(null);
+        return this.wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.FRONT).findFirst().orElse(null);
     }
 
     @Nullable
     public Wheel getFirstRearWheel()
     {
-        return wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.REAR).findFirst().orElse(null);
+        return this.wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.REAR).findFirst().orElse(null);
     }
 
     public void setBodyPosition(PartPosition bodyPosition)
@@ -469,7 +474,7 @@ public class VehicleProperties
 
     public PartPosition getBodyPosition()
     {
-        return bodyPosition;
+        return this.bodyPosition;
     }
 
     public void setEnginePosition(PartPosition enginePosition)
@@ -479,7 +484,7 @@ public class VehicleProperties
 
     public PartPosition getEnginePosition()
     {
-        return enginePosition;
+        return this.enginePosition;
     }
 
     public void setFuelPortPosition(PartPosition fuelPortPosition)
@@ -497,7 +502,7 @@ public class VehicleProperties
 
     public PartPosition getFuelPortPosition()
     {
-        return fuelPortPosition;
+        return this.fuelPortPosition;
     }
 
     public void setFuelPortLidPosition(PartPosition fuelPortLidPosition)
@@ -507,7 +512,7 @@ public class VehicleProperties
 
     public PartPosition getFuelPortLidPosition()
     {
-        return fuelPortLidPosition;
+        return this.fuelPortLidPosition;
     }
 
     public void setKeyPortPosition(PartPosition keyPortPosition)
@@ -518,7 +523,7 @@ public class VehicleProperties
 
     public PartPosition getKeyPortPosition()
     {
-        return keyPortPosition;
+        return this.keyPortPosition;
     }
 
     public void setKeyPosition(PartPosition keyPosition)
@@ -528,7 +533,7 @@ public class VehicleProperties
 
     public PartPosition getKeyPosition()
     {
-        return keyPosition;
+        return this.keyPosition;
     }
 
     public void setDisplayPosition(PartPosition displayPosition)
@@ -538,7 +543,7 @@ public class VehicleProperties
 
     public PartPosition getDisplayPosition()
     {
-        return displayPosition;
+        return this.displayPosition;
     }
 
     public void setFrontAxelVec(double x, double z)
@@ -549,7 +554,7 @@ public class VehicleProperties
     @Nullable
     public Vec3d getFrontAxelVec()
     {
-        return frontAxelVec;
+        return this.frontAxelVec;
     }
 
     public void setRearAxelVec(double x, double z)
@@ -560,6 +565,16 @@ public class VehicleProperties
     @Nullable
     public Vec3d getRearAxelVec()
     {
-        return rearAxelVec;
+        return this.rearAxelVec;
+    }
+
+    public void addSeat(Seat seat)
+    {
+        this.seats.add(seat);
+    }
+
+    public List<Seat> getSeats()
+    {
+        return ImmutableList.copyOf(this.seats);
     }
 }

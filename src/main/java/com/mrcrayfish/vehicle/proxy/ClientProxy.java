@@ -29,6 +29,7 @@ import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.SimpleSound;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
@@ -58,6 +59,8 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
@@ -575,5 +578,20 @@ public class ClientProxy implements Proxy
             return Config.CLIENT.rotateCameraWithVehicle.get();
         }
         return false;
+    }
+
+    @Override
+    public void syncPlayerSeat(int entityId, int seatIndex, UUID uuid)
+    {
+        ClientPlayerEntity clientPlayer = Minecraft.getInstance().player;
+        if(clientPlayer != null)
+        {
+            Entity entity = clientPlayer.worldClient.getEntityByID(entityId);
+            if(entity instanceof VehicleEntity)
+            {
+                VehicleEntity vehicle = (VehicleEntity) entity;
+                vehicle.getSeatTracker().setSeatIndex(seatIndex, uuid);
+            }
+        }
     }
 }

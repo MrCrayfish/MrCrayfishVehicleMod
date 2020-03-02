@@ -3,6 +3,8 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.CustomDataParameters;
+import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
@@ -64,9 +66,12 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected double lerpYaw;
     protected double lerpPitch;
 
+    protected SeatTracker seatTracker;
+
     public VehicleEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
+        this.seatTracker = new SeatTracker(this);
     }
 
     @Override
@@ -183,7 +188,17 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             }
             else if(this.canBeRidden(player))
             {
-                player.startRiding(this);
+                if(player.startRiding(this))
+                {
+                    if(!this.world.isRemote)
+                    {
+                        int seatIndex = this.seatTracker.getNextAvailableSeat();
+                        if(seatIndex != -1)
+                        {
+                            this.getSeatTracker().setSeatIndex(seatIndex, player.getUniqueID());
+                        }
+                    }
+                }
                 return true;
             }
         }
@@ -690,5 +705,49 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public IPacket<?> createSpawnPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public SeatTracker getSeatTracker()
+    {
+        return this.seatTracker;
+    }
+
+    @Override
+    protected boolean canFitPassenger(Entity passenger)
+    {
+        return this.getPassengers().size() < this.getProperties().getSeats().size();
+    }
+
+    @Override
+    protected void removePassenger(Entity passenger)
+    {
+        super.removePassenger(passenger);
+        this.getSeatTracker().remove(passenger.getUniqueID());
+    }
+
+    @Override
+    public void updatePassenger(Entity passenger)
+    {
+        super.updatePassenger(passenger);
+        this.updatePassengerPosition(passenger);
+    }
+
+    protected void updatePassengerPosition(Entity passenger)
+    {
+        if(this.isPassenger(passenger))
+        {
+            int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
+            if(seatIndex != -1)
+            {
+                VehicleProperties properties = this.getProperties();
+                if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
+                {
+                    Seat seat = properties.getSeats().get(seatIndex);
+                    Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+                    passenger.setPosition(this.getPosX() + seatVec.x, this.getPosY() + seatVec.y, this.getPosZ() + seatVec.z);
+                    this.applyYawToEntity(passenger);
+                }
+            }
+        }
     }
 }
