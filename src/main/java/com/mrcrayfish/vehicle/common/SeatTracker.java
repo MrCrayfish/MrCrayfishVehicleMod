@@ -5,12 +5,15 @@ import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageSyncPlayerSeat;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -95,6 +98,42 @@ public class SeatTracker
                     return i;
                 }
             }
+        }
+        return -1;
+    }
+
+    public int getClosestAvailableSeatToPlayer(PlayerEntity player)
+    {
+        VehicleEntity vehicle = this.vehicleRef.get();
+        if(vehicle != null && !vehicle.world.isRemote)
+        {
+            VehicleProperties properties = vehicle.getProperties();
+            List<Seat> seats = properties.getSeats();
+
+            /* If vehicle is full of passengers, no need to search */
+            if(vehicle.getPassengers().size() == seats.size())
+                return -1;
+
+            int closestSeatIndex = -1;
+            double closestDistance = 0;
+            for(int i = 0; i < seats.size(); i++)
+            {
+                if(!this.isSeatAvailable(i))
+                    continue;
+
+                /* Get the real world distance to the seat and check if it's the closest */
+                Seat seat = seats.get(i);
+                Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
+                seatVec = seatVec.rotateYaw(-(vehicle.getModifiedRotationYaw()) * 0.017453292F);
+                seatVec = seatVec.add(vehicle.getPositionVec());
+                double distance = player.getDistanceSq(seatVec.x, seatVec.y - player.getHeight() / 2F, seatVec.z);
+                if(closestSeatIndex == -1 || distance < closestDistance)
+                {
+                    closestSeatIndex = i;
+                    closestDistance = distance;
+                }
+            }
+            return closestSeatIndex;
         }
         return -1;
     }

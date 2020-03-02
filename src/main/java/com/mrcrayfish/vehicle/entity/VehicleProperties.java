@@ -196,9 +196,9 @@ public class VehicleProperties
         properties.setRearAxelVec(0, -14.5);
         properties.addSeat(new Seat(new Vec3d(4.5, 5, 11), true));
         properties.addSeat(new Seat(new Vec3d(-4.5, 5, 11)));
-        properties.addSeat(new Seat(new Vec3d(-4.5, 5, 11)));
-        properties.addSeat(new Seat(new Vec3d(-4.5, 5, 11)));
-        properties.addSeat(new Seat(new Vec3d(-4.5, 5, 11)));
+        properties.addSeat(new Seat(new Vec3d(4.5, 5, -3)));
+        properties.addSeat(new Seat(new Vec3d(-4.5, 5, -3)));
+        properties.addSeat(new Seat(new Vec3d(4.5, 5, -15)));
         VehicleProperties.setProperties(ModEntities.MINI_BUS, properties);
 
         /* Moped */

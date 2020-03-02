@@ -192,7 +192,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 {
                     if(!this.world.isRemote)
                     {
-                        int seatIndex = this.seatTracker.getNextAvailableSeat();
+                        int seatIndex = this.seatTracker.getClosestAvailableSeatToPlayer(player);
                         if(seatIndex != -1)
                         {
                             this.getSeatTracker().setSeatIndex(seatIndex, player.getUniqueID());
