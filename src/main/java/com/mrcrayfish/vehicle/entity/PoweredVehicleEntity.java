@@ -744,8 +744,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vec3d seatVec = seat.getPosition().scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).rotateYaw(-(this.rotationYaw + 180) * 0.017453292F).scale(0.0625);
-                    passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y, this.getPosZ() - seatVec.z);
+                    Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625).rotateYaw(-(this.rotationYaw + 180) * 0.017453292F);
+                    passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y + passenger.getYOffset() - 3 * 0.0625 * properties.getBodyPosition().getScale(), this.getPosZ() - seatVec.z);
                     if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
                     {
                         passenger.rotationYaw -= this.deltaYaw;
