@@ -735,8 +735,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(this.isPassenger(passenger))
         {
-            //Vec3d vec3d = (new Vec3d(1, 0.0D, 1)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
-            //passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double)0, this.getPosZ() + vec3d.z);
             int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
             if(seatIndex != -1)
             {
@@ -745,7 +743,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
                     Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625).rotateYaw(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
-                    passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y + passenger.getYOffset() - 3 * 0.0625 * properties.getBodyPosition().getScale(), this.getPosZ() - seatVec.z);
+                    //Vec3d seatVec = Vec3d.ZERO;
+                    passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y + passenger.getYOffset(), this.getPosZ() - seatVec.z);
                     if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
                     {
                         passenger.rotationYaw -= this.deltaYaw;

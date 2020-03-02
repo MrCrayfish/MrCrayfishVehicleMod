@@ -61,48 +61,9 @@ public class GolfCartEntity extends LandVehicleEntity implements EntityRaytracer
     }
 
     @Override
-    public void updatePassenger(Entity passenger)
+    public void updatePassenger(Entity passenger) //TODO remove
     {
-        if (this.isPassenger(passenger))
-        {
-            float xOffset = -0.3875F;
-            float yOffset = (float)((!this.isAlive() ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
-            float zOffset = 0.4F;
-
-            if (this.getPassengers().size() > 0)
-            {
-                int index = this.getPassengers().indexOf(passenger);
-                if (index > 0)
-                {
-                    xOffset -= (index / 2F) * 0.6875F;
-                    zOffset -= (index % 2) * 0.8F;
-                }
-
-                Vec3d vec3d = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-(this.rotationYaw - additionalYaw) * 0.017453292F - ((float)Math.PI / 2F));
-                passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double)yOffset, this.getPosZ() + vec3d.z);
-                passenger.rotationYaw -= deltaYaw;
-                passenger.setRotationYawHead(passenger.rotationYaw);
-                this.applyYawToEntity(passenger, index > 1);
-            }
-        }
-    }
-
-    private void applyYawToEntity(Entity entityToUpdate, boolean isBackSeat)
-    {
-        entityToUpdate.setRenderYawOffset(this.rotationYaw - this.additionalYaw + (isBackSeat ? 180F : 0F));
-        float f = MathHelper.wrapDegrees(entityToUpdate.rotationYaw - this.rotationYaw + (isBackSeat ? 180F : 0F));
-        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-        entityToUpdate.prevRotationYaw += f1 - f;
-        entityToUpdate.rotationYaw += f1 - f;
-        entityToUpdate.setRotationYawHead(entityToUpdate.rotationYaw);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void applyOrientationToEntity(Entity entityToUpdate)
-    {
-        int index = this.getPassengers().indexOf(entityToUpdate);
-        this.applyYawToEntity(entityToUpdate, index > 1);
+        super.updatePassenger(passenger);
     }
 
     @Override

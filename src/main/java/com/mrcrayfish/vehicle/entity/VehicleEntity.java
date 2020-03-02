@@ -188,15 +188,12 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             }
             else if(this.canBeRidden(player))
             {
-                if(player.startRiding(this))
+                int seatIndex = this.seatTracker.getClosestAvailableSeatToPlayer(player);
+                if(seatIndex != -1)
                 {
-                    if(!this.world.isRemote)
+                    if(player.startRiding(this))
                     {
-                        int seatIndex = this.seatTracker.getClosestAvailableSeatToPlayer(player);
-                        if(seatIndex != -1)
-                        {
-                            this.getSeatTracker().setSeatIndex(seatIndex, player.getUniqueID());
-                        }
+                        this.getSeatTracker().setSeatIndex(seatIndex, player.getUniqueID());
                     }
                 }
                 return true;
@@ -487,12 +484,18 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     protected void applyYawToEntity(Entity passenger)
     {
-        passenger.setRenderYawOffset(this.rotationYaw);
-        float f = MathHelper.wrapDegrees(passenger.rotationYaw - this.rotationYaw);
-        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-        passenger.prevRotationYaw += f1 - f;
-        passenger.rotationYaw += f1 - f;
-        passenger.setRotationYawHead(passenger.rotationYaw);
+        int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
+        if(seatIndex != -1)
+        {
+            VehicleProperties properties = this.getProperties();
+            Seat seat = properties.getSeats().get(seatIndex);
+            passenger.setRenderYawOffset(this.getModifiedRotationYaw() + seat.getYawOffset());
+            float f = MathHelper.wrapDegrees(passenger.rotationYaw - this.getModifiedRotationYaw() + seat.getYawOffset());
+            float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
+            passenger.prevRotationYaw += f1 - f;
+            passenger.rotationYaw += f1 - f;
+            passenger.setRotationYawHead(passenger.rotationYaw);
+        }
     }
 
     @Override
@@ -743,7 +746,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.rotationYaw * 0.017453292F - ((float) Math.PI / 2F));
+                    Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
                     passenger.setPosition(this.getPosX() + seatVec.x, this.getPosY() + seatVec.y, this.getPosZ() + seatVec.z);
                     this.applyYawToEntity(passenger);
                 }

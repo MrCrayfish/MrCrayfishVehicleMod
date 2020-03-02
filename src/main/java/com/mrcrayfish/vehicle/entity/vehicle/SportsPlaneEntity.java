@@ -85,7 +85,7 @@ public class SportsPlaneEntity extends PlaneEntity implements IEntityRaytraceabl
     @Override
     public double getMountedYOffset()
     {
-        return 12 * 0.0625;
+        return 0;
     }
 
     @Override

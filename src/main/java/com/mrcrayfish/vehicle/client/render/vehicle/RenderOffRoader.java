@@ -54,8 +54,7 @@ public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
     @Override
     public void applyPlayerModel(OffRoaderEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        List<Entity> passengers = entity.getPassengers();
-        int index = passengers.indexOf(player);
+        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
         if(index < 2) //Sitting in the front
         {
             model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-80F);

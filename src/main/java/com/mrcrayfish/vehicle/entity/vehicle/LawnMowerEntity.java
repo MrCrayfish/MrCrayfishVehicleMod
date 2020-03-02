@@ -132,7 +132,7 @@ public class LawnMowerEntity extends LandVehicleEntity implements IEntityRaytrac
     @Override
     public double getMountedYOffset()
     {
-        return 10.5 * 0.0625;
+        return 0;
     }
 
     @Override

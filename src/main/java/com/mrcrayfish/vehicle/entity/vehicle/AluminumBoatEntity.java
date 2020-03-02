@@ -82,39 +82,14 @@ public class AluminumBoatEntity extends BoatEntity implements IEntityRaytraceabl
         return 1.5F;
     }
 
+    //TODO remove
     @Override
     public double getMountedYOffset()
     {
-        return 4 * 0.0625;
+        return 0;
     }
 
-    @Override
-    public void updatePassenger(Entity passenger)
-    {
-        if (this.isPassenger(passenger))
-        {
-            float xOffset = -0.9F;
-            float yOffset = (float)((!this.isAlive() ? 0.01D : this.getMountedYOffset()) + passenger.getYOffset());
-            float zOffset = -0.5F;
-
-            if (this.getPassengers().size() > 1)
-            {
-                int index = this.getPassengers().indexOf(passenger);
-                if (index > 0)
-                {
-                    xOffset += (index / 2F) * 1.2F;
-                    zOffset += (index % 2) * 1F;
-                }
-            }
-
-            Vec3d vec3d = (new Vec3d(xOffset, 0.0D, zOffset)).rotateYaw(-this.rotationYaw * 0.017453292F - ((float)Math.PI / 2F));
-            passenger.setPosition(this.getPosX() + vec3d.x, this.getPosY() + (double)yOffset, this.getPosZ() + vec3d.z);
-            passenger.rotationYaw -= deltaYaw;
-            passenger.setRotationYawHead(passenger.rotationYaw);
-            this.applyYawToEntity(passenger);
-        }
-    }
-
+    //TODO remove
     @Override
     protected boolean canFitPassenger(Entity passenger)
     {
@@ -132,6 +107,4 @@ public class AluminumBoatEntity extends BoatEntity implements IEntityRaytraceabl
     {
         return false;
     }
-
-
 }

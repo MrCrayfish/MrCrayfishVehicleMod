@@ -9,10 +9,17 @@ public class Seat
 {
     private Vec3d position;
     private boolean driver;
+    private float yawOffset;
 
     public Seat(Vec3d position)
     {
         this(position, false);
+    }
+
+    public Seat(Vec3d position, float yawOffset)
+    {
+        this(position, false);
+        this.yawOffset = yawOffset;
     }
 
     public Seat(Vec3d position, boolean driver)
@@ -29,5 +36,10 @@ public class Seat
     public boolean isDriverSeat()
     {
         return driver;
+    }
+
+    public float getYawOffset()
+    {
+        return yawOffset;
     }
 }

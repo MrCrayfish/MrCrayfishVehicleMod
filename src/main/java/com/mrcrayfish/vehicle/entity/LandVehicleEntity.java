@@ -221,17 +221,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
     }
 
-    @Override
-    protected void applyYawToEntity(Entity passenger)
-    {
-        passenger.setRenderYawOffset(this.rotationYaw - this.additionalYaw);
-        float f = MathHelper.wrapDegrees(passenger.rotationYaw - this.rotationYaw);
-        float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-        passenger.prevRotationYaw += f1 - f;
-        passenger.rotationYaw += f1 - f;
-        passenger.setRotationYawHead(passenger.rotationYaw);
-    }
-
     public void setDrifting(boolean drifting)
     {
         this.dataManager.set(DRIFTING, drifting);

@@ -61,7 +61,7 @@ public class BumperCarEntity extends LandVehicleEntity implements IEntityRaytrac
     @Override
     public double getMountedYOffset()
     {
-        return 3 * 0.0625F;
+        return 0;
     }
 
     @Override

@@ -1,15 +1,21 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.BoatEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.RayTraceResult;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -35,6 +41,8 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRaytracer.IEntityRay
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) bodyPosition.getRotY()));
         matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) bodyPosition.getRotZ()));
 
+        this.renderRotationLine(matrixStack, 0xFF0000);
+
         //Applies leaning rotation caused by turning
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
@@ -42,6 +50,8 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRaytracer.IEntityRay
 
         //Makes the boat tilt up the faster it goes
         matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+
+        //this.renderRotationLine(matrixStack, 0xFF0000);
 
         //Translate the body
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
@@ -100,5 +110,23 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRaytracer.IEntityRay
         }
 
         matrixStack.pop();
+    }
+
+    private void renderRotationLine(MatrixStack stack, int color)
+    {
+        float red = (float) (color >> 16 & 255) / 255.0F;
+        float green = (float) (color >> 8 & 255) / 255.0F;
+        float blue = (float) (color & 255) / 255.0F;
+        RenderSystem.disableTexture();
+        RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
+        RenderSystem.enableDepthTest();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
+        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, -2).color(red, green, blue, 1.0F).endVertex();
+        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, 2).color(red, green, blue, 1.0F).endVertex();
+        tessellator.draw();
+        RenderSystem.disableDepthTest();
+        RenderSystem.enableTexture();
     }
 }

@@ -48,7 +48,7 @@ public class MessageCycleSeats implements IMessage<MessageCycleSeats>
                     int seatIndex = tracker.getSeatIndex(player.getUniqueID());
                     for(int i = 0; i < seats.size() - 1; i++)
                     {
-                        int nextIndex = (seatIndex + i) % seats.size();
+                        int nextIndex = (seatIndex + (i + 1)) % seats.size();
                         if(tracker.isSeatAvailable(nextIndex))
                         {
                             tracker.setSeatIndex(nextIndex, player.getUniqueID());
