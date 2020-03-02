@@ -70,6 +70,7 @@ import java.util.function.Predicate;
 public class ClientProxy implements Proxy
 {
     public static final KeyBinding KEY_HORN = new KeyBinding("key.horn", GLFW.GLFW_KEY_H, "key.categories.vehicle");
+    public static final KeyBinding KEY_CYCLE_SEATS = new KeyBinding("key.cycle_seats", GLFW.GLFW_KEY_C, "key.categories.vehicle");
 
     public static boolean controllableLoaded = false;
     
@@ -138,6 +139,7 @@ public class ClientProxy implements Proxy
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);
+        ClientRegistry.registerKeyBinding(KEY_CYCLE_SEATS);
 
         /* Screen Registration */
         ScreenManager.registerFactory(ModContainers.FLUID_EXTRACTOR, FluidExtractorScreen::new);

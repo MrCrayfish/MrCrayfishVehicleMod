@@ -36,6 +36,13 @@ public class SeatTracker
         return -1;
     }
 
+    /**
+     * Sets the seat index for the corresponding player uuid. If the uuid already exists
+     * in the seating map, it will automatically be updated to the new index.
+     *
+     * @param index the index of the seat
+     * @param uuid the uuid of the player
+     */
     public void setSeatIndex(int index, UUID uuid)
     {
         if(index < 0 || index >= this.maxSeatSize)
@@ -46,6 +53,21 @@ public class SeatTracker
         {
             PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncPlayerSeat(vehicle.getEntityId(), index, uuid));
         }
+    }
+
+    public boolean isSeatAvailable(int index)
+    {
+        if(index < 0 || index >= this.maxSeatSize)
+            return false;
+        if(!this.playerSeatMap.inverse().containsKey(index))
+            return true;
+        VehicleEntity vehicle = this.vehicleRef.get();
+        if(vehicle != null)
+        {
+            UUID uuid = this.playerSeatMap.inverse().get(index);
+            return vehicle.getPassengers().stream().noneMatch(entity -> entity.getUniqueID().equals(uuid));
+        }
+        return false;
     }
 
     public void remove(UUID uuid)

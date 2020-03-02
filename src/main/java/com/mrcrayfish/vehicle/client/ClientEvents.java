@@ -15,7 +15,9 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageCycleSeats;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
+import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
@@ -38,6 +40,7 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.text.DecimalFormat;
@@ -86,7 +89,10 @@ public class ClientEvents
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event)
     {
-        if(Config.CLIENT.autoPerspective.get() && Minecraft.getInstance().player != null)
+        if(Minecraft.getInstance().player == null)
+            return;
+
+        if(Config.CLIENT.autoPerspective.get())
         {
             Entity entity = Minecraft.getInstance().player.getRidingEntity();
             if(entity instanceof VehicleEntity)
@@ -95,6 +101,14 @@ public class ClientEvents
                 {
                     originalPerspective = -1;
                 }
+            }
+        }
+
+        if(ClientProxy.KEY_CYCLE_SEATS.isPressed() && event.getAction() == GLFW.GLFW_PRESS)
+        {
+            if(Minecraft.getInstance().player.getRidingEntity() instanceof VehicleEntity)
+            {
+                PacketHandler.instance.sendToServer(new MessageCycleSeats());
             }
         }
     }

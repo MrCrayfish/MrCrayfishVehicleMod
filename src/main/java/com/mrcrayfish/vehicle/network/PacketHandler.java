@@ -45,6 +45,7 @@ public class PacketHandler
         register(MessagePower.class, new MessagePower());
         register(MessageEntityFluid.class, new MessageEntityFluid());
         register(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());
+        register(MessageCycleSeats.class, new MessageCycleSeats());
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)
