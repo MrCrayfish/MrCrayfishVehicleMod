@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.ISpecialModel;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.BathEntity;
@@ -40,17 +41,17 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
-            double offsetX = -seatVec.x;
-            double offsetY = -(seatVec.y + player.getYOffset() - 3 * 0.0625 * properties.getBodyPosition().getScale() - 18 * 0.0625);
-            double offsetZ = seatVec.z;
-
+            Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
+            double scale = 32.0 / 30.0;
+            double offsetX = seatVec.x * scale;
+            double offsetY = (seatVec.y + player.getYOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetZ = seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
             float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-bodyPitch));
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(bodyRoll));
-            matrixStack.translate(-offsetX, -offsetY, -offsetZ);
+            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(bodyRoll));
+            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-bodyPitch));
+            matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
     }
 

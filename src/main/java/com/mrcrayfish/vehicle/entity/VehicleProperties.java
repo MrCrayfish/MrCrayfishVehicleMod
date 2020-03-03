@@ -371,7 +371,7 @@ public class VehicleProperties
             properties.setHeldOffset(new Vec3d(4.0, 3.5, 0.0));
             properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.4375));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-            properties.addSeat(new Seat(new Vec3d(0, 0, 0)));
+            properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
             VehicleProperties.setProperties(ModEntities.BATH, properties);
 
             /* Sofa */
@@ -388,7 +388,7 @@ public class VehicleProperties
             properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F, true, true);
             properties.setFrontAxelVec(0, 7.0);
             properties.setRearAxelVec(0, -7.0);
-            properties.addSeat(new Seat(new Vec3d(0, 0, 0)));
+            properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
             VehicleProperties.setProperties(ModEntities.SOFA, properties);
 
             /* Sofacopter */
@@ -397,7 +397,7 @@ public class VehicleProperties
             properties.setFuelPortPosition(new PartPosition(0.0, 3.0, 8.0, 0, 0, 0, 0.45));
             properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
-            properties.addSeat(new Seat(new Vec3d(0, 0, 0)));
+            properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
             VehicleProperties.setProperties(ModEntities.SOFACOPTER, properties);
         }
     }
