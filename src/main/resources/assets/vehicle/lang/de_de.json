@@ -122,6 +122,7 @@
     "entity.vehicle.fertilizer": "Dünger",
     "entity.vehicle.fluid_trailer": "Flüssigkeitsanhänger",
     "entity.vehicle.tractor": "Traktor",
+    "entity.vehicle.mini_bus": "Mini Bus",
 
     "vehicle.config.title": "MrCrayfish's Fahrzeug Mod Konfiguration",
     "vehicle.config.client": "Client",
@@ -184,7 +185,8 @@
     "vehicle.tooltip.paint_color": "Farbe",
     "vehicle.tooltip.engine": "Motor",
     "vehicle.tooltip.wheels": "Reifen",
-    
+
     "key.categories.vehicle": "MrCrayfish's Fahrzeug Mod",
-    "key.horn": "Hupe"
+    "key.vehicle.cycle_seats": "Wechsel Sitze",
+    "key.vehicle.horn": "Hupe"
 }
