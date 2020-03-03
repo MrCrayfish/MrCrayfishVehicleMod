@@ -6,8 +6,11 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageSyncPlayerSeat;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.lang.ref.WeakReference;
@@ -136,5 +139,55 @@ public class SeatTracker
             return closestSeatIndex;
         }
         return -1;
+    }
+
+    public CompoundNBT write()
+    {
+        CompoundNBT compound = new CompoundNBT();
+        ListNBT list = new ListNBT();
+        this.playerSeatMap.forEach((uuid, seatIndex) -> {
+            CompoundNBT seatTag = new CompoundNBT();
+            seatTag.putUniqueId("UUID", uuid);
+            seatTag.putInt("SeatIndex", seatIndex);
+            list.add(seatTag);
+        });
+        compound.put("PlayerSeatMap", list);
+        return compound;
+    }
+
+    public void read(CompoundNBT compound)
+    {
+        if(compound.contains("PlayerSeatMap", Constants.NBT.TAG_LIST))
+        {
+            this.playerSeatMap.clear();
+            ListNBT list = compound.getList("PlayerSeatMap", Constants.NBT.TAG_COMPOUND);
+            list.forEach(nbt -> {
+                CompoundNBT seatTag = (CompoundNBT) nbt;
+                UUID uuid = seatTag.getUniqueId("UUID");
+                int seatIndex = seatTag.getInt("SeatIndex");
+                this.playerSeatMap.put(uuid, seatIndex);
+            });
+        }
+    }
+
+    public void write(PacketBuffer buffer)
+    {
+        buffer.writeVarInt(this.playerSeatMap.size());
+        this.playerSeatMap.forEach((uuid, seatIndex) -> {
+            buffer.writeUniqueId(uuid);
+            buffer.writeVarInt(seatIndex);
+        });
+    }
+
+    public void read(PacketBuffer buffer)
+    {
+        this.playerSeatMap.clear();
+        int size = buffer.readVarInt();
+        for(int i = 0; i < size; i++)
+        {
+            UUID uuid = buffer.readUniqueId();
+            int seatIndex = buffer.readVarInt();
+            this.playerSeatMap.put(uuid, seatIndex);
+        }
     }
 }

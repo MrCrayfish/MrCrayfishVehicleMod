@@ -235,6 +235,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             this.trailerId = compound.getUniqueId("Trailer");
         }
+        if(compound.contains("SeatTracker", Constants.NBT.TAG_COMPOUND))
+        {
+            this.seatTracker.read(compound.getCompound("SeatTracker"));
+        }
     }
 
     @Override
@@ -249,6 +253,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             compound.putUniqueId("Trailer", this.trailerId);
         }
+
+        compound.put("SeatTracker", this.seatTracker.write());
     }
 
     @Override
@@ -634,12 +640,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public void writeSpawnData(PacketBuffer buffer)
     {
         buffer.writeFloat(this.rotationYaw);
+        this.seatTracker.write(buffer);
     }
 
     @Override
     public void readSpawnData(PacketBuffer buffer)
     {
         this.rotationYaw = this.prevRotationYaw = buffer.readFloat();
+        this.seatTracker.read(buffer);
     }
 
     public boolean canTowTrailer()
