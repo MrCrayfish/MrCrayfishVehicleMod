@@ -59,10 +59,8 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
@@ -240,24 +238,6 @@ public class ClientProxy implements Proxy
     }
 
     @Override
-    public void openVehicleEditWindow(int entityId, int windowId)
-    {
-        //TODO convert to new gui system
-        /*PlayerEntity player = Minecraft.getInstance().player;
-        if(player != null)
-        {
-            World world = player.getEntityWorld();
-            Entity entity = world.getEntityByID(entityId);
-            if(entity instanceof PoweredVehicleEntity)
-            {
-                PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
-                Minecraft.getInstance().displayGuiScreen(new EditVehicleScreen(poweredVehicle.getVehicleInventory(), poweredVehicle, player));
-                player.openContainer.windowId = windowId;
-            }
-        }*/
-    }
-
-    @Override
     public void syncStorageInventory(int entityId, CompoundNBT compound)
     {
         World world = Minecraft.getInstance().world;
@@ -269,21 +249,6 @@ public class ClientProxy implements Proxy
             IStorage wrapper = (IStorage) entity;
             wrapper.getInventory().read(compound);
         }
-    }
-
-    @Override
-    public void openStorageWindow(int entityId, int windowId)
-    {
-        //TODO convert to normal gui system
-        /*EntityPlayer player = Minecraft.getMinecraft().player;
-        World world = player.getEntityWorld();
-        Entity entity = world.getEntityByID(entityId);
-        if(entity instanceof IStorage)
-        {
-            IStorage wrapper = (IStorage) entity;
-            Minecraft.getMinecraft().displayGuiScreen(new StorageScreen(player.inventory, wrapper.getInventory()));
-            player.openContainer.windowId = windowId;
-        }*/
     }
 
     @Override

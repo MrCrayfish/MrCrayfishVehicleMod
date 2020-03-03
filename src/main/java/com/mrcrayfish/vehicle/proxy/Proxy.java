@@ -23,13 +23,9 @@ public interface Proxy
 
     default void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle) {}
 
-    default void openVehicleEditWindow(int entityId, int windowId) {}
-
     default void syncStorageInventory(int entityId, CompoundNBT compound) {}
 
     default void syncEntityFluid(int entityId, FluidStack stack) {}
-
-    default void openStorageWindow(int entityId, int windowId) {}
 
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {}
 

@@ -59,12 +59,6 @@ public class TractorEntity extends LandVehicleEntity implements EntityRaytracer.
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 12 * 0.0625;
-    }  //TODO remove
-
-    @Override
     public boolean shouldRenderEngine()
     {
         return true;
@@ -98,11 +92,5 @@ public class TractorEntity extends LandVehicleEntity implements EntityRaytracer.
     public boolean canBeColored()
     {
         return true;
-    }
-
-    @Override
-    public void updatePassenger(Entity passenger)
-    {
-        super.updatePassenger(passenger); //TODO remove
     }
 }

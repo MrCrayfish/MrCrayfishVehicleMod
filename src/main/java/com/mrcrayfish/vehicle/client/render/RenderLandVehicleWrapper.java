@@ -72,7 +72,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             matrixStack.push();
             matrixStack.translate(0.0, -8 * 0.0625, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = this.getWheelModel(entity);
+            IBakedModel wheelModel = RenderUtil.getWheelModel(entity);
             properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
             matrixStack.pop();
         }
@@ -80,7 +80,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         //Render the engine if the vehicle has explicitly stated it should
         if(entity.shouldRenderEngine() && entity.hasEngine())
         {
-            IBakedModel engineModel = this.getEngineModel(entity);
+            IBakedModel engineModel = RenderUtil.getEngineModel(entity);
             this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
         }
 

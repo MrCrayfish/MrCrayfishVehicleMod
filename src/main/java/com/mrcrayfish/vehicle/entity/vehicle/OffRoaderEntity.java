@@ -56,31 +56,6 @@ public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytrace
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 12 * 0.0625;
-    } //TODO remove
-
-    @Override
-    public void updatePassenger(Entity passenger) //TODO remove
-    {
-        super.updatePassenger(passenger);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void applyOrientationToEntity(Entity entityToUpdate)
-    {
-        this.applyYawToEntity(entityToUpdate);
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return this.getPassengers().size() < 4;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

@@ -41,8 +41,6 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRaytracer.IEntityRay
         matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) bodyPosition.getRotY()));
         matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) bodyPosition.getRotZ()));
 
-        this.renderRotationLine(matrixStack, 0xFF0000);
-
         //Applies leaning rotation caused by turning
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
@@ -76,7 +74,7 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRaytracer.IEntityRay
         //Render the engine if the vehicle has explicitly stated it should
         if(entity.shouldRenderEngine() && entity.hasEngine())
         {
-            this.renderEngine(entity, properties.getEnginePosition(), this.getEngineModel(entity), matrixStack, renderTypeBuffer, light);
+            this.renderEngine(entity, properties.getEnginePosition(), RenderUtil.getEngineModel(entity), matrixStack, renderTypeBuffer, light);
         }
 
         //Render the fuel port of the vehicle
@@ -110,23 +108,5 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRaytracer.IEntityRay
         }
 
         matrixStack.pop();
-    }
-
-    private void renderRotationLine(MatrixStack stack, int color)
-    {
-        float red = (float) (color >> 16 & 255) / 255.0F;
-        float green = (float) (color >> 8 & 255) / 255.0F;
-        float blue = (float) (color & 255) / 255.0F;
-        RenderSystem.disableTexture();
-        RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
-        RenderSystem.enableDepthTest();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, -2).color(red, green, blue, 1.0F).endVertex();
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, 2).color(red, green, blue, 1.0F).endVertex();
-        tessellator.draw();
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableTexture();
     }
 }

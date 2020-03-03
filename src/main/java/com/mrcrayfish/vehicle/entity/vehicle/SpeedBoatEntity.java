@@ -74,12 +74,6 @@ public class SpeedBoatEntity extends BoatEntity implements IEntityRaytraceable
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 3 * 0.0625;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

@@ -91,12 +91,6 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0.0625 * 7.5;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.NONE;

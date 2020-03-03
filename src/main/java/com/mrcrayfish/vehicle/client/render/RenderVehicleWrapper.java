@@ -137,24 +137,4 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         this.renderPart(position, model, matrixStack, buffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
         matrixStack.pop();
     }
-
-    protected IBakedModel getWheelModel(PoweredVehicleEntity entity)
-    {
-        ItemStack stack = ItemLookup.getWheel(entity);
-        if(!stack.isEmpty())
-        {
-            return RenderUtil.getModel(stack);
-        }
-        return Minecraft.getInstance().getModelManager().getMissingModel();
-    }
-
-    protected IBakedModel getEngineModel(PoweredVehicleEntity entity)
-    {
-        ItemStack stack = ItemLookup.getEngine(entity);
-        if(!stack.isEmpty())
-        {
-            return RenderUtil.getModel(stack);
-        }
-        return Minecraft.getInstance().getModelManager().getMissingModel();
-    }
 }

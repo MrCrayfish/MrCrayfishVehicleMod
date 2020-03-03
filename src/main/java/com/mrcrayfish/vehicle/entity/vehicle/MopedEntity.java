@@ -112,12 +112,6 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 8 * 0.0625;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

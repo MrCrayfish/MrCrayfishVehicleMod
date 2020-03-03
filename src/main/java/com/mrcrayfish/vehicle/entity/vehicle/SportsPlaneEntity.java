@@ -83,12 +83,6 @@ public class SportsPlaneEntity extends PlaneEntity implements IEntityRaytraceabl
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.LARGE_MOTOR;

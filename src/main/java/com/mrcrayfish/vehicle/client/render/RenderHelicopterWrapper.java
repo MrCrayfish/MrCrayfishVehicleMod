@@ -54,7 +54,7 @@ public class RenderHelicopterWrapper<T extends HelicopterEntity & EntityRaytrace
         //Render the engine if the vehicle has explicitly stated it should
         if(entity.shouldRenderEngine() && entity.hasEngine())
         {
-            this.renderEngine(entity, properties.getEnginePosition(), this.getEngineModel(entity), matrixStack, renderTypeBuffer, light);
+            this.renderEngine(entity, properties.getEnginePosition(), RenderUtil.getEngineModel(entity), matrixStack, renderTypeBuffer, light);
         }
 
         //Render the fuel port of the vehicle

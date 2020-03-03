@@ -41,12 +41,6 @@ public class ATVEntity extends LandVehicleEntity implements IEntityRaytraceable
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 9.5 * 0.0625;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.SMALL_MOTOR;
@@ -62,17 +56,5 @@ public class ATVEntity extends LandVehicleEntity implements IEntityRaytraceable
     public boolean canTowTrailer()
     {
         return true;
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger) //TODO remove
-    {
-        return this.getPassengers().size() < 2;
-    }
-
-    @Override
-    public void updatePassenger(Entity passenger) //TODO remove
-    {
-        super.updatePassenger(passenger);
     }
 }

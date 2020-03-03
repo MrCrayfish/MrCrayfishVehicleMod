@@ -71,7 +71,7 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
         //Render the engine if the vehicle has explicitly stated it should
         if(entity.shouldRenderEngine() && entity.hasEngine())
         {
-            IBakedModel engineModel = this.getEngineModel(entity);
+            IBakedModel engineModel = RenderUtil.getEngineModel(entity);
             this.renderEngine(entity, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
         }
 

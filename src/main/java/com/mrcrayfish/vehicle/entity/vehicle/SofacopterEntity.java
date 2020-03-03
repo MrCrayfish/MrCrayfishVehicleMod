@@ -25,12 +25,6 @@ public class SofacopterEntity extends HelicopterEntity implements EntityRaytrace
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0.3125;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.ELECTRIC_MOTOR;

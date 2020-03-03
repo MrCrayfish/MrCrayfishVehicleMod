@@ -52,12 +52,6 @@ public class SmartCarEntity extends LandVehicleEntity implements IEntityRaytrace
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 2 * 0.0625;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

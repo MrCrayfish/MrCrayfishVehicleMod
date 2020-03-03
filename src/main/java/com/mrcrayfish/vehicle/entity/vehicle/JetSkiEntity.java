@@ -81,24 +81,6 @@ public class JetSkiEntity extends BoatEntity implements IEntityRaytraceable
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0;
-    }
-
-    @Override
-    public void updatePassenger(Entity passenger) //TODO remove
-    {
-        super.updatePassenger(passenger);
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger) //TODO remove
-    {
-        return this.getPassengers().size() < 2;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

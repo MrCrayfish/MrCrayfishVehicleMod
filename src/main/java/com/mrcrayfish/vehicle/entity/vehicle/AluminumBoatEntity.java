@@ -82,20 +82,6 @@ public class AluminumBoatEntity extends BoatEntity implements IEntityRaytraceabl
         return 1.5F;
     }
 
-    //TODO remove
-    @Override
-    public double getMountedYOffset()
-    {
-        return 0;
-    }
-
-    //TODO remove
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return this.getPassengers().size() < 4;
-    }
-
     @Override
     public boolean canBeColored()
     {

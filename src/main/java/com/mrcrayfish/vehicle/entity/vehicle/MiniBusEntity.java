@@ -55,12 +55,6 @@ public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

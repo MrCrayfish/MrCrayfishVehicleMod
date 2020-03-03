@@ -461,9 +461,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public abstract double getMountedYOffset();
-
-    @Override
     protected boolean canBeRidden(Entity entityIn)
     {
         return true;

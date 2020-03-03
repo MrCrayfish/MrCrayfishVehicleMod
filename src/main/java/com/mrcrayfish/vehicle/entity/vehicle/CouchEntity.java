@@ -32,12 +32,6 @@ public class CouchEntity extends LandVehicleEntity implements IEntityRaytraceabl
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0.525;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.SMALL_MOTOR;

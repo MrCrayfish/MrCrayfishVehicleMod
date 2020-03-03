@@ -55,24 +55,6 @@ public class GolfCartEntity extends LandVehicleEntity implements EntityRaytracer
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 11 * 0.0625;
-    }
-
-    @Override
-    public void updatePassenger(Entity passenger) //TODO remove
-    {
-        super.updatePassenger(passenger);
-    }
-
-    @Override
-    protected boolean canFitPassenger(Entity passenger)
-    {
-        return this.getPassengers().size() < 4;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

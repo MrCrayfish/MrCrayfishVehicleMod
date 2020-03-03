@@ -43,12 +43,6 @@ public class DuneBuggyEntity extends LandVehicleEntity implements IEntityRaytrac
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 3.25 * 0.0625;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.ELECTRIC_MOTOR;

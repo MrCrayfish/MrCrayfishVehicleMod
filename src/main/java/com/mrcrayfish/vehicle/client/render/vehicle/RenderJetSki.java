@@ -109,22 +109,4 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
     {
         return false;
     }
-
-    private void renderRotationLine(MatrixStack stack, int color)
-    {
-        float red = (float) (color >> 16 & 255) / 255.0F;
-        float green = (float) (color >> 8 & 255) / 255.0F;
-        float blue = (float) (color & 255) / 255.0F;
-        RenderSystem.disableTexture();
-        RenderSystem.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
-        RenderSystem.enableDepthTest();
-        Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
-        buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, -2).color(red, green, blue, 1.0F).endVertex();
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, 2).color(red, green, blue, 1.0F).endVertex();
-        tessellator.draw();
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableTexture();
-    }
 }
