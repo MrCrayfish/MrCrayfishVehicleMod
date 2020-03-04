@@ -20,12 +20,6 @@ import net.minecraft.item.ItemStack;
 public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTrailerEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.FERTILIZER_TRAILER;
-    }
-
-    @Override
     public void render(FertilizerTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.FERTILIZER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);

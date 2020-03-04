@@ -19,12 +19,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.BUMPER_CAR_BODY;
-    }
-
-    @Override
     public void render(BumperCarEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render body

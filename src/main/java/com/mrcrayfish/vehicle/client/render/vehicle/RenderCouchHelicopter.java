@@ -20,12 +20,6 @@ import net.minecraft.util.math.Vec3d;
 public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.RED_SOFA;
-    }
-
-    @Override
     public void render(SofacopterEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.push();

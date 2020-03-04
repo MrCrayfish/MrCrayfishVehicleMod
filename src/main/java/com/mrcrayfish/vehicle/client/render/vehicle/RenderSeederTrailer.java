@@ -21,12 +21,6 @@ import net.minecraft.item.ItemStack;
 public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.SEEDER_TRAILER;
-    }
-
-    @Override
     public void render(SeederTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body

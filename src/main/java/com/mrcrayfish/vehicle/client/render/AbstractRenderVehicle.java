@@ -23,8 +23,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public abstract class AbstractRenderVehicle<T extends VehicleEntity>
 {
-    public abstract ISpecialModel getBodyModel();
-
     public ISpecialModel getKeyHoleModel()
     {
         return SpecialModels.KEY_HOLE;

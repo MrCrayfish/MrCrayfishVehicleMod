@@ -36,12 +36,6 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
     }
 
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.ALUMINUM_BOAT_BODY;
-    }
-
-    @Override
     public void render(AluminumBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);

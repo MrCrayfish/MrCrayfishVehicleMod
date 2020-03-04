@@ -16,12 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.LAWN_MOWER_BODY;
-    }
-
-    @Override
     public void render(LawnMowerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Body

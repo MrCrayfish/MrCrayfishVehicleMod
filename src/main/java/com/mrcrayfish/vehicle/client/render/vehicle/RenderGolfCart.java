@@ -16,12 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderGolfCart extends AbstractRenderVehicle<GolfCartEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.GOLF_CART_BODY;
-    }
-
-    @Override
     public void render(GolfCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body

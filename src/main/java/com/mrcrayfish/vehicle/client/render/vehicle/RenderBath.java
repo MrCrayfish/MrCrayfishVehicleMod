@@ -21,12 +21,6 @@ import net.minecraft.util.math.Vec3d;
 public class RenderBath extends AbstractRenderVehicle<BathEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.ATV_BODY;
-    }
-
-    @Override
     public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));

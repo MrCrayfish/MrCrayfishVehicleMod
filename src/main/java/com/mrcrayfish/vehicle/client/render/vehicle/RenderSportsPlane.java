@@ -31,12 +31,6 @@ import org.lwjgl.opengl.GL11;
 public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.SPORTS_PLANE;
-    }
-
-    @Override
     public void render(SportsPlaneEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE.getModel(), matrixStack, renderTypeBuffer, light);

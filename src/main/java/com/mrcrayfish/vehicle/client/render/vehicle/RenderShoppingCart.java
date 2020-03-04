@@ -15,12 +15,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderShoppingCart extends AbstractRenderVehicle<ShoppingCartEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.SHOPPING_CART_BODY;
-    }
-
-    @Override
     public void render(ShoppingCartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.SHOPPING_CART_BODY.getModel(), matrixStack, renderTypeBuffer, light);

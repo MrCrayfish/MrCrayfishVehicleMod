@@ -22,12 +22,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 public class RenderFluidTrailer extends AbstractRenderTrailer<FluidTrailerEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.FLUID_TRAILER;
-    }
-
-    @Override
     public void render(FluidTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.FLUID_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);

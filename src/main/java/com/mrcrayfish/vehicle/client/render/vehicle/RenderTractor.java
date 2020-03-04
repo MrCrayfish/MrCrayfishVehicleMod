@@ -16,12 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderTractor extends AbstractRenderVehicle<TractorEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.TRACTOR;
-    }
-
-    @Override
     public void render(TractorEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.TRACTOR.getModel(), matrixStack, renderTypeBuffer, light);

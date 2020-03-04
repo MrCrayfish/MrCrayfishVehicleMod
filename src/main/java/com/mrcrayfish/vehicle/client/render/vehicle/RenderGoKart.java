@@ -16,12 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderGoKart extends AbstractRenderVehicle<GoKartEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.GO_KART_BODY;
-    }
-
-    @Override
     public void render(GoKartEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.GO_KART_BODY.getModel(), matrixStack, renderTypeBuffer, light);

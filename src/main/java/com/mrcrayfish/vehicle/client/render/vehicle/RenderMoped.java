@@ -53,12 +53,6 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
     }
 
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.MOPED_BODY;
-    }
-
-    @Override
     public void render(MopedEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);

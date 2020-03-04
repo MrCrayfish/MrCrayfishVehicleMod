@@ -23,12 +23,6 @@ import java.util.List;
 public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.MINI_BUS_BODY;
-    }
-
-    @Override
     public ISpecialModel getTowBarModel()
     {
         return SpecialModels.BIG_TOW_BAR;

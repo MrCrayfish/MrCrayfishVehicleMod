@@ -24,12 +24,6 @@ import net.minecraft.util.math.Vec3d;
 public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.MINI_BIKE_BODY;
-    }
-
-    @Override
     public void render(MiniBikeEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);

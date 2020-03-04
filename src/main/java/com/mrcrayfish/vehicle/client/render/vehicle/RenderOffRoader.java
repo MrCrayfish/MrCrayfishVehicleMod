@@ -22,12 +22,6 @@ import java.util.List;
 public class RenderOffRoader extends AbstractRenderVehicle<OffRoaderEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.OFF_ROADER_BODY;
-    }
-
-    @Override
     public void render(OffRoaderEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);

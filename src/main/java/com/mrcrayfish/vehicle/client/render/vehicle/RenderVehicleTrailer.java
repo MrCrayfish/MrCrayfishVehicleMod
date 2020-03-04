@@ -13,12 +13,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 public class RenderVehicleTrailer extends AbstractRenderTrailer<VehicleEntityTrailer>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.VEHICLE_TRAILER;
-    }
-
-    @Override
     public void render(VehicleEntityTrailer entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.VEHICLE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);

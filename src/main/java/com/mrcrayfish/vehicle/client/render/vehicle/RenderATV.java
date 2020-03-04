@@ -26,12 +26,6 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
     }
 
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.ATV_BODY;
-    }
-
-    @Override
     public void render(ATVEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Body

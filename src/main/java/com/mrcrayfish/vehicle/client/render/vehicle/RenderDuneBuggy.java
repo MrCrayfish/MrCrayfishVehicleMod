@@ -20,12 +20,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.DUNE_BUGGY_BODY;
-    }
-
-    @Override
     public void render(DuneBuggyEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_BODY.getModel(), matrixStack, renderTypeBuffer, light);

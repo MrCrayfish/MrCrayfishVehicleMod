@@ -27,12 +27,6 @@ import org.lwjgl.opengl.GL11;
 public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.JET_SKI_BODY;
-    }
-
-    @Override
     public void render(JetSkiEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body

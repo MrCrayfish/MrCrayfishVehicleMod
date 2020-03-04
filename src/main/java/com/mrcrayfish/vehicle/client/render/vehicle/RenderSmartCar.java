@@ -19,12 +19,6 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderSmartCar extends AbstractRenderVehicle<SmartCarEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.SMART_CAR_BODY;
-    }
-
-    @Override
     public void render(SmartCarEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.SMART_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);

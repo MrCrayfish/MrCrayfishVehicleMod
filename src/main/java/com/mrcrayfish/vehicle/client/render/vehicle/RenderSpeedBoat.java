@@ -23,12 +23,6 @@ import net.minecraft.util.math.Vec3d;
 public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
 {
     @Override
-    public ISpecialModel getBodyModel()
-    {
-        return SpecialModels.SPEED_BOAT_BODY;
-    }
-
-    @Override
     public void render(SpeedBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
