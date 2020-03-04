@@ -122,6 +122,7 @@
     "entity.vehicle.fertilizer": "\u0279\u01ddz\u1d09\ua781\u1d09\u0287\u0279\u01dd\u2132",
     "entity.vehicle.fluid_trailer": "\u0279\u01dd\ua781\u1d09\u0250\u0279\u27d8 p\u1d09n\ua781\u2132",
     "entity.vehicle.tractor": "\u0279o\u0287\u0254\u0250\u0279\u27d8",
+    "entity.vehicle.mini_bus": "sn\u15fa \u1d09u\u1d09W",
 
     "vehicle.config.title": "\u1d77\u1d09\u025fuo\u0186 poW \u01dd\ua781\u0254\u1d09\u0265\u01dd\u039b s,\u0265s\u1d09\u025f\u028e\u0250\u0279\u0186\u0279W",
     "vehicle.config.client": "\u0287u\u01dd\u1d09\ua781\u0186",
@@ -166,7 +167,7 @@
     "vehicle.config.server.max_hose_distance": "\u01dd\u0254u\u0250\u0287s\u1d09\u15e1 \u01ddsoH x\u0250W",
     "vehicle.config.server.max_hose_distance.tooltip": "s\u029e\u0250\u01dd\u0279q \u01ddso\u0265 p\u1d09n\ua781\u025f \u0279o d\u026fnd s\u0250\u1d77 \u01dd\u0265\u0287 \u026fo\u0279\u025f \u01ddso\u0265 \u01dd\u0265\u0287 \u01dd\u0279o\u025f\u01ddq \u01dd\u0254u\u0250\u0287s\u1d09p \u026fn\u026f\u1d09x\u0250\u026f \u01dd\u0265\u27d8",
 
-    "vehicle.chat.pump.power": "%s \u0279?:\u01ddpoW \u0279\u01dd\u028do\u0500q?",
+    "vehicle.chat.pump.power": "%s §b:\u01ddpoW \u0279\u01dd\u028do\u0500§r",
     "vehicle.chat.pump.power.off": "\u025f\u025fo \ua781\u0250u\u1d77\u1d09s s\u01dd\u0279\u1d09nb\u01dd\u1d1a",
     "vehicle.chat.pump.power.on": "uo \ua781\u0250u\u1d77\u1d09s s\u01dd\u0279\u1d09nb\u01dd\u1d1a",
     "vehicle.chat.pump.power.always": "\u01dd\u028c\u1d09\u0287\u0254\u0250 s\u028e\u0250\u028d\ua781\u2c6f",
@@ -183,5 +184,9 @@
     "vehicle.tooltip.not_applicable": "\u01dd\ua781q\u0250\u0254\u1d09\ua781dd\u0250 \u0287oN",
     "vehicle.tooltip.paint_color": "\u0279o\ua781o\u0186 \u0287u\u1d09\u0250\u0500",
     "vehicle.tooltip.engine": "\u01ddu\u1d09\u1d77u\u018e",
-    "vehicle.tooltip.wheels": "\ua781\u01dd\u01dd\u0265M"
+    "vehicle.tooltip.wheels": "s\ua781\u01dd\u01dd\u0265M",
+
+    "key.categories.vehicle": "poW \u01dd\ua781\u0254\u1d09\u0265\u01dd\u039b s,\u0265s\u1d09\u025f\u028e\u0250\u0279\u0186\u0279W",
+    "key.vehicle.cycle_seats": "s\u0287\u0250\u01ddS \u01dd\ua781\u0254\u028e\u0186",
+    "key.vehicle.horn": "\u0279oH",
 }
