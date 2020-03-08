@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.client.Models;
 import com.mrcrayfish.vehicle.item.SubItems;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -93,7 +92,6 @@ public class RegistrationHandler
         public static void register(ModelRegistryEvent event)
         {
             Items.ITEMS.forEach(Models::registerRender);
-            com.mrcrayfish.vehicle.client.Models.registerModels(ModItems.MODELS);
         }
 
         private static void registerRender(Item item)

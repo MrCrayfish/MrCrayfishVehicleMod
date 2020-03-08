@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -147,7 +147,7 @@ public class GasPumpRenderer extends TileEntitySpecialRenderer<TileEntityGasPump
                     GlStateManager.rotate(180F, 0, 1, 0);
                     GlStateManager.rotate(90F, 1, 0, 0);
                     GlStateManager.scale(0.8, 0.8, 0.8);
-                    RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
+                    RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }

@@ -479,28 +479,28 @@ public class EntityRaytracer
         List<MatrixTransformation> trailerStorageTransformGlobal = Lists.newArrayList();
         createBodyTransforms(trailerStorageTransformGlobal, EntityStorageTrailer.class);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerStorageParts = Maps.newHashMap();
-        createTransformListForPart(Models.CHEST_TRAILER, trailerStorageParts, trailerStorageTransformGlobal);
+        createTransformListForPart(SpecialModels.CHEST_TRAILER, trailerStorageParts, trailerStorageTransformGlobal);
         registerEntityStatic(EntityStorageTrailer.class, trailerStorageParts);
 
         // Seeder Trailer
         List<MatrixTransformation> seederTransformGlobal = Lists.newArrayList();
         createBodyTransforms(seederTransformGlobal, EntitySeederTrailer.class);
         HashMap<RayTracePart, List<MatrixTransformation>> seederParts = Maps.newHashMap();
-        createTransformListForPart(Models.SEEDER_TRAILER, seederParts, seederTransformGlobal);
+        createTransformListForPart(SpecialModels.SEEDER_TRAILER, seederParts, seederTransformGlobal);
         registerEntityStatic(EntitySeederTrailer.class, seederParts);
 
         // Fertilizer
         List<MatrixTransformation> fertilizerTransformGlobal = Lists.newArrayList();
         createBodyTransforms(fertilizerTransformGlobal, EntityFertilizerTrailer.class);
         HashMap<RayTracePart, List<MatrixTransformation>> fertilizerParts = Maps.newHashMap();
-        createTransformListForPart(Models.FERTILIZER_TRAILER, fertilizerParts, fertilizerTransformGlobal);
+        createTransformListForPart(SpecialModels.FERTILIZER_TRAILER, fertilizerParts, fertilizerTransformGlobal);
         registerEntityStatic(EntityFertilizerTrailer.class, fertilizerParts);
 
         // Fluid
         List<MatrixTransformation> trailerFluidTransformGlobal = Lists.newArrayList();
         createBodyTransforms(trailerFluidTransformGlobal, EntityFluidTrailer.class);
         HashMap<RayTracePart, List<MatrixTransformation>> trailerFluidParts = Maps.newHashMap();
-        createTransformListForPart(Models.FLUID_TRAILER, trailerFluidParts, trailerFluidTransformGlobal);
+        createTransformListForPart(SpecialModels.FLUID_TRAILER, trailerFluidParts, trailerFluidTransformGlobal);
         registerEntityStatic(EntityFluidTrailer.class, trailerFluidParts);
     }
 
@@ -753,8 +753,8 @@ public class EntityRaytracer
         createTransformListForPart(part, parts, Lists.newArrayList(), transforms);
     }
 
-    public static void createTransformListForPart(Models model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
-                                                 @Nullable Function<RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
+    public static void createTransformListForPart(SpecialModels model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal,
+                                                  @Nullable Function<RayTraceResultRotated, EnumHand> continuousInteraction, MatrixTransformation... transforms)
     {
         List<MatrixTransformation> transformsAll = Lists.newArrayList();
         transformsAll.addAll(transformsGlobal);
@@ -770,7 +770,7 @@ public class EntityRaytracer
      * @param transformsGlobal transforms that apply to all parts for this entity
      * @param transforms part-specific transforms for the given part
      */
-    public static void createTransformListForPart(Models model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, MatrixTransformation... transforms)
+    public static void createTransformListForPart(SpecialModels model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, MatrixTransformation... transforms)
     {
         createTransformListForPart(model, parts, transformsGlobal, null, transforms);
     }
@@ -1757,7 +1757,7 @@ public class EntityRaytracer
     {
         private final ItemStack partStack;
         private final AxisAlignedBB partBox;
-        private final Models model;
+        private final SpecialModels model;
         private final Function<RayTraceResultRotated, R> continuousInteraction;
 
         public RayTracePart(ItemStack partStack, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
@@ -1770,7 +1770,7 @@ public class EntityRaytracer
             this(ItemStack.EMPTY, partBox, null, continuousInteraction);
         }
 
-        public RayTracePart(Models model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
+        public RayTracePart(SpecialModels model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this(ItemStack.EMPTY, null, model, continuousInteraction);
         }
@@ -1780,7 +1780,7 @@ public class EntityRaytracer
             this(ItemStack.EMPTY, partBox, null, null);
         }
 
-        private RayTracePart(ItemStack partStack, @Nullable AxisAlignedBB partBox, @Nullable Models model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
+        private RayTracePart(ItemStack partStack, @Nullable AxisAlignedBB partBox, @Nullable SpecialModels model, @Nullable Function<RayTraceResultRotated, R> continuousInteraction)
         {
             this.partStack = partStack;
             this.partBox = partBox;
@@ -1800,7 +1800,7 @@ public class EntityRaytracer
         }
 
         @Nullable
-        public Models getModel()
+        public SpecialModels getModel()
         {
             return model;
         }

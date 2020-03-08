@@ -1,9 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityFertilizerTrailer;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -19,7 +18,7 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<EntityFertili
     @Override
     public void render(EntityFertilizerTrailer entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body, Models.FERTILIZER_TRAILER.getModel());
+        this.renderDamagedPart(entity, entity.body, SpecialModels.FERTILIZER_TRAILER.getModel());
         this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
@@ -76,7 +75,7 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<EntityFertili
             float wheelRotation = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
             GlStateManager.rotate(-wheelRotation, 1, 0, 0);
             GlStateManager.scale((float) 1.25, (float) 1.25, (float) 1.25);
-            RenderUtil.renderItemModel(entity.body, Models.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderItemModel(entity.body, SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
         }
         GlStateManager.popMatrix();
     }

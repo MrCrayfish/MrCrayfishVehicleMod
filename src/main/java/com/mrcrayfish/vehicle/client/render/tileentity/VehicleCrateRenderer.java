@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import net.minecraft.block.state.IBlockState;
@@ -72,7 +72,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
 
                 GlStateManager.translate(-0.5, 0, -0.5);
                 GlStateManager.translate(0, 0, -2 * 0.0625);
-                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
+                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(SpecialModels.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.popMatrix();
             }
 
@@ -85,7 +85,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
                 GlStateManager.scale(1.001, 1.001, 1.001);
                 GlStateManager.translate(-0.5, -0.5, -0.5);
                 GlStateManager.translate(0, 0, (6 * 0.0625) * 0.998);
-                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
+                Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(SpecialModels.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
                 GlStateManager.popMatrix();
             }
 
@@ -96,7 +96,7 @@ public class VehicleCrateRenderer extends TileEntitySpecialRenderer<TileEntityVe
             GlStateManager.scale(1.001, 1.001, 1.001);
             GlStateManager.translate(-0.5, -0.5, -0.5);
             GlStateManager.translate(0, 0, (6 * 0.0625) * 0.998);
-            Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(Models.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
+            Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelRenderer().renderModelBrightnessColor(SpecialModels.VEHICLE_CRATE.getModel(), 1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.popMatrix();
 
             GlStateManager.popMatrix();

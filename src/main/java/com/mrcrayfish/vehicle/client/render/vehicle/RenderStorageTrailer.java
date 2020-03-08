@@ -1,14 +1,11 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.trailer.EntityStorageTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.util.ResourceLocation;
 
 import java.util.Calendar;
@@ -32,7 +29,7 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<EntityStorageTra
     @Override
     public void render(EntityStorageTrailer entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body, Models.CHEST_TRAILER.getModel());
+        this.renderDamagedPart(entity, entity.body, SpecialModels.CHEST_TRAILER.getModel());
         this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 

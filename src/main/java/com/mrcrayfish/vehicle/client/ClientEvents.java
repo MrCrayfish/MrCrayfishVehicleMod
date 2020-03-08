@@ -351,7 +351,7 @@ public class ClientEvents
                 GlStateManager.translate((float) handOffset * f, f1, f2);
                 GlStateManager.translate((float) handOffset * 0.65F, -0.52F + 0.25F, -0.72F);
                 GlStateManager.rotate(45F, 1, 0, 0);
-                RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
+                RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
                 event.setCanceled(true);
             }
@@ -406,7 +406,7 @@ public class ClientEvents
                     boolean leftHanded = entity.getPrimaryHand() == EnumHandSide.LEFT;
                     GlStateManager.translate((float) (leftHanded ? -1 : 1) / 16.0F, 0.125F, -0.625F);
                     GlStateManager.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
-                    RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), Models.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
+                    RenderUtil.renderItemModel(new ItemStack(ModItems.MODELS), SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mrcrayfish.vehicle.client.Models;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
@@ -20,7 +20,7 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<EntitySeederTrail
     public void render(EntitySeederTrailer entity, float partialTicks)
     {
         //Render the body
-        this.renderDamagedPart(entity, entity.body, Models.SEEDER_TRAILER.getModel());
+        this.renderDamagedPart(entity, entity.body, SpecialModels.SEEDER_TRAILER.getModel());
         this.renderWheel(entity, true, -17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, false, 17.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
@@ -92,7 +92,7 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<EntitySeederTrail
                     float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
                     GlStateManager.rotate(-wheelRotation, 1, 0, 0);
                     GlStateManager.scale((float) 0.75, (float) 0.75, (float) 0.75);
-                    RenderUtil.renderItemModel(trailer.body, Models.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
+                    RenderUtil.renderItemModel(trailer.body, SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }
