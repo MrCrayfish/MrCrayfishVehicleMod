@@ -24,7 +24,7 @@ public class RenderJetSki extends AbstractRenderVehicle<EntityJetSki>
         //Render the handles bars
         GlStateManager.pushMatrix();
         {
-            GlStateManager.translate(0, 0.375, 0.25);
+            GlStateManager.translate(0, 0.355, 0.225);
             GlStateManager.rotate(-45F, 1, 0, 0);
             GlStateManager.translate(0, 0.02, 0);
 
