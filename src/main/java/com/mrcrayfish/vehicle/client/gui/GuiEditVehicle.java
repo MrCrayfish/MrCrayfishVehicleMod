@@ -151,10 +151,12 @@ public class GuiEditVehicle extends GuiContainer
             int mouseWheelDelta = Mouse.getDWheel();
             if(mouseWheelDelta < 0 && windowZoom > 0)
             {
+                showHelp = false;
                 windowZoom--;
             }
             else if(mouseWheelDelta > 0)
             {
+                showHelp = false;
                 windowZoom++;
             }
 
