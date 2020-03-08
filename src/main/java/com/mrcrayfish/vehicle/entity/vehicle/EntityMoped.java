@@ -85,7 +85,7 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
         this.setFuelCapacity(12000F);
-        this.setFuelConsumption(0.9F);
+        this.setFuelConsumption(0.225F);
     }
 
     @Override

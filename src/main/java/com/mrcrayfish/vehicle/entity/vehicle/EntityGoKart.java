@@ -30,7 +30,7 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
         this.setTurnSensitivity(12);
         this.setSize(1.5F, 0.5F);
         this.stepHeight = 0.625F;
-        this.setFuelConsumption(2.0F);
+        this.setFuelConsumption(0.5F);
     }
 
     @Override

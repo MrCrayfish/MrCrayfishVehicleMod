@@ -34,7 +34,7 @@ public class EntitySofacopter extends EntityHelicopter implements EntityRaytrace
         super(worldIn);
         this.setSize(1.0F, 1.0F);
         this.setFuelCapacity(40000F);
-        this.setFuelConsumption(2.0F);
+        this.setFuelConsumption(0.5F);
         this.dataManager.set(COLOR, 11546150);
     }
 

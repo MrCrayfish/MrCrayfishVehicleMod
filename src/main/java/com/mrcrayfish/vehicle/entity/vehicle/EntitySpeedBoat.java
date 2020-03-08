@@ -30,7 +30,7 @@ public class EntitySpeedBoat extends EntityBoat implements IEntityRaytraceable
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
         this.setFuelCapacity(25000F);
-        this.setFuelConsumption(3.0F);
+        this.setFuelConsumption(0.75F);
     }
 
     @Override

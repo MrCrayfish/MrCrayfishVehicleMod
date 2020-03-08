@@ -31,7 +31,7 @@ public class EntityJetSki extends EntityBoat implements IEntityRaytraceable
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
-        this.setFuelConsumption(2.0F);
+        this.setFuelConsumption(0.5F);
     }
 
     @Override

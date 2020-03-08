@@ -92,7 +92,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public boolean launching;
     public int launchingTimer;
     public boolean disableFallDamage;
-    public float fuelConsumption = 1F;
+    public float fuelConsumption = 0.25F;
 
     protected double[] wheelPositions;
     protected boolean wheelsOnGround = true;

@@ -27,7 +27,7 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
         this.setMaxTurnAngle(20);
         this.setSize(2.25F, 0.875F);
         this.setFuelCapacity(25000F);
-        this.setFuelConsumption(2.0F);
+        this.setFuelConsumption(0.5F);
     }
 
     @Override
