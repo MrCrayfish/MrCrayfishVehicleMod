@@ -129,6 +129,7 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
             else if(result.getPartHit() == CHEST_BOX)
             {
                 PacketHandler.INSTANCE.sendToServer(new MessageOpenStorage(this.getEntityId()));
+                Minecraft.getMinecraft().player.swingArm(EnumHand.MAIN_HAND);
                 return true;
             }
         }
