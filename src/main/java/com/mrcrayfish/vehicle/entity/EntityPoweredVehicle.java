@@ -346,7 +346,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.setSpeed(currentSpeed);
 
         /* Updates the direction of the vehicle */
-        rotationYaw -= deltaYaw;
+        VehicleProperties properties = this.getProperties();
+        if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
+        {
+            this.rotationYaw -= this.deltaYaw;
+        }
 
         /* Updates the vehicle motion and applies it on top of the normal motion */
         this.updateVehicleMotion();
