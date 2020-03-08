@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.block.BlockFluidPipe;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
@@ -27,10 +28,10 @@ public class TileEntityFluidPipe extends TileFluidHandlerSynced implements ITick
 
     public TileEntityFluidPipe()
     {
-        capacity = 500;
-        transferAmount = 20;
-        tank = new FluidTank(capacity);
-        disabledConnections = new boolean[EnumFacing.values().length];
+        this.capacity = 500;
+        this.transferAmount = VehicleConfig.SERVER.pipeTransferAmount;
+        this.tank = new FluidTank(this.capacity);
+        this.disabledConnections = new boolean[EnumFacing.values().length];
     }
 
     public static boolean[] getDisabledConnections(TileEntityFluidPipe pipe)

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.block.BlockFluidPump;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.state.IBlockState;
@@ -22,7 +23,8 @@ public class TileEntityFluidPump extends TileEntityFluidPipe
 
     public TileEntityFluidPump()
     {
-        powerMode = PowerMode.RQUIRES_SIGNAL_ON;
+        this.transferAmount = VehicleConfig.SERVER.pumpTransferAmount;
+        this.powerMode = PowerMode.RQUIRES_SIGNAL_ON;
     }
 
     public enum PowerMode

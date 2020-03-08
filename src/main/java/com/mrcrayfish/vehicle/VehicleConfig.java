@@ -60,6 +60,18 @@ public class VehicleConfig
         @Config.Comment("The maximum distance before the hose from the gas pump or fluid hose breaks")
         @Config.LangKey(Reference.MOD_ID + ".config.server.max_hose_distance")
         public double maxHoseDistance = 6.0;
+
+        @Config.Name("Pipe Transfer Amount")
+        @Config.Comment("The amount of fluid a pipe will transfer each tick")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.pipe_transfer_amount")
+        @Config.RangeInt(min = 1)
+        public int pipeTransferAmount = 50;
+
+        @Config.Name("Pump Transfer Amount")
+        @Config.Comment("The amount of fluid a pump will transfer each tick")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.pump_transfer_amount")
+        @Config.RangeInt(min = 1)
+        public int pumpTransferAmount = 50;
     }
 
     public static class Client
