@@ -1,11 +1,14 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMoped;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelChest;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -33,7 +36,7 @@ public class RenderMoped extends AbstractRenderVehicle<EntityMoped>
     {
         Minecraft.getMinecraft().getRenderManager().setDebugBoundingBox(false);
 
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.MOPED_BODY.getModel());
 
         GlStateManager.pushMatrix();
         {
@@ -53,7 +56,7 @@ public class RenderMoped extends AbstractRenderVehicle<EntityMoped>
             {
                 GlStateManager.translate(0, 0.835, 0.525);
                 GlStateManager.scale(0.8, 0.8, 0.8);
-                renderDamagedPart(entity, entity.handleBar);
+                this.renderDamagedPart(entity, SpecialModels.MOPED_HANDLE_BAR.getModel());
             }
             GlStateManager.popMatrix();
 
@@ -63,7 +66,7 @@ public class RenderMoped extends AbstractRenderVehicle<EntityMoped>
                 GlStateManager.translate(0, -0.12, 0.785);
                 GlStateManager.rotate(-22.5F, 1, 0, 0);
                 GlStateManager.scale(0.9, 0.9, 0.9);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.mudGuard, ItemCameraTransforms.TransformType.NONE);
+                this.renderDamagedPart(entity, SpecialModels.MOPED_MUD_GUARD.getModel());
             }
             GlStateManager.popMatrix();
 
@@ -79,7 +82,11 @@ public class RenderMoped extends AbstractRenderVehicle<EntityMoped>
                         GlStateManager.rotate(-frontWheelSpin, 1, 0, 0);
                     }
                     GlStateManager.scale(1.3F, 1.3F, 1.3F);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
+                    IBakedModel model = RenderUtil.getWheelModel(entity);
+                    if(model != null)
+                    {
+                        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, entity.getWheelColor());
+                    }
                 }
                 GlStateManager.popMatrix();
             }

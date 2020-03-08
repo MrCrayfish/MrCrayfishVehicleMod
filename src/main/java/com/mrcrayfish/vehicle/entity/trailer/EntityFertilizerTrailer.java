@@ -81,13 +81,6 @@ public class EntityFertilizerTrailer extends EntityTrailer implements EntityRayt
     }
 
     @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.MODELS);
-    }
-
-    @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
         ItemStack heldItem = player.getHeldItem(hand);

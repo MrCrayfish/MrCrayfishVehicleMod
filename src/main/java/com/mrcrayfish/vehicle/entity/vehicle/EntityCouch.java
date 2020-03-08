@@ -25,15 +25,6 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(Item.getByNameOrId("cfm:couch_jeb"), 1, 0);
-        wheel = new ItemStack(ModItems.WHEEL);
-    }
-
-    @Override
     public SoundEvent getMovingSound()
     {
         return ModSounds.ATV_ENGINE_MONO;

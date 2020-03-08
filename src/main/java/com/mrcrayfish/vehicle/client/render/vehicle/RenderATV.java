@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityATV;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -23,7 +25,7 @@ public class RenderATV extends AbstractRenderVehicle<EntityATV>
     public void render(EntityATV entity, float partialTicks)
     {
         //Body
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel());
 
         //Handle Bars
         GlStateManager.pushMatrix();
@@ -37,7 +39,7 @@ public class RenderATV extends AbstractRenderVehicle<EntityATV>
             float turnRotation = wheelAngleNormal * 15F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLE_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, -1);
         }
         GlStateManager.popMatrix();
     }

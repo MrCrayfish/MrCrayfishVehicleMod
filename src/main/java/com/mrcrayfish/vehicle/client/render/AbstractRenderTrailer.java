@@ -1,9 +1,13 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
+import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.item.ItemStack;
 
 /**
  * Author: MrCrayfish
@@ -27,7 +31,9 @@ public abstract class AbstractRenderTrailer<T extends EntityTrailer> extends Abs
                     float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
                     GlStateManager.rotate(right ? wheelRotation : -wheelRotation, 1, 0, 0);
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(trailer.wheel, ItemCameraTransforms.TransformType.NONE);
+                    ItemStack wheel = new ItemStack(ModItems.WHEEL);
+                    IBakedModel model = RenderUtil.getModel(wheel);
+                    RenderUtil.renderItemModel(wheel, model, ItemCameraTransforms.TransformType.NONE);
                 }
                 GlStateManager.popMatrix();
             }

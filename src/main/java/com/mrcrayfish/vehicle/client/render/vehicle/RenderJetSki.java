@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityJetSki;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,7 +19,7 @@ public class RenderJetSki extends AbstractRenderVehicle<EntityJetSki>
     public void render(EntityJetSki entity, float partialTicks)
     {
         //Render the body
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.JET_SKI_BODY.getModel());
 
         //Render the handles bars
         GlStateManager.pushMatrix();
@@ -31,7 +33,7 @@ public class RenderJetSki extends AbstractRenderVehicle<EntityJetSki>
             float turnRotation = wheelAngleNormal * 15F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLE_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, entity.getColor());
         }
         GlStateManager.popMatrix();
     }

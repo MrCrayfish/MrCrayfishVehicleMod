@@ -1,9 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityCouch;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -17,7 +20,7 @@ public class RenderCouch extends AbstractRenderVehicle<EntityCouch>
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 0.0625, 0);
         GlStateManager.rotate(90F, 0, 1, 0);
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity,SpecialModels.COUCH.getModel());
         GlStateManager.popMatrix();
     }
 

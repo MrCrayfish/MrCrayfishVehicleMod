@@ -1,18 +1,22 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
+import java.awt.*;
 
 /**
  * Author: MrCrayfish
@@ -51,10 +55,9 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
             {
                 GlStateManager.pushMatrix();
                 GlStateManager.rotate(180F, 0, 1, 0);
-
                 Vec3d towBarOffset = properties.getTowBarPosition();
                 GlStateManager.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-                Minecraft.getMinecraft().getRenderItem().renderItem(entity.towBar, ItemCameraTransforms.TransformType.NONE);
+                RenderUtil.renderModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }
 
@@ -93,11 +96,11 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
      * will be cancelled if the PartPosition parameter is null.
      *
      * @param position the render definitions to apply to the part
-     * @param part the part to render onto the vehicle
+     * @param model the model of the part
      */
-    protected void renderPart(@Nullable PartPosition position, ItemStack part)
+    protected void renderPart(@Nullable PartPosition position, @Nullable IBakedModel model, int color)
     {
-        if(position == null)
+        if(position == null || model == null)
             return;
 
         GlStateManager.pushMatrix();
@@ -109,7 +112,7 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
             GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
             GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
             GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, color);
         }
         GlStateManager.popMatrix();
     }
@@ -138,16 +141,74 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
      * Renders the engine (ItemStack) on the vehicle using the specified PartPosition. It adds a
      * subtle shake to the render to simulate it being powered.
      *
+     * @param entity the powered vehicle to render the engine to
      * @param position the render definitions to apply to the part
-     * @param part the part to render onto the vehicle
      */
-    protected void renderEngine(EntityPoweredVehicle entity, @Nullable PartPosition position, ItemStack part)
+    protected void renderEngine(EntityPoweredVehicle entity, @Nullable PartPosition position)
     {
         if(entity.isFueled() && entity.getControllingPassenger() != null)
         {
             GlStateManager.rotate(0.5F * (entity.ticksExisted % 2), 1, 0, 1);
             GlStateManager.rotate(-0.5F * (entity.ticksExisted % 2), 0, 1, 0);
         }
-        this.renderPart(position, part);
+        IBakedModel model = RenderUtil.getEngineModel(entity);
+        if(model != null)
+        {
+            this.renderPart(position, model, -1);
+        }
+    }
+
+    /**
+     * Renders the fuel port onto the vehicle model at the specified part position
+     *
+     * @param entity the powered vehicle to render the fuel port to
+     * @param position the render definitions to apply to the part
+     */
+    protected void renderFuelPort(EntityPoweredVehicle entity, @Nullable PartPosition position)
+    {
+        if(entity.shouldRenderFuelPort() && entity.requiresFuel())
+        {
+            Color color = new Color(entity.getColor());
+            int brightness = (int) Math.sqrt(color.getRed() * color.getRed() * 0.241 + color.getGreen() * color.getGreen() * 0.691 + color.getBlue() * color.getBlue() * 0.068);
+            int colorInt = (brightness > 127 ? color.darker() : color.brighter()).getRGB();
+
+            EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
+            if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            {
+                this.renderPart(position, entity.getFuelPort().getBody().getModel(), colorInt);
+                if(renderVehicle.shouldRenderFuelLid())
+                {
+                    this.renderPart(position, entity.getFuelPort().getLid().getModel(), colorInt);
+                }
+                entity.playFuelPortOpenSound();
+            }
+            else
+            {
+                this.renderPart(position, entity.getFuelPort().getClosed().getModel(), colorInt);
+                entity.playFuelPortCloseSound();
+            }
+        }
+    }
+
+    /**
+     * Renders the key port onto the vehicle model
+     *
+     * @param entity the powered vehicle to render the key port to
+     */
+    protected void renderKeyPort(EntityPoweredVehicle entity)
+    {
+        if(entity.isKeyNeeded())
+        {
+            Color color = new Color(entity.getColor());
+            int brightness = (int) Math.sqrt(color.getRed() * color.getRed() * 0.241 + color.getGreen() * color.getGreen() * 0.691 + color.getBlue() * color.getBlue() * 0.068);
+            int colorInt = (brightness > 127 ? color.darker() : color.brighter()).getRGB();
+
+            VehicleProperties properties = entity.getProperties();
+            this.renderPart(properties.getKeyPortPosition(), SpecialModels.KEY_HOLE.getModel(), colorInt);
+            if(!entity.getKeyStack().isEmpty())
+            {
+                this.renderKey(properties.getKeyPosition(), entity.getKeyStack());
+            }
+        }
     }
 }

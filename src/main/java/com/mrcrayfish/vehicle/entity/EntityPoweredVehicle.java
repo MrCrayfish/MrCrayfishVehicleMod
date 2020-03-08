@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
@@ -115,26 +116,8 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     public float vehicleMotionZ;
 
     private UUID owner;
-
     private InventoryBasic vehicleInventory;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack engine;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack keyPort;
-
-    @SideOnly(Side.CLIENT)
     private FuelPort fuelPort;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack fuelPortClosed;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack fuelPortBody;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack fuelPortLid;
 
     private boolean fueling;
 
@@ -232,21 +215,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return true;
     }
 
-    @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        engine = new ItemStack(ModItems.SMALL_ENGINE);
-        keyPort = new ItemStack(ModItems.KEY_HOLE);
-        setFuelPort(FuelPort.LID);
-    }
-
     protected void setFuelPort(FuelPort fuelPort)
     {
         this.fuelPort = fuelPort;
-        fuelPortClosed = new ItemStack(fuelPort.getClosed());
-        fuelPortBody = new ItemStack(fuelPort.getBody());
-        fuelPortLid = new ItemStack(fuelPort.getLid());
     }
 
     public void fuelVehicle(EntityPlayer player, EnumHand hand)
@@ -1104,41 +1075,6 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     }
 
     @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(ENGINE_TIER.equals(key))
-            {
-                EngineTier tier = EngineTier.getType(this.dataManager.get(ENGINE_TIER));
-                engine.setItemDamage(tier.ordinal());
-            }
-            if(WHEEL_TYPE.equals(key))
-            {
-                WheelType type = this.getWheelType();
-                wheel.setItemDamage(type.ordinal());
-            }
-            if(COLOR.equals(key))
-            {
-                Color color = new Color(this.dataManager.get(COLOR));
-                int colorInt = (Math.sqrt(color.getRed() * color.getRed() * 0.241
-                        + color.getGreen() * color.getGreen() * 0.691
-                        + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();
-                CommonUtils.getItemTagCompound(fuelPortClosed).setInteger("color", colorInt);
-                CommonUtils.getItemTagCompound(fuelPortBody).setInteger("color", colorInt);
-                CommonUtils.getItemTagCompound(fuelPortLid).setInteger("color", colorInt);
-                CommonUtils.getItemTagCompound(keyPort).setInteger("color", colorInt);
-            }
-            if(WHEEL_COLOR.equals(key))
-            {
-                int color = this.dataManager.get(WHEEL_COLOR);
-                CommonUtils.getItemTagCompound(wheel).setInteger("color", color != -1 ? color : 16383998);
-            }
-        }
-    }
-
-    @Override
     public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
@@ -1450,6 +1386,11 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return ItemStack.EMPTY;
     }
 
+    public FuelPort getFuelPort()
+    {
+        return this.fuelPort;
+    }
+
     public enum TurnDirection
     {
         LEFT(1), FORWARD(0), RIGHT(-1);
@@ -1487,15 +1428,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public enum FuelPort
     {
-        LID(ModItems.FUEL_PORT_CLOSED, ModItems.FUEL_PORT_BODY, ModItems.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
-        CAP(ModItems.FUEL_PORT_2_CLOSED, ModItems.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
+        LID(SpecialModels.FUEL_PORT_CLOSED, SpecialModels.FUEL_PORT_BODY, SpecialModels.FUEL_PORT_LID, ModSounds.FUEL_PORT_OPEN, 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE, 0.12F, 0.6F),
+        CAP(SpecialModels.FUEL_PORT_2_CLOSED, SpecialModels.FUEL_PORT_2_PIPE, null, ModSounds.FUEL_PORT_2_OPEN, 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE, 0.3F, 0.6F);
 
-        private Item closed, body, lid;
+        private SpecialModels closed, body, lid;
         private SoundEvent soundOpen, soundClose;
         private float volumeOpen, volumeClose;
         private float pitchOpen, pitchClose;
 
-        FuelPort(Item closed, Item body, Item lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
+        FuelPort(SpecialModels closed, SpecialModels body, SpecialModels lid, SoundEvent soundOpen, float volumeOpen, float pitchOpen, SoundEvent soundClose, float volumeClose, float pitchClose)
         {
             this.closed = closed;
             this.body = body;
@@ -1508,17 +1449,17 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             this.pitchClose = pitchClose;
         }
 
-        public Item getClosed()
+        public SpecialModels getClosed()
         {
             return closed;
         }
 
-        public Item getBody()
+        public SpecialModels getBody()
         {
             return body;
         }
 
-        public Item getLid()
+        public SpecialModels getLid()
         {
             return lid;
         }

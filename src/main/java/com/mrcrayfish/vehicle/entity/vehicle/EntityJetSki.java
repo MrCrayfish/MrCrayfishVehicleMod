@@ -19,12 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityJetSki extends EntityBoat implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack handleBar;
-
     public EntityJetSki(World worldIn)
     {
         super(worldIn);
@@ -32,16 +26,7 @@ public class EntityJetSki extends EntityBoat implements IEntityRaytraceable
         this.setTurnSensitivity(15);
         this.setSize(1.5F, 1.0F);
         this.setFuelConsumption(0.5F);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.JET_SKI_BODY);
-        handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
-        setFuelPort(FuelPort.CAP);
+        this.setFuelPort(FuelPort.CAP);
     }
 
     @Override

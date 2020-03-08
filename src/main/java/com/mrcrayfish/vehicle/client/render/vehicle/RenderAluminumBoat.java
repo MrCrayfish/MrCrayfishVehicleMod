@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityAluminumBoat;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelPlayer;
@@ -26,7 +28,7 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat
     @Override
     public void render(EntityAluminumBoat entity, float partialTicks)
     {
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.body, ItemCameraTransforms.TransformType.NONE);
+        this.renderDamagedPart(entity,SpecialModels.ALUMINUM_BOAT_BODY.getModel());
     }
 
     @Override

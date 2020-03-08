@@ -1,10 +1,13 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityDuneBuggy;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -16,7 +19,7 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<EntityDuneBuggy>
     @Override
     public void render(EntityDuneBuggy entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_BODY.getModel());
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         double wheelScale = 1.0F;
@@ -32,7 +35,7 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<EntityDuneBuggy>
             GlStateManager.rotate(22.5F, 1, 0, 0);
             GlStateManager.translate(0, 0, -0.2);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.handleBar, ItemCameraTransforms.TransformType.NONE);
+            this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_HANDLE_BAR.getModel());
 
             if(entity.hasWheels())
             {
@@ -46,7 +49,11 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<EntityDuneBuggy>
                     }
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
+                    IBakedModel model = RenderUtil.getWheelModel(entity);
+                    if(model != null)
+                    {
+                        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, entity.getWheelColor());
+                    }
                 }
                 GlStateManager.popMatrix();
             }

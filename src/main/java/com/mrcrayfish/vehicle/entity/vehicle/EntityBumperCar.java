@@ -18,12 +18,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack steeringWheel;
-
     public EntityBumperCar(World worldIn)
     {
         super(worldIn);
@@ -33,16 +27,6 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
         this.stepHeight = 0.625F;
 
         //TODO figure out fuel system
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.BUMPER_CAR_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override

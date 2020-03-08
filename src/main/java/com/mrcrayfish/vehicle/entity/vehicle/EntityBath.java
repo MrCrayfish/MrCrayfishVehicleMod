@@ -33,13 +33,6 @@ public class EntityBath extends EntityPlane implements IEntityRaytraceable
     }
 
     @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(Item.getByNameOrId("cfm:bath_bottom"), 1, 0);
-    }
-
-    @Override
     public void updateVehicle()
     {
         if(this.isFlying() && this.getControllingPassenger() != null)

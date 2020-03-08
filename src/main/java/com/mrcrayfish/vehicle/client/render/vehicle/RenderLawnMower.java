@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityLawnMower;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -17,7 +19,7 @@ public class RenderLawnMower extends AbstractRenderVehicle<EntityLawnMower>
     public void render(EntityLawnMower entity, float partialTicks)
     {
         //Body
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.LAWN_MOWER_BODY.getModel());
 
         //Render the handles bars
         GlStateManager.pushMatrix();
@@ -31,7 +33,7 @@ public class RenderLawnMower extends AbstractRenderVehicle<EntityLawnMower>
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, entity.getColor());
         }
         GlStateManager.popMatrix();
     }

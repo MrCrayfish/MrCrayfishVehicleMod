@@ -37,14 +37,6 @@ public class EntityAluminumBoat extends EntityBoat implements IEntityRaytraceabl
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.ALUMINUM_BOAT_BODY);
-    }
-
-    @Override
     public void createParticles()
     {
         if(state == State.ON_WATER)

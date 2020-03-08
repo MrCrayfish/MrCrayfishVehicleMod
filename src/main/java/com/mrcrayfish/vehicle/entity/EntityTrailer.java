@@ -45,14 +45,6 @@ public abstract class EntityTrailer extends EntityVehicle
     }
 
     @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.TRAILER_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-    }
-
-    @Override
     public boolean canBeCollidedWith()
     {
         return true;

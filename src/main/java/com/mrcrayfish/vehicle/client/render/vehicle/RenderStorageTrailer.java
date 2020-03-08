@@ -29,7 +29,7 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<EntityStorageTra
     @Override
     public void render(EntityStorageTrailer entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body, SpecialModels.CHEST_TRAILER.getModel());
+        this.renderDamagedPart(entity, SpecialModels.CHEST_TRAILER.getModel());
         this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
         this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 

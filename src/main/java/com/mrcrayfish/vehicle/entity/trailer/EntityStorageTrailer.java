@@ -63,13 +63,6 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
     }
 
     @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.MODELS);
-    }
-
-    @Override
     public double getHitchOffset()
     {
         return -16.0 * 1.1;

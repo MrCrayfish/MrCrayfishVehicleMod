@@ -19,12 +19,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack handleBar;
-
     public EntityMiniBike(World worldIn)
     {
         super(worldIn);
@@ -32,33 +26,6 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
         this.setTurnSensitivity(12);
         this.setFuelCapacity(15000F);
         this.setFuelConsumption(0.375F);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.MINI_BIKE_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        handleBar = new ItemStack(ModItems.MINI_BIKE_HANDLE_BAR);
-    }
-
-    @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(COLOR.equals(key))
-            {
-                if(!handleBar.hasTagCompound())
-                {
-                    handleBar.setTagCompound(new NBTTagCompound());
-                }
-                handleBar.getTagCompound().setInteger("color", this.dataManager.get(COLOR));
-            }
-        }
     }
 
     @Override

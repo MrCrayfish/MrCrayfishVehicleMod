@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntitySofacopter;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -18,12 +20,12 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<EntitySofacopte
     {
         GlStateManager.pushMatrix();
         GlStateManager.rotate(90F, 0, 1, 0);
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.COUCH.getModel());
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
         GlStateManager.translate(0, 8 * 0.0625, 0);
-        renderDamagedPart(entity, entity.arm);
+        this.renderDamagedPart(entity, SpecialModels.COUCH_HELICOPTER_ARM.getModel());
         GlStateManager.popMatrix();
 
         GlStateManager.pushMatrix();
@@ -31,7 +33,7 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<EntitySofacopte
         float bladeRotation = entity.prevBladeRotation + (entity.bladeRotation - entity.prevBladeRotation) * partialTicks;
         GlStateManager.rotate(bladeRotation, 0, 1, 0);
         GlStateManager.scale(1.5, 1.5, 1.5);
-        Minecraft.getMinecraft().getRenderItem().renderItem(entity.blade, ItemCameraTransforms.TransformType.NONE);
+        this.renderDamagedPart(entity, SpecialModels.BLADE.getModel());
         GlStateManager.popMatrix();
 
        /* GlStateManager.pushMatrix();

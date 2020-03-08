@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityOffRoader;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,7 +21,7 @@ public class RenderOffRoader extends AbstractRenderVehicle<EntityOffRoader>
     @Override
     public void render(EntityOffRoader entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.OFF_ROADER_BODY.getModel());
 
         //Render the handles bars
         GlStateManager.pushMatrix();
@@ -36,7 +38,7 @@ public class RenderOffRoader extends AbstractRenderVehicle<EntityOffRoader>
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, entity.getColor());
         }
         GlStateManager.popMatrix();
     }

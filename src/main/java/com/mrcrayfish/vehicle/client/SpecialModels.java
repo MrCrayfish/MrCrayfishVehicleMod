@@ -2,8 +2,11 @@ package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
@@ -27,7 +30,47 @@ public enum SpecialModels
     SEED_SPIKER("seed_spiker"),
     FERTILIZER_TRAILER("trailer_fertilizer_body"),
     FLUID_TRAILER("trailer_fluid_body"),
-    NOZZLE("nozzle");
+    NOZZLE("nozzle"),
+    ATV_BODY("atv_body"),
+    ATV_HANDLE_BAR("handle_bar"),
+    DUNE_BUGGY_BODY("dune_buggy_body"),
+    DUNE_BUGGY_HANDLE_BAR("dune_buggy_handle_bar"),
+    GO_KART_BODY("go_kart_body"),
+    GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
+    SHOPPING_CART_BODY("shopping_cart_body"),
+    MINI_BIKE_BODY("mini_bike_body"),
+    MINI_BIKE_HANDLE_BAR("mini_bike_handle_bar"),
+    BUMPER_CAR_BODY("bumper_car_body"),
+    JET_SKI_BODY("jet_ski_body"),
+    SPEED_BOAT_BODY("speed_boat_body"),
+    ALUMINUM_BOAT_BODY("aluminum_boat_body"),
+    SMART_CAR_BODY("smart_car_body"),
+    LAWN_MOWER_BODY("lawn_mower_body"),
+    MOPED_BODY("moped_body"),
+    MOPED_MUD_GUARD("moped_mud_guard"),
+    MOPED_HANDLE_BAR("moped_handle_bar"),
+    SPORTS_PLANE_BODY("sports_plane_body"),
+    SPORTS_PLANE_WING("sports_plane_wing"),
+    SPORTS_PLANE_WHEEL_COVER("sports_plane_wheel_cover"),
+    SPORTS_PLANE_LEG("sports_plane_leg"),
+    SPORTS_PLANE_PROPELLER("sports_plane_propeller"),
+    GOLF_CART_BODY("golf_cart_body"),
+    OFF_ROADER_BODY("off_roader_body"),
+    TRACTOR_BODY("tractor_body"),
+    TRAILER_BODY("trailer_body"),
+    TOW_BAR("tow_bar"),
+    FUEL_PORT_CLOSED("fuel_port_closed"),
+    FUEL_PORT_BODY("fuel_port_body"),
+    FUEL_PORT_LID("fuel_port_lid"),
+    FUEL_PORT_2_CLOSED("fuel_port_2_closed"),
+    FUEL_PORT_2_PIPE("fuel_port_2_pipe"),
+    KEY_HOLE("key_hole"),
+    COUCH_HELICOPTER_ARM("couch_helicopter_arm"),
+    COUCH_HELICOPTER_SKID("couch_helicopter_skid"),
+
+    COUCH(new ModelResourceLocation("cfm:jeb_couch", "normal"), false),
+    BLADE(new ModelResourceLocation("cfm:ceiling_fan_fans", "normal"), false),
+    BATH(new ModelResourceLocation("cfm:bath_bottom", "normal"), false);
 
     /**
      * An arbitrary item in your mod to register isolated models as variants of
@@ -40,8 +83,14 @@ public enum SpecialModels
     private ModelResourceLocation modelLocation;
 
     /**
+     * If true, registers this model as a new variant
+     */
+    private boolean specialModel;
+
+    /**
      * Cached model
      */
+    @SideOnly(Side.CLIENT)
     private IBakedModel cachedModel;
 
     /**
@@ -51,7 +100,13 @@ public enum SpecialModels
      */
     SpecialModels(String modelName)
     {
-        this.modelLocation = new ModelResourceLocation(new ResourceLocation(Reference.MOD_ID, modelName), null);
+        this(new ModelResourceLocation(new ResourceLocation(Reference.MOD_ID, modelName), null), true);
+    }
+
+    SpecialModels(ModelResourceLocation resourceLocation, boolean specialModel)
+    {
+        this.modelLocation = resourceLocation;
+        this.specialModel = specialModel;
     }
 
     /**
@@ -59,12 +114,14 @@ public enum SpecialModels
      *
      * @return isolated model
      */
+    @SideOnly(Side.CLIENT)
     public IBakedModel getModel()
     {
         if(this.cachedModel == null)
         {
-            IBakedModel model = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getModel(this.modelLocation);
-            if(model == Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes().getModelManager().getMissingModel())
+            ModelManager modelManager = RenderUtil.getModelManager();
+            IBakedModel model = modelManager.getModel(this.modelLocation);
+            if(model == modelManager.getMissingModel())
             {
                 return model;
             }
@@ -80,7 +137,10 @@ public enum SpecialModels
         SpecialModels.item = ModItems.MODELS;
         for(SpecialModels model : SpecialModels.values())
         {
-            ModelLoader.registerItemVariants(item, model.modelLocation);
+            if(model.specialModel)
+            {
+                ModelLoader.registerItemVariants(item, model.modelLocation);
+            }
         }
     }
 }

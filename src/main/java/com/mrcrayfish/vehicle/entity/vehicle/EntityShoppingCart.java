@@ -31,15 +31,6 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     }
 
     @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.SHOPPING_CART_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-    }
-
-    @Override
     public void onUpdate()
     {
         if(pusher != null)

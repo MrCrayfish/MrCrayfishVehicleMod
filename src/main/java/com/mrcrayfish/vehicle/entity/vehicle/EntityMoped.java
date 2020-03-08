@@ -69,15 +69,6 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
 
     private StorageInventory inventory;
 
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack handleBar;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack mudGuard;
-
     public EntityMoped(World worldIn)
     {
         super(worldIn);
@@ -93,41 +84,6 @@ public class EntityMoped extends EntityMotorcycle implements IEntityRaytraceable
     {
         super.entityInit();
         this.dataManager.register(CHEST, false);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.MOPED_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        handleBar = new ItemStack(ModItems.MOPED_HANDLE_BAR);
-        mudGuard = new ItemStack(ModItems.MOPED_MUD_GUARD);
-    }
-
-    @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(COLOR.equals(key))
-            {
-                int color = this.dataManager.get(COLOR);
-                this.setPartColor(handleBar, color);
-                this.setPartColor(mudGuard, color);
-            }
-        }
-    }
-
-    private void setPartColor(ItemStack stack, int color)
-    {
-        if(!stack.hasTagCompound())
-        {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-        stack.getTagCompound().setInteger("color", color);
     }
 
     @Override

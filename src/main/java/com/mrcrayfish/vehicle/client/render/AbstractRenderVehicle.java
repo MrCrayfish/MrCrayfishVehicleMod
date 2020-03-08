@@ -1,6 +1,9 @@
 package com.mrcrayfish.vehicle.client.render;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
+import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,42 +46,27 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
         return true;
     }
 
-    protected void renderDamagedPart(EntityVehicle vehicle, ItemStack part)
+    protected void renderDamagedPart(EntityVehicle vehicle, IBakedModel model)
     {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelMesher().getItemModel(part);
-        renderDamagedPart(vehicle, part, model);
+        this.renderDamagedPart(vehicle, model, false);
+        this.renderDamagedPart(vehicle, model, true);
     }
 
-    protected void renderDamagedPart(EntityVehicle vehicle, ItemStack part, IBakedModel model)
+    private void renderDamagedPart(EntityVehicle vehicle, IBakedModel model, boolean renderDamage)
     {
-        renderDamagedPart(vehicle, part, model, false);
-        renderDamagedPart(vehicle, part, model, true);
-    }
-
-    private void renderDamagedPart(EntityVehicle vehicle, ItemStack part, IBakedModel model, boolean renderDamage)
-    {
-        if (!part.isEmpty())
+        if(renderDamage)
         {
-
-            if(renderDamage)
-            {
-                int stage = vehicle.getDestroyedStage();
-                if(stage <= 0)
-                    return;
-                Minecraft.getMinecraft().getTextureManager().bindTexture(DESTROY_STAGES[stage - 1]);
-                GlStateManager.matrixMode(GL11.GL_TEXTURE);
-                GlStateManager.pushMatrix();
-                GlStateManager.translate(0.0625F, 0.0625F, 0.0625F);
-                GlStateManager.scale(64F, 32F, 32F);
-                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-                GlStateManager.translate(0F, 0.0015F, 0.0001F);
-                GlStateManager.scale(1.0025F, 1.0025F, 1.0025F);
-            }
-            else
-            {
-                Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
-            }
+            int stage = vehicle.getDestroyedStage();
+            if(stage <= 0)
+                return;
+            Minecraft.getMinecraft().getTextureManager().bindTexture(DESTROY_STAGES[stage - 1]);
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.pushMatrix();
+            GlStateManager.translate(0.0625F, 0.0625F, 0.0625F);
+            GlStateManager.scale(64F, 32F, 32F);
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+            GlStateManager.translate(0F, 0.0015F, 0.0001F);
+            GlStateManager.scale(1.0025F, 1.0025F, 1.0025F);
 
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GlStateManager.enableRescaleNormal();
@@ -88,26 +76,21 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
             GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
 
             GlStateManager.pushMatrix();
-            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, ItemCameraTransforms.TransformType.NONE, false);
-            Minecraft.getMinecraft().getRenderItem().renderItem(part, model);
             GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, vehicle.getColor());
+
             GlStateManager.popMatrix();
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
 
             GlStateManager.depthFunc(GL11.GL_LEQUAL);
-
-            if(renderDamage)
-            {
-                GlStateManager.matrixMode(GL11.GL_TEXTURE);
-                GlStateManager.popMatrix();
-                GlStateManager.matrixMode(GL11.GL_MODELVIEW);
-            }
-            else
-            {
-                Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-                Minecraft.getMinecraft().getTextureManager().getTexture(TextureMap.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
-            }
+            GlStateManager.matrixMode(GL11.GL_TEXTURE);
+            GlStateManager.popMatrix();
+            GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        }
+        else
+        {
+            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, vehicle.getColor());
         }
     }
 }

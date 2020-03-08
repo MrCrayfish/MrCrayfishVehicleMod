@@ -19,27 +19,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityOffRoader extends EntityLandVehicle implements EntityRaytracer.IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack steeringWheel;
-
     public EntityOffRoader(World worldIn)
     {
         super(worldIn);
         this.setSize(2F, 1F);
         this.setMaxSpeed(18F);
         this.setFuelCapacity(25000F);
-    }
-
-    @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.OFF_ROADER_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override

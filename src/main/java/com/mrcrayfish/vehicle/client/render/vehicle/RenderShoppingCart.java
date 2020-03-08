@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityShoppingCart;
 import net.minecraft.client.model.ModelPlayer;
@@ -13,7 +14,7 @@ public class RenderShoppingCart extends AbstractRenderVehicle<EntityShoppingCart
     @Override
     public void render(EntityShoppingCart entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.SHOPPING_CART_BODY.getModel());
     }
 
     @Override

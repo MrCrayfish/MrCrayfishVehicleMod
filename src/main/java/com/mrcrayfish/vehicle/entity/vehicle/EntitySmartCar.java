@@ -16,12 +16,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack steeringWheel;
-
     public EntitySmartCar(World worldIn)
     {
         super(worldIn);
@@ -29,16 +23,6 @@ public class EntitySmartCar extends EntityLandVehicle implements IEntityRaytrace
         this.setTurnSensitivity(12);
         this.setSize(1.85F, 1.15F);
         this.stepHeight = 1F;
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.SMART_CAR_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override

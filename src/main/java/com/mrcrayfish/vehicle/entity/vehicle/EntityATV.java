@@ -18,28 +18,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityATV extends EntityLandVehicle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack handleBar;
-
     public EntityATV(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(15);
         this.setSize(1.5F, 1.0F);
         this.setFuelCapacity(20000F);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        this.body = new ItemStack(ModItems.ATV_BODY);
-        this.handleBar = new ItemStack(ModItems.ATV_HANDLE_BAR);
-        this.wheel = new ItemStack(ModItems.WHEEL);
         this.setFuelPort(FuelPort.CAP);
     }
 

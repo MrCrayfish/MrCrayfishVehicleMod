@@ -1,9 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBath;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 
 /**
@@ -15,7 +18,7 @@ public class RenderBath extends AbstractRenderVehicle<EntityBath>
     public void render(EntityBath entity, float partialTicks)
     {
         GlStateManager.rotate(90F, 0, 1, 0);
-        renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity,SpecialModels.BATH.getModel());
     }
 
     @Override

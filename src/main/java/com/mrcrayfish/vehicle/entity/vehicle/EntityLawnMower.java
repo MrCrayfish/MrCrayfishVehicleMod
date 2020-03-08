@@ -28,28 +28,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack steeringWheel;
-
     public EntityLawnMower(World worldIn)
     {
         super(worldIn);
         this.setMaxSpeed(8);
         this.setSize(1.2F, 1.0F);
         this.setFuelCapacity(5000F);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.LAWN_MOWER_BODY);
-        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
-        wheel = new ItemStack(ModItems.WHEEL);
     }
 
     @Override

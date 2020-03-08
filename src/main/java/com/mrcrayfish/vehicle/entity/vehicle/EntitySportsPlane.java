@@ -27,18 +27,6 @@ public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceabl
     public float propellerRotation;
     public float prevPropellerRotation;
 
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack wing;
-    @SideOnly(Side.CLIENT)
-    public ItemStack wheelCover;
-    @SideOnly(Side.CLIENT)
-    public ItemStack leg;
-    @SideOnly(Side.CLIENT)
-    public ItemStack propeller;
-
     public EntitySportsPlane(World worldIn)
     {
         super(worldIn);
@@ -52,46 +40,9 @@ public class EntitySportsPlane extends EntityPlane implements IEntityRaytraceabl
     }
 
     @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.SPORTS_PLANE_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        wing = new ItemStack(ModItems.SPORTS_PLANE_WING);
-        wheelCover = new ItemStack(ModItems.SPORTS_PLANE_WHEEL_COVER);
-        leg = new ItemStack(ModItems.SPORTS_PLANE_LEG);
-        propeller = new ItemStack(ModItems.SPORTS_PLANE_PROPELLER);
-    }
-
-    @Override
     public AxisAlignedBB getRenderBoundingBox()
     {
         return this.getEntityBoundingBox().grow(1.5);
-    }
-
-    @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(COLOR.equals(key))
-            {
-                int color = this.dataManager.get(COLOR);
-                this.setPartColor(wing, color);
-                this.setPartColor(wheelCover, color);
-                this.setPartColor(propeller, color);
-            }
-        }
-    }
-
-    private void setPartColor(ItemStack stack, int color)
-    {
-        if(!stack.hasTagCompound())
-        {
-            stack.setTagCompound(new NBTTagCompound());
-        }
-        stack.getTagCompound().setInteger("color", color);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EntityBoat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -64,37 +65,14 @@ public class RenderBoatWrapper<T extends EntityBoat & EntityRaytracer.IEntityRay
             //Render the engine if the vehicle has explicitly stated it should
             if(entity.shouldRenderEngine() && entity.hasEngine())
             {
-                this.renderEngine(entity, properties.getEnginePosition(), entity.engine);
+                this.renderEngine(entity, properties.getEnginePosition());
             }
 
             //Render the fuel port of the vehicle
-            if(entity.shouldRenderFuelPort() && entity.requiresFuel())
-            {
-                EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-                if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
-                {
-                    this.renderPart(properties.getFuelPortPosition(), entity.fuelPortBody);
-                    if(renderVehicle.shouldRenderFuelLid())
-                    {
-                        this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
-                    }
-                    entity.playFuelPortOpenSound();
-                }
-                else
-                {
-                    this.renderPart(properties.getFuelPortPosition(), entity.fuelPortClosed);
-                    entity.playFuelPortCloseSound();
-                }
-            }
+            this.renderFuelPort(entity, properties.getFuelPortPosition());
 
-            if(entity.isKeyNeeded())
-            {
-                this.renderPart(properties.getKeyPortPosition(), entity.keyPort);
-                if(!entity.getKeyStack().isEmpty())
-                {
-                    this.renderKey(properties.getKeyPosition(), entity.getKeyStack());
-                }
-            }
+            //Render the key port
+            this.renderKeyPort(entity);
         }
         GlStateManager.popMatrix();
     }

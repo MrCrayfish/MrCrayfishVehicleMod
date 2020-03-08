@@ -17,12 +17,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack handleBar;
-
     public EntityDuneBuggy(World worldIn)
     {
         super(worldIn);
@@ -30,15 +24,6 @@ public class EntityDuneBuggy extends EntityLandVehicle implements IEntityRaytrac
         this.setSize(0.75F, 0.75F);
         this.stepHeight = 0.5F;
         this.setFuelCapacity(5000F);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.DUNE_BUGGY_BODY);
-        handleBar = new ItemStack(ModItems.DUNE_BUGGY_HANDLE_BAR);
     }
 
     @Override

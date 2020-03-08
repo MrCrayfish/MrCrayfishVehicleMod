@@ -1,10 +1,13 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -16,7 +19,7 @@ public class RenderMiniBike extends AbstractRenderVehicle<EntityMiniBike>
     @Override
     public void render(EntityMiniBike entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_BODY.getModel());
 
         //Render the handles bars
         GlStateManager.pushMatrix();
@@ -33,7 +36,7 @@ public class RenderMiniBike extends AbstractRenderVehicle<EntityMiniBike>
             GlStateManager.rotate(22.5F, 1, 0, 0);
             GlStateManager.translate(0, 0, -10.5 * 0.0625);
 
-            renderDamagedPart(entity, entity.handleBar);
+            this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_HANDLE_BAR.getModel());
 
             if(entity.hasWheels())
             {
@@ -47,7 +50,11 @@ public class RenderMiniBike extends AbstractRenderVehicle<EntityMiniBike>
                     }
                     GlStateManager.scale(wheelScale, wheelScale, wheelScale);
                     GlStateManager.rotate(180F, 0, 1, 0);
-                    Minecraft.getMinecraft().getRenderItem().renderItem(entity.wheel, ItemCameraTransforms.TransformType.NONE);
+                    IBakedModel model = RenderUtil.getWheelModel(entity);
+                    if(model != null)
+                    {
+                        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, entity.getWheelColor());
+                    }
                 }
                 GlStateManager.popMatrix();
             }

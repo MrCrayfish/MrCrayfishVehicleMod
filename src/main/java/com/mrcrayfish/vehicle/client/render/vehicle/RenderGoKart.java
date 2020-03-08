@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
+import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityGoKart;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -16,7 +18,7 @@ public class RenderGoKart extends AbstractRenderVehicle<EntityGoKart>
     @Override
     public void render(EntityGoKart entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, entity.body);
+        this.renderDamagedPart(entity, SpecialModels.GO_KART_BODY.getModel());
 
         //Render the handles bars
         GlStateManager.pushMatrix();
@@ -31,7 +33,7 @@ public class RenderGoKart extends AbstractRenderVehicle<EntityGoKart>
             float turnRotation = wheelAngleNormal * 25F;
             GlStateManager.rotate(turnRotation, 0, 1, 0);
 
-            Minecraft.getMinecraft().getRenderItem().renderItem(entity.steeringWheel, ItemCameraTransforms.TransformType.NONE);
+            RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, entity.getColor());
         }
         GlStateManager.popMatrix();
     }

@@ -53,15 +53,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     protected EntityTrailer trailer = null;
     private int searchDelay = 20;
 
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack body, wheel;
-
-    @SideOnly(Side.CLIENT)
-    public ItemStack towBar;
-
     protected int lerpSteps;
     protected double lerpX;
     protected double lerpY;
@@ -90,11 +81,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     }
 
     @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        towBar = new ItemStack(ModItems.TOW_BAR);
-        wheel = new ItemStack(ModItems.WHEEL, 1, WheelType.STANDARD.ordinal());
-    }
+    public void onClientInit() {}
 
     /* Overridden to prevent odd step sound when driving vehicles. Ain't no subclasses getting
      * the ability to override this. */
@@ -247,17 +234,9 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     public void notifyDataManagerChange(DataParameter<?> key)
     {
         super.notifyDataManagerChange(key);
-        if(world.isRemote)
+        if(this.world.isRemote)
         {
-            if(COLOR.equals(key))
-            {
-                if(!body.hasTagCompound())
-                {
-                    body.setTagCompound(new NBTTagCompound());
-                }
-                body.getTagCompound().setInteger("color", this.dataManager.get(COLOR));
-            }
-            else if(TRAILER.equals(key))
+            if(TRAILER.equals(key))
             {
                 int entityId = this.dataManager.get(TRAILER);
                 if(entityId != -1)

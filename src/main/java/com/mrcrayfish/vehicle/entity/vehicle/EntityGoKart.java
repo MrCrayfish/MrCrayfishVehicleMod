@@ -17,12 +17,6 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  */
 public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceable
 {
-    /**
-     * ItemStack instances used for rendering
-     */
-    @SideOnly(Side.CLIENT)
-    public ItemStack steeringWheel;
-
     public EntityGoKart(World worldIn)
     {
         super(worldIn);
@@ -31,16 +25,6 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
         this.setSize(1.5F, 0.5F);
         this.stepHeight = 0.625F;
         this.setFuelConsumption(0.5F);
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void onClientInit()
-    {
-        super.onClientInit();
-        body = new ItemStack(ModItems.GO_KART_BODY);
-        wheel = new ItemStack(ModItems.WHEEL);
-        steeringWheel = new ItemStack(ModItems.GO_KART_STEERING_WHEEL);
     }
 
     @Override
