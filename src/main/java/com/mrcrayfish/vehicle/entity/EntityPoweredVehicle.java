@@ -442,7 +442,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             }
         }
 
-        if(this.requiresFuel() && controllingPassenger != null && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative())
+        if(this.requiresFuel() && controllingPassenger instanceof EntityPlayer && !((EntityPlayer) controllingPassenger).isCreative() && this.isEnginePowered())
         {
             float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
             float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
