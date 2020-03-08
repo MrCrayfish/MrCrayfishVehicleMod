@@ -55,45 +55,6 @@ import java.util.stream.Collectors;
  */
 public class GuiWorkstation extends GuiContainer
 {
-    private static final ImmutableList<Class<? extends EntityVehicle>> VEHICLES;
-    public static final ImmutableMap<Class<? extends EntityVehicle>, PartPosition> DISPLAY_PROPERTIES;
-
-    static
-    {
-        ImmutableMap.Builder<Class<? extends EntityVehicle>, PartPosition> builder = ImmutableMap.builder();
-        builder.put(EntityAluminumBoat.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
-        builder.put(EntityATV.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityBumperCar.class, new PartPosition(0.0F, 0.0F, -0.4F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityDuneBuggy.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.75F));
-        builder.put(EntityGoKart.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityGolfCart.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
-        builder.put(EntityJetSki.class, new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityLawnMower.class, new PartPosition(0.0F, 0.0F, -0.7F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityMiniBike.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityMoped.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-        builder.put(EntityOffRoader.class, new PartPosition(0.0F, 0.0F, 0.1F, 0.0F, 0.0F, 0.0F, 1.0F));
-        builder.put(EntityShoppingCart.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.45F));
-        builder.put(EntitySmartCar.class, new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(EntitySpeedBoat.class, new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F));
-        builder.put(EntitySportsPlane.class, new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
-        builder.put(EntityTractor.class, new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.25F));
-        builder.put(EntityVehicleTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(EntityStorageTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(EntitySeederTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(EntityFertilizerTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        builder.put(EntityFluidTrailer.class, new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-
-        if(Loader.isModLoaded("cfm"))
-        {
-            builder.put(EntityBath.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-            builder.put(EntityCouch.class, new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
-            builder.put(EntitySofacopter.class, new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
-        }
-
-        DISPLAY_PROPERTIES = builder.build();
-        VEHICLES = DISPLAY_PROPERTIES.keySet().asList();
-    }
-
     private static final ResourceLocation GUI = new ResourceLocation("vehicle:textures/gui/workstation.png");
 
     private List<MaterialItem> materials;
@@ -119,7 +80,7 @@ public class GuiWorkstation extends GuiContainer
         this.xSize = 289;
         this.ySize = 202;
         this.materials = new ArrayList<>();
-        this.cachedVehicle = new EntityVehicle[VEHICLES.size()];
+        this.cachedVehicle = new EntityVehicle[VehicleRecipes.getVehicleCount()];
     }
 
     @Override
@@ -270,7 +231,7 @@ public class GuiWorkstation extends GuiContainer
         {
             if(currentVehicle - 1 < 0)
             {
-                this.loadVehicle(VEHICLES.size() - 1);
+                this.loadVehicle(VehicleRecipes.getVehicleCount() - 1);
             }
             else
             {
@@ -280,7 +241,7 @@ public class GuiWorkstation extends GuiContainer
         }
         else if(button.id == 2)
         {
-            if(currentVehicle + 1 >= VEHICLES.size())
+            if(currentVehicle + 1 >= VehicleRecipes.getVehicleCount())
             {
                 this.loadVehicle(0);
             }
@@ -314,7 +275,7 @@ public class GuiWorkstation extends GuiContainer
         {
             if(cachedVehicle[index] == null)
             {
-                EntityVehicle vehicle = VEHICLES.get(index).getDeclaredConstructor(World.class).newInstance(Minecraft.getMinecraft().world);
+                EntityVehicle vehicle = VehicleRecipes.getVehicleClasses().get(index).getDeclaredConstructor(World.class).newInstance(Minecraft.getMinecraft().world);
                 java.util.List<EntityDataManager.DataEntry<?>> entryList = vehicle.getDataManager().getAll();
                 if(entryList != null)
                 {
@@ -448,7 +409,7 @@ public class GuiWorkstation extends GuiContainer
 
             int vehicleIndex = transitioning ? prevCurrentVehicle : currentVehicle;
             Class<? extends EntityVehicle>  clazz = cachedVehicle[vehicleIndex].getClass();
-            PartPosition position = DISPLAY_PROPERTIES.get(clazz);
+            PartPosition position = VehicleProperties.getProperties(VehicleRecipes.getVehicleClasses().get(vehicleIndex)).getDisplayPosition();
             if(position != null)
             {
                 //Apply vehicle rotations, translations, and scale

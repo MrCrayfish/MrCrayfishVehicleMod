@@ -184,7 +184,11 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
             }
             else
             {
-                this.renderPart(position, entity.getFuelPort().getClosed().getModel(), colorInt);
+                SpecialModels model = entity.getFuelPort().getClosed();
+                if(model != null)
+                {
+                    this.renderPart(position, model.getModel(), colorInt);
+                }
                 entity.playFuelPortCloseSound();
             }
         }

@@ -117,7 +117,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     private UUID owner;
     private InventoryBasic vehicleInventory;
-    private FuelPort fuelPort;
+    private FuelPort fuelPort = FuelPort.LID;
 
     private boolean fueling;
 

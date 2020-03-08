@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.crafting;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.Loader;
 
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -22,11 +24,11 @@ import java.util.Set;
  */
 public class VehicleRecipes
 {
-    public static final ImmutableMap<Class<? extends Entity>, VehicleRecipe> RECIPES;
+    public static final ImmutableMap<Class<? extends EntityVehicle>, VehicleRecipe> RECIPES;
 
     static
     {
-        ImmutableMap.Builder<Class<? extends Entity>, VehicleRecipe> mapBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<Class<? extends EntityVehicle>, VehicleRecipe> mapBuilder = ImmutableMap.builder();
 
         Builder builder;
 
@@ -207,6 +209,16 @@ public class VehicleRecipes
     public static VehicleRecipe getRecipe(Class<? extends Entity> clazz)
     {
         return RECIPES.get(clazz);
+    }
+
+    public static int getVehicleCount()
+    {
+        return RECIPES.size();
+    }
+
+    public static List<Class<? extends EntityVehicle>> getVehicleClasses()
+    {
+        return ImmutableList.copyOf(RECIPES.keySet());
     }
 
     public static class VehicleRecipe

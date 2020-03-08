@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.MouseHelper;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -110,7 +111,7 @@ public class GuiEditVehicle extends GuiContainer
                 GlStateManager.rotate(135F, 0, 1, 0);
                 GlStateManager.scale(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
                 GlStateManager.scale(-22, -22, -22);
-                PartPosition position = GuiWorkstation.DISPLAY_PROPERTIES.get(vehicle.getClass());
+                PartPosition position = VehicleProperties.getProperties(vehicle.getClass()).getDisplayPosition();
                 if(position != null)
                 {
                     //Apply vehicle rotations, translations, and scale
