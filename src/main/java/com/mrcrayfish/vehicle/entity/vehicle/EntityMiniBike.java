@@ -71,12 +71,6 @@ public class EntityMiniBike extends EntityMotorcycle implements IEntityRaytracea
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 9.5 * 0.0625;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

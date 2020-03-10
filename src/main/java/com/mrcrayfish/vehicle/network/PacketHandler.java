@@ -41,6 +41,8 @@ public class PacketHandler
         registerMessage(MessageTravelProperties.class, Side.SERVER);
         registerMessage(MessagePower.class, Side.SERVER);
         registerMessage(MessageEntityFluid.class, Side.CLIENT);
+        registerMessage(MessageSyncPlayerSeat.class, Side.CLIENT);
+        registerMessage(MessageCycleSeats.class, Side.SERVER);
     }
 
     private static void registerMessage(Class packet, Side side)

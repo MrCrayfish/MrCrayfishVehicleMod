@@ -29,6 +29,7 @@ import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraft.client.settings.KeyBinding;
@@ -55,12 +56,16 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Author: MrCrayfish
  */
 public class ClientProxy implements Proxy
 {
-    public static final KeyBinding KEY_HORN = new KeyBinding("key.horn", Keyboard.KEY_H, "key.categories.vehicle");
+    public static final KeyBinding KEY_HORN = new KeyBinding("key.vehicle.horn", Keyboard.KEY_H, "key.categories.vehicle");
+    public static final KeyBinding KEY_CYCLE_SEATS  = new KeyBinding("key.vehicle.cycle_seats", Keyboard.KEY_C, "key.categories.vehicle");
 
     public static boolean controllableLoaded = false;
     
@@ -84,6 +89,7 @@ public class ClientProxy implements Proxy
         registerVehicleRender(EntityGolfCart.class, new RenderLandVehicleWrapper<>(new RenderGolfCart()));
         registerVehicleRender(EntityOffRoader.class, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
         registerVehicleRender(EntityTractor.class, new RenderLandVehicleWrapper<>(new RenderTractor()));
+        registerVehicleRender(EntityMiniBus.class, new RenderLandVehicleWrapper<>(new RenderMiniBus()));
 
         /* Register Mod Exclusive Vehicles */
         if(Loader.isModLoaded("cfm"))
@@ -115,6 +121,7 @@ public class ClientProxy implements Proxy
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);
+        ClientRegistry.registerKeyBinding(KEY_CYCLE_SEATS);
 
         ModelLoaderRegistry.registerLoader(new CustomLoader());
     }
@@ -521,6 +528,21 @@ public class ClientProxy implements Proxy
             {
                 FluidTank tank = (FluidTank) handler;
                 tank.setFluid(stack);
+            }
+        }
+    }
+
+    @Override
+    public void syncPlayerSeat(int entityId, int seatIndex, UUID uuid)
+    {
+        EntityPlayerSP clientPlayer = Minecraft.getMinecraft().player;
+        if(clientPlayer != null)
+        {
+            Entity entity = clientPlayer.world.getEntityByID(entityId);
+            if(entity instanceof EntityVehicle)
+            {
+                EntityVehicle vehicle = (EntityVehicle) entity;
+                vehicle.getSeatTracker().setSeatIndex(seatIndex, uuid);
             }
         }
     }

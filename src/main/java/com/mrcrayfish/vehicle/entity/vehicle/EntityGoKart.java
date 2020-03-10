@@ -70,12 +70,6 @@ public class EntityGoKart extends EntityLandVehicle implements IEntityRaytraceab
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

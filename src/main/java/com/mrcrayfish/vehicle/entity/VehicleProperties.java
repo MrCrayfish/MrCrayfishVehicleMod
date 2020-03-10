@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.client.render.Wheel;
+import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
@@ -44,6 +45,10 @@ public class VehicleProperties
         properties.setFuelPortPosition(new PartPosition(-16.0, 3, -18, 0.0, -90.0, 0.0, 0.25));
         properties.setHeldOffset(new Vec3d(0.0, 0.0, 0.0));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+        properties.addSeat(new Seat(new Vec3d(-7, 8, -15), true));
+        properties.addSeat(new Seat(new Vec3d(7, 6, -15)));
+        properties.addSeat(new Seat(new Vec3d(-7, 6, 3)));
+        properties.addSeat(new Seat(new Vec3d(7, 6, 3)));
         VehicleProperties.setProperties(EntityAluminumBoat.class, properties);
 
         /* ATV */
@@ -63,6 +68,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F, true, true);
         properties.setFrontAxelVec(0, 10.5);
         properties.setRearAxelVec(0, -10.5);
+        properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
+        properties.addSeat(new Seat(new Vec3d(0, 4, -8)));
         VehicleProperties.setProperties(EntityATV.class, properties);
 
         /* Bumper Car */
@@ -80,6 +87,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F, false, true);
         properties.setFrontAxelVec(0, 8.5);
         properties.setRearAxelVec(0, -8.5);
+        properties.addSeat(new Seat(new Vec3d(0, 1, -1), true));
         VehicleProperties.setProperties(EntityBumperCar.class, properties);
 
         /* Dune Buggy */
@@ -95,6 +103,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 2.4F, -5.7F, 1.0F, true, true);
         properties.setFrontAxelVec(0, 5.3);
         properties.setRearAxelVec(0, -5.7);
+        properties.addSeat(new Seat(new Vec3d(0, 2, 0), true));
         VehicleProperties.setProperties(EntityDuneBuggy.class, properties);
 
         /* Go Kart */
@@ -112,6 +121,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 1.4F, true, true);
         properties.setFrontAxelVec(0, 13.5);
         properties.setRearAxelVec(0, -8.5);
+        properties.addSeat(new Seat(new Vec3d(0, -2, -1), true));
         VehicleProperties.setProperties(EntityGoKart.class, properties);
 
         /* Golf Cart */
@@ -129,6 +139,10 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -12.5F, 1.75F, true, true);
         properties.setFrontAxelVec(0, 16.0);
         properties.setRearAxelVec(0, -12.5);
+        properties.addSeat(new Seat(new Vec3d(5.5, 5, -6), true));
+        properties.addSeat(new Seat(new Vec3d(-5.5, 5, -6)));
+        properties.addSeat(new Seat(new Vec3d(5.5, 5, -15), 180F));
+        properties.addSeat(new Seat(new Vec3d(-5.5, 5, -15), 180F));
         VehicleProperties.setProperties(EntityGolfCart.class, properties);
 
         /* Jet Ski */
@@ -139,6 +153,8 @@ public class VehicleProperties
         properties.setHeldOffset(new Vec3d(6.0, 0.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.09375, -0.65));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F));
+        properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
+        properties.addSeat(new Seat(new Vec3d(0, 5, -7)));
         VehicleProperties.setProperties(EntityJetSki.class, properties);
 
         /* Lawn Mower */
@@ -158,6 +174,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 1.55F, true, true);
         properties.setFrontAxelVec(0, 13.5);
         properties.setRearAxelVec(0, -10.7);
+        properties.addSeat(new Seat(new Vec3d(0, 7, 0), true));
         VehicleProperties.setProperties(EntityLawnMower.class, properties);
 
         /* Mini Bike */
@@ -173,7 +190,31 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.5F + 1.7F * 0.0625F, 13.0F, 1.65F, true, false);
         properties.setFrontAxelVec(0, 13);
         properties.setRearAxelVec(0, -6.7);
+        properties.addSeat(new Seat(new Vec3d(0, 7, 0), true));
         VehicleProperties.setProperties(EntityMiniBike.class, properties);
+
+        /* Mini Bus */
+        properties = new VehicleProperties();
+        properties.setAxleOffset(1.0F);
+        properties.setWheelOffset(4.5F);
+        properties.setBodyPosition(new PartPosition(0, 0, 0, 0, 0, 0, 1.3));
+        properties.setFuelPortPosition(new PartPosition(-12.0, 8.0, -8.75, 0, -90, 0, 0.25));
+        properties.setKeyPortPosition(new PartPosition(0, 6.75, 19.5, -67.5, 0, 0, 0.5));
+        properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
+        properties.setTowBarPosition(new Vec3d(0.0, 0.0, -33.0));
+        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.1F, 0.0F, 0.0F, 0.0F, 1.0F));
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 1.5F, 1.9F, 1.9F, true, true);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 1.5F, 1.9F, 1.9F, true, true);
+        properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 0.0F, -13.5F, 1.5F, 1.9F, 1.9F, true, true);
+        properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 0.0F, -13.5F, 1.5F, 1.9F, 1.9F, true, true);
+        properties.setFrontAxelVec(0, 14.5);
+        properties.setRearAxelVec(0, -14.5);
+        properties.addSeat(new Seat(new Vec3d(4.5, 2, 11), true));
+        properties.addSeat(new Seat(new Vec3d(-4.5, 2, 11)));
+        properties.addSeat(new Seat(new Vec3d(4.5, 2, -3)));
+        properties.addSeat(new Seat(new Vec3d(-4.5, 2, -3)));
+        properties.addSeat(new Seat(new Vec3d(4.5, 2, -15)));
+        VehicleProperties.setProperties(EntityMiniBus.class, properties);
 
         /* Moped */
         properties = new VehicleProperties();
@@ -188,6 +229,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.4F, 14.5F, 1.3F, true, false);
         properties.setFrontAxelVec(0, 14.5);
         properties.setRearAxelVec(0, -6.7);
+        properties.addSeat(new Seat(new Vec3d(0, 4, 0), true));
         VehicleProperties.setProperties(EntityMoped.class, properties);
 
         /* Off Roader */
@@ -205,6 +247,10 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 10.0F, -14.5F, 2.25F, true, true);
         properties.setFrontAxelVec(0, 14.5);
         properties.setRearAxelVec(0, -14.5);
+        properties.addSeat(new Seat(new Vec3d(5, 4, -3), true));
+        properties.addSeat(new Seat(new Vec3d(-5, 4, -3)));
+        properties.addSeat(new Seat(new Vec3d(5, 11.5, -14.5)));
+        properties.addSeat(new Seat(new Vec3d(-5, 3.5, -18.9)));
         VehicleProperties.setProperties(EntityOffRoader.class, properties);
 
         /* Shopping Cart */
@@ -221,6 +267,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F, false, true);
         properties.setFrontAxelVec(0, 9.5);
         properties.setRearAxelVec(0, -10.5);
+        properties.addSeat(new Seat(new Vec3d(0, 7, 0), true));
         VehicleProperties.setProperties(EntityShoppingCart.class, properties);
 
         /* Smart Car */
@@ -238,6 +285,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7F, -12F, 1.5F, false, true);
         properties.setFrontAxelVec(0, 12);
         properties.setRearAxelVec(0, -12);
+        properties.addSeat(new Seat(new Vec3d(0, 0.5, 0), true));
         VehicleProperties.setProperties(EntitySmartCar.class, properties);
 
         /* Speed Boat */
@@ -248,6 +296,7 @@ public class VehicleProperties
         properties.setHeldOffset(new Vec3d(6.0, -0.5, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.09375, -0.75));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F));
+        properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
         VehicleProperties.setProperties(EntitySpeedBoat.class, properties);
 
         /* Sports Plane */
@@ -256,6 +305,7 @@ public class VehicleProperties
         properties.setFuelPortPosition(new PartPosition(-4.35, 4, -6, 0, -112.5, 0, 0.25));
         properties.setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
+        properties.addSeat(new Seat(new Vec3d(0, 6, 0), true));
         VehicleProperties.setProperties(EntitySportsPlane.class, properties);
 
         /* Tractor */
@@ -275,6 +325,7 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 3.0F, 4.5F, 4.5F, true, true);
         properties.setFrontAxelVec(0, 14.0);
         properties.setRearAxelVec(0, -14.5);
+        properties.addSeat(new Seat(new Vec3d(0, 9, -10), true));
         VehicleProperties.setProperties(EntityTractor.class, properties);
 
         /* Fertilizer Trailer */
@@ -318,6 +369,7 @@ public class VehicleProperties
             properties.setHeldOffset(new Vec3d(4.0, 3.5, 0.0));
             properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.4375));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+            properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
             VehicleProperties.setProperties(EntityBath.class, properties);
 
             /* Sofa */
@@ -334,6 +386,7 @@ public class VehicleProperties
             properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F, true, true);
             properties.setFrontAxelVec(0, 7.0);
             properties.setRearAxelVec(0, -7.0);
+            properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
             VehicleProperties.setProperties(EntityCouch.class, properties);
 
             /* Sofacopter */
@@ -342,6 +395,7 @@ public class VehicleProperties
             properties.setFuelPortPosition(new PartPosition(0.0, 3.0, 8.0, 0, 0, 0, 0.45));
             properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
+            properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
             VehicleProperties.setProperties(EntitySofacopter.class, properties);
         }
     }
@@ -361,6 +415,7 @@ public class VehicleProperties
     private PartPosition displayPosition = PartPosition.DEFAULT;
     private Vec3d frontAxelVec = null;
     private Vec3d rearAxelVec = null;
+    private List<Seat> seats = new ArrayList<>();
 
     public void setAxleOffset(float axleOffset)
     {
@@ -556,5 +611,15 @@ public class VehicleProperties
     public Vec3d getRearAxelVec()
     {
         return rearAxelVec;
+    }
+
+    public void addSeat(Seat seat)
+    {
+        this.seats.add(seat);
+    }
+
+    public List<Seat> getSeats()
+    {
+        return ImmutableList.copyOf(this.seats);
     }
 }

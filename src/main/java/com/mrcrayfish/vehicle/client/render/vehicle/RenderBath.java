@@ -2,12 +2,15 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBath;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Author: MrCrayfish
@@ -24,13 +27,25 @@ public class RenderBath extends AbstractRenderVehicle<EntityBath>
     @Override
     public void applyPlayerRender(EntityBath entity, EntityPlayer player, float partialTicks)
     {
-        double offsetY = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset() - 0.5;//TODO make this last variable a variable in entity plane
-        GlStateManager.translate(0, offsetY, 0);
-        float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
-        float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-        GlStateManager.rotate(-bodyPitch, 1, 0, 0);
-        GlStateManager.rotate(bodyRoll, 0, 0, 1);
-        GlStateManager.translate(0, -offsetY, 0);
+        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        if(index != -1)
+        {
+            VehicleProperties properties = entity.getProperties();
+            Seat seat = properties.getSeats().get(index);
+            Vec3d seatVec = seat.getPosition().addVector(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale());
+            seatVec = new Vec3d(-seatVec.x, seatVec.y, seatVec.z);
+            seatVec = seatVec.scale(0.0625);
+            double scale = 32.0 / 30.0;
+            double offsetX = seatVec.x * scale;
+            double offsetY = (seatVec.y + player.getYOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetZ = seatVec.z * scale;
+            GlStateManager.translate(offsetX, offsetY, offsetZ);
+            float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
+            float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
+            GlStateManager.rotate(bodyRoll, 0, 0, 1);
+            GlStateManager.rotate(-bodyPitch, 1, 0, 0);
+            GlStateManager.translate(-offsetX, -offsetY, -offsetX);
+        }
     }
 
     @Override

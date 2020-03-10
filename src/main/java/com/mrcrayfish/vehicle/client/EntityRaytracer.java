@@ -436,6 +436,19 @@ public class EntityRaytracer
         createKeyPortTransforms(SpecialModels.KEY_HOLE, EntityTractor.class, tractorParts, tractorTransformGlobal);
         registerEntityStatic(EntityTractor.class, tractorParts);
 
+        List<MatrixTransformation> miniBusTransformGlobal = Lists.newArrayList();
+        createBodyTransforms(miniBusTransformGlobal, EntityMiniBus.class);
+        HashMap<RayTracePart, List<MatrixTransformation>> miniBusParts = Maps.newHashMap();
+        createTransformListForPart(SpecialModels.MINI_BUS_BODY, miniBusParts, miniBusTransformGlobal);
+        createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, miniBusParts, miniBusTransformGlobal,
+                MatrixTransformation.createTranslation(-0.2825F, 0.225F, 1.0625F),
+                MatrixTransformation.createRotation(-67.5F, 1, 0, 0),
+                MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
+                MatrixTransformation.createScale(0.75F));
+        createFuelablePartTransforms(SpecialModels.FUEL_PORT_CLOSED, EntityMiniBus.class, miniBusParts, miniBusTransformGlobal);
+        createKeyPortTransforms(SpecialModels.KEY_HOLE, EntityMiniBus.class, miniBusParts, miniBusTransformGlobal);
+        registerEntityStatic(EntityMiniBus.class, miniBusParts);
+
         if(Loader.isModLoaded("cfm"))
         {
             // Bath

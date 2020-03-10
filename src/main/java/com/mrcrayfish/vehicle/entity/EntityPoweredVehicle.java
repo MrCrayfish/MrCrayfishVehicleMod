@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
@@ -697,17 +698,48 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     @Nullable
     public Entity getControllingPassenger()
     {
-        return this.getPassengers().isEmpty() ? null : this.getPassengers().get(0);
+        if(this.getPassengers().isEmpty())
+        {
+            return null;
+        }
+        VehicleProperties properties = this.getProperties();
+        for(Entity passenger : this.getPassengers())
+        {
+            int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
+            if(seatIndex != -1 && properties.getSeats().get(seatIndex).isDriverSeat())
+            {
+                return passenger;
+            }
+        }
+        return null;
     }
 
     @Override
-    public void updatePassenger(Entity passenger)
+    public void updatePassengerPosition(Entity passenger)
     {
-        super.updatePassenger(passenger);
-        //TODO change to config option
-        passenger.rotationYaw -= deltaYaw;
-        passenger.setRotationYawHead(passenger.rotationYaw);
-        super.applyYawToEntity(passenger);
+        if(this.isPassenger(passenger))
+        {
+            int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
+            if(seatIndex != -1)
+            {
+                VehicleProperties properties = this.getProperties();
+                if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
+                {
+                    Seat seat = properties.getSeats().get(seatIndex);
+                    Vec3d seatVec = seat.getPosition().addVector(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale());
+                    seatVec = new Vec3d(-seatVec.x, seatVec.y, seatVec.z);
+                    seatVec = seatVec.scale(0.0625).rotateYaw(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
+                    //Vec3d seatVec = Vec3d.ZERO;
+                    passenger.setPosition(this.posX - seatVec.x, this.posY + seatVec.y + passenger.getYOffset(), this.posZ - seatVec.z);
+                    //if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
+                    {
+                        passenger.rotationYaw -= this.deltaYaw;
+                        passenger.setRotationYawHead(passenger.rotationYaw);
+                    }
+                    this.applyYawToEntity(passenger);
+                }
+            }
+        }
     }
 
     public boolean isMoving()

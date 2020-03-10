@@ -10,6 +10,9 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * Author: MrCrayfish
  */
@@ -82,4 +85,6 @@ public interface Proxy
     {
         return 1.0F;
     }
+
+    default void syncPlayerSeat(int entityId, int seatIndex, UUID uuid) {}
 }

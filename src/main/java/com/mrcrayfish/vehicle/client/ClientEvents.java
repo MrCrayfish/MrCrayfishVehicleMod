@@ -17,7 +17,9 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageCycleSeats;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
+import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import com.mrcrayfish.vehicle.tileentity.TileEntityFluidPipe;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Block;
@@ -104,6 +106,9 @@ public class ClientEvents
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event)
     {
+        if(Minecraft.getMinecraft().player == null)
+            return;
+
         if(VehicleConfig.CLIENT.display.autoPerspective)
         {
             Entity entity = Minecraft.getMinecraft().player.getRidingEntity();
@@ -113,6 +118,14 @@ public class ClientEvents
                 {
                     originalPerspective = -1;
                 }
+            }
+        }
+
+        if(ClientProxy.KEY_CYCLE_SEATS.isPressed())
+        {
+            if(Minecraft.getMinecraft().player.getRidingEntity() instanceof EntityVehicle)
+            {
+                PacketHandler.INSTANCE.sendToServer(new MessageCycleSeats());
             }
         }
     }

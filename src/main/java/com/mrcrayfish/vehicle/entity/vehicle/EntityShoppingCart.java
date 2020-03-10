@@ -58,7 +58,7 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     @Override
     public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
     {
-        if(!world.isRemote)
+        if(!world.isRemote) //TODO remove
         {
             if(player.isSneaking())
             {
@@ -93,12 +93,6 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     public SoundEvent getRidingSound()
     {
         return null;
-    }
-
-    @Override
-    public double getMountedYOffset()
-    {
-        return 0.0625 * 7.5;
     }
 
     @Override

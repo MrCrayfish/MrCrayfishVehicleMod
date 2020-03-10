@@ -45,12 +45,6 @@ public class EntityBath extends EntityPlane implements IEntityRaytraceable
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 0.0625;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.NONE;

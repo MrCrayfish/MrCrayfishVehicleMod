@@ -93,4 +93,9 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
             RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, vehicle.getColor());
         }
     }
+
+    public SpecialModels getTowBarModel()
+    {
+        return SpecialModels.TOW_BAR;
+    }
 }

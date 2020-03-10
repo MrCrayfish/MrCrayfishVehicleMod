@@ -50,7 +50,7 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
 
                 Vec3d towBarOffset = properties.getTowBarPosition();
                 GlStateManager.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-                RenderUtil.renderModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE);
+                RenderUtil.renderModel(this.renderVehicle.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE);
                 GlStateManager.popMatrix();
             }
 

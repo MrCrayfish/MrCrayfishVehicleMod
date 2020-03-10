@@ -57,12 +57,6 @@ public class EntityTractor extends EntityLandVehicle implements EntityRaytracer.
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 12 * 0.0625;
-    }
-
-    @Override
     public boolean shouldRenderEngine()
     {
         return true;

@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityAluminumBoat;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -11,6 +13,7 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Author: MrCrayfish
@@ -43,23 +46,26 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<EntityAluminumBoat
     @Override
     public void applyPlayerRender(EntityAluminumBoat entity, EntityPlayer player, float partialTicks)
     {
-        double offsetX = -0.5;
-        double offsetY = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
-        double offsetZ = -0.9;
-
-        int index = entity.getPassengers().indexOf(player);
-        if(index > 0)
+        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        if(index != -1)
         {
-            offsetX += (index % 2) * 1F;
-            offsetZ += (index / 2F) * 1.2F;
-        }
+            VehicleProperties properties = entity.getProperties();
+            Seat seat = properties.getSeats().get(index);
+            Vec3d seatVec = seat.getPosition().addVector(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale());
+            seatVec = new Vec3d(-seatVec.x, seatVec.y, seatVec.z);
+            seatVec = seatVec.scale(0.0625);
+            double scale = 32.0 / 30.0;
+            double offsetX = -seatVec.x * scale;
+            double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetZ = seatVec.z * scale;
 
-        GlStateManager.translate(offsetX, offsetY, offsetZ);
-        float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-        float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-        GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
-        GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
-        GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+            GlStateManager.translate(offsetX, offsetY, offsetZ);
+            float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
+            GlStateManager.rotate(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
+            GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+        }
     }
 
     //TODO fix this

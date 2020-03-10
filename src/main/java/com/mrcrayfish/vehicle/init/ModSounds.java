@@ -47,6 +47,8 @@ public class ModSounds
     public static final SoundEvent TRACTOR_ENGINE_STEREO = null;
     public static final SoundEvent NOZZLE_PICK_UP = null;
     public static final SoundEvent NOZZLE_PUT_DOWN = null;
+    public static final SoundEvent MINI_BUS_ENGINE_MONO = null;
+    public static final SoundEvent MINI_BUS_ENGINE_STEREO = null;
 
     public static void register()
     {
@@ -85,6 +87,8 @@ public class ModSounds
         register(SoundNames.TRACTOR_ENGINE_STEREO);
         register(SoundNames.NOZZLE_PICK_UP);
         register(SoundNames.NOZZLE_PUT_DOWN);
+        register(SoundNames.MINI_BUS_ENGINE_MONO);
+        register(SoundNames.MINI_BUS_ENGINE_STEREO);
     }
 
     private static void register(String soundNameIn)

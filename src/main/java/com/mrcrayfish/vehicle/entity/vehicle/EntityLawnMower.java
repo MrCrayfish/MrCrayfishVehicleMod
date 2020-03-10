@@ -135,12 +135,6 @@ public class EntityLawnMower extends EntityLandVehicle implements IEntityRaytrac
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 10.5 * 0.0625;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.SMALL_MOTOR;

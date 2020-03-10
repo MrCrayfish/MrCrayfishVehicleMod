@@ -65,12 +65,6 @@ public class EntityBumperCar extends EntityLandVehicle implements IEntityRaytrac
     }
 
     @Override
-    public double getMountedYOffset()
-    {
-        return 3 * 0.0625F;
-    }
-
-    @Override
     public EngineType getEngineType()
     {
         return EngineType.ELECTRIC_MOTOR;

@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityMiniBike;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -10,6 +12,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.Vec3d;
 
 /**
  * Author: MrCrayfish
@@ -81,11 +84,23 @@ public class RenderMiniBike extends AbstractRenderVehicle<EntityMiniBike>
     @Override
     public void applyPlayerRender(EntityMiniBike entity, EntityPlayer player, float partialTicks)
     {
-        double offset = 24 * 0.0625 + entity.getMountedYOffset() + player.getYOffset();
-        GlStateManager.translate(0, offset, 0);
-        float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-        float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-        GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 20F, 0, 0, 1);
-        GlStateManager.translate(0, -offset, 0);
+        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        if(index != -1)
+        {
+            VehicleProperties properties = entity.getProperties();
+            Seat seat = properties.getSeats().get(index);
+            Vec3d seatVec = seat.getPosition().addVector(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale());
+            seatVec = new Vec3d(-seatVec.x, seatVec.y, seatVec.z);
+            seatVec = seatVec.scale(0.0625);
+            double scale = 32.0 / 30.0;
+            double offsetX = seatVec.x * scale;
+            double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetZ = -seatVec.z * scale;
+            GlStateManager.translate(offsetX, offsetY, offsetZ);
+            float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
+            GlStateManager.rotate(turnAngleNormal * currentSpeedNormal * 20F, 0, 0, 1);
+            GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+        }
     }
 }

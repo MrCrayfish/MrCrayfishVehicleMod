@@ -99,6 +99,7 @@ entity.vehicle.seeder_trailer.name=Seeder
 entity.vehicle.fertilizer_trailer.name=Fertilizer
 entity.vehicle.fluid_trailer.name=Fluid Trailer
 entity.vehicle.tractor.name=Tractor
+entity.vehicle.mini_bus.name=Mini Bus
 
 vehicle.config.title=MrCrayfish's Vehicle Mod Config
 vehicle.config.client=Client
