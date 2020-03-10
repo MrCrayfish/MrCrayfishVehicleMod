@@ -8,20 +8,22 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Author: MrCrayfish
  */
 @OnlyIn(Dist.CLIENT)
 public class MovingSoundHornRiding extends TickableSound
 {
-    private final PlayerEntity player;
-    private final PoweredVehicleEntity vehicle;
+    private final WeakReference<PlayerEntity> playerRef;
+    private final WeakReference<PoweredVehicleEntity> vehicleRef;
 
     public MovingSoundHornRiding(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
         super(vehicle.getHornRidingSound(), SoundCategory.NEUTRAL);
-        this.player = player;
-        this.vehicle = vehicle;
+        this.playerRef = new WeakReference<>(player);
+        this.vehicleRef = new WeakReference<>(vehicle);
         this.attenuationType = AttenuationType.NONE;
         this.repeat = true;
         this.repeatDelay = 0;
@@ -32,10 +34,18 @@ public class MovingSoundHornRiding extends TickableSound
     @Override
     public void tick()
     {
-        this.volume = vehicle.getHorn() ? 1.0F : 0.0F;
-        if(!this.vehicle.isAlive() || this.player.getRidingEntity() == null || this.player.getRidingEntity() != this.vehicle || this.player != Minecraft.getInstance().player)
+        PoweredVehicleEntity vehicle = this.vehicleRef.get();
+        PlayerEntity player = this.playerRef.get();
+        if(vehicle == null || player == null)
         {
             this.donePlaying = true;
+            return;
         }
+        if(!vehicle.isAlive() || player.getRidingEntity() == null || player.getRidingEntity() != vehicle || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
+        {
+            this.donePlaying = true;
+            return;
+        }
+        this.volume = vehicle.getHorn() ? 1.0F : 0.0F;
     }
 }

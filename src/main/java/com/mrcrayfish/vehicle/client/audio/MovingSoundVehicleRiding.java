@@ -9,20 +9,22 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Author: MrCrayfish
  */
 @OnlyIn(Dist.CLIENT)
 public class MovingSoundVehicleRiding extends TickableSound
 {
-    private final PlayerEntity player;
-    private final PoweredVehicleEntity vehicle;
+    private final WeakReference<PlayerEntity> playerRef;
+    private final WeakReference<PoweredVehicleEntity> vehicleRef;
 
     public MovingSoundVehicleRiding(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
         super(vehicle.getRidingSound(), SoundCategory.NEUTRAL);
-        this.player = player;
-        this.vehicle = vehicle;
+        this.playerRef = new WeakReference<>(player);
+        this.vehicleRef = new WeakReference<>(vehicle);
         this.attenuationType = ISound.AttenuationType.NONE;
         this.repeat = true;
         this.repeatDelay = 0;
@@ -32,14 +34,19 @@ public class MovingSoundVehicleRiding extends TickableSound
     @Override
     public void tick()
     {
-        this.volume = vehicle.isEnginePowered() ? 0.8F : 0.8F * vehicle.getActualSpeed();
-        if(vehicle.isAlive() && vehicle.equals(player.getRidingEntity()) && player.equals(Minecraft.getInstance().player))
-        {
-            this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getActualSpeed());
-        }
-        else
+        PoweredVehicleEntity vehicle = this.vehicleRef.get();
+        PlayerEntity player = this.playerRef.get();
+        if(vehicle == null || player == null)
         {
             this.donePlaying = true;
+            return;
         }
+        if(!vehicle.isAlive() || !vehicle.equals(player.getRidingEntity()) || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
+        {
+            this.donePlaying = true;
+            return;
+        }
+        this.volume = vehicle.getControllingPassenger() != null ? 1.0F : 0.0F;
+        this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getActualSpeed());
     }
 }

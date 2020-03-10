@@ -8,18 +8,20 @@ import net.minecraft.util.SoundCategory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Author: MrCrayfish
  */
 @OnlyIn(Dist.CLIENT)
 public class MovingSoundHorn extends TickableSound
 {
-    private final PoweredVehicleEntity vehicle;
+    private final WeakReference<PoweredVehicleEntity> vehicleRef;
 
     public MovingSoundHorn(PoweredVehicleEntity vehicle)
     {
         super(vehicle.getHornSound(), SoundCategory.NEUTRAL);
-        this.vehicle = vehicle;
+        this.vehicleRef = new WeakReference<>(vehicle);
         this.repeat = true;
         this.repeatDelay = 0;
         this.volume = 0.001F;
@@ -29,13 +31,19 @@ public class MovingSoundHorn extends TickableSound
     @Override
     public void tick()
     {
+        PoweredVehicleEntity vehicle = this.vehicleRef.get();
+        if(vehicle == null || Minecraft.getInstance().player == null)
+        {
+            this.donePlaying = true;
+            return;
+        }
         this.volume = vehicle.getHorn() ? 1.0F : 0.0F;
-        if(vehicle.isAlive() && vehicle.getControllingPassenger() != null && Minecraft.getInstance().player != null && vehicle.getControllingPassenger() != Minecraft.getInstance().player)
+        if(vehicle.isAlive() && vehicle.getPassengers().size() > 0)
         {
             PlayerEntity localPlayer = Minecraft.getInstance().player;
-            this.x = (float) (vehicle.getPosX() + (localPlayer.getPosY() - vehicle.getPosZ()) * 0.65);
-            this.y = (float) (vehicle.getPosX() + (localPlayer.getPosY() - vehicle.getPosZ()) * 0.65);
-            this.z = (float) (vehicle.getPosX() + (localPlayer.getPosY() - vehicle.getPosZ()) * 0.65);
+            this.x = (float) (vehicle.getPosX() + (localPlayer.getPosX() - vehicle.getPosX()) * 0.65);
+            this.y = (float) (vehicle.getPosY() + (localPlayer.getPosY() - vehicle.getPosY()) * 0.65);
+            this.z = (float) (vehicle.getPosZ() + (localPlayer.getPosZ() - vehicle.getPosZ()) * 0.65);
         }
         else
         {

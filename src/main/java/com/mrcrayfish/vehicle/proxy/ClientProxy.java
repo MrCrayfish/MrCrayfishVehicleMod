@@ -28,6 +28,7 @@ import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.ScreenManager;
@@ -59,7 +60,10 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -71,7 +75,9 @@ public class ClientProxy implements Proxy
     public static final KeyBinding KEY_CYCLE_SEATS = new KeyBinding("key.vehicle.cycle_seats", GLFW.GLFW_KEY_C, "key.categories.vehicle");
 
     public static boolean controllableLoaded = false;
-    
+
+    private static final WeakHashMap<UUID, Map<SoundType, ITickableSound>> SOUND_TRACKER = new WeakHashMap<>();
+
     @Override
     public void setupClient()
     {
@@ -150,8 +156,7 @@ public class ClientProxy implements Proxy
         //ModelLoaderRegistry.registerLoader(new CustomLoader());
         //ModelLoaderRegistry.registerLoader(new ResourceLocation(Reference.MOD_ID, "ramp"), new CustomLoader());
 
-        IItemColor color = (stack, index) ->
-        {
+        IItemColor color = (stack, index) -> {
             if(index == 0 && stack.hasTag() && stack.getTag().contains("Color", Constants.NBT.TAG_INT))
             {
                 return stack.getTag().getInt("Color");
@@ -159,16 +164,14 @@ public class ClientProxy implements Proxy
             return 0xFFFFFF;
         };
 
-        ForgeRegistries.ITEMS.forEach(item ->
-        {
+        ForgeRegistries.ITEMS.forEach(item -> {
             if(item instanceof SprayCanItem || item instanceof KeyItem || (item instanceof PartItem && ((PartItem) item).isColored()))
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
             }
         });
 
-        ((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> CompletableFuture.runAsync(() ->
-        {
+        ((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> CompletableFuture.runAsync(() -> {
             FluidUtils.clearCacheFluidColor();
             EntityRaytracer.clearDataForReregistration();
         }));
@@ -189,23 +192,48 @@ public class ClientProxy implements Proxy
     @Override
     public void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
-        Minecraft.getInstance().deferTask(() ->
+        Minecraft.getInstance().enqueue(() ->
         {
-            if(vehicle.getRidingSound() != null)
+            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle.getUniqueID(), uuid -> new HashMap<>());
+            if(vehicle.getRidingSound() != null && player.equals(Minecraft.getInstance().player))
             {
-                Minecraft.getInstance().getSoundHandler().play(new MovingSoundVehicleRiding(player, vehicle));
+                ITickableSound sound = soundMap.get(SoundType.ENGINE_RIDING);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                {
+                    sound = new MovingSoundVehicleRiding(player, vehicle);
+                    soundMap.put(SoundType.ENGINE_RIDING, sound);
+                    Minecraft.getInstance().getSoundHandler().play(sound);
+                }
             }
-            if(vehicle.getMovingSound() != null)
+            if(vehicle.getMovingSound() != null && !player.equals(Minecraft.getInstance().player))
             {
-                Minecraft.getInstance().getSoundHandler().play(new MovingSoundVehicle(vehicle));
+                ITickableSound sound = soundMap.get(SoundType.ENGINE);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                {
+                    sound = new MovingSoundVehicle(vehicle);
+                    soundMap.put(SoundType.ENGINE, sound);
+                    Minecraft.getInstance().getSoundHandler().play(new MovingSoundVehicle(vehicle));
+                }
             }
-            if(vehicle.getHornSound() != null)
+            if(vehicle.getHornSound() != null && !player.equals(Minecraft.getInstance().player))
             {
-                Minecraft.getInstance().getSoundHandler().play(new MovingSoundHorn(vehicle));
+                ITickableSound sound = soundMap.get(SoundType.HORN);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                {
+                    sound = new MovingSoundHorn(vehicle);
+                    soundMap.put(SoundType.HORN, sound);
+                    Minecraft.getInstance().getSoundHandler().play(sound);
+                }
             }
-            if(vehicle.getHornRidingSound() != null)
+            if(vehicle.getHornRidingSound() != null && player.equals(Minecraft.getInstance().player))
             {
-                Minecraft.getInstance().getSoundHandler().play(new MovingSoundHornRiding(player, vehicle));
+                ITickableSound sound = soundMap.get(SoundType.HORN_RIDING);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                {
+                    sound = new MovingSoundHornRiding(player, vehicle);
+                    soundMap.put(SoundType.HORN_RIDING, sound);
+                    Minecraft.getInstance().getSoundHandler().play(sound);
+                }
             }
         });
     }
@@ -241,8 +269,7 @@ public class ClientProxy implements Proxy
     public void syncStorageInventory(int entityId, CompoundNBT compound)
     {
         World world = Minecraft.getInstance().world;
-        if(world == null)
-            return;
+        if(world == null) return;
         Entity entity = world.getEntityByID(entityId);
         if(entity instanceof IStorage)
         {
@@ -519,16 +546,13 @@ public class ClientProxy implements Proxy
     public void syncEntityFluid(int entityId, FluidStack stack)
     {
         World world = Minecraft.getInstance().world;
-        if(world == null)
-            return;
+        if(world == null) return;
 
         Entity entity = world.getEntityByID(entityId);
-        if(entity == null)
-            return;
+        if(entity == null) return;
 
         LazyOptional<IFluidHandler> optional = entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY);
-        optional.ifPresent(handler ->
-        {
+        optional.ifPresent(handler -> {
             if(handler instanceof FluidTank)
             {
                 FluidTank tank = (FluidTank) handler;
@@ -560,5 +584,13 @@ public class ClientProxy implements Proxy
                 vehicle.getSeatTracker().setSeatIndex(seatIndex, uuid);
             }
         }
+    }
+
+    private enum SoundType
+    {
+        ENGINE,
+        ENGINE_RIDING,
+        HORN,
+        HORN_RIDING;
     }
 }
