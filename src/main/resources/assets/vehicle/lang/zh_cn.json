@@ -47,7 +47,7 @@
     "item.vehicle.industrial_jerry_can.info": "使用工业简便油桶能够为载具装填燃料，它能够存储15桶燃料",
     "item.vehicle.industrial_jerry_can.fuel": "燃料: %s",
     "item.vehicle.wrench": "扳手",
-    "item.vehicle.key": "钥匙",
+    "item.vehicle.key": "车钥匙",
     "item.vehicle.panel": "仪表盘",
     "item.vehicle.standard_wheel": "轮胎",
     "item.vehicle.sports_wheel": "轮胎",
@@ -170,7 +170,7 @@
     "vehicle.chat.pump.power": "§b动力模式:§r %s",
     "vehicle.chat.pump.power.off": "需要信号-关",
     "vehicle.chat.pump.power.on": "需要信号-开",
-    "vehicle.chat.pump.power.always": "总是",
+    "vehicle.chat.pump.power.always": "保持激活",
 
     "vehicle.status.invalid_owner": "你不是这辆载具的主人",
     "vehicle.status.key_added": "用钥匙成功锁定载具",
@@ -184,7 +184,7 @@
     "vehicle.tooltip.not_applicable": "不适用",
     "vehicle.tooltip.paint_color": "喷漆颜色",
     "vehicle.tooltip.engine": "引擎",
-    "vehicle.tooltip.wheels": "车轮",
+    "vehicle.tooltip.wheels": "轮胎",
 
     "key.categories.vehicle": "MrCrayfish的载具模组",
     "key.vehicle.cycle_seats": "自行车座椅",
