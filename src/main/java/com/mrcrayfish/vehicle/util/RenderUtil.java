@@ -149,7 +149,7 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
-    private static void renderModel(IBakedModel model, int color)
+    public static void renderModel(IBakedModel model, int color)
     {
         GlStateManager.pushMatrix();
         GlStateManager.translate(-0.5F, -0.5F, -0.5F);

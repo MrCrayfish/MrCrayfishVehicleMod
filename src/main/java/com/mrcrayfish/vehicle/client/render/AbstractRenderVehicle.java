@@ -77,8 +77,11 @@ public abstract class AbstractRenderVehicle<T extends EntityVehicle>
 
             GlStateManager.pushMatrix();
             GlStateManager.cullFace(GlStateManager.CullFace.BACK);
-            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, vehicle.getColor());
-
+            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, ItemCameraTransforms.TransformType.NONE, false);
+            if(!model.isBuiltInRenderer())
+            {
+                RenderUtil.renderModel(model, vehicle.getColor());
+            }
             GlStateManager.popMatrix();
             GlStateManager.disableRescaleNormal();
             GlStateManager.disableBlend();
