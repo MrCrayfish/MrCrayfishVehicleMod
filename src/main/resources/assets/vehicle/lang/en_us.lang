@@ -162,3 +162,7 @@ vehicle.tooltip.not_applicable=Not applicable
 vehicle.tooltip.paint_color=Paint Color
 vehicle.tooltip.engine=Engine
 vehicle.tooltip.wheels=Wheels
+
+key.categories.vehicle=MrCrayfish's Vehicle Mod
+key.vehicle.horn=Horn
+key.vehicle.cycle_seats=Cycle Seats
