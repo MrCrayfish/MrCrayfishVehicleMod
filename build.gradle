@@ -43,7 +43,7 @@ repositories {
 
 dependencies {
     compile 'obfuscate:Obfuscate:0.2.6:1.12.2'
-    compile 'controllable:Controllable:1.12.2:0.3.0'
+    compile 'controllable:Controllable:1.12.2:0.8.0'
 }
 
 processResources {

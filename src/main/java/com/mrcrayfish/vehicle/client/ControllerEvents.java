@@ -40,7 +40,7 @@ public class ControllerEvents
             switch(event.getButton())
             {
                 case Buttons.A:
-                    if(player.getRidingEntity() instanceof EntityPoweredVehicle)
+                    if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityPoweredVehicle)
                     {
                         event.setCanceled(true);
                     }

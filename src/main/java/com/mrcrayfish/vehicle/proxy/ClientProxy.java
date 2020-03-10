@@ -257,6 +257,11 @@ public class ClientProxy implements Proxy
     {
         if(controllableLoaded)
         {
+            if(Minecraft.getMinecraft().currentScreen != null)
+            {
+                return EntityPoweredVehicle.AccelerationDirection.NONE;
+            }
+
             Controller controller = Controllable.getController();
             if(controller != null)
             {
@@ -271,11 +276,11 @@ public class ClientProxy implements Proxy
                         return EntityPoweredVehicle.AccelerationDirection.REVERSE;
                     }
                 }
-                else if(controller.getState().a)
+                else if(controller.isButtonPressed(Buttons.A))
                 {
                     return EntityPoweredVehicle.AccelerationDirection.FORWARD;
                 }
-                else if(controller.getState().b)
+                else if(controller.isButtonPressed(Buttons.B))
                 {
                     return EntityPoweredVehicle.AccelerationDirection.REVERSE;
                 }
@@ -290,6 +295,11 @@ public class ClientProxy implements Proxy
     {
         if(controllableLoaded)
         {
+            if(Minecraft.getMinecraft().currentScreen != null)
+            {
+                return EntityPoweredVehicle.TurnDirection.FORWARD;
+            }
+
             Controller controller = Controllable.getController();
             if(controller != null)
             {
@@ -301,11 +311,11 @@ public class ClientProxy implements Proxy
                 {
                     return EntityPoweredVehicle.TurnDirection.LEFT;
                 }
-                if(controller.getState().dpadRight)
+                if(controller.isButtonPressed(Buttons.DPAD_RIGHT))
                 {
                     return EntityPoweredVehicle.TurnDirection.RIGHT;
                 }
-                if(controller.getState().dpadLeft)
+                if(controller.isButtonPressed(Buttons.DPAD_LEFT))
                 {
                     return EntityPoweredVehicle.TurnDirection.LEFT;
                 }
@@ -330,6 +340,11 @@ public class ClientProxy implements Proxy
         {
             if(controllableLoaded)
             {
+                if(Minecraft.getMinecraft().currentScreen != null)
+                {
+                    return 0.0F;
+                }
+
                 Controller controller = Controllable.getController();
                 if(controller != null)
                 {
@@ -377,7 +392,7 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                if(controller.getState().rb)
+                if(controller.isButtonPressed(Buttons.RIGHT_BUMPER))
                 {
                     return true;
                 }
@@ -413,8 +428,8 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.getState().rb;
-                flapDown |= controller.getState().lb;
+                flapUp |= controller.isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.isButtonPressed(Buttons.LEFT_BUMPER);
             }
         }
         return EntityPlane.FlapDirection.fromInput(flapUp, flapDown);
@@ -430,8 +445,8 @@ public class ClientProxy implements Proxy
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                flapUp |= controller.getState().rb;
-                flapDown |= controller.getState().lb;
+                flapUp |= controller.isButtonPressed(Buttons.RIGHT_BUMPER);
+                flapDown |= controller.isButtonPressed(Buttons.LEFT_BUMPER);
             }
         }
         return EntityHelicopter.AltitudeChange.fromInput(flapUp, flapDown);
