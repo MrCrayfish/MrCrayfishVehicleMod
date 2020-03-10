@@ -727,13 +727,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected void removePassenger(Entity passenger)
-    {
-        super.removePassenger(passenger);
-        this.getSeatTracker().remove(passenger.getUniqueID());
-    }
-
-    @Override
     public void updatePassenger(Entity passenger)
     {
         super.updatePassenger(passenger);
