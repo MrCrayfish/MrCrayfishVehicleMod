@@ -12,6 +12,8 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
+import net.minecraft.block.Block;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.block.FarmlandBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -21,6 +23,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.BlockNamedItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
@@ -112,7 +115,7 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
 
     private void plantSeed(Vec3d vec)
     {
-        BlockPos pos = new BlockPos(prevPosX + vec.x, prevPosY + 0.25, prevPosZ + vec.z);
+        BlockPos pos = new BlockPos(this.posX + vec.x, this.posY + 0.25, this.posZ + vec.z);
         if(world.isAirBlock(pos) && world.getBlockState(pos.down()).getBlock() instanceof FarmlandBlock)
         {
             ItemStack seed = this.getSeed();
@@ -120,10 +123,10 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
             {
                 seed = this.getSeedFromStorage((StorageTrailerEntity) this.getPullingEntity());
             }
-            if(!seed.isEmpty() && seed.getItem() instanceof net.minecraftforge.common.IPlantable)
+            if(this.isSeed(seed))
             {
-                net.minecraftforge.common.IPlantable plantable = (net.minecraftforge.common.IPlantable) seed.getItem();
-                world.setBlockState(pos, plantable.getPlant(world, pos));
+                Block seedBlock = ((BlockNamedItem) seed.getItem()).getBlock();
+                this.world.setBlockState(pos, seedBlock.getDefaultState());
                 seed.shrink(1);
             }
         }
@@ -131,15 +134,20 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
 
     private ItemStack getSeed()
     {
-        for(int i = 0; i < inventory.getSizeInventory(); i++)
+        for(int i = 0; i < this.inventory.getSizeInventory(); i++)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
-            if(!stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable)
+            ItemStack stack = this.inventory.getStackInSlot(i);
+            if(this.isSeed(stack))
             {
                 return stack;
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    private boolean isSeed(ItemStack stack)
+    {
+        return !stack.isEmpty() && stack.getItem() instanceof BlockNamedItem && ((BlockNamedItem) stack.getItem()).getBlock() instanceof CropsBlock;
     }
 
     private ItemStack getSeedFromStorage(StorageTrailerEntity storageTrailer)
