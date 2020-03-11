@@ -64,7 +64,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                     GlStateManager.rotatef(180F, 1, 0, 0);
                     GlStateManager.rotatef(-90F, 0, 1, 0);
                     GlStateManager.translated(0F, player.isSneaking() ? 0.3125F : 0.5625F, 0F);
-                    EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getRenderManager().renderers.get(this.cachedType);
+                    EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getRenderManager().getRenderer(this.cachedEntity);
                     render.doRender(this.cachedEntity, 0.0D, 0.0D, 0.0D, 0F, 0F);
                 }
                 GlStateManager.popMatrix();
