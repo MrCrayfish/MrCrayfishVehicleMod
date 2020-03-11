@@ -47,7 +47,7 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
         supplier.get().enqueueWork(() ->
         {
             ServerPlayerEntity player = supplier.get().getSender();
-            if(player != null)
+            if(player != null && !player.isSneaking())
             {
                 World world = player.world;
                 Entity targetEntity = world.getEntityByID(message.entityId);

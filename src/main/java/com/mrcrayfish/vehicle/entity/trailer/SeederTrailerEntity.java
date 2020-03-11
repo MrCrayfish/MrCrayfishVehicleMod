@@ -79,7 +79,10 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
         ItemStack heldItem = player.getHeldItem(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof SprayCanItem)) && player instanceof ServerPlayerEntity)
         {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
+            if(!player.isSneaking())
+            {
+                NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
+            }
             return true;
         }
         return super.processInitialInteract(player, hand);
