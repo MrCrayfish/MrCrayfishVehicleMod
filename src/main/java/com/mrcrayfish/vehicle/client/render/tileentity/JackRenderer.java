@@ -99,6 +99,7 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                     Entity passenger = jack.getPassengers().get(0);
                     if(passenger instanceof VehicleEntity && passenger.isAlive())
                     {
+                        RenderHelper.enableStandardItemLighting();
                         GlStateManager.translated(0.5, 0.5, 0.5);
                         GlStateManager.translated(0, -1 * 0.0625, 0);
                         float progress = (te.prevLiftProgress + (te.liftProgress - te.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
