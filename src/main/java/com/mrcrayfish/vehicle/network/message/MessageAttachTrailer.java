@@ -54,7 +54,7 @@ public class MessageAttachTrailer implements IMessage<MessageAttachTrailer>
                 {
                     TrailerEntity trailer = (TrailerEntity) trailerEntity;
                     Entity entity = world.getEntityByID(message.entityId);
-                    if(entity instanceof PlayerEntity && entity.getRidingEntity() == null)
+                    if(entity instanceof PlayerEntity && entity.getRidingEntity() == null && !entity.isSneaking())
                     {
                         trailer.setPullingEntity(entity);
                         entity.getDataManager().set(CustomDataParameters.TRAILER, message.trailerId);
