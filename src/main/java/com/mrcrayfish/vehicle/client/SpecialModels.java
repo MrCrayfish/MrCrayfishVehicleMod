@@ -13,6 +13,11 @@ import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Field;
+import java.util.Map;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels implements ISpecialModel
@@ -117,11 +122,11 @@ public enum SpecialModels implements ISpecialModel
     {
         if(this.cachedModel == null)
         {
-            //ModelManager modelManager = Minecraft.getInstance().getModelManager();
-            IBakedModel model = Minecraft.getInstance().getModelManager().modelRegistry.get(this.modelLocation);
+            ModelManager modelManager = Minecraft.getInstance().getModelManager();
+            IBakedModel model = getModel(modelManager, this.modelLocation);
             if(model == null)
             {
-                return Minecraft.getInstance().getModelManager().getMissingModel();
+                return modelManager.getMissingModel();
             }
             this.cachedModel = model;
         }
@@ -140,4 +145,28 @@ public enum SpecialModels implements ISpecialModel
             }
         }
     }
+
+    /**
+     * Gets a model by it's resource location via reflection. Access transformer seems to not be
+     * working. It will work on first build of gradle but if you refresh it will reset back.
+     */
+    @Nullable
+    private static IBakedModel getModel(ModelManager modelManager, ResourceLocation location)
+    {
+        if(modelRegistryField == null)
+        {
+            modelRegistryField = ObfuscationReflectionHelper.findField(ModelManager.class, "field_174958_a");
+        }
+        try
+        {
+            return ((Map<ResourceLocation, IBakedModel>)modelRegistryField.get(modelManager)).get(location);
+        }
+        catch(IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private static Field modelRegistryField = null;
 }
