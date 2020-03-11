@@ -1,11 +1,9 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
@@ -31,7 +29,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    public void doRender(T entity, double x, double y, double z, float entityYaw, float partialTicks)
     {
         if(!entity.isAlive())
             return;
@@ -39,22 +37,23 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
         if(entity.getRidingEntity() instanceof EntityJack)
             return;
 
-        matrixStack.push();
-        wrapper.applyPreRotations(entity, matrixStack, partialTicks);
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
-        this.setupBreakAnimation(entity, matrixStack, partialTicks);
-        wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
-        matrixStack.pop();
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(x, y, z);
+        wrapper.applyPreRotations(entity, partialTicks);
+        GlStateManager.rotatef(-entityYaw, 0, 1, 0);
+        this.setupBreakAnimation(entity, partialTicks);
+        wrapper.render(entity, partialTicks);
+        GlStateManager.popMatrix();
 
-        EntityRaytracer.renderRaytraceElements(entity, matrixStack, entityYaw);
+        EntityRaytracer.renderRaytraceElements(entity, x, y, z, entityYaw);
     }
 
-    private void setupBreakAnimation(VehicleEntity vehicle, MatrixStack matrixStack, float partialTicks)
+    private void setupBreakAnimation(VehicleEntity vehicle,float partialTicks)
     {
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         if(timeSinceHit > 0.0F)
         {
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(MathHelper.sin(timeSinceHit) * timeSinceHit));
+            GlStateManager.rotatef(MathHelper.sin(timeSinceHit) * timeSinceHit, 0, 0, 1);
         }
     }
 }

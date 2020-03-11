@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.client.screen;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -15,9 +13,7 @@ import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -63,7 +59,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getTextureManager().bindTexture(GUI_TEXTURES);
         int left = (this.width - this.xSize) / 2;
@@ -106,60 +102,44 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(wrapper != null)
         {
-            int startX = (this.width - this.xSize) / 2;
-            int startY = (this.height - this.ySize) / 2;
-
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef(96, 78, 1050.0F);
-            RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
-
+            int i = (this.width - this.xSize) / 2;
+            int j = (this.height - this.ySize) / 2;
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            RenderUtil.scissor(startX + 26, startY + 17, 142, 70);
-
-            MatrixStack matrixStack = new MatrixStack();
-            matrixStack.translate(0.0, 0.0, 1000.0);
-            matrixStack.translate(windowX - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
-            matrixStack.translate(0, windowY - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
-
-            Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-10F);
-            quaternion.multiply(Axis.POSITIVE_X.func_229187_a_(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0)));
-            quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0)));
-            quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(135F));
-            matrixStack.rotate(quaternion);
-
-            matrixStack.scale(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
-            matrixStack.scale(22F, 22F, 22F);
-
-            VehicleProperties properties = VehicleProperties.getProperties(vehicle.getType());
-            PartPosition position = PartPosition.DEFAULT;
-            if(properties != null)
+            RenderUtil.scissor(i + 26, j + 17, 142, 70);
+            GlStateManager.pushMatrix();
             {
-                position = properties.getDisplayPosition();
+                RenderHelper.enableGUIStandardItemLighting();
+                GlStateManager.translated(96, 78, 100);
+                GlStateManager.translated(windowX + (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
+                GlStateManager.translated(0, windowY + (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
+                GlStateManager.rotatef(-10F, 1, 0, 0);
+                GlStateManager.rotatef(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0), 1, 0, 0);
+                GlStateManager.rotatef(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0), 0, 1, 0);
+                GlStateManager.rotatef(135F, 0, 1, 0);
+                GlStateManager.scalef(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
+                GlStateManager.scalef(-22, -22, -22);
+                PartPosition position = VehicleProperties.getProperties(vehicle.getType()).getDisplayPosition();
+                if(position != null)
+                {
+                    //Apply vehicle rotations, translations, and scale
+                    GlStateManager.scaled(position.getScale(), position.getScale(), position.getScale());
+                    GlStateManager.rotatef((float) position.getRotX(), 1, 0, 0);
+                    GlStateManager.rotatef((float) position.getRotY(), 0, 1, 0);
+                    GlStateManager.rotatef((float) position.getRotZ(), 0, 0, 1);
+                    GlStateManager.translated(position.getX(), position.getY(), position.getZ());
+                }
+                wrapper.render(vehicle, Minecraft.getInstance().getRenderPartialTicks());
             }
-            matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
-            matrixStack.translate(position.getX(), position.getY(), position.getZ());
-
-            EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
-            renderManager.setRenderShadow(false);
-            renderManager.func_229089_a_(quaternion);
-            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-            wrapper.render(vehicle, matrixStack, renderTypeBuffer, Minecraft.getInstance().getRenderPartialTicks(), 15728880);
-            renderTypeBuffer.func_228461_a_();
-            renderManager.setRenderShadow(true);
-
+            GlStateManager.popMatrix();
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            RenderSystem.popMatrix();
         }
 
         if(showHelp)
         {
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+            GlStateManager.pushMatrix();
+            GlStateManager.scalef(0.5F, 0.5F, 0.5F);
             minecraft.fontRenderer.drawString(I18n.format("container.edit_vehicle.window_help"), 56, 38, Color.WHITE.getRGB());
-            RenderSystem.popMatrix();
+            GlStateManager.popMatrix();
         }
     }
 
@@ -213,8 +193,8 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             if(this.mouseGrabbedButton == 0 && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
             {
                 this.mouseGrabbed = false;
-                this.windowX -= (mouseX - this.mouseClickedX);
-                this.windowY -= (mouseY - this.mouseClickedY);
+                this.windowX += (mouseX - this.mouseClickedX - 1);
+                this.windowY += (mouseY - this.mouseClickedY);
             }
             else if(mouseGrabbedButton == 1 && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
             {

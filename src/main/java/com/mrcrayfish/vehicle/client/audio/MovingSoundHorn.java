@@ -41,9 +41,9 @@ public class MovingSoundHorn extends TickableSound
         if(vehicle.isAlive() && vehicle.getPassengers().size() > 0)
         {
             PlayerEntity localPlayer = Minecraft.getInstance().player;
-            this.x = (float) (vehicle.getPosX() + (localPlayer.getPosX() - vehicle.getPosX()) * 0.65);
-            this.y = (float) (vehicle.getPosY() + (localPlayer.getPosY() - vehicle.getPosY()) * 0.65);
-            this.z = (float) (vehicle.getPosZ() + (localPlayer.getPosZ() - vehicle.getPosZ()) * 0.65);
+            this.x = (float) (vehicle.posX + (localPlayer.posX - vehicle.posX) * 0.65);
+            this.y = (float) (vehicle.posY + (localPlayer.posY - vehicle.posY) * 0.65);
+            this.z = (float) (vehicle.posZ + (localPlayer.posZ - vehicle.posZ) * 0.65);
         }
         else
         {

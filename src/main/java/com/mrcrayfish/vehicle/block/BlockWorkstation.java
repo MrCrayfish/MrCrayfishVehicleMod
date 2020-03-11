@@ -67,18 +67,18 @@ public class BlockWorkstation extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof INamedContainerProvider)
             {
-                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
-                return ActionResultType.SUCCESS;
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, pos);
+                return true;
             }
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

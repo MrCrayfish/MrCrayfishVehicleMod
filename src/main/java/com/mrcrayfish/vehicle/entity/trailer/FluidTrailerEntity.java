@@ -69,7 +69,7 @@ public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer
     @Override
     public boolean processInitialInteract(PlayerEntity player, Hand hand)
     {
-        if(!world.isRemote && !player.isCrouching())
+        if(!world.isRemote && !player.isSneaking())
         {
             if(FluidUtil.interactWithFluidHandler(player, hand, tank))
             {

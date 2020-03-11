@@ -1,25 +1,14 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.JetSkiEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -27,25 +16,25 @@ import org.lwjgl.opengl.GL11;
 public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
 {
     @Override
-    public void render(JetSkiEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(JetSkiEntity entity, float partialTicks)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModels.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.JET_SKI_BODY.getModel());
 
         //Render the handles bars
-        matrixStack.push();
+        GlStateManager.pushMatrix();
 
-        matrixStack.translate(0, 0.355, 0.225);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        GlStateManager.translated(0, 0.355, 0.225);
+        GlStateManager.rotatef(-45F, 1, 0, 0);
 
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        GlStateManager.rotatef(turnRotation, 0, 1, 0);
 
-        this.renderDamagedPart(entity, SpecialModels.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ATV_HANDLES.getModel());
 
-        matrixStack.pop();
+        GlStateManager.popMatrix();
     }
 
     @Override
@@ -76,7 +65,7 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
     }
 
     @Override
-    public void applyPlayerRender(JetSkiEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
+    public void applyPlayerRender(JetSkiEntity entity, PlayerEntity player, float partialTicks)
     {
         int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
         if(index != -1)
@@ -89,12 +78,12 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
             double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
 
-            matrixStack.translate(offsetX, offsetY, offsetZ);
+            GlStateManager.translated(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
-            matrixStack.translate(-offsetX, -offsetY, -offsetZ);
+            GlStateManager.rotatef(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
+            GlStateManager.rotatef(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
+            GlStateManager.translated(-offsetX, -offsetY, -offsetZ);
         }
     }
 

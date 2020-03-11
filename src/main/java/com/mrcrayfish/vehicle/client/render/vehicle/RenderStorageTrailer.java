@@ -1,16 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -33,19 +29,19 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<StorageTrailerEn
     }
 
     @Override
-    public void render(StorageTrailerEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(StorageTrailerEntity entity, float partialTicks)
     {
-        this.renderDamagedPart(entity, SpecialModels.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
-        this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
+        this.renderDamagedPart(entity, SpecialModels.STORAGE_TRAILER.getModel());
+        this.renderWheel(entity, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
+        this.renderWheel(entity, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks);
 
-        matrixStack.push();
-        matrixStack.translate(0, 0.0625, 0);
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
-        matrixStack.scale(0.9F, 0.9F, 0.9F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(0, 0.0625, 0);
+        GlStateManager.rotatef(180F, 0, 1, 0);
+        GlStateManager.scalef(0.9F, 0.9F, 0.9F);
         ItemStack chest = new ItemStack(Blocks.CHEST);
-        RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.DEFAULT_LIGHT, RenderUtil.getModel(chest));
-        matrixStack.pop();
+        RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, RenderUtil.getModel(chest));
+        GlStateManager.popMatrix();
         /*//Render chest
         GlStateManager.pushMatrix(); //TODO add this back once I create a model class for chest
         {

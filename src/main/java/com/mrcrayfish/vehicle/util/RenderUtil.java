@@ -1,23 +1,25 @@
 package com.mrcrayfish.vehicle.util;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import net.minecraftforge.client.model.pipeline.LightUtil;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -54,11 +56,11 @@ public class RenderUtil
         float greenEnd = (float)(rightColor >> 16 & 255) / 255.0F;
         float blueEnd = (float)(rightColor >> 8 & 255) / 255.0F;
         float alphaEnd = (float)(rightColor & 255) / 255.0F;
-        RenderSystem.disableTexture();
-        RenderSystem.enableBlend();
-        RenderSystem.disableAlphaTest();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.shadeModel(7425);
+        GlStateManager.disableTexture();
+        GlStateManager.enableBlend();
+        GlStateManager.disableAlphaTest();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
@@ -67,17 +69,17 @@ public class RenderUtil
         bufferbuilder.pos((double)left, (double)bottom, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
         bufferbuilder.pos((double)right, (double)bottom, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
         tessellator.draw();
-        RenderSystem.shadeModel(7424);
-        RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.enableTexture();
+        GlStateManager.shadeModel(7424);
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlphaTest();
+        GlStateManager.enableTexture();
     }
 
     public static void scissor(int x, int y, int width, int height) //TODO might need fixing. I believe I rewrote this in a another mod
     {
         Minecraft mc = Minecraft.getInstance();
-        int scale = (int) mc.getMainWindow().getGuiScaleFactor();
-        GL11.glScissor(x * scale, mc.getMainWindow().getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
+        int scale = (int) mc.mainWindow.getGuiScaleFactor();
+        GL11.glScissor(x * scale, mc.mainWindow.getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
     }
 
     public static IBakedModel getModel(ItemStack stack)
@@ -85,38 +87,58 @@ public class RenderUtil
         return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
     }
 
-    public static void renderColoredModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int color, int lightTexture, int overlayTexture)
+    public static void renderColoredModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, int color)
     {
-        matrixStack.push();
-        net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
-        matrixStack.translate(-0.5, -0.5, -0.5);
+        GlStateManager.pushMatrix();
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.pushMatrix();
+        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, leftHanded);
         if(!model.isBuiltInRenderer())
         {
-            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.func_228783_h_());
-            renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
+            renderModel(model, ItemStack.EMPTY, color);
         }
-        matrixStack.pop();
+        GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+        GlStateManager.popMatrix();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+        GlStateManager.popMatrix();
     }
 
-    public static void renderDamagedVehicleModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, int stage, int color, int lightTexture, int overlayTexture)
+    public static void renderDamagedVehicleModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, int stage, int color)
     {
-        matrixStack.push();
-        net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
-        matrixStack.translate(-0.5, -0.5, -0.5);
+        GlStateManager.pushMatrix();
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.pushMatrix();
+        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, leftHanded);
         if(!model.isBuiltInRenderer())
         {
-            Minecraft mc = Minecraft.getInstance();
-            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.func_228019_au_().func_228489_c_().getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(stage)), matrixStack.getLast());
-            renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
+            Minecraft mc = Minecraft.getInstance(); //TODO figure out how to bind damaged texture
+            renderModel(model, ItemStack.EMPTY, color);
         }
-        matrixStack.pop();
+        GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+        GlStateManager.popMatrix();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
+        GlStateManager.popMatrix();
     }
 
-    public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int lightTexture, int overlayTexture, IBakedModel model)
+    public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, boolean leftHanded, IBakedModel model)
     {
         if(!stack.isEmpty())
         {
-            matrixStack.push();
+            GlStateManager.pushMatrix();
             boolean isGui = transformType == ItemCameraTransforms.TransformType.GUI;
             boolean tridentFlag = isGui || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
             if(stack.getItem() == Items.TRIDENT && tridentFlag)
@@ -124,46 +146,44 @@ public class RenderUtil
                 model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
             }
 
-            net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
-            matrixStack.translate(-0.5, -0.5, -0.5);
+            net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, leftHanded);
+            GlStateManager.translated(-0.5, -0.5, -0.5);
             if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
             {
-                RenderType renderType = RenderTypeLookup.func_228389_a_(stack);
-                if(isGui && Objects.equals(renderType, Atlases.func_228784_i_()))
-                {
-                    renderType = Atlases.func_228785_j_();
-                }
-                IVertexBuilder vertexBuilder = ItemRenderer.func_229113_a_(renderTypeBuffer, renderType, true, stack.hasEffect());
-                renderModel(model, stack, -1, lightTexture, overlayTexture, matrixStack, vertexBuilder);
+                renderModel(model, stack, -1);
             }
             else
             {
-                stack.getItem().getItemStackTileEntityRenderer().render(stack, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
+                stack.getItem().getTileEntityItemStackRenderer().renderByItem(stack);
             }
 
-            matrixStack.pop();
+            GlStateManager.popMatrix();
         }
     }
 
-    private static void renderModel(IBakedModel model, ItemStack stack, int color, int lightTexture, int overlayTexture, MatrixStack matrixStack, IVertexBuilder vertexBuilder)
+    private static void renderModel(IBakedModel model, ItemStack stack, int color)
     {
+        GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
         Random random = new Random();
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder buffer = tessellator.getBuffer();
+        buffer.begin(7, DefaultVertexFormats.ITEM);
         for(Direction direction : Direction.values())
         {
             random.setSeed(42L);
-            renderQuads(matrixStack, vertexBuilder, model.getQuads(null, direction, random), stack, color, lightTexture, overlayTexture);
+            renderQuads(buffer, model.getQuads(null, direction, random), stack, color);
         }
         random.setSeed(42L);
-        renderQuads(matrixStack, vertexBuilder, model.getQuads(null, null, random), stack, color, lightTexture, overlayTexture);
+        renderQuads(buffer, model.getQuads(null, null, random), stack, color);
+        tessellator.draw();
     }
 
-    private static void renderQuads(MatrixStack matrixStack, IVertexBuilder vertexBuilder, List<BakedQuad> quads, ItemStack stack, int color, int lightTexture, int overlayTexture)
+    private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, ItemStack stack, int color)
     {
         boolean useItemColor = !stack.isEmpty() && color != -1;
-        MatrixStack.Entry entry = matrixStack.getLast();
         for(BakedQuad quad : quads)
         {
-            int tintColor = 0xFFFFFF;
+            int tintColor = 0xFFFFFFFF;
             if(quad.hasTintIndex())
             {
                 if(useItemColor)
@@ -174,11 +194,9 @@ public class RenderUtil
                 {
                     tintColor = color;
                 }
+                tintColor = tintColor | -16777216;
             }
-            float red = (float) (tintColor >> 16 & 255) / 255.0F;
-            float green = (float) (tintColor >> 8 & 255) / 255.0F;
-            float blue = (float) (tintColor & 255) / 255.0F;
-            vertexBuilder.addVertexData(entry, quad, red, green, blue, lightTexture, overlayTexture);
+            LightUtil.renderQuadColor(renderer, quad, tintColor);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
@@ -76,7 +76,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
 

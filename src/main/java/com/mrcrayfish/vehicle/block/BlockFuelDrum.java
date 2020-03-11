@@ -88,14 +88,14 @@ public class BlockFuelDrum extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
-            ItemStack stack = playerEntity.getHeldItem(hand);
-            if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+            ItemStack stack = player.getHeldItem(hand);
+            if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace()))
             {
-                return ActionResultType.SUCCESS;
+                return true;
             }
 
             if(stack.getItem() instanceof JerryCanItem)
@@ -103,7 +103,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                 JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
                 if(jerryCan.isFull(stack))
                 {
-                    return ActionResultType.SUCCESS;
+                    return true;
                 }
 
                 TileEntity tileEntity = world.getTileEntity(pos);
@@ -113,7 +113,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                     FluidTank tank = (FluidTank) handler;
                     if(tank.getFluid().getFluid() != ModFluids.FUELIUM)
                     {
-                        return ActionResultType.SUCCESS;
+                        return true;
                     }
                     FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
                     if(!fluidStack.isEmpty())
@@ -125,11 +125,11 @@ public class BlockFuelDrum extends BlockRotatedObject
                             handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                         }
                     }
-                    return ActionResultType.SUCCESS;
+                    return true;
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

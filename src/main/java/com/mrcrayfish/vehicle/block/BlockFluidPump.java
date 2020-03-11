@@ -65,11 +65,11 @@ public class BlockFluidPump extends BlockFluidPipe
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(super.onBlockActivated(state, world, pos, player, hand, result) == ActionResultType.SUCCESS)
+        if(super.onBlockActivated(state, world, pos, player, hand, result))
         {
-            return ActionResultType.SUCCESS;
+            return true;
         }
         FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
         AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
@@ -80,9 +80,9 @@ public class BlockFluidPump extends BlockFluidPipe
                 ((FluidPumpTileEntity) pipe).cyclePowerMode(player);
                 world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
             }
-            return ActionResultType.SUCCESS;
+            return true;
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Nullable

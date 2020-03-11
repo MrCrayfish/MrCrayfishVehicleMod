@@ -40,22 +40,21 @@ public class BlockFluidMixer extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
-            if(!FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+            if(!FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace()))
             {
                 TileEntity tileEntity = world.getTileEntity(pos);
                 if(tileEntity instanceof INamedContainerProvider)
                 {
-                    TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) playerEntity);
-                    NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
+                    TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) player);
+                    NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, pos);
                 }
             }
-            return ActionResultType.SUCCESS;
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

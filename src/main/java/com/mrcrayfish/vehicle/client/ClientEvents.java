@@ -1,12 +1,11 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -22,11 +21,9 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.entity.model.RendererModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -168,7 +165,7 @@ public class ClientEvents
             AbstractRenderVehicle<VehicleEntity> render = (AbstractRenderVehicle<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
             if(render != null)
             {
-                render.applyPlayerRender(vehicle, player, event.getPartialTicks(), event.getMatrixStack(), event.getBuilder());
+                render.applyPlayerRender(vehicle, player, event.getPartialTicks());
             }
         }
     }
@@ -245,7 +242,7 @@ public class ClientEvents
     }
 
     @OnlyIn(Dist.CLIENT)
-    private static void copyModelAngles(ModelRenderer source, ModelRenderer dest)
+    private static void copyModelAngles(RendererModel source, RendererModel dest)
     {
         dest.rotateAngleX = source.rotateAngleX;
         dest.rotateAngleY = source.rotateAngleY;
@@ -298,13 +295,12 @@ public class ClientEvents
     }
 
     @SubscribeEvent
-    public void onRenderHand(RenderHandEvent event)
+    public void onRenderHand(RenderSpecificHandEvent event)
     {
-        MatrixStack matrixStack = event.getMatrixStack();
         if (event.getHand() == Hand.OFF_HAND && fuelingHandOffset > -1)
         {
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(25F));
-            matrixStack.translate(0, -0.35 - fuelingHandOffset, 0.2);
+            GlStateManager.rotatef(25F, 1, 0, 0);
+            GlStateManager.translated(0, -0.35 - fuelingHandOffset, 0.2);
         }
 
         if(!event.getItemStack().isEmpty() && event.getItemStack().getItem() instanceof SprayCanItem)
@@ -326,8 +322,8 @@ public class ClientEvents
             }
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;
-            matrixStack.translate(0, 0.35 + offset, -0.2);
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-25F));
+            GlStateManager.translated(0, 0.35 + offset, -0.2);
+            GlStateManager.rotatef(-25F, 1, 0, 0);
             if (event.getHand() == Hand.MAIN_HAND)
             {
                 fuelingHandOffset = offset;
@@ -344,16 +340,14 @@ public class ClientEvents
             if(event.getHand() == Hand.MAIN_HAND && shouldRenderNozzle)
             {
                 if(event.getSwingProgress() > 0 && event.getSwingProgress() <= 0.25) return;
-                matrixStack.push();
+                GlStateManager.pushMatrix();
                 boolean mainHand = event.getHand() == Hand.MAIN_HAND;
                 HandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                 int handOffset = handSide == HandSide.RIGHT ? 1 : -1;
-                matrixStack.translate(handOffset * 0.65, -0.52 + 0.25, -0.72);
-                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(45F));
-                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-                int light = Minecraft.getInstance().getRenderManager().func_229085_a_(player, event.getPartialTicks());
-                RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT); //TODO check
-                matrixStack.pop();
+                GlStateManager.translated(handOffset * 0.65, -0.52 + 0.25, -0.72);
+                GlStateManager.rotatef(45F, 1, 0, 0);
+                RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, -1); //TODO check
+                GlStateManager.popMatrix();
                 event.setCanceled(true);
             }
         }
@@ -385,40 +379,39 @@ public class ClientEvents
     @SubscribeEvent
     public void onModelRenderPost(PlayerModelEvent.Render.Post event)
     {
-        MatrixStack matrixStack = event.getMatrixStack();
         PlayerEntity entity = event.getPlayer();
         if(entity.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
-            matrixStack.push();
+            GlStateManager.pushMatrix();
             {
                 if(event.getModelPlayer().isChild)
                 {
-                    matrixStack.translate(0.0, 0.75, 0.0);
-                    matrixStack.scale(0.5F, 0.5F, 0.5F);
+                    GlStateManager.translated(0.0, 0.75, 0.0);
+                    GlStateManager.scalef(0.5F, 0.5F, 0.5F);
                 }
-                matrixStack.push();
+                GlStateManager.pushMatrix();
                 {
-                    if(entity.isCrouching())
+                    if(entity.isSneaking())
                     {
-                        matrixStack.translate(0.0, 0.2, 0.0);
+                        GlStateManager.translated(0.0, 0.2, 0.0);
                     }
                     //event.getModelPlayer().postRenderArm(0.0625F, entity.getPrimaryHand()); //TODO find out what this is
-                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(180F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+                    GlStateManager.rotatef(180F, 1, 0, 0);
+                    GlStateManager.rotatef(180F, 0, 1, 0);
                     boolean leftHanded = entity.getPrimaryHand() == HandSide.LEFT;
-                    matrixStack.translate((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
-                    matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
+                    GlStateManager.translated((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
+                    GlStateManager.translated(0, -9 * 0.0625F, 5.75 * 0.0625F);
                     //TODO figure this out. Missing mappings is making this difficult
                     //RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
                 }
-                matrixStack.pop();
+                GlStateManager.popMatrix();
             }
-            matrixStack.pop();
+            GlStateManager.popMatrix();
         }
     }
 
     @SubscribeEvent
-    public void renderCustomBlockHighlights(DrawHighlightEvent.HighlightBlock event)
+    public void renderCustomBlockHighlights(DrawBlockHighlightEvent.HighlightBlock event)
     {
         /*BlockRayTraceResult target = event.getTarget();
         Entity player = event.getInfo().getRenderViewEntity();

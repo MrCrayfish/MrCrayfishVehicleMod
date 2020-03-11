@@ -142,7 +142,7 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
         Pair<AxisAlignedBB, Direction> hit = this.getBox(world, pos, state, player, hand, result.getFace(), result.getHitVec(), pipe);
@@ -154,9 +154,9 @@ public class BlockFluidPipe extends BlockObject
             world.setBlockState(pos, newState);
             world.notifyBlockUpdate(pos, state, newState, 3 & 8);
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.ENTITY_IRON_GOLEM_STEP, SoundCategory.BLOCKS, 1.0F, 2.0F);
-            return ActionResultType.SUCCESS;
+            return true;
         }
-        return ActionResultType.FAIL;
+        return true;
     }
 
     @Nullable

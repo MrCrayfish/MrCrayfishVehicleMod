@@ -1,19 +1,14 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SpeedBoatEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
 
@@ -23,21 +18,21 @@ import net.minecraft.util.math.Vec3d;
 public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
 {
     @Override
-    public void render(SpeedBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(SpeedBoatEntity entity, float partialTicks)
     {
         //Render the body
-        this.renderDamagedPart(entity, SpecialModels.SPEED_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.SPEED_BOAT_BODY.getModel());
 
-        matrixStack.push();
-        matrixStack.translate(0, 0.215, -0.125);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
-        matrixStack.translate(0, 0.02, 0);
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(0, 0.215, -0.125);
+        GlStateManager.rotatef(-45F, 1, 0, 0);
+        GlStateManager.translated(0, 0.02, 0);
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
-        matrixStack.pop();
+        GlStateManager.rotatef(turnRotation, 0, 1, 0);
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, -1);
+        GlStateManager.popMatrix();
     }
 
     @Override
@@ -58,7 +53,7 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
     }
 
     @Override
-    public void applyPlayerRender(SpeedBoatEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
+    public void applyPlayerRender(SpeedBoatEntity entity, PlayerEntity player, float partialTicks)
     {
         int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
         if(index != -1)
@@ -71,12 +66,12 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
             double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
 
-            matrixStack.translate(offsetX, offsetY, offsetZ);
+            GlStateManager.translated(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
-            matrixStack.translate(-offsetX, -offsetY, -offsetZ);
+            GlStateManager.rotatef(turnAngleNormal * currentSpeedNormal * 15F, 0, 0, 1);
+            GlStateManager.rotatef(-8F * Math.min(1.0F, currentSpeedNormal), 1, 0, 0);
+            GlStateManager.translated(-offsetX, -offsetY, -offsetZ);
         }
     }
 

@@ -52,7 +52,7 @@ public class ModTileEntities
         registry.register(buildType(Names.TileEntity.VEHICLE_CRATE, TileEntityType.Builder.create(VehicleCrateTileEntity::new, ModBlocks.VEHICLE_CRATE)));
         registry.register(buildType(Names.TileEntity.WORKSTATION, TileEntityType.Builder.create(WorkstationTileEntity::new, ModBlocks.WORKSTATION)));
         registry.register(buildType(Names.TileEntity.JACK, TileEntityType.Builder.create(JackTileEntity::new, ModBlocks.JACK)));
-        registry.register(buildType(Names.TileEntity.BOOST, TileEntityType.Builder.create(BoostTileEntity::new, ModBlocks.BOOST_PAD, ModBlocks.BOOST_RAMP, ModBlocks.STEEP_BOOST_RAMP)));
+        registry.register(buildType(Names.TileEntity.BOOST, TileEntityType.Builder.create(BoostTileEntity::new))); //ModBlocks.BOOST_PAD, ModBlocks.BOOST_RAMP, ModBlocks.STEEP_BOOST_RAMP
         registry.register(buildType(Names.TileEntity.GAS_PUMP, TileEntityType.Builder.create(GasPumpTileEntity::new, ModBlocks.GAS_PUMP)));
         registry.register(buildType(Names.TileEntity.GAS_PUMP_TANK, TileEntityType.Builder.create(GasPumpTankTileEntity::new, ModBlocks.GAS_PUMP)));
     }

@@ -558,15 +558,15 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     double wheelX = this.wheelPositions[i * 3];
                     double wheelY = this.wheelPositions[i * 3 + 1];
                     double wheelZ = this.wheelPositions[i * 3 + 2];
-                    int x = MathHelper.floor(this.getPosX() + wheelX);
-                    int y = MathHelper.floor(this.getPosY() + wheelY - 0.2D);
-                    int z = MathHelper.floor(this.getPosZ() + wheelZ);
+                    int x = MathHelper.floor(this.posX + wheelX);
+                    int y = MathHelper.floor(this.posY + wheelY - 0.2D);
+                    int z = MathHelper.floor(this.posZ + wheelZ);
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = this.world.getBlockState(pos);
                     if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
                     {
                         Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F);
-                        this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), this.getPosX() + wheelX, this.getPosY() + wheelY, this.getPosZ() + wheelZ, dirVec.x, dirVec.y, dirVec.z);
+                        this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), this.posX + wheelX, this.posY + wheelY, this.posZ + wheelZ, dirVec.x, dirVec.y, dirVec.z);
                     }
                 }
             }
@@ -575,7 +575,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         if(this.shouldShowEngineSmoke()&& this.canDrive() && this.ticksExisted % 2 == 0)
         {
             Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
-            this.world.addParticle(ParticleTypes.SMOKE, this.getPosX() + smokePosition.x, this.getPosY() + smokePosition.y, this.getPosZ() + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
+            this.world.addParticle(ParticleTypes.SMOKE, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
         }
     }
 
@@ -744,7 +744,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     Seat seat = properties.getSeats().get(seatIndex);
                     Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625).rotateYaw(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
                     //Vec3d seatVec = Vec3d.ZERO;
-                    passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y + passenger.getYOffset(), this.getPosZ() - seatVec.z);
+                    passenger.setPosition(this.posX - seatVec.x, this.posY + seatVec.y + passenger.getYOffset(), this.posZ - seatVec.z);
                     if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
                     {
                         passenger.rotationYaw -= this.deltaYaw;
@@ -813,7 +813,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public double getKilometersPreHour()
     {
-        return Math.sqrt(Math.pow(this.getPosX() - this.prevPosX, 2) + Math.pow(this.getPosY() - this.prevPosY, 2) + Math.pow(this.getPosZ() - this.prevPosZ, 2)) * 20;
+        return Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posY - this.prevPosY, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20;
     }
 
     public void setTurnDirection(TurnDirection turnDirection)
@@ -1120,17 +1120,16 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     }
 
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public void fall(float distance, float damageMultiplier)
     {
         if(!this.disableFallDamage)
         {
-            super.func_225503_b_(distance, damageMultiplier);
+            super.fall(distance, damageMultiplier);
         }
         if(this.launchingTimer <= 0 && distance > 3)
         {
             this.disableFallDamage = false;
         }
-        return true;
     }
 
     private boolean isControllingPassengerCreative()
@@ -1226,7 +1225,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 }
                 else
                 {
-                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 0.8F);
+                    this.world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.AIR_WRENCH_GUN, SoundCategory.BLOCKS, 1.0F, 0.8F);
                     this.setWheels(false);
                     this.setWheelColor(-1);
                 }
@@ -1251,7 +1250,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             ItemStack engine = ItemLookup.getEngine(this);
             if(this.getEngineType() != EngineType.NONE && !engine.isEmpty())
             {
-                InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), engine);
+                InventoryUtil.spawnItemStack(this.world, this.posX, this.posY, this.posZ, engine);
             }
 
             // Spawns the key and removes the associated vehicle uuid
@@ -1259,14 +1258,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(!key.isEmpty())
             {
                 CommonUtils.getOrCreateStackTag(key).remove("VehicleId");
-                InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), key);
+                InventoryUtil.spawnItemStack(this.world, this.posX, this.posY, this.posZ, key);
             }
 
             // Spawns wheels if the vehicle has any
             ItemStack wheel = ItemLookup.getWheel(this);
             if(this.canChangeWheels() && !wheel.isEmpty())
             {
-                InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), wheel);
+                InventoryUtil.spawnItemStack(this.world, this.posX, this.posY, this.posZ, wheel);
             }
         }
     }
@@ -1328,9 +1327,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 double wheelX = this.wheelPositions[i * 3];
                 double wheelY = this.wheelPositions[i * 3 + 1];
                 double wheelZ = this.wheelPositions[i * 3 + 2];
-                int x = MathHelper.floor(this.getPosX() + wheelX);
-                int y = MathHelper.floor(this.getPosY() + wheelY - 0.2D);
-                int z = MathHelper.floor(this.getPosZ() + wheelZ);
+                int x = MathHelper.floor(this.posX + wheelX);
+                int y = MathHelper.floor(this.posY + wheelY - 0.2D);
+                int z = MathHelper.floor(this.posZ + wheelZ);
                 BlockPos pos = new BlockPos(x, y, z);
                 BlockState state = this.world.getBlockState(pos);
                 if(state.getMaterial() != Material.AIR)
@@ -1371,9 +1370,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     double wheelX = this.wheelPositions[i * 3];
                     double wheelY = this.wheelPositions[i * 3 + 1];
                     double wheelZ = this.wheelPositions[i * 3 + 2];
-                    int x = MathHelper.floor(this.getPosX() + wheelX);
-                    int y = MathHelper.floor(this.getPosY() + wheelY - 0.2D);
-                    int z = MathHelper.floor(this.getPosZ() + wheelZ);
+                    int x = MathHelper.floor(this.posX + wheelX);
+                    int y = MathHelper.floor(this.posY + wheelY - 0.2D);
+                    int z = MathHelper.floor(this.posZ + wheelZ);
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = this.world.getBlockState(pos);
                     if(!state.getCollisionShape(this.world, pos).isEmpty())

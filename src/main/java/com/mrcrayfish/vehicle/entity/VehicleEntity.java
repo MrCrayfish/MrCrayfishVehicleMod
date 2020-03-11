@@ -106,7 +106,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public boolean processInitialInteract(PlayerEntity player, Hand hand)
     {
-        if(!world.isRemote && !player.isCrouching())
+        if(!world.isRemote && !player.isSneaking())
         {
             int trailerId = player.getDataManager().get(CustomDataParameters.TRAILER);
             if(trailerId != -1)
@@ -139,7 +139,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                             if(this.getColor() != color)
                             {
                                 this.setColor(compound.getInt("Color"));
-                                player.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                player.world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 compound.putInt("RemainingSprays", remainingSprays - 1);
                             }
                         }
@@ -153,7 +153,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 {
                     heldItem.damageItem(1, player, playerEntity -> player.sendBreakAnimation(hand));
                     this.setHealth(this.getHealth() + 5F);
-                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_THUD, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
+                    this.world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.VEHICLE_THUD, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
                     player.swingArm(hand);
                     if(player instanceof ServerPlayerEntity)
                     {
@@ -171,9 +171,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                                 double height = this.getHeight() * 1.5;
 
                                 Vec3d heldOffset = this.getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-                                double x = this.getPosX() + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
-                                double y = this.getPosY() + height * rand.nextFloat();
-                                double z = this.getPosZ() + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
+                                double x = this.posX + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
+                                double y = this.posY + height * rand.nextFloat();
+                                double z = this.posZ + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
 
                                 double d0 = rand.nextGaussian() * 0.02D;
                                 double d1 = rand.nextGaussian() * 0.02D;
@@ -181,7 +181,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                                 ((ServerWorld) this.world).spawnParticle(ParticleTypes.HAPPY_VILLAGER, x, y, z, 1, d0, d1, d2, 1.0);
                             }
                         }
-                        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
+                        this.world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
                     }
                 }
                 return true;
@@ -297,9 +297,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
 
-        /*this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();*/
+        /*this.prevPosX = this.posX;
+        this.prevPosY = this.posY;
+        this.prevPosZ = this.posZ;*/
 
         if(!this.world.isRemote)
         {
@@ -390,20 +390,19 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public void fall(float distance, float damageMultiplier)
     {
         if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getMotion().getY() < -1.0F)
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_IMPACT, SoundCategory.AMBIENT, 1.0F, 1.0F);
+            this.world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.VEHICLE_IMPACT, SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
-        return true;
     }
 
     protected void onVehicleDestroyed(LivingEntity entity)
     {
-        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_DESTROYED, SoundCategory.AMBIENT, 1.0F, 0.5F);
+        this.world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.VEHICLE_DESTROYED, SoundCategory.AMBIENT, 1.0F, 0.5F);
 
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
         if(!isCreativeMode && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
@@ -418,7 +417,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     int shrink = copy.getCount() / 2;
                     if(shrink > 0)
                         copy.shrink(this.rand.nextInt(shrink + 1));
-                    InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), copy);
+                    InventoryUtil.spawnItemStack(this.world, this.posX, this.posY, this.posZ, copy);
                 }
             }
         }
@@ -434,17 +433,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     private void tickLerp()
     {
-        if(this.canPassengerSteer())
-        {
-            this.lerpSteps = 0;
-            this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
-        }
-
         if(this.lerpSteps > 0)
         {
-            double d0 = this.getPosX() + (this.lerpX - this.getPosX()) / (double) this.lerpSteps;
-            double d1 = this.getPosY() + (this.lerpY - this.getPosY()) / (double) this.lerpSteps;
-            double d2 = this.getPosZ() + (this.lerpZ - this.getPosZ()) / (double) this.lerpSteps;
+            double d0 = this.posX + (this.lerpX - this.posX) / (double) this.lerpSteps;
+            double d1 = this.posY + (this.lerpY - this.posY) / (double) this.lerpSteps;
+            double d2 = this.posZ + (this.lerpZ - this.posZ) / (double) this.lerpSteps;
             double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
             this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
             this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
@@ -453,7 +446,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.setRotation(this.rotationYaw, this.rotationPitch);
         }
     }
-
 
     @Override
     public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
@@ -625,9 +617,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         partVec = partVec.add(0, 0.5, 0);
         partVec = partVec.add(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
         partVec = partVec.rotateYaw(-(this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks) * 0.017453292F);
-        partVec = partVec.add(this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks, 0, 0);
-        partVec = partVec.add(0, this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks, 0);
-        partVec = partVec.add(0, 0, this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks);
+        partVec = partVec.add(this.prevPosX + (this.posX - this.prevPosX) * partialTicks, 0, 0);
+        partVec = partVec.add(0, this.prevPosY + (this.posY - this.prevPosY) * partialTicks, 0);
+        partVec = partVec.add(0, 0, this.prevPosZ + (this.posZ - this.prevPosZ) * partialTicks);
         return partVec;
     }
 
@@ -745,7 +737,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
                     Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
-                    passenger.setPosition(this.getPosX() + seatVec.x, this.getPosY() + seatVec.y, this.getPosZ() + seatVec.z);
+                    passenger.setPosition(this.posX + seatVec.x, this.posY + seatVec.y, this.posZ + seatVec.z);
                     this.applyYawToEntity(passenger);
                 }
             }

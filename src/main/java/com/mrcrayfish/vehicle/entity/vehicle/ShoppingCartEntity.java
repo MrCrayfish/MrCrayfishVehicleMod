@@ -33,15 +33,15 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
         if(this.pusher != null)
         {
             this.prevRotationYaw = this.rotationYaw;
-            this.prevPosX = this.getPosX();
-            this.prevPosY = this.getPosY();
-            this.prevPosZ = this.getPosZ();
+            this.prevPosX = this.posX;
+            this.prevPosY = this.posY;
+            this.prevPosZ = this.posZ;
             float x = MathHelper.sin(-pusher.rotationYaw * 0.017453292F) * 1.3F;
             float z = MathHelper.cos(-pusher.rotationYaw * 0.017453292F) * 1.3F;
-            this.setPosition(pusher.getPosX() + x, pusher.getPosY(), pusher.getPosZ() + z);
-            this.lastTickPosX = this.getPosX();
-            this.lastTickPosY = this.getPosY();
-            this.lastTickPosZ = this.getPosZ();
+            this.setPosition(pusher.posX + x, pusher.posY, pusher.posZ + z);
+            this.lastTickPosX = this.posX;
+            this.lastTickPosY = this.posY;
+            this.lastTickPosZ = this.posZ;
             this.rotationYaw = pusher.rotationYaw;
         }
         else
@@ -55,7 +55,7 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
     {
         if(!world.isRemote)
         {
-            if(player.isCrouching())
+            if(player.isSneaking())
             {
                 if(pusher == player)
                 {

@@ -36,7 +36,7 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
         supplier.get().enqueueWork(() ->
         {
             ServerPlayerEntity player = supplier.get().getSender();
-            if(player != null && player.isCrouching())
+            if(player != null && player.isSneaking())
             {
                 //Spawns the vehicle and plays the placing sound
                 if(player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
@@ -70,9 +70,9 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
 
                     //Gets the clicked vec if it was a right click block event
                     Vec3d lookVec = player.getLookVec();
-                    double posX = player.getPosX();
-                    double posY = player.getPosY() + player.getEyeHeight();
-                    double posZ = player.getPosZ();
+                    double posX = player.posX;
+                    double posY = player.posY + player.getEyeHeight();
+                    double posZ = player.posZ;
                     entity.setPositionAndRotation(posX + heldOffset.x * 0.0625D, posY + heldOffset.y * 0.0625D, posZ + heldOffset.z * 0.0625D, rotation, 0F);
 
                     Vec3d motion = entity.getMotion();
@@ -80,7 +80,7 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
                     entity.fallDistance = 0.0F;
 
                     player.world.addEntity(entity);
-                    player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
             }
         });

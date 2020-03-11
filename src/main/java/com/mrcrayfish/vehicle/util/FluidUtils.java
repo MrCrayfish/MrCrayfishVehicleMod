@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -42,7 +42,7 @@ public class FluidUtils
         }
         else
         {
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getSprite(fluid.getFluid().getAttributes().getStillTexture());
             if(sprite != null)
             {
                 long totalRed = 0;
@@ -92,7 +92,7 @@ public class FluidUtils
         if(fluid == null || fluid.isEmpty())
             return;
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getSprite(fluid.getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
             float minU = sprite.getMinU();
@@ -104,7 +104,7 @@ public class FluidUtils
 
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-            RenderSystem.enableBlend();
+            GlStateManager.enableBlend();
             int count = 1 + ((int) Math.ceil(tankLevel)) / 16;
             for(int i = 0; i < count; i++)
             {
@@ -112,7 +112,7 @@ public class FluidUtils
                 double offsetY = height - 16.0 * i - subHeight;
                 drawQuad(x, y + offsetY, 16, subHeight, minU, (float) (maxV - deltaV * (subHeight / 16.0)), maxU, maxV);
             }
-            RenderSystem.disableBlend();
+            GlStateManager.disableBlend();
         }
     }
 

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.inventory.container.FluidMixerContainer;
@@ -107,7 +107,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
     {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
 

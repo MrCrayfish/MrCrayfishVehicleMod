@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ModelManager;
 import net.minecraft.client.renderer.model.ModelResourceLocation;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
@@ -115,10 +117,11 @@ public enum SpecialModels implements ISpecialModel
     {
         if(this.cachedModel == null)
         {
-            IBakedModel model = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
-            if(model == Minecraft.getInstance().getModelManager().getMissingModel())
+            //ModelManager modelManager = Minecraft.getInstance().getModelManager();
+            IBakedModel model = Minecraft.getInstance().getModelManager().modelRegistry.get(this.modelLocation);
+            if(model == null)
             {
-                return model;
+                return Minecraft.getInstance().getModelManager().getMissingModel();
             }
             this.cachedModel = model;
         }

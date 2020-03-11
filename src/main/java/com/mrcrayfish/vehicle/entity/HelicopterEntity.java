@@ -262,10 +262,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
      * Overridden to prevent players from taking fall damage when landing a plane
      */
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
-    {
-        return false;
-    }
+    public void fall(float distance, float damageMultiplier) {}
 
     public void setAltitudeChange(AltitudeChange altitudeChange)
     {

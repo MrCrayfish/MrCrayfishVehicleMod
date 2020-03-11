@@ -36,7 +36,7 @@ public class BumperCarEntity extends LandVehicleEntity implements IEntityRaytrac
     private void applyBumperCollision(BumperCarEntity entity)
     {
         this.setMotion(this.getMotion().add(this.vehicleMotionX * 2, 0, this.vehicleMotionZ * 2));
-        world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.BONK, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
+        world.playSound(null, this.posX, this.posY, this.posZ, ModSounds.BONK, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
         this.currentSpeed *= 0.25F;
     }
 

@@ -116,14 +116,14 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(result.getFace() == Direction.UP && playerEntity.getHeldItem(hand).getItem() == ModItems.WRENCH)
+        if(result.getFace() == Direction.UP && player.getHeldItem(hand).getItem() == ModItems.WRENCH)
         {
-            this.openCrate(world, pos, state, playerEntity);
-            return ActionResultType.SUCCESS;
+            this.openCrate(world, pos, state, player);
+            return true;
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

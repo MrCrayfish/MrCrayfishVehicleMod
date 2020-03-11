@@ -1,16 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 
 /**
@@ -19,26 +15,26 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
 {
     @Override
-    public void render(BumperCarEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(BumperCarEntity entity, float partialTicks)
     {
         //Render body
-        this.renderDamagedPart(entity, SpecialModels.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.BUMPER_CAR_BODY.getModel());
 
         //Render the handles bars
-        matrixStack.push();
-        matrixStack.translate(0, 0.2, 0);
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-45F));
-        matrixStack.translate(0, -0.02, 0);
-        matrixStack.scale(0.9F, 0.9F, 0.9F);
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(0, 0.2, 0);
+        GlStateManager.rotatef(-45F, 1, 0, 0);
+        GlStateManager.translated(0, -0.02, 0);
+        GlStateManager.scalef(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
+        GlStateManager.rotatef(turnRotation, 0, 1, 0);
 
-        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, entity.getColor());
 
-        matrixStack.pop();
+        GlStateManager.popMatrix();
     }
 
     @Override

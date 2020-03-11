@@ -1,17 +1,14 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -24,41 +21,36 @@ import org.lwjgl.opengl.GL11;
  */
 public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
 {
-    public FuelDrumRenderer(TileEntityRendererDispatcher dispatcher)
-    {
-        super(dispatcher);
-    }
-
     @Override
-    public void render(FuelDrumTileEntity fuelDrumTileEntity, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer iRenderTypeBuffer, int lightTexture, int overlayTexture)
+    public void render(FuelDrumTileEntity tileEntityIn, double x, double y, double z, float partialTicks, int destroyStage)
     {
-        if(Minecraft.getInstance().player.isCrouching())
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(x, y, z);
+        if(Minecraft.getInstance().player.isSneaking())
         {
-            if(fuelDrumTileEntity.hasFluid() && this.renderDispatcher.cameraHitResult != null && this.renderDispatcher.cameraHitResult.getType() == RayTraceResult.Type.BLOCK)
+            if(tileEntityIn.hasFluid() && this.rendererDispatcher.cameraHitResult != null && this.rendererDispatcher.cameraHitResult.getType() == RayTraceResult.Type.BLOCK)
             {
-                BlockRayTraceResult result = (BlockRayTraceResult) this.renderDispatcher.cameraHitResult;
-                if(result.getPos().equals(fuelDrumTileEntity.getPos()))
+                BlockRayTraceResult result = (BlockRayTraceResult) this.rendererDispatcher.cameraHitResult;
+                if(result.getPos().equals(tileEntityIn.getPos()))
                 {
-                    this.drawFluidLabel(this.renderDispatcher.fontRenderer, fuelDrumTileEntity.getFluidTank(), matrixStack);
-                    //this.drawFluidLabel(getFontRenderer(), te.getFluidTank(), (float) x + 0.5F, (float) y + 1.25F, (float) z + 0.5F);
+                    this.drawFluidLabel(tileEntityIn, this.rendererDispatcher.fontRenderer, tileEntityIn.getFluidTank());
                 }
             }
         }
+        GlStateManager.popMatrix();
     }
 
-    private void drawFluidLabel(FontRenderer fontRendererIn, FluidTank tank, MatrixStack matrixStack)
+    private void drawFluidLabel(FuelDrumTileEntity te, FontRenderer fontRendererIn, FluidTank tank)
     {
         if(tank.getFluid().isEmpty())
             return;
 
-        RenderSystem.pushMatrix();
-        RenderSystem.enableDepthTest();
-        RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
-        RenderSystem.translated(0.5, 1.25, 0.5);
-        RenderSystem.rotatef(-Minecraft.getInstance().player.rotationYaw, 0.0F, 1.0F, 0.0F);
-        RenderSystem.rotatef(Minecraft.getInstance().player.rotationPitch, 1.0F, 0.0F, 0.0F);
-        RenderSystem.scalef(-0.025F, -0.025F, 0.025F);
-        RenderSystem.disableTexture();
+        GlStateManager.pushMatrix();
+        GlStateManager.enableDepthTest();
+        GlStateManager.translated(0.5, 1.25, 0.5);
+        GlStateManager.rotatef(-Minecraft.getInstance().player.rotationYaw, 0.0F, 1.0F, 0.0F);
+        GlStateManager.rotatef(Minecraft.getInstance().player.rotationPitch, 1.0F, 0.0F, 0.0F);
+        GlStateManager.scalef(-0.025F, -0.025F, 0.025F);
 
         float level = tank.getFluidAmount() / (float) tank.getCapacity();
         double width = 30;
@@ -67,9 +59,14 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
         double offsetWidth = width / 2.0;
 
         FluidStack stack = tank.getFluid();
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureMap().getSprite(stack.getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
+            int waterColor = stack.getFluid().getAttributes().getColor(te.getWorld(), te.getPos());
+            float red = (float) (waterColor >> 16 & 255) / 255.0F;
+            float green = (float) (waterColor >> 8 & 255) / 255.0F;
+            float blue = (float) (waterColor & 255) / 255.0F;
+
             float minU = sprite.getMinU();
             float maxU = sprite.getMaxU();
             float minV = sprite.getMinV();
@@ -81,7 +78,8 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             float deltaU = maxU - minU;
             maxU = minU + deltaU * level;
 
-            Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.disableLighting();
+            GlStateManager.disableTexture();
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();
@@ -93,17 +91,18 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             buffer.pos(-offsetWidth + width + 1, -2.0, -0.01).color(0.5F, 0.5F, 0.5F, 1.0F).endVertex();
             tessellator.draw();
 
-            RenderSystem.enableTexture();
-            RenderSystem.translated(0, 0, -0.05);
+            GlStateManager.enableTexture();
+            Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            GlStateManager.translated(0, 0, -0.05);
 
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-            buffer.pos(-offsetWidth, -1.0, 0.0).tex(minU, maxV).endVertex();
-            buffer.pos(-offsetWidth, 4.0, 0.0).tex(minU, minV).endVertex();
-            buffer.pos(-offsetWidth + fuelWidth, 4.0, 0.0).tex(maxU, minV).endVertex();
-            buffer.pos(-offsetWidth + fuelWidth, -1.0, 0.0).tex(maxU, maxV).endVertex();
+            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
+            buffer.pos(-offsetWidth, -1.0, 0.0).tex(minU, maxV).color(red, green, blue, 1.0F).endVertex();
+            buffer.pos(-offsetWidth, 4.0, 0.0).tex(minU, minV).color(red, green, blue, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth, 4.0, 0.0).tex(maxU, minV).color(red, green, blue, 1.0F).endVertex();
+            buffer.pos(-offsetWidth + fuelWidth, -1.0, 0.0).tex(maxU, maxV).color(red, green, blue, 1.0F).endVertex();
             tessellator.draw();
 
-            RenderSystem.disableTexture();
+            GlStateManager.disableTexture();
 
             buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
             buffer.pos(-offsetWidth + fuelWidth, -1.0, 0.0).color(0.4F, 0.4F, 0.4F, 1.0F).endVertex();
@@ -113,16 +112,16 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             tessellator.draw();
         }
 
-        RenderSystem.enableTexture();
+        GlStateManager.enableTexture();
 
-        RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+        GlStateManager.scalef(0.5F, 0.5F, 0.5F);
         String name = stack.getDisplayName().getFormattedText();
         int nameWidth = fontRendererIn.getStringWidth(name) / 2;
         fontRendererIn.drawString(name, -nameWidth, -14, -1);
 
-        RenderSystem.enableLighting();
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableDepthTest();
-        RenderSystem.popMatrix();
+        GlStateManager.enableLighting();
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableDepthTest();
+        GlStateManager.popMatrix();
     }
 }

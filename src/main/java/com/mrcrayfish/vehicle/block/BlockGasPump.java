@@ -89,7 +89,7 @@ public class BlockGasPump extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
@@ -99,25 +99,25 @@ public class BlockGasPump extends BlockRotatedObject
                 if(tileEntity instanceof GasPumpTileEntity)
                 {
                     GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
-                    if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerEntity.getEntityId())
+                    if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == player.getEntityId())
                     {
                         gasPump.setFuelingEntity(null);
                         world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     else if(state.get(DIRECTION).rotateY().equals(result.getFace()))
                     {
-                        gasPump.setFuelingEntity(playerEntity);
+                        gasPump.setFuelingEntity(player);
                         world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                 }
             }
             else
             {
-                ItemStack stack = playerEntity.getHeldItem(hand);
+                ItemStack stack = player.getHeldItem(hand);
 
-                if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+                if(FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace()))
                 {
-                    return ActionResultType.SUCCESS;
+                    return true;
                 }
 
                 if(stack.getItem() instanceof JerryCanItem)
@@ -125,7 +125,7 @@ public class BlockGasPump extends BlockRotatedObject
                     JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
                     if(jerryCan.isFull(stack))
                     {
-                        return ActionResultType.SUCCESS;
+                        return true;
                     }
 
                     TileEntity tileEntity = world.getTileEntity(pos);
@@ -137,7 +137,7 @@ public class BlockGasPump extends BlockRotatedObject
                             FluidTank tank = (FluidTank) handler;
                             if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
                             {
-                                return ActionResultType.SUCCESS;
+                                return true;
                             }
 
                             FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
@@ -150,13 +150,13 @@ public class BlockGasPump extends BlockRotatedObject
                                     handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                                 }
                             }
-                            return ActionResultType.SUCCESS;
+                            return true;
                         }
                     }
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

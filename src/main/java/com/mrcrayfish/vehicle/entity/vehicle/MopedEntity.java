@@ -292,7 +292,7 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
             InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
             this.inventory = null;
             this.setChest(false);
-            world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            world.playSound(null, this.posX, this.posY, this.posZ, SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
             world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
     }

@@ -83,7 +83,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
         this.doBlockCollisions();
 
-        float speed = (float) (Math.sqrt(Math.pow(this.getPosX() - this.prevPosX, 2) + Math.pow(this.getPosY() - this.prevPosY, 2) + Math.pow(this.getPosZ() - this.prevPosZ, 2)) * 20);
+        float speed = (float) (Math.sqrt(Math.pow(this.posX - this.prevPosX, 2) + Math.pow(this.posY - this.prevPosY, 2) + Math.pow(this.posZ - this.prevPosZ, 2)) * 20);
         wheelRotation -= 90F * (speed / 10F);
     }
 
@@ -106,7 +106,7 @@ public abstract class TrailerEntity extends VehicleEntity
             }
         }
 
-        this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.getPosZ(), towBar.x - this.getPosX()) - Math.toRadians(90F));
+        this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.posZ, towBar.x - this.posX) - Math.toRadians(90F));
         double deltaRot = (double) (this.prevRotationYaw - this.rotationYaw);
         if (deltaRot < -180.0D)
         {
@@ -119,7 +119,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
         Vec3d vec = new Vec3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar);
         Vec3d motion = this.getMotion();
-        this.setMotion(vec.x - this.getPosX(), motion.getY(), vec.z - this.getPosZ());
+        this.setMotion(vec.x - this.posX, motion.getY(), vec.z - this.posZ);
         this.move(MoverType.SELF, this.getMotion());
     }
 

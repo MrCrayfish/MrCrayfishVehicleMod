@@ -1,11 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.CouchEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -15,13 +13,13 @@ import net.minecraft.entity.player.PlayerEntity;
 public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
 {
     @Override
-    public void render(CouchEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(CouchEntity entity, float partialTicks)
     {
-        matrixStack.push();
-        matrixStack.translate(0.0, 0.0625, 0.0);
-        //matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
-        this.renderDamagedPart(entity, SpecialModels.RAINBOW_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
-        matrixStack.pop();
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(0.0, 0.0625, 0.0);
+        //GlStateManager.rotatef(Vector3f.field_229181_d_.func_229187_a_(90F));
+        this.renderDamagedPart(entity, SpecialModels.RAINBOW_SOFA.getModel());
+        GlStateManager.popMatrix();
     }
 
     @Override

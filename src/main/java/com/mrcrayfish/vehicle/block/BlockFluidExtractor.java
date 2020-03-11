@@ -35,25 +35,25 @@ public class BlockFluidExtractor extends BlockRotatedObject
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
         if(!world.isRemote)
         {
-            ItemStack stack = playerEntity.getHeldItem(hand);
+            ItemStack stack = player.getHeldItem(hand);
             if(stack.getItem() == Items.BUCKET)
             {
-                FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace());
-                return ActionResultType.SUCCESS;
+                FluidUtil.interactWithFluidHandler(player, hand, world, pos, result.getFace());
+                return true;
             }
 
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof FluidExtractorTileEntity)
             {
-                NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
-                return ActionResultType.SUCCESS;
+                NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, pos);
+                return true;
             }
         }
-        return ActionResultType.SUCCESS;
+        return true;
     }
 
     @Override

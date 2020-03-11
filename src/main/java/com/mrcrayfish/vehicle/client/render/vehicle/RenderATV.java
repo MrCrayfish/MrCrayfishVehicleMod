@@ -1,17 +1,13 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 
 /**
@@ -26,25 +22,25 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
     }
 
     @Override
-    public void render(ATVEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(ATVEntity entity, float partialTicks)
     {
         //Body
-        this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel());
 
         //Handle bar transformations
-        matrixStack.push();
-        matrixStack.translate(0.0, 0.3375, 0.25);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
-        matrixStack.translate(0.0, -0.025, 0);
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(0.0, 0.3375, 0.25);
+        GlStateManager.rotatef(-45F, 1, 0, 0);
+        GlStateManager.translated(0.0, -0.025, 0);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        GlStateManager.rotatef(turnRotation, 0, 1, 0);
 
-        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, entity.getColor());
 
-        matrixStack.pop();
+        GlStateManager.popMatrix();
     }
 
     @Override

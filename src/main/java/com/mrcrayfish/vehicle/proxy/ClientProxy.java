@@ -12,19 +12,21 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
+import com.mrcrayfish.vehicle.client.render.JackRenderer;
 import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.client.screen.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
-import com.mrcrayfish.vehicle.entity.HelicopterEntity;
-import com.mrcrayfish.vehicle.entity.PlaneEntity;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.init.*;
+import com.mrcrayfish.vehicle.entity.*;
+import com.mrcrayfish.vehicle.entity.trailer.*;
+import com.mrcrayfish.vehicle.entity.vehicle.*;
+import com.mrcrayfish.vehicle.init.ModContainers;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
+import com.mrcrayfish.vehicle.tileentity.*;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -32,8 +34,6 @@ import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -81,52 +81,52 @@ public class ClientProxy implements Proxy
     @Override
     public void setupClient()
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, RenderType.cutout());
+        //TODO need to be converted back
+        /*RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, RenderType.cutout());
         RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, RenderType.cutout());
-
         RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, RenderType.translucent());
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, RenderType.translucent());
         RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, RenderType.translucent());
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP, RenderType.translucent());
         RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, RenderType.translucent());*/
 
         /* Register Vehicles */
-        registerVehicleRender(ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));
-        registerVehicleRender(ModEntities.DUNE_BUGGY, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
-        registerVehicleRender(ModEntities.GO_KART, new RenderLandVehicleWrapper<>(new RenderGoKart()));
-        registerVehicleRender(ModEntities.SHOPPING_CART, new RenderLandVehicleWrapper<>(new RenderShoppingCart()));
-        registerVehicleRender(ModEntities.MINI_BIKE, new RenderMotorcycleWrapper<>(new RenderMiniBike()));
-        registerVehicleRender(ModEntities.BUMPER_CAR, new RenderLandVehicleWrapper<>(new RenderBumperCar()));
-        registerVehicleRender(ModEntities.JET_SKI, new RenderBoatWrapper<>(new RenderJetSki()));
-        registerVehicleRender(ModEntities.SPEED_BOAT, new RenderBoatWrapper<>(new RenderSpeedBoat()));
-        registerVehicleRender(ModEntities.ALUMINUM_BOAT, new RenderBoatWrapper<>(new RenderAluminumBoat()));
-        registerVehicleRender(ModEntities.SMART_CAR, new RenderLandVehicleWrapper<>(new RenderSmartCar()));
-        registerVehicleRender(ModEntities.LAWN_MOWER, new RenderLandVehicleWrapper<>(new RenderLawnMower()));
-        registerVehicleRender(ModEntities.MOPED, new RenderMotorcycleWrapper<>(new RenderMoped()));
-        registerVehicleRender(ModEntities.SPORTS_PLANE, new RenderPlaneWrapper<>(new RenderSportsPlane()));
-        registerVehicleRender(ModEntities.GOLF_CART, new RenderLandVehicleWrapper<>(new RenderGolfCart()));
-        registerVehicleRender(ModEntities.OFF_ROADER, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
-        registerVehicleRender(ModEntities.TRACTOR, new RenderLandVehicleWrapper<>(new RenderTractor()));
-        registerVehicleRender(ModEntities.MINI_BUS, new RenderLandVehicleWrapper<>(new RenderMiniBus()));
+        registerVehicleRender(ATVEntity.class, ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));
+        registerVehicleRender(DuneBuggyEntity.class, ModEntities.DUNE_BUGGY, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
+        registerVehicleRender(GoKartEntity.class, ModEntities.GO_KART, new RenderLandVehicleWrapper<>(new RenderGoKart()));
+        registerVehicleRender(ShoppingCartEntity.class, ModEntities.SHOPPING_CART, new RenderLandVehicleWrapper<>(new RenderShoppingCart()));
+        registerVehicleRender(MiniBikeEntity.class, ModEntities.MINI_BIKE, new RenderMotorcycleWrapper<>(new RenderMiniBike()));
+        registerVehicleRender(BumperCarEntity.class, ModEntities.BUMPER_CAR, new RenderLandVehicleWrapper<>(new RenderBumperCar()));
+        registerVehicleRender(JetSkiEntity.class, ModEntities.JET_SKI, new RenderBoatWrapper<>(new RenderJetSki()));
+        registerVehicleRender(SpeedBoatEntity.class, ModEntities.SPEED_BOAT, new RenderBoatWrapper<>(new RenderSpeedBoat()));
+        registerVehicleRender(AluminumBoatEntity.class, ModEntities.ALUMINUM_BOAT, new RenderBoatWrapper<>(new RenderAluminumBoat()));
+        registerVehicleRender(SmartCarEntity.class, ModEntities.SMART_CAR, new RenderLandVehicleWrapper<>(new RenderSmartCar()));
+        registerVehicleRender(LawnMowerEntity.class, ModEntities.LAWN_MOWER, new RenderLandVehicleWrapper<>(new RenderLawnMower()));
+        registerVehicleRender(MopedEntity.class, ModEntities.MOPED, new RenderMotorcycleWrapper<>(new RenderMoped()));
+        registerVehicleRender(SportsPlaneEntity.class, ModEntities.SPORTS_PLANE, new RenderPlaneWrapper<>(new RenderSportsPlane()));
+        registerVehicleRender(GolfCartEntity.class, ModEntities.GOLF_CART, new RenderLandVehicleWrapper<>(new RenderGolfCart()));
+        registerVehicleRender(OffRoaderEntity.class, ModEntities.OFF_ROADER, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
+        registerVehicleRender(TractorEntity.class, ModEntities.TRACTOR, new RenderLandVehicleWrapper<>(new RenderTractor()));
+        registerVehicleRender(MiniBusEntity.class, ModEntities.MINI_BUS, new RenderLandVehicleWrapper<>(new RenderMiniBus()));
 
         /* Register Trailers */
-        registerVehicleRender(ModEntities.VEHICLE_TRAILER, new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
-        registerVehicleRender(ModEntities.STORAGE_TRAILER, new RenderVehicleWrapper<>(new RenderStorageTrailer()));
-        registerVehicleRender(ModEntities.FLUID_TRAILER, new RenderVehicleWrapper<>(new RenderFluidTrailer()));
-        registerVehicleRender(ModEntities.SEEDER, new RenderVehicleWrapper<>(new RenderSeederTrailer()));
-        registerVehicleRender(ModEntities.FERTILIZER, new RenderVehicleWrapper<>(new RenderFertilizerTrailer()));
+        registerVehicleRender(VehicleEntityTrailer.class, ModEntities.VEHICLE_TRAILER, new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
+        registerVehicleRender(StorageTrailerEntity.class, ModEntities.STORAGE_TRAILER, new RenderVehicleWrapper<>(new RenderStorageTrailer()));
+        registerVehicleRender(FluidTrailerEntity.class, ModEntities.FLUID_TRAILER, new RenderVehicleWrapper<>(new RenderFluidTrailer()));
+        registerVehicleRender(SeederTrailerEntity.class, ModEntities.SEEDER, new RenderVehicleWrapper<>(new RenderSeederTrailer()));
+        registerVehicleRender(FertilizerTrailerEntity.class, ModEntities.FERTILIZER, new RenderVehicleWrapper<>(new RenderFertilizerTrailer()));
 
         /* Register Mod Exclusive Vehicles */
         if(ModList.get().isLoaded("cfm"))
         {
-            registerVehicleRender(ModEntities.SOFA, new RenderLandVehicleWrapper<>(new RenderCouch()));
-            registerVehicleRender(ModEntities.BATH, new RenderPlaneWrapper<>(new RenderBath()));
-            registerVehicleRender(ModEntities.SOFACOPTER, new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
+            registerVehicleRender(CouchEntity.class, ModEntities.SOFA, new RenderLandVehicleWrapper<>(new RenderCouch()));
+            registerVehicleRender(BathEntity.class, ModEntities.BATH, new RenderPlaneWrapper<>(new RenderBath()));
+            registerVehicleRender(SofacopterEntity.class, ModEntities.SOFACOPTER, new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
         }
 
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.JACK, com.mrcrayfish.vehicle.client.render.JackRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(EntityJack.class, JackRenderer::new);
 
         /* Client Events */
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
@@ -134,12 +134,12 @@ public class ClientProxy implements Proxy
         MinecraftForge.EVENT_BUS.register(this);
 
         /* Tile Entity Special Renderer*/
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_EXTRACTOR, FluidExtractorRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FUEL_DRUM, FuelDrumRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.VEHICLE_CRATE, VehicleCrateRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.JACK, com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP, GasPumpRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP_TANK, GasPumpTankRenderer::new);
+        ClientRegistry.bindTileEntitySpecialRenderer(FluidExtractorTileEntity.class, new FluidExtractorRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(FuelDrumTileEntity.class, new FuelDrumRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(VehicleCrateTileEntity.class, new VehicleCrateRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(JackTileEntity.class, new com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(GasPumpTileEntity.class, new GasPumpRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(GasPumpTankTileEntity.class, new GasPumpTankRenderer());
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);
@@ -183,9 +183,9 @@ public class ClientProxy implements Proxy
         }
     }
 
-    private <T extends VehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> void registerVehicleRender(EntityType<T> type, RenderVehicleWrapper<T, R> wrapper)
+    private <T extends VehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> void registerVehicleRender(Class<T> clazz, EntityType<T> type, RenderVehicleWrapper<T, R> wrapper)
     {
-        RenderingRegistry.registerEntityRenderingHandler(type, manager -> new RenderEntityVehicle<>(manager, wrapper));
+        RenderingRegistry.registerEntityRenderingHandler(clazz, manager -> new RenderEntityVehicle<>(manager, wrapper));
         VehicleRenderRegistry.registerRenderWrapper(type, wrapper);
     }
 
@@ -577,7 +577,7 @@ public class ClientProxy implements Proxy
         ClientPlayerEntity clientPlayer = Minecraft.getInstance().player;
         if(clientPlayer != null)
         {
-            Entity entity = clientPlayer.worldClient.getEntityByID(entityId);
+            Entity entity = clientPlayer.world.getEntityByID(entityId);
             if(entity instanceof VehicleEntity)
             {
                 VehicleEntity vehicle = (VehicleEntity) entity;

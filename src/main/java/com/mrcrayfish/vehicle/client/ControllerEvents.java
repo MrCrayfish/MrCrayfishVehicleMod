@@ -180,7 +180,7 @@ public class ControllerEvents
 
     public static boolean isRightClicking()
     {
-        boolean isRightClicking = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        boolean isRightClicking = GLFW.glfwGetMouseButton(Minecraft.getInstance().mainWindow.getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         isRightClicking |= ClientProxy.controllableLoaded && Controllable.getController() != null && Controllable.getController().getLTriggerValue() != 0.0F;
         return isRightClicking;
     }

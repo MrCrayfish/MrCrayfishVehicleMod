@@ -1,21 +1,15 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.SpecialModels;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -37,37 +31,37 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         return renderVehicle;
     }
 
-    public void render(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void render(T entity, float partialTicks)
     {
         if(!entity.isAlive())
             return;
 
-        matrixStack.push();
+        GlStateManager.pushMatrix();
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) bodyPosition.getRotZ()));
+        GlStateManager.rotated(bodyPosition.getRotX(), 1, 0, 0);
+        GlStateManager.rotated(bodyPosition.getRotY(), 0, 1, 0);
+        GlStateManager.rotated(bodyPosition.getRotZ(), 0, 0, 1);
 
         if(entity.canTowTrailer())
         {
-            matrixStack.push();
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
+            GlStateManager.pushMatrix();
+            GlStateManager.rotatef(180F, 0, 1, 0);
             Vec3d towBarOffset = properties.getTowBarPosition();
-            matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-            RenderUtil.renderColoredModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
-            matrixStack.pop();
+            GlStateManager.translated(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
+            RenderUtil.renderColoredModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, -1);
+            GlStateManager.popMatrix();
         }
 
-        matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-        matrixStack.scale((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
-        matrixStack.translate(0.0, 0.5, 0.0);
-        matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
-        matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
-        this.renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
+        GlStateManager.translated(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
+        GlStateManager.scaled(bodyPosition.getScale(), bodyPosition.getScale(), bodyPosition.getScale());
+        GlStateManager.translated(0.0, 0.5, 0.0);
+        GlStateManager.translated(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+        GlStateManager.translated(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+        this.renderVehicle.render(entity, partialTicks);
 
-        matrixStack.pop();
+        GlStateManager.popMatrix();
     }
 
     /**
@@ -75,7 +69,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
      * @param entity
      * @param partialTicks
      */
-    public void applyPreRotations(T entity, MatrixStack stack, float partialTicks) {}
+    public void applyPreRotations(T entity, float partialTicks) {}
 
     /**
      * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
@@ -84,38 +78,38 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
      * @param position the render definitions to apply to the part
      * @param model the part to render onto the vehicle
      */
-    protected void renderPart(@Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
+    protected void renderPart(@Nullable PartPosition position, IBakedModel model, int color)
     {
         if(position == null)
             return;
 
-        matrixStack.push();
-        matrixStack.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-        matrixStack.translate(0.0, -0.5, 0.0);
-        matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.translate(0.0, 0.5, 0.0);
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, color, lightTexture, overlayTexture);
-        matrixStack.pop();
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        GlStateManager.translated(0.0, -0.5, 0.0);
+        GlStateManager.scalef((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+        GlStateManager.translated(0.0, 0.5, 0.0);
+        GlStateManager.rotated(position.getRotX(), 1, 0, 0);
+        GlStateManager.rotated(position.getRotY(), 0, 1, 0);
+        GlStateManager.rotated(position.getRotZ(), 0, 0, 1);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, color);
+        GlStateManager.popMatrix();
     }
 
-    protected void renderKey(@Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
+    protected void renderKey(@Nullable PartPosition position, IBakedModel model, int color)
     {
         if(position == null)
             return;
 
-        matrixStack.push();
-        matrixStack.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
-        matrixStack.translate(0.0, -0.25, 0.0);
-        matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
-        matrixStack.translate(0.0, 0.0, -0.05);
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, color, lightTexture, overlayTexture);
-        matrixStack.pop();
+        GlStateManager.pushMatrix();
+        GlStateManager.translated(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+        GlStateManager.translated(0.0, -0.25, 0.0);
+        GlStateManager.scalef((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
+        GlStateManager.rotated(position.getRotX(), 1, 0, 0);
+        GlStateManager.rotated(position.getRotY(), 0, 1, 0);
+        GlStateManager.rotated(position.getRotZ(), 0, 0, 1);
+        GlStateManager.translated(0.0, 0.0, -0.05);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, color);
+        GlStateManager.popMatrix();
     }
 
 
@@ -125,16 +119,15 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
      *
      * @param position the render definitions to apply to the part
      */
-    protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
+    protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model)
     {
-        matrixStack.push();
+        GlStateManager.pushMatrix();
         if(entity.isFueled() && entity.getControllingPassenger() != null)
         {
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-0.5F * (entity.ticksExisted % 2)));
+            GlStateManager.rotatef(0.5F * (entity.ticksExisted % 2), 1, 0, 1);
+            GlStateManager.rotatef(-0.5F * (entity.ticksExisted % 2), 0, 1, 0);
         }
-        this.renderPart(position, model, matrixStack, buffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
-        matrixStack.pop();
+        this.renderPart(position, model, -1);
+        GlStateManager.popMatrix();
     }
 }

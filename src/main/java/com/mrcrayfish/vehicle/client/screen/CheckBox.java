@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.util.ResourceLocation;
@@ -37,7 +37,7 @@ public class CheckBox extends Widget
     @Override
     public void renderButton(int mouseX, int mouseY, float partialTicks)
     {
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getTextureManager().bindTexture(GUI);
         this.blit(this.x, this.y, 0, 0, 8, 8);

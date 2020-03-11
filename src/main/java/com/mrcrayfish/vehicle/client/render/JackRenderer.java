@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.entity.EntityJack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
@@ -24,5 +22,6 @@ public class JackRenderer extends EntityRenderer<EntityJack>
     }
 
     @Override
-    public void render(EntityJack jack, float p_225623_2_, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light) {}
+    public void doRender(EntityJack entity, double x, double y, double z, float entityYaw, float partialTicks) { }
+
 }

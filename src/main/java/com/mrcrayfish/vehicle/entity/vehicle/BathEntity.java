@@ -38,7 +38,7 @@ public class BathEntity extends PlaneEntity implements IEntityRaytraceable
         {
             for(int i = 0; i < 4; i++)
             {
-                this.world.addParticle(ParticleTypes.DRIPPING_WATER, this.getPosX() - 0.25 + 0.5 * rand.nextGaussian(), this.getPosY() + 0.5 * rand.nextGaussian(), this.getPosZ() - 0.25 + 0.5 * rand.nextGaussian(), 0, 0, 0);
+                this.world.addParticle(ParticleTypes.DRIPPING_WATER, this.posX - 0.25 + 0.5 * rand.nextGaussian(), this.posY + 0.5 * rand.nextGaussian(), this.posZ - 0.25 + 0.5 * rand.nextGaussian(), 0, 0, 0);
             }
         }
     }

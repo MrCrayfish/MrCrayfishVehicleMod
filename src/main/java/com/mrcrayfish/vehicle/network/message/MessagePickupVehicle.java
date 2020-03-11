@@ -47,7 +47,7 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
     {
         supplier.get().enqueueWork(() -> {
             ServerPlayerEntity player = supplier.get().getSender();
-            if(player != null && player.isCrouching())
+            if(player != null && player.isSneaking())
             {
                 Entity targetEntity = player.world.getEntityByID(message.entityId);
                 if(targetEntity != null)

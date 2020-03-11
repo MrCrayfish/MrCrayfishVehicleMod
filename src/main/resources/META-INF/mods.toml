@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[31,)"
+loaderVersion="[28,)"
 
 [[mods]]
 modId="vehicle"
@@ -15,18 +15,18 @@ description="A mod that adds vehicles into Minecraft!"
 [[dependencies.vehicle]]
     modId="forge"
     mandatory=true
-    versionRange="[31.0.13,)"
+    versionRange="[28.2.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.vehicle]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.15.2,1.16)"
+    versionRange="[1.14.4,1.15)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.vehicle]]
     modId="obfuscate"
     mandatory=true
-    versionRange="[0.3.4,)"
+    versionRange="[0.3.3,)"
     ordering="AFTER"
     side="BOTH"

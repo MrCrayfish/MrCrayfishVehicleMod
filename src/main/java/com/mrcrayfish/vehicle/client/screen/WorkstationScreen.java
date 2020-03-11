@@ -1,10 +1,8 @@
 package com.mrcrayfish.vehicle.client.screen;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
@@ -25,10 +23,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
@@ -368,7 +364,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
 
-        RenderSystem.enableBlend();
+        GlStateManager.enableBlend();
 
         this.minecraft.getTextureManager().bindTexture(GUI);
         this.blit(startX, startY + 80, 0, 134, 176, 122);
@@ -392,7 +388,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         this.filteredMaterials = this.getMaterials();
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+            GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
             this.minecraft.getTextureManager().bindTexture(GUI);
 
             MaterialItem materialItem = this.filteredMaterials.get(i);
@@ -414,7 +410,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                     this.blit(startX + 186, startY + i * 19 + 6 + 57, 0, 38, 80, 19);
                 }
 
-                RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+                GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 String name = stack.getDisplayName().getUnformattedComponentText();
                 if(this.font.getStringWidth(name) > 55)
                 {
@@ -422,6 +418,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 }
                 this.font.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
 
+                RenderHelper.enableGUIStandardItemLighting();
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
 
                 if(this.checkBoxMaterials.isToggled())
@@ -435,43 +432,37 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }
 
-        RenderSystem.pushMatrix();
-        RenderSystem.translatef(startX + 88, startY + 90, 1050.0F);
-        RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
-
-        MatrixStack matrixStack = new MatrixStack();
-        matrixStack.translate(0.0, 0.0, 1000.0);
-
-        float scale = this.prevVehicleScale + (this.vehicleScale - this.prevVehicleScale) * partialTicks;
-        matrixStack.scale(scale, scale, scale);
-        Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-5F);
-        Quaternion quaternion1 = Axis.POSITIVE_Y.func_229187_a_(-(this.minecraft.player.ticksExisted + partialTicks));
-        quaternion.multiply(quaternion1);
-        matrixStack.rotate(quaternion);
-
-        int vehicleIndex = this.transitioning ? prevCurrentVehicle : currentVehicle;
-        VehicleProperties properties = VehicleProperties.getProperties(this.cachedVehicle[vehicleIndex].getType());
-        PartPosition position = PartPosition.DEFAULT;
-        if(properties != null)
+        GlStateManager.pushMatrix();
         {
-            position = properties.getDisplayPosition();
+            RenderHelper.enableGUIStandardItemLighting();
+            GlStateManager.translated(startX + 88, startY + 90, 100);
+
+            float scale = prevVehicleScale + (vehicleScale - prevVehicleScale) * partialTicks;
+            GlStateManager.scalef(scale, -scale, scale);
+
+            GlStateManager.rotatef(5F, 1, 0, 0);
+            GlStateManager.rotatef(Minecraft.getInstance().player.ticksExisted + partialTicks, 0, 1, 0);
+
+            int vehicleIndex = transitioning ? prevCurrentVehicle : currentVehicle;
+            Class<? extends VehicleEntity> clazz = cachedVehicle[vehicleIndex].getClass();
+            VehicleProperties properties = VehicleProperties.getProperties(this.cachedVehicle[vehicleIndex].getType());
+            PartPosition position = PartPosition.DEFAULT;
+            if(properties != null)
+            {
+                position = properties.getDisplayPosition();
+            }
+
+            //Apply vehicle rotations, translations, and scale
+            GlStateManager.scaled(position.getScale(), position.getScale(), position.getScale());
+            GlStateManager.rotatef((float) position.getRotX(), 1, 0, 0);
+            GlStateManager.rotatef((float) position.getRotY(), 0, 1, 0);
+            GlStateManager.rotatef((float) position.getRotZ(), 0, 0, 1);
+            GlStateManager.translated(position.getX(), position.getY(), position.getZ());
+
+            EntityRenderer<VehicleEntity> render = Minecraft.getInstance().getRenderManager().getRenderer(clazz);
+            render.doRender(cachedVehicle[vehicleIndex], 0F, 0F, 0F, 0F, 0F);
         }
-
-        matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
-        matrixStack.translate(position.getX(), position.getY(), position.getZ());
-
-        EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
-        renderManager.setRenderShadow(false);
-        renderManager.func_229089_a_(quaternion);
-        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-        renderManager.func_229084_a_(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
-        renderTypeBuffer.func_228461_a_();
-        renderManager.setRenderShadow(true);
-
-        RenderSystem.popMatrix();
+        GlStateManager.popMatrix();
     }
 
     private void drawSlot(int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required, boolean applicable)
