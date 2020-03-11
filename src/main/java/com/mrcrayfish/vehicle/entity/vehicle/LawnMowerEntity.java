@@ -87,7 +87,7 @@ public class LawnMowerEntity extends LandVehicleEntity implements IEntityRaytrac
         if(storageTrailer != null && storageTrailer.getInventory() != null)
         {
             Inventory storage = storageTrailer.getInventory();
-            storage.addItem(stack);
+            stack = storage.addItem(stack);
             if(!stack.isEmpty())
             {
                 if(storageTrailer.getTrailer() instanceof StorageTrailerEntity)
