@@ -392,7 +392,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         /* Reduces the motion and speed multiplier */
         if(this.onGround)
         {
-            this.setMotion(this.getMotion().mul(0.8, 0.98, 0.8));
+            this.setMotion(this.getMotion().mul(0.65, 0.98, 0.65));
         }
         else
         {
