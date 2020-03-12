@@ -1,5 +1,6 @@
 {
-    "parent": "forge:item/bucket",
-    "loader": "forge:bucket",
-    "fluid": "vehicle:ender_sap"
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "vehicle:item/ender_sap_bucket"
+    }
 }
