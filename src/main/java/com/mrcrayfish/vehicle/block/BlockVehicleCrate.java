@@ -77,9 +77,21 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
+    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
+    {
+        return false;
+    }
+
+    @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        return VoxelShapes.fullCube();
+        return VoxelShapes.empty();
+    }
+
+    @Override
+    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    {
+        return VoxelShapes.empty();
     }
 
     @Override
