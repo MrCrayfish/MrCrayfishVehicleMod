@@ -87,7 +87,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     {
         return VoxelShapes.empty();
     }
-    
+
     @Override
     public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
     {
