@@ -109,6 +109,13 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             }
         }
 
+        this.renderSteeringDebug(properties, entity);
+
+        GlStateManager.popMatrix();
+    }
+
+    private void renderSteeringDebug(VehicleProperties properties, LandVehicleEntity entity)
+    {
         if(Config.CLIENT.renderSteeringDebug.get())
         {
             if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
@@ -192,7 +199,6 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
                 GlStateManager.popMatrix();
             }
         }
-        GlStateManager.popMatrix();
     }
 
     private void renderSteeringLine(int color)
@@ -202,14 +208,14 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         float blue = (float) (color & 255) / 255.0F;
         GlStateManager.disableTexture();
         GlStateManager.lineWidth(Math.max(2.0F, (float) Minecraft.getInstance().mainWindow.getFramebufferWidth() / 1920.0F * 2.0F));
-        GlStateManager.enableDepthTest();
+        GlStateManager.disableLighting();
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
         buffer.pos(0, 0, 0).color(red, green, blue, 1.0F).endVertex();
         buffer.pos(0, 2, 0).color(red, green, blue, 1.0F).endVertex();
         tessellator.draw();
-        GlStateManager.disableDepthTest();
+        GlStateManager.enableLighting();
         GlStateManager.enableTexture();
     }
 
