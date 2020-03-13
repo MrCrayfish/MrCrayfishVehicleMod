@@ -4,7 +4,8 @@
         "logo": "vehicle:model/cray_industries_logo",
         "bolt": "minecraft:block/light_gray_concrete",
         "frame": "minecraft:block/anvil",
-        "base": "minecraft:block/iron_block"
+        "base": "minecraft:block/iron_block",
+        "particle": "minecraft:block/iron_block"
     },
     "elements": [
         {
