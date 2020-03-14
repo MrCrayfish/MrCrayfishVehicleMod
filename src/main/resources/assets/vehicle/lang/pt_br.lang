@@ -14,7 +14,7 @@ vehicle.engine_info.additional_max_speed=Velocidade máxima adicional
 vehicle.engine_info.fuel_consumption=Consumo de combustível
 
 vehicle.wheel_type.stock.name=De fábrica
-vehicle.wheel_type.sports.name=Esporte
+vehicle.wheel_type.sports.name=Esportivo
 vehicle.wheel_type.racing.name=Corrida
 vehicle.wheel_type.off_road.name=Off Road
 vehicle.wheel_type.snow.name=Neve
@@ -99,7 +99,7 @@ entity.vehicle.seeder_trailer.name=Semeadora
 entity.vehicle.fertilizer_trailer.name=Fertilizadora
 entity.vehicle.fluid_trailer.name=Trailer de Fluidos
 entity.vehicle.tractor.name=Trator
-entity.vehicle.mini_bus.name=Mini Onibus
+entity.vehicle.mini_bus.name=Mini Ônibus
 
 vehicle.config.title=MrCrayfish's Vehicle Mod Configuração
 vehicle.config.client=Cliente
