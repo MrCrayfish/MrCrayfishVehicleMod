@@ -14,7 +14,7 @@ vehicle.engine_info.additional_max_speed=Velocidade máxima adicional
 vehicle.engine_info.fuel_consumption=Consumo de combustível
 
 vehicle.wheel_type.stock.name=De fábrica
-vehicle.wheel_type.sports.name=Esporte
+vehicle.wheel_type.sports.name=Esportivo
 vehicle.wheel_type.racing.name=Corrida
 vehicle.wheel_type.off_road.name=Off Road
 vehicle.wheel_type.snow.name=Neve
@@ -63,7 +63,7 @@ fluid.blaze_juice=Suco de Blaze
 
 container.fluid_extractor=Extrator de Fluido
 container.fluid_mixer=Misturador de Fluido
-container.edit_vehicle.window_help=Clique para mover e girar
+container.edit_vehicle.window_help=Clique para mover e rotacionar
 
 vehicle.info_help=Precione SHIFT para mais informação
 tile.vehicle.boost_pad.info=Dirija sobre esta Plataforma de Impulso para dar mais velocidade ao seu veículo!
@@ -99,6 +99,7 @@ entity.vehicle.seeder_trailer.name=Semeadora
 entity.vehicle.fertilizer_trailer.name=Fertilizadora
 entity.vehicle.fluid_trailer.name=Trailer de Fluidos
 entity.vehicle.tractor.name=Trator
+entity.vehicle.mini_bus.name=Mini Ônibus
 
 vehicle.config.title=MrCrayfish's Vehicle Mod Configuração
 vehicle.config.client=Cliente
@@ -122,7 +123,7 @@ vehicle.config.client.display.auto_perspective.tooltip=Se verdadeiro, alterna au
 vehicle.config.client.display.workstation_animation=Animação da estação de trabalho
 vehicle.config.client.display.workstation_animation.tooltip=Se verdadeiro, uma animação é executada ao trocar/passar os veículos na estação de trabalho
 vehicle.config.client.controller=Controle
-vehicle.config.client.controller.tooltip=Opções de configuração para suporte ao controlador (Deve ter "Controllable" instalado)
+vehicle.config.client.controller.tooltip=Opções de configuração para suporte ao controlador (Deve ter "Controllable"(mod) instalado)
 vehicle.config.client.controller.use_triggers=Usar gatilhos
 vehicle.config.client.controller.use_triggers.tooltip=Se verdadeiro, usará os gatilhos no controlador para controlar a aceleração do veículo.
 
@@ -134,7 +135,7 @@ vehicle.config.server.vehicle_damage=Dano no veículo
 vehicle.config.server.vehicle_damage.tooltip=Se verdadeiro, os veículos sofrerão dano.
 vehicle.config.server.trailer_detach_threshold=Limite de desanexação do Trailer
 vehicle.config.server.trailer_detach_threshold.tooltip=A distância antes do Trailer se soltar de um veículo
-vehicle.config.server.trailer_sync_cooldown=Tempo de sinconização do Trailer
+vehicle.config.server.trailer_sync_cooldown=Tempo de sincronização do Trailer
 vehicle.config.server.trailer_sync_cooldown.tooltip=A quantidade de ticks de espera antes de sincronizar dados com os clientes sobre a conexão do trailer. Isso é importante para um movimento suave do trailer no lado do cliente.
 vehicle.config.server.trailer_inventory_sync_cooldown=Tempo de sincronização do Trailer com Baú
 vehicle.config.server.trailer_inventory_sync_cooldown.tooltip=A quantidade de ticks de espera antes de sincronizar o inventário do trailer para acompanhar os clientes. Se o valor estiver definido como 0 ou menos, o inventário não será sincronizado e economizará no uso da rede.
@@ -161,3 +162,7 @@ vehicle.tooltip.not_applicable=Não aplicável
 vehicle.tooltip.paint_color=Cor da pintura
 vehicle.tooltip.engine=Motor
 vehicle.tooltip.wheels=Roda
+
+key.categories.vehicle=MrCrayfish's Vehicle Mod
+key.vehicle.horn=Buzina
+key.vehicle.cycle_seats=Assento para moto
