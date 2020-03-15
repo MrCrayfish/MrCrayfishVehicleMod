@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.common.entity;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,6 +15,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
@@ -45,6 +47,25 @@ public class HeldVehicleDataHandler
         if (event.getObject() instanceof PlayerEntity)
         {
             event.addCapability(new ResourceLocation(Reference.MOD_ID, "held_vehicle"), new Provider());
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerClone(PlayerEvent.Clone event)
+    {
+        if(event.isWasDeath())
+            return;
+
+        IHeldVehicle handler = getHandler(event.getOriginal());
+        if(handler != null)
+        {
+            IHeldVehicle newHandler = getHandler(event.getPlayer());
+            if(newHandler != null)
+            {
+                CompoundNBT heldVehicleTag = handler.getVehicleTag();
+                newHandler.setVehicleTag(heldVehicleTag);
+                event.getPlayer().getDataManager().set(CustomDataParameters.HELD_VEHICLE, heldVehicleTag);
+            }
         }
     }
 
