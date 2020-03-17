@@ -23,6 +23,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -196,6 +197,14 @@ public class CommonEvents
         return false;
     }
 
+    private RayTraceResult rayTrace(PlayerEntity player, double distance, float partialTicks, boolean includeWater)
+    {
+        Vec3d eyeVec = player.getEyePosition(partialTicks);
+        Vec3d lookVec = player.getLook(partialTicks);
+        Vec3d combinedVec = eyeVec.add(lookVec.x * distance, lookVec.y * distance, lookVec.z * distance);
+        return player.world.rayTraceBlocks(new RayTraceContext(eyeVec, combinedVec, RayTraceContext.BlockMode.OUTLINE, includeWater ? RayTraceContext.FluidMode.ANY : RayTraceContext.FluidMode.NONE, player));
+    }
+
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
     {
@@ -261,7 +270,7 @@ public class CommonEvents
                 if(!player.getDataManager().get(CustomDataParameters.HELD_VEHICLE).isEmpty())
                 {
                     //Vec3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
-                    RayTraceResult result = player.func_213324_a(10.0, 0.0F, false);
+                    RayTraceResult result = this.rayTrace(player, 10.0, 0.0F, false);
                     Vec3d clickedVec = result.getHitVec();
                     if(clickedVec == null || event.getFace() != Direction.UP)
                     {
@@ -331,7 +340,7 @@ public class CommonEvents
                 PlayerEntity player = event.getPlayer();
                 float reach = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
                 reach = player.isCreative() ? reach : reach - 0.5F;
-                RayTraceResult result = player.func_213324_a(reach, 0.0F, false);
+                RayTraceResult result = this.rayTrace(player, reach, 0.0F, false);
                 if(result.getType() == RayTraceResult.Type.BLOCK)
                     return;
 
