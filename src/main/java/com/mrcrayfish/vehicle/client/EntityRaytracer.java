@@ -1443,6 +1443,7 @@ public class EntityRaytracer
     {
         if(Config.CLIENT.renderOutlines.get())
         {
+            GlStateManager.pushMatrix();
             GlStateManager.translated(x, y, z);
             GlStateManager.rotatef(-yaw, 0, 1, 0);
             GlStateManager.enableBlend();
@@ -1458,7 +1459,6 @@ public class EntityRaytracer
             GlStateManager.enableLighting();
             GlStateManager.enableTexture();
             GlStateManager.disableBlend();
-
             GlStateManager.popMatrix();
         }
     }
