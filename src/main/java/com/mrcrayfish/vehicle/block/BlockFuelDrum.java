@@ -144,33 +144,4 @@ public class BlockFuelDrum extends BlockRotatedObject
     {
         return new FuelDrumTileEntity();
     }
-
-    @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
-    {
-        if(!world.isRemote && !player.isCreative())
-        {
-            TileEntity tileEntity = world.getTileEntity(pos);
-            if(tileEntity instanceof FuelDrumTileEntity)
-            {
-                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
-                if(((FuelDrumTileEntity) tileEntity).getAmount() > 0)
-                {
-                    CompoundNBT tileEntityTag = new CompoundNBT();
-                    tileEntity.write(tileEntityTag);
-                    tileEntityTag.remove("x");
-                    tileEntityTag.remove("y");
-                    tileEntityTag.remove("z");
-                    tileEntityTag.remove("id");
-
-                    CompoundNBT compound = new CompoundNBT();
-                    compound.put("BlockEntityTag", tileEntityTag);
-                    drop.setTag(compound);
-                }
-                world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-                return world.setBlockState(pos, Blocks.AIR.getDefaultState());
-            }
-        }
-        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
-    }
 }
