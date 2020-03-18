@@ -81,17 +81,6 @@ public class ClientProxy implements Proxy
     @Override
     public void setupClient()
     {
-        //TODO need to be converted back
-        /*RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, RenderType.translucent());*/
-
         /* Register Vehicles */
         registerVehicleRender(ATVEntity.class, ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));
         registerVehicleRender(DuneBuggyEntity.class, ModEntities.DUNE_BUGGY, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));

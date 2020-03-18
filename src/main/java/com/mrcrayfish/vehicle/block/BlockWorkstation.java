@@ -11,6 +11,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -37,6 +38,12 @@ public class BlockWorkstation extends BlockRotatedObject
     public BlockWorkstation()
     {
         super(Names.Block.WORKSTATION, Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
+    }
+
+    @Override
+    public BlockRenderLayer getRenderLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
     }
 
     private VoxelShape getShape(BlockState state)

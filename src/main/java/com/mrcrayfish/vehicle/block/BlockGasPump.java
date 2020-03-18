@@ -54,6 +54,12 @@ public class BlockGasPump extends BlockRotatedObject
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));
     }
 
+    @Override
+    public BlockRenderLayer getRenderLayer()
+    {
+        return BlockRenderLayer.CUTOUT;
+    }
+
     private VoxelShape getShape(BlockState state)
     {
         if(SHAPES.containsKey(state))
