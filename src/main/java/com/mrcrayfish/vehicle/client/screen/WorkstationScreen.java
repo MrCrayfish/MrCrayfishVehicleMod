@@ -368,11 +368,11 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         this.minecraft.getTextureManager().bindTexture(GUI);
         this.blit(startX, startY + 80, 0, 134, 176, 122);
-        this.blit(startX + 180, startY, 176, 54, 6, 208);
-        this.blit(startX + 186, startY, 182, 54, 57, 208);
-        this.blit(startX + 186 + 57, startY, 220, 54, 23, 208);
-        this.blit(startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
-        this.blit(startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
+        this.blit(startX + 180, startY, 176, 54, 6, 202);
+        this.blit(startX + 186, startY, 182, 54, 57, 202);
+        this.blit(startX + 186 + 57, startY, 220, 54, 23, 202);
+        this.blit(startX + 186 + 57 + 23, startY, 220, 54, 3, 202);
+        this.blit(startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 202);
 
         /* Slots */
         this.drawSlot(startX, startY, 186, 29, 80, 0, 0, false, this.cachedVehicle[currentVehicle].canBeColored());
