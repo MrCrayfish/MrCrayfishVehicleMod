@@ -405,11 +405,11 @@ public class CommonEvents
             EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
             {
                 Entity vehicle = entityType.create(player.world);
-                if(vehicle instanceof PoweredVehicleEntity)
+                if(vehicle instanceof VehicleEntity)
                 {
                     vehicle.read(tagCompound);
                     float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                    Vec3d heldOffset = ((PoweredVehicleEntity) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                    Vec3d heldOffset = ((VehicleEntity) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                     vehicle.setPositionAndRotation(player.posX + heldOffset.x * 0.0625D, player.posY + player.getEyeHeight() + heldOffset.y * 0.0625D, player.posZ + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.addEntity(vehicle);
                 }
