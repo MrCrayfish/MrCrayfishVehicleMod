@@ -49,6 +49,7 @@ public class BlockFluidExtractor extends BlockRotatedObject
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof FluidExtractorTileEntity)
             {
+                TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) player);
                 NetworkHooks.openGui((ServerPlayerEntity) player, (INamedContainerProvider) tileEntity, pos);
                 return true;
             }
