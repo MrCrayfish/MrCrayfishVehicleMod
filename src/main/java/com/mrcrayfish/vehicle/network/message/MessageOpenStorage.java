@@ -48,7 +48,7 @@ public class MessageOpenStorage implements IMessage, IMessageHandler<MessageOpen
             EntityPlayerMP player = ctx.getServerHandler().player;
             World world = player.world;
             Entity targetEntity = world.getEntityByID(message.entityId);
-            if(targetEntity != null && targetEntity instanceof IStorage)
+            if(targetEntity instanceof IStorage && !player.isSneaking())
             {
                 float reachDistance = (float) player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).getAttributeValue();
                 if(player.getDistance(targetEntity) < reachDistance)

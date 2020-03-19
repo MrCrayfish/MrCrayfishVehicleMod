@@ -81,8 +81,11 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
         ItemStack heldItem = player.getHeldItem(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan)) && player instanceof EntityPlayerMP)
         {
-            inventory.openGui((EntityPlayerMP) player, this);
-            return true;
+            if(!player.isSneaking())
+            {
+                this.inventory.openGui((EntityPlayerMP) player, this);
+                return true;
+            }
         }
         return super.processInitialInteract(player, hand);
     }
