@@ -46,7 +46,7 @@ public class MovingSoundVehicleRiding extends TickableSound
             this.donePlaying = true;
             return;
         }
-        this.volume = vehicle.getControllingPassenger() != null ? 1.0F : 0.0F;
+        this.volume = vehicle.getControllingPassenger() != null && vehicle.isEnginePowered() ? 1.0F : 0.0F;
         this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getActualSpeed());
     }
 }
