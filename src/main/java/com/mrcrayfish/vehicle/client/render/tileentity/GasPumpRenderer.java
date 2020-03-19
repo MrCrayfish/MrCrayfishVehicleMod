@@ -11,18 +11,15 @@ import com.mrcrayfish.vehicle.tileentity.GasPumpTileEntity;
 import com.mrcrayfish.vehicle.util.CollisionHelper;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
@@ -81,35 +78,32 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             {
                 gasPump.setRecentlyUsed(true);
                 PlayerEntity entity = gasPump.getFuelingEntity();
-                if(gasPump.getFuelingEntityPos() == null || !gasPump.getFuelingEntityPos().equals(entity.getPositionVector()))
+                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
+                double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
+                double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
+                double side = entity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
+                float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
+                Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
+                Vec3d hoseVec = new Vec3d(-0.35 * side, -0.025, -0.025);
+                if(entity instanceof AbstractClientPlayerEntity)
                 {
-                    double side = entity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
-                    double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
-                    double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
-                    double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
-                    float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
-                    Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
-                    Vec3d hoseVec = new Vec3d(-0.35 * side, 0.01, 0.0625);
-                    if(entity instanceof AbstractClientPlayerEntity)
+                    String skinType = ((AbstractClientPlayerEntity) entity).getSkinType();
+                    if(skinType.equals("slim"))
                     {
-                        String skinType = ((AbstractClientPlayerEntity) entity).getSkinType();
-                        if(skinType.equals("slim"))
-                        {
-                            hoseVec = hoseVec.add(0.03 * side, -0.03, 0.0);
-                        }
+                        hoseVec = hoseVec.add(0.03 * side, -0.03, 0.0);
                     }
-                    hoseVec = hoseVec.rotateYaw(-renderYawOffset * 0.017453292F);
-                    if(entity.equals(Minecraft.getInstance().player))
-                    {
-                        if(Minecraft.getInstance().gameSettings.thirdPersonView == 0)
-                        {
-                            lookVec = Vec3d.fromPitchYaw(0F, entity.rotationYaw);
-                            hoseVec = new Vec3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
-                        }
-                    }
-                    HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
-                    gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.6425, pos[1]), new Vec3d(0, -5, 0)), destPoint));
                 }
+                hoseVec = hoseVec.rotateYaw(-renderYawOffset * 0.017453292F);
+                if(entity.equals(Minecraft.getInstance().player))
+                {
+                    if(Minecraft.getInstance().gameSettings.thirdPersonView == 0)
+                    {
+                        lookVec = Vec3d.fromPitchYaw(0F, entity.rotationYaw);
+                        hoseVec = new Vec3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
+                    }
+                }
+                HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
+                gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.6425, pos[1]), new Vec3d(0, -5, 0)), destPoint));
             }
             else
             {

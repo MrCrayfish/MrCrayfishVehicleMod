@@ -31,8 +31,6 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     private PlayerEntity fuelingEntity;
 
     private HermiteInterpolator cachedSpline;
-    private HermiteInterpolator.Point cachedPoint;
-    private Vec3d fuelingEntityPos;
     private boolean recentlyUsed;
 
     public GasPumpTileEntity()
@@ -48,28 +46,6 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     public void setCachedSpline(HermiteInterpolator cachedSpline)
     {
         this.cachedSpline = cachedSpline;
-    }
-
-    @Nullable
-    public HermiteInterpolator.Point getCachedPoint()
-    {
-        return this.cachedPoint;
-    }
-
-    public void setCachedPoint(HermiteInterpolator.Point cachedPoint)
-    {
-        this.cachedPoint = cachedPoint;
-    }
-
-    @Nullable
-    public Vec3d getFuelingEntityPos()
-    {
-        return this.fuelingEntityPos;
-    }
-
-    public void setFuelingEntityPos(Vec3d fuelingEntityPos)
-    {
-        this.fuelingEntityPos = fuelingEntityPos;
     }
 
     public boolean isRecentlyUsed()
