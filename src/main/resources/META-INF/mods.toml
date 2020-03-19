@@ -3,7 +3,7 @@ loaderVersion="[28,)"
 
 [[mods]]
 modId="vehicle"
-version="0.43.3"
+version="0.43.4"
 displayName="MrCrayfish's Vehicle Mod"
 updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/vehicle/update.json"
 displayURL="https://mrcrayfish.com/mods?id=vehicle"
