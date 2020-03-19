@@ -43,11 +43,11 @@ public class ModEntities
     public static final RegistryObject<EntityType<MiniBusEntity>> MINI_BUS = registerVehicle("mini_bus", MiniBusEntity::new, 2.0F, 2.0F);
 
     /* Trailers */
-    public static final RegistryObject<EntityType<VehicleEntityTrailer>> VEHICLE_TRAILER = registerVehicle("vehicle_trailer", VehicleEntityTrailer::new, 1.5F, 1.5F);
+    public static final RegistryObject<EntityType<VehicleEntityTrailer>> VEHICLE_TRAILER = registerVehicle("vehicle_trailer", VehicleEntityTrailer::new, 1.5F, 0.75F);
     public static final RegistryObject<EntityType<StorageTrailerEntity>> STORAGE_TRAILER = registerVehicle("storage_trailer", StorageTrailerEntity::new, 1.0F, 1.0F);
     public static final RegistryObject<EntityType<FluidTrailerEntity>> FLUID_TRAILER = registerVehicle("fluid_trailer", FluidTrailerEntity::new, 1.5F, 1.5F);
-    public static final RegistryObject<EntityType<SeederTrailerEntity>> SEEDER = registerVehicle("seeder", SeederTrailerEntity::new, 1.5F, 1.5F);
-    public static final RegistryObject<EntityType<FertilizerTrailerEntity>> FERTILIZER = registerVehicle("fertilizer", FertilizerTrailerEntity::new, 1.5F, 1.5F);
+    public static final RegistryObject<EntityType<SeederTrailerEntity>> SEEDER = registerVehicle("seeder", SeederTrailerEntity::new, 1.5F, 1.0F);
+    public static final RegistryObject<EntityType<FertilizerTrailerEntity>> FERTILIZER = registerVehicle("fertilizer", FertilizerTrailerEntity::new, 1.5F, 1.0F);
 
     /* Special Vehicles */
     public static final RegistryObject<EntityType<CouchEntity>> SOFA = registerDependent("cfm", "couch", CouchEntity::new, 1.0F, 1.0F);
