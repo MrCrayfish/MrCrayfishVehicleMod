@@ -47,7 +47,6 @@ import java.util.List;
  */
 public class CommonEvents
 {
-    public static final DataParameter<Boolean> PUSHING_CART = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.BOOLEAN);
     public static final DataParameter<NBTTagCompound> HELD_VEHICLE = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.COMPOUND_TAG);
     public static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.VARINT);
     public static final DataParameter<Optional<BlockPos>> GAS_PUMP = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.OPTIONAL_BLOCK_POS);
@@ -117,7 +116,6 @@ public class CommonEvents
     {
         if(event.getEntity() instanceof EntityPlayer)
         {
-            event.getEntity().getDataManager().register(PUSHING_CART, false);
             event.getEntity().getDataManager().register(HELD_VEHICLE, new NBTTagCompound());
             event.getEntity().getDataManager().register(TRAILER, -1);
             event.getEntity().getDataManager().register(GAS_PUMP, Optional.absent());

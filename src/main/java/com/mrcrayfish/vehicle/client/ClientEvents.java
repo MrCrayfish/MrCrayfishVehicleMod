@@ -237,16 +237,6 @@ public class ClientEvents
             }
         }
 
-        if(player.getDataManager().get(CommonEvents.PUSHING_CART))
-        {
-            player.renderYawOffset = player.rotationYawHead;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-90F);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-90F);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
-            return;
-        }
-
         if(ridingEntity != null && ridingEntity instanceof EntityVehicle)
         {
             EntityVehicle vehicle = (EntityVehicle) ridingEntity;

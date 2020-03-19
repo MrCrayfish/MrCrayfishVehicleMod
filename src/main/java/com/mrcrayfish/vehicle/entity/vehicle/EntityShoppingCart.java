@@ -52,34 +52,6 @@ public class EntityShoppingCart extends EntityLandVehicle implements IEntityRayt
     }
 
     @Override
-    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
-    {
-        if(!world.isRemote) //TODO remove
-        {
-            if(player.isSneaking())
-            {
-                if(pusher == player)
-                {
-                    pusher = null;
-                    player.getDataManager().set(CommonEvents.PUSHING_CART, false);
-                    return true;
-                }
-                else if(pusher == null)
-                {
-                    pusher = player;
-                    player.getDataManager().set(CommonEvents.PUSHING_CART, true);
-                }
-            }
-            else if(pusher != player)
-            {
-                super.processInitialInteract(player, hand);
-            }
-
-        }
-        return true;
-    }
-
-    @Override
     public SoundEvent getMovingSound()
     {
         return null;
