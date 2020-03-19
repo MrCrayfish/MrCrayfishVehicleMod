@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.vehicle.Config;
@@ -22,7 +23,9 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.entity.model.IHasArm;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -402,14 +405,14 @@ public class ClientEvents
                     {
                         matrixStack.translate(0.0, 0.2, 0.0);
                     }
-                    //event.getModelPlayer().postRenderArm(0.0625F, entity.getPrimaryHand()); //TODO find out what this is
+                    event.getModelPlayer().func_225599_a_(HandSide.RIGHT, event.getMatrixStack());
                     matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(180F));
                     matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
                     boolean leftHanded = entity.getPrimaryHand() == HandSide.LEFT;
                     matrixStack.translate((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
                     matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
-                    //TODO figure this out. Missing mappings is making this difficult
-                    //RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, event.getBuilder(), -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
+                    IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
+                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
                 }
                 matrixStack.pop();
             }
