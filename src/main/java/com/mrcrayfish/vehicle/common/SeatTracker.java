@@ -81,11 +81,6 @@ public class SeatTracker
         return false;
     }
 
-    public void remove(UUID uuid)
-    {
-        this.playerSeatMap.remove(uuid);
-    }
-
     public int getNextAvailableSeat()
     {
         EntityVehicle vehicle = this.vehicleRef.get();
