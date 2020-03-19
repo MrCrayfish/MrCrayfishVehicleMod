@@ -70,9 +70,9 @@ public enum SpecialModels
     COUCH_HELICOPTER_ARM("couch_helicopter_arm"),
     COUCH_HELICOPTER_SKID("couch_helicopter_skid"),
 
-    COUCH(new ModelResourceLocation("cfm:jeb_couch", "normal"), false),
-    BLADE(new ModelResourceLocation("cfm:ceiling_fan_fans", "normal"), false),
-    BATH(new ModelResourceLocation("cfm:bath_bottom", "normal"), false);
+    COUCH(new ModelResourceLocation("cfm:couch", "colour=14,facing=east,type=both"), false),
+    BLADE(new ModelResourceLocation("cfm:ceiling_fan_fans", "inventory"), false),
+    BATH(new ModelResourceLocation("cfm:bath_bottom", "inventory"), false);
 
     /**
      * An arbitrary item in your mod to register isolated models as variants of
