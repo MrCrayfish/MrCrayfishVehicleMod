@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ModelManager;

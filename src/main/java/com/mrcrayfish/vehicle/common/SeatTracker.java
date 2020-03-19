@@ -16,7 +16,6 @@ import net.minecraftforge.fml.network.PacketDistributor;
 import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish

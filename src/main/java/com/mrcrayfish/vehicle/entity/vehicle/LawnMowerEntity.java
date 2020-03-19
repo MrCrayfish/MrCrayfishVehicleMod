@@ -4,7 +4,6 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
-import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

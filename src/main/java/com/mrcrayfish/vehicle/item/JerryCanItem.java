@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.item;
 
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;

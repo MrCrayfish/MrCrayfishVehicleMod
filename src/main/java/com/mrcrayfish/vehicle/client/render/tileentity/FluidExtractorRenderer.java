@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.block.BlockFluidExtractor;
-import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;

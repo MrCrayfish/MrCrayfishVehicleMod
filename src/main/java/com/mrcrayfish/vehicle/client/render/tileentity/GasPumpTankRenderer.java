@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.tileentity.GasPumpTankTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

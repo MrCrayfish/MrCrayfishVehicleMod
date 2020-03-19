@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityJack;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;

@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
-import com.mrcrayfish.vehicle.util.Names;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -14,7 +13,6 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;

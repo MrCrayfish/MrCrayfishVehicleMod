@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
-import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;

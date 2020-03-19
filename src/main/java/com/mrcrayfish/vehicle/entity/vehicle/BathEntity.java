@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.entity.vehicle;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
-import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvent;
