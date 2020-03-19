@@ -146,7 +146,7 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
     protected void renderEngine(EntityPoweredVehicle entity, @Nullable PartPosition position)
     {
         GlStateManager.pushMatrix();
-        if(entity.isFueled() && entity.getControllingPassenger() != null)
+        if(entity.isEnginePowered() && entity.getControllingPassenger() != null)
         {
             GlStateManager.rotate(0.5F * (entity.ticksExisted % 2), 1, 0, 1);
             GlStateManager.rotate(-0.5F * (entity.ticksExisted % 2), 0, 1, 0);
