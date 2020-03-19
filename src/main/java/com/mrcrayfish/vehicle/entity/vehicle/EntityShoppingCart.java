@@ -4,15 +4,11 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
-import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
  * Author: MrCrayfish

@@ -7,7 +7,6 @@ import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFuelDrum;
 import com.mrcrayfish.vehicle.tileentity.TileEntityVehicleCrate;
 import com.mrcrayfish.vehicle.util.BlockNames;
 import com.mrcrayfish.vehicle.util.Bounds;

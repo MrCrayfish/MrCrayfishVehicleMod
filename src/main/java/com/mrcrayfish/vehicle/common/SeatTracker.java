@@ -10,14 +10,12 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 /**
