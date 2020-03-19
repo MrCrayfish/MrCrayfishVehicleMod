@@ -51,7 +51,6 @@ public class RenderBath extends AbstractRenderVehicle<EntityBath>
     @Override
     public void applyPlayerModel(EntityBath entity, EntityPlayer player, ModelPlayer model, float partialTicks)
     {
-        model.bipedHead.isHidden = true;
         model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
         model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
