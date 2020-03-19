@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import com.mrcrayfish.vehicle.util.Names;
+import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
@@ -49,6 +50,7 @@ public class BlockFluidExtractor extends BlockRotatedObject
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof FluidExtractorTileEntity)
             {
+                TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) playerEntity);
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);
                 return ActionResultType.SUCCESS;
             }
