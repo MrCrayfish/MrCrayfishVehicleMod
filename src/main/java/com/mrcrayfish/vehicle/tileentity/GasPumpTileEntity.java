@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
@@ -12,6 +13,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -28,9 +30,56 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     private int fuelingEntityId;
     private PlayerEntity fuelingEntity;
 
+    private HermiteInterpolator cachedSpline;
+    private HermiteInterpolator.Point cachedPoint;
+    private Vec3d fuelingEntityPos;
+    private boolean recentlyUsed;
+
     public GasPumpTileEntity()
     {
         super(ModTileEntities.GAS_PUMP.get());
+    }
+
+    public HermiteInterpolator getCachedSpline()
+    {
+        return cachedSpline;
+    }
+
+    public void setCachedSpline(HermiteInterpolator cachedSpline)
+    {
+        this.cachedSpline = cachedSpline;
+    }
+
+    @Nullable
+    public HermiteInterpolator.Point getCachedPoint()
+    {
+        return this.cachedPoint;
+    }
+
+    public void setCachedPoint(HermiteInterpolator.Point cachedPoint)
+    {
+        this.cachedPoint = cachedPoint;
+    }
+
+    @Nullable
+    public Vec3d getFuelingEntityPos()
+    {
+        return this.fuelingEntityPos;
+    }
+
+    public void setFuelingEntityPos(Vec3d fuelingEntityPos)
+    {
+        this.fuelingEntityPos = fuelingEntityPos;
+    }
+
+    public boolean isRecentlyUsed()
+    {
+        return recentlyUsed;
+    }
+
+    public void setRecentlyUsed(boolean recentlyUsed)
+    {
+        this.recentlyUsed = recentlyUsed;
     }
 
     @Nullable
