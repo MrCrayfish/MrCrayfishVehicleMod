@@ -317,7 +317,7 @@ public class VehicleProperties
         properties.setBodyPosition(new PartPosition(1.0));
         properties.setEnginePosition(new PartPosition(0, 6, 8.775, 0, 0, 0, 0.85));
         properties.setFuelPortPosition(new PartPosition(-6.0, 9.5, -0.5, 0, -90, 0, 0.3));
-        properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
+        properties.setKeyPortPosition(new PartPosition(-2.75, 12, -1.75, -45.0, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -24.5));
         properties.setDisplayPosition(new PartPosition(1.25F));
