@@ -161,7 +161,7 @@ public class RenderUtil
         }
     }
 
-    private static void renderModel(IBakedModel model, ItemStack stack, int color)
+    public static void renderModel(IBakedModel model, ItemStack stack, int color)
     {
         GlStateManager.translatef(-0.5F, -0.5F, -0.5F);
         Random random = new Random();
