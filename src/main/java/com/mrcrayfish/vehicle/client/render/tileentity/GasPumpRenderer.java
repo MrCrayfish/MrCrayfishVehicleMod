@@ -32,9 +32,6 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     @Override
     public void render(GasPumpTileEntity gasPump, double x, double y, double z, float partialTicks, int destroyStage)
     {
-        GlStateManager.pushMatrix();
-        GlStateManager.translated(x, y, z);
-
         BlockPos blockPos = gasPump.getPos();
         BlockState state = gasPump.getWorld().getBlockState(blockPos);
         if(state.getBlock() != ModBlocks.GAS_PUMP.get())
@@ -71,12 +68,14 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
        
         GlStateManager.pushMatrix();
         {
+            GlStateManager.translated(x, y, z);
+
             HermiteInterpolator.Point destPoint;
             if(gasPump.getFuelingEntity() != null)
             {
                 PlayerEntity entity = gasPump.getFuelingEntity();
                 double side = entity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
-                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posZ - entity.prevPosX) * partialTicks);
+                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.posX - entity.prevPosX) * partialTicks);
                 double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.posY - entity.prevPosY) * partialTicks);
                 double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.posZ - entity.prevPosZ) * partialTicks);
                 float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
@@ -130,7 +129,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         GlStateManager.rotated(Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z)), 0, 1, 0);
                         GlStateManager.rotated(Math.toDegrees(Math.asin(-r.getDir().normalize().y)), 1, 0, 0);
                         GlStateManager.scalef(0.075F, 0.075F, 0.075F);
-                        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE);
+                        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, -1);
                         GlStateManager.popMatrix();
                     }
                 }
@@ -188,8 +187,6 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             }
             GlStateManager.popMatrix();
         }
-        GlStateManager.popMatrix();
-
         GlStateManager.popMatrix();
     }
 }
