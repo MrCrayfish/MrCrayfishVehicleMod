@@ -55,6 +55,27 @@ public abstract class EntityTrailer extends EntityVehicle
 
         this.motionY -= 0.08;
 
+        if(this.world.isRemote)
+        {
+            int entityId = this.dataManager.get(PULLING_ENTITY);
+            if(entityId != -1)
+            {
+                Entity entity = world.getEntityByID(this.dataManager.get(PULLING_ENTITY));
+                if(entity instanceof EntityPlayer || (entity instanceof EntityVehicle && ((EntityVehicle) entity).canTowTrailer()))
+                {
+                    this.pullingEntity = entity;
+                }
+                else if(this.pullingEntity != null)
+                {
+                    this.pullingEntity = null;
+                }
+            }
+            else if(this.pullingEntity != null)
+            {
+                this.pullingEntity = null;
+            }
+        }
+
         if(this.pullingEntity != null && !world.isRemote)
         {
             if(this.pullingEntity.getDistance(this) > VehicleConfig.SERVER.trailerDetachThreshold)
@@ -167,35 +188,6 @@ public abstract class EntityTrailer extends EntityVehicle
     public boolean canMountTrailer()
     {
         return false;
-    }
-
-    @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(world.isRemote)
-        {
-            if(PULLING_ENTITY.equals(key))
-            {
-                int entityId = this.dataManager.get(PULLING_ENTITY);
-                if(entityId != -1)
-                {
-                    Entity entity = world.getEntityByID(this.dataManager.get(PULLING_ENTITY));
-                    if(entity instanceof EntityPlayer || (entity instanceof EntityVehicle && ((EntityVehicle) entity).canTowTrailer()))
-                    {
-                        pullingEntity = entity;
-                    }
-                    else
-                    {
-                        pullingEntity = null;
-                    }
-                }
-                else
-                {
-                    pullingEntity = null;
-                }
-            }
-        }
     }
 
     public abstract double getHitchOffset();

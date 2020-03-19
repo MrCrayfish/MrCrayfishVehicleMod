@@ -53,7 +53,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
 
     protected UUID trailerId;
     protected EntityTrailer trailer = null;
-    private int searchDelay = 20;
+    private int searchDelay = 0;
 
     protected int lerpSteps;
     protected double lerpX;
@@ -250,38 +250,6 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public void notifyDataManagerChange(DataParameter<?> key)
-    {
-        super.notifyDataManagerChange(key);
-        if(this.world.isRemote)
-        {
-            if(TRAILER.equals(key))
-            {
-                int entityId = this.dataManager.get(TRAILER);
-                if(entityId != -1)
-                {
-                    Entity entity = world.getEntityByID(this.dataManager.get(TRAILER));
-                    if(entity instanceof EntityTrailer)
-                    {
-                        this.trailer = (EntityTrailer) entity;
-                        this.trailerId = trailer.getUniqueID();
-                    }
-                    else
-                    {
-                        this.trailer = null;
-                        this.trailerId = null;
-                    }
-                }
-                else
-                {
-                    this.trailer = null;
-                    this.trailerId = null;
-                }
-            }
-        }
-    }
-
-    @Override
     public void onUpdate()
     {
         if(this.getTimeSinceHit() > 0)
@@ -314,6 +282,30 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
             else
             {
                 this.searchDelay--;
+            }
+        }
+
+        if(this.world.isRemote)
+        {
+            int entityId = this.dataManager.get(TRAILER);
+            if(entityId != -1)
+            {
+                Entity entity = world.getEntityByID(this.dataManager.get(TRAILER));
+                if(entity instanceof EntityTrailer)
+                {
+                    this.trailer = (EntityTrailer) entity;
+                    this.trailerId = trailer.getUniqueID();
+                }
+                else if(this.trailer != null)
+                {
+                    this.trailer = null;
+                    this.trailerId = null;
+                }
+            }
+            else if(this.trailer != null)
+            {
+                this.trailer = null;
+                this.trailerId = null;
             }
         }
 
