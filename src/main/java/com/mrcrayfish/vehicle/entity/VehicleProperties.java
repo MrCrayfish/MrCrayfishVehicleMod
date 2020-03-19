@@ -44,7 +44,7 @@ public class VehicleProperties
         properties.setBodyPosition(new PartPosition(0.0, 0.0, 0.2, 1.1));
         properties.setFuelPortPosition(new PartPosition(-16.0, 3, -18, 0.0, -90.0, 0.0, 0.25));
         properties.setHeldOffset(new Vec3d(0.0, 0.0, 0.0));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.0F));
+        properties.setDisplayPosition(new PartPosition(1.0F));
         properties.addSeat(new Seat(new Vec3d(-7, 8, -15), true));
         properties.addSeat(new Seat(new Vec3d(7, 6, -15)));
         properties.addSeat(new Seat(new Vec3d(-7, 6, 3)));
@@ -61,7 +61,7 @@ public class VehicleProperties
         properties.setHeldOffset(new Vec3d(4.0, 3.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -20.8));
         properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.55));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+        properties.setDisplayPosition(new PartPosition(1.5F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 4.0F, 10.5F, 1.85F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 4.0F, -10.5F, 1.85F, true, true);
@@ -80,7 +80,7 @@ public class VehicleProperties
         properties.setFuelPortPosition(new PartPosition(-8.0, 6, -8.0, 0, -90, 0, 0.25));
         properties.setHeldOffset(new Vec3d(6.0, 0.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.5625));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.4F, 0.0F, 0.0F, 0.0F, 1.5F));
+        properties.setDisplayPosition(new PartPosition(1.5F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7.0F, 8.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7.0F, -8.5F, 0.75F, false, true);
@@ -98,7 +98,7 @@ public class VehicleProperties
         properties.setFuelPortPosition(new PartPosition(0, 3, -7.0, 0, 180, 0, 0.25));
         properties.setHeldOffset(new Vec3d(2.0, 0.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.025, -0.25));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.75F));
+        properties.setDisplayPosition(new PartPosition(1.75F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 2.4F, -5.7F, 1.0F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 2.4F, -5.7F, 1.0F, true, true);
         properties.setFrontAxelVec(0, 5.3);
@@ -167,7 +167,7 @@ public class VehicleProperties
         properties.setHeldOffset(new Vec3d(12.0, -1.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -20.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.01, -1.0));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.7F, 0.0F, 0.0F, 0.0F, 1.5F));
+        properties.setDisplayPosition(new PartPosition(1.5F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.15F, false, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.15F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 1.55F, true, true);
@@ -185,7 +185,7 @@ public class VehicleProperties
         properties.setEnginePosition(new PartPosition(0, 1, 2.5, 0, 180F, 0, 1.0));
         properties.setHeldOffset(new Vec3d(6.0, 0.0, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.0625, -0.5));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
+        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0F, 1.5F));
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.65F, true, true);
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.5F + 1.7F * 0.0625F, 13.0F, 1.65F, true, false);
         properties.setFrontAxelVec(0, 13);
@@ -202,7 +202,7 @@ public class VehicleProperties
         properties.setKeyPortPosition(new PartPosition(0, 6.75, 19.5, -67.5, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -33.0));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.1F, 0.0F, 0.0F, 0.0F, 1.0F));
+        properties.setDisplayPosition(new PartPosition(1.0F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 1.5F, 1.9F, 1.9F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 1.5F, 1.9F, 1.9F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 0.0F, -13.5F, 1.5F, 1.9F, 1.9F, true, true);
@@ -260,7 +260,7 @@ public class VehicleProperties
         properties.setBodyPosition(new PartPosition(0, 0, 0.165, 0, 0, 0, 1.05));
         properties.setHeldOffset(new Vec3d(4.0, 9.25, 0.0));
         properties.setTrailerOffset(new Vec3d(0.0, -0.03125, -0.25));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.45F));
+        properties.setDisplayPosition(new PartPosition(1.45F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.NONE, 5.75F, -10.5F, 0.75F, false, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 4.0F, 9.5F, 0.75F, false, true);
@@ -278,7 +278,7 @@ public class VehicleProperties
         properties.setFuelPortPosition(new PartPosition(-9.0, 8.7, -12.3, 0, -90, 0, 0.25));
         properties.setHeldOffset(new Vec3d(3.0, 1.0, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -24.5));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.35F));
+        properties.setDisplayPosition(new PartPosition(1.35F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7F, 12F, 1.5F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 12F, 1.5F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, -12F, 1.5F, false, true);
@@ -304,7 +304,7 @@ public class VehicleProperties
         properties.setBodyPosition(new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8));
         properties.setFuelPortPosition(new PartPosition(-4.35, 4, -6, 0, -112.5, 0, 0.25));
         properties.setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
+        properties.setDisplayPosition(new PartPosition(0.85F));
         properties.addSeat(new Seat(new Vec3d(0, 6, 0), true));
         VehicleProperties.setProperties(EntitySportsPlane.class, properties);
 
@@ -318,7 +318,7 @@ public class VehicleProperties
         properties.setKeyPortPosition(new PartPosition(0, 7, 6.2, -67.5, 0, 0, 0.5));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -24.5));
-        properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.2F, 0.0F, 0.0F, 0.0F, 1.25F));
+        properties.setDisplayPosition(new PartPosition(1.25F));
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 1.5F, 2.25F, 2.25F, true, true);
         properties.addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 1.5F, 2.25F, 2.25F, true, true);
         properties.addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 3.0F, 4.5F, 4.5F, true, true);
