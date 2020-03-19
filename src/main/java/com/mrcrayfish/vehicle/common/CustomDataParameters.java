@@ -14,7 +14,6 @@ import java.util.Optional;
  */
 public class CustomDataParameters
 {
-    public static final DataParameter<Boolean> PUSHING_CART = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.BOOLEAN);
     public static final DataParameter<CompoundNBT> HELD_VEHICLE = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.COMPOUND_NBT);
     public static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.VARINT);
     public static final DataParameter<Optional<BlockPos>> GAS_PUMP = EntityDataManager.createKey(PlayerEntity.class, DataSerializers.OPTIONAL_BLOCK_POS);

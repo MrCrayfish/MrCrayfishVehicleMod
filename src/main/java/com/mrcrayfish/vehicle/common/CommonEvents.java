@@ -109,7 +109,6 @@ public class CommonEvents
     {
         if(event.getEntity() instanceof PlayerEntity)
         {
-            event.getEntity().getDataManager().register(CustomDataParameters.PUSHING_CART, false);
             event.getEntity().getDataManager().register(CustomDataParameters.HELD_VEHICLE, new CompoundNBT());
             event.getEntity().getDataManager().register(CustomDataParameters.TRAILER, -1);
             event.getEntity().getDataManager().register(CustomDataParameters.GAS_PUMP, Optional.empty());

@@ -1,12 +1,10 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
@@ -48,34 +46,6 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
         {
             super.tick();
         }
-    }
-
-    @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
-    {
-        if(!world.isRemote)
-        {
-            if(player.isSneaking())
-            {
-                if(pusher == player)
-                {
-                    pusher = null;
-                    player.getDataManager().set(CustomDataParameters.PUSHING_CART, false);
-                    return true;
-                }
-                else if(pusher == null)
-                {
-                    pusher = player;
-                    player.getDataManager().set(CustomDataParameters.PUSHING_CART, true);
-                }
-            }
-            else if(pusher != player)
-            {
-                super.processInitialInteract(player, hand);
-            }
-
-        }
-        return true;
     }
 
     @Override
