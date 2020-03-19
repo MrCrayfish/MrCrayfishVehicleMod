@@ -61,7 +61,7 @@ public class EntitySeederTrailer extends EntityTrailer implements EntityRaytrace
     {
         super(worldIn);
         this.initInventory();
-        this.setSize(1.5F, 1.5F);
+        this.setSize(1.5F, 1.0F);
     }
 
     public boolean canBeColored()
