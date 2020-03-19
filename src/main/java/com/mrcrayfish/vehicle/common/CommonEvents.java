@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
+import com.mrcrayfish.vehicle.tileentity.TileEntityGasPump;
 import com.mrcrayfish.vehicle.tileentity.TileEntityJack;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -405,9 +406,20 @@ public class CommonEvents
                     player.getDataManager().set(TRAILER, -1);
                 }
             }
+
             if(!world.isRemote && player.isSpectator())
             {
                 this.dropVehicle(player);
+            }
+
+            Optional<BlockPos> pos = player.getDataManager().get(GAS_PUMP);
+            if(pos.isPresent())
+            {
+                TileEntity tileEntity = world.getTileEntity(pos.get());
+                if(!(tileEntity instanceof TileEntityGasPump))
+                {
+                    player.getDataManager().set(GAS_PUMP, Optional.absent());
+                }
             }
         }
     }
