@@ -395,7 +395,7 @@ public class VehicleProperties
             properties.setFuelPortPosition(new PartPosition(0.0, 3.0, 8.0, 0, 0, 0, 0.45));
             properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
-            properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
+            properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
             VehicleProperties.setProperties(EntitySofacopter.class, properties);
         }
     }

@@ -245,15 +245,6 @@ public abstract class EntityHelicopter extends EntityPoweredVehicle
     }
 
     @Override
-    public void updatePassenger(Entity passenger)
-    {
-        if(this.isPassenger(passenger))
-        {
-            passenger.setPosition(this.posX, this.posY + this.getMountedYOffset() + passenger.getYOffset(), this.posZ);
-        }
-    }
-
-    @Override
     protected void updateTurning() {}
 
     @Override
