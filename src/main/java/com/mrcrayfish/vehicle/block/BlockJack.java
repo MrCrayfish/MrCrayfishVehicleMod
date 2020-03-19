@@ -23,6 +23,7 @@ public class BlockJack extends BlockObject
     public BlockJack()
     {
         super(Material.PISTON, BlockNames.JACK);
+        this.setHardness(1.0F);
     }
 
     @Override

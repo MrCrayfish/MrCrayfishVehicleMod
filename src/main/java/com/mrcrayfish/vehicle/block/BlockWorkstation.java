@@ -23,6 +23,7 @@ public class BlockWorkstation extends BlockRotatedObject
     public BlockWorkstation()
     {
         super(Material.IRON, BlockNames.WORKSTATION);
+        this.setHardness(1.5F);
     }
 
     @Override
