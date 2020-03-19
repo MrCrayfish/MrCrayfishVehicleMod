@@ -97,9 +97,19 @@ public abstract class EntityTrailer extends EntityVehicle
         }
         else if(!world.isRemote)
         {
-            this.motionX *= 0.75;
-            this.motionZ *= 0.75;
             this.move(MoverType.SELF, this.motionX, this.motionY, this.motionZ);
+            
+            /* Reduces the motion and speed multiplier */
+            if(this.onGround)
+            {
+                this.motionX *= 0.65;
+                this.motionZ *= 0.65;
+            }
+            else
+            {
+                this.motionX *= 0.98;
+                this.motionZ *= 0.98;
+            }
         }
 
         this.doBlockCollisions();

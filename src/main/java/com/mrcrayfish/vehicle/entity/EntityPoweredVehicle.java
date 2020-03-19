@@ -371,9 +371,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         /* Reduces the motion and speed multiplier */
         if(this.onGround)
         {
-            motionX *= 0.8;
+            motionX *= 0.65;
             motionY *= 0.98D;
-            motionZ *= 0.8;
+            motionZ *= 0.65;
         }
         else
         {
