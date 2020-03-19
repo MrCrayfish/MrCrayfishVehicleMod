@@ -34,6 +34,7 @@ import com.mrcrayfish.vehicle.tileentity.*;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
+import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -62,7 +63,10 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.WeakHashMap;
 
 /**
  * Author: MrCrayfish
@@ -73,6 +77,8 @@ public class ClientProxy implements Proxy
     public static final KeyBinding KEY_CYCLE_SEATS  = new KeyBinding("key.vehicle.cycle_seats", Keyboard.KEY_C, "key.categories.vehicle");
 
     public static boolean controllableLoaded = false;
+
+    private static final WeakHashMap<UUID, Map<SoundType, ITickableSound>> SOUND_TRACKER = new WeakHashMap<>();
     
     @Override
     public void preInit()
@@ -177,21 +183,46 @@ public class ClientProxy implements Proxy
     {
         Minecraft.getMinecraft().addScheduledTask(() ->
         {
-            if(vehicle.getRidingSound() != null)
+            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle.getUniqueID(), uuid -> new HashMap<>());
+            if(vehicle.getRidingSound() != null && player.equals(Minecraft.getMinecraft().player))
             {
-                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicleRiding(player, vehicle));
+                ITickableSound sound = soundMap.get(SoundType.ENGINE_RIDING);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(sound))
+                {
+                    sound = new MovingSoundVehicleRiding(player, vehicle);
+                    soundMap.put(SoundType.ENGINE_RIDING, sound);
+                    Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+                }
             }
-            if(vehicle.getMovingSound() != null)
+            if(vehicle.getMovingSound() != null && !player.equals(Minecraft.getMinecraft().player))
             {
-                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(vehicle));
+                ITickableSound sound = soundMap.get(SoundType.ENGINE);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(sound))
+                {
+                    sound = new MovingSoundVehicle(vehicle);
+                    soundMap.put(SoundType.ENGINE, sound);
+                    Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundVehicle(vehicle));
+                }
             }
-            if(vehicle.getHornSound() != null)
+            if(vehicle.getHornSound() != null && !player.equals(Minecraft.getMinecraft().player))
             {
-                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundHorn(vehicle));
+                ITickableSound sound = soundMap.get(SoundType.HORN);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(sound))
+                {
+                    sound = new MovingSoundHorn(vehicle);
+                    soundMap.put(SoundType.HORN, sound);
+                    Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+                }
             }
-            if(vehicle.getHornRidingSound() != null)
+            if(vehicle.getHornRidingSound() != null && player.equals(Minecraft.getMinecraft().player))
             {
-                Minecraft.getMinecraft().getSoundHandler().playSound(new MovingSoundHornRiding(player, vehicle));
+                ITickableSound sound = soundMap.get(SoundType.HORN_RIDING);
+                if(sound == null || sound.isDonePlaying() || !Minecraft.getMinecraft().getSoundHandler().isSoundPlaying(sound))
+                {
+                    sound = new MovingSoundHornRiding(player, vehicle);
+                    soundMap.put(SoundType.HORN_RIDING, sound);
+                    Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+                }
             }
         });
     }
@@ -565,5 +596,13 @@ public class ClientProxy implements Proxy
                 vehicle.getSeatTracker().setSeatIndex(seatIndex, uuid);
             }
         }
+    }
+
+    private enum SoundType
+    {
+        ENGINE,
+        ENGINE_RIDING,
+        HORN,
+        HORN_RIDING;
     }
 }
