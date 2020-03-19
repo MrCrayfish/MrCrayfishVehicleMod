@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.google.common.base.Optional;
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +26,29 @@ public class TileEntityGasPump extends TileEntitySynced implements ITickable
 {
     private int fuelingEntityId;
     private EntityPlayer fuelingEntity;
+
+    private HermiteInterpolator cachedSpline;
+    private boolean recentlyUsed;
+
+    public HermiteInterpolator getCachedSpline()
+    {
+        return cachedSpline;
+    }
+
+    public void setCachedSpline(HermiteInterpolator cachedSpline)
+    {
+        this.cachedSpline = cachedSpline;
+    }
+
+    public boolean isRecentlyUsed()
+    {
+        return recentlyUsed;
+    }
+
+    public void setRecentlyUsed(boolean recentlyUsed)
+    {
+        this.recentlyUsed = recentlyUsed;
+    }
 
     @Nullable
     public FluidTank getTank()

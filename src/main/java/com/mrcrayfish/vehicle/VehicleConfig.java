@@ -128,6 +128,12 @@ public class VehicleConfig
         @Config.Comment("If true, an animation is performed while cycling vehicles in the workstation")
         @Config.LangKey(Reference.MOD_ID + ".config.client.display.workstation_animation")
         public boolean workstationAnimation = true;
+
+        @Config.Name("Hose Segments")
+        @Config.Comment("The amount of segments to use to render the hose on a gas pump. The lower the value, the better the performance but renders a less realistically looking hose")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.display.hose_segments")
+        @Config.RangeInt(min = 1, max = 100)
+        public int hoseSegments = 10;
     }
 
     public static class Controller

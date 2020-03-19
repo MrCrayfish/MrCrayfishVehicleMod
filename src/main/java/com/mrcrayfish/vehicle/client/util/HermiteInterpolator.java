@@ -2,8 +2,11 @@ package com.mrcrayfish.vehicle.client.util;
 
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class to help with hermite interpolation. Based on work by Nils Pipenbrinck
@@ -11,34 +14,37 @@ import java.util.List;
  */
 public class HermiteInterpolator
 {
-    private List<Point> points;
+    private Map<Pair<Integer, Float>, Result> resultCache = new HashMap<>();
+    private Point[] points;
 
-    public HermiteInterpolator(List<Point> points)
+    public HermiteInterpolator(Point ... points)
     {
         this.points = points;
     }
 
     public Result get(int index, float progress)
     {
-        Point p1 = this.getPoint(index);
-        Point p2 = this.getPoint(index + 1);
-        double pX = point(p1.pos.x, p2.pos.x, p1.control.x, p2.control.x, progress);
-        double pY = point(p1.pos.y, p2.pos.y, p1.control.y, p2.control.y, progress);
-        double pZ = point(p1.pos.z, p2.pos.z, p1.control.z, p2.control.z, progress);
-        double aX = angle(p1.pos.x, p2.pos.x, p1.control.x, p2.control.x, progress);
-        double aY = angle(p1.pos.y, p2.pos.y, p1.control.y, p2.control.y, progress);
-        double aZ = angle(p1.pos.z, p2.pos.z, p1.control.z, p2.control.z, progress);
-        return new Result(new Vec3d(pX, pY, pZ), new Vec3d(aX, aY, aZ));
+        return this.resultCache.computeIfAbsent(Pair.of(index, progress), pair -> {
+            Point p1 = this.getPoint(index);
+            Point p2 = this.getPoint(index + 1);
+            double pX = point(p1.pos.x, p2.pos.x, p1.control.x, p2.control.x, progress);
+            double pY = point(p1.pos.y, p2.pos.y, p1.control.y, p2.control.y, progress);
+            double pZ = point(p1.pos.z, p2.pos.z, p1.control.z, p2.control.z, progress);
+            double aX = angle(p1.pos.x, p2.pos.x, p1.control.x, p2.control.x, progress);
+            double aY = angle(p1.pos.y, p2.pos.y, p1.control.y, p2.control.y, progress);
+            double aZ = angle(p1.pos.z, p2.pos.z, p1.control.z, p2.control.z, progress);
+            return new Result(new Vec3d(pX, pY, pZ), new Vec3d(aX, aY, aZ));
+        });
     }
 
     public Point getPoint(int index)
     {
-        return points.get(MathHelper.clamp(index, 0, points.size() - 1));
+        return this.points[MathHelper.clamp(index, 0, this.points.length - 1)];
     }
 
     public int getSize()
     {
-        return points.size();
+        return this.points.length;
     }
 
     public double point(double p1, double p2, double t1, double t2, double s)
