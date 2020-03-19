@@ -1044,7 +1044,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public boolean isEnginePowered()
     {
-        return (this.getEngineType() == EngineType.NONE || this.hasEngine() && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9) && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
+        return ((this.getEngineType() == EngineType.NONE || this.hasEngine()) && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9) && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
     }
 
     public boolean canDrive()
