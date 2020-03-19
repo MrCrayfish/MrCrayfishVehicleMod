@@ -70,7 +70,7 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipeSerializers.CRAFTING;
+        return ModRecipeSerializers.CRAFTING.get();
     }
 
     @Override

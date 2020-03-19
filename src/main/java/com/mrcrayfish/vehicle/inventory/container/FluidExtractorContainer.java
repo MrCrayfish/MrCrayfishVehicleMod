@@ -15,16 +15,11 @@ import net.minecraftforge.common.ForgeHooks;
  */
 public class FluidExtractorContainer extends Container
 {
-    private int extractionProgress;
-    private int remainingFuel;
-    private int maxFuelProgress;
-    private int fluidLevel;
-
     private FluidExtractorTileEntity fluidExtractor;
 
     public FluidExtractorContainer(int windowId, IInventory playerInventory, FluidExtractorTileEntity fluidExtractor)
     {
-        super(ModContainers.FLUID_EXTRACTOR, windowId);
+        super(ModContainers.FLUID_EXTRACTOR.get(), windowId);
         this.fluidExtractor = fluidExtractor;
 
         this.addSlot(new FuelSlot(fluidExtractor, 0, 33, 34));

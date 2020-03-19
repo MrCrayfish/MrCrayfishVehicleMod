@@ -67,7 +67,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     public BlockVehicleCrate()
     {
-        super(Names.Block.VEHICLE_CRATE, Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
+        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
     }
 
     @Override
@@ -130,7 +130,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @Override
     public boolean onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(result.getFace() == Direction.UP && player.getHeldItem(hand).getItem() == ModItems.WRENCH)
+        if(result.getFace() == Direction.UP && player.getHeldItem(hand).getItem() == ModItems.WRENCH.get())
         {
             this.openCrate(world, pos, state, player);
             return true;
@@ -253,17 +253,16 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
         CompoundNBT itemTag = new CompoundNBT();
         itemTag.put("BlockEntityTag", blockEntityTag);
-        ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);
+        ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());
         stack.setTag(itemTag);
         return stack;
     }
 
-    public static void registerVehicle(String id)
+    public static void registerVehicle(ResourceLocation id)
     {
-        ResourceLocation resource = new ResourceLocation(id);
-        if(!REGISTERED_CRATES.contains(resource))
+        if(!REGISTERED_CRATES.contains(id))
         {
-            REGISTERED_CRATES.add(resource);
+            REGISTERED_CRATES.add(id);
             Collections.sort(REGISTERED_CRATES);
         }
     }

@@ -53,12 +53,7 @@ public class BlockFuelDrum extends BlockRotatedObject
 
     public BlockFuelDrum()
     {
-        this(Names.Block.FUEL_DRUM);
-    }
-
-    public BlockFuelDrum(String id)
-    {
-        super(id, Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
     }
 
     @Override
@@ -111,7 +106,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                 if(handler instanceof FluidTank)
                 {
                     FluidTank tank = (FluidTank) handler;
-                    if(tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                    if(tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
                     {
                         return true;
                     }

@@ -21,9 +21,9 @@ public class WheelItem extends PartItem implements IDyeable
 {
     private WheelType wheelType;
 
-    public WheelItem(String id, WheelType wheelType)
+    public WheelItem(WheelType wheelType, Item.Properties properties)
     {
-        super(id, new Item.Properties().group(VehicleMod.CREATIVE_TAB));
+        super(properties);
         this.wheelType = wheelType;
     }
 

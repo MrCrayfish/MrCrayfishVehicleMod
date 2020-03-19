@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -14,9 +15,9 @@ import net.minecraft.world.World;
  */
 public class GoKartEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public GoKartEntity(World worldIn)
+    public GoKartEntity(EntityType<? extends GoKartEntity> type, World worldIn)
     {
-        super(ModEntities.GO_KART, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(12);
         this.stepHeight = 0.625F;
@@ -26,13 +27,13 @@ public class GoKartEntity extends LandVehicleEntity implements IEntityRaytraceab
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO;
+        return ModSounds.GO_KART_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO;
+        return ModSounds.GO_KART_ENGINE_STEREO.get();
     }
 
     @Override

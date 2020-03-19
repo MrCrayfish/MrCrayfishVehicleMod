@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BushBlock;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -29,9 +30,9 @@ import java.util.List;
  */
 public class LawnMowerEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public LawnMowerEntity(World worldIn)
+    public LawnMowerEntity(EntityType<? extends LawnMowerEntity> type, World worldIn)
     {
-        super(ModEntities.LAWN_MOWER, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(8);
         this.setFuelCapacity(5000F);
     }
@@ -120,13 +121,13 @@ public class LawnMowerEntity extends LandVehicleEntity implements IEntityRaytrac
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ATV_ENGINE_MONO;
+        return ModSounds.ATV_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ATV_ENGINE_STEREO;
+        return ModSounds.ATV_ENGINE_STEREO.get();
     }
 
     @Override

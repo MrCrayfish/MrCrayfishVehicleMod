@@ -135,7 +135,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             int statrColorRGB = ((((redBlaze + redSap) / 2) & 255) << 16)
                     | ((((greenBlaze + greenSap) / 2) & 255) << 8) | ((((blueBlaze + blueSap) / 2) & 255));
             int statrColor = (130 << 24) | statrColorRGB;
-            int fluidColor = (130 << 24) | FluidUtils.getAverageFluidColor(ModFluids.FUELIUM); //TODO change to recipe
+            int fluidColor = (130 << 24) | FluidUtils.getAverageFluidColor(ModFluids.FUELIUM.get()); //TODO change to recipe
             double extractionPercentage = this.fluidMixerTileEntity.getExtractionProgress() / (double) Config.SERVER.mixerMixTime.get();
 
             double lenghtItem = 76;

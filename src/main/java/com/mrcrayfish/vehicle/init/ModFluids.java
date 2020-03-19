@@ -4,36 +4,28 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.fluid.BlazeJuice;
 import com.mrcrayfish.vehicle.fluid.EnderSap;
 import com.mrcrayfish.vehicle.fluid.Fuelium;
+import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistry;
 
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModFluids
 {
-    public static final Fluid FUELIUM = new Fuelium.Source();
-    public static final FlowingFluid FLOWING_FUELIUM = new Fuelium.Flowing();
-    public static final Fluid ENDER_SAP = new EnderSap.Source();
-    public static final FlowingFluid FLOWING_ENDER_SAP = new EnderSap.Flowing();
-    public static final Fluid BLAZE_JUICE = new BlazeJuice.Source();
-    public static final FlowingFluid FLOWING_BLAZE_JUICE = new BlazeJuice.Flowing();
+    public static final DeferredRegister<Fluid> FLUIDS = new DeferredRegister<>(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 
-    @SubscribeEvent
-    @SuppressWarnings("unused")
-    public static void register(final RegistryEvent.Register<Fluid> event)
-    {
-        IForgeRegistry<Fluid> registry = event.getRegistry();
-        registry.register(FUELIUM);
-        registry.register(FLOWING_FUELIUM);
-        registry.register(ENDER_SAP);
-        registry.register(FLOWING_ENDER_SAP);
-        registry.register(BLAZE_JUICE);
-        registry.register(FLOWING_BLAZE_JUICE);
-    }
+    public static final RegistryObject<Fluid> FUELIUM = FLUIDS.register("fuelium", Fuelium.Source::new);
+    public static final RegistryObject<FlowingFluid> FLOWING_FUELIUM = FLUIDS.register("flowing_fuelium", Fuelium.Flowing::new);
+    public static final RegistryObject<Fluid> ENDER_SAP = FLUIDS.register("ender_sap", EnderSap.Source::new);
+    public static final RegistryObject<FlowingFluid> FLOWING_ENDER_SAP = FLUIDS.register("flowing_ender_sap", EnderSap.Flowing::new);
+    public static final RegistryObject<Fluid> BLAZE_JUICE = FLUIDS.register("blaze_juice", BlazeJuice.Source::new);
+    public static final RegistryObject<FlowingFluid> FLOWING_BLAZE_JUICE = FLUIDS.register("flowing_blaze_juice", BlazeJuice.Flowing::new);
 }

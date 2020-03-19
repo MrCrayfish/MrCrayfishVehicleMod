@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -50,9 +51,9 @@ public class StorageTrailerEntity extends TrailerEntity implements EntityRaytrac
 
     private StorageInventory inventory;
 
-    public StorageTrailerEntity(World worldIn)
+    public StorageTrailerEntity(EntityType<? extends StorageTrailerEntity> type, World worldIn)
     {
-        super(ModEntities.STORAGE_TRAILER, worldIn);
+        super(type, worldIn);
         this.initInventory();
     }
 

@@ -4,8 +4,10 @@ import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -13,10 +15,9 @@ import java.util.function.Function;
  */
 public class EntityUtil
 {
-    public static <T extends Entity> EntityType<T> buildVehicleType(String id, Function<World, T> function, float width, float height)
+    public static <T extends Entity> EntityType<T> buildVehicleType(ResourceLocation id, BiFunction<EntityType<T>, World, T> function, float width, float height)
     {
-        EntityType<T> type = EntityType.Builder.<T>create((entityType, world) -> function.apply(world), EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).setCustomClientFactory((spawnEntity, world) -> function.apply(world)).build(id);
-        type.setRegistryName(id);
+        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).build(id.toString());
         BlockVehicleCrate.registerVehicle(id);
         return type;
     }

@@ -50,7 +50,7 @@ public class BlockGasPump extends BlockRotatedObject
 
     public BlockGasPump()
     {
-        super(Names.Block.GAS_PUMP, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));
     }
 
@@ -108,12 +108,12 @@ public class BlockGasPump extends BlockRotatedObject
                     if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == player.getEntityId())
                     {
                         gasPump.setFuelingEntity(null);
-                        world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     else if(state.get(DIRECTION).rotateY().equals(result.getFace()))
                     {
                         gasPump.setFuelingEntity(player);
-                        world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                 }
             }
@@ -141,7 +141,7 @@ public class BlockGasPump extends BlockRotatedObject
                         if(handler instanceof FluidTank)
                         {
                             FluidTank tank = (FluidTank) handler;
-                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
                             {
                                 return true;
                             }

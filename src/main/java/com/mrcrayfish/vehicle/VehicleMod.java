@@ -8,9 +8,7 @@ import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.WheelType;
-import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.init.ModLootFunctions;
+import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -22,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -43,7 +42,7 @@ public class VehicleMod
         @Override
         public ItemStack createIcon()
         {
-            return new ItemStack(ModItems.WOOD_SMALL_ENGINE);
+            return new ItemStack(ModItems.WOOD_SMALL_ENGINE.get());
         }
 
         @Override
@@ -75,7 +74,7 @@ public class VehicleMod
                 blockEntityTag.putInt("WheelType", WheelType.STANDARD.ordinal());
                 CompoundNBT itemTag = new CompoundNBT();
                 itemTag.put("BlockEntityTag", blockEntityTag);
-                ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE);
+                ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());
                 stack.setTag(itemTag);
                 items.add(stack);
             });
@@ -84,6 +83,15 @@ public class VehicleMod
 
     public VehicleMod()
     {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        ModBlocks.BLOCKS.register(eventBus);
+        ModItems.ITEMS.register(eventBus);
+        ModEntities.ENTITY_TYPES.register(eventBus);
+        ModTileEntities.TILE_ENTITY_TYPES.register(eventBus);
+        ModContainers.CONTAINER_TYPES.register(eventBus);
+        ModSounds.SOUNDS.register(eventBus);
+        ModRecipeSerializers.RECIPE_SERIALIZERS.register(eventBus);
+        ModFluids.FLUIDS.register(eventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);

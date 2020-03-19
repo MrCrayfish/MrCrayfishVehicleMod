@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
@@ -13,22 +14,22 @@ import net.minecraft.world.World;
  */
 public class CouchEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public CouchEntity(World worldIn)
+    public CouchEntity(EntityType<? extends CouchEntity> type, World worldIn)
     {
-        super(ModEntities.SOFA, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(10);
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ATV_ENGINE_MONO;
+        return ModSounds.ATV_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ATV_ENGINE_STEREO;
+        return ModSounds.ATV_ENGINE_STEREO.get();
     }
 
     @Override

@@ -20,6 +20,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -64,9 +65,9 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
 
     private StorageInventory inventory;
 
-    public MopedEntity(World worldIn)
+    public MopedEntity(EntityType<? extends MopedEntity> type, World worldIn)
     {
-        super(ModEntities.MOPED, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(12F);
         this.setTurnSensitivity(15);
         this.setMaxTurnAngle(45);
@@ -84,13 +85,13 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.MOPED_ENGINE_MONO;
+        return ModSounds.MOPED_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.MOPED_ENGINE_STEREO;
+        return ModSounds.MOPED_ENGINE_STEREO.get();
     }
 
     @Override

@@ -19,6 +19,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -59,9 +60,9 @@ public class SeederTrailerEntity extends TrailerEntity implements EntityRaytrace
     private int inventoryTimer;
     private StorageInventory inventory;
 
-    public SeederTrailerEntity(World worldIn)
+    public SeederTrailerEntity(EntityType<? extends SeederTrailerEntity> type, World worldIn)
     {
-        super(ModEntities.SEEDER, worldIn);
+        super(type, worldIn);
         this.initInventory();
     }
 

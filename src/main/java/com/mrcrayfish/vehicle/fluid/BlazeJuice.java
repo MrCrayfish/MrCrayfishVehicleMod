@@ -20,22 +20,17 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 {
     public BlazeJuice()
     {
-        super(new Properties(() -> ModFluids.BLAZE_JUICE, () -> ModFluids.FLOWING_BLAZE_JUICE, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.BLAZE_JUICE));
+        super(new Properties(ModFluids.BLAZE_JUICE, ModFluids.FLOWING_BLAZE_JUICE, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(ModBlocks.BLAZE_JUICE::get));
     }
 
     @Override
     public Item getFilledBucket()
     {
-        return ModItems.BLAZE_JUICE_BUCKET;
+        return ModItems.BLAZE_JUICE_BUCKET.get();
     }
 
     public static class Source extends BlazeJuice
     {
-        public Source()
-        {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "blaze_juice"));
-        }
-
         @Override
         public boolean isSource(IFluidState state)
         {
@@ -51,11 +46,6 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 
     public static class Flowing extends BlazeJuice
     {
-        public Flowing()
-        {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "flowing_blaze_juice"));
-        }
-
         @Override
         protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder)
         {

@@ -65,7 +65,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
 
     public BlockSteepBoostRamp()
     {
-        super(Names.Block.STEEP_BOOST_RAMP, Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
     }
 
     @Override
@@ -101,7 +101,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
                 PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                 if(!poweredVehicle.isBoosting())
                 {
-                    world.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
+                    world.playSound(null, pos, ModSounds.BOOST_PAD.get(), SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(3);

@@ -268,7 +268,7 @@ public class ClientEvents
                 {
                     SprayCanItem sprayCan = (SprayCanItem) player.inventory.getCurrentItem().getItem();
                     float pitch = 0.85F + 0.15F * sprayCan.getRemainingSprays(player.inventory.getCurrentItem());
-                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
+                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(ModSounds.SPRAY_CAN_SHAKE.get(), pitch, 0.75F));
                 }
             }
 
@@ -318,7 +318,7 @@ public class ClientEvents
             double offset = Math.sin((tickCounter + Minecraft.getInstance().getRenderPartialTicks()) * 0.4) * 0.01;
             if (offsetPrev > offsetPrevPrev && offsetPrev > offset)
             {
-                Minecraft.getInstance().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
+                Minecraft.getInstance().player.playSound(ModSounds.LIQUID_GLUG.get(), 0.3F, 1F);
             }
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;

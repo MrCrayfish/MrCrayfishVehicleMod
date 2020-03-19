@@ -17,6 +17,7 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.IIntArray;
 import net.minecraft.util.INameable;
@@ -113,7 +114,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     public FluidExtractorTileEntity()
     {
-        super(ModTileEntities.FLUID_EXTRACTOR, Config.SERVER.extractorCapacity.get(), stack -> true);
+        super(ModTileEntities.FLUID_EXTRACTOR.get(), Config.SERVER.extractorCapacity.get(), stack -> true);
         this.capacity = Config.SERVER.extractorCapacity.get();
     }
 

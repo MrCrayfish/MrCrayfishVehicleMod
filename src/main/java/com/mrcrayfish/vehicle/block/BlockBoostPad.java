@@ -48,7 +48,7 @@ public class BlockBoostPad extends BlockRotatedObject
 
     public BlockBoostPad()
     {
-        super(Names.Block.BOOST_PAD, Block.Properties.create(Material.ROCK).hardnessAndResistance(0.6F));
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.6F));
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(LEFT, false).with(RIGHT, false));
     }
 
@@ -96,7 +96,7 @@ public class BlockBoostPad extends BlockRotatedObject
                 PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entityIn;
                 if(!poweredVehicle.isBoosting())
                 {
-                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD.get(), SoundCategory.BLOCKS, 1.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();

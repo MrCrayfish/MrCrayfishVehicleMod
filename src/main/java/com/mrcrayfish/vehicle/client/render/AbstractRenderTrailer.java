@@ -24,7 +24,7 @@ public abstract class AbstractRenderTrailer<T extends TrailerEntity> extends Abs
         float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
         GlStateManager.rotatef(right ? wheelRotation : -wheelRotation, 1, 0, 0);
         GlStateManager.scalef(wheelScale, wheelScale, wheelScale);
-        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, -1);
+        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, -1);
         GlStateManager.popMatrix();
     }
 }

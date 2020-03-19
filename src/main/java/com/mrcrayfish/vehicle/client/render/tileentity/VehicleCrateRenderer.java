@@ -26,7 +26,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
     public void render(VehicleCrateTileEntity crate, double x, double y, double z, float partialTicks, int destroyStage)
     {
         BlockState state = crate.getWorld().getBlockState(crate.getPos());
-        if(state.getBlock() != ModBlocks.VEHICLE_CRATE)
+        if(state.getBlock() != ModBlocks.VEHICLE_CRATE.get())
             return;
         
         GlStateManager.pushMatrix();

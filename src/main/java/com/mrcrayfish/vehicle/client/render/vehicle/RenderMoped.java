@@ -82,7 +82,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
                 GlStateManager.rotatef(-frontWheelSpin, 1, 0, 0);
             }
             GlStateManager.scalef(1.3F, 1.3F, 1.3F);
-            RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, -1);
+            RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, -1);
             GlStateManager.popMatrix();
         }
 

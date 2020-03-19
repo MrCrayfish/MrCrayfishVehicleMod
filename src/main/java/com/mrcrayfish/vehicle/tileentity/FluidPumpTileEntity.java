@@ -26,7 +26,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
 
     public FluidPumpTileEntity()
     {
-        super(ModTileEntities.FLUID_PUMP, Config.SERVER.pumpCapacity.get());
+        super(ModTileEntities.FLUID_PUMP.get(), Config.SERVER.pumpCapacity.get());
         this.transferAmount = Config.SERVER.pumpTransferAmount.get();
         this.powerMode = PowerMode.REQUIRES_SIGNAL_ON;
     }

@@ -50,7 +50,7 @@ public class VehicleProperties
         properties.addSeat(new Seat(new Vec3d(7, 6, -15)));
         properties.addSeat(new Seat(new Vec3d(-7, 6, 3)));
         properties.addSeat(new Seat(new Vec3d(7, 6, 3)));
-        VehicleProperties.setProperties(ModEntities.ALUMINUM_BOAT, properties);
+        VehicleProperties.setProperties(ModEntities.ALUMINUM_BOAT.get(), properties);
 
         /* ATV */
         properties = new VehicleProperties();
@@ -71,7 +71,7 @@ public class VehicleProperties
         properties.setRearAxelVec(0, -10.5);
         properties.addSeat(new Seat(new Vec3d(0, 5, -3), true));
         properties.addSeat(new Seat(new Vec3d(0, 5.5, -12)));
-        VehicleProperties.setProperties(ModEntities.ATV, properties);
+        VehicleProperties.setProperties(ModEntities.ATV.get(), properties);
 
         /* Bumper Car */
         properties = new VehicleProperties();
@@ -89,7 +89,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 8.5);
         properties.setRearAxelVec(0, -8.5);
         properties.addSeat(new Seat(new Vec3d(0, 1, -6), true));
-        VehicleProperties.setProperties(ModEntities.BUMPER_CAR, properties);
+        VehicleProperties.setProperties(ModEntities.BUMPER_CAR.get(), properties);
 
         /* Dune Buggy */
         properties = new VehicleProperties();
@@ -106,7 +106,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 5.3);
         properties.setRearAxelVec(0, -5.7);
         properties.addSeat(new Seat(new Vec3d(0, 2, -3), true));
-        VehicleProperties.setProperties(ModEntities.DUNE_BUGGY, properties);
+        VehicleProperties.setProperties(ModEntities.DUNE_BUGGY.get(), properties);
 
         /* Go Kart */
         properties = new VehicleProperties();
@@ -124,7 +124,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 13.5);
         properties.setRearAxelVec(0, -8.5);
         properties.addSeat(new Seat(new Vec3d(0, -2, -1), true));
-        VehicleProperties.setProperties(ModEntities.GO_KART, properties);
+        VehicleProperties.setProperties(ModEntities.GO_KART.get(), properties);
 
         /* Golf Cart */
         properties = new VehicleProperties();
@@ -145,7 +145,7 @@ public class VehicleProperties
         properties.addSeat(new Seat(new Vec3d(-5.5, 5, -6)));
         properties.addSeat(new Seat(new Vec3d(5.5, 5, -15), 180F));
         properties.addSeat(new Seat(new Vec3d(-5.5, 5, -15), 180F));
-        VehicleProperties.setProperties(ModEntities.GOLF_CART, properties);
+        VehicleProperties.setProperties(ModEntities.GOLF_CART.get(), properties);
 
         /* Jet Ski */
         properties = new VehicleProperties();
@@ -157,7 +157,7 @@ public class VehicleProperties
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F));
         properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
         properties.addSeat(new Seat(new Vec3d(0, 5, -7)));
-        VehicleProperties.setProperties(ModEntities.JET_SKI, properties);
+        VehicleProperties.setProperties(ModEntities.JET_SKI.get(), properties);
 
         /* Lawn Mower */
         properties = new VehicleProperties();
@@ -177,7 +177,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 13.5);
         properties.setRearAxelVec(0, -10.7);
         properties.addSeat(new Seat(new Vec3d(0, 7, -9), true));
-        VehicleProperties.setProperties(ModEntities.LAWN_MOWER, properties);
+        VehicleProperties.setProperties(ModEntities.LAWN_MOWER.get(), properties);
 
         /* Mini Bike */
         properties = new VehicleProperties();
@@ -193,7 +193,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 13);
         properties.setRearAxelVec(0, -6.7);
         properties.addSeat(new Seat(new Vec3d(0, 7, -2), true));
-        VehicleProperties.setProperties(ModEntities.MINI_BIKE, properties);
+        VehicleProperties.setProperties(ModEntities.MINI_BIKE.get(), properties);
 
         /* Mini Bus */
         properties = new VehicleProperties();
@@ -216,7 +216,7 @@ public class VehicleProperties
         properties.addSeat(new Seat(new Vec3d(4.5, 2, -3)));
         properties.addSeat(new Seat(new Vec3d(-4.5, 2, -3)));
         properties.addSeat(new Seat(new Vec3d(4.5, 2, -15)));
-        VehicleProperties.setProperties(ModEntities.MINI_BUS, properties);
+        VehicleProperties.setProperties(ModEntities.MINI_BUS.get(), properties);
 
         /* Moped */
         properties = new VehicleProperties();
@@ -232,7 +232,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 14.5);
         properties.setRearAxelVec(0, -6.7);
         properties.addSeat(new Seat(new Vec3d(0, 4, -2), true));
-        VehicleProperties.setProperties(ModEntities.MOPED, properties);
+        VehicleProperties.setProperties(ModEntities.MOPED.get(), properties);
 
         /* Off Roader */
         properties = new VehicleProperties();
@@ -253,7 +253,7 @@ public class VehicleProperties
         properties.addSeat(new Seat(new Vec3d(-5, 4, -3)));
         properties.addSeat(new Seat(new Vec3d(5, 11.5, -14.5)));
         properties.addSeat(new Seat(new Vec3d(-5, 3.5, -18.9)));
-        VehicleProperties.setProperties(ModEntities.OFF_ROADER, properties);
+        VehicleProperties.setProperties(ModEntities.OFF_ROADER.get(), properties);
 
         /* Shopping Cart */
         properties = new VehicleProperties();
@@ -270,7 +270,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 9.5);
         properties.setRearAxelVec(0, -10.5);
         properties.addSeat(new Seat(new Vec3d(0, 7, -4), true));
-        VehicleProperties.setProperties(ModEntities.SHOPPING_CART, properties);
+        VehicleProperties.setProperties(ModEntities.SHOPPING_CART.get(), properties);
 
         /* Smart Car */
         properties = new VehicleProperties();
@@ -288,7 +288,7 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 12);
         properties.setRearAxelVec(0, -12);
         properties.addSeat(new Seat(new Vec3d(0, 0.5, -2), true));
-        VehicleProperties.setProperties(ModEntities.SMART_CAR, properties);
+        VehicleProperties.setProperties(ModEntities.SMART_CAR.get(), properties);
 
         /* Speed Boat */
         properties = new VehicleProperties();
@@ -299,7 +299,7 @@ public class VehicleProperties
         properties.setTrailerOffset(new Vec3d(0.0, -0.09375, -0.75));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F));
         properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
-        VehicleProperties.setProperties(ModEntities.SPEED_BOAT, properties);
+        VehicleProperties.setProperties(ModEntities.SPEED_BOAT.get(), properties);
 
         /* Sports Plane */
         properties = new VehicleProperties();
@@ -308,7 +308,7 @@ public class VehicleProperties
         properties.setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.35F, 0.0F, 0.0F, 0.0F, 0.85F));
         properties.addSeat(new Seat(new Vec3d(0, 6, 0), true));
-        VehicleProperties.setProperties(ModEntities.SPORTS_PLANE, properties);
+        VehicleProperties.setProperties(ModEntities.SPORTS_PLANE.get(), properties);
 
         /* Tractor */
         properties = new VehicleProperties();
@@ -328,40 +328,40 @@ public class VehicleProperties
         properties.setFrontAxelVec(0, 14.0);
         properties.setRearAxelVec(0, -14.5);
         properties.addSeat(new Seat(new Vec3d(0, 9, -14), true));
-        VehicleProperties.setProperties(ModEntities.TRACTOR, properties);
+        VehicleProperties.setProperties(ModEntities.TRACTOR.get(), properties);
 
         /* Fertilizer Trailer */
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        VehicleProperties.setProperties(ModEntities.FERTILIZER, properties);
+        VehicleProperties.setProperties(ModEntities.FERTILIZER.get(), properties);
 
         /* Fluid Trailer */
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
         properties.setHeldOffset(new Vec3d(0D, 3D, 0D));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        VehicleProperties.setProperties(ModEntities.FLUID_TRAILER, properties);
+        VehicleProperties.setProperties(ModEntities.FLUID_TRAILER.get(), properties);
 
         /* Seeder Trailer */
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        VehicleProperties.setProperties(ModEntities.SEEDER, properties);
+        VehicleProperties.setProperties(ModEntities.SEEDER.get(), properties);
 
         /* Storage Trailer */
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
         properties.setTowBarPosition(new Vec3d(0.0, 0.0, -12.0));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        VehicleProperties.setProperties(ModEntities.STORAGE_TRAILER, properties);
+        VehicleProperties.setProperties(ModEntities.STORAGE_TRAILER.get(), properties);
 
         /* Vehicle Trailer */
         properties = new VehicleProperties();
         properties.setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1));
         properties.setHeldOffset(new Vec3d(0D, 3D, 0D));
         properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F));
-        VehicleProperties.setProperties(ModEntities.VEHICLE_TRAILER, properties);
+        VehicleProperties.setProperties(ModEntities.VEHICLE_TRAILER.get(), properties);
 
         if(ModList.get().isLoaded("cfm"))
         {
@@ -372,7 +372,7 @@ public class VehicleProperties
             properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.4375));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
             properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
-            VehicleProperties.setProperties(ModEntities.BATH, properties);
+            VehicleProperties.setProperties(ModEntities.BATH.get(), properties);
 
             /* Sofa */
             properties = new VehicleProperties();
@@ -389,7 +389,7 @@ public class VehicleProperties
             properties.setFrontAxelVec(0, 7.0);
             properties.setRearAxelVec(0, -7.0);
             properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
-            VehicleProperties.setProperties(ModEntities.SOFA, properties);
+            VehicleProperties.setProperties(ModEntities.SOFA.get(), properties);
 
             /* Sofacopter */
             properties = new VehicleProperties();
@@ -398,7 +398,7 @@ public class VehicleProperties
             properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
             properties.addSeat(new Seat(new Vec3d(0, 0, 0), true));
-            VehicleProperties.setProperties(ModEntities.SOFACOPTER, properties);
+            VehicleProperties.setProperties(ModEntities.SOFACOPTER.get(), properties);
         }
     }
 

@@ -9,9 +9,8 @@ import net.minecraft.item.Item;
  */
 public class KeyItem extends Item implements IDyeable
 {
-    public KeyItem()
+    public KeyItem(Item.Properties properties)
     {
-        super(new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB));
-        this.setRegistryName(Names.Item.KEY);
+        super(properties);
     }
 }

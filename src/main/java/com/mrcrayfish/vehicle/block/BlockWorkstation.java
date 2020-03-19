@@ -37,7 +37,7 @@ public class BlockWorkstation extends BlockRotatedObject
 
     public BlockWorkstation()
     {
-        super(Names.Block.WORKSTATION, Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -18,22 +19,22 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class GolfCartEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
 {
-    public GolfCartEntity(World worldIn)
+    public GolfCartEntity(EntityType<? extends GolfCartEntity> type, World worldIn)
     {
-        super(ModEntities.GOLF_CART, worldIn);
+        super(type, worldIn);
         //TODO figure out electric vehicles
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO;
+        return ModSounds.ELECTRIC_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_STEREO;
+        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
     }
 
     @Override

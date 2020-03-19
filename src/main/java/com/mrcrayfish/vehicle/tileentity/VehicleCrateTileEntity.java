@@ -50,7 +50,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
 
     public VehicleCrateTileEntity()
     {
-        super(ModTileEntities.VEHICLE_CRATE);
+        super(ModTileEntities.VEHICLE_CRATE.get());
     }
 
     public void setEntityId(ResourceLocation entityId)
@@ -152,7 +152,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                 if(this.timer == 90 || this.timer == 110 || this.timer == 130 || this.timer == 150)
                 {
                     float pitch = (float) (0.9F + 0.2F * RAND.nextDouble());
-                    VehicleMod.PROXY.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND, this.pos, 1.0F, pitch);
+                    VehicleMod.PROXY.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND.get(), this.pos, 1.0F, pitch);
                 }
                 if(this.timer == 150)
                 {

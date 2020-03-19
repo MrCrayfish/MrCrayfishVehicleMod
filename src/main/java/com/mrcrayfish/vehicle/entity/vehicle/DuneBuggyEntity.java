@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
@@ -14,9 +15,9 @@ import net.minecraft.world.World;
  */
 public class DuneBuggyEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public DuneBuggyEntity(World worldIn)
+    public DuneBuggyEntity(EntityType<? extends DuneBuggyEntity> type, World worldIn)
     {
-        super(ModEntities.DUNE_BUGGY, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(10);
         this.stepHeight = 0.5F;
         this.setFuelCapacity(5000F);
@@ -33,13 +34,13 @@ public class DuneBuggyEntity extends LandVehicleEntity implements IEntityRaytrac
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO;
+        return ModSounds.ELECTRIC_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_STEREO;
+        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
     }
 
     @Override

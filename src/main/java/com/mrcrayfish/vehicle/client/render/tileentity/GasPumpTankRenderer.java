@@ -26,7 +26,7 @@ public class GasPumpTankRenderer extends TileEntityRenderer<GasPumpTankTileEntit
     public void render(GasPumpTankTileEntity gasPump, double x, double y, double z, float partialTicks, int destroyStage)
     {
         BlockState state = gasPump.getWorld().getBlockState(gasPump.getPos());
-        if(state.getBlock() != ModBlocks.GAS_PUMP)
+        if(state.getBlock() != ModBlocks.GAS_PUMP.get())
             return;
 
         GlStateManager.pushMatrix();
@@ -58,7 +58,7 @@ public class GasPumpTankRenderer extends TileEntityRenderer<GasPumpTankTileEntit
 
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-            int light = getWorld().getCombinedLight(te.getPos(), ModFluids.FUELIUM.getAttributes().getLuminosity());
+            int light = getWorld().getCombinedLight(te.getPos(), te.getFluidTank().getFluid().getFluid().getAttributes().getLuminosity());
             int lightX = light >> 0x10 & 0xFFFF;
             int lightY = light & 0xFFFF;
 

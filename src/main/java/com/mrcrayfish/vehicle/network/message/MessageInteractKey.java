@@ -62,7 +62,7 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
                     if(poweredVehicle.isKeyNeeded())
                     {
                         ItemStack stack = player.getHeldItemMainhand();
-                        if(!stack.isEmpty() && stack.getItem() == ModItems.WRENCH)
+                        if(!stack.isEmpty() && stack.getItem() == ModItems.WRENCH.get())
                         {
                             if(poweredVehicle.isOwner(player))
                             {
@@ -78,7 +78,7 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
                         }
                         if(poweredVehicle.getKeyStack().isEmpty())
                         {
-                            if(!stack.isEmpty() && stack.getItem() == ModItems.KEY)
+                            if(!stack.isEmpty() && stack.getItem() == ModItems.KEY.get())
                             {
                                 UUID keyUuid = CommonUtils.getOrCreateStackTag(stack).getUniqueId("VehicleId");
                                 if(poweredVehicle.getUniqueID().equals(keyUuid))

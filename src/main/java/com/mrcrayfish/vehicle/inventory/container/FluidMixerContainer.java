@@ -26,7 +26,7 @@ public class FluidMixerContainer extends Container
 
     public FluidMixerContainer(int windowId, PlayerInventory playerInventory, FluidMixerTileEntity fluidExtractor)
     {
-        super(ModContainers.FLUID_MIXER, windowId);
+        super(ModContainers.FLUID_MIXER.get(), windowId);
         this.fluidExtractor = fluidExtractor;
 
         this.addSlot(new FuelSlot(fluidExtractor, 0, 9, 50));

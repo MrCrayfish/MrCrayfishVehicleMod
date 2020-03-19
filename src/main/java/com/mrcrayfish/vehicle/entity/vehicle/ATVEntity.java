@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -15,9 +16,9 @@ import net.minecraft.world.World;
  */
 public class ATVEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public ATVEntity(World worldIn)
+    public ATVEntity(EntityType<? extends ATVEntity> type, World worldIn)
     {
-        super(ModEntities.ATV, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(15);
         this.setFuelCapacity(20000F);
     }
@@ -31,13 +32,13 @@ public class ATVEntity extends LandVehicleEntity implements IEntityRaytraceable
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ATV_ENGINE_MONO;
+        return ModSounds.ATV_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ATV_ENGINE_STEREO;
+        return ModSounds.ATV_ENGINE_STEREO.get();
     }
 
     @Override

@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -34,9 +35,9 @@ public class VehicleEntityTrailer extends TrailerEntity implements EntityRaytrac
         return map;
     });
 
-    public VehicleEntityTrailer(World worldIn)
+    public VehicleEntityTrailer(EntityType<? extends VehicleEntityTrailer> type, World worldIn)
     {
-        super(ModEntities.VEHICLE_TRAILER, worldIn);
+        super(type, worldIn);
     }
 
     @Override

@@ -44,11 +44,6 @@ public class BlockFluidPump extends BlockFluidPipe
             {Block.makeCuboidShape(16, 3, 3, 13, 13, 13), Block.makeCuboidShape(13, 4.5, 4.5, 12, 11.5, 11.5)}
     };
 
-    public BlockFluidPump()
-    {
-        super(Names.Block.FLUID_PUMP);
-    }
-
     @Override
     protected VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
     {
@@ -88,7 +83,7 @@ public class BlockFluidPump extends BlockFluidPipe
     @Nullable
     public AxisAlignedBB getHousingBox(BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Vec3d hitVec, @Nullable FluidPipeTileEntity pipe)
     {
-        if(!(pipe instanceof FluidPumpTileEntity) || player.getHeldItem(hand).getItem() != ModItems.WRENCH)
+        if(!(pipe instanceof FluidPumpTileEntity) || player.getHeldItem(hand).getItem() != ModItems.WRENCH.get())
         {
             return null;
         }
@@ -136,7 +131,7 @@ public class BlockFluidPump extends BlockFluidPipe
             BlockPos adjacentPos = pos.offset(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
             boolean enabled = !disabledConnections[facing.getIndex()];
-            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE)
+            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
             {
                 state = state.with(CONNECTED_PIPES[facing.getIndex()], enabled);
             }

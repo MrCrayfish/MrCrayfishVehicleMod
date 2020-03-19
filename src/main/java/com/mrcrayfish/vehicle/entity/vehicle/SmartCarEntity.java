@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
@@ -13,9 +14,9 @@ import net.minecraft.world.World;
  */
 public class SmartCarEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public SmartCarEntity(World worldIn)
+    public SmartCarEntity(EntityType<? extends SmartCarEntity> type, World worldIn)
     {
-        super(ModEntities.SMART_CAR, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(12);
         this.stepHeight = 1F;
@@ -24,13 +25,13 @@ public class SmartCarEntity extends LandVehicleEntity implements IEntityRaytrace
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO;
+        return ModSounds.ELECTRIC_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_STEREO;
+        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
     }
 
     @Override

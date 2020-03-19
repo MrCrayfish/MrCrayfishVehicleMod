@@ -36,7 +36,7 @@ public class BlockFluidMixer extends BlockRotatedObject
 {
     public BlockFluidMixer()
     {
-        super(Names.Block.FLUID_MIXER, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
     }
 
     @Override

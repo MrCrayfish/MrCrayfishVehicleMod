@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
@@ -24,16 +25,16 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
     private boolean activated = false;
     private int liftProgress;
 
-    public EntityJack(World worldIn)
+    public EntityJack(EntityType<? extends EntityJack> type, World worldIn)
     {
-        super(ModEntities.JACK, worldIn);
+        super(type, worldIn);
         this.setNoGravity(true);
         this.noClip = true;
     }
 
-    public EntityJack(World worldIn, BlockPos pos, double yOffset, float yaw)
+    public EntityJack(EntityType<? extends EntityJack> type, World worldIn, BlockPos pos, double yOffset, float yaw)
     {
-        this(worldIn);
+        this(type, worldIn);
         this.setPosition(pos.getX() + 0.5, pos.getY() + yOffset, pos.getZ() + 0.5);
         this.setRotation(yaw, 0F);
         this.initialX = pos.getX() + 0.5;

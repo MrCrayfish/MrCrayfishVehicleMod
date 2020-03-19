@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.recipe;
 
 import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.init.ModRecipes;
+import com.mrcrayfish.vehicle.init.ModRecipeSerializers;
 import com.mrcrayfish.vehicle.item.IDyeable;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
@@ -99,6 +99,6 @@ public class RecipeColorSprayCan extends SpecialRecipe
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipes.COLOR_SPRAY_CAN;
+        return ModRecipeSerializers.COLOR_SPRAY_CAN.get();
     }
 }

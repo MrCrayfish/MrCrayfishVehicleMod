@@ -9,9 +9,8 @@ import net.minecraft.item.Item;
  */
 public class HammerItem extends Item
 {
-    public HammerItem()
+    public HammerItem(Item.Properties properties)
     {
-        super(new Item.Properties().maxDamage(200).group(VehicleMod.CREATIVE_TAB));
-        this.setRegistryName(Names.Item.HAMMER);
+        super(properties);
     }
 }

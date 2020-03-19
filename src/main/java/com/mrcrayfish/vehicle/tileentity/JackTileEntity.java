@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.mrcrayfish.vehicle.block.BlockJack;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import net.minecraft.block.BlockState;
@@ -34,12 +35,12 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
 
     public JackTileEntity()
     {
-        super(ModTileEntities.JACK);
+        super(ModTileEntities.JACK.get());
     }
 
     public void setVehicle(VehicleEntity vehicle)
     {
-        this.jack = new EntityJack(this.world, this.pos, 9 * 0.0625, vehicle.rotationYaw);
+        this.jack = new EntityJack(ModEntities.JACK.get(), this.world, this.pos, 9 * 0.0625, vehicle.rotationYaw);
         vehicle.startRiding(this.jack, true);
         this.jack.updateRidden();
         this.world.addEntity(this.jack);
@@ -76,19 +77,19 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
             {
                 if(!this.activated)
                 {
-                    this.world.playSound(null, this.pos, ModSounds.JACK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    this.world.playSound(null, this.pos, ModSounds.JACK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     this.activated = true;
                 }
             }
             else if(this.activated)
             {
-                this.world.playSound(null, this.pos, ModSounds.JACK_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                this.world.playSound(null, this.pos, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 this.activated = false;
             }
         }
         else if(this.activated)
         {
-            this.world.playSound(null, this.pos, ModSounds.JACK_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            this.world.playSound(null, this.pos, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             this.activated = false;
         }
 

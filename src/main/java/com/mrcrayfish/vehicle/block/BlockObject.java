@@ -7,9 +7,8 @@ import net.minecraft.block.Block;
  */
 public class BlockObject extends Block
 {
-    public BlockObject(String id, Block.Properties properties)
+    public BlockObject(Block.Properties properties)
     {
         super(properties);
-        this.setRegistryName(id);
     }
 }

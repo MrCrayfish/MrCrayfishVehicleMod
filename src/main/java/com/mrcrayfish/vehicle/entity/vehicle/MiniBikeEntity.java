@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -14,9 +15,9 @@ import net.minecraft.world.World;
  */
 public class MiniBikeEntity extends MotorcycleEntity implements IEntityRaytraceable
 {
-    public MiniBikeEntity(World worldIn)
+    public MiniBikeEntity(EntityType<? extends MiniBikeEntity> type, World worldIn)
     {
-        super(ModEntities.MINI_BIKE, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(18F);
         this.setTurnSensitivity(12);
         this.setFuelCapacity(15000F);
@@ -26,13 +27,13 @@ public class MiniBikeEntity extends MotorcycleEntity implements IEntityRaytracea
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO;
+        return ModSounds.GO_KART_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO;
+        return ModSounds.GO_KART_ENGINE_STEREO.get();
     }
 
     @Override

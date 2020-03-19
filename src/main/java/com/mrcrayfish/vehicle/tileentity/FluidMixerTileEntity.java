@@ -54,7 +54,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
     private FluidTank tankBlaze = new FluidTank(Config.SERVER.mixerInputCapacity.get(), this::isValidFluid);
     private FluidTank tankEnderSap = new FluidTank(Config.SERVER.mixerInputCapacity.get(), this::isValidFluid);
-    private FluidTank tankFuelium = new FluidTank(Config.SERVER.mixerOutputCapacity.get(), stack -> stack.getFluid() == ModFluids.FUELIUM);
+    private FluidTank tankFuelium = new FluidTank(Config.SERVER.mixerOutputCapacity.get(), stack -> stack.getFluid() == ModFluids.FUELIUM.get());
 
     private static final int SLOT_FUEL = 0;
     public static final int SLOT_INGREDIENT = 1;
@@ -145,7 +145,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
     public FluidMixerTileEntity()
     {
-        super(ModTileEntities.FLUID_MIXER);
+        super(ModTileEntities.FLUID_MIXER.get());
     }
 
     @Override

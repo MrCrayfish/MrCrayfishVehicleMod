@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
@@ -22,9 +23,9 @@ public class SportsPlaneEntity extends PlaneEntity implements IEntityRaytraceabl
     public float propellerRotation;
     public float prevPropellerRotation;
 
-    public SportsPlaneEntity(World worldIn)
+    public SportsPlaneEntity(EntityType<? extends SportsPlaneEntity> type, World worldIn)
     {
-        super(ModEntities.SPORTS_PLANE, worldIn);
+        super(type, worldIn);
         this.setAccelerationSpeed(0.5F);
         this.setMaxSpeed(25F);
         this.setMaxTurnAngle(25);
@@ -73,13 +74,13 @@ public class SportsPlaneEntity extends PlaneEntity implements IEntityRaytraceabl
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.SPORTS_PLANE_ENGINE_MONO;
+        return ModSounds.SPORTS_PLANE_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.SPORTS_PLANE_ENGINE_STEREO;
+        return ModSounds.SPORTS_PLANE_ENGINE_STEREO.get();
     }
 
     @Override

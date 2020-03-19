@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.network.message.MessageEntityFluid;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -55,9 +56,9 @@ public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer
         }
     };
 
-    public FluidTrailerEntity(World worldIn)
+    public FluidTrailerEntity(EntityType<? extends FluidTrailerEntity> type, World worldIn)
     {
-        super(ModEntities.FLUID_TRAILER, worldIn);
+        super(type, worldIn);
     }
 
     @Override

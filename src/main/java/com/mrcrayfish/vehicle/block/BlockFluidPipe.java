@@ -72,12 +72,7 @@ public class BlockFluidPipe extends BlockObject
 
     public BlockFluidPipe()
     {
-        this(Names.Block.FLUID_PIPE);
-    }
-
-    public BlockFluidPipe(String name)
-    {
-        super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(0.5F));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(0.5F));
         BlockState defaultState = this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH);
         for(Direction facing : Direction.values())
         {
@@ -182,7 +177,7 @@ public class BlockFluidPipe extends BlockObject
                     BlockState adjacentState = world.getBlockState(adjacentPos);
                     TileEntity tileEntity = world.getTileEntity(adjacentPos);
                     Block adjacentBlock = adjacentState.getBlock();
-                    if((this == ModBlocks.FLUID_PUMP && adjacentBlock == ModBlocks.FLUID_PUMP) || (this == ModBlocks.FLUID_PIPE && adjacentBlock == ModBlocks.FLUID_PIPE && getCollisionFacing(adjacentState) != facing.getOpposite()) || tileEntity == null || !tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent())
+                    if((this == ModBlocks.FLUID_PUMP.get() && adjacentBlock == ModBlocks.FLUID_PUMP.get()) || (this == ModBlocks.FLUID_PIPE.get() && adjacentBlock == ModBlocks.FLUID_PIPE.get() && getCollisionFacing(adjacentState) != facing.getOpposite()) || tileEntity == null || !tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent())
                     {
                         return null;
                     }
@@ -223,7 +218,7 @@ public class BlockFluidPipe extends BlockObject
             BlockPos adjacentPos = pos.offset(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
             boolean enabled = !disabledConnections[facing.getIndex()];
-            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE)
+            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
             {
                 Direction adjacentFacing = adjacentState.get(DIRECTION);
                 if(adjacentPos.offset(adjacentFacing).equals(pos))
@@ -231,7 +226,7 @@ public class BlockFluidPipe extends BlockObject
                     state = state.with(CONNECTED_PIPES[facing.getIndex()], enabled);
                 }
             }
-            else if(adjacentState.getBlock() == ModBlocks.FLUID_PUMP)
+            else if(adjacentState.getBlock() == ModBlocks.FLUID_PUMP.get())
             {
                 state = state.with(CONNECTED_PIPES[facing.getIndex()], enabled);
             }

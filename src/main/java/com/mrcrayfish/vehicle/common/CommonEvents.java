@@ -154,7 +154,7 @@ public class CommonEvents
                         targetEntity.remove();
 
                         //Plays pick up sound
-                        world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.posX, player.posY, player.posZ, ModSounds.PICK_UP_VEHICLE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         return true;
                     }
@@ -457,7 +457,7 @@ public class CommonEvents
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
     {
         BlockState state = event.getWorld().getBlockState(event.getPos());
-        if(state.getBlock() != ModBlocks.GAS_PUMP && event.getPlayer().getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
+        if(state.getBlock() != ModBlocks.GAS_PUMP.get() && event.getPlayer().getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
         }

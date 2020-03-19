@@ -20,22 +20,17 @@ public abstract class EnderSap extends ForgeFlowingFluid
 {
     public EnderSap()
     {
-        super(new Properties(() -> ModFluids.ENDER_SAP, () -> ModFluids.FLOWING_ENDER_SAP, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/ender_sap_still"), new ResourceLocation(Reference.MOD_ID, "block/ender_sap_flowing")).viscosity(3000).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.ENDER_SAP));
+        super(new Properties(ModFluids.ENDER_SAP, ModFluids.FLOWING_ENDER_SAP, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/ender_sap_still"), new ResourceLocation(Reference.MOD_ID, "block/ender_sap_flowing")).viscosity(3000).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(ModBlocks.ENDER_SAP::get));
     }
 
     @Override
     public Item getFilledBucket()
     {
-        return ModItems.ENDER_SAP_BUCKET;
+        return ModItems.ENDER_SAP_BUCKET.get();
     }
 
     public static class Source extends EnderSap
     {
-        public Source()
-        {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "ender_sap"));
-        }
-
         @Override
         public boolean isSource(IFluidState state)
         {
@@ -51,11 +46,6 @@ public abstract class EnderSap extends ForgeFlowingFluid
 
     public static class Flowing extends EnderSap
     {
-        public Flowing()
-        {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "flowing_ender_sap"));
-        }
-
         @Override
         protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder)
         {

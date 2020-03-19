@@ -53,7 +53,7 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
 
             Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
 
-            int light = getWorld().getCombinedLight(te.getPos(), ModFluids.FUELIUM.getAttributes().getLuminosity());
+            int light = getWorld().getCombinedLight(te.getPos(), fluid.getAttributes().getLuminosity());
             int lightX = light >> 0x10 & 0xFFFF;
             int lightY = light & 0xFFFF;
 

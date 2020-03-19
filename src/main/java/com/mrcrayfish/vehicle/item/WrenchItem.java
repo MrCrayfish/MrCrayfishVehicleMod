@@ -6,9 +6,8 @@ import net.minecraft.item.Item;
 
 public class WrenchItem extends Item
 {
-    public WrenchItem()
+    public WrenchItem(Item.Properties properties)
     {
-        super(new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB));
-        this.setRegistryName(Names.Item.WRENCH);
+        super(properties);
     }
 }
