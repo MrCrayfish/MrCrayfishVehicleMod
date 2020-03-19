@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.item;
 
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.util.CommonUtils;

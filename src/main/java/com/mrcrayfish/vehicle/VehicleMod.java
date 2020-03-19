@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle;
 
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
-import com.mrcrayfish.vehicle.client.ControllerEvents;
 import com.mrcrayfish.vehicle.client.gui.GuiHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
@@ -14,7 +13,6 @@ import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
-import com.mrcrayfish.vehicle.init.RegistrationHandler;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.proxy.Proxy;
 import net.minecraft.creativetab.CreativeTabs;
@@ -28,7 +26,9 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.*;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 

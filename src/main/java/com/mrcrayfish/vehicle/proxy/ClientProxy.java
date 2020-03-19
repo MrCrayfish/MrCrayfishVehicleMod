@@ -1,10 +1,13 @@
 package com.mrcrayfish.vehicle.proxy;
 
-import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.Controllable;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.vehicle.VehicleConfig;
-import com.mrcrayfish.vehicle.client.*;
+import com.mrcrayfish.vehicle.client.ClientEvents;
+import com.mrcrayfish.vehicle.client.ControllerEvents;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
@@ -16,7 +19,10 @@ import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
-import com.mrcrayfish.vehicle.entity.*;
+import com.mrcrayfish.vehicle.entity.EntityHelicopter;
+import com.mrcrayfish.vehicle.entity.EntityPlane;
+import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.trailer.*;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -56,7 +62,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**

@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
+import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;

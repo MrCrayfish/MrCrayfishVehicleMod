@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
-import com.mrcrayfish.vehicle.tileentity.TileEntityFluidExtractor;
 import com.mrcrayfish.vehicle.tileentity.TileEntityGasPumpTank;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;

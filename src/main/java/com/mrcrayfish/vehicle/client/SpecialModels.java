@@ -3,8 +3,6 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ModelManager;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
