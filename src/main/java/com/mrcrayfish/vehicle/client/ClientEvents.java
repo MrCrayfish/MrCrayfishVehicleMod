@@ -57,6 +57,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
@@ -586,7 +587,7 @@ public class ClientEvents
     @SubscribeEvent
     public void onJump(InputEvent.KeyInputEvent event)
     {
-        if(GuiScreen.isCtrlKeyDown())
+        if(Keyboard.getEventKeyState() && Keyboard.getEventKey() == Minecraft.getMinecraft().gameSettings.keyBindSprint.getKeyCode())
         {
             EntityPlayer player = Minecraft.getMinecraft().player;
             if(Minecraft.getMinecraft().currentScreen == null && player.getRidingEntity() instanceof EntityVehicle)
