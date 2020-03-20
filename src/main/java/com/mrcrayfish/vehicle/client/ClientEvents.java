@@ -572,7 +572,7 @@ public class ClientEvents
     @SubscribeEvent
     public void onJump(InputEvent.KeyInputEvent event)
     {
-        if(Screen.hasControlDown())
+        if(event.getAction() == GLFW.GLFW_PRESS && event.getKey() == Minecraft.getInstance().gameSettings.keyBindSprint.getKey().getKeyCode())
         {
             PlayerEntity player = Minecraft.getInstance().player;
             if(Minecraft.getInstance().currentScreen == null && player.getRidingEntity() instanceof VehicleEntity)
