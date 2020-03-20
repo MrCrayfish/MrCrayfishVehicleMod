@@ -2,7 +2,10 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
+import com.mrcrayfish.vehicle.client.EntityRaytracer;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
@@ -15,18 +18,20 @@ import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -77,9 +82,9 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
        
         matrixStack.push();
         {
-            HermiteInterpolator.Point destPoint;
             if(gasPump.getFuelingEntity() != null)
             {
+                gasPump.setRecentlyUsed(true);
                 PlayerEntity entity = gasPump.getFuelingEntity();
                 double side = entity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
                 double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * partialTicks);
@@ -105,43 +110,133 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         hoseVec = new Vec3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
                     }
                 }
-                destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
+                HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
+                gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.6425, pos[1]), new Vec3d(0, -5, 0)), destPoint));
             }
             else
             {
-                double[] destPos = CollisionHelper.fixRotation(facing, 0.345, 1.06, 0.345, 1.06);
-                destPoint = new HermiteInterpolator.Point(new Vec3d(destPos[0], 0.0625, destPos[1]), new Vec3d(0, 3, 0));
+                if(gasPump.getCachedSpline() == null || gasPump.isRecentlyUsed())
+                {
+                    gasPump.setRecentlyUsed(false);
+                    double[] destPos = CollisionHelper.fixRotation(facing, 0.345, 1.06, 0.345, 1.06);
+                    HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vec3d(destPos[0], 0.1, destPos[1]), new Vec3d(0, 3, 0));
+                    gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.6425, pos[1]), new Vec3d(0, -5, 0)), destPoint));
+                }
             }
-
-            HermiteInterpolator spline = new HermiteInterpolator(Lists.newArrayList(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.5625, pos[1]), new Vec3d(0, -5, 0)), destPoint));
 
             //new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.5 + v.y / 2, -z + v.z / 2), new Vec3d(v.x * 5, v.y, v.z * 5))
             //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.25, -z + v.z / 2), new Vec3d(-x + v.x * 10, -y, -z + v.z * 10))
 
-            ItemStack stack = new ItemStack(Blocks.BLACK_CONCRETE);
-            IBakedModel model = RenderUtil.getModel(stack);
-
-            matrixStack.push();
+            HermiteInterpolator spline = gasPump.getCachedSpline();
+            if(spline != null)
             {
-                int steps = 100;
+                float gray = 0.1F;
+                float red = gray;
+                float hoseDiameter = 0.07F;
+                if(gasPump.getFuelingEntity() != null)
+                {
+                    red = (float) (Math.sqrt(gasPump.getFuelingEntity().getDistanceSq(gasPump.getPos().getX() + 0.5, gasPump.getPos().getY() + 0.5, gasPump.getPos().getZ() + 0.5)) / Config.SERVER.maxHoseDistance.get());
+                    red = red * red * red * red * red * red;
+                    red = Math.max(red, gray);
+                }
+
+                RenderSystem.pushMatrix();
+                RenderSystem.disableTexture();
+                RenderSystem.enableDepthTest();
+                RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
+
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder buffer = tessellator.getBuffer();
+                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
+
+                /*buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                buffer.pos(1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                buffer.pos(1, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
+                buffer.pos(0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();*/
+
+                int segments = Config.CLIENT.hoseSegments.get();
                 for(int i = 0; i < spline.getSize() - 1; i++)
                 {
-                    for(int j = 0; j <= steps; j++)
+                    for(int j = 0; j < segments; j++)
                     {
-                        float percent = j / (float) steps;
-                        HermiteInterpolator.Result r = spline.get(i, percent);
-                        matrixStack.push();
-                        matrixStack.translate(r.getPoint().x, r.getPoint().y, r.getPoint().z);
-                        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) Math.toDegrees(Math.atan2(r.getDir().x, r.getDir().z))));
-                        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) Math.toDegrees(Math.asin(-r.getDir().normalize().y))));
-                        matrixStack.scale(0.075F, 0.075F, 0.075F);
-                        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.DEFAULT_LIGHT, matrixStack, renderTypeBuffer);
-                        matrixStack.pop();
+                        float percent = j / (float) segments;
+                        HermiteInterpolator.Result start = spline.get(i, percent);
+                        HermiteInterpolator.Result end = spline.get(i, (float) (j + 1) / (float) segments);
+
+                        Matrix4f startMatrix = new Matrix4f();
+                        startMatrix.identity();
+                        EntityRaytracer.MatrixTransformation.createTranslation((float) start.getPoint().getX(), (float) start.getPoint().getY(), (float) start.getPoint().getZ()).transform(startMatrix);
+                        if(i == 0 && j == 0)
+                        {
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(startMatrix);
+                        }
+                        else
+                        {
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(startMatrix);
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(startMatrix);
+                        }
+
+                        Matrix4f endMatrix = new Matrix4f();
+                        endMatrix.identity();
+                        EntityRaytracer.MatrixTransformation.createTranslation((float) end.getPoint().x, (float) end.getPoint().y, (float) end.getPoint().z).transform(endMatrix);
+                        if(i == spline.getSize() - 2 && j == segments - 1)
+                        {
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(endMatrix);
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(endMatrix);
+                        }
+                        else
+                        {
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(endMatrix);
+                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(endMatrix);
+                        }
+
+                        Matrix4f startTemp = new Matrix4f(startMatrix);
+                        Matrix4f endTemp = new Matrix4f(endMatrix);
+                        Matrix4f parent = matrixStack.getLast().getPositionMatrix();
+
+                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter / 2, hoseDiameter / 2, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(0, -hoseDiameter, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, -hoseDiameter, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+
+                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+
+                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
+                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(endTemp);
+                        this.createVertex(buffer, parent, endTemp, red, gray);
                     }
                 }
+                tessellator.draw();
+                RenderSystem.enableTexture();
+                RenderSystem.disableDepthTest();
+                RenderSystem.popMatrix();
             }
-            matrixStack.pop();
 
             if(gasPump.getFuelingEntity() == null)
             {
@@ -195,5 +290,12 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             matrixStack.pop();
         }
         matrixStack.pop();
+    }
+
+    private void createVertex(BufferBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray)
+    {
+        Vector4f vec = new Vector4f(0.0F, 0.0F, 0.0F, 1.0F);
+        vec.func_229372_a_(pos);
+        buffer.pos(vec.getX(), vec.getY(), vec.getZ()).color(red, gray, gray, 1.0F).endVertex();
     }
 }

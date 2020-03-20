@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
@@ -28,9 +29,32 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     private int fuelingEntityId;
     private PlayerEntity fuelingEntity;
 
+    private HermiteInterpolator cachedSpline;
+    private boolean recentlyUsed;
+
     public GasPumpTileEntity()
     {
         super(ModTileEntities.GAS_PUMP.get());
+    }
+
+    public HermiteInterpolator getCachedSpline()
+    {
+        return cachedSpline;
+    }
+
+    public void setCachedSpline(HermiteInterpolator cachedSpline)
+    {
+        this.cachedSpline = cachedSpline;
+    }
+
+    public boolean isRecentlyUsed()
+    {
+        return recentlyUsed;
+    }
+
+    public void setRecentlyUsed(boolean recentlyUsed)
+    {
+        this.recentlyUsed = recentlyUsed;
     }
 
     @Nullable
