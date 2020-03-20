@@ -17,9 +17,9 @@ public abstract class BlockRotatedObject extends BlockObject
 {
     public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
 
-    public BlockRotatedObject(String id, Block.Properties properties)
+    public BlockRotatedObject(Block.Properties properties)
     {
-        super(id, properties);
+        super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
     }
 

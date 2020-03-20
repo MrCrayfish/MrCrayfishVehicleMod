@@ -13,11 +13,6 @@ import javax.annotation.Nullable;
  */
 public class BlockIndustrialFuelDrum extends BlockFuelDrum
 {
-    public BlockIndustrialFuelDrum()
-    {
-        super(Names.Block.INDUSTRIAL_FUEL_DRUM);
-    }
-
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)

@@ -45,12 +45,7 @@ public class BlockFuelDrum extends BlockRotatedObject
 
     public BlockFuelDrum()
     {
-        this(Names.Block.FUEL_DRUM);
-    }
-
-    public BlockFuelDrum(String id)
-    {
-        super(id, Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
     }
 
     @Override

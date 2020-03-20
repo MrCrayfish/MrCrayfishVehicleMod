@@ -67,7 +67,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     public BlockVehicleCrate()
     {
-        super(Names.Block.VEHICLE_CRATE, Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
+        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
     }
 
     @Override

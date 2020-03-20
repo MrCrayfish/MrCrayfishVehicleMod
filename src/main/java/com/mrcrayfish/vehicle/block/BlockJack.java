@@ -24,7 +24,7 @@ public class BlockJack extends BlockObject
 
     public BlockJack()
     {
-        super(Names.Block.JACK, Block.Properties.create(Material.PISTON));
+        super(Block.Properties.create(Material.PISTON));
     }
 
     @Override

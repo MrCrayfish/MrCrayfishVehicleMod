@@ -53,7 +53,7 @@ public class BlockGasPump extends BlockRotatedObject
 
     public BlockGasPump()
     {
-        super(Names.Block.GAS_PUMP, Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));
     }
 

@@ -31,11 +31,6 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 
     public static class Source extends BlazeJuice
     {
-        public Source()
-        {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "blaze_juice"));
-        }
-
         @Override
         public boolean isSource(IFluidState state)
         {
@@ -51,11 +46,6 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 
     public static class Flowing extends BlazeJuice
     {
-        public Flowing()
-        {
-            this.setRegistryName(new ResourceLocation(Reference.MOD_ID, "flowing_blaze_juice"));
-        }
-
         @Override
         protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder)
         {

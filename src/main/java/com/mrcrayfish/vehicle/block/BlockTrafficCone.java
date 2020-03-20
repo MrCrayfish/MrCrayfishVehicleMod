@@ -20,7 +20,7 @@ public class BlockTrafficCone extends BlockObject
 
     public BlockTrafficCone()
     {
-        super(Names.Block.TRAFFIC_CONE, Block.Properties.create(Material.CLAY, MaterialColor.ORANGE_TERRACOTTA).hardnessAndResistance(0.5F));
+        super(Block.Properties.create(Material.CLAY, MaterialColor.ORANGE_TERRACOTTA).hardnessAndResistance(0.5F));
     }
 
     @Override

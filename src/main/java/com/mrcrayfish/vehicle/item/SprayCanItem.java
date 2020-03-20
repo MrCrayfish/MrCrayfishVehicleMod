@@ -29,7 +29,6 @@ public class SprayCanItem extends Item implements IDyeable
     public SprayCanItem(Item.Properties properties)
     {
         super(properties);
-        this.setRegistryName(Names.Item.SPRAY_CAN);
     }
 
     @Override

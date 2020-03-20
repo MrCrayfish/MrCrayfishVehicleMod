@@ -44,11 +44,6 @@ public class BlockFluidPump extends BlockFluidPipe
             {Block.makeCuboidShape(16, 3, 3, 13, 13, 13), Block.makeCuboidShape(13, 4.5, 4.5, 12, 11.5, 11.5)}
     };
 
-    public BlockFluidPump()
-    {
-        super(Names.Block.FLUID_PUMP);
-    }
-
     @Override
     protected VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
     {

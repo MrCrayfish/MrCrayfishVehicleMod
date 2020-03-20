@@ -65,7 +65,7 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
 
     public BlockSteepBoostRamp()
     {
-        super(Names.Block.STEEP_BOOST_RAMP, Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
     }
 
     @Override

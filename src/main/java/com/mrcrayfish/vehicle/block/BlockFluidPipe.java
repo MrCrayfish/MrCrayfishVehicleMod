@@ -72,12 +72,7 @@ public class BlockFluidPipe extends BlockObject
 
     public BlockFluidPipe()
     {
-        this(Names.Block.FLUID_PIPE);
-    }
-
-    public BlockFluidPipe(String name)
-    {
-        super(name, Block.Properties.create(Material.IRON).hardnessAndResistance(0.5F));
+        super(Block.Properties.create(Material.IRON).hardnessAndResistance(0.5F));
         BlockState defaultState = this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH);
         for(Direction facing : Direction.values())
         {

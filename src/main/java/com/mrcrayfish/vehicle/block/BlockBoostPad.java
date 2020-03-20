@@ -48,7 +48,7 @@ public class BlockBoostPad extends BlockRotatedObject
 
     public BlockBoostPad()
     {
-        super(Names.Block.BOOST_PAD, Block.Properties.create(Material.ROCK).hardnessAndResistance(0.6F));
+        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.6F));
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(LEFT, false).with(RIGHT, false));
     }
 
