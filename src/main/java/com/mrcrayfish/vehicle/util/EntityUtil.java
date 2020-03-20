@@ -8,7 +8,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish

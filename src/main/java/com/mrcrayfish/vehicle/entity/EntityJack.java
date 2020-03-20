@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
