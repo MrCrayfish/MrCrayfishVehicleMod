@@ -125,7 +125,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
     protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
     {
         matrixStack.push();
-        if(entity.isFueled() && entity.getControllingPassenger() != null)
+        if(entity.isEnginePowered() && entity.getControllingPassenger() != null)
         {
             matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
             matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
