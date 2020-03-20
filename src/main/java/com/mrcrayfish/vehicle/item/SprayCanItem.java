@@ -81,9 +81,9 @@ public class SprayCanItem extends Item implements IDyeable
         if(compound != null && compound.contains("RemainingSprays", Constants.NBT.TAG_INT))
         {
             int remainingSprays = compound.getInt("RemainingSprays");
-            return this.hasColor(stack) && remainingSprays >= 0 && remainingSprays < this.getCapacity(stack);
+            return this.hasColor(stack) && remainingSprays < this.getCapacity(stack);
         }
-        return false;
+        return true;
     }
 
     @Override
