@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
@@ -18,9 +19,9 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
 {
-    public OffRoaderEntity(World worldIn)
+    public OffRoaderEntity(EntityType<? extends OffRoaderEntity> type, World worldIn)
     {
-        super(ModEntities.OFF_ROADER, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(18F);
         this.setFuelCapacity(25000F);
     }
@@ -28,13 +29,13 @@ public class OffRoaderEntity extends LandVehicleEntity implements EntityRaytrace
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO;
+        return ModSounds.SPEED_BOAT_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+        return ModSounds.SPEED_BOAT_ENGINE_STEREO.get();
     }
 
     @Override

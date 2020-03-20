@@ -22,7 +22,7 @@ public class WorkstationContainer extends Container
 
     public WorkstationContainer(int windowId, IInventory playerInventory, WorkstationTileEntity workstationTileEntity)
     {
-        super(ModContainers.WORKSTATION, windowId);
+        super(ModContainers.WORKSTATION.get(), windowId);
         this.workstationTileEntity = workstationTileEntity;
         this.pos = workstationTileEntity.getPos();
 

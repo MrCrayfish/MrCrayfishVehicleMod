@@ -22,7 +22,7 @@ public class EditVehicleContainer extends Container
 
     public EditVehicleContainer(int windowId, IInventory vehicleInventory, PoweredVehicleEntity vehicle, PlayerEntity player, PlayerInventory playerInventory)
     {
-        super(ModContainers.EDIT_VEHICLE, windowId);
+        super(ModContainers.EDIT_VEHICLE.get(), windowId);
         this.vehicleInventory = vehicleInventory;
         this.vehicle = vehicle;
 

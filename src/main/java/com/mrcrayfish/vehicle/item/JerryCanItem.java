@@ -31,10 +31,9 @@ public class JerryCanItem extends Item
     private final int capacity;
     private final int fillRate;
 
-    public JerryCanItem(String id, int capacity, int fillRate)
+    public JerryCanItem(int capacity, int fillRate, Item.Properties properties)
     {
-        super(new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB));
-        this.setRegistryName(id);
+        super(properties);
         this.capacity = capacity;
         this.fillRate = fillRate;
     }

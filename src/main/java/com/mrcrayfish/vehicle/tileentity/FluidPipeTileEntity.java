@@ -32,7 +32,7 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     @SuppressWarnings("ConstantConditions")
     public FluidPipeTileEntity()
     {
-        this(ModTileEntities.FLUID_PIPE, Config.SERVER.pipeCapacity.get());
+        this(ModTileEntities.FLUID_PIPE.get(), Config.SERVER.pipeCapacity.get());
     }
 
     public FluidPipeTileEntity(TileEntityType<?> tileEntityType, int capacity)

@@ -81,52 +81,52 @@ public class ClientProxy implements Proxy
     @Override
     public void setupClient()
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR, RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP, RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.cutout());
 
-        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE, RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE, RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.translucent());
 
         /* Register Vehicles */
-        registerVehicleRender(ModEntities.ATV, new RenderLandVehicleWrapper<>(new RenderATV()));
-        registerVehicleRender(ModEntities.DUNE_BUGGY, new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
-        registerVehicleRender(ModEntities.GO_KART, new RenderLandVehicleWrapper<>(new RenderGoKart()));
-        registerVehicleRender(ModEntities.SHOPPING_CART, new RenderLandVehicleWrapper<>(new RenderShoppingCart()));
-        registerVehicleRender(ModEntities.MINI_BIKE, new RenderMotorcycleWrapper<>(new RenderMiniBike()));
-        registerVehicleRender(ModEntities.BUMPER_CAR, new RenderLandVehicleWrapper<>(new RenderBumperCar()));
-        registerVehicleRender(ModEntities.JET_SKI, new RenderBoatWrapper<>(new RenderJetSki()));
-        registerVehicleRender(ModEntities.SPEED_BOAT, new RenderBoatWrapper<>(new RenderSpeedBoat()));
-        registerVehicleRender(ModEntities.ALUMINUM_BOAT, new RenderBoatWrapper<>(new RenderAluminumBoat()));
-        registerVehicleRender(ModEntities.SMART_CAR, new RenderLandVehicleWrapper<>(new RenderSmartCar()));
-        registerVehicleRender(ModEntities.LAWN_MOWER, new RenderLandVehicleWrapper<>(new RenderLawnMower()));
-        registerVehicleRender(ModEntities.MOPED, new RenderMotorcycleWrapper<>(new RenderMoped()));
-        registerVehicleRender(ModEntities.SPORTS_PLANE, new RenderPlaneWrapper<>(new RenderSportsPlane()));
-        registerVehicleRender(ModEntities.GOLF_CART, new RenderLandVehicleWrapper<>(new RenderGolfCart()));
-        registerVehicleRender(ModEntities.OFF_ROADER, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
-        registerVehicleRender(ModEntities.TRACTOR, new RenderLandVehicleWrapper<>(new RenderTractor()));
-        registerVehicleRender(ModEntities.MINI_BUS, new RenderLandVehicleWrapper<>(new RenderMiniBus()));
+        registerVehicleRender(ModEntities.ATV.get(), new RenderLandVehicleWrapper<>(new RenderATV()));
+        registerVehicleRender(ModEntities.DUNE_BUGGY.get(), new RenderLandVehicleWrapper<>(new RenderDuneBuggy()));
+        registerVehicleRender(ModEntities.GO_KART.get(), new RenderLandVehicleWrapper<>(new RenderGoKart()));
+        registerVehicleRender(ModEntities.SHOPPING_CART.get(), new RenderLandVehicleWrapper<>(new RenderShoppingCart()));
+        registerVehicleRender(ModEntities.MINI_BIKE.get(), new RenderMotorcycleWrapper<>(new RenderMiniBike()));
+        registerVehicleRender(ModEntities.BUMPER_CAR.get(), new RenderLandVehicleWrapper<>(new RenderBumperCar()));
+        registerVehicleRender(ModEntities.JET_SKI.get(), new RenderBoatWrapper<>(new RenderJetSki()));
+        registerVehicleRender(ModEntities.SPEED_BOAT.get(), new RenderBoatWrapper<>(new RenderSpeedBoat()));
+        registerVehicleRender(ModEntities.ALUMINUM_BOAT.get(), new RenderBoatWrapper<>(new RenderAluminumBoat()));
+        registerVehicleRender(ModEntities.SMART_CAR.get(), new RenderLandVehicleWrapper<>(new RenderSmartCar()));
+        registerVehicleRender(ModEntities.LAWN_MOWER.get(), new RenderLandVehicleWrapper<>(new RenderLawnMower()));
+        registerVehicleRender(ModEntities.MOPED.get(), new RenderMotorcycleWrapper<>(new RenderMoped()));
+        registerVehicleRender(ModEntities.SPORTS_PLANE.get(), new RenderPlaneWrapper<>(new RenderSportsPlane()));
+        registerVehicleRender(ModEntities.GOLF_CART.get(), new RenderLandVehicleWrapper<>(new RenderGolfCart()));
+        registerVehicleRender(ModEntities.OFF_ROADER.get(), new RenderLandVehicleWrapper<>(new RenderOffRoader()));
+        registerVehicleRender(ModEntities.TRACTOR.get(), new RenderLandVehicleWrapper<>(new RenderTractor()));
+        registerVehicleRender(ModEntities.MINI_BUS.get(), new RenderLandVehicleWrapper<>(new RenderMiniBus()));
 
         /* Register Trailers */
-        registerVehicleRender(ModEntities.VEHICLE_TRAILER, new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
-        registerVehicleRender(ModEntities.STORAGE_TRAILER, new RenderVehicleWrapper<>(new RenderStorageTrailer()));
-        registerVehicleRender(ModEntities.FLUID_TRAILER, new RenderVehicleWrapper<>(new RenderFluidTrailer()));
-        registerVehicleRender(ModEntities.SEEDER, new RenderVehicleWrapper<>(new RenderSeederTrailer()));
-        registerVehicleRender(ModEntities.FERTILIZER, new RenderVehicleWrapper<>(new RenderFertilizerTrailer()));
+        registerVehicleRender(ModEntities.VEHICLE_TRAILER.get(), new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
+        registerVehicleRender(ModEntities.STORAGE_TRAILER.get(), new RenderVehicleWrapper<>(new RenderStorageTrailer()));
+        registerVehicleRender(ModEntities.FLUID_TRAILER.get(), new RenderVehicleWrapper<>(new RenderFluidTrailer()));
+        registerVehicleRender(ModEntities.SEEDER.get(), new RenderVehicleWrapper<>(new RenderSeederTrailer()));
+        registerVehicleRender(ModEntities.FERTILIZER.get(), new RenderVehicleWrapper<>(new RenderFertilizerTrailer()));
 
         /* Register Mod Exclusive Vehicles */
         if(ModList.get().isLoaded("cfm"))
         {
-            registerVehicleRender(ModEntities.SOFA, new RenderLandVehicleWrapper<>(new RenderCouch()));
-            registerVehicleRender(ModEntities.BATH, new RenderPlaneWrapper<>(new RenderBath()));
-            registerVehicleRender(ModEntities.SOFACOPTER, new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
+            registerVehicleRender(ModEntities.SOFA.get(), new RenderLandVehicleWrapper<>(new RenderCouch()));
+            registerVehicleRender(ModEntities.BATH.get(), new RenderPlaneWrapper<>(new RenderBath()));
+            registerVehicleRender(ModEntities.SOFACOPTER.get(), new RenderHelicopterWrapper<>(new RenderCouchHelicopter()));
         }
 
-        RenderingRegistry.registerEntityRenderingHandler(ModEntities.JACK, com.mrcrayfish.vehicle.client.render.JackRenderer::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntities.JACK.get(), com.mrcrayfish.vehicle.client.render.JackRenderer::new);
 
         /* Client Events */
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
@@ -134,23 +134,23 @@ public class ClientProxy implements Proxy
         MinecraftForge.EVENT_BUS.register(this);
 
         /* Tile Entity Special Renderer*/
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_EXTRACTOR, FluidExtractorRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FUEL_DRUM, FuelDrumRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.VEHICLE_CRATE, VehicleCrateRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.JACK, com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP, GasPumpRenderer::new);
-        ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP_TANK, GasPumpTankRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_EXTRACTOR.get(), FluidExtractorRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FUEL_DRUM.get(), FuelDrumRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.VEHICLE_CRATE.get(), VehicleCrateRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.JACK.get(), com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP.get(), GasPumpRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP_TANK.get(), GasPumpTankRenderer::new);
 
         /* Key Bindings */
         ClientRegistry.registerKeyBinding(KEY_HORN);
         ClientRegistry.registerKeyBinding(KEY_CYCLE_SEATS);
 
         /* Screen Registration */
-        ScreenManager.registerFactory(ModContainers.FLUID_EXTRACTOR, FluidExtractorScreen::new);
-        ScreenManager.registerFactory(ModContainers.FLUID_MIXER, FluidMixerScreen::new);
-        ScreenManager.registerFactory(ModContainers.EDIT_VEHICLE, EditVehicleScreen::new);
-        ScreenManager.registerFactory(ModContainers.WORKSTATION, WorkstationScreen::new);
-        ScreenManager.registerFactory(ModContainers.STORAGE, StorageScreen::new);
+        ScreenManager.registerFactory(ModContainers.FLUID_EXTRACTOR.get(), FluidExtractorScreen::new);
+        ScreenManager.registerFactory(ModContainers.FLUID_MIXER.get(), FluidMixerScreen::new);
+        ScreenManager.registerFactory(ModContainers.EDIT_VEHICLE.get(), EditVehicleScreen::new);
+        ScreenManager.registerFactory(ModContainers.WORKSTATION.get(), WorkstationScreen::new);
+        ScreenManager.registerFactory(ModContainers.STORAGE.get(), StorageScreen::new);
 
         //TODO add custom loader
         //ModelLoaderRegistry.registerLoader(new CustomLoader());

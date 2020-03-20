@@ -70,7 +70,7 @@ public class FluidExtractorRecipe implements IRecipe<FluidExtractorTileEntity>
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipeSerializers.FLUID_EXTRACTOR;
+        return ModRecipeSerializers.FLUID_EXTRACTOR.get();
     }
 
     @Override

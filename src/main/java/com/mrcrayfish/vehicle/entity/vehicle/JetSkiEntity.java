@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
@@ -16,9 +17,9 @@ import net.minecraft.world.World;
  */
 public class JetSkiEntity extends BoatEntity implements IEntityRaytraceable
 {
-    public JetSkiEntity(World worldIn)
+    public JetSkiEntity(EntityType<? extends JetSkiEntity> type, World worldIn)
     {
-        super(ModEntities.JET_SKI, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(15);
         this.setFuelConsumption(0.5F);
@@ -53,13 +54,13 @@ public class JetSkiEntity extends BoatEntity implements IEntityRaytraceable
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO;
+        return ModSounds.SPEED_BOAT_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO;
+        return ModSounds.SPEED_BOAT_ENGINE_STEREO.get();
     }
 
     @Override

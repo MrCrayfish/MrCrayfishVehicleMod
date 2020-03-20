@@ -135,7 +135,7 @@ public class FluidMixerRecipe implements IRecipe<FluidMixerTileEntity>
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipeSerializers.FLUID_MIXER;
+        return ModRecipeSerializers.FLUID_MIXER.get();
     }
 
     @Override

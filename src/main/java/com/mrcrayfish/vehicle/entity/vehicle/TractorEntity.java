@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -15,9 +16,9 @@ import net.minecraft.world.World;
  */
 public class TractorEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
 {
-    public TractorEntity(World worldIn)
+    public TractorEntity(EntityType<? extends TractorEntity> type, World worldIn)
     {
-        super(ModEntities.TRACTOR, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(6);
         this.setTurnSensitivity(3);
     }
@@ -25,13 +26,13 @@ public class TractorEntity extends LandVehicleEntity implements EntityRaytracer.
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.TRACTOR_ENGINE_MONO;
+        return ModSounds.TRACTOR_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.TRACTOR_ENGINE_STEREO;
+        return ModSounds.TRACTOR_ENGINE_STEREO.get();
     }
 
     @Override

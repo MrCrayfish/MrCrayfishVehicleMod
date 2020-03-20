@@ -20,13 +20,13 @@ public abstract class Fuelium extends ForgeFlowingFluid
 {
     public Fuelium()
     {
-        super(new Properties(() -> ModFluids.FUELIUM, () -> ModFluids.FLOWING_FUELIUM, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM));
+        super(new Properties(() -> ModFluids.FUELIUM.get(), () -> ModFluids.FLOWING_FUELIUM.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM.get()));
     }
 
     @Override
     public Item getFilledBucket()
     {
-        return ModItems.FUELIUM_BUCKET;
+        return ModItems.FUELIUM_BUCKET.get();
     }
 
     public static class Source extends Fuelium

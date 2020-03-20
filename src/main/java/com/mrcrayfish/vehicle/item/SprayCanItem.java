@@ -27,9 +27,9 @@ public class SprayCanItem extends Item implements IDyeable
 {
     public static final int MAX_SPRAYS = 5;
 
-    public SprayCanItem()
+    public SprayCanItem(Item.Properties properties)
     {
-        super(new Item.Properties().group(VehicleMod.CREATIVE_TAB));
+        super(properties);
         this.setRegistryName(Names.Item.SPRAY_CAN);
     }
 

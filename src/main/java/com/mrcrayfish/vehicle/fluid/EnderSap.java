@@ -20,13 +20,13 @@ public abstract class EnderSap extends ForgeFlowingFluid
 {
     public EnderSap()
     {
-        super(new Properties(() -> ModFluids.ENDER_SAP, () -> ModFluids.FLOWING_ENDER_SAP, FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/ender_sap_still"), new ResourceLocation(Reference.MOD_ID, "block/ender_sap_flowing")).viscosity(3000).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.ENDER_SAP));
+        super(new Properties(() -> ModFluids.ENDER_SAP.get(), () -> ModFluids.FLOWING_ENDER_SAP.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/ender_sap_still"), new ResourceLocation(Reference.MOD_ID, "block/ender_sap_flowing")).viscosity(3000).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.ENDER_SAP.get()));
     }
 
     @Override
     public Item getFilledBucket()
     {
-        return ModItems.ENDER_SAP_BUCKET;
+        return ModItems.ENDER_SAP_BUCKET.get();
     }
 
     public static class Source extends EnderSap

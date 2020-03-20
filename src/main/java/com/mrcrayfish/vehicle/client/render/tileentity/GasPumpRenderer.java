@@ -43,7 +43,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     {
         BlockPos blockPos = gasPump.getPos();
         BlockState state = gasPump.getWorld().getBlockState(blockPos);
-        if(state.getBlock() != ModBlocks.GAS_PUMP)
+        if(state.getBlock() != ModBlocks.GAS_PUMP.get())
         {
             return;
         }

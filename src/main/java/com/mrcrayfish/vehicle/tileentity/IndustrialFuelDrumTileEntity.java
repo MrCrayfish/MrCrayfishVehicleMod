@@ -10,6 +10,6 @@ public class IndustrialFuelDrumTileEntity extends FuelDrumTileEntity
 {
     public IndustrialFuelDrumTileEntity()
     {
-        super(ModTileEntities.INDUSTRIAL_FUEL_DRUM, Config.SERVER.industrialFuelDrumCapacity.get());
+        super(ModTileEntities.INDUSTRIAL_FUEL_DRUM.get(), Config.SERVER.industrialFuelDrumCapacity.get());
     }
 }

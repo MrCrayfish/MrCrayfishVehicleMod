@@ -27,28 +27,28 @@ public class ItemLookup
     public static void init()
     {
         if(init) return;
-        WHEEL_LOOKUP.put(WheelType.STANDARD, ModItems.STANDARD_WHEEL);
-        WHEEL_LOOKUP.put(WheelType.SPORTS, ModItems.SPORTS_WHEEL);
-        WHEEL_LOOKUP.put(WheelType.RACING, ModItems.RACING_WHEEL);
-        WHEEL_LOOKUP.put(WheelType.OFF_ROAD, ModItems.OFF_ROAD_WHEEL);
-        WHEEL_LOOKUP.put(WheelType.SNOW, ModItems.SNOW_WHEEL);
-        WHEEL_LOOKUP.put(WheelType.ALL_TERRAIN, ModItems.ALL_TERRAIN_WHEEL);
-        WHEEL_LOOKUP.put(WheelType.PLASTIC, ModItems.PLASTIC_WHEEL);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.WOOD), ModItems.WOOD_SMALL_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.STONE), ModItems.STONE_SMALL_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.IRON), ModItems.IRON_SMALL_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.GOLD), ModItems.GOLD_SMALL_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.DIAMOND), ModItems.DIAMOND_SMALL_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.WOOD), ModItems.WOOD_LARGE_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.STONE), ModItems.STONE_LARGE_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.IRON), ModItems.IRON_LARGE_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.GOLD), ModItems.GOLD_LARGE_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.DIAMOND), ModItems.DIAMOND_LARGE_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.WOOD), ModItems.WOOD_ELECTRIC_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.STONE), ModItems.STONE_ELECTRIC_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.IRON), ModItems.IRON_ELECTRIC_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.GOLD), ModItems.GOLD_ELECTRIC_ENGINE);
-        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.DIAMOND), ModItems.DIAMOND_ELECTRIC_ENGINE);
+        WHEEL_LOOKUP.put(WheelType.STANDARD, ModItems.STANDARD_WHEEL.get());
+        WHEEL_LOOKUP.put(WheelType.SPORTS, ModItems.SPORTS_WHEEL.get());
+        WHEEL_LOOKUP.put(WheelType.RACING, ModItems.RACING_WHEEL.get());
+        WHEEL_LOOKUP.put(WheelType.OFF_ROAD, ModItems.OFF_ROAD_WHEEL.get());
+        WHEEL_LOOKUP.put(WheelType.SNOW, ModItems.SNOW_WHEEL.get());
+        WHEEL_LOOKUP.put(WheelType.ALL_TERRAIN, ModItems.ALL_TERRAIN_WHEEL.get());
+        WHEEL_LOOKUP.put(WheelType.PLASTIC, ModItems.PLASTIC_WHEEL.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.WOOD), ModItems.WOOD_SMALL_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.STONE), ModItems.STONE_SMALL_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.IRON), ModItems.IRON_SMALL_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.GOLD), ModItems.GOLD_SMALL_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.SMALL_MOTOR, EngineTier.DIAMOND), ModItems.DIAMOND_SMALL_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.WOOD), ModItems.WOOD_LARGE_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.STONE), ModItems.STONE_LARGE_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.IRON), ModItems.IRON_LARGE_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.GOLD), ModItems.GOLD_LARGE_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.LARGE_MOTOR, EngineTier.DIAMOND), ModItems.DIAMOND_LARGE_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.WOOD), ModItems.WOOD_ELECTRIC_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.STONE), ModItems.STONE_ELECTRIC_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.IRON), ModItems.IRON_ELECTRIC_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.GOLD), ModItems.GOLD_ELECTRIC_ENGINE.get());
+        ENGINE_LOOKUP.put(Pair.of(EngineType.ELECTRIC_MOTOR, EngineTier.DIAMOND), ModItems.DIAMOND_ELECTRIC_ENGINE.get());
         init = true;
     }
 

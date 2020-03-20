@@ -30,7 +30,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
 
     public GasPumpTileEntity()
     {
-        super(ModTileEntities.GAS_PUMP);
+        super(ModTileEntities.GAS_PUMP.get());
     }
 
     @Nullable

@@ -111,7 +111,7 @@ public class BlockFuelDrum extends BlockRotatedObject
                 if(handler instanceof FluidTank)
                 {
                     FluidTank tank = (FluidTank) handler;
-                    if(tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                    if(tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
                     {
                         return ActionResultType.SUCCESS;
                     }

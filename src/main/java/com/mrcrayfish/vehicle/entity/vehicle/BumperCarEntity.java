@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -15,9 +16,9 @@ import net.minecraft.world.World;
  */
 public class BumperCarEntity extends LandVehicleEntity implements IEntityRaytraceable
 {
-    public BumperCarEntity(World worldIn)
+    public BumperCarEntity(EntityType<? extends BumperCarEntity> type, World worldIn)
     {
-        super(ModEntities.BUMPER_CAR, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(10);
         this.setTurnSensitivity(20);
         this.stepHeight = 0.625F;
@@ -36,20 +37,20 @@ public class BumperCarEntity extends LandVehicleEntity implements IEntityRaytrac
     private void applyBumperCollision(BumperCarEntity entity)
     {
         this.setMotion(this.getMotion().add(this.vehicleMotionX * 2, 0, this.vehicleMotionZ * 2));
-        world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.BONK, SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
+        world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.BONK.get(), SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
         this.currentSpeed *= 0.25F;
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO;
+        return ModSounds.ELECTRIC_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_STEREO;
+        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
     }
 
     @Override

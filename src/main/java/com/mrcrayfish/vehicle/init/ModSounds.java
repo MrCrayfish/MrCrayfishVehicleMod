@@ -1,106 +1,59 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.ObjectHolder;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * Author: MrCrayfish
  */
-@ObjectHolder(Reference.MOD_ID)
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModSounds
 {
-    public static final SoundEvent HORN_MONO = null;
-    public static final SoundEvent HORN_STEREO = null;
-    public static final SoundEvent ATV_ENGINE_MONO = null;
-    public static final SoundEvent ATV_ENGINE_STEREO = null;
-    public static final SoundEvent GO_KART_ENGINE_MONO = null;
-    public static final SoundEvent GO_KART_ENGINE_STEREO = null;
-    public static final SoundEvent ELECTRIC_ENGINE_MONO = null;
-    public static final SoundEvent ELECTRIC_ENGINE_STEREO = null;
-    public static final SoundEvent BONK = null;
-    public static final SoundEvent PICK_UP_VEHICLE = null;
-    public static final SoundEvent SPEED_BOAT_ENGINE_MONO = null;
-    public static final SoundEvent SPEED_BOAT_ENGINE_STEREO = null;
-    public static final SoundEvent SPRAY_CAN_SPRAY = null;
-    public static final SoundEvent SPRAY_CAN_SHAKE = null;
-    public static final SoundEvent MOPED_ENGINE_MONO = null;
-    public static final SoundEvent MOPED_ENGINE_STEREO = null;
-    public static final SoundEvent SPORTS_PLANE_ENGINE_MONO = null;
-    public static final SoundEvent SPORTS_PLANE_ENGINE_STEREO = null;
-    public static final SoundEvent BOOST_PAD = null;
-    public static final SoundEvent LIQUID_GLUG = null;
-    public static final SoundEvent FUEL_PORT_OPEN = null;
-    public static final SoundEvent FUEL_PORT_CLOSE = null;
-    public static final SoundEvent FUEL_PORT_2_OPEN = null;
-    public static final SoundEvent FUEL_PORT_2_CLOSE = null;
-    public static final SoundEvent VEHICLE_CRATE_PANEL_LAND = null;
-    public static final SoundEvent JACK_UP = null;
-    public static final SoundEvent JACK_DOWN = null;
-    public static final SoundEvent VEHICLE_IMPACT = null;
-    public static final SoundEvent VEHICLE_DESTROYED = null;
-    public static final SoundEvent VEHICLE_THUD = null;
-    public static final SoundEvent AIR_WRENCH_GUN = null;
-    public static final SoundEvent TRACTOR_ENGINE_MONO = null;
-    public static final SoundEvent TRACTOR_ENGINE_STEREO = null;
-    public static final SoundEvent NOZZLE_PICK_UP = null;
-    public static final SoundEvent NOZZLE_PUT_DOWN = null;
-    public static final SoundEvent MINI_BUS_ENGINE_MONO = null;
-    public static final SoundEvent MINI_BUS_ENGINE_STEREO = null;
+    public static final DeferredRegister<SoundEvent> SOUNDS = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
-    private static SoundEvent buildSound(String soundNameIn)
-    {
-        ResourceLocation resource = new ResourceLocation(soundNameIn);
-        return new SoundEvent(resource).setRegistryName(soundNameIn);
-    }
+    public static final RegistryObject<SoundEvent> HORN_MONO = register("horn_mono");
+    public static final RegistryObject<SoundEvent> HORN_STEREO = register("horn_stereo");
+    public static final RegistryObject<SoundEvent> ATV_ENGINE_MONO = register("atv_engine_mono");
+    public static final RegistryObject<SoundEvent> ATV_ENGINE_STEREO = register("atv_engine_stereo");
+    public static final RegistryObject<SoundEvent> GO_KART_ENGINE_MONO = register("go_kart_engine_mono");
+    public static final RegistryObject<SoundEvent> GO_KART_ENGINE_STEREO = register("go_kart_engine_stereo");
+    public static final RegistryObject<SoundEvent> ELECTRIC_ENGINE_MONO = register("electric_engine_mono");
+    public static final RegistryObject<SoundEvent> ELECTRIC_ENGINE_STEREO = register("electric_engine_stereo");
+    public static final RegistryObject<SoundEvent> BONK = register("bonk");
+    public static final RegistryObject<SoundEvent> PICK_UP_VEHICLE = register("pick_up_vehicle");
+    public static final RegistryObject<SoundEvent> SPEED_BOAT_ENGINE_MONO = register("speed_boat_engine_mono");
+    public static final RegistryObject<SoundEvent> SPEED_BOAT_ENGINE_STEREO = register("speed_boat_engine_stereo");
+    public static final RegistryObject<SoundEvent> SPRAY_CAN_SPRAY = register("spray_can_spray");
+    public static final RegistryObject<SoundEvent> SPRAY_CAN_SHAKE = register("spray_can_shake");
+    public static final RegistryObject<SoundEvent> MOPED_ENGINE_MONO = register("moped_engine_mono");
+    public static final RegistryObject<SoundEvent> MOPED_ENGINE_STEREO = register("moped_engine_stereo");
+    public static final RegistryObject<SoundEvent> SPORTS_PLANE_ENGINE_MONO = register("sports_plane_engine_mono");
+    public static final RegistryObject<SoundEvent> SPORTS_PLANE_ENGINE_STEREO = register("sports_plane_engine_stereo");
+    public static final RegistryObject<SoundEvent> BOOST_PAD = register("boost_pad");
+    public static final RegistryObject<SoundEvent> LIQUID_GLUG = register("liquid_glug");
+    public static final RegistryObject<SoundEvent> FUEL_PORT_OPEN = register("fuel_port_open");
+    public static final RegistryObject<SoundEvent> FUEL_PORT_CLOSE = register("fuel_port_close");
+    public static final RegistryObject<SoundEvent> FUEL_PORT_2_OPEN = register("fuel_port_2_open");
+    public static final RegistryObject<SoundEvent> FUEL_PORT_2_CLOSE = register("fuel_port_2_close");
+    public static final RegistryObject<SoundEvent> VEHICLE_CRATE_PANEL_LAND = register("vehicle_crate_panel_land");
+    public static final RegistryObject<SoundEvent> JACK_UP = register("jack_up");
+    public static final RegistryObject<SoundEvent> JACK_DOWN = register("jack_down");
+    public static final RegistryObject<SoundEvent> VEHICLE_IMPACT = register("vehicle_impact");
+    public static final RegistryObject<SoundEvent> VEHICLE_DESTROYED = register("vehicle_destroyed");
+    public static final RegistryObject<SoundEvent> VEHICLE_THUD = register("vehicle_thud");
+    public static final RegistryObject<SoundEvent> AIR_WRENCH_GUN = register("air_wrench_gun");
+    public static final RegistryObject<SoundEvent> TRACTOR_ENGINE_MONO = register("tractor_engine_mono");
+    public static final RegistryObject<SoundEvent> TRACTOR_ENGINE_STEREO = register("tractor_engine_stereo");
+    public static final RegistryObject<SoundEvent> NOZZLE_PICK_UP = register("nozzle_pick_up");
+    public static final RegistryObject<SoundEvent> NOZZLE_PUT_DOWN = register("nozzle_put_down");
+    public static final RegistryObject<SoundEvent> MINI_BUS_ENGINE_MONO = register("mini_bus_engine_mono");
+    public static final RegistryObject<SoundEvent> MINI_BUS_ENGINE_STEREO = register("mini_bus_engine_stereo");
 
-    @SubscribeEvent
-    public static void buildSound(final RegistryEvent.Register<SoundEvent> event)
+    private static RegistryObject<SoundEvent> register(String id)
     {
-        IForgeRegistry<SoundEvent> registry = event.getRegistry();
-        registry.register(buildSound(Names.Sound.HORN_MONO));
-        registry.register(buildSound(Names.Sound.HORN_STEREO));
-        registry.register(buildSound(Names.Sound.ATV_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.ATV_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.GO_KART_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.GO_KART_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.ELECTRIC_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.ELECTRIC_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.BONK));
-        registry.register(buildSound(Names.Sound.PICK_UP_VEHICLE));
-        registry.register(buildSound(Names.Sound.SPEED_BOAT_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.SPEED_BOAT_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.SPRAY_CAN_SPRAY));
-        registry.register(buildSound(Names.Sound.SPRAY_CAN_SHAKE));
-        registry.register(buildSound(Names.Sound.MOPED_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.MOPED_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.SPORTS_PLANE_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.SPORTS_PLANE_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.BOOST_PAD));
-        registry.register(buildSound(Names.Sound.LIQUID_GLUG));
-        registry.register(buildSound(Names.Sound.FUEL_PORT_OPEN));
-        registry.register(buildSound(Names.Sound.FUEL_PORT_CLOSE));
-        registry.register(buildSound(Names.Sound.FUEL_PORT_2_OPEN));
-        registry.register(buildSound(Names.Sound.FUEL_PORT_2_CLOSE));
-        registry.register(buildSound(Names.Sound.VEHICLE_CRATE_PANEL_LAND));
-        registry.register(buildSound(Names.Sound.JACK_UP));
-        registry.register(buildSound(Names.Sound.JACK_DOWN));
-        registry.register(buildSound(Names.Sound.VEHICLE_IMPACT));
-        registry.register(buildSound(Names.Sound.VEHICLE_DESTROYED));
-        registry.register(buildSound(Names.Sound.VEHICLE_THUD));
-        registry.register(buildSound(Names.Sound.AIR_WRENCH_GUN));
-        registry.register(buildSound(Names.Sound.TRACTOR_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.TRACTOR_ENGINE_STEREO));
-        registry.register(buildSound(Names.Sound.NOZZLE_PICK_UP));
-        registry.register(buildSound(Names.Sound.NOZZLE_PUT_DOWN));
-        registry.register(buildSound(Names.Sound.MINI_BUS_ENGINE_MONO));
-        registry.register(buildSound(Names.Sound.MINI_BUS_ENGINE_STEREO));
+        return ModSounds.SOUNDS.register(id, () -> new SoundEvent(new ResourceLocation(Reference.MOD_ID, id)));
     }
 }

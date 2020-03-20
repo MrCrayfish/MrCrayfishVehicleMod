@@ -98,7 +98,7 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
                 matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
             }
             matrixStack.scale(1.3F, 1.3F, 1.3F);
-            RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
             matrixStack.pop();
         }
 

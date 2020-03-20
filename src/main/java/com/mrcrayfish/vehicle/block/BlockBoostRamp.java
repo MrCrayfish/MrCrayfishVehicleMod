@@ -102,7 +102,7 @@ public class BlockBoostRamp extends BlockRotatedObject
                 PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                 if(!poweredVehicle.isBoosting())
                 {
-                    world.playSound(null, pos, ModSounds.BOOST_PAD, SoundCategory.BLOCKS, 2.0F, 0.5F);
+                    world.playSound(null, pos, ModSounds.BOOST_PAD.get(), SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(2);

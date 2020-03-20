@@ -18,6 +18,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -58,9 +59,9 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
     private StorageInventory inventory;
     private BlockPos[] lastPos = new BlockPos[3];
 
-    public FertilizerTrailerEntity(World worldIn)
+    public FertilizerTrailerEntity(EntityType<? extends FertilizerTrailerEntity> type, World worldIn)
     {
-        super(ModEntities.FERTILIZER, worldIn);
+        super(type, worldIn);
         this.initInventory();
     }
 

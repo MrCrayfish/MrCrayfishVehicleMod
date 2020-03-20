@@ -13,12 +13,12 @@ public class BoostTileEntity extends TileEntitySynced
 
     public BoostTileEntity()
     {
-        super(ModTileEntities.BOOST);
+        super(ModTileEntities.BOOST.get());
     }
 
     public BoostTileEntity(float defaultSpeedMultiplier)
     {
-        super(ModTileEntities.BOOST);
+        super(ModTileEntities.BOOST.get());
         this.speedMultiplier = defaultSpeedMultiplier;
     }
 

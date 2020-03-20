@@ -63,7 +63,7 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                             if(attachableChest.hasChest())
                             {
                                 ItemStack stack = player.inventory.getCurrentItem();
-                                if(stack.getItem() == ModItems.WRENCH)
+                                if(stack.getItem() == ModItems.WRENCH.get())
                                 {
                                     ((IAttachableChest) targetEntity).removeChest();
                                 }

@@ -113,7 +113,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     public FluidExtractorTileEntity()
     {
-        super(ModTileEntities.FLUID_EXTRACTOR, Config.SERVER.extractorCapacity.get(), stack -> true);
+        super(ModTileEntities.FLUID_EXTRACTOR.get(), Config.SERVER.extractorCapacity.get(), stack -> true);
         this.capacity = Config.SERVER.extractorCapacity.get();
     }
 

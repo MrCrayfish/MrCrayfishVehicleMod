@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -15,9 +16,9 @@ import net.minecraft.world.World;
  */
 public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
 {
-    public MiniBusEntity(World worldIn)
+    public MiniBusEntity(EntityType<? extends MiniBusEntity> type, World worldIn)
     {
-        super(ModEntities.MINI_BUS, worldIn);
+        super(type, worldIn);
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(2);
         this.setFuelCapacity(30000F);
@@ -27,13 +28,13 @@ public class MiniBusEntity extends LandVehicleEntity implements EntityRaytracer.
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.MINI_BUS_ENGINE_MONO;
+        return ModSounds.MINI_BUS_ENGINE_MONO.get();
 }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.MINI_BUS_ENGINE_STEREO;
+        return ModSounds.MINI_BUS_ENGINE_STEREO.get();
     }
 
     @Override

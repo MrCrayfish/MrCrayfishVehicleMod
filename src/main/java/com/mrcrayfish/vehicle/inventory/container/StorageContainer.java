@@ -19,7 +19,7 @@ public class StorageContainer extends Container
 
     public StorageContainer(int windowId, IInventory playerInventory, IStorage storageInventory, PlayerEntity player)
     {
-        super(ModContainers.STORAGE, windowId);
+        super(ModContainers.STORAGE.get(), windowId);
         this.storageInventory = storageInventory;
         this.numRows = storageInventory.getSizeInventory() / 9;
         storageInventory.openInventory(player);

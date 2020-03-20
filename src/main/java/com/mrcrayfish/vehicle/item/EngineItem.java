@@ -26,14 +26,9 @@ public class EngineItem extends PartItem
     private EngineType engineType;
     private EngineTier engineTier;
 
-    public EngineItem(String id, EngineType engineType, EngineTier engineTier)
+    public EngineItem(EngineType engineType, EngineTier engineTier, Item.Properties properties)
     {
-        this(id, engineType, engineTier, new Item.Properties().group(VehicleMod.CREATIVE_TAB));
-    }
-
-    public EngineItem(String id, EngineType engineType, EngineTier engineTier, Item.Properties properties)
-    {
-        super(id, properties);
+        super(properties);
         this.engineType = engineType;
         this.engineTier = engineTier;
     }

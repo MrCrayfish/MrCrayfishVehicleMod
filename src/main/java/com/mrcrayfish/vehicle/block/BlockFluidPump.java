@@ -88,7 +88,7 @@ public class BlockFluidPump extends BlockFluidPipe
     @Nullable
     public AxisAlignedBB getHousingBox(BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Vec3d hitVec, @Nullable FluidPipeTileEntity pipe)
     {
-        if(!(pipe instanceof FluidPumpTileEntity) || player.getHeldItem(hand).getItem() != ModItems.WRENCH)
+        if(!(pipe instanceof FluidPumpTileEntity) || player.getHeldItem(hand).getItem() != ModItems.WRENCH.get())
         {
             return null;
         }
@@ -136,7 +136,7 @@ public class BlockFluidPump extends BlockFluidPipe
             BlockPos adjacentPos = pos.offset(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
             boolean enabled = !disabledConnections[facing.getIndex()];
-            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE)
+            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
             {
                 state = state.with(CONNECTED_PIPES[facing.getIndex()], enabled);
             }

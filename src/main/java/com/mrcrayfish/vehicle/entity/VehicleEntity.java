@@ -139,7 +139,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                             if(this.getColor() != color)
                             {
                                 this.setColor(compound.getInt("Color"));
-                                player.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.SPRAY_CAN_SPRAY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                player.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.SPRAY_CAN_SPRAY.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 compound.putInt("RemainingSprays", remainingSprays - 1);
                             }
                         }
@@ -147,13 +147,13 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 }
                 return true;
             }
-            else if(heldItem.getItem() == ModItems.HAMMER && this.getRidingEntity() instanceof EntityJack)
+            else if(heldItem.getItem() == ModItems.HAMMER.get() && this.getRidingEntity() instanceof EntityJack)
             {
                 if(this.getHealth() < this.getMaxHealth())
                 {
                     heldItem.damageItem(1, player, playerEntity -> player.sendBreakAnimation(hand));
                     this.setHealth(this.getHealth() + 5F);
-                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_THUD, SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
+                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_THUD.get(), SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
                     player.swingArm(hand);
                     if(player instanceof ServerPlayerEntity)
                     {
@@ -396,14 +396,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             float damage = distance / 2F;
             this.attackEntityFrom(DamageSource.FALL, damage);
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_IMPACT, SoundCategory.AMBIENT, 1.0F, 1.0F);
+            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_IMPACT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
         return true;
     }
 
     protected void onVehicleDestroyed(LivingEntity entity)
     {
-        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_DESTROYED, SoundCategory.AMBIENT, 1.0F, 0.5F);
+        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_DESTROYED.get(), SoundCategory.AMBIENT, 1.0F, 0.5F);
 
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
         if(!isCreativeMode && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))

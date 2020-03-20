@@ -102,12 +102,12 @@ public class BlockGasPump extends BlockRotatedObject
                     if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerEntity.getEntityId())
                     {
                         gasPump.setFuelingEntity(null);
-                        world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                     else if(state.get(DIRECTION).rotateY().equals(result.getFace()))
                     {
                         gasPump.setFuelingEntity(playerEntity);
-                        world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class BlockGasPump extends BlockRotatedObject
                         if(handler instanceof FluidTank)
                         {
                             FluidTank tank = (FluidTank) handler;
-                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
                             {
                                 return ActionResultType.SUCCESS;
                             }

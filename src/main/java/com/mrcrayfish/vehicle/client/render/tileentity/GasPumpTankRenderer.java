@@ -30,7 +30,7 @@ public class GasPumpTankRenderer extends TileEntityRenderer<GasPumpTankTileEntit
     public void render(GasPumpTankTileEntity gasPump, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
         BlockState state = gasPump.getWorld().getBlockState(gasPump.getPos());
-        if(state.getBlock() != ModBlocks.GAS_PUMP)
+        if(state.getBlock() != ModBlocks.GAS_PUMP.get())
             return;
 
         matrixStack.push();

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.recipe;
 
-import com.mrcrayfish.vehicle.init.ModRecipes;
+import com.mrcrayfish.vehicle.init.ModRecipeSerializers;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -106,6 +106,6 @@ public class RecipeRefillSprayCan extends SpecialRecipe
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipes.REFILL_SPRAY_CAN;
+        return ModRecipeSerializers.REFILL_SPRAY_CAN.get();
     }
 }

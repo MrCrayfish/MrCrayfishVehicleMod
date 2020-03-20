@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
@@ -13,9 +14,9 @@ import net.minecraft.world.World;
  */
 public class BathEntity extends PlaneEntity implements IEntityRaytraceable
 {
-    public BathEntity(World worldIn)
+    public BathEntity(EntityType<? extends BathEntity> type, World worldIn)
     {
-        super(ModEntities.BATH, worldIn);
+        super(type, worldIn);
         this.setFuelConsumption(0.0F);
     }
 

@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvent;
@@ -18,9 +19,9 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
 {
     private PlayerEntity pusher;
 
-    public ShoppingCartEntity(World worldIn)
+    public ShoppingCartEntity(EntityType<? extends ShoppingCartEntity> type, World worldIn)
     {
-        super(ModEntities.SHOPPING_CART, worldIn);
+        super(type, worldIn);
         this.setMaxTurnAngle(90);
         this.setTurnSensitivity(15);
         this.setFuelCapacity(0F);

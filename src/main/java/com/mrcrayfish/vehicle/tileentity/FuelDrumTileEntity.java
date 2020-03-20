@@ -11,7 +11,7 @@ public class FuelDrumTileEntity extends TileFluidHandlerSynced
 {
     public FuelDrumTileEntity()
     {
-        super(ModTileEntities.FUEL_DRUM, Config.SERVER.fuelDrumCapacity.get());
+        super(ModTileEntities.FUEL_DRUM.get(), Config.SERVER.fuelDrumCapacity.get());
     }
 
     public FuelDrumTileEntity(TileEntityType<?> tileEntityType, int capacity)

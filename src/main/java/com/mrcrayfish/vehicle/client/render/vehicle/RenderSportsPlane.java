@@ -94,7 +94,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
                         matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
                     }
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
                 }
                 matrixStack.pop();
             }

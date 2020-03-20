@@ -274,7 +274,7 @@ public class ClientEvents
                 {
                     SprayCanItem sprayCan = (SprayCanItem) player.inventory.getCurrentItem().getItem();
                     float pitch = 0.85F + 0.15F * sprayCan.getRemainingSprays(player.inventory.getCurrentItem());
-                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(ModSounds.SPRAY_CAN_SHAKE, pitch, 0.75F));
+                    Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(ModSounds.SPRAY_CAN_SHAKE.get(), pitch, 0.75F));
                 }
             }
 
@@ -325,7 +325,7 @@ public class ClientEvents
             double offset = Math.sin((tickCounter + Minecraft.getInstance().getRenderPartialTicks()) * 0.4) * 0.01;
             if (offsetPrev > offsetPrevPrev && offsetPrev > offset)
             {
-                Minecraft.getInstance().player.playSound(ModSounds.LIQUID_GLUG, 0.3F, 1F);
+                Minecraft.getInstance().player.playSound(ModSounds.LIQUID_GLUG.get(), 0.3F, 1F);
             }
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;
@@ -511,7 +511,7 @@ public class ClientEvents
         {
             for (Hand hand : Hand.values())
             {
-                if (!(player.getHeldItem(hand).getItem() == ModItems.WRENCH))
+                if (!(player.getHeldItem(hand).getItem() == ModItems.WRENCH.get()))
                 {
                     continue;
                 }
@@ -563,8 +563,8 @@ public class ClientEvents
     {
         event.getInfo().getBlockAtCamera();
         /*Block block = event.getState().getBlock(); //TODO do i need to fix this
-        boolean isSap = block == ModBlocks.ENDER_SAP;
-        if (isSap || block == ModBlocks.FUELIUM || block == ModBlocks.BLAZE_JUICE)
+        boolean isSap = block == ModBlocks.ENDER_SAP.get();
+        if (isSap || block == ModBlocks.FUELIUM.get() || block == ModBlocks.BLAZE_JUICE.get())
         {
             GlStateManager.setFog(GlStateManager.FogMode.EXP);
             event.setDensity(isSap ? 1 : 0.5F);
