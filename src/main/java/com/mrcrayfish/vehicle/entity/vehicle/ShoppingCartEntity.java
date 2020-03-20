@@ -51,34 +51,6 @@ public class ShoppingCartEntity extends LandVehicleEntity implements IEntityRayt
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
-    {
-        if(!world.isRemote)
-        {
-            if(player.isCrouching())
-            {
-                if(pusher == player)
-                {
-                    pusher = null;
-                    player.getDataManager().set(CustomDataParameters.PUSHING_CART, false);
-                    return true;
-                }
-                else if(pusher == null)
-                {
-                    pusher = player;
-                    player.getDataManager().set(CustomDataParameters.PUSHING_CART, true);
-                }
-            }
-            else if(pusher != player)
-            {
-                super.processInitialInteract(player, hand);
-            }
-
-        }
-        return true;
-    }
-
-    @Override
     public SoundEvent getMovingSound()
     {
         return null;
