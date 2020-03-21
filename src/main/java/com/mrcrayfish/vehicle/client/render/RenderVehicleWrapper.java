@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -95,7 +96,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         GlStateManager.popMatrix();
     }
 
-    protected void renderKey(@Nullable PartPosition position, IBakedModel model, int color)
+    protected void renderKey(@Nullable PartPosition position, IBakedModel model, ItemStack stack)
     {
         if(position == null)
             return;
@@ -108,7 +109,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         GlStateManager.rotated(position.getRotY(), 0, 1, 0);
         GlStateManager.rotated(position.getRotZ(), 0, 0, 1);
         GlStateManager.translated(0.0, 0.0, -0.05);
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, color);
+        RenderUtil.renderModel(model, ItemCameraTransforms.TransformType.NONE, false, stack);
         GlStateManager.popMatrix();
     }
 

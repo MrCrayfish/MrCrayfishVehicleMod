@@ -93,7 +93,7 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
             this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), entity.getColor());
             if(!entity.getKeyStack().isEmpty())
             {
-                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), -1);
+                this.renderKey(properties.getKeyPosition(), RenderUtil.getModel(entity.getKeyStack()), entity.getKeyStack());
             }
         }
 

@@ -134,6 +134,31 @@ public class RenderUtil
         GlStateManager.popMatrix();
     }
 
+    public static void renderModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, ItemStack stack)
+    {
+        GlStateManager.pushMatrix();
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).setBlurMipmap(false, false);
+        GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager.enableRescaleNormal();
+        GlStateManager.alphaFunc(516, 0.1F);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+        GlStateManager.pushMatrix();
+        model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(model, transformType, leftHanded);
+        if(!model.isBuiltInRenderer())
+        {
+            renderModel(model, stack, -1);
+        }
+        GlStateManager.cullFace(GlStateManager.CullFace.BACK);
+        GlStateManager.popMatrix();
+        GlStateManager.disableRescaleNormal();
+        GlStateManager.disableBlend();
+        Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+        Minecraft.getInstance().getTextureManager().getTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE).restoreLastBlurMipmap();
+        GlStateManager.popMatrix();
+    }
+
     public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, boolean leftHanded, IBakedModel model)
     {
         if(!stack.isEmpty())
@@ -180,7 +205,7 @@ public class RenderUtil
 
     private static void renderQuads(BufferBuilder renderer, List<BakedQuad> quads, ItemStack stack, int color)
     {
-        boolean useItemColor = !stack.isEmpty() && color != -1;
+        boolean useItemColor = !stack.isEmpty() && color == -1;
         for(BakedQuad quad : quads)
         {
             int tintColor = 0xFFFFFFFF;
