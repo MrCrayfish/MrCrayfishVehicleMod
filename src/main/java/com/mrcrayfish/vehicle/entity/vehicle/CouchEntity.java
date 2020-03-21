@@ -17,6 +17,7 @@ public class CouchEntity extends LandVehicleEntity implements IEntityRaytraceabl
     {
         super(type, worldIn);
         this.setMaxSpeed(10);
+        this.dataManager.set(COLOR, 11546150);
     }
 
     @Override
