@@ -155,6 +155,11 @@ public class VehicleConfig
         @Config.Comment("If true, the raytracer will be reloaded each tick.")
         @Config.LangKey(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload")
         public boolean reloadRaytracerEachTick = false;
+
+        @Config.Name("Reload Vehicle Properties Each Tick")
+        @Config.Comment("If true, the vehicle properties will be reloaded each tick.")
+        @Config.LangKey(Reference.MOD_ID + ".config.client.debug.raytracer.vehicle_properties_reload")
+        public boolean reloadVehiclePropertiesEachTick = false;
     }
 
     @SubscribeEvent
