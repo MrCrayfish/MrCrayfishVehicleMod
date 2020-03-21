@@ -44,6 +44,8 @@ public class PacketHandler
         registerMessage(MessageSyncPlayerSeat.class, Side.CLIENT);
         registerMessage(MessageCycleSeats.class, Side.SERVER);
         registerMessage(MessageSyncHeldVehicle.class, Side.CLIENT);
+        registerMessage(MessageSyncPlayerTrailer.class, Side.CLIENT);
+        registerMessage(MessageSyncPlayerGasPumpPos.class, Side.CLIENT);
     }
 
     private static void registerMessage(Class packet, Side side)

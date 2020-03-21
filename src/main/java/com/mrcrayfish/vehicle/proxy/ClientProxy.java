@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.proxy;
 
+import com.google.common.base.Optional;
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
@@ -19,6 +20,7 @@ import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
@@ -607,6 +609,43 @@ public class ClientProxy implements Proxy
         if(entity instanceof EntityPlayer)
         {
             HeldVehicleDataHandler.setHeldVehicle((EntityPlayer) entity, tagCompound);
+        }
+    }
+
+    @Override
+    public void syncPlayerData(int entityId, int trailer, Optional<BlockPos> gasPumpPos)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            SyncedPlayerData.setTrailer(player, trailer);
+            SyncedPlayerData.setGasPumpPos(player, gasPumpPos);
+        }
+    }
+
+    @Override
+    public void syncTrailer(int entityId, int trailer)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            SyncedPlayerData.setTrailer(player, trailer);
+        }
+    }
+
+    @Override
+    public void syncGasPumpPos(int entityId, Optional<BlockPos> gasPumpPos)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            SyncedPlayerData.setGasPumpPos(player, gasPumpPos);
         }
     }
 

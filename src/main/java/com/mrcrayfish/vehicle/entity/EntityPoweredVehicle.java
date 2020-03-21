@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.container.ContainerVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.vehicle.EntityBumperCar;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -221,9 +222,9 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
 
     public void fuelVehicle(EntityPlayer player, EnumHand hand)
     {
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
         {
-            BlockPos pos = player.getDataManager().get(CommonEvents.GAS_PUMP).get();
+            BlockPos pos = SyncedPlayerData.getGasPumpPos(player).get();
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof TileEntityGasPump)
             {

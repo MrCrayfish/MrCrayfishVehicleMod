@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.proxy;
 
+import com.google.common.base.Optional;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
@@ -30,6 +31,12 @@ public interface Proxy
     default void syncStorageInventory(int entityId, NBTTagCompound tagCompound) {}
 
     default void syncHeldVehicle(int entityId, NBTTagCompound tagCompound) {}
+
+    default void syncPlayerData(int entityId, int trailer, Optional<BlockPos> gasPumpPos) {}
+
+    default void syncTrailer(int entityId, int trailer) {}
+
+    default void syncGasPumpPos(int entityId, Optional<BlockPos> gasPumpPos) {}
 
     default void syncEntityFluid(int entityId, FluidStack stack) {}
 

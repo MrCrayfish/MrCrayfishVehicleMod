@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -162,7 +163,7 @@ public class EntityRaytracer
     public static final Function<RayTraceResultRotated, EnumHand> FUNCTION_FUELING = (rayTraceResult) ->
     {
         EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent() && ControllerEvents.isRightClicking())
+        if(SyncedPlayerData.getGasPumpPos(player).isPresent() && ControllerEvents.isRightClicking())
         {
             Entity entity = rayTraceResult.entityHit;
             if(entity instanceof EntityPoweredVehicle)

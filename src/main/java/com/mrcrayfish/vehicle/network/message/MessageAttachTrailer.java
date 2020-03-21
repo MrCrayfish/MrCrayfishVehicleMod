@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
@@ -55,7 +56,7 @@ public class MessageAttachTrailer implements IMessage, IMessageHandler<MessageAt
                 if(entity instanceof EntityPlayer && entity.getRidingEntity() == null)
                 {
                     trailer.setPullingEntity(entity);
-                    entity.getDataManager().set(CommonEvents.TRAILER, message.trailerId);
+                    SyncedPlayerData.setTrailer((EntityPlayer) entity, message.trailerId);
                 }
             }
         });

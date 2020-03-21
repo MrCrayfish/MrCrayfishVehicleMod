@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -104,7 +105,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
     {
         if(!world.isRemote && !player.isSneaking())
         {
-            int trailerId = player.getDataManager().get(CommonEvents.TRAILER);
+            int trailerId = SyncedPlayerData.getTrailer(player);
             if(trailerId != -1)
             {
                 if(this.getRidingEntity() == null && this.canTowTrailer() && this.getTrailer() == null)
@@ -114,7 +115,7 @@ public abstract class EntityVehicle extends Entity implements IEntityAdditionalS
                     {
                         EntityTrailer trailer = (EntityTrailer) entity;
                         this.setTrailer(trailer);
-                        player.getDataManager().set(CommonEvents.TRAILER, -1);
+                        SyncedPlayerData.setTrailer(player, -1);
                     }
                 }
                 return true;

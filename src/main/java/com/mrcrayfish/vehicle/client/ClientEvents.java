@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.init.ModBlocks;
@@ -202,7 +203,7 @@ public class ClientEvents
         Entity ridingEntity = player.getRidingEntity();
         ModelPlayer model = event.getModelPlayer();
 
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
         {
             boolean rightHanded = player.getPrimaryHand() == EnumHandSide.RIGHT;
             if(rightHanded)
@@ -336,7 +337,7 @@ public class ClientEvents
         }
 
         EntityPlayer player = Minecraft.getMinecraft().player;
-        if(player.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
         {
             if(event.getSwingProgress() > 0)
             {
@@ -370,7 +371,7 @@ public class ClientEvents
     public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
     {
         Entity entity = event.getEntity();
-        if(entity instanceof EntityPlayer && entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(entity instanceof EntityPlayer && SyncedPlayerData.getGasPumpPos((EntityPlayer) entity).isPresent())
         {
             event.setCanceled(true);
             return;
@@ -389,7 +390,7 @@ public class ClientEvents
     public void onModelRenderPost(ModelPlayerEvent.Render.Post event)
     {
         EntityPlayer entity = event.getEntityPlayer();
-        if(entity.getDataManager().get(CommonEvents.GAS_PUMP).isPresent())
+        if(SyncedPlayerData.getGasPumpPos(entity).isPresent())
         {
             GlStateManager.pushMatrix();
             {

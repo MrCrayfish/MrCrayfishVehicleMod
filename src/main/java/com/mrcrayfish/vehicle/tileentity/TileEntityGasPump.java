@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -72,14 +73,14 @@ public class TileEntityGasPump extends TileEntitySynced implements ITickable
         {
             if(fuelingEntity != null)
             {
-                fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.absent());
+                SyncedPlayerData.setGasPumpPos(this.fuelingEntity, Optional.absent());
             }
             this.fuelingEntity = null;
             this.fuelingEntityId = -1;
             if(entity != null)
             {
                 this.fuelingEntityId = entity.getEntityId();
-                entity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.fromNullable(this.getPos()));
+                SyncedPlayerData.setGasPumpPos(entity, Optional.fromNullable(this.getPos()));
             }
             this.syncToClient();
         }
@@ -117,7 +118,7 @@ public class TileEntityGasPump extends TileEntitySynced implements ITickable
                 {
                     world.playSound(null, fuelingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
-                fuelingEntity.getDataManager().set(CommonEvents.GAS_PUMP, Optional.absent());
+                SyncedPlayerData.setGasPumpPos(this.fuelingEntity, Optional.absent());
                 fuelingEntityId = -1;
                 fuelingEntity = null;
                 this.syncToClient();

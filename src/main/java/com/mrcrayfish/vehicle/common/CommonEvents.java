@@ -5,6 +5,7 @@ import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.EntityTrailer;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
@@ -21,9 +22,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
@@ -31,9 +29,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -47,9 +43,6 @@ import java.util.List;
  */
 public class CommonEvents
 {
-    public static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.VARINT);
-    public static final DataParameter<Optional<BlockPos>> GAS_PUMP = EntityDataManager.createKey(EntityPlayer.class, DataSerializers.OPTIONAL_BLOCK_POS);
-
     private static final List<String> IGNORE_ITEMS;
     private static final List<String> IGNORE_SOUNDS;
     private static final List<String> IGNORE_ENTITIES;
@@ -107,16 +100,6 @@ public class CommonEvents
             {
                 missing.ignore();
             }
-        }
-    }
-
-    @SubscribeEvent
-    public void onEntityInit(EntityEvent.EntityConstructing event)
-    {
-        if(event.getEntity() instanceof EntityPlayer)
-        {
-            event.getEntity().getDataManager().register(TRAILER, -1);
-            event.getEntity().getDataManager().register(GAS_PUMP, Optional.absent());
         }
     }
 
@@ -345,9 +328,9 @@ public class CommonEvents
         {
             EntityPlayer player = event.player;
             World world = player.world;
-            if(player.isSneaking())
+            if(!world.isRemote && player.isSneaking())
             {
-                int trailerId = player.getDataManager().get(TRAILER);
+                int trailerId = SyncedPlayerData.getTrailer(player);
                 if(trailerId != -1)
                 {
                     Entity entity = world.getEntityByID(trailerId);
@@ -355,7 +338,7 @@ public class CommonEvents
                     {
                         ((EntityTrailer) entity).setPullingEntity(null);
                     }
-                    player.getDataManager().set(TRAILER, -1);
+                    SyncedPlayerData.setTrailer(player, -1);
                 }
             }
 
@@ -364,13 +347,13 @@ public class CommonEvents
                 this.dropVehicle(player);
             }
 
-            Optional<BlockPos> pos = player.getDataManager().get(GAS_PUMP);
+            Optional<BlockPos> pos = SyncedPlayerData.getGasPumpPos(player);
             if(pos.isPresent())
             {
                 TileEntity tileEntity = world.getTileEntity(pos.get());
                 if(!(tileEntity instanceof TileEntityGasPump))
                 {
-                    player.getDataManager().set(GAS_PUMP, Optional.absent());
+                    SyncedPlayerData.setGasPumpPos(player, Optional.absent());
                 }
             }
         }
@@ -379,7 +362,7 @@ public class CommonEvents
     @SubscribeEvent
     public void onRightClick(PlayerInteractEvent.RightClickItem event)
     {
-        if(event.getEntityPlayer().getDataManager().get(GAS_PUMP).isPresent())
+        if(SyncedPlayerData.getGasPumpPos(event.getEntityPlayer()).isPresent())
         {
             event.setCanceled(true);
         }
@@ -389,7 +372,7 @@ public class CommonEvents
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
     {
         IBlockState state = event.getWorld().getBlockState(event.getPos());
-        if(state.getBlock() != ModBlocks.GAS_PUMP && event.getEntityPlayer().getDataManager().get(GAS_PUMP).isPresent())
+        if(state.getBlock() != ModBlocks.GAS_PUMP && SyncedPlayerData.getGasPumpPos(event.getEntityPlayer()).isPresent())
         {
             event.setCanceled(true);
         }
