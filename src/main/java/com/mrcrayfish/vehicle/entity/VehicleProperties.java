@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.vehicle.VehicleConfig;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -24,7 +25,7 @@ public class VehicleProperties
 
     public static void setProperties(Class<? extends EntityVehicle> clazz, VehicleProperties properties)
     {
-        if(!PROPERTIES_MAP.containsKey(clazz))
+        if(!PROPERTIES_MAP.containsKey(clazz) || VehicleConfig.CLIENT.debug.reloadVehiclePropertiesEachTick)
         {
             PROPERTIES_MAP.put(clazz, properties);
         }
@@ -377,6 +378,7 @@ public class VehicleProperties
             properties.setAxleOffset(-1.5F);
             properties.setWheelOffset(5.0F);
             properties.setBodyPosition(new PartPosition(0, -0.0625, 0.1, 0, 0, 0, 1.0));
+            properties.setFuelPortPosition(new PartPosition(0, 2, 8, 0, 0, 0, 0.5));
             properties.setHeldOffset(new Vec3d(2.0, 2.0, 0.0));
             properties.setTrailerOffset(new Vec3d(0.0, 0.0, -0.25));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F));
@@ -392,7 +394,7 @@ public class VehicleProperties
             /* Sofacopter */
             properties = new VehicleProperties();
             properties.setBodyPosition(new PartPosition(0, 0, 0.0625, 0, 0, 0, 1));
-            properties.setFuelPortPosition(new PartPosition(0.0, 3.0, 8.0, 0, 0, 0, 0.45));
+            properties.setFuelPortPosition(new PartPosition(0.0, 1.5, 8.0, 0, 0, 0, 0.45));
             properties.setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8));
             properties.setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F));
             properties.addSeat(new Seat(new Vec3d(0, 5, 0), true));
