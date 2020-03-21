@@ -57,7 +57,7 @@ public class MessageAttachTrailer implements IMessage<MessageAttachTrailer>
                     if(entity instanceof PlayerEntity && entity.getRidingEntity() == null)
                     {
                         trailer.setPullingEntity(entity);
-                        SyncedPlayerData.setTrailer(player, message.trailerId);
+                        SyncedPlayerData.setTrailer((PlayerEntity) entity, message.trailerId);
                     }
                 }
             }
