@@ -92,7 +92,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * partialTicks);
                 float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
                 Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
-                Vec3d hoseVec = new Vec3d(-0.35 * side, 0.01, 0.0625);
+                Vec3d hoseVec = new Vec3d(-0.35 * side, -0.025, -0.025);
                 if(entity instanceof AbstractClientPlayerEntity)
                 {
                     String skinType = ((AbstractClientPlayerEntity) entity).getSkinType();
