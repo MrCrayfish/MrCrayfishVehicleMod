@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Vec3d;
 
 import javax.annotation.Nullable;
@@ -98,7 +99,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         matrixStack.pop();
     }
 
-    protected void renderKey(@Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
+    protected void renderKey(@Nullable PartPosition position, ItemStack stack, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
         if(position == null)
             return;
@@ -111,7 +112,8 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
         matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
         matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
         matrixStack.translate(0.0, 0.0, -0.05);
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, color, lightTexture, overlayTexture);
+        RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, lightTexture, overlayTexture, model);
+
         matrixStack.pop();
     }
 

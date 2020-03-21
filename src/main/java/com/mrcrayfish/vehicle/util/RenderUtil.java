@@ -124,7 +124,7 @@ public class RenderUtil
                 model = Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation("minecraft:trident#inventory"));
             }
 
-            net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
+            model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
             matrixStack.translate(-0.5, -0.5, -0.5);
             if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
             {
@@ -159,7 +159,7 @@ public class RenderUtil
 
     private static void renderQuads(MatrixStack matrixStack, IVertexBuilder vertexBuilder, List<BakedQuad> quads, ItemStack stack, int color, int lightTexture, int overlayTexture)
     {
-        boolean useItemColor = !stack.isEmpty() && color != -1;
+        boolean useItemColor = !stack.isEmpty() && color == -1;
         MatrixStack.Entry entry = matrixStack.getLast();
         for(BakedQuad quad : quads)
         {
