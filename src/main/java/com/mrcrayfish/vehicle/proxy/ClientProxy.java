@@ -16,6 +16,7 @@ import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.client.screen.*;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
@@ -540,6 +541,20 @@ public class ClientProxy implements Proxy
             }
         }
         return 1.0F;
+    }
+
+    @Override
+    public void syncHeldVehicle(int entityId, CompoundNBT compound)
+    {
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            Entity entity = world.getEntityByID(entityId);
+            if(entity instanceof PlayerEntity)
+            {
+                HeldVehicleDataHandler.setHeldVehicle((PlayerEntity) entity, compound);
+            }
+        }
     }
 
     @Override

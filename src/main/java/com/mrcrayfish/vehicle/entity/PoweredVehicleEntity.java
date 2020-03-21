@@ -6,10 +6,10 @@ import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.client.ISpecialModel;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Wheel;
-import com.mrcrayfish.vehicle.common.CustomDataParameters;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -241,9 +241,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public void fuelVehicle(PlayerEntity player, Hand hand)
     {
-        if(player.getDataManager().get(CustomDataParameters.GAS_PUMP).isPresent())
+        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
         {
-            BlockPos pos = player.getDataManager().get(CustomDataParameters.GAS_PUMP).get();
+            BlockPos pos = SyncedPlayerData.getGasPumpPos(player).get();
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof GasPumpTileEntity)
             {
