@@ -23,7 +23,8 @@ import java.util.WeakHashMap;
  * other entities that aren't your own. It can cause mismatched ids and crash the game. This synced
  * data attempts to solve the problem (at least for players) and allows data to be synced to clients.
  * The data can only be controlled on the server. Changing the data on the client will have no affect
- * on the server.
+ * on the server. It should also be noted that this data is not saved (just like data params) and
+ * will have to be manually saved.
  *
  * TODO make synced data dynamic instead of hardcoded. Basically I should be able to register them similar to data params
  *
