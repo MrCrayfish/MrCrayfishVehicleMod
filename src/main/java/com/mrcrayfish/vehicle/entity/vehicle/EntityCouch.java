@@ -17,6 +17,7 @@ public class EntityCouch extends EntityLandVehicle implements IEntityRaytraceabl
         super(worldIn);
         this.setMaxSpeed(10);
         this.setSize(1.0F, 1.0F);
+        this.dataManager.set(COLOR, 11546150);
     }
 
     @Override
