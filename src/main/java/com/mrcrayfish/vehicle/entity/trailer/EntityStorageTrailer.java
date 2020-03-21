@@ -86,18 +86,6 @@ public class EntityStorageTrailer extends EntityTrailer implements EntityRaytrac
         return interactionBoxMapStatic;
     }
 
-    @Override
-    public boolean processInitialInteract(EntityPlayer player, EnumHand hand)
-    {
-        ItemStack heldItem = player.getHeldItem(hand);
-        if((heldItem.isEmpty() || !(heldItem.getItem() instanceof ItemSprayCan)) && player instanceof EntityPlayerMP)
-        {
-            inventory.openGui((EntityPlayerMP) player, this);
-            return true;
-        }
-        return super.processInitialInteract(player, hand);
-    }
-
     @Nullable
     @Override
     @SideOnly(Side.CLIENT)
