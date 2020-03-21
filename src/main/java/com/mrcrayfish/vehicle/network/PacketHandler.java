@@ -43,6 +43,7 @@ public class PacketHandler
         registerMessage(MessageEntityFluid.class, Side.CLIENT);
         registerMessage(MessageSyncPlayerSeat.class, Side.CLIENT);
         registerMessage(MessageCycleSeats.class, Side.SERVER);
+        registerMessage(MessageSyncHeldVehicle.class, Side.CLIENT);
     }
 
     private static void registerMessage(Class packet, Side side)

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client;
 import com.mrcrayfish.obfuscate.client.event.ModelPlayerEvent;
 import com.mrcrayfish.vehicle.client.render.layer.LayerHeldVehicle;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelPlayer;
@@ -57,7 +58,7 @@ public class HeldVehicleEvents
         ModelPlayer model = event.getModelPlayer();
         EntityPlayer player = event.getEntityPlayer();
 
-        boolean holdingVehicle = !player.getDataManager().get(CommonEvents.HELD_VEHICLE).hasNoTags();
+        boolean holdingVehicle = HeldVehicleDataHandler.isHoldingVehicle(player);
         if(holdingVehicle && !idToCounter.containsKey(player.getUniqueID()))
         {
             idToCounter.put(player.getUniqueID(), new AnimationCounter(40));

@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render.layer;
 
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
@@ -27,7 +28,7 @@ public class LayerHeldVehicle implements LayerRenderer<AbstractClientPlayer>
     @Override
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        NBTTagCompound tagCompound = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
+        NBTTagCompound tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
         if(!tagCompound.hasNoTags())
         {
             Class<? extends Entity> entityClass = EntityList.getClassFromName(tagCompound.getString("id"));

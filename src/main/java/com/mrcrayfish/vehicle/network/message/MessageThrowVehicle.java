@@ -36,22 +36,14 @@ public class MessageThrowVehicle implements IMessage, IMessageHandler<MessageThr
             if(player.isSneaking())
             {
                 //Spawns the vehicle and plays the placing sound
-                if(!player.getDataManager().get(CommonEvents.HELD_VEHICLE).hasNoTags())
+                if(HeldVehicleDataHandler.isHoldingVehicle(player))
                 {
-                    NBTTagCompound tagCompound = player.getDataManager().get(CommonEvents.HELD_VEHICLE);
+                    NBTTagCompound tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
                     Entity entity = EntityList.createEntityFromNBT(tagCompound, player.world);
                     if(entity instanceof EntityVehicle)
                     {
                         //Updates the DataParameter
-                        NBTTagCompound tag = new NBTTagCompound();
-                        player.getDataManager().set(CommonEvents.HELD_VEHICLE, tag);
-
-                        //Updates the player capability
-                        HeldVehicleDataHandler.IHeldVehicle heldVehicle = HeldVehicleDataHandler.getHandler(player);
-                        if(heldVehicle != null)
-                        {
-                            heldVehicle.setVehicleTag(tag);
-                        }
+                        HeldVehicleDataHandler.setHeldVehicle(player, new NBTTagCompound());
 
                         //Sets the positions and spawns the entity
                         float rotation = (player.getRotationYawHead() + 90F) % 360.0F;

@@ -18,6 +18,7 @@ import com.mrcrayfish.vehicle.client.model.CustomLoader;
 import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
@@ -595,6 +596,17 @@ public class ClientProxy implements Proxy
                 EntityVehicle vehicle = (EntityVehicle) entity;
                 vehicle.getSeatTracker().setSeatIndex(seatIndex, uuid);
             }
+        }
+    }
+
+    @Override
+    public void syncHeldVehicle(int entityId, NBTTagCompound tagCompound)
+    {
+        World world = Minecraft.getMinecraft().world;
+        Entity entity = world.getEntityByID(entityId);
+        if(entity instanceof EntityPlayer)
+        {
+            HeldVehicleDataHandler.setHeldVehicle((EntityPlayer) entity, tagCompound);
         }
     }
 

@@ -1,8 +1,11 @@
 package com.mrcrayfish.vehicle.common.entity;
 
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageSyncHeldVehicle;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
@@ -13,6 +16,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import javax.annotation.Nonnull;
@@ -32,6 +37,40 @@ public class HeldVehicleDataHandler
         MinecraftForge.EVENT_BUS.register(new HeldVehicleDataHandler());
     }
 
+    public static boolean isHoldingVehicle(EntityPlayer player)
+    {
+        IHeldVehicle handler = getHandler(player);
+        if(handler != null)
+        {
+            return !handler.getVehicleTag().hasNoTags();
+        }
+        return false;
+    }
+
+    public static NBTTagCompound getHeldVehicle(EntityPlayer player)
+    {
+        IHeldVehicle handler = getHandler(player);
+        if(handler != null)
+        {
+            return handler.getVehicleTag();
+        }
+        return new NBTTagCompound();
+    }
+
+    public static void setHeldVehicle(EntityPlayer player, NBTTagCompound vehicleTag)
+    {
+        IHeldVehicle handler = getHandler(player);
+        if(handler != null)
+        {
+            handler.setVehicleTag(vehicleTag);
+        }
+        if(!player.world.isRemote)
+        {
+            PacketHandler.INSTANCE.sendTo(new MessageSyncHeldVehicle(player.getEntityId(), vehicleTag), (EntityPlayerMP) player);
+            PacketHandler.INSTANCE.sendToAllTracking(new MessageSyncHeldVehicle(player.getEntityId(), vehicleTag), player);
+        }
+    }
+
     @Nullable
     public static IHeldVehicle getHandler(EntityPlayer player)
     {
@@ -48,6 +87,30 @@ public class HeldVehicleDataHandler
         if (event.getObject() instanceof EntityPlayer)
         {
             event.addCapability(new ResourceLocation(Reference.MOD_ID, "held_vehicle"), new Provider());
+        }
+    }
+
+    @SubscribeEvent
+    public void onStartTracking(PlayerEvent.StartTracking event)
+    {
+        if(event.getTarget() instanceof EntityPlayer)
+        {
+            EntityPlayer player = (EntityPlayer) event.getTarget();
+            NBTTagCompound vehicleTag = getHeldVehicle(player);
+            PacketHandler.INSTANCE.sendTo(new MessageSyncHeldVehicle(player.getEntityId(), vehicleTag), (EntityPlayerMP) event.getEntityPlayer());
+        }
+    }
+
+    @SubscribeEvent
+    public void onPlayerJoinWorld(EntityJoinWorldEvent event)
+    {
+        Entity entity = event.getEntity();
+        if(entity instanceof EntityPlayer && !event.getWorld().isRemote)
+        {
+            EntityPlayer player = (EntityPlayer) entity;
+            NBTTagCompound vehicleTag = getHeldVehicle(player);
+            PacketHandler.INSTANCE.sendTo(new MessageSyncHeldVehicle(player.getEntityId(), vehicleTag), (EntityPlayerMP) player);
+            //PacketHandler.INSTANCE.sendToAllTracking(new MessageSyncHeldVehicle(player.getEntityId(), vehicleTag), player);
         }
     }
 
