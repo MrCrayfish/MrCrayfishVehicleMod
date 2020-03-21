@@ -11,6 +11,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.FluidStack;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -23,6 +24,14 @@ public interface Proxy
     default void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle) {}
 
     default void syncStorageInventory(int entityId, CompoundNBT compound) {}
+
+    default void syncHeldVehicle(int entityId, CompoundNBT compound) {}
+
+    default void syncPlayerData(int entityId, int trailer, Optional<BlockPos> gasPumpPos) {}
+
+    default void syncTrailer(int entityId, int trailer) {}
+
+    default void syncGasPumpPos(int entityId, Optional<BlockPos> gasPumpPos) {}
 
     default void syncEntityFluid(int entityId, FluidStack stack) {}
 

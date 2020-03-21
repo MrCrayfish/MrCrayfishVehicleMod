@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
-import com.mrcrayfish.vehicle.common.CustomDataParameters;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.entity.Entity;
@@ -13,7 +13,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
@@ -80,14 +79,14 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
         {
             if(this.fuelingEntity != null)
             {
-                this.fuelingEntity.getDataManager().set(CustomDataParameters.GAS_PUMP, Optional.empty());
+                SyncedPlayerData.setGasPumpPos(this.fuelingEntity, Optional.empty());
             }
             this.fuelingEntity = null;
             this.fuelingEntityId = -1;
             if(entity != null)
             {
                 this.fuelingEntityId = entity.getEntityId();
-                entity.getDataManager().set(CustomDataParameters.GAS_PUMP, Optional.of(this.getPos()));
+                SyncedPlayerData.setGasPumpPos(entity, Optional.of(this.getPos()));
             }
             this.syncToClient();
         }
@@ -125,7 +124,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
                 {
                     this.world.playSound(null, this.fuelingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
-                this.fuelingEntity.getDataManager().set(CustomDataParameters.GAS_PUMP, Optional.empty());
+                SyncedPlayerData.setGasPumpPos(this.fuelingEntity, Optional.empty());
                 this.fuelingEntityId = -1;
                 this.fuelingEntity = null;
                 this.syncFuelingEntity();

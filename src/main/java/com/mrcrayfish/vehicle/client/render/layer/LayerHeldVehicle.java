@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.layer;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
-import com.mrcrayfish.vehicle.common.CustomDataParameters;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -33,7 +33,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
     @Override
     public void render(AbstractClientPlayerEntity player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        CompoundNBT tagCompound = player.getDataManager().get(CustomDataParameters.HELD_VEHICLE);
+        CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
         if(!tagCompound.isEmpty())
         {
             Optional<EntityType<?>> optional = EntityType.byKey(tagCompound.getString("id"));

@@ -17,6 +17,8 @@ import com.mrcrayfish.vehicle.client.render.*;
 import com.mrcrayfish.vehicle.client.render.tileentity.*;
 import com.mrcrayfish.vehicle.client.render.vehicle.*;
 import com.mrcrayfish.vehicle.client.screen.*;
+import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
+import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.*;
 import com.mrcrayfish.vehicle.entity.trailer.*;
@@ -60,10 +62,7 @@ import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -572,6 +571,66 @@ public class ClientProxy implements Proxy
             {
                 VehicleEntity vehicle = (VehicleEntity) entity;
                 vehicle.getSeatTracker().setSeatIndex(seatIndex, uuid);
+            }
+        }
+    }
+
+    @Override
+    public void syncHeldVehicle(int entityId, CompoundNBT compound)
+    {
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            Entity entity = world.getEntityByID(entityId);
+            if(entity instanceof PlayerEntity)
+            {
+                HeldVehicleDataHandler.setHeldVehicle((PlayerEntity) entity, compound);
+            }
+        }
+    }
+
+    @Override
+    public void syncPlayerData(int entityId, int trailer, Optional<BlockPos> gasPumpPos)
+    {
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            Entity entity = world.getEntityByID(entityId);
+            if(entity instanceof PlayerEntity)
+            {
+                PlayerEntity player = (PlayerEntity) entity;
+                SyncedPlayerData.setTrailer(player, trailer);
+                SyncedPlayerData.setGasPumpPos(player, gasPumpPos);
+            }
+        }
+    }
+
+    @Override
+    public void syncTrailer(int entityId, int trailer)
+    {
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            Entity entity = world.getEntityByID(entityId);
+            if(entity instanceof PlayerEntity)
+            {
+                PlayerEntity player = (PlayerEntity) entity;
+                SyncedPlayerData.setTrailer(player, trailer);
+            }
+        }
+    }
+
+    @Override
+    public void syncGasPumpPos(int entityId, Optional<BlockPos> gasPumpPos)
+    {
+        World world = Minecraft.getInstance().world;
+        if(world != null)
+        {
+            Entity entity = world.getEntityByID(entityId);
+            if(entity instanceof PlayerEntity)
+            {
+                PlayerEntity player = (PlayerEntity) entity;
+                SyncedPlayerData.setGasPumpPos(player, gasPumpPos);
             }
         }
     }
