@@ -118,7 +118,7 @@ public class CommonEvents
     {
         if(hand == Hand.MAIN_HAND && !world.isRemote && player.isSneaking() && !player.isSpectator() && Config.SERVER.pickUpVehicles.get())
         {
-            if(HeldVehicleDataHandler.isHoldingVehicle(player))
+            if(!HeldVehicleDataHandler.isHoldingVehicle(player))
             {
                 if(targetEntity instanceof VehicleEntity && !targetEntity.isBeingRidden() && targetEntity.isAlive())
                 {
