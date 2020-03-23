@@ -23,6 +23,7 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
     public MessagePickupVehicle(Entity targetEntity)
     {
         this.entityId = targetEntity.getEntityId();
+        System.out.println(targetEntity.getEntityId());
     }
 
     public MessagePickupVehicle(int entityId)
@@ -33,19 +34,20 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
     @Override
     public void encode(MessagePickupVehicle message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
     }
 
     @Override
     public MessagePickupVehicle decode(PacketBuffer buffer)
     {
-        return new MessagePickupVehicle(buffer.readInt());
+        return new MessagePickupVehicle(buffer.readVarInt());
     }
 
     @Override
     public void handle(MessagePickupVehicle message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> {
+        supplier.get().enqueueWork(() ->
+        {
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null && player.isSneaking())
             {

@@ -33,14 +33,14 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     @Override
     public void encode(MessageSyncInventory message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
         buffer.writeCompoundTag(message.compound);
     }
 
     @Override
     public MessageSyncInventory decode(PacketBuffer buffer)
     {
-        return new MessageSyncInventory(buffer.readInt(), buffer.readCompoundTag());
+        return new MessageSyncInventory(buffer.readVarInt(), buffer.readCompoundTag());
     }
 
     @Override

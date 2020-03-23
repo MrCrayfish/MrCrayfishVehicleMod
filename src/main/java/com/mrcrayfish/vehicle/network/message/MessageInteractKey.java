@@ -37,13 +37,13 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
     @Override
     public void encode(MessageInteractKey message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
     }
 
     @Override
     public MessageInteractKey decode(PacketBuffer buffer)
     {
-        return new MessageInteractKey(buffer.readInt());
+        return new MessageInteractKey(buffer.readVarInt());
     }
 
     @SuppressWarnings("ConstantConditions")

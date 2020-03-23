@@ -30,14 +30,14 @@ public class MessageAttachTrailer implements IMessage<MessageAttachTrailer>
     @Override
     public void encode(MessageAttachTrailer message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.trailerId);
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.trailerId);
+        buffer.writeVarInt(message.entityId);
     }
 
     @Override
     public MessageAttachTrailer decode(PacketBuffer buffer)
     {
-        return new MessageAttachTrailer(buffer.readInt(), buffer.readInt());
+        return new MessageAttachTrailer(buffer.readVarInt(), buffer.readVarInt());
     }
 
     @Override

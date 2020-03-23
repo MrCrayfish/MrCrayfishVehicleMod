@@ -31,13 +31,13 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
     @Override
     public void encode(MessageOpenStorage message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
     }
 
     @Override
     public MessageOpenStorage decode(PacketBuffer buffer)
     {
-        return new MessageOpenStorage(buffer.readInt());
+        return new MessageOpenStorage(buffer.readVarInt());
     }
 
     @SuppressWarnings("ConstantConditions")

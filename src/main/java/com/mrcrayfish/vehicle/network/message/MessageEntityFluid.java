@@ -27,14 +27,14 @@ public class MessageEntityFluid implements IMessage<MessageEntityFluid>
     @Override
     public void encode(MessageEntityFluid message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
         buffer.writeCompoundTag(message.stack.writeToNBT(new CompoundNBT()));
     }
 
     @Override
     public MessageEntityFluid decode(PacketBuffer buffer)
     {
-        return new MessageEntityFluid(buffer.readInt(), FluidStack.loadFluidStackFromNBT(buffer.readCompoundTag()));
+        return new MessageEntityFluid(buffer.readVarInt(), FluidStack.loadFluidStackFromNBT(buffer.readCompoundTag()));
     }
 
     @Override

@@ -31,13 +31,13 @@ public class MessageAttachChest implements IMessage<MessageAttachChest>
     @Override
     public void encode(MessageAttachChest message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
     }
 
     @Override
     public MessageAttachChest decode(PacketBuffer buffer)
     {
-        return new MessageAttachChest(buffer.readInt());
+        return new MessageAttachChest(buffer.readVarInt());
     }
 
     @Override

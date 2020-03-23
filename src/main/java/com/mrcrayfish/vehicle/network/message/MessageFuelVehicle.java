@@ -27,14 +27,14 @@ public class MessageFuelVehicle implements IMessage<MessageFuelVehicle>
     @Override
     public void encode(MessageFuelVehicle message, PacketBuffer buffer)
     {
-        buffer.writeInt(message.entityId);
+        buffer.writeVarInt(message.entityId);
         buffer.writeEnumValue(message.hand);
     }
 
     @Override
     public MessageFuelVehicle decode(PacketBuffer buffer)
     {
-        return new MessageFuelVehicle(buffer.readInt(), buffer.readEnumValue(Hand.class));
+        return new MessageFuelVehicle(buffer.readVarInt(), buffer.readEnumValue(Hand.class));
     }
 
     @Override
