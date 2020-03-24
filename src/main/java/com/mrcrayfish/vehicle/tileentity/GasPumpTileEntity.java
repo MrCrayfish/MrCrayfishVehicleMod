@@ -1,8 +1,9 @@
 package com.mrcrayfish.vehicle.tileentity;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
-import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
+import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.entity.Entity;
@@ -79,14 +80,14 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
         {
             if(this.fuelingEntity != null)
             {
-                SyncedPlayerData.setGasPumpPos(this.fuelingEntity, Optional.empty());
+                SyncedPlayerData.instance().set(this.fuelingEntity, ModDataKeys.GAS_PUMP, Optional.empty());
             }
             this.fuelingEntity = null;
             this.fuelingEntityId = -1;
             if(entity != null)
             {
                 this.fuelingEntityId = entity.getEntityId();
-                SyncedPlayerData.setGasPumpPos(entity, Optional.of(this.getPos()));
+                SyncedPlayerData.instance().set(entity, ModDataKeys.GAS_PUMP, Optional.of(this.getPos()));
             }
             this.syncToClient();
         }
@@ -124,7 +125,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
                 {
                     this.world.playSound(null, this.fuelingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
-                SyncedPlayerData.setGasPumpPos(this.fuelingEntity, Optional.empty());
+                SyncedPlayerData.instance().set(this.fuelingEntity, ModDataKeys.GAS_PUMP, Optional.empty());
                 this.fuelingEntityId = -1;
                 this.fuelingEntity = null;
                 this.syncFuelingEntity();

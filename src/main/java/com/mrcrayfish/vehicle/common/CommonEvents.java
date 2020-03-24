@@ -1,14 +1,15 @@
 package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableList;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
-import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
@@ -29,9 +30,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -361,7 +360,7 @@ public class CommonEvents
             World world = player.world;
             if(player.isCrouching())
             {
-                int trailerId = SyncedPlayerData.getTrailer(player);
+                int trailerId = SyncedPlayerData.instance().get(player, ModDataKeys.TRAILER);
                 if(trailerId != -1)
                 {
                     Entity entity = world.getEntityByID(trailerId);
@@ -369,7 +368,7 @@ public class CommonEvents
                     {
                         ((TrailerEntity) entity).setPullingEntity(null);
                     }
-                    SyncedPlayerData.setTrailer(player, -1);
+                    SyncedPlayerData.instance().set(player, ModDataKeys.TRAILER, -1);
                 }
             }
 
@@ -378,13 +377,13 @@ public class CommonEvents
                 this.dropVehicle(player);
             }
 
-            Optional<BlockPos> pos = SyncedPlayerData.getGasPumpPos(player);
+            Optional<BlockPos> pos = SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP);
             if(pos.isPresent())
             {
                 TileEntity tileEntity = world.getTileEntity(pos.get());
                 if(!(tileEntity instanceof GasPumpTileEntity))
                 {
-                    SyncedPlayerData.setGasPumpPos(player, Optional.empty());
+                    SyncedPlayerData.instance().set(player, ModDataKeys.GAS_PUMP, Optional.empty());
                 }
             }
         }
@@ -393,7 +392,7 @@ public class CommonEvents
     @SubscribeEvent
     public void onRightClick(PlayerInteractEvent.RightClickItem event)
     {
-        if(SyncedPlayerData.getGasPumpPos(event.getPlayer()).isPresent())
+        if(SyncedPlayerData.instance().get(event.getPlayer(), ModDataKeys.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
         }
@@ -403,7 +402,7 @@ public class CommonEvents
     public void onRightClick(PlayerInteractEvent.RightClickBlock event)
     {
         BlockState state = event.getWorld().getBlockState(event.getPos());
-        if(state.getBlock() != ModBlocks.GAS_PUMP.get() && SyncedPlayerData.getGasPumpPos(event.getPlayer()).isPresent())
+        if(state.getBlock() != ModBlocks.GAS_PUMP.get() && SyncedPlayerData.instance().get(event.getPlayer(), ModDataKeys.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
         }

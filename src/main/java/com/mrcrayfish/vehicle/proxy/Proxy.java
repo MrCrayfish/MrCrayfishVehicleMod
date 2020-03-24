@@ -27,12 +27,6 @@ public interface Proxy
 
     default void syncHeldVehicle(int entityId, CompoundNBT compound) {}
 
-    default void syncPlayerData(int entityId, int trailer, Optional<BlockPos> gasPumpPos) {}
-
-    default void syncTrailer(int entityId, int trailer) {}
-
-    default void syncGasPumpPos(int entityId, Optional<BlockPos> gasPumpPos) {}
-
     default void syncEntityFluid(int entityId, FluidStack stack) {}
 
     default void playSound(SoundEvent sound, BlockPos pos, float volume, float pitch) {}

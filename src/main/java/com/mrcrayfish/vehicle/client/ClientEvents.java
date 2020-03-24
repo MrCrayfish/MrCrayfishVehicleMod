@@ -3,15 +3,16 @@ package com.mrcrayfish.vehicle.client;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
-import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -183,7 +184,7 @@ public class ClientEvents
         Entity ridingEntity = player.getRidingEntity();
         PlayerModel model = event.getModelPlayer();
 
-        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
+        if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())
         {
             boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
             if(rightHanded)
@@ -324,7 +325,7 @@ public class ClientEvents
         }
 
         PlayerEntity player = Minecraft.getInstance().player;
-        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
+        if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())
         {
             if(event.getSwingProgress() > 0)
             {
@@ -356,7 +357,7 @@ public class ClientEvents
     public void onRenderThirdPerson(RenderItemEvent.Held.Pre event)
     {
         Entity entity = event.getEntity();
-        if(entity instanceof PlayerEntity && SyncedPlayerData.getGasPumpPos((PlayerEntity) entity).isPresent())
+        if(entity instanceof PlayerEntity && SyncedPlayerData.instance().get((PlayerEntity) entity, ModDataKeys.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
             return;
@@ -376,7 +377,7 @@ public class ClientEvents
     {
         MatrixStack matrixStack = event.getMatrixStack();
         PlayerEntity entity = event.getPlayer();
-        if(SyncedPlayerData.getGasPumpPos(entity).isPresent())
+        if(SyncedPlayerData.instance().get(entity, ModDataKeys.GAS_PUMP).isPresent())
         {
             matrixStack.push();
             {

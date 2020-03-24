@@ -4,14 +4,15 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
@@ -152,7 +153,7 @@ public class EntityRaytracer
     public static final Function<RayTraceResultRotated, Hand> FUNCTION_FUELING = (rayTraceResult) ->
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if(SyncedPlayerData.getGasPumpPos(player).isPresent() && ControllerEvents.isRightClicking())
+        if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent() && ControllerEvents.isRightClicking())
         {
             Entity entity = rayTraceResult.getEntity();
             if(entity instanceof PoweredVehicleEntity)

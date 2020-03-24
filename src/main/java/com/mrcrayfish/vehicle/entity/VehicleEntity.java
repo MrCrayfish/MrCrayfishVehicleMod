@@ -1,13 +1,14 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
@@ -108,7 +109,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         if(!world.isRemote && !player.isCrouching())
         {
-            int trailerId = SyncedPlayerData.getTrailer(player);
+            int trailerId = SyncedPlayerData.instance().get(player, ModDataKeys.TRAILER);
             if(trailerId != -1)
             {
                 if(this.getRidingEntity() == null && this.canTowTrailer() && this.getTrailer() == null)
@@ -118,7 +119,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     {
                         TrailerEntity trailer = (TrailerEntity) entity;
                         this.setTrailer(trailer);
-                        SyncedPlayerData.setTrailer(player, -1);
+                        SyncedPlayerData.instance().set(player, ModDataKeys.TRAILER, -1);
                     }
                 }
                 return true;

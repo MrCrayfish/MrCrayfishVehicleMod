@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
@@ -9,8 +10,8 @@ import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
+import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
@@ -241,9 +242,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public void fuelVehicle(PlayerEntity player, Hand hand)
     {
-        if(SyncedPlayerData.getGasPumpPos(player).isPresent())
+        if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())
         {
-            BlockPos pos = SyncedPlayerData.getGasPumpPos(player).get();
+            BlockPos pos = SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).get();
             TileEntity tileEntity = world.getTileEntity(pos);
             if(tileEntity instanceof GasPumpTileEntity)
             {

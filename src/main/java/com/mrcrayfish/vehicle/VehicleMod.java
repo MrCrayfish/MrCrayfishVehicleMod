@@ -107,6 +107,7 @@ public class VehicleMod
         VehicleProperties.register();
         ItemLookup.init();
         ModLootFunctions.register();
+        ModDataKeys.register();
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
