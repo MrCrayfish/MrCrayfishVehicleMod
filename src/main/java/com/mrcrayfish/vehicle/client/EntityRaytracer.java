@@ -244,6 +244,14 @@ public class EntityRaytracer
         registerEntityStatic(ModEntities.BUMPER_CAR.get(), bumperCarParts);
 
         // Dune buggy
+        List<MatrixTransformation> dirtBikeTransformGlobal = Lists.newArrayList();
+        createBodyTransforms(dirtBikeTransformGlobal, ModEntities.DIRT_BIKE.get());
+        HashMap<RayTracePart, List<MatrixTransformation>> dirtBikeParts = Maps.newHashMap();
+        createTransformListForPart(SpecialModels.DIRT_BIKE_BODY, dirtBikeParts, dirtBikeTransformGlobal);
+        createTransformListForPart(SpecialModels.DIRT_BIKE_HANDLES, dirtBikeParts, dirtBikeTransformGlobal);
+        registerEntityStatic(ModEntities.DIRT_BIKE.get(), dirtBikeParts);
+
+        // Dune buggy
         List<MatrixTransformation> duneBuggyTransformGlobal = Lists.newArrayList();
         createBodyTransforms(duneBuggyTransformGlobal, ModEntities.DUNE_BUGGY.get());
         HashMap<RayTracePart, List<MatrixTransformation>> duneBuggyParts = Maps.newHashMap();

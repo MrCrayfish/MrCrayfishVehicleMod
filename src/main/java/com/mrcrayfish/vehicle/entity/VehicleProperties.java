@@ -91,6 +91,21 @@ public class VehicleProperties
         properties.addSeat(new Seat(new Vec3d(0, 1, -6), true));
         VehicleProperties.setProperties(ModEntities.BUMPER_CAR.get(), properties);
 
+        /* Dirt Bike */
+        properties = new VehicleProperties();
+        properties.setAxleOffset(0.0F);
+        properties.setWheelOffset(2.5F);
+        properties.setBodyPosition(new PartPosition(1.0));
+        //properties.setFuelPortPosition(new PartPosition(0, 3, -7.0, 0, 180, 0, 0.25));
+        properties.setHeldOffset(new Vec3d(0.0, 0.0, 0.0));
+        //properties.setDisplayPosition(new PartPosition(1.75F));
+        properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, 0.0F, 14.08F, 1.0F, false, true);
+        properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, 0.0F, -11.61F, 1.0F, true, true);
+        properties.setFrontAxelVec(0, 14.08);
+        properties.setRearAxelVec(0, -11.61);
+        properties.addSeat(new Seat(new Vec3d(0, 8, -3), true));
+        VehicleProperties.setProperties(ModEntities.DIRT_BIKE.get(), properties);
+
         /* Dune Buggy */
         properties = new VehicleProperties();
         properties.setAxleOffset(-2.3F);
