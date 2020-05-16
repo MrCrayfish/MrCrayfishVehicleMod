@@ -108,6 +108,8 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRaytrace
             }
         }
 
+        this.renderSteeringDebug(matrixStack, properties, entity);
+
         matrixStack.pop();
     }
 }

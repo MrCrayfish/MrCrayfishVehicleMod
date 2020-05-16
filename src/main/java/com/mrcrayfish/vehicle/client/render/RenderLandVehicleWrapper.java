@@ -113,6 +113,13 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
             }
         }
 
+        this.renderSteeringDebug(matrixStack, properties, entity);
+
+        matrixStack.pop();
+    }
+
+    protected void renderSteeringDebug(MatrixStack matrixStack, VehicleProperties properties, T entity)
+    {
         if(Config.CLIENT.renderSteeringDebug.get())
         {
             if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
@@ -196,7 +203,6 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
                 matrixStack.pop();
             }
         }
-        matrixStack.pop();
     }
 
     private void renderSteeringLine(MatrixStack stack, int color)
