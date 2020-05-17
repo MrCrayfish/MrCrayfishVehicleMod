@@ -103,7 +103,8 @@ public class VehicleProperties
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, 0.0F, -11.61F, 1.5F, 2.25F, 2.25F, true, true);
         properties.setFrontAxelVec(0, 14.08);
         properties.setRearAxelVec(0, -11.61);
-        properties.addSeat(new Seat(new Vec3d(0, 8, -3), true));
+        properties.addSeat(new Seat(new Vec3d(0, 8, -2), true));
+        properties.addSeat(new Seat(new Vec3d(0, 9, -9)));
         VehicleProperties.setProperties(ModEntities.DIRT_BIKE.get(), properties);
 
         /* Dune Buggy */
