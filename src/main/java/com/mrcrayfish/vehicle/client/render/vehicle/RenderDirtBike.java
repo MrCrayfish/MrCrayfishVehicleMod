@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -34,7 +35,6 @@ public class RenderDirtBike extends AbstractRenderVehicle<DirtBikeEntity>
         matrixStack.translate(0.0, 0.0, 10.5 * 0.0625);
         matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-22.5F));
 
-        float wheelScale = 1.65F;
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
@@ -47,17 +47,22 @@ public class RenderDirtBike extends AbstractRenderVehicle<DirtBikeEntity>
 
         if(entity.hasWheels())
         {
-            matrixStack.push();
-            matrixStack.translate(0, -0.5 + 1.7 * 0.0625, 13 * 0.0625);
-            float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
-            if(entity.isMoving())
+            Wheel wheel = entity.getProperties().getWheels().stream().filter(wheel1 -> wheel1.getPosition() == Wheel.Position.FRONT).findFirst().orElse(null);
+            if(wheel != null)
             {
-                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
+                matrixStack.push();
+                matrixStack.translate(0, -0.5, 0);
+                matrixStack.translate(wheel.getOffsetX() * 0.0625, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+                float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
+                if(entity.isMoving())
+                {
+                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
+                }
+                matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
+                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+                RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                matrixStack.pop();
             }
-            matrixStack.scale(wheelScale, wheelScale, wheelScale);
-            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
-            //RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
-            matrixStack.pop();
         }
 
         matrixStack.pop();
