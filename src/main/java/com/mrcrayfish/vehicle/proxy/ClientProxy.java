@@ -27,6 +27,7 @@ import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
@@ -34,6 +35,9 @@ import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.BreakingParticle;
+import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
@@ -43,10 +47,13 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -623,6 +630,20 @@ public class ClientProxy implements Proxy
             {
                 HeldVehicleDataHandler.setHeldVehicle((PlayerEntity) entity, compound);
             }
+        }
+    }
+
+    @Override
+    public void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vec3d motion)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        World world = mc.world;
+        if(world != null)
+        {
+            DiggingParticle particle = new DiggingParticle(world, x, y, z, motion.x, motion.y, motion.z, state);
+            particle.setBlockPos(pos);
+            particle.multiplyVelocity((float) motion.length());
+            mc.particles.addEffect(particle);
         }
     }
 

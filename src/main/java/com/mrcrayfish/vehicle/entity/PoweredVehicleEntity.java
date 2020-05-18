@@ -554,7 +554,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public void createParticles()
     {
-        if(this.getAcceleration() == AccelerationDirection.FORWARD)
+        if(this.getAcceleration() == AccelerationDirection.FORWARD || this.charging)
         {
             /* Uses the same logic when rendering wheels to determine the position, then spawns
              * particles at the contact of the wheel and the ground. */
@@ -578,8 +578,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     BlockState state = this.world.getBlockState(pos);
                     if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
                     {
-                        Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F);
-                        this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), this.getPosX() + wheelX, this.getPosY() + wheelY, this.getPosZ() + wheelZ, dirVec.x, dirVec.y, dirVec.z);
+                        Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F).add(0, 0.5, 0);
+                        if(this.charging)
+                        {
+                            dirVec = dirVec.scale(this.currentSpeed / 3F);
+                        }
+                        VehicleMod.PROXY.spawnWheelParticle(pos, state, this.getPosX() + wheelX, this.getPosY() + wheelY, this.getPosZ() + wheelZ, dirVec);
                     }
                 }
             }
