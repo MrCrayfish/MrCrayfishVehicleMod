@@ -17,7 +17,7 @@ public class DirtBikeEntity extends MotorcycleEntity implements EntityRaytracer.
     public DirtBikeEntity(EntityType<? extends DirtBikeEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(25F);
+        this.setMaxSpeed(18F);
         this.setTurnSensitivity(10);
         this.setFuelCapacity(20000F);
         this.setFuelConsumption(0.35F);
