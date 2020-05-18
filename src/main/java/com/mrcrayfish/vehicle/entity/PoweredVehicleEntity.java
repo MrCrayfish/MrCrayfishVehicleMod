@@ -486,7 +486,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             if(this.canDrive())
             {
-                boolean charging = this.canCharge() && acceleration == AccelerationDirection.CHARGING && Math.abs(this.currentSpeed) < 0.05F;
+                boolean charging = this.canCharge() && acceleration == AccelerationDirection.CHARGING && Math.abs(this.currentSpeed) < 0.5F;
                 if(acceleration == AccelerationDirection.FORWARD || (charging || this.charging))
                 {
                     if(!this.charging)
