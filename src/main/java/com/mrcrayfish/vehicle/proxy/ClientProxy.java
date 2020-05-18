@@ -27,6 +27,7 @@ import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
@@ -299,17 +300,40 @@ public class ClientProxy implements Proxy
                         return PoweredVehicleEntity.AccelerationDirection.REVERSE;
                     }
                 }
-                else if(controller.getButtonsStates().getState(Buttons.A))
+
+                boolean forward = controller.getButtonsStates().getState(Buttons.A);
+                boolean reverse = controller.getButtonsStates().getState(Buttons.B);
+                if(forward && reverse)
+                {
+                    return PoweredVehicleEntity.AccelerationDirection.CHARGING;
+                }
+                else if(forward)
                 {
                     return PoweredVehicleEntity.AccelerationDirection.FORWARD;
                 }
-                else if(controller.getButtonsStates().getState(Buttons.B))
+                else if(reverse)
                 {
                     return PoweredVehicleEntity.AccelerationDirection.REVERSE;
                 }
-
             }
         }
+
+        GameSettings settings = Minecraft.getInstance().gameSettings;
+        boolean forward = settings.keyBindForward.isKeyDown();
+        boolean reverse = settings.keyBindBack.isKeyDown();
+        if(forward && reverse)
+        {
+            return PoweredVehicleEntity.AccelerationDirection.CHARGING;
+        }
+        else if(forward)
+        {
+            return PoweredVehicleEntity.AccelerationDirection.FORWARD;
+        }
+        else if(reverse)
+        {
+            return PoweredVehicleEntity.AccelerationDirection.REVERSE;
+        }
+
         return PoweredVehicleEntity.AccelerationDirection.fromEntity(entity);
     }
 

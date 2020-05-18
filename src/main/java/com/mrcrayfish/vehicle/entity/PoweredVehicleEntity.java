@@ -107,6 +107,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public int launchingTimer;
     public boolean disableFallDamage;
     public float fuelConsumption = 0.25F;
+    protected boolean charging;
 
     protected double[] wheelPositions;
     protected boolean wheelsOnGround = true;
@@ -462,12 +463,24 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         EngineTier engineTier = this.getEngineTier();
         AccelerationDirection acceleration = this.getAcceleration();
+
+        /* Reset charging to false if acceleration is not charging */
+        if(acceleration != AccelerationDirection.CHARGING)
+        {
+            this.charging = false;
+        }
+
         if(this.getControllingPassenger() != null)
         {
             if(this.canDrive())
             {
-                if(acceleration == AccelerationDirection.FORWARD)
+                boolean charging = this.canCharge() && acceleration == AccelerationDirection.CHARGING && Math.abs(this.currentSpeed) < 0.05F;
+                if(acceleration == AccelerationDirection.FORWARD || (charging || this.charging))
                 {
+                    if(!this.charging)
+                    {
+                        this.charging = charging;
+                    }
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
                         float maxSpeed = this.getActualMaxSpeed() * wheelModifier * this.getPower();
@@ -1392,6 +1405,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return false;
     }
 
+    protected boolean canCharge()
+    {
+        return false;
+    }
+
     @Override
     public ItemStack getPickedResult(RayTraceResult target)
     {
@@ -1449,7 +1467,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public enum AccelerationDirection
     {
-        FORWARD, NONE, REVERSE;
+        FORWARD, NONE, REVERSE,
+        CHARGING;
 
         public static AccelerationDirection fromEntity(LivingEntity entity)
         {
