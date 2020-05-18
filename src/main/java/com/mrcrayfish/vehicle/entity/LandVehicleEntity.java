@@ -203,7 +203,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         double speed = this.getSpeed();
 
         Wheel frontWheel = properties.getFirstFrontWheel();
-        if(frontWheel != null)
+        if(frontWheel != null && !this.charging)
         {
             double frontWheelCircumference = wheelCircumference * vehicleScale * frontWheel.getScaleY();
             double rotation = (speed * 16) / frontWheelCircumference;
