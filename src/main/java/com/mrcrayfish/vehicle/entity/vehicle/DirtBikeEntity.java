@@ -17,22 +17,22 @@ public class DirtBikeEntity extends MotorcycleEntity implements EntityRaytracer.
     public DirtBikeEntity(EntityType<? extends DirtBikeEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(18F);
-        this.setTurnSensitivity(12);
-        this.setFuelCapacity(15000F);
-        this.setFuelConsumption(0.375F);
+        this.setMaxSpeed(25F);
+        this.setTurnSensitivity(10);
+        this.setFuelCapacity(20000F);
+        this.setFuelConsumption(0.35F);
     }
 
     @Override
     public SoundEvent getMovingSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO.get();
+        return ModSounds.DIRT_BIKE_ENGINE_MONO.get();
     }
 
     @Override
     public SoundEvent getRidingSound()
     {
-        return ModSounds.GO_KART_ENGINE_STEREO.get();
+        return ModSounds.DIRT_BIKE_ENGINE_STEREO.get();
     }
 
     @Override
@@ -44,13 +44,13 @@ public class DirtBikeEntity extends MotorcycleEntity implements EntityRaytracer.
     @Override
     public float getMinEnginePitch()
     {
-        return 0.5F;
+        return 0.85F;
     }
 
     @Override
     public float getMaxEnginePitch()
     {
-        return 1.8F;
+        return 1.5F;
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DirtBikeEntity extends MotorcycleEntity implements EntityRaytracer.
     @Override
     public Vec3d getEngineSmokePosition()
     {
-        return new Vec3d(0, 0.55, 0);
+        return new Vec3d(-0.0625, 1.25, -1);
     }
 
     @Override
@@ -78,9 +78,9 @@ public class DirtBikeEntity extends MotorcycleEntity implements EntityRaytracer.
     }
 
     @Override
-    public boolean shouldRenderFuelPort()
+    public FuelPortType getFuelPortType()
     {
-        return false;
+        return FuelPortType.SMALL;
     }
 
     @Override
