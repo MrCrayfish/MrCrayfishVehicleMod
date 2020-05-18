@@ -601,6 +601,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
             this.world.addParticle(ParticleTypes.SMOKE, this.getPosX() + smokePosition.x, this.getPosY() + smokePosition.y, this.getPosZ() + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
+            if(this.charging && this.getRealSpeed() > 0.95F)
+            {
+                this.world.addParticle(ParticleTypes.CRIT, this.getPosX() + smokePosition.x, this.getPosY() + smokePosition.y, this.getPosZ() + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
+            }
         }
     }
 
