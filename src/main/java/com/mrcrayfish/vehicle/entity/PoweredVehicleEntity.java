@@ -47,7 +47,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Hand;
@@ -108,6 +107,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public boolean disableFallDamage;
     public float fuelConsumption = 0.25F;
     protected boolean charging;
+    protected AccelerationDirection prevAcceleration;
 
     protected double[] wheelPositions;
     protected boolean wheelsOnGround = true;
@@ -359,6 +359,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.createParticles();
         }
 
+        /* Makes the vehicle boost slightly from charging up */
+        if(this.charging && this.prevAcceleration == AccelerationDirection.CHARGING && this.getAcceleration() != this.prevAcceleration && this.getRealSpeed() > 0.95F)
+        {
+            this.releaseCharge();
+        }
+
         /* Handle the current speed of the vehicle based on rider's forward movement */
         this.updateGroundState();
         this.updateSpeed();
@@ -443,6 +449,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(currentFuel < 0F) currentFuel = 0F;
             this.setCurrentFuel(currentFuel);
         }
+
+        this.prevAcceleration = this.getAcceleration();
     }
 
     public void updateVehicle() {}
@@ -791,6 +799,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float getActualMaxSpeed()
     {
         return this.dataManager.get(MAX_SPEED) + this.getEngineTier().getAdditionalMaxSpeed();
+    }
+
+    public float getRealSpeed()
+    {
+        return this.currentSpeed / (this.getActualMaxSpeed() * this.getWheelModifier() * this.getPower());
     }
 
     public void setSpeed(float speed)
@@ -1412,6 +1425,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected boolean canCharge()
     {
         return false;
+    }
+
+    protected void releaseCharge()
+    {
+        this.boosting = true;
+        this.boostTimer = 20;
+        this.speedMultiplier = 0.5F;
     }
 
     @Override
