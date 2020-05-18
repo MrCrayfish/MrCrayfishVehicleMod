@@ -14,6 +14,7 @@ public class ModSounds
 {
     public static final DeferredRegister<SoundEvent> SOUNDS = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
+    //TODO update these in 1.16 update
     public static final RegistryObject<SoundEvent> HORN_MONO = register("horn_mono");
     public static final RegistryObject<SoundEvent> HORN_STEREO = register("horn_stereo");
     public static final RegistryObject<SoundEvent> ATV_ENGINE_MONO = register("atv_engine_mono");
