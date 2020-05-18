@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
@@ -64,6 +65,24 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         matrixStack.translate(0.0, 0.5, 0.0);
         matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
         matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+
+        if(entity.canWheelie())
+        {
+            if(properties.getRearAxelVec() == null)
+            {
+                return;
+            }
+            matrixStack.translate(0.0, -0.5, 0.0);
+            matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
+            matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
+            float wheelieProgress = MathHelper.lerp(partialTicks, entity.prevWheelieCount, entity.wheelieCount) / 4F;
+            wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
+            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-30F * wheelieProgress));
+            matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
+            matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+            matrixStack.translate(0.0, 0.5, 0.0);
+        }
+
         renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
 
         if(entity.hasWheels())

@@ -284,4 +284,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         return true;
     }
+
+    public boolean canWheelie()
+    {
+        return true;
+    }
 }

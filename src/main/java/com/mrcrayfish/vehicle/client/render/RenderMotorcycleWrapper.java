@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 
 /**
@@ -56,6 +57,24 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRaytrace
 
         //Translate the vehicle so it's actually riding on it's wheels
         matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+
+        /* Rotates the wheel based relative to the rear axel to create a wheelie */
+        if(entity.canWheelie())
+        {
+            if(properties.getRearAxelVec() == null)
+            {
+                return;
+            }
+            matrixStack.translate(0.0, -0.5, 0.0);
+            matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
+            matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
+            float wheelieProgress = MathHelper.lerp(partialTicks, entity.prevWheelieCount, entity.wheelieCount) / 4F;
+            wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
+            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-30F * wheelieProgress));
+            matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
+            matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+            matrixStack.translate(0.0, 0.5, 0.0);
+        }
 
         //Render body
         renderVehicle.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);

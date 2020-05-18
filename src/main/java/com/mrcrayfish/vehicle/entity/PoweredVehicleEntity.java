@@ -124,6 +124,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float renderWheelAngle;
     @OnlyIn(Dist.CLIENT)
     public float prevRenderWheelAngle;
+    @OnlyIn(Dist.CLIENT)
+    public int wheelieCount;
+    @OnlyIn(Dist.CLIENT)
+    public int prevWheelieCount;
 
     public float vehicleMotionX;
     public float vehicleMotionY;
@@ -612,6 +616,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void onClientUpdate()
     {
         this.prevRenderWheelAngle = this.renderWheelAngle;
+        this.prevWheelieCount = this.wheelieCount;
 
         Entity entity = this.getControllingPassenger();
         if(entity instanceof LivingEntity && entity.equals(Minecraft.getInstance().player))
@@ -645,6 +650,18 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             float targetTurnAngle = VehicleMod.PROXY.getTargetTurnAngle(this, false);
             this.setTargetTurnAngle(targetTurnAngle);
             PacketHandler.instance.sendToServer(new MessageTurnAngle(targetTurnAngle));
+        }
+
+        if(this.isBoosting() && this.getControllingPassenger() != null)
+        {
+            if(this.wheelieCount < 4)
+            {
+                this.wheelieCount++;
+            }
+        }
+        else if(this.wheelieCount > 0)
+        {
+            this.wheelieCount--;
         }
     }
 
