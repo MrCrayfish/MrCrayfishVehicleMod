@@ -100,6 +100,7 @@ public class VehicleProperties
         properties.setFuelPortPosition(new PartPosition(0, 12.1, 3, 67.5, 180, 0, 0.35));
         properties.setHeldOffset(new Vec3d(0.0, 3.5, 0.0));
         properties.setDisplayPosition(new PartPosition(1.4F));
+        properties.setTrailerOffset(new Vec3d(0, -0.0625, -0.3125));
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, 0.0F, 14.08F, 1.5F, 2.25F, 2.25F, false, false);
         properties.addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, 0.0F, -11.61F, 1.5F, 2.25F, 2.25F, true, true);
         properties.setFrontAxelVec(0, 14.08);
