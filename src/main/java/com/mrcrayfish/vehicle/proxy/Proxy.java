@@ -4,11 +4,13 @@ import com.google.common.base.Optional;
 import com.mrcrayfish.vehicle.entity.EntityHelicopter;
 import com.mrcrayfish.vehicle.entity.EntityPlane;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.UUID;
@@ -95,4 +97,7 @@ public interface Proxy
     }
 
     default void syncPlayerSeat(int entityId, int seatIndex, UUID uuid) {}
+
+    default void spawnWheelParticle(BlockPos pos, IBlockState state, double x, double y, double z, Vec3d motion) {}
+
 }

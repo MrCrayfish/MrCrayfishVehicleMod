@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 
 /**
@@ -66,6 +67,23 @@ public class RenderLandVehicleWrapper<T extends EntityLandVehicle & EntityRaytra
 
             //Translate the vehicle so it's actually riding on it's wheels
             GlStateManager.translate(0, properties.getWheelOffset() * 0.0625F, 0);
+
+            if(entity.canWheelie())
+            {
+                if(properties.getRearAxelVec() == null)
+                {
+                    return;
+                }
+                GlStateManager.translate(0.0, -0.5, 0.0);
+                GlStateManager.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
+                GlStateManager.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
+                float wheelieProgress = (float) (MathHelper.clampedLerp(entity.prevWheelieCount, entity.wheelieCount, partialTicks) / 4F);
+                wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
+                GlStateManager.rotate(-30F * wheelieProgress, 1, 0, 0); //TODO test
+                GlStateManager.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
+                GlStateManager.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+                GlStateManager.translate(0.0, 0.5, 0.0);
+            }
 
             //Render body
             renderVehicle.render(entity, partialTicks);

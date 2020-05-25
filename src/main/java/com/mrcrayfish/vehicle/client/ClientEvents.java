@@ -9,8 +9,9 @@ import com.mrcrayfish.vehicle.block.BlockFuelDrum;
 import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
-import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.SyncedPlayerData;
+import com.mrcrayfish.vehicle.entity.EntityLandVehicle;
 import com.mrcrayfish.vehicle.entity.EntityPoweredVehicle;
 import com.mrcrayfish.vehicle.entity.EntityVehicle;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -28,7 +29,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelRenderer;
@@ -44,7 +44,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumHandSide;
-import net.minecraft.util.math.*;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawBlockHighlightEvent;
@@ -189,6 +193,35 @@ public class ClientEvents
             if(render != null)
             {
                 render.applyPlayerRender(vehicle, player, event.getPartialTicks());
+            }
+
+            if(vehicle instanceof EntityLandVehicle)
+            {
+                EntityLandVehicle landVehicle = (EntityLandVehicle) vehicle;
+                if(landVehicle.canWheelie())
+                {
+                    int index = vehicle.getSeatTracker().getSeatIndex(player.getUniqueID());
+                    if(index != -1)
+                    {
+                        VehicleProperties properties = landVehicle.getProperties();
+                        if(properties.getRearAxelVec() == null)
+                        {
+                            return;
+                        }
+                        Seat seat = properties.getSeats().get(index);
+                        Vec3d seatVec = seat.getPosition().addVector(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
+                        double vehicleScale = properties.getBodyPosition().getScale();
+                        double playerScale = 32.0 / 30.0;
+                        double offsetX = -(seatVec.x * playerScale);
+                        double offsetY = (seatVec.y + player.getYOffset()) * playerScale + 24 * 0.0625 - properties.getWheelOffset() * 0.0625 * vehicleScale;
+                        double offsetZ = (seatVec.z * playerScale) - properties.getRearAxelVec().z * 0.0625 * vehicleScale;
+                        GlStateManager.translate(offsetX, offsetY, offsetZ);
+                        float wheelieProgress = (float) (MathHelper.clampedLerp(landVehicle.prevWheelieCount, landVehicle.wheelieCount, event.getPartialTicks()) / 4F);
+                        wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
+                        GlStateManager.rotate(-30F * wheelieProgress, 1, 0, 0);
+                        GlStateManager.translate(-offsetX, -offsetY, -offsetZ);
+                    }
+                }
             }
         }
     }

@@ -118,6 +118,7 @@ public class VehicleMod
         registerVehicle("off_roader", EntityOffRoader.class);
         registerVehicle("tractor", EntityTractor.class);
         registerVehicle("mini_bus", EntityMiniBus.class);
+        registerVehicle("dirt_bike", EntityDirtBike.class);
 
         if(Loader.isModLoaded("cfm"))
         {

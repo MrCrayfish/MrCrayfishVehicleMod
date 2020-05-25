@@ -252,6 +252,15 @@ public class EntityRaytracer
         createFuelablePartTransforms(SpecialModels.FUEL_PORT_CLOSED, EntityBumperCar.class, bumperCarParts, bumperCarTransformGlobal);
         registerEntityStatic(EntityBumperCar.class, bumperCarParts);
 
+        //Dirt bike
+        List<MatrixTransformation> dirtBikeTransformGlobal = Lists.newArrayList();
+        createBodyTransforms(dirtBikeTransformGlobal, EntityDirtBike.class);
+        HashMap<RayTracePart, List<MatrixTransformation>> dirtBikeParts = Maps.newHashMap();
+        createTransformListForPart(SpecialModels.DIRT_BIKE_BODY, dirtBikeParts, dirtBikeTransformGlobal);
+        createTransformListForPart(SpecialModels.DIRT_BIKE_HANDLES, dirtBikeParts, dirtBikeTransformGlobal);
+        createFuelablePartTransforms(SpecialModels.FUEL_PORT_2_CLOSED, EntityDirtBike.class, dirtBikeParts, dirtBikeTransformGlobal);
+        registerEntityStatic(EntityDirtBike.class, dirtBikeParts);
+
         // Dune buggy
         List<MatrixTransformation> duneBuggyTransformGlobal = Lists.newArrayList();
         createBodyTransforms(duneBuggyTransformGlobal, EntityDuneBuggy.class);

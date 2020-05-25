@@ -54,6 +54,12 @@ public class VehicleRecipes
         builder.addMaterial(new ItemStack(ModItems.PANEL, 8));
         mapBuilder.put(EntityBumperCar.class, builder.build());
 
+        /* Dirt Bike */
+        builder = new Builder();
+        builder.addMaterial(new ItemStack(Items.IRON_INGOT, 36));
+        builder.addMaterial(new ItemStack(Blocks.WOOL, 2, EnumDyeColor.GRAY.getMetadata()));
+        mapBuilder.put(EntityDirtBike.class, builder.build());
+
         /* Dune Buggy */
         builder = new Builder();
         builder.addMaterial(new ItemStack(Blocks.CONCRETE, 16, EnumDyeColor.YELLOW.getMetadata()));

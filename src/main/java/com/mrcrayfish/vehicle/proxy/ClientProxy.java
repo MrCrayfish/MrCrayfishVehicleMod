@@ -35,21 +35,27 @@ import com.mrcrayfish.vehicle.item.ItemPart;
 import com.mrcrayfish.vehicle.item.ItemSprayCan;
 import com.mrcrayfish.vehicle.tileentity.*;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.particle.ParticleDigging;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.resources.IReloadableResourceManager;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -104,6 +110,8 @@ public class ClientProxy implements Proxy
         registerVehicleRender(EntityOffRoader.class, new RenderLandVehicleWrapper<>(new RenderOffRoader()));
         registerVehicleRender(EntityTractor.class, new RenderLandVehicleWrapper<>(new RenderTractor()));
         registerVehicleRender(EntityMiniBus.class, new RenderLandVehicleWrapper<>(new RenderMiniBus()));
+        registerVehicleRender(EntityDirtBike.class, new RenderMotorcycleWrapper<>(new RenderDirtBike()));
+
 
         /* Register Mod Exclusive Vehicles */
         if(Loader.isModLoaded("cfm"))
@@ -306,7 +314,11 @@ public class ClientProxy implements Proxy
             {
                 if(VehicleConfig.CLIENT.controller.useTriggers)
                 {
-                    if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() == 0.0F)
+                    if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() != 0.0F)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.CHARGING;
+                    }
+                    else if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() == 0.0F)
                     {
                         return EntityPoweredVehicle.AccelerationDirection.FORWARD;
                     }
@@ -315,17 +327,42 @@ public class ClientProxy implements Proxy
                         return EntityPoweredVehicle.AccelerationDirection.REVERSE;
                     }
                 }
-                else if(controller.isButtonPressed(Buttons.A))
+                else
                 {
-                    return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+                    boolean forward = controller.getButtonsStates().getState(Buttons.A);
+                    boolean reverse = controller.getButtonsStates().getState(Buttons.B);
+                    if(forward && reverse)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.CHARGING;
+                    }
+                    else if(forward)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+                    }
+                    else if(reverse)
+                    {
+                        return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+                    }
                 }
-                else if(controller.isButtonPressed(Buttons.B))
-                {
-                    return EntityPoweredVehicle.AccelerationDirection.REVERSE;
-                }
-
             }
         }
+
+        GameSettings settings = Minecraft.getMinecraft().gameSettings;
+        boolean forward = settings.keyBindForward.isKeyDown();
+        boolean reverse = settings.keyBindBack.isKeyDown();
+        if(forward && reverse)
+        {
+            return EntityPoweredVehicle.AccelerationDirection.CHARGING;
+        }
+        else if(forward)
+        {
+            return EntityPoweredVehicle.AccelerationDirection.FORWARD;
+        }
+        else if(reverse)
+        {
+            return EntityPoweredVehicle.AccelerationDirection.REVERSE;
+        }
+
         return EntityPoweredVehicle.AccelerationDirection.fromEntity(entity);
     }
 
@@ -646,6 +683,17 @@ public class ClientProxy implements Proxy
         {
             EntityPlayer player = (EntityPlayer) entity;
             SyncedPlayerData.setGasPumpPos(player, gasPumpPos);
+        }
+    }
+
+    @Override
+    public void spawnWheelParticle(BlockPos pos, IBlockState state, double x, double y, double z, Vec3d motion)
+    {
+        Minecraft mc = Minecraft.getMinecraft();
+        World world = mc.world;
+        if(world != null)
+        {
+            world.spawnParticle(EnumParticleTypes.BLOCK_CRACK, x, y, z, motion.x, motion.y, motion.z, Block.getStateId(state));
         }
     }
 

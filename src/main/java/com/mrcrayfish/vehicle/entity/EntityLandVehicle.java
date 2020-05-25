@@ -92,6 +92,25 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         VehicleProperties properties = this.getProperties();
         if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
         {
+            AccelerationDirection acceleration = this.getAcceleration();
+            if(acceleration == AccelerationDirection.CHARGING && this.charging)
+            {
+                PartPosition bodyPosition = properties.getBodyPosition();
+                Vec3d frontAxel = properties.getFrontAxelVec().scale(0.0625F).scale(bodyPosition.getScale());
+                Vec3d nextFrontAxel = frontAxel.rotateYaw((this.turnAngle / 20F) * 0.017453292F);
+                Vec3d deltaAxel = frontAxel.subtract(nextFrontAxel).rotateYaw(-this.rotationYaw * 0.017453292F);
+                double deltaYaw = -this.turnAngle / 20F;
+                this.rotationYaw += deltaYaw;
+                this.deltaYaw = (float) -deltaYaw;
+                this.vehicleMotionX = (float) deltaAxel.x;
+                if(!this.launching)
+                {
+                    this.motionY -= 0.08D;
+                }
+                this.vehicleMotionZ = (float) deltaAxel.z;
+                return;
+            }
+
             PartPosition bodyPosition = properties.getBodyPosition();
             Vec3d nextFrontAxelVec = new Vec3d(0, 0, currentSpeed / 20F).rotateYaw(this.wheelAngle * 0.017453292F);
             nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
@@ -184,7 +203,7 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
         double speed = this.getSpeed();
 
         Wheel frontWheel = properties.getFirstFrontWheel();
-        if(frontWheel != null)
+        if(frontWheel != null && !this.charging)
         {
             double frontWheelCircumference = wheelCircumference * vehicleScale * frontWheel.getScaleY();
             double rotation = (speed * 16) / frontWheelCircumference;
@@ -258,5 +277,16 @@ public abstract class EntityLandVehicle extends EntityPoweredVehicle
     {
         VehicleProperties properties = this.getProperties();
         return properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null && properties.getFrontAxelVec().z < properties.getRearAxelVec().z;
+    }
+
+    @Override
+    protected boolean canCharge()
+    {
+        return true;
+    }
+
+    public boolean canWheelie()
+    {
+        return true;
     }
 }

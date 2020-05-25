@@ -57,6 +57,8 @@ public enum SpecialModels
     TRACTOR_BODY("tractor_body"),
     TRAILER_BODY("trailer_body"),
     MINI_BUS_BODY("mini_bus_body"),
+    DIRT_BIKE_BODY("dirt_bike_body"),
+    DIRT_BIKE_HANDLES("dirt_bike_handles"),
     TOW_BAR("tow_bar"),
     BIG_TOW_BAR("big_tow_bar"),
     FUEL_PORT_CLOSED("fuel_port_closed"),

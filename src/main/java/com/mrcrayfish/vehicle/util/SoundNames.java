@@ -45,4 +45,6 @@ public class SoundNames
     public static final String NOZZLE_PUT_DOWN = PREFIX + "nozzle_put_down";
     public static final String MINI_BUS_ENGINE_MONO = PREFIX + "mini_bus_engine_mono";
     public static final String MINI_BUS_ENGINE_STEREO = PREFIX + "mini_bus_engine_stereo";
+    public static final String DIRT_BIKE_ENGINE_MONO = PREFIX + "dirt_bike_engine_mono";
+    public static final String DIRT_BIKE_ENGINE_STEREO = PREFIX + "dirt_bike_engine_stereo";
 }
