@@ -123,6 +123,7 @@
     "entity.vehicle.fluid_trailer": "Fluid Trailer",
     "entity.vehicle.tractor": "Tractor",
     "entity.vehicle.mini_bus": "Mini Bus",
+    "entity.vehicle.dirt_bike": "Dirt Bike",
 
     "vehicle.config.title": "MrCrayfish's Vehicle Mod Config",
     "vehicle.config.client": "Client",

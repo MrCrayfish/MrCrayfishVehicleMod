@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
@@ -60,6 +61,24 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         GlStateManager.translated(0.0, 0.5, 0.0);
         GlStateManager.translated(0.0, properties.getAxleOffset() * 0.0625, 0.0);
         GlStateManager.translated(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+
+        if(entity.canWheelie())
+        {
+            if(properties.getRearAxelVec() == null)
+            {
+                return;
+            }
+            GlStateManager.translated(0.0, -0.5, 0.0);
+            GlStateManager.translated(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
+            GlStateManager.translated(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
+            float wheelieProgress = MathHelper.lerp(partialTicks, entity.prevWheelieCount, entity.wheelieCount) / 4F;
+            wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
+            GlStateManager.rotatef(-30F * wheelieProgress, 1, 0, 0); //TODO test
+            GlStateManager.translated(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
+            GlStateManager.translated(0.0, properties.getAxleOffset() * 0.0625, 0.0);
+            GlStateManager.translated(0.0, 0.5, 0.0);
+        }
+
         renderVehicle.render(entity, partialTicks);
 
         if(entity.hasWheels())

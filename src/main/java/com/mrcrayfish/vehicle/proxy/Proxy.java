@@ -3,12 +3,14 @@ package com.mrcrayfish.vehicle.proxy;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Optional;
@@ -95,4 +97,7 @@ public interface Proxy
     }
 
     default void syncPlayerSeat(int entityId, int seatIndex, UUID uuid) {}
+
+    default void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vec3d motion) {}
+
 }

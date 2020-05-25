@@ -106,6 +106,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public int launchingTimer;
     public boolean disableFallDamage;
     public float fuelConsumption = 0.25F;
+    protected boolean charging;
+    protected AccelerationDirection prevAcceleration;
 
     protected double[] wheelPositions;
     protected boolean wheelsOnGround = true;
@@ -122,6 +124,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float renderWheelAngle;
     @OnlyIn(Dist.CLIENT)
     public float prevRenderWheelAngle;
+    @OnlyIn(Dist.CLIENT)
+    public int wheelieCount;
+    @OnlyIn(Dist.CLIENT)
+    public int prevWheelieCount;
 
     public float vehicleMotionX;
     public float vehicleMotionY;
@@ -357,6 +363,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.createParticles();
         }
 
+        /* Makes the vehicle boost slightly from charging up */
+        if(this.charging && this.prevAcceleration == AccelerationDirection.CHARGING && this.getAcceleration() != this.prevAcceleration && this.getRealSpeed() > 0.95F)
+        {
+            this.releaseCharge();
+        }
+
         /* Handle the current speed of the vehicle based on rider's forward movement */
         this.updateGroundState();
         this.updateSpeed();
@@ -441,6 +453,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(currentFuel < 0F) currentFuel = 0F;
             this.setCurrentFuel(currentFuel);
         }
+
+        this.prevAcceleration = this.getAcceleration();
     }
 
     public void updateVehicle() {}
@@ -461,12 +475,24 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         EngineTier engineTier = this.getEngineTier();
         AccelerationDirection acceleration = this.getAcceleration();
+
+        /* Reset charging to false if acceleration is not charging */
+        if(acceleration != AccelerationDirection.CHARGING)
+        {
+            this.charging = false;
+        }
+
         if(this.getControllingPassenger() != null)
         {
             if(this.canDrive())
             {
-                if(acceleration == AccelerationDirection.FORWARD)
+                boolean charging = this.canCharge() && acceleration == AccelerationDirection.CHARGING && Math.abs(this.currentSpeed) < 0.5F;
+                if(acceleration == AccelerationDirection.FORWARD || (charging || this.charging))
                 {
+                    if(!this.charging)
+                    {
+                        this.charging = charging;
+                    }
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
                         float maxSpeed = this.getActualMaxSpeed() * wheelModifier * this.getPower();
@@ -540,7 +566,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public void createParticles()
     {
-        if(this.getAcceleration() == AccelerationDirection.FORWARD)
+        if(this.getAcceleration() == AccelerationDirection.FORWARD || this.charging)
         {
             /* Uses the same logic when rendering wheels to determine the position, then spawns
              * particles at the contact of the wheel and the ground. */
@@ -564,8 +590,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     BlockState state = this.world.getBlockState(pos);
                     if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
                     {
-                        Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F);
-                        this.world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state), this.posX + wheelX, this.posY + wheelY, this.posZ + wheelZ, dirVec.x, dirVec.y, dirVec.z);
+                        Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F).add(0, 0.5, 0);
+                        if(this.charging)
+                        {
+                            dirVec = dirVec.scale(this.currentSpeed / 3F);
+                        }
+                        VehicleMod.PROXY.spawnWheelParticle(pos, state, this.posX + wheelX, this.posY + wheelY, this.posZ + wheelZ, dirVec);
                     }
                 }
             }
@@ -575,6 +605,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
             this.world.addParticle(ParticleTypes.SMOKE, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
+            if(this.charging && this.getRealSpeed() > 0.95F)
+            {
+                this.world.addParticle(ParticleTypes.CRIT, this.posX + smokePosition.x, this.posY + smokePosition.y, this.posZ + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
+            }
         }
     }
 
@@ -582,6 +616,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void onClientUpdate()
     {
         this.prevRenderWheelAngle = this.renderWheelAngle;
+        this.prevWheelieCount = this.wheelieCount;
 
         Entity entity = this.getControllingPassenger();
         if(entity instanceof LivingEntity && entity.equals(Minecraft.getInstance().player))
@@ -615,6 +650,18 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             float targetTurnAngle = VehicleMod.PROXY.getTargetTurnAngle(this, false);
             this.setTargetTurnAngle(targetTurnAngle);
             PacketHandler.instance.sendToServer(new MessageTurnAngle(targetTurnAngle));
+        }
+
+        if(this.isBoosting() && this.getControllingPassenger() != null)
+        {
+            if(this.wheelieCount < 4)
+            {
+                this.wheelieCount++;
+            }
+        }
+        else if(this.wheelieCount > 0)
+        {
+            this.wheelieCount--;
         }
     }
 
@@ -773,6 +820,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float getActualMaxSpeed()
     {
         return this.dataManager.get(MAX_SPEED) + this.getEngineTier().getAdditionalMaxSpeed();
+    }
+
+    public float getRealSpeed()
+    {
+        return this.currentSpeed / (this.getActualMaxSpeed() * this.getWheelModifier() * this.getPower());
     }
 
     public void setSpeed(float speed)
@@ -1390,6 +1442,18 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return false;
     }
 
+    protected boolean canCharge()
+    {
+        return false;
+    }
+
+    protected void releaseCharge()
+    {
+        this.boosting = true;
+        this.boostTimer = 20;
+        this.speedMultiplier = 0.5F;
+    }
+
     @Override
     public ItemStack getPickedResult(RayTraceResult target)
     {
@@ -1447,7 +1511,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public enum AccelerationDirection
     {
-        FORWARD, NONE, REVERSE;
+        FORWARD, NONE, REVERSE, CHARGING;
 
         public static AccelerationDirection fromEntity(LivingEntity entity)
         {

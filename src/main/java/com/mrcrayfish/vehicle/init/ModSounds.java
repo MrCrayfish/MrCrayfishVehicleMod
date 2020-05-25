@@ -51,6 +51,8 @@ public class ModSounds
     public static final RegistryObject<SoundEvent> NOZZLE_PUT_DOWN = register("nozzle_put_down");
     public static final RegistryObject<SoundEvent> MINI_BUS_ENGINE_MONO = register("mini_bus_engine_mono");
     public static final RegistryObject<SoundEvent> MINI_BUS_ENGINE_STEREO = register("mini_bus_engine_stereo");
+    public static final RegistryObject<SoundEvent> DIRT_BIKE_ENGINE_MONO = register("dirt_bike_engine_mono");
+    public static final RegistryObject<SoundEvent> DIRT_BIKE_ENGINE_STEREO = register("dirt_bike_engine_stereo");
 
     private static RegistryObject<SoundEvent> register(String id)
     {

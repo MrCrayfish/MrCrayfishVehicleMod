@@ -41,6 +41,7 @@ public class ModEntities
     public static final RegistryObject<EntityType<OffRoaderEntity>> OFF_ROADER = registerVehicle("off_roader", OffRoaderEntity::new, 2.0F, 1.0F);
     public static final RegistryObject<EntityType<TractorEntity>> TRACTOR = registerVehicle("tractor", TractorEntity::new, 1.5F, 1.5F);
     public static final RegistryObject<EntityType<MiniBusEntity>> MINI_BUS = registerVehicle("mini_bus", MiniBusEntity::new, 2.0F, 2.0F);
+    public static final RegistryObject<EntityType<DirtBikeEntity>> DIRT_BIKE = registerVehicle("dirt_bike", DirtBikeEntity::new, 1.0F, 1.5F);
 
     /* Trailers */
     public static final RegistryObject<EntityType<VehicleEntityTrailer>> VEHICLE_TRAILER = registerVehicle("vehicle_trailer", VehicleEntityTrailer::new, 1.5F, 0.75F);

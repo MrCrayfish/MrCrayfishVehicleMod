@@ -30,12 +30,15 @@ import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.tileentity.*;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -47,6 +50,7 @@ import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -99,6 +103,7 @@ public class ClientProxy implements Proxy
         registerVehicleRender(OffRoaderEntity.class, ModEntities.OFF_ROADER.get(), new RenderLandVehicleWrapper<>(new RenderOffRoader()));
         registerVehicleRender(TractorEntity.class, ModEntities.TRACTOR.get(), new RenderLandVehicleWrapper<>(new RenderTractor()));
         registerVehicleRender(MiniBusEntity.class, ModEntities.MINI_BUS.get(), new RenderLandVehicleWrapper<>(new RenderMiniBus()));
+        registerVehicleRender(DirtBikeEntity.class, ModEntities.DIRT_BIKE.get(), new RenderMotorcycleWrapper<>(new RenderDirtBike()));
 
         /* Register Trailers */
         registerVehicleRender(VehicleEntityTrailer.class, ModEntities.VEHICLE_TRAILER.get(), new RenderVehicleWrapper<>(new RenderVehicleTrailer()));
@@ -285,18 +290,47 @@ public class ClientProxy implements Proxy
                     {
                         return PoweredVehicleEntity.AccelerationDirection.REVERSE;
                     }
+                    else if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() != 0.0F)
+                    {
+                        return PoweredVehicleEntity.AccelerationDirection.CHARGING;
+                    }
                 }
-                else if(controller.getButtonsStates().getState(Buttons.A))
+                else
                 {
-                    return PoweredVehicleEntity.AccelerationDirection.FORWARD;
+                    boolean forward = controller.getButtonsStates().getState(Buttons.A);
+                    boolean reverse = controller.getButtonsStates().getState(Buttons.B);
+                    if(forward && reverse)
+                    {
+                        return PoweredVehicleEntity.AccelerationDirection.CHARGING;
+                    }
+                    else if(forward)
+                    {
+                        return PoweredVehicleEntity.AccelerationDirection.FORWARD;
+                    }
+                    else if(reverse)
+                    {
+                        return PoweredVehicleEntity.AccelerationDirection.REVERSE;
+                    }
                 }
-                else if(controller.getButtonsStates().getState(Buttons.B))
-                {
-                    return PoweredVehicleEntity.AccelerationDirection.REVERSE;
-                }
-
             }
         }
+
+        GameSettings settings = Minecraft.getInstance().gameSettings;
+        boolean forward = settings.keyBindForward.isKeyDown();
+        boolean reverse = settings.keyBindBack.isKeyDown();
+        if(forward && reverse)
+        {
+            return PoweredVehicleEntity.AccelerationDirection.CHARGING;
+        }
+        else if(forward)
+        {
+            return PoweredVehicleEntity.AccelerationDirection.FORWARD;
+        }
+        else if(reverse)
+        {
+            return PoweredVehicleEntity.AccelerationDirection.REVERSE;
+        }
+
         return PoweredVehicleEntity.AccelerationDirection.fromEntity(entity);
     }
 
@@ -632,6 +666,20 @@ public class ClientProxy implements Proxy
                 PlayerEntity player = (PlayerEntity) entity;
                 SyncedPlayerData.setGasPumpPos(player, gasPumpPos);
             }
+        }
+    }
+
+    @Override
+    public void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vec3d motion)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        World world = mc.world;
+        if(world != null)
+        {
+            DiggingParticle particle = new DiggingParticle(world, x, y, z, motion.x, motion.y, motion.z, state);
+            particle.setBlockPos(pos);
+            particle.multiplyVelocity((float) motion.length());
+            mc.particles.addEffect(particle);
         }
     }
 
