@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 
 /**
@@ -15,13 +14,7 @@ public abstract class EnderSap extends ModFluid
 {
     public EnderSap()
     {
-        super(ModFluids.ENDER_SAP, ModFluids.FLOWING_ENDER_SAP, ModBlocks.ENDER_SAP, 1000, 3000, 1F, 10, 93, 80);
-    }
-
-    @Override
-    public Item getFilledBucket()
-    {
-        return ModItems.ENDER_SAP_BUCKET.get();
+        super(ModFluids.ENDER_SAP, ModFluids.FLOWING_ENDER_SAP, ModBlocks.ENDER_SAP, ModItems.ENDER_SAP_BUCKET, 1000, 3000, 1F, 10, 93, 80);
     }
 
     public static class Source extends EnderSap

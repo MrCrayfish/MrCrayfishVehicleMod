@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 
 /**
@@ -15,13 +14,7 @@ public abstract class Fuelium extends ModFluid
 {
     public Fuelium()
     {
-        super(ModFluids.FUELIUM, ModFluids.FLOWING_FUELIUM, ModBlocks.FUELIUM, 900, 900, 0.5F, 148, 242, 45);
-    }
-
-    @Override
-    public Item getFilledBucket()
-    {
-        return ModItems.FUELIUM_BUCKET.get();
+        super(ModFluids.FUELIUM, ModFluids.FLOWING_FUELIUM, ModBlocks.FUELIUM, ModItems.FUELIUM_BUCKET, 900, 900, 0.5F, 148, 242, 45);
     }
 
     public static class Source extends Fuelium

@@ -3,6 +3,8 @@ package com.mrcrayfish.vehicle.fluid;
 import com.mrcrayfish.vehicle.Reference;
 import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.BucketItem;
+import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -14,9 +16,10 @@ import java.util.function.Supplier;
 public abstract class ModFluid extends ForgeFlowingFluid
 {
     private final float fogDensity, fogRed, fogGreen, fogBlue;
+    private final Supplier<BucketItem> bucket;
 
     protected ModFluid(Supplier<? extends Fluid> still, Supplier<? extends Fluid> flowing, RegistryObject<FlowingFluidBlock> block,
-                       int density, int viscosity, float fogDensity, int fogRed, int fogGreen, int fogBlue)
+                       Supplier<BucketItem> bucket, int density, int viscosity, float fogDensity, int fogRed, int fogGreen, int fogBlue)
     {
         super(new Properties(still, flowing,
                 FluidAttributes.builder(getTexture(block, "_still"), getTexture(block, "_flowing"))
@@ -28,11 +31,18 @@ public abstract class ModFluid extends ForgeFlowingFluid
         this.fogRed = fogRed / 255F;
         this.fogGreen = fogGreen / 255F;
         this.fogBlue = fogBlue / 255F;
+        this.bucket = bucket;
     }
 
     private static ResourceLocation getTexture(RegistryObject<FlowingFluidBlock> block, String suffix)
     {
         return new ResourceLocation(Reference.MOD_ID, "block/" + block.getId().getPath() + suffix);
+    }
+
+    @Override
+    public Item getFilledBucket()
+    {
+        return bucket.get();
     }
 
     public float getFogDensity()

@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 
 /**
@@ -15,13 +14,7 @@ public abstract class BlazeJuice extends ModFluid
 {
     public BlazeJuice()
     {
-        super(ModFluids.BLAZE_JUICE, ModFluids.FLOWING_BLAZE_JUICE, ModBlocks.BLAZE_JUICE, 1000, 800, 0.5F, 254, 198, 0);
-    }
-
-    @Override
-    public Item getFilledBucket()
-    {
-        return ModItems.BLAZE_JUICE_BUCKET.get();
+        super(ModFluids.BLAZE_JUICE, ModFluids.FLOWING_BLAZE_JUICE, ModBlocks.BLAZE_JUICE, ModItems.BLAZE_JUICE_BUCKET, 1000, 800, 0.5F, 254, 198, 0);
     }
 
     public static class Source extends BlazeJuice
