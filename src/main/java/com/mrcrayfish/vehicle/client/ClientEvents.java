@@ -53,6 +53,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -587,25 +588,31 @@ public class ClientEvents
     @SubscribeEvent
     public void setLiquidFogDensity(EntityViewRenderEvent.FogDensity event)
     {
-        Fluid fluid = event.getInfo().getFluidState().getFluid();
-        if(fluid instanceof ModFluid)
+        alterFog(event, fluid ->
         {
             RenderSystem.fogMode(GlStateManager.FogMode.EXP);
-            event.setDensity(((ModFluid) fluid).getFogDensity());
+            event.setDensity(fluid.getFogDensity());
             event.setCanceled(true);
-        }
+        });
     }
 
     @SubscribeEvent
     public void setLiquidFogColor(EntityViewRenderEvent.FogColors event)
     {
+        alterFog(event, fluid ->
+        {
+            event.setRed(fluid.getFogRed());
+            event.setGreen(fluid.getFogGreen());
+            event.setBlue(fluid.getFogBlue());
+        });
+    }
+
+    private void alterFog(EntityViewRenderEvent event, Consumer<ModFluid> action)
+    {
         Fluid fluid = event.getInfo().getFluidState().getFluid();
         if(fluid instanceof ModFluid)
         {
-            ModFluid modFluid = (ModFluid) fluid;
-            event.setRed(modFluid.getFogRed());
-            event.setGreen(modFluid.getFogGreen());
-            event.setBlue(modFluid.getFogBlue());
+            action.accept((ModFluid) fluid);
         }
     }
 
