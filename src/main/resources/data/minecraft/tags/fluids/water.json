@@ -1,0 +1,11 @@
+{
+  "replace": false,
+  "values": [
+    "vehicle:blaze_juice",
+    "vehicle:flowing_blaze_juice",
+    "vehicle:ender_sap",
+    "vehicle:flowing_ender_sap",
+    "vehicle:fuelium",
+    "vehicle:flowing_fuelium"
+  ]
+}
