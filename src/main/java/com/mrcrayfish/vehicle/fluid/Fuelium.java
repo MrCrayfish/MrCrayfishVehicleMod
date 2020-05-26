@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.fluid;
 
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
@@ -8,19 +7,15 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class Fuelium extends ForgeFlowingFluid
+public abstract class Fuelium extends ModFluid
 {
     public Fuelium()
     {
-        super(new Properties(() -> ModFluids.FUELIUM.get(), () -> ModFluids.FLOWING_FUELIUM.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM.get()));
+        super(ModFluids.FUELIUM, ModFluids.FLOWING_FUELIUM, ModBlocks.FUELIUM, 900, 900, 0.5F, 148, 242, 45);
     }
 
     @Override
@@ -38,7 +33,7 @@ public abstract class Fuelium extends ForgeFlowingFluid
         }
 
         @Override
-        public int getLevel(IFluidState p_207192_1_)
+        public int getLevel(IFluidState state)
         {
             return 8;
         }
