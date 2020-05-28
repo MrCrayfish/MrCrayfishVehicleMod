@@ -116,6 +116,32 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
         GlStateManager.popMatrix();
     }
 
+    /**
+     * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
+     * will be cancelled if the PartPosition parameter is null.
+     *
+     * @param position the render definitions to apply to the part
+     * @param model the special model of the part
+     */
+    protected void renderPart(@Nullable PartPosition position, @Nullable SpecialModels model, int color)
+    {
+        if(position == null || model == null)
+            return;
+
+        GlStateManager.pushMatrix();
+        {
+            GlStateManager.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
+            GlStateManager.translate(0, -0.5, 0);
+            GlStateManager.scale(position.getScale(), position.getScale(), position.getScale());
+            GlStateManager.translate(0, 0.5, 0);
+            GlStateManager.rotate((float) position.getRotX(), 1, 0, 0);
+            GlStateManager.rotate((float) position.getRotY(), 0, 1, 0);
+            GlStateManager.rotate((float) position.getRotZ(), 0, 0, 1);
+            RenderUtil.renderColoredModel(model .getModel(), ItemCameraTransforms.TransformType.NONE, color);
+        }
+        GlStateManager.popMatrix();
+    }
+
     protected void renderKey(@Nullable PartPosition position, ItemStack part)
     {
         if(position == null)
@@ -176,10 +202,10 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
             EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
             if (result != null && result.entityHit == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
             {
-                this.renderPart(position, entity.getFuelPort().getBody().getModel(), colorInt);
+                this.renderPart(position, entity.getFuelPort().getBody(), colorInt);
                 if(renderVehicle.shouldRenderFuelLid())
                 {
-                    this.renderPart(position, entity.getFuelPort().getLid().getModel(), colorInt);
+                    this.renderPart(position, entity.getFuelPort().getLid(), colorInt);
                 }
                 entity.playFuelPortOpenSound();
             }
@@ -188,7 +214,7 @@ public class RenderVehicleWrapper<T extends EntityVehicle & EntityRaytracer.IEnt
                 SpecialModels model = entity.getFuelPort().getClosed();
                 if(model != null)
                 {
-                    this.renderPart(position, model.getModel(), colorInt);
+                    this.renderPart(position, model, colorInt);
                 }
                 entity.playFuelPortCloseSound();
             }
