@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -14,7 +14,7 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Author: MrCrayfish
  */
-public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends EntityRenderer<T>
+public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable, R extends AbstractRenderVehicle<T>> extends EntityRenderer<T>
 {
     private final RenderVehicleWrapper<T, R> wrapper;
 
@@ -46,7 +46,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRaytracer.IEnti
         wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
         matrixStack.pop();
 
-        EntityRaytracer.renderRaytraceElements(entity, matrixStack, entityYaw);
+        EntityRayTracer.instance().renderRayTraceElements(entity, matrixStack, entityYaw);
     }
 
     private void setupBreakAnimation(VehicleEntity vehicle, MatrixStack matrixStack, float partialTicks)

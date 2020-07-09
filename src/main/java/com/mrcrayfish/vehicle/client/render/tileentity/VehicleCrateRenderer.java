@@ -2,9 +2,10 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.Direction;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -107,7 +109,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
             matrixStack.translate(0.5F, 0.0F, 0.5F);
 
             double progress = Math.min(1.0F, Math.max(0, (crate.getTimer() - 150 + 5 * partialTicks)) / 100.0);
-            Pair<Float, Float> scaleAndOffset = EntityRaytracer.getCrateScaleAndOffset(crate.getEntity().getClass());
+            Pair<Float, Float> scaleAndOffset = EntityRayTracer.instance().getCrateScaleAndOffset((EntityType<? extends VehicleEntity>) crate.getEntity().getType());
             float scaleStart = scaleAndOffset.getLeft();
             float scale = scaleStart + (1 - scaleStart) * (float) progress;
             matrixStack.translate(0, 0, scaleAndOffset.getRight() * (1 - progress) * scale);

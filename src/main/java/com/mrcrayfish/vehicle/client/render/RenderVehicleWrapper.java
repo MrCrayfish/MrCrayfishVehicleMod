@@ -1,10 +1,9 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -22,7 +21,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>>
+public class RenderVehicleWrapper<T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable, R extends AbstractRenderVehicle<T>>
 {
     protected final R renderVehicle;
 
@@ -80,7 +79,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
      * Renders a part (ItemStack) on the vehicle using the specified PartPosition. The rendering
      * will be cancelled if the PartPosition parameter is null.
      *
-     * @param position the render definitions to apply to the part
+     * @param position the render definitions to construct to the part
      * @param model the part to render onto the vehicle
      */
     protected void renderPart(@Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
@@ -123,7 +122,7 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRaytracer.IEnt
      * Renders the engine (ItemStack) on the vehicle using the specified PartPosition. It adds a
      * subtle shake to the render to simulate it being powered.
      *
-     * @param position the render definitions to apply to the part
+     * @param position the render definitions to construct to the part
      */
     protected void renderEngine(PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
     {

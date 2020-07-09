@@ -1,11 +1,11 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTracePart;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.TriangleRayTraceList;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.IEntityRayTraceable;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTracePart;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTraceResultRotated;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.TriangleRayTraceList;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.EngineType;
@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable, IAttachableChest
+public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(MopedEntity.class, DataSerializers.BOOLEAN);
     private static final RayTracePart CHEST_BOX = new RayTracePart(new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375));
@@ -57,8 +57,8 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () ->
     {
         Map<RayTracePart, TriangleRayTraceList> map = new HashMap<>();
-        map.put(CHEST_BOX, EntityRaytracer.boxToTriangles(CHEST_BOX.getBox(), null));
-        map.put(TRAY_BOX, EntityRaytracer.boxToTriangles(TRAY_BOX.getBox(), null));
+        map.put(CHEST_BOX, EntityRayTracer.boxToTriangles(CHEST_BOX.getBox(), null));
+        map.put(TRAY_BOX, EntityRayTracer.boxToTriangles(TRAY_BOX.getBox(), null));
         return map;
     });
 
@@ -172,7 +172,7 @@ public class MopedEntity extends MotorcycleEntity implements IEntityRaytraceable
                 return true;
             }
         }
-        return IEntityRaytraceable.super.processHit(result, rightClick);
+        return super.processHit(result, rightClick);
     }
 
     @Override

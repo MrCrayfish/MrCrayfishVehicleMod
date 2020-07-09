@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -16,7 +17,7 @@ import net.minecraft.util.math.RayTraceResult;
 /**
  * Author: MrCrayfish
  */
-public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderPlaneWrapper<T extends PlaneEntity & EntityRayTracer.IEntityRayTraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
     public RenderPlaneWrapper(R renderVehicle)
     {
@@ -73,8 +74,8 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRaytracer.IEntityR
         if(entity.shouldRenderFuelPort() && entity.requiresFuel())
         {
             PoweredVehicleEntity.FuelPortType fuelPortType = entity.getFuelPortType();
-            EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
                 this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
                 if(renderVehicle.shouldRenderFuelLid())

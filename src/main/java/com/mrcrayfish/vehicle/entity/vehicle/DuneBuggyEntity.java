@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.IEntityRayTraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.WheelType;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class DuneBuggyEntity extends LandVehicleEntity implements IEntityRaytraceable
+public class DuneBuggyEntity extends LandVehicleEntity
 {
     public DuneBuggyEntity(EntityType<? extends DuneBuggyEntity> type, World worldIn)
     {

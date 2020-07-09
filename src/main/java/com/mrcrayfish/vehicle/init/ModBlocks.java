@@ -37,9 +37,9 @@ public class ModBlocks
     public static final RegistryObject<FlowingFluidBlock> FUELIUM = register("fuelium", new FlowingFluidBlock(ModFluids.FLOWING_FUELIUM, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> ENDER_SAP = register("ender_sap", new FlowingFluidBlock(ModFluids.FLOWING_ENDER_SAP, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> BLAZE_JUICE = register("blaze_juice", new FlowingFluidBlock(ModFluids.FLOWING_BLAZE_JUICE, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
-    //public static final Block BOOST_PAD = register(new BlockBoostPad(), null);
-    //public static final Block BOOST_RAMP = register(new BlockBoostRamp(), null); //ItemBoostRamp::new
-    //public static final Block STEEP_BOOST_RAMP = register(new BlockSteepBoostRamp(), null);
+    //public static final Block BOOST_PAD = registerConstructor(new BlockBoostPad(), null);
+    //public static final Block BOOST_RAMP = registerConstructor(new BlockBoostRamp(), null); //ItemBoostRamp::new
+    //public static final Block STEEP_BOOST_RAMP = registerConstructor(new BlockSteepBoostRamp(), null);
 
     private static <T extends Block> RegistryObject<T> register(String id, T block)
     {

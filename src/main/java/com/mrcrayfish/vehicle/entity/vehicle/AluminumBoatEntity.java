@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
 import com.mrcrayfish.vehicle.entity.BoatEntity;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -12,7 +11,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class AluminumBoatEntity extends BoatEntity implements IEntityRaytraceable
+public class AluminumBoatEntity extends BoatEntity
 {
     public AluminumBoatEntity(EntityType<? extends AluminumBoatEntity> type, World worldIn)
     {

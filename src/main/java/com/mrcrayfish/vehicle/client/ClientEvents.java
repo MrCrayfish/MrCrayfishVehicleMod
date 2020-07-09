@@ -5,7 +5,7 @@ import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.EntityRaytracer.RayTraceResultRotated;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
@@ -306,8 +306,8 @@ public class ClientEvents
             }
 
             tickCounter++;
-            RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-            if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+            if (result != null && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
                 if (!fueling)
                 {
@@ -341,8 +341,8 @@ public class ClientEvents
         }
 
         fuelingHandOffset = -1;
-        RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-        if (result != null && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING) && event.getHand() == EntityRaytracer.getContinuousInteractionObject())
+        RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+        if (result != null && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING) && event.getHand() == EntityRayTracer.instance().getContinuousInteractionHand())
         {
             double offset = Math.sin((tickCounter + Minecraft.getInstance().getRenderPartialTicks()) * 0.4) * 0.01;
             if (offsetPrev > offsetPrevPrev && offsetPrev > offset)

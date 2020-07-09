@@ -3,7 +3,8 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -26,7 +27,7 @@ import org.lwjgl.opengl.GL11;
 /**
  * Author: MrCrayfish
  */
-public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
+public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTracer.IEntityRayTraceable, R extends AbstractRenderVehicle<T>> extends RenderVehicleWrapper<T, R>
 {
     public RenderLandVehicleWrapper(R renderVehicle)
     {
@@ -106,8 +107,8 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRaytra
         if(entity.shouldRenderFuelPort() && entity.requiresFuel())
         {
             PoweredVehicleEntity.FuelPortType fuelPortType = entity.getFuelPortType();
-            EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
                 this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
                 if(renderVehicle.shouldRenderFuelLid())

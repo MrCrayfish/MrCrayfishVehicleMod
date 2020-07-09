@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
@@ -45,12 +45,12 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class FertilizerTrailerEntity extends TrailerEntity implements EntityRaytracer.IEntityRaytraceable, IStorage
+public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
 {
-    private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 6.2 * 0.0625, 6 * 0.0625, 7 * 0.0625, 8.4 * 0.0625F, 18 * 0.0625, 1.1));
-    private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
-        Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> map = new HashMap<>();
-        map.put(CONNECTION_BOX, EntityRaytracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
+    private static final EntityRayTracer.RayTracePart CONNECTION_BOX = new EntityRayTracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 6.2 * 0.0625, 6 * 0.0625, 7 * 0.0625, 8.4 * 0.0625F, 18 * 0.0625, 1.1));
+    private static final Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
+        Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> map = new HashMap<>();
+        map.put(CONNECTION_BOX, EntityRayTracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
         return map;
     });
 
@@ -252,14 +252,14 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> getStaticInteractionBoxMap()
+    public Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> getStaticInteractionBoxMap()
     {
         return interactionBoxMapStatic;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public List<EntityRaytracer.RayTracePart> getApplicableInteractionBoxes()
+    public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return ImmutableList.of(CONNECTION_BOX);
     }
@@ -274,7 +274,7 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
+    public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(rightClick)
         {
@@ -284,7 +284,7 @@ public class FertilizerTrailerEntity extends TrailerEntity implements EntityRayt
                 return true;
             }
         }
-        return EntityRaytracer.IEntityRaytraceable.super.processHit(result, rightClick);
+        return super.processHit(result, rightClick);
     }
 
     @Override

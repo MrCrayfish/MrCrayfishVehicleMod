@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.IEntityRayTraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import net.minecraft.entity.EntityType;
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class BathEntity extends PlaneEntity implements IEntityRaytraceable
+public class BathEntity extends PlaneEntity
 {
     public BathEntity(EntityType<? extends BathEntity> type, World worldIn)
     {

@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
@@ -37,12 +37,12 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer.IEntityRaytraceable, IEntityAdditionalSpawnData
+public class FluidTrailerEntity extends TrailerEntity implements IEntityAdditionalSpawnData
 {
-    private static final EntityRaytracer.RayTracePart CONNECTION_BOX = new EntityRaytracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 8.5 * 0.0625F, 24 * 0.0625, 1.1));
-    private static final Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
-        Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> map = new HashMap<>();
-        map.put(CONNECTION_BOX, EntityRaytracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
+    private static final EntityRayTracer.RayTracePart CONNECTION_BOX = new EntityRayTracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 8.5 * 0.0625F, 24 * 0.0625, 1.1));
+    private static final Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
+        Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> map = new HashMap<>();
+        map.put(CONNECTION_BOX, EntityRayTracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
         return map;
     });
 
@@ -81,7 +81,7 @@ public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public Map<EntityRaytracer.RayTracePart, EntityRaytracer.TriangleRayTraceList> getStaticInteractionBoxMap()
+    public Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> getStaticInteractionBoxMap()
     {
         return interactionBoxMapStatic;
     }
@@ -89,7 +89,7 @@ public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer
     @Nullable
     @Override
     @OnlyIn(Dist.CLIENT)
-    public List<EntityRaytracer.RayTracePart> getApplicableInteractionBoxes()
+    public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return Collections.singletonList(CONNECTION_BOX);
     }
@@ -104,14 +104,14 @@ public class FluidTrailerEntity extends TrailerEntity implements EntityRaytracer
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean processHit(EntityRaytracer.RayTraceResultRotated result, boolean rightClick)
+    public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(result.getPartHit() == CONNECTION_BOX && rightClick)
         {
             PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getInstance().player.getEntityId()));
             return true;
         }
-        return EntityRaytracer.IEntityRaytraceable.super.processHit(result, rightClick);
+        return super.processHit(result, rightClick);
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -17,7 +18,7 @@ import net.minecraft.util.math.RayTraceResult;
 /**
  * Author: MrCrayfish
  */
-public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRaytracer.IEntityRaytraceable, R extends AbstractRenderVehicle<T>> extends RenderLandVehicleWrapper<T, R>
+public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRayTracer.IEntityRayTraceable, R extends AbstractRenderVehicle<T>> extends RenderLandVehicleWrapper<T, R>
 {
     public RenderMotorcycleWrapper(R renderVehicle)
     {
@@ -101,8 +102,8 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRaytrace
         if(entity.shouldRenderFuelPort() && entity.requiresFuel())
         {
             PoweredVehicleEntity.FuelPortType fuelPortType = entity.getFuelPortType();
-            EntityRaytracer.RayTraceResultRotated result = EntityRaytracer.getContinuousInteraction();
-            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(EntityRaytracer.FUNCTION_FUELING))
+            EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
                 this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
                 if(renderVehicle.shouldRenderFuelLid())

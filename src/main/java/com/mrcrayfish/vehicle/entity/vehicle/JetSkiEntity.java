@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.IEntityRayTraceable;
 import com.mrcrayfish.vehicle.entity.BoatEntity;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class JetSkiEntity extends BoatEntity implements IEntityRaytraceable
+public class JetSkiEntity extends BoatEntity
 {
     public JetSkiEntity(EntityType<? extends JetSkiEntity> type, World worldIn)
     {

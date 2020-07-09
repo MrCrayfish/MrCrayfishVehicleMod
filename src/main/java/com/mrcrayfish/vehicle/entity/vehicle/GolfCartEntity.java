@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class GolfCartEntity extends LandVehicleEntity implements EntityRaytracer.IEntityRaytraceable
+public class GolfCartEntity extends LandVehicleEntity
 {
     public GolfCartEntity(EntityType<? extends GolfCartEntity> type, World worldIn)
     {

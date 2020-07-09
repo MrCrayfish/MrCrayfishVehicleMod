@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -12,7 +12,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class DirtBikeEntity extends MotorcycleEntity implements EntityRaytracer.IEntityRaytraceable
+public class DirtBikeEntity extends MotorcycleEntity
 {
     public DirtBikeEntity(EntityType<? extends DirtBikeEntity> type, World worldIn)
     {

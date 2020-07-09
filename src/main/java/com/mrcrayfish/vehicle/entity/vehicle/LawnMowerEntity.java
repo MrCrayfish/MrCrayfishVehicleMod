@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.client.EntityRaytracer.IEntityRaytraceable;
+import com.mrcrayfish.vehicle.client.EntityRayTracer.IEntityRayTraceable;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class LawnMowerEntity extends LandVehicleEntity implements IEntityRaytraceable
+public class LawnMowerEntity extends LandVehicleEntity
 {
     public LawnMowerEntity(EntityType<? extends LawnMowerEntity> type, World worldIn)
     {

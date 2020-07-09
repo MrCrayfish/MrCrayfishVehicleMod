@@ -1,11 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.BlockGasPump;
-import com.mrcrayfish.vehicle.client.EntityRaytracer;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
@@ -14,19 +13,16 @@ import com.mrcrayfish.vehicle.tileentity.GasPumpTileEntity;
 import com.mrcrayfish.vehicle.util.CollisionHelper;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
@@ -166,69 +162,69 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
 
                         Matrix4f startMatrix = new Matrix4f();
                         startMatrix.identity();
-                        EntityRaytracer.MatrixTransformation.createTranslation((float) start.getPoint().getX(), (float) start.getPoint().getY(), (float) start.getPoint().getZ()).transform(startMatrix);
+                        EntityRayTracer.MatrixTransformation.createTranslation((float) start.getPoint().getX(), (float) start.getPoint().getY(), (float) start.getPoint().getZ()).transform(startMatrix);
                         if(i == 0 && j == 0)
                         {
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(startMatrix);
                         }
                         else
                         {
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(startMatrix);
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(startMatrix);
                         }
 
                         Matrix4f endMatrix = new Matrix4f();
                         endMatrix.identity();
-                        EntityRaytracer.MatrixTransformation.createTranslation((float) end.getPoint().x, (float) end.getPoint().y, (float) end.getPoint().z).transform(endMatrix);
+                        EntityRayTracer.MatrixTransformation.createTranslation((float) end.getPoint().x, (float) end.getPoint().y, (float) end.getPoint().z).transform(endMatrix);
                         if(i == spline.getSize() - 2 && j == segments - 1)
                         {
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(endMatrix);
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(endMatrix);
                         }
                         else
                         {
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(endMatrix);
-                            EntityRaytracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(endMatrix);
                         }
 
                         Matrix4f startTemp = new Matrix4f(startMatrix);
                         Matrix4f endTemp = new Matrix4f(endMatrix);
                         Matrix4f parent = matrixStack.getLast().getPositionMatrix();
 
-                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter / 2, hoseDiameter / 2, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, hoseDiameter / 2, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(0, -hoseDiameter, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(0, -hoseDiameter, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
 
                         this.createVertex(buffer, parent, endTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, -hoseDiameter, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, -hoseDiameter, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
 
-                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
 
-                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
-                        EntityRaytracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(endTemp);
+                        EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(endTemp);
                         this.createVertex(buffer, parent, endTemp, red, gray);
                     }
                 }
