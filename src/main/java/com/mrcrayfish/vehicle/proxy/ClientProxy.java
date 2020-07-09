@@ -260,12 +260,12 @@ public class ClientProxy implements Proxy
         });
 
         /* Dirt Bike */
-        /*EntityRayTracer.instance().registerTransforms(ModEntities.DIRT_BIKE.get(), (entityRayTracer, transforms, parts) ->
+        EntityRayTracer.instance().registerTransforms(ModEntities.DIRT_BIKE.get(), (entityRayTracer, transforms, parts) ->
         {
             EntityRayTracer.createTransformListForPart(SpecialModels.DIRT_BIKE_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.DIRT_BIKE_HANDLES, parts, transforms);
             EntityRayTracer.createFuelPartTransforms(ModEntities.DIRT_BIKE.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
-        });*/
+        });
 
         /* Dune Buggy */
         EntityRayTracer.instance().registerTransforms(ModEntities.DUNE_BUGGY.get(), (entityRayTracer, transforms, parts) ->
