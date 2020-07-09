@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.BoostTileEntity;
-import com.mrcrayfish.vehicle.util.Names;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
-import com.mrcrayfish.vehicle.util.Names;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

@@ -2,7 +2,11 @@ package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.entity.EntityJack;
-import com.mrcrayfish.vehicle.entity.trailer.*;
+import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.FluidTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.SeederTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.VehicleEntityTrailer;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.util.EntityUtil;
 import net.minecraft.entity.Entity;

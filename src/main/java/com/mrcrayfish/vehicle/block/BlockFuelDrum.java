@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
-import com.mrcrayfish.vehicle.util.Names;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
