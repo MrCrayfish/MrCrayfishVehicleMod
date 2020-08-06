@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
@@ -121,10 +122,10 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             matrixStack.translate(windowX - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
             matrixStack.translate(0, windowY - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
 
-            Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-10F);
-            quaternion.multiply(Axis.POSITIVE_X.func_229187_a_(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0)));
-            quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0)));
-            quaternion.multiply(Axis.POSITIVE_Y.func_229187_a_(135F));
+            Quaternion quaternion = Vector3f.XP.rotationDegrees(-10F);
+            quaternion.multiply(Vector3f.XP.rotationDegrees(windowRotationY - (mouseGrabbed && mouseGrabbedButton == 1 ? mouseY - mouseClickedY : 0)));
+            quaternion.multiply(Vector3f.YP.rotationDegrees(windowRotationX + (mouseGrabbed && mouseGrabbedButton == 1 ? mouseX - mouseClickedX : 0)));
+            quaternion.multiply(Vector3f.YP.rotationDegrees(135F));
             matrixStack.rotate(quaternion);
 
             matrixStack.scale(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
@@ -137,17 +138,17 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
                 position = properties.getDisplayPosition();
             }
             matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees((float) position.getRotX()));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees((float) position.getRotY()));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) position.getRotZ()));
             matrixStack.translate(position.getX(), position.getY(), position.getZ());
 
             EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
             renderManager.setRenderShadow(false);
-            renderManager.func_229089_a_(quaternion);
-            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
+            renderManager.setCameraOrientation(quaternion);
+            IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
             wrapper.render(vehicle, matrixStack, renderTypeBuffer, Minecraft.getInstance().getRenderPartialTicks(), 15728880);
-            renderTypeBuffer.func_228461_a_();
+            renderTypeBuffer.finish();
             renderManager.setRenderShadow(true);
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);

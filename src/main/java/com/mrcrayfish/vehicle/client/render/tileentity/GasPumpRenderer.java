@@ -16,11 +16,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector4f;
+import net.minecraft.client.renderer.*;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -32,6 +28,8 @@ import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.lwjgl.opengl.GL11;
+
+import java.util.Vector;
 
 /**
  * Author: MrCrayfish
@@ -144,7 +142,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 RenderSystem.pushMatrix();
                 RenderSystem.disableTexture();
                 RenderSystem.enableDepthTest();
-                RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
+                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
 
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
@@ -165,36 +163,36 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         HermiteInterpolator.Result end = spline.get(i, (float) (j + 1) / (float) segments);
 
                         Matrix4f startMatrix = new Matrix4f();
-                        startMatrix.identity();
+                        startMatrix.setIdentity();
                         EntityRayTracer.MatrixTransformation.createTranslation((float) start.getPoint().getX(), (float) start.getPoint().getY(), (float) start.getPoint().getZ()).transform(startMatrix);
                         if(i == 0 && j == 0)
                         {
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(startMatrix);
                         }
                         else
                         {
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(startMatrix);
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(startMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(startMatrix);
                         }
 
                         Matrix4f endMatrix = new Matrix4f();
-                        endMatrix.identity();
+                        endMatrix.setIdentity();
                         EntityRayTracer.MatrixTransformation.createTranslation((float) end.getPoint().x, (float) end.getPoint().y, (float) end.getPoint().z).transform(endMatrix);
                         if(i == spline.getSize() - 2 && j == segments - 1)
                         {
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(endMatrix);
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(endMatrix);
                         }
                         else
                         {
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(endMatrix);
-                            EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(endMatrix);
+                            EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(endMatrix);
                         }
 
                         Matrix4f startTemp = new Matrix4f(startMatrix);
                         Matrix4f endTemp = new Matrix4f(endMatrix);
-                        Matrix4f parent = matrixStack.getLast().getPositionMatrix();
+                        Matrix4f parent = matrixStack.getLast().getMatrix();
 
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
@@ -244,11 +242,10 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 {
                     double[] destPos = CollisionHelper.fixRotation(facing, 0.29, 1.06, 0.29, 1.06);
                     matrixStack.translate(destPos[0], 0.5, destPos[1]);
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
-                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
+                    matrixStack.rotate(Vector3f.YN.rotationDegrees(facing.getHorizontalIndex() * -90F));
+                    matrixStack.rotate(Vector3f.XP.rotationDegrees(90F));
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 }
                 matrixStack.pop();
             }
@@ -256,10 +253,10 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             matrixStack.push();
             {
                 matrixStack.translate(0.5, 0, 0.5);
-                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(facing.getHorizontalIndex() * -90F));
                 matrixStack.translate(-0.5, 0, -0.5);
                 matrixStack.translate(0.5, 11 * 0.0625, 3 * 0.0625);
-                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
 
                 matrixStack.translate(0F, 0F, 0.01F);
 
@@ -272,7 +269,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         int amount = (int) Math.ceil(100 * (gasPump.getTank().getFluidAmount() / (double) gasPump.getTank().getCapacity()));
                         String percent = String.format("%d%%", amount);
                         int width = fontRenderer.getStringWidth(percent);
-                        fontRenderer.renderString(percent, -width / 2, 10, 16777215, false, matrixStack.getLast().getPositionMatrix(), renderTypeBuffer, false, 0, light);
+                        fontRenderer.renderString(percent, -width / 2, 10, 16777215, false, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, light);
                     }
                 }
                 matrixStack.pop();
@@ -283,7 +280,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     matrixStack.scale(0.01F, -0.01F, 0.01F);
                     FontRenderer fontRenderer = this.renderDispatcher.fontRenderer;
                     int width = fontRenderer.getStringWidth("Fuelium");
-                    fontRenderer.renderString("Fuelium", -width / 2, 10, 9761325, false, matrixStack.getLast().getPositionMatrix(), renderTypeBuffer, false, 0, light);
+                    fontRenderer.renderString("Fuelium", -width / 2, 10, 9761325, false, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, light);
                 }
                 matrixStack.pop();
             }
@@ -295,7 +292,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     private void createVertex(BufferBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray)
     {
         Vector4f vec = new Vector4f(0.0F, 0.0F, 0.0F, 1.0F);
-        vec.func_229372_a_(pos);
+        vec.transform(pos);
         buffer.pos(vec.getX(), vec.getY(), vec.getZ()).color(red, gray, gray, 1.0F).endVertex();
     }
 }

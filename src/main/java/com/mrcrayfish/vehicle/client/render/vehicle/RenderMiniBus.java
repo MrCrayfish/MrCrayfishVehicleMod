@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.MiniBusEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -34,7 +35,7 @@ public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
 
         // Positions the steering wheel in the correct position
         matrixStack.translate(-0.2825, 0.225, 1.0625);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-67.5F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-67.5F));
         matrixStack.translate(0, -0.02, 0);
         matrixStack.scale(0.75F, 0.75F, 0.75F);
 
@@ -42,9 +43,9 @@ public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.pop();
     }

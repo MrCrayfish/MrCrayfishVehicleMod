@@ -123,7 +123,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     private boolean isBelowBlockTopSolid(IWorldReader reader, BlockPos pos)
     {
-        return reader.getBlockState(pos.down()).func_224755_d(reader, pos.down(), Direction.UP);
+        return reader.getBlockState(pos.down()).isSolidSide(reader, pos.down(), Direction.UP);
     }
 
     @Override

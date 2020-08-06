@@ -1175,11 +1175,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     }
 
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public boolean onLivingFall(float distance, float damageMultiplier)
     {
         if(!this.disableFallDamage)
         {
-            super.func_225503_b_(distance, damageMultiplier);
+            super.onLivingFall(distance, damageMultiplier);
         }
         if(this.launchingTimer <= 0 && distance > 3)
         {

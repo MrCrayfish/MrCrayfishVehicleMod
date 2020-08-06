@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.JetSkiEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.Vec3d;
@@ -28,12 +29,12 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         matrixStack.push();
 
         matrixStack.translate(0, 0.355, 0.225);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-45F));
 
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModels.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
@@ -84,8 +85,8 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }

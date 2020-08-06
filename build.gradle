@@ -18,7 +18,7 @@ archivesBaseName = "vehicle-mod"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
 minecraft {
-    mappings channel: 'snapshot', version: '20200122-1.15.1'
+    mappings channel: 'snapshot', version: '20200804-1.15.1'
 
     runs {
         client {
@@ -47,7 +47,7 @@ minecraft {
             workingDirectory project.file('run')
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'vehicle', '--all', '--output', file('src/generated/resources/')
             mods {
                 modid {
                     source sourceSets.main

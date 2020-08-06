@@ -28,6 +28,7 @@ import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
@@ -444,8 +445,8 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         float scale = this.prevVehicleScale + (this.vehicleScale - this.prevVehicleScale) * partialTicks;
         matrixStack.scale(scale, scale, scale);
-        Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-5F);
-        Quaternion quaternion1 = Axis.POSITIVE_Y.func_229187_a_(-(this.minecraft.player.ticksExisted + partialTicks));
+        Quaternion quaternion = Vector3f.XP.rotationDegrees(-5F);
+        Quaternion quaternion1 = Vector3f.YP.rotationDegrees(-(this.minecraft.player.ticksExisted + partialTicks));
         quaternion.multiply(quaternion1);
         matrixStack.rotate(quaternion);
 
@@ -458,17 +459,17 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         }
 
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) position.getRotX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) position.getRotY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) position.getRotZ()));
         matrixStack.translate(position.getX(), position.getY(), position.getZ());
 
         EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
         renderManager.setRenderShadow(false);
-        renderManager.func_229089_a_(quaternion);
-        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-        renderManager.func_229084_a_(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
-        renderTypeBuffer.func_228461_a_();
+        renderManager.setCameraOrientation(quaternion);
+        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        renderManager.renderEntityStatic(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
+        renderTypeBuffer.finish();
         renderManager.setRenderShadow(true);
 
         RenderSystem.popMatrix();

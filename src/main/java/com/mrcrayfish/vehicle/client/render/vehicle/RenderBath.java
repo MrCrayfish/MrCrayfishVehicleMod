@@ -22,7 +22,7 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     @Override
     public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
         this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
@@ -42,8 +42,8 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
             float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(bodyRoll));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-bodyPitch));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(bodyRoll));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
     }

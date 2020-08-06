@@ -13,6 +13,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.DirtBikeEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,14 +34,14 @@ public class RenderDirtBike extends AbstractRenderVehicle<DirtBikeEntity>
         matrixStack.push();
 
         matrixStack.translate(0.0, 0.0, 10.5 * 0.0625);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-22.5F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-22.5F));
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
 
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(22.5F));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
 
         this.renderDamagedPart(entity, SpecialModels.DIRT_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
@@ -56,11 +57,11 @@ public class RenderDirtBike extends AbstractRenderVehicle<DirtBikeEntity>
                 float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
                 if(entity.isMoving())
                 {
-                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-frontWheelSpin));
+                    matrixStack.rotate(Vector3f.XP.rotationDegrees(-frontWheelSpin));
                 }
                 matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
-                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
-                RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+                RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 matrixStack.pop();
             }
         }
@@ -110,7 +111,7 @@ public class RenderDirtBike extends AbstractRenderVehicle<DirtBikeEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 20F));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(turnAngleNormal * currentSpeedNormal * 20F));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }

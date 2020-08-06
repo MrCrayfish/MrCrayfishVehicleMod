@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraftforge.fluids.FluidStack;
@@ -53,7 +54,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
 
         RenderSystem.pushMatrix();
         RenderSystem.enableDepthTest();
-        RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
+        RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
         RenderSystem.translated(0.5, 1.25, 0.5);
         RenderSystem.rotatef(-Minecraft.getInstance().player.rotationYaw, 0.0F, 1.0F, 0.0F);
         RenderSystem.rotatef(Minecraft.getInstance().player.rotationPitch, 1.0F, 0.0F, 0.0F);
@@ -67,7 +68,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
         double offsetWidth = width / 2.0;
 
         FluidStack stack = tank.getFluid();
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
             float minU = sprite.getMinU();
@@ -81,7 +82,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
             float deltaU = maxU - minU;
             maxU = minU + deltaU * level;
 
-            Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuffer();

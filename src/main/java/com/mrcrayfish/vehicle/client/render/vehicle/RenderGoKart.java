@@ -22,14 +22,14 @@ public class RenderGoKart extends AbstractRenderVehicle<GoKartEntity>
         //Render the handles bars
         matrixStack.push();
         matrixStack.translate(0, 0.09, 0.49);
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-45F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-45F));
         matrixStack.translate(0, -0.02, 0);
         matrixStack.scale(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
