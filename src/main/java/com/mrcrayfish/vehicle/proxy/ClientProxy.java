@@ -61,7 +61,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -126,10 +128,15 @@ public class ClientProxy implements Proxy
         //ModelLoaderRegistry.registerLoader(new CustomLoader());
         //ModelLoaderRegistry.registerLoader(new ResourceLocation(Reference.MOD_ID, "ramp"), new CustomLoader());
 
-        ((IReloadableResourceManager) Minecraft.getInstance().getResourceManager()).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> CompletableFuture.runAsync(() -> {
-            FluidUtils.clearCacheFluidColor();
-            EntityRayTracer.instance().clearDataForReregistration();
-        }));
+        IResourceManager rm = Minecraft.getInstance().getResourceManager();
+        if (rm instanceof IReloadableResourceManager)
+        {
+            ((IReloadableResourceManager) rm).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> CompletableFuture.runAsync(() ->
+            {
+                FluidUtils.clearCacheFluidColor();
+                EntityRayTracer.instance().clearDataForReregistration();
+            }, backgroundExecutor).thenCompose(stage::markCompleteAwaitingOthers));
+        }
     }
 
     private void setupRenderLayers()
