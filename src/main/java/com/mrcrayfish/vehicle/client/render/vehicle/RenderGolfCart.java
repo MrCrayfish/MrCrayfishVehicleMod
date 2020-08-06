@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.GolfCartEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -25,7 +26,7 @@ public class RenderGolfCart extends AbstractRenderVehicle<GolfCartEntity>
 
         // Positions the steering wheel in the correct position
         matrixStack.translate(-0.345, 0.425, 0.1);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-45F));
         matrixStack.translate(0, -0.02, 0);
         matrixStack.scale(0.95F, 0.95F, 0.95F);
 
@@ -33,7 +34,7 @@ public class RenderGolfCart extends AbstractRenderVehicle<GolfCartEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 

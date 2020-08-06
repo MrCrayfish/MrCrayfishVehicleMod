@@ -7,7 +7,9 @@ import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
@@ -40,10 +42,10 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<StorageTrailerEn
 
         matrixStack.push();
         matrixStack.translate(0, 0.0625, 0);
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
         matrixStack.scale(0.9F, 0.9F, 0.9F);
         ItemStack chest = new ItemStack(Blocks.CHEST);
-        RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.DEFAULT_LIGHT, RenderUtil.getModel(chest));
+        Minecraft.getInstance().getItemRenderer().renderItem(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(chest));
         matrixStack.pop();
         /*//Render chest
         GlStateManager.pushMatrix(); //TODO add this back once I create a model class for chest

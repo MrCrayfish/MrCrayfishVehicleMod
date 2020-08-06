@@ -41,7 +41,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
 
         matrixStack.push();
         wrapper.applyPreRotations(entity, matrixStack, partialTicks);
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(-entityYaw));
         this.setupBreakAnimation(entity, matrixStack, partialTicks);
         wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
         matrixStack.pop();
@@ -54,7 +54,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         if(timeSinceHit > 0.0F)
         {
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(MathHelper.sin(timeSinceHit) * timeSinceHit));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(MathHelper.sin(timeSinceHit) * timeSinceHit));
         }
     }
 }

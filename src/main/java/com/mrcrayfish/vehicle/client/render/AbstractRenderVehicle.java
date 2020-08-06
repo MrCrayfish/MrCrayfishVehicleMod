@@ -62,11 +62,11 @@ public abstract class AbstractRenderVehicle<T extends VehicleEntity>
             int stage = vehicle.getDestroyedStage();
             if(stage <= 0)
                 return;
-            RenderUtil.renderDamagedVehicleModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, stage, vehicle.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderDamagedVehicleModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, stage, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
         }
         else
         {
-            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
         }
     }
 }

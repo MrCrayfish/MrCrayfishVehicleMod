@@ -22,12 +22,12 @@ public abstract class AbstractRenderTrailer<T extends TrailerEntity> extends Abs
         matrixStack.translate(offsetX, offsetY, offsetZ);
         if(right)
         {
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
         }
         float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(right ? wheelRotation : -wheelRotation));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(right ? wheelRotation : -wheelRotation));
         matrixStack.scale(wheelScale, wheelScale, wheelScale);
-        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.pop();
     }
 }

@@ -36,7 +36,7 @@ public class RenderFluidTrailer extends AbstractRenderTrailer<FluidTrailerEntity
         Fluid fluid = tank.getFluid().getFluid();
         if(fluid == Fluids.EMPTY) return;
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
 
         int waterColor = fluid.getAttributes().getColor(entity.getEntityWorld(), entity.getPosition());
         float red = (float) (waterColor >> 16 & 255) / 255.0F;
@@ -47,26 +47,26 @@ public class RenderFluidTrailer extends AbstractRenderTrailer<FluidTrailerEntity
         float minV = sprite.getMinV();
         float maxV = Math.min(minV + (sprite.getMaxV() - minV) * height, sprite.getMaxV());
 
-        IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.translucentNoCrumbling());
-        Matrix4f matrix = matrixStack.getLast().getPositionMatrix();
+        IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.getTranslucentNoCrumbling());
+        Matrix4f matrix = matrixStack.getLast().getMatrix();
 
         //left side
-        buffer.pos(matrix, x + width, y, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y + height, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y + height, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
 
-        buffer.pos(matrix, x, y, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y + height, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y + height, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(minU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z + depth).color(red - 0.25F, green - 0.25F, blue - 0.25F, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
 
         maxU = Math.min(minU + (sprite.getMaxU() - minU) * depth, sprite.getMaxU());
         maxV = Math.min(minV + (sprite.getMaxV() - minV) * width, sprite.getMaxV());
 
-        buffer.pos(matrix, x, y + height, z).color(red, green, blue, 1.0F).tex(maxU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, minV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
-        buffer.pos(matrix, x + width, y + height, z).color(red, green, blue, 1.0F).tex(maxU, maxV).lightmap(light).func_225584_a_(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z).color(red, green, blue, 1.0F).tex(maxU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, minV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z + depth).color(red, green, blue, 1.0F).tex(minU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
+        buffer.pos(matrix, x + width, y + height, z).color(red, green, blue, 1.0F).tex(maxU, maxV).lightmap(light).normal(0.0F, 1.0F, 0.0F).endVertex();
     }
 }

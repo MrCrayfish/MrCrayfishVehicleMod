@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -33,15 +34,15 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         //Handle bar transformations
         matrixStack.push();
         matrixStack.translate(0.0, 0.3375, 0.25);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-45F));
         matrixStack.translate(0.0, -0.025, 0);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.pop();
     }

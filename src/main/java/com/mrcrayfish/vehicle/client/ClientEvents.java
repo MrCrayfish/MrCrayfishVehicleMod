@@ -204,7 +204,7 @@ public class ClientEvents
                         matrixStack.translate(offsetX, offsetY, offsetZ);
                         float wheelieProgress = MathHelper.lerp(event.getPartialTicks(), landVehicle.prevWheelieCount, landVehicle.wheelieCount) / 4F;
                         wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
-                        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-30F * wheelieProgress));
+                        matrixStack.rotate(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
                         matrixStack.translate(-offsetX, -offsetY, -offsetZ);
                     }
                 }
@@ -332,7 +332,7 @@ public class ClientEvents
         MatrixStack matrixStack = event.getMatrixStack();
         if (event.getHand() == Hand.OFF_HAND && fuelingHandOffset > -1)
         {
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(25F));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(25F));
             matrixStack.translate(0, -0.35 - fuelingHandOffset, 0.2);
         }
 
@@ -356,7 +356,7 @@ public class ClientEvents
             offsetPrevPrev = offsetPrev;
             offsetPrev = offset;
             matrixStack.translate(0, 0.35 + offset, -0.2);
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-25F));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-25F));
             if (event.getHand() == Hand.MAIN_HAND)
             {
                 fuelingHandOffset = offset;
@@ -378,10 +378,10 @@ public class ClientEvents
                 HandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
                 int handOffset = handSide == HandSide.RIGHT ? 1 : -1;
                 matrixStack.translate(handOffset * 0.65, -0.52 + 0.25, -0.72);
-                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(45F));
-                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-                int light = Minecraft.getInstance().getRenderManager().func_229085_a_(player, event.getPartialTicks());
-                RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT); //TODO check
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(45F));
+                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                int light = Minecraft.getInstance().getRenderManager().getPackedLight(player, event.getPartialTicks());
+                RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY); //TODO check
                 matrixStack.pop();
                 event.setCanceled(true);
             }
@@ -431,14 +431,14 @@ public class ClientEvents
                     {
                         matrixStack.translate(0.0, 0.2, 0.0);
                     }
-                    event.getModelPlayer().func_225599_a_(HandSide.RIGHT, event.getMatrixStack());
-                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(180F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+                    event.getModelPlayer().translateHand(HandSide.RIGHT, event.getMatrixStack());
+                    matrixStack.rotate(Vector3f.XP.rotationDegrees(180F));
+                    matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
                     boolean leftHanded = entity.getPrimaryHand() == HandSide.LEFT;
                     matrixStack.translate((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
                     matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
-                    IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.DEFAULT_LIGHT);
+                    IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.NO_OVERLAY);
                 }
                 matrixStack.pop();
             }

@@ -397,7 +397,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public boolean onLivingFall(float distance, float damageMultiplier)
     {
         if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getMotion().getY() < -1.0F)
         {

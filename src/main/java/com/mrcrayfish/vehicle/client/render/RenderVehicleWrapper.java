@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -44,17 +45,17 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRayTracer.IEnt
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) bodyPosition.getRotZ()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
         if(entity.canTowTrailer())
         {
             matrixStack.push();
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
             Vec3d towBarOffset = properties.getTowBarPosition();
             matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-            RenderUtil.renderColoredModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.pop();
         }
 
@@ -92,9 +93,9 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRayTracer.IEnt
         matrixStack.translate(0.0, -0.5, 0.0);
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
         matrixStack.translate(0.0, 0.5, 0.0);
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) position.getRotX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) position.getRotY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) position.getRotZ()));
         RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, color, lightTexture, overlayTexture);
         matrixStack.pop();
     }
@@ -108,11 +109,11 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRayTracer.IEnt
         matrixStack.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
         matrixStack.translate(0.0, -0.25, 0.0);
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) position.getRotZ()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) position.getRotX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) position.getRotY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) position.getRotZ()));
         matrixStack.translate(0.0, 0.0, -0.05);
-        RenderUtil.renderModel(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, lightTexture, overlayTexture, model);
+        Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, buffer, lightTexture, overlayTexture, model);
 
         matrixStack.pop();
     }
@@ -129,11 +130,11 @@ public class RenderVehicleWrapper<T extends VehicleEntity & EntityRayTracer.IEnt
         matrixStack.push();
         if(entity.isEnginePowered() && entity.getControllingPassenger() != null)
         {
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(0.5F * (entity.ticksExisted % 2)));
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-0.5F * (entity.ticksExisted % 2)));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(0.5F * (entity.ticksExisted % 2)));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(0.5F * (entity.ticksExisted % 2)));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-0.5F * (entity.ticksExisted % 2)));
         }
-        this.renderPart(position, model, matrixStack, buffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        this.renderPart(position, model, matrixStack, buffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.pop();
     }
 }

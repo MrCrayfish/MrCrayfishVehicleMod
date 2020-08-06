@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SpeedBoatEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -29,13 +30,13 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
 
         matrixStack.push();
         matrixStack.translate(0, 0.215, -0.125);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-45F));
         matrixStack.translate(0, 0.02, 0);
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
-        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
+        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.pop();
     }
 
@@ -73,8 +74,8 @@ public class RenderSpeedBoat extends AbstractRenderVehicle<SpeedBoatEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }

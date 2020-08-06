@@ -18,7 +18,7 @@ public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
     {
         matrixStack.push();
         matrixStack.translate(0.0, 0.0625, 0.0);
-        //matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
+        //matrixStack.rotate(Vector3f.field_229181_d_.rotationDegrees(90F));
         this.renderDamagedPart(entity, SpecialModels.RAINBOW_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
     }

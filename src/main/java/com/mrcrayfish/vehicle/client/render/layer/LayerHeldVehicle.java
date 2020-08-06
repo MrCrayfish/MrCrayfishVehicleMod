@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -33,16 +34,16 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
     }
 
     @Override
-    public void func_225628_a_(MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int i, AbstractClientPlayerEntity playerEntity, float v, float v1, float partialTicks, float v3, float v4, float v5)
+    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer, int packedLight, AbstractClientPlayerEntity player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(playerEntity);
+        CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
         if(!tagCompound.isEmpty())
         {
             Optional<EntityType<?>> optional = EntityType.byKey(tagCompound.getString("id"));
             if(optional.isPresent())
             {
                 EntityType<?> entityType = optional.get();
-                Entity entity = entityType.create(playerEntity.world);
+                Entity entity = entityType.create(player.world);
                 if(entity instanceof VehicleEntity)
                 {
                     entity.read(tagCompound);
@@ -55,7 +56,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
             {
                 matrixStack.push();
                 {
-                    HeldVehicleEvents.AnimationCounter counter = HeldVehicleEvents.idToCounter.get(playerEntity.getUniqueID());
+                    HeldVehicleEvents.AnimationCounter counter = HeldVehicleEvents.idToCounter.get(player.getUniqueID());
                     if(counter != null)
                     {
                         float width = this.cachedEntity.getWidth() / 2;
@@ -63,11 +64,11 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                     }
                     Vec3d heldOffset = this.cachedEntity.getProperties().getHeldOffset();
                     matrixStack.translate(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
-                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(180F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(-90F));
-                    matrixStack.translate(0F, playerEntity.isCrouching() ? 0.3125F : 0.5625F, 0F);
+                    matrixStack.rotate(Vector3f.XP.rotationDegrees(180F));
+                    matrixStack.rotate(Vector3f.YP.rotationDegrees(-90F));
+                    matrixStack.translate(0F, player.isCrouching() ? 0.3125F : 0.5625F, 0F);
                     EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getRenderManager().renderers.get(this.cachedType);
-                    render.render(this.cachedEntity, 0.0F, 0.0F, matrixStack, renderTypeBuffer, i);
+                    render.render(this.cachedEntity, 0.0F, 0.0F, matrixStack, buffer, packedLight);
                 }
                 matrixStack.pop();
             }

@@ -54,6 +54,7 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
@@ -141,15 +142,15 @@ public class ClientProxy implements Proxy
 
     private void setupRenderLayers()
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.getTranslucent());
     }
 
     private void registerEntityRenders()
@@ -258,10 +259,10 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.ATV_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.3375F, 0.25F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.025F, 0.0F));
             EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 180F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 1.05F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.ATV.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
             EntityRayTracer.createKeyPortTransforms(ModEntities.ATV.get(), parts, transforms);
@@ -273,7 +274,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.BUMPER_CAR_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.2F, 0.0F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.9F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.BUMPER_CAR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
@@ -302,7 +303,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.09F, 0.49F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.9F));
             EntityRayTracer.createPartTransforms(ModItems.WOOD_SMALL_ENGINE.get(), VehicleProperties.getProperties(ModEntities.GO_KART.get()).getEnginePosition(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
@@ -314,7 +315,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.JET_SKI_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.375F, 0.25F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.02F, 0.0F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.JET_SKI.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
         });
@@ -325,10 +326,10 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.LAWN_MOWER_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.4F, -0.15F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createScale(0.9F));
             EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 180F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 0.6F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         });
@@ -352,7 +353,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.MOPED_MUD_GUARD, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.0625F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.12F, 0.785F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -22.5F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -22.5F),
                 EntityRayTracer.MatrixTransformation.createScale(0.9F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.MOPED.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         });
@@ -369,11 +370,11 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.SMART_CAR_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.2F, 0.3F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -67.5F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.9F));
             EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 180F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 1.35F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.SMART_CAR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         });
@@ -384,7 +385,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.SPEED_BOAT_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.215F, -0.125F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.02F, 0.0F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.SPEED_BOAT.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         });
@@ -397,12 +398,12 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createKeyPortTransforms(ModEntities.SPORTS_PLANE.get(), parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WING, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0, -0.1875F, 0.5F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Z, 180F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.ZP, 180F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.875F, 0.0625F, 0.0F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, 5F));
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, 5F));
             EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WING, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.875F, -0.1875F, 0.5F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -5F));
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -5F));
             transforms.add(EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
             transforms.add(EntityRayTracer.MatrixTransformation.createScale(0.85F));
             EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
@@ -413,12 +414,12 @@ public class ClientProxy implements Proxy
                 EntityRayTracer.MatrixTransformation.createTranslation(-0.46875F, -0.1875F, 0.125F));
             EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(-0.46875F, -0.1875F, 0.125F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, -100F));
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, -100F));
             EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.46875F, -0.1875F, 0.125F));
             EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.46875F, -0.1875F, 0.125F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 100F));
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 100F));
         });
 
         /* Golf Cart */
@@ -427,7 +428,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.GOLF_CART_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(-0.345F, 0.425F, 0.1F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.95F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.GOLF_CART.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
@@ -440,7 +441,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.OFF_ROADER_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(-0.3125F, 0.35F, 0.2F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -45F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.75F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.OFF_ROADER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
@@ -453,7 +454,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.TRACTOR, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.66F, -0.475F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -67.5F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.9F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.TRACTOR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
@@ -466,7 +467,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BUS_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                 EntityRayTracer.MatrixTransformation.createTranslation(-0.2825F, 0.225F, 1.0625F),
-                EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
+                EntityRayTracer.MatrixTransformation.createRotation(Vector3f.XP, -67.5F),
                 EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                 EntityRayTracer.MatrixTransformation.createScale(0.75F));
             EntityRayTracer.createFuelPartTransforms(ModEntities.MINI_BUS.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
@@ -479,14 +480,14 @@ public class ClientProxy implements Proxy
             EntityRayTracer.instance().registerTransforms(ModEntities.BATH.get(), (tracer, transforms, parts) ->
             {
                 EntityRayTracer.createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:bath")), parts, transforms,
-                        EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
+                        EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 90F));
             });
 
             /* Sofa */
             EntityRayTracer.instance().registerTransforms(ModEntities.SOFA.get(), (tracer, transforms, parts) ->
             {
                 EntityRayTracer.createTransformListForPart(SpecialModels.RAINBOW_SOFA, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 90F),
                     EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.0625F, 0.0F));
             });
 
@@ -494,7 +495,7 @@ public class ClientProxy implements Proxy
             EntityRayTracer.instance().registerTransforms(ModEntities.SOFACOPTER.get(), (tracer, transforms, parts) ->
             {
                 EntityRayTracer.createTransformListForPart(SpecialModels.RED_SOFA, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
+                    EntityRayTracer.MatrixTransformation.createRotation(Vector3f.YP, 90F));
                 EntityRayTracer.createTransformListForPart(SpecialModels.SOFA_HELICOPTER_ARM, parts, transforms,
                     EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 8 * 0.0625F, 0.0F));
                 EntityRayTracer.createFuelPartTransforms(ModEntities.SOFACOPTER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
