@@ -16,7 +16,7 @@ public class PacketHandler
     public static void register()
     {
         instance = NetworkRegistry.ChannelBuilder
-                .named(new ResourceLocation(Reference.MOD_ID, "network"))
+                .named(new ResourceLocation(Reference.MOD_ID, "play"))
                 .networkProtocolVersion(() -> PROTOCOL_VERSION)
                 .clientAcceptedVersions(PROTOCOL_VERSION::equals)
                 .serverAcceptedVersions(PROTOCOL_VERSION::equals)
