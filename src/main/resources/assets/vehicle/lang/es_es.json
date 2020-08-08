@@ -180,12 +180,12 @@
 "vehicle.status.key_invalid": "La llave no entra en este Vehículo",
 "vehicle.status.key_removed": "El Vehículo ya no está bloqueado",
 
-"vehicle.tooltip.optional": "Opcional",
-"vehicle.tooltip.required": "Necesario",
-"vehicle.tooltip.not_applicable": "No aplicable",
+"vehicle.tooltip.optional": "§b§7Opcional",
+"vehicle.tooltip.required": "§cNecesario",
+"vehicle.tooltip.not_applicable": "§7No aplicable",
 "vehicle.tooltip.paint_color": "Color de Pintura",
 "vehicle.tooltip.engine": "Motor",
-"vehicle.tooltip.wheels": "Ruedas",
+"vehicle.tooltip.wheels": "§7Ruedas",
 
 "key.categories.vehicle": "MrCrayfish's Vehicle Mod",
 "key.vehicle.cycle_seats": "Cambiar Asiento",

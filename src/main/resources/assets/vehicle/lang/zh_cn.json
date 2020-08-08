@@ -179,12 +179,12 @@
     "vehicle.status.key_invalid": "这把钥匙不适合这辆载具",
     "vehicle.status.key_removed": "载具不再锁定",
 
-    "vehicle.tooltip.optional": "可选",
-    "vehicle.tooltip.required": "需要",
-    "vehicle.tooltip.not_applicable": "不适用",
+    "vehicle.tooltip.optional": "§b§7可选",
+    "vehicle.tooltip.required": "§c需要",
+    "vehicle.tooltip.not_applicable": "§7不适用",
     "vehicle.tooltip.paint_color": "喷漆颜色",
     "vehicle.tooltip.engine": "引擎",
-    "vehicle.tooltip.wheels": "轮胎",
+    "vehicle.tooltip.wheels": "§7轮胎",
 
     "key.categories.vehicle": "MrCrayfish的载具模组",
     "key.vehicle.cycle_seats": "自行车座椅",

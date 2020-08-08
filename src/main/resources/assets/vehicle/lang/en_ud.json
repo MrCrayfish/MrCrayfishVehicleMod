@@ -179,12 +179,12 @@
     "vehicle.status.key_invalid": "\u01dd\ua781\u0254\u1d09\u0265\u01dd\u028c s\u1d09\u0265\u0287 \u0287\u1d09\u025f \u0287ou s\u01ddop \u028e\u01dd\u029e s\u1d09\u0265\u27d8",
     "vehicle.status.key_removed": "p\u01dd\u029e\u0254o\ua781 \u0279\u01dd\u1d77uo\ua781 ou s\u1d09 \u01dd\ua781\u0254\u1d09\u0265\u01dd\u039b",
 
-    "vehicle.tooltip.optional": "\ua781\u0250uo\u1d09\u0287dO",
-    "vehicle.tooltip.required": "p\u01dd\u0279\u1d09nb\u01dd\u1d1a",
-    "vehicle.tooltip.not_applicable": "\u01dd\ua781q\u0250\u0254\u1d09\ua781dd\u0250 \u0287oN",
+    "vehicle.tooltip.optional": "§b§7\ua781\u0250uo\u1d09\u0287dO",
+    "vehicle.tooltip.required": "§cp\u01dd\u0279\u1d09nb\u01dd\u1d1a",
+    "vehicle.tooltip.not_applicable": "§7\u01dd\ua781q\u0250\u0254\u1d09\ua781dd\u0250 \u0287oN",
     "vehicle.tooltip.paint_color": "\u0279o\ua781o\u0186 \u0287u\u1d09\u0250\u0500",
     "vehicle.tooltip.engine": "\u01ddu\u1d09\u1d77u\u018e",
-    "vehicle.tooltip.wheels": "s\ua781\u01dd\u01dd\u0265M",
+    "vehicle.tooltip.wheels": "§7s\ua781\u01dd\u01dd\u0265M",
 
     "key.categories.vehicle": "poW \u01dd\ua781\u0254\u1d09\u0265\u01dd\u039b s,\u0265s\u1d09\u025f\u028e\u0250\u0279\u0186\u0279W",
     "key.vehicle.cycle_seats": "s\u0287\u0250\u01ddS \u01dd\ua781\u0254\u028e\u0186",

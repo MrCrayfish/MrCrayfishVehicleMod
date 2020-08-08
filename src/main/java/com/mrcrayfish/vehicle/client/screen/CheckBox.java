@@ -21,9 +21,7 @@ public class CheckBox extends Widget
 
     public CheckBox(int left, int top, ITextComponent title)
     {
-        super(0, 0, left, top, title);
-        this.width = 8;
-        this.height = 8;
+        super(left, top, 8, 8, title);
     }
 
     public void setToggled(boolean toggled)

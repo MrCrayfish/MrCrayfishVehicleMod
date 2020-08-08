@@ -179,12 +179,12 @@
     "vehicle.status.key_invalid": "이 열쇠는 이 차량에 맞지 않습니다.",
     "vehicle.status.key_removed": "차량이 더 이상 잠기지 않습니다.",
 
-    "vehicle.tooltip.optional": "선택",
-    "vehicle.tooltip.required": "필수",
-    "vehicle.tooltip.not_applicable": "해당 없음",
+    "vehicle.tooltip.optional": "§b§7선택",
+    "vehicle.tooltip.required": "§c필수",
+    "vehicle.tooltip.not_applicable": "§7해당 없음",
     "vehicle.tooltip.paint_color": "페인트 색",
     "vehicle.tooltip.engine": "엔진",
-    "vehicle.tooltip.wheels": "바퀴",
+    "vehicle.tooltip.wheels": "§7바퀴",
 
     "key.categories.vehicle": "차량 모드",
     "key.vehicle.cycle_seats": "사이클 시트",

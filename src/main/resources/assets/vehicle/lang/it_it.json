@@ -155,10 +155,10 @@
     "vehicle.status.key_invalid": "Questa chiave non ci sta nel veicolo",
     "vehicle.status.key_removed": "Il veicolo non e' piu' bloccato",
 
-    "vehicle.tooltip.optional": "Facoltativo",
-    "vehicle.tooltip.required": "Obbligatorio",
-    "vehicle.tooltip.not_applicable": "Non applicabile",
+    "vehicle.tooltip.optional": "§b§7Facoltativo",
+    "vehicle.tooltip.required": "§cObbligatorio",
+    "vehicle.tooltip.not_applicable": "§7Non applicabile",
     "vehicle.tooltip.paint_color": "Colore vernice",
     "vehicle.tooltip.engine": "Motore",
-    "vehicle.tooltip.wheels": "Ruote"
+    "vehicle.tooltip.wheels": "§7Ruote"
 }

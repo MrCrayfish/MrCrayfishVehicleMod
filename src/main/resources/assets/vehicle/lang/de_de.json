@@ -179,12 +179,12 @@
     "vehicle.status.key_invalid": "Dieser Schlüssel gehört nicht zum Fahrzeug",
     "vehicle.status.key_removed": "Fahrzeug ist nicht länger verschlossen",
 
-    "vehicle.tooltip.optional": "Optional",
-    "vehicle.tooltip.required": "Benötigt",
-    "vehicle.tooltip.not_applicable": "Nicht kompatibel",
+    "vehicle.tooltip.optional": "§b§7Optional",
+    "vehicle.tooltip.required": "§cBenötigt",
+    "vehicle.tooltip.not_applicable": "§7Nicht kompatibel",
     "vehicle.tooltip.paint_color": "Farbe",
     "vehicle.tooltip.engine": "Motor",
-    "vehicle.tooltip.wheels": "Reifen",
+    "vehicle.tooltip.wheels": "§7Reifen",
 
     "key.categories.vehicle": "MrCrayfish's Fahrzeug Mod",
     "key.vehicle.cycle_seats": "Wechsel Sitz",
