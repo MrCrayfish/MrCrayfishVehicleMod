@@ -29,7 +29,6 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -117,6 +116,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             GL11.glEnable(GL11.GL_SCISSOR_TEST);
             RenderUtil.scissor(startX + 26, startY + 17, 142, 70);
 
+            matrixStack.push();
             matrixStack.translate(0.0, 0.0, 1000.0);
             matrixStack.translate(windowX - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseX - mouseClickedX : 0), 0, 0);
             matrixStack.translate(0, windowY - (mouseGrabbed && mouseGrabbedButton == 0 ? mouseY - mouseClickedY : 0), 0);
@@ -150,7 +150,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             renderTypeBuffer.finish();
             renderManager.setRenderShadow(true);
 
-            matrixStack.translate(0.0, 0.0, -1000.0);
+            matrixStack.pop();
 
             GL11.glDisable(GL11.GL_SCISSOR_TEST);
             RenderSystem.popMatrix();
@@ -160,7 +160,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         {
             RenderSystem.pushMatrix();
             RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-            minecraft.fontRenderer.drawString(matrixStack, I18n.format("container.edit_vehicle.window_help"), 56, 38, Color.WHITE.getRGB());
+            minecraft.fontRenderer.drawString(matrixStack, I18n.format("container.edit_vehicle.window_help"), 56, 38, 0xFFFFFF);
             RenderSystem.popMatrix();
         }
     }
