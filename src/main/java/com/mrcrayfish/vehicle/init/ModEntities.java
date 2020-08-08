@@ -55,9 +55,9 @@ public class ModEntities
     public static final RegistryObject<EntityType<FertilizerTrailerEntity>> FERTILIZER = registerVehicle("fertilizer", FertilizerTrailerEntity::new, 1.5F, 1.0F);
 
     /* Special Vehicles */
-    public static final RegistryObject<EntityType<CouchEntity>> SOFA = registerDependent("cfm", "couch", CouchEntity::new, 1.0F, 1.0F);
-    public static final RegistryObject<EntityType<BathEntity>> BATH = registerDependent("cfm", "bath", BathEntity::new, 1.0F, 1.0F);
-    public static final RegistryObject<EntityType<SofacopterEntity>> SOFACOPTER = registerDependent("cfm", "sofacopter", SofacopterEntity::new, 1.0F, 1.0F);
+    public static final RegistryObject<EntityType<CouchEntity>> SOFA = registerDependent("cfm", "couch", CouchEntity::new, 1.0F, 1.0F, true);
+    public static final RegistryObject<EntityType<BathEntity>> BATH = registerDependent("cfm", "bath", BathEntity::new, 1.0F, 1.0F, false);
+    public static final RegistryObject<EntityType<SofacopterEntity>> SOFACOPTER = registerDependent("cfm", "sofacopter", SofacopterEntity::new, 1.0F, 1.0F, false);
 
     /* Other */
     public static final RegistryObject<EntityType<EntityJack>> JACK = registerEntity("jack", EntityJack::new, 0.0F, 0.0F);
@@ -68,11 +68,11 @@ public class ModEntities
         return ModEntities.ENTITY_TYPES.register(id, () -> type);
     }
 
-    private static <T extends Entity> RegistryObject<EntityType<T>> registerDependent(String modId, String id, BiFunction<EntityType<T>, World, T> function, float width, float height)
+    private static <T extends Entity> RegistryObject<EntityType<T>> registerDependent(String modId, String id, BiFunction<EntityType<T>, World, T> function, float width, float height, boolean registerCrate)
     {
         if(ModList.get().isLoaded(modId))
         {
-            EntityType<T> type = EntityUtil.buildVehicleType(new ResourceLocation(Reference.MOD_ID, id), function, width, height);
+            EntityType<T> type = EntityUtil.buildVehicleType(new ResourceLocation(Reference.MOD_ID, id), function, width, height, registerCrate);
             return ModEntities.ENTITY_TYPES.register(id, () -> type);
         }
         return null;

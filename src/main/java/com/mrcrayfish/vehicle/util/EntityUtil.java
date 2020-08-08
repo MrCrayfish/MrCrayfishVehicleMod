@@ -16,8 +16,16 @@ public class EntityUtil
 {
     public static <T extends Entity> EntityType<T> buildVehicleType(ResourceLocation id, BiFunction<EntityType<T>, World, T> function, float width, float height)
     {
+        return buildVehicleType(id, function, width, height, true);
+    }
+
+    public static <T extends Entity> EntityType<T> buildVehicleType(ResourceLocation id, BiFunction<EntityType<T>, World, T> function, float width, float height, boolean registerCrate)
+    {
         EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).build(id.toString());
-        BlockVehicleCrate.registerVehicle(id);
+        if(registerCrate)
+        {
+            BlockVehicleCrate.registerVehicle(id);
+        }
         return type;
     }
 }
