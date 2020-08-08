@@ -8,8 +8,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -35,8 +37,7 @@ public class SprayCanItem extends Item implements IDyeable
     {
         if(Screen.hasShiftDown())
         {
-            String info = I18n.format("item.vehicle.spray_can.info");
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent("item.vehicle.spray_can.info"), 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
         }
         else
         {

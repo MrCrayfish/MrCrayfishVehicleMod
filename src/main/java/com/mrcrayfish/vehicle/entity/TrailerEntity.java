@@ -10,7 +10,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -53,7 +53,7 @@ public abstract class TrailerEntity extends VehicleEntity
     {
         this.prevWheelRotation = this.wheelRotation;
 
-        Vec3d motion = this.getMotion();
+        Vector3d motion = this.getMotion();
         this.setMotion(motion.getX(), motion.getY() - 0.08, motion.getZ());
 
         if(this.world.isRemote)
@@ -99,7 +99,7 @@ public abstract class TrailerEntity extends VehicleEntity
         else if(!world.isRemote)
         {
             motion = this.getMotion();
-            this.move(MoverType.SELF, new Vec3d(motion.getX() * 0.75, motion.getY(), motion.getZ() * 0.75));
+            this.move(MoverType.SELF, new Vector3d(motion.getX() * 0.75, motion.getY(), motion.getZ() * 0.75));
         }
 
         this.doBlockCollisions();
@@ -110,12 +110,12 @@ public abstract class TrailerEntity extends VehicleEntity
 
     private void updatePullingMotion()
     {
-        Vec3d towBar = pullingEntity.getPositionVector();
+        Vector3d towBar = pullingEntity.getPositionVec();
         if(pullingEntity instanceof VehicleEntity)
         {
             VehicleEntity vehicle = (VehicleEntity) pullingEntity;
-            Vec3d towBarVec = vehicle.getProperties().getTowBarPosition();
-            towBarVec = new Vec3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyPosition().getZ());
+            Vector3d towBarVec = vehicle.getProperties().getTowBarPosition();
+            towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyPosition().getZ());
             if(vehicle instanceof LandVehicleEntity)
             {
                 LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
@@ -138,8 +138,8 @@ public abstract class TrailerEntity extends VehicleEntity
             this.prevRotationYaw -= 360.0F;
         }
 
-        Vec3d vec = new Vec3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar);
-        Vec3d motion = this.getMotion();
+        Vector3d vec = new Vector3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar);
+        Vector3d motion = this.getMotion();
         this.setMotion(vec.x - this.getPosX(), motion.getY(), vec.z - this.getPosZ());
         this.move(MoverType.SELF, this.getMotion());
     }

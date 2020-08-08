@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModSounds
 {
-    public static final DeferredRegister<SoundEvent> SOUNDS = new DeferredRegister<>(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
+    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
     //TODO update these in 1.16 update
     public static final RegistryObject<SoundEvent> HORN_MONO = register("horn_mono");

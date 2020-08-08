@@ -33,7 +33,7 @@ public class MovingSoundVehicle extends TickableSound
         PoweredVehicleEntity vehicle = this.vehicleRef.get();
         if(vehicle == null || Minecraft.getInstance().player == null)
         {
-            this.donePlaying = true;
+            this.func_239509_o_();
             return;
         }
         this.volume = (vehicle.isEnginePowered() && !vehicle.equals(Minecraft.getInstance().player.getRidingEntity())) ? 1.0F : 0.0F;
@@ -47,7 +47,7 @@ public class MovingSoundVehicle extends TickableSound
         }
         else
         {
-            this.donePlaying = true;
+            this.func_239509_o_();
         }
     }
 }

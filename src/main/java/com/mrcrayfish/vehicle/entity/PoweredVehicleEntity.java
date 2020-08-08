@@ -53,6 +53,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -60,7 +61,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -287,7 +288,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
     {
         ItemStack stack = player.getHeldItem(hand);
         if(!world.isRemote)
@@ -304,7 +305,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 if(!this.owner.equals(player.getUniqueID()))
                 {
                     CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
-                    return false;
+                    return ActionResultType.FAIL;
                 }
 
                 if(this.isLockable())
@@ -322,13 +323,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         {
                             CommonUtils.sendInfoMessage(player, "vehicle.status.key_created");
                         }
-                        return true;
+                        return ActionResultType.SUCCESS;
                     }
                 }
                 else
                 {
                     CommonUtils.sendInfoMessage(player, "vehicle.status.not_lockable");
-                    return false;
+                    return ActionResultType.FAIL;
                 }
             }
             else if(stack.getItem() == ModItems.WRENCH.get() && this.getRidingEntity() instanceof EntityJack)
@@ -341,7 +342,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 {
                     CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
         return super.processInitialInteract(player, hand);
@@ -592,9 +593,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     int z = MathHelper.floor(this.getPosZ() + wheelZ);
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = this.world.getBlockState(pos);
-                    if(state.getMaterial() != Material.AIR && state.getMaterial().isToolNotRequired())
+                    if(state.getMaterial() != Material.AIR && !state.getMaterial().isSolid())
                     {
-                        Vec3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F).add(0, 0.5, 0);
+                        Vector3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F).add(0, 0.5, 0);
                         if(this.charging)
                         {
                             dirVec = dirVec.scale(this.currentSpeed / 3F);
@@ -607,7 +608,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         if(this.shouldShowEngineSmoke()&& this.canDrive() && this.ticksExisted % 2 == 0)
         {
-            Vec3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
+            Vector3d smokePosition = this.getEngineSmokePosition().rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
             this.world.addParticle(ParticleTypes.SMOKE, this.getPosX() + smokePosition.x, this.getPosY() + smokePosition.y, this.getPosZ() + smokePosition.z, -this.getMotion().x, 0.0D, -this.getMotion().z);
             if(this.charging && this.getRealSpeed() > 0.95F)
             {
@@ -792,8 +793,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625).rotateYaw(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
-                    //Vec3d seatVec = Vec3d.ZERO;
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625).rotateYaw(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
+                    //Vector3d seatVec = Vector3d.ZERO;
                     passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y + passenger.getYOffset(), this.getPosZ() - seatVec.z);
                     if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
                     {
@@ -963,9 +964,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return true;
     }
 
-    public Vec3d getEngineSmokePosition()
+    public Vector3d getEngineSmokePosition()
     {
-        return new Vec3d(0, 0, 0);
+        return new Vector3d(0, 0, 0);
     }
 
     public boolean shouldShowEngineSmoke()
@@ -1087,7 +1088,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(!this.getKeyStack().isEmpty())
         {
-            Vec3d keyHole = this.getPartPositionAbsoluteVec(this.getProperties().getKeyPortPosition(), 1F);
+            Vector3d keyHole = this.getPartPositionAbsoluteVec(this.getProperties().getKeyPortPosition(), 1F);
             this.world.addEntity(new ItemEntity(this.world, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
             this.setKeyStack(ItemStack.EMPTY);
         }
@@ -1175,11 +1176,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     }
 
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public boolean onLivingFall(float distance, float damageMultiplier)
     {
         if(!this.disableFallDamage)
         {
-            super.func_225503_b_(distance, damageMultiplier);
+            super.onLivingFall(distance, damageMultiplier);
         }
         if(this.launchingTimer <= 0 && distance > 3)
         {
@@ -1361,7 +1362,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScaleY();
 
                 /* Update the wheel position */
-                Vec3d wheelVec = new Vec3d(wheelX, wheelY, wheelZ).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
+                Vector3d wheelVec = new Vector3d(wheelX, wheelY, wheelZ).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
                 wheelPositions[i * 3] = wheelVec.x;
                 wheelPositions[i * 3 + 1] = wheelVec.y;
                 wheelPositions[i * 3 + 2] = wheelVec.z;
@@ -1394,7 +1395,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     {
                         wheelModifier += (1.0F - type.snowMultiplier);
                     }
-                    else if(!state.getMaterial().isToolNotRequired())
+                    else if(!state.getMaterial().isSolid())
                     {
                         wheelModifier += (1.0F - type.roadMultiplier);
                     }

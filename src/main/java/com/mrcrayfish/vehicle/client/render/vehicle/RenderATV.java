@@ -33,15 +33,15 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         //Handle bar transformations
         matrixStack.push();
         matrixStack.translate(0.0, 0.3375, 0.25);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-45F));
         matrixStack.translate(0.0, -0.025, 0);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
 
-        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.pop();
     }

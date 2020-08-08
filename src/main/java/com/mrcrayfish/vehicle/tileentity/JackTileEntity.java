@@ -13,7 +13,7 @@ import net.minecraft.entity.MoverType;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -123,7 +123,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
                     {
                         AxisAlignedBB entityBoundingBox = entity.getBoundingBox();
                         double posY = boundingBox.maxY - entityBoundingBox.minY;
-                        entity.move(MoverType.PISTON, new Vec3d(0.0, posY, 0.0));
+                        entity.move(MoverType.PISTON, new Vector3d(0.0, posY, 0.0));
                     }
                 }
             }

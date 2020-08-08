@@ -13,7 +13,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 /**
@@ -96,9 +96,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             if(acceleration == AccelerationDirection.CHARGING && this.charging)
             {
                 PartPosition bodyPosition = properties.getBodyPosition();
-                Vec3d frontAxel = properties.getFrontAxelVec().scale(0.0625F).scale(bodyPosition.getScale());
-                Vec3d nextFrontAxel = frontAxel.rotateYaw((this.turnAngle / 20F) * 0.017453292F);
-                Vec3d deltaAxel = frontAxel.subtract(nextFrontAxel).rotateYaw(-this.rotationYaw * 0.017453292F);
+                Vector3d frontAxel = properties.getFrontAxelVec().scale(0.0625F).scale(bodyPosition.getScale());
+                Vector3d nextFrontAxel = frontAxel.rotateYaw((this.turnAngle / 20F) * 0.017453292F);
+                Vector3d deltaAxel = frontAxel.subtract(nextFrontAxel).rotateYaw(-this.rotationYaw * 0.017453292F);
                 double deltaYaw = -this.turnAngle / 20F;
                 this.rotationYaw += deltaYaw;
                 this.deltaYaw = (float) -deltaYaw;
@@ -112,9 +112,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             }
 
             PartPosition bodyPosition = properties.getBodyPosition();
-            Vec3d nextFrontAxelVec = new Vec3d(0, 0, currentSpeed / 20F).rotateYaw(this.wheelAngle * 0.017453292F);
+            Vector3d nextFrontAxelVec = new Vector3d(0, 0, currentSpeed / 20F).rotateYaw(this.wheelAngle * 0.017453292F);
             nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
-            Vec3d nextRearAxelVec = new Vec3d(0, 0, currentSpeed / 20F);
+            Vector3d nextRearAxelVec = new Vector3d(0, 0, currentSpeed / 20F);
             nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
             double deltaYaw = Math.toDegrees(Math.atan2(nextRearAxelVec.z - nextFrontAxelVec.z, nextRearAxelVec.x - nextFrontAxelVec.x)) + 90;
             if(this.isRearWheelSteering())
@@ -124,7 +124,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.rotationYaw += deltaYaw;
             this.deltaYaw = (float) -deltaYaw;
 
-            Vec3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5);
+            Vector3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5);
             nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
             nextVehicleVec = nextVehicleVec.scale(bodyPosition.getScale()).rotateYaw((-this.rotationYaw + 90) * 0.017453292F);
 

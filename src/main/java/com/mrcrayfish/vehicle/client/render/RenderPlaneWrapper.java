@@ -9,10 +9,10 @@ import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -33,17 +33,17 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRayTracer.IEntityR
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) bodyPosition.getRotZ()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
         matrixStack.translate(0.0, 0.5, 0.0);
 
         float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-bodyPitch));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bodyPitch));
 
         float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(-bodyRoll));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees(-bodyRoll));
 
         matrixStack.translate(0.0, -0.5, 0.0);
 
@@ -77,7 +77,7 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRayTracer.IEntityR
             EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
                 if(renderVehicle.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -86,17 +86,17 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRayTracer.IEntityR
             }
             else
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
                 entity.playFuelPortCloseSound();
             }
         }
 
         if(entity.isKeyNeeded())
         {
-            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
             if(!entity.getKeyStack().isEmpty())
             {
-                this.renderKey(properties.getKeyPosition(), entity.getKeyStack(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                this.renderKey(properties.getKeyPosition(), entity.getKeyStack(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             }
         }
 

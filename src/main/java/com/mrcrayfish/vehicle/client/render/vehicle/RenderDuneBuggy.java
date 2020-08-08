@@ -6,12 +6,12 @@ import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.DuneBuggyEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -30,11 +30,11 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
         matrixStack.push();
 
         matrixStack.translate(0.0, 0.0, 3.125 * 0.0625);
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-22.5F));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(-22.5F));
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(turnRotation));
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(22.5F));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -0.2);
 
         this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
@@ -46,12 +46,12 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             if(entity.isMoving())
             {
-                matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-frontWheelSpin));
+                matrixStack.rotate(Vector3f.XP.rotationDegrees(-frontWheelSpin));
             }
             matrixStack.scale((float) wheelScale, (float) wheelScale, (float) wheelScale);
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
             IBakedModel wheelModel = RenderUtil.getWheelModel(entity);
-            RenderUtil.renderColoredModel(wheelModel, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getWheelColor(), light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(wheelModel, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getWheelColor(), light, OverlayTexture.NO_OVERLAY);
             matrixStack.pop();
         }
 

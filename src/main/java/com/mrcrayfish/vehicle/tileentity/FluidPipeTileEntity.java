@@ -119,9 +119,9 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         if(compound.contains("DisabledConnections", Constants.NBT.TAG_BYTE_ARRAY))
         {
             byte[] connections = compound.getByteArray("DisabledConnections");

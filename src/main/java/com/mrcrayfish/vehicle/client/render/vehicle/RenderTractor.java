@@ -22,13 +22,13 @@ public class RenderTractor extends AbstractRenderVehicle<TractorEntity>
         //Render the handles bars
         matrixStack.push();
         matrixStack.translate(0, 0.66, -0.475);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-67.5F));
+        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-67.5F));
         matrixStack.translate(0, -0.02, 0);
         matrixStack.scale(0.9F, 0.9F, 0.9F);
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
         this.renderDamagedPart(entity, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
     }

@@ -9,7 +9,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -125,7 +125,7 @@ public class SeatTracker
 
                 /* Get the real world distance to the seat and check if it's the closest */
                 Seat seat = seats.get(i);
-                Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
+                Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
                 seatVec = seatVec.rotateYaw(-(vehicle.getModifiedRotationYaw()) * 0.017453292F);
                 seatVec = seatVec.add(vehicle.getPositionVec());
                 double distance = player.getDistanceSq(seatVec.x, seatVec.y - player.getHeight() / 2F, seatVec.z);

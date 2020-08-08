@@ -26,10 +26,8 @@ import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.client.gui.widget.button.Button;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Quaternion;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeItem;
@@ -39,8 +37,11 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -101,7 +102,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         super.init();
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
-        this.addButton(new Button(startX, startY, 15, 20, "<", button ->
+        this.addButton(new Button(startX, startY, 15, 20, new StringTextComponent("<"), button ->
         {
             if(currentVehicle - 1 < 0)
             {
@@ -113,7 +114,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
-        this.addButton(new Button(startX + 161, startY, 15, 20, ">", button ->
+        this.addButton(new Button(startX + 161, startY, 15, 20, new StringTextComponent(">"), button ->
         {
             if(currentVehicle + 1 >= this.vehicleTypes.size())
             {
@@ -125,7 +126,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
-        this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, "Craft", button ->
+        this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, new StringTextComponent("Craft"), button ->
         {
             ResourceLocation registryName = this.cachedVehicle[currentVehicle].getType().getRegistryName();
             if(registryName != null)
@@ -134,7 +135,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }));
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 186, startY + 51, "Show Remaining"));
+        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 186, startY + 51, new StringTextComponent("Show Remaining")));
         this.checkBoxMaterials.setToggled(WorkstationScreen.showRemaining);
         this.loadVehicle(currentVehicle);
     }
@@ -307,11 +308,11 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground();
-        super.render(mouseX, mouseY, partialTicks);
-        this.renderHoveredToolTip(mouseX, mouseY);
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.func_230459_a_(matrixStack, mouseX, mouseY);
 
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
@@ -324,7 +325,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 MaterialItem materialItem = this.filteredMaterials.get(i);
                 if(!materialItem.getStack().isEmpty())
                 {
-                    this.renderTooltip(materialItem.getStack(), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, materialItem.getStack(), mouseX, mouseY);
                 }
             }
         }
@@ -332,35 +333,43 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         VehicleEntity vehicle = this.cachedVehicle[currentVehicle];
         if(vehicle.canBeColored())
         {
-            this.drawSlotTooltip(Lists.newArrayList(TextFormatting.AQUA + I18n.format("vehicle.tooltip.optional"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.paint_color")), startX, startY, 186, 29, mouseX, mouseY, 0);
+            //TODO optional should have AQUA text formatting
+            //TODO paint colour should have gray text formatting
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional"), new TranslationTextComponent("vehicle.tooltip.paint_color")), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
         else
         {
-            this.drawSlotTooltip(Lists.newArrayList(I18n.format("vehicle.tooltip.paint_color"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.not_applicable")), startX, startY, 186, 29, mouseX, mouseY, 0);
+            //TODO not applicable should have GRAY text formatting
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
 
         if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).getEngineType() != EngineType.NONE)
         {
             String engineName = ((PoweredVehicleEntity) vehicle).getEngineType().getEngineName();
-            this.drawSlotTooltip(Lists.newArrayList(TextFormatting.RED + I18n.format("vehicle.tooltip.required"), TextFormatting.GRAY + engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
+            //TODO required should have red text formatting
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent(engineName)), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
         else
         {
-            this.drawSlotTooltip(Lists.newArrayList(I18n.format("vehicle.tooltip.engine"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.not_applicable")), startX, startY, 206, 29, mouseX, mouseY, 1);
+            //TODO not applicable should have GRAY text formatting
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
 
         if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).canChangeWheels())
         {
-            this.drawSlotTooltip(Lists.newArrayList(TextFormatting.RED + I18n.format("vehicle.tooltip.required"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            //TODO required should have red text formatting
+            //TODO wheels should have GRAY text formatting
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
         }
         else
         {
-            this.drawSlotTooltip(Lists.newArrayList(I18n.format("vehicle.tooltip.wheels"), TextFormatting.GRAY + I18n.format("vehicle.tooltip.not_applicable")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            //TODO not applicable should have GRAY text formatting
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 226, 29, mouseX, mouseY, 2);
         }
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         /* Fixes partial ticks to use percentage from 0 to 1 */
         partialTicks = this.minecraft.getRenderPartialTicks();
@@ -371,23 +380,23 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         RenderSystem.enableBlend();
 
         this.minecraft.getTextureManager().bindTexture(GUI);
-        this.blit(startX, startY + 80, 0, 134, 176, 122);
-        this.blit(startX + 180, startY, 176, 54, 6, 208);
-        this.blit(startX + 186, startY, 182, 54, 57, 208);
-        this.blit(startX + 186 + 57, startY, 220, 54, 23, 208);
-        this.blit(startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
-        this.blit(startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
+        this.blit(matrixStack, startX, startY + 80, 0, 134, 176, 122);
+        this.blit(matrixStack, startX + 180, startY, 176, 54, 6, 208);
+        this.blit(matrixStack, startX + 186, startY, 182, 54, 57, 208);
+        this.blit(matrixStack, startX + 186 + 57, startY, 220, 54, 23, 208);
+        this.blit(matrixStack, startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
+        this.blit(matrixStack, startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
 
         /* Slots */
-        this.drawSlot(startX, startY, 186, 29, 80, 0, 0, false, this.cachedVehicle[currentVehicle].canBeColored());
+        this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, this.cachedVehicle[currentVehicle].canBeColored());
         boolean needsEngine = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) this.cachedVehicle[currentVehicle]).getEngineType() != EngineType.NONE;
-        this.drawSlot(startX, startY, 206, 29, 80, 16, 1, !this.validEngine, needsEngine);
+        this.drawSlot(matrixStack, startX, startY, 206, 29, 80, 16, 1, !this.validEngine, needsEngine);
         boolean needsWheels = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) this.cachedVehicle[currentVehicle]).canChangeWheels();
-        this.drawSlot(startX, startY, 226, 29, 80, 32, 2, needsWheels && this.workstation.getStackInSlot(2).isEmpty(), needsWheels);
+        this.drawSlot(matrixStack, startX, startY, 226, 29, 80, 32, 2, needsWheels && this.workstation.getStackInSlot(2).isEmpty(), needsWheels);
 
         //this.checkBoxMaterials.draw(mc, guiLeft, guiTop); TODO I dont need this?
 
-        this.drawCenteredString(this.font, this.cachedVehicle[currentVehicle].getName().getFormattedText(), startX + 88, startY + 6, Color.WHITE.getRGB());
+        this.drawCenteredString(matrixStack, this.font, this.cachedVehicle[currentVehicle].getName().getString(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         this.filteredMaterials = this.getMaterials();
         for(int i = 0; i < this.filteredMaterials.size(); i++)
@@ -400,27 +409,27 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             if(stack.isEmpty())
             {
                 RenderHelper.disableStandardItemLighting();
-                this.blit(startX + 186, startY + i * 19 + 6 + 57, 0, 19, 80, 19);
+                this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 19, 80, 19);
             }
             else
             {
                 RenderHelper.disableStandardItemLighting();
                 if(materialItem.isEnabled())
                 {
-                    this.blit(startX + 186, startY + i * 19 + 6 + 57, 0, 0, 80, 19);
+                    this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 0, 80, 19);
                 }
                 else
                 {
-                    this.blit(startX + 186, startY + i * 19 + 6 + 57, 0, 38, 80, 19);
+                    this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 38, 80, 19);
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
                 String name = stack.getDisplayName().getUnformattedComponentText();
                 if(this.font.getStringWidth(name) > 55)
                 {
-                    name = this.font.trimStringToWidth(stack.getDisplayName().getUnformattedComponentText(), 50).trim() + "...";
+                    name = this.font.func_238412_a_(stack.getDisplayName().getUnformattedComponentText(), 50).trim() + "...";
                 }
-                this.font.drawString(name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
+                this.font.drawString(matrixStack, name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
 
                 Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
 
@@ -439,13 +448,12 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         RenderSystem.translatef(startX + 88, startY + 90, 1050.0F);
         RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
 
-        MatrixStack matrixStack = new MatrixStack();
         matrixStack.translate(0.0, 0.0, 1000.0);
 
         float scale = this.prevVehicleScale + (this.vehicleScale - this.prevVehicleScale) * partialTicks;
         matrixStack.scale(scale, scale, scale);
-        Quaternion quaternion = Axis.POSITIVE_X.func_229187_a_(-5F);
-        Quaternion quaternion1 = Axis.POSITIVE_Y.func_229187_a_(-(this.minecraft.player.ticksExisted + partialTicks));
+        Quaternion quaternion = Axis.POSITIVE_X.rotationDegrees(-5F);
+        Quaternion quaternion1 = Axis.POSITIVE_Y.rotationDegrees(-(this.minecraft.player.ticksExisted + partialTicks));
         quaternion.multiply(quaternion1);
         matrixStack.rotate(quaternion);
 
@@ -458,46 +466,47 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         }
 
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_((float) position.getRotX()));
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_((float) position.getRotY()));
-        matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_((float) position.getRotZ()));
+        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees((float) position.getRotX()));
+        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees((float) position.getRotY()));
+        matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees((float) position.getRotZ()));
         matrixStack.translate(position.getX(), position.getY(), position.getZ());
 
         EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
         renderManager.setRenderShadow(false);
-        renderManager.func_229089_a_(quaternion);
-        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().func_228019_au_().func_228487_b_();
-        renderManager.func_229084_a_(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
-        renderTypeBuffer.func_228461_a_();
+        renderManager.setCameraOrientation(quaternion);
+        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        renderManager.renderEntityStatic(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
+        renderTypeBuffer.finish();
         renderManager.setRenderShadow(true);
 
+        matrixStack.translate(0.0, 0.0, -1000.0);
         RenderSystem.popMatrix();
     }
 
-    private void drawSlot(int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required, boolean applicable)
+    private void drawSlot(MatrixStack matrixStack, int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required, boolean applicable)
     {
         int textureOffset = required ? 18 : 0;
-        this.blit(startX + x, startY + y, 128 + textureOffset, 0, 18, 18);
+        this.blit(matrixStack, startX + x, startY + y, 128 + textureOffset, 0, 18, 18);
         if(this.workstation.getStackInSlot(slot).isEmpty())
         {
             if(applicable)
             {
-                this.blit(startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), iconY, 16, 16);
+                this.blit(matrixStack, startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), iconY, 16, 16);
             }
             else
             {
-                this.blit(startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), 48, 16, 16);
+                this.blit(matrixStack, startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), 48, 16, 16);
             }
         }
     }
 
-    private void drawSlotTooltip(List<String> text, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
+    private void drawSlotTooltip(MatrixStack matrixStack, List<ITextProperties> text, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
     {
         if(this.workstation.getStackInSlot(slot).isEmpty())
         {
             if(CommonUtils.isMouseWithin(mouseX, mouseY, startX + x, startY + y, 18, 18))
             {
-                this.renderTooltip(text, mouseX, mouseY, this.minecraft.fontRenderer);
+                this.renderTooltip(matrixStack, text, mouseX, mouseY);
             }
         }
     }
@@ -514,9 +523,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8, 109, 4210752);
+        this.font.drawString(matrixStack, this.playerInventory.getDisplayName().getString(), 8, 109, 4210752);
     }
 
     public static class MaterialItem

@@ -8,7 +8,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -112,7 +112,7 @@ public class EntityJack extends Entity implements IEntityAdditionalSpawnData
         if(passenger instanceof VehicleEntity)
         {
             VehicleEntity vehicle = (VehicleEntity) passenger;
-            Vec3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
+            Vector3d heldOffset = vehicle.getProperties().getHeldOffset().rotateYaw(passenger.rotationYaw * 0.017453292F);
             vehicle.setPosition(this.getPosX() - heldOffset.z * 0.0625, this.getPosY() - heldOffset.y * 0.0625 - 2 * 0.0625, this.getPosZ() - heldOffset.x * 0.0625);
         }
     }

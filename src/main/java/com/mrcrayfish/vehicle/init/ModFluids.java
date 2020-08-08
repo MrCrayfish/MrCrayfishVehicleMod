@@ -15,7 +15,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModFluids
 {
-    public static final DeferredRegister<Fluid> FLUIDS = new DeferredRegister<>(ForgeRegistries.FLUIDS, Reference.MOD_ID);
+    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 
     public static final RegistryObject<Fluid> FUELIUM = FLUIDS.register("fuelium", Fuelium.Source::new);
     public static final RegistryObject<FlowingFluid> FLOWING_FUELIUM = FLUIDS.register("flowing_fuelium", Fuelium.Flowing::new);

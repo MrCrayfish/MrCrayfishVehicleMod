@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.util;
 
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
@@ -33,7 +33,7 @@ public class HermiteInterpolator
             double aX = angle(p1.pos.x, p2.pos.x, p1.control.x, p2.control.x, progress);
             double aY = angle(p1.pos.y, p2.pos.y, p1.control.y, p2.control.y, progress);
             double aZ = angle(p1.pos.z, p2.pos.z, p1.control.z, p2.control.z, progress);
-            return new Result(new Vec3d(pX, pY, pZ), new Vec3d(aX, aY, aZ));
+            return new Result(new Vector3d(pX, pY, pZ), new Vector3d(aX, aY, aZ));
         });
     }
 
@@ -70,16 +70,16 @@ public class HermiteInterpolator
 
     public static class Point
     {
-        private final Vec3d pos;
-        private final Vec3d control;
+        private final Vector3d pos;
+        private final Vector3d control;
 
-        public Point(Vec3d pos)
+        public Point(Vector3d pos)
         {
             this.pos = pos;
             this.control = pos;
         }
 
-        public Point(Vec3d pos, Vec3d control)
+        public Point(Vector3d pos, Vector3d control)
         {
             this.pos = pos;
             this.control = control;
@@ -88,21 +88,21 @@ public class HermiteInterpolator
 
     public static class Result
     {
-        Vec3d point;
-        Vec3d direction;
+        Vector3d point;
+        Vector3d direction;
 
-        public Result(Vec3d point, Vec3d direction)
+        public Result(Vector3d point, Vector3d direction)
         {
             this.point = point;
             this.direction = direction;
         }
 
-        public Vec3d getPoint()
+        public Vector3d getPoint()
         {
             return point;
         }
 
-        public Vec3d getDir()
+        public Vector3d getDir()
         {
             return direction;
         }

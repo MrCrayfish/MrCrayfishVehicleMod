@@ -20,8 +20,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -64,8 +66,7 @@ public class BlockFuelDrum extends BlockRotatedObject
     {
         if(Screen.hasShiftDown())
         {
-            String info = I18n.format("tile.vehicle.fuel_drum.info");
-            list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            list.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent("tile.vehicle.fuel_drum.info"), 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
         }
         else
         {

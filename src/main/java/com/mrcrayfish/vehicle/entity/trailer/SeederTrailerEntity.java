@@ -26,9 +26,10 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BlockNamedItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -77,13 +78,13 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
     {
         ItemStack heldItem = player.getHeldItem(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof SprayCanItem)) && player instanceof ServerPlayerEntity)
         {
             NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
-            return true;
+            return ActionResultType.SUCCESS;
         }
         return super.processInitialInteract(player, hand);
     }
@@ -104,13 +105,13 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     {
         super.onUpdateVehicle();
 
-        Vec3d lookVec = this.getLookVec();
+        Vector3d lookVec = this.getLookVec();
         this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(90F)).scale(0.85));
-        this.plantSeed(Vec3d.ZERO);
+        this.plantSeed(Vector3d.ZERO);
         this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(-90F)).scale(0.85));
     }
 
-    private void plantSeed(Vec3d vec)
+    private void plantSeed(Vector3d vec)
     {
         BlockPos pos = new BlockPos(prevPosX + vec.x, prevPosY + 0.25, prevPosZ + vec.z);
         if(world.isAirBlock(pos) && world.getBlockState(pos.down()).getBlock() instanceof FarmlandBlock)

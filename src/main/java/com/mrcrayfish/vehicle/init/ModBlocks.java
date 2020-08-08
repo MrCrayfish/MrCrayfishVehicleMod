@@ -21,7 +21,7 @@ import java.util.function.Function;
  */
 public class ModBlocks
 {
-    public static final DeferredRegister<Block> BLOCKS = new DeferredRegister<>(ForgeRegistries.BLOCKS, Reference.MOD_ID);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
     public static final RegistryObject<Block> TRAFFIC_CONE = register("traffic_cone", new BlockTrafficCone(), ItemTrafficCone::new);
     public static final RegistryObject<Block> FLUID_EXTRACTOR = register("fluid_extractor", new BlockFluidExtractor());

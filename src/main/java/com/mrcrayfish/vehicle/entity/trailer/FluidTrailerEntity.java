@@ -12,6 +12,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -67,13 +68,13 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
     {
         if(!world.isRemote && !player.isCrouching())
         {
             if(FluidUtil.interactWithFluidHandler(player, hand, tank))
             {
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
         return super.processInitialInteract(player, hand);

@@ -38,12 +38,12 @@ public class MovingSoundVehicleRiding extends TickableSound
         PlayerEntity player = this.playerRef.get();
         if(vehicle == null || player == null)
         {
-            this.donePlaying = true;
+            this.func_239509_o_();
             return;
         }
         if(!vehicle.isAlive() || !vehicle.equals(player.getRidingEntity()) || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
         {
-            this.donePlaying = true;
+            this.func_239509_o_();
             return;
         }
         this.volume = vehicle.getControllingPassenger() != null && vehicle.isEnginePowered() ? 1.0F : 0.0F;

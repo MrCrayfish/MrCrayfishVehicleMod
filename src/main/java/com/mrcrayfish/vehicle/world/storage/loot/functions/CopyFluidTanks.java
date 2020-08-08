@@ -2,17 +2,17 @@ package com.mrcrayfish.vehicle.world.storage.loot.functions;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.init.ModLootFunctions;
 import com.mrcrayfish.vehicle.tileentity.IFluidTankWriter;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootFunction;
+import net.minecraft.loot.LootFunctionType;
+import net.minecraft.loot.LootParameters;
+import net.minecraft.loot.conditions.ILootCondition;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootFunction;
-import net.minecraft.world.storage.loot.LootParameters;
-import net.minecraft.world.storage.loot.conditions.ILootCondition;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -75,13 +75,14 @@ public class CopyFluidTanks extends LootFunction
         return stack;
     }
 
+    @Override
+    public LootFunctionType func_230425_b_()
+    {
+        return ModLootFunctions.COPY_FLUID_TANKS;
+    }
+
     public static class Serializer extends LootFunction.Serializer<CopyFluidTanks>
     {
-        public Serializer()
-        {
-            super(new ResourceLocation(Reference.MOD_ID, "copy_fluid_tanks"), CopyFluidTanks.class);
-        }
-
         @Override
         public CopyFluidTanks deserialize(JsonObject object, JsonDeserializationContext deserializationContext, ILootCondition[] conditionsIn)
         {

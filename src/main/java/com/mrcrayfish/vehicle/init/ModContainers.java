@@ -23,7 +23,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModContainers
 {
-    public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = new DeferredRegister<>(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
+    public static final DeferredRegister<ContainerType<?>> CONTAINER_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, Reference.MOD_ID);
 
     public static final RegistryObject<ContainerType<FluidExtractorContainer>> FLUID_EXTRACTOR = register("fluid_extractor", (IContainerFactory<FluidExtractorContainer>) (windowId, playerInventory, data) -> {
         FluidExtractorTileEntity fluidExtractor = (FluidExtractorTileEntity) playerInventory.player.world.getTileEntity(data.readBlockPos());

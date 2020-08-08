@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;
@@ -12,6 +13,7 @@ import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -38,10 +40,10 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground(); //TODO do I need this?
-        super.render(mouseX, mouseY, partialTicks);
+        this.renderBackground(matrixStack); //TODO do I need this?
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
 
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
@@ -53,40 +55,39 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             {
                 if(stack.getAmount() > 0)
                 {
-                    this.renderTooltip(Arrays.asList(stack.getDisplayName().getFormattedText(), TextFormatting.GRAY.toString() + this.fluidExtractorTileEntity.getFluidLevel() + "/" + this.fluidExtractorTileEntity.getCapacity() + " mB"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Arrays.asList(new StringTextComponent(stack.getDisplayName().getString()), new StringTextComponent(TextFormatting.GRAY.toString() + this.fluidExtractorTileEntity.getFluidLevel() + "/" + this.fluidExtractorTileEntity.getCapacity() + " mB")), mouseX, mouseY);
                 }
                 else
                 {
-                    this.renderTooltip(Collections.singletonList("No Fluid"), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Collections.singletonList(new StringTextComponent("No Fluid")), mouseX, mouseY);
                 }
             }
         }
 
-        this.renderHoveredToolTip(mouseX, mouseY);
+        this.func_230459_a_(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY)
+    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        String s = this.fluidExtractorTileEntity.getDisplayName().getFormattedText();
-        this.minecraft.fontRenderer.drawString(s, 8, 6, 4210752);
-        this.minecraft.fontRenderer.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8, this.ySize - 96 + 2, 4210752);
+        this.minecraft.fontRenderer.drawString(matrixStack, this.fluidExtractorTileEntity.getDisplayName().getString(), 8, 6, 4210752);
+        this.minecraft.fontRenderer.drawString(matrixStack, this.playerInventory.getDisplayName().getString(), 8, this.ySize - 96 + 2, 4210752);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         int startX = (this.width - this.xSize) / 2;
         int startY = (this.height - this.ySize) / 2;
 
         this.minecraft.getTextureManager().bindTexture(GUI);
-        this.blit(startX, startY, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack, startX, startY, 0, 0, this.xSize, this.ySize);
 
         if(this.fluidExtractorTileEntity.getRemainingFuel() >= 0)
         {
             int remainingFuel = (int) (14 * (this.fluidExtractorTileEntity.getRemainingFuel() / (double) this.fluidExtractorTileEntity.getFuelMaxProgress()));
-            this.blit(startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
+            this.blit(matrixStack, startX + 64, startY + 53 + 14 - remainingFuel, 176, 14 - remainingFuel, 14, remainingFuel + 1);
         }
 
         if(this.fluidExtractorTileEntity.canExtract())
@@ -102,20 +103,20 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
                 fluidColor = (255 << 24) | FluidUtils.getAverageFluidColor(fluidExtract.getFluid());
             }
             RenderUtil.drawGradientRectHorizontal(left, top, right, bottom, -1, fluidColor);
-            this.blit(startX + 93, startY + 34, 176, 14, 23, 16);
+            this.blit(matrixStack, startX + 93, startY + 34, 176, 14, 23, 16);
             double extractionPercentage = this.fluidExtractorTileEntity.getExtractionProgress() / (double) Config.SERVER.extractorExtractTime.get();
             int extractionProgress = (int) (22 * extractionPercentage + 1);
-            this.blit(startX + 93 + extractionProgress, startY + 34, 93 + extractionProgress, 34, 23 - extractionProgress, 17);
+            this.blit(matrixStack, startX + 93 + extractionProgress, startY + 34, 93 + extractionProgress, 34, 23 - extractionProgress, 17);
         }
 
-        this.drawFluidTank(this.fluidExtractorTileEntity.getFluidStackTank(), startX + 127, startY + 14, this.fluidExtractorTileEntity.getFluidLevel() / (double) this.fluidExtractorTileEntity.getCapacity(), 59);
+        this.drawFluidTank(this.fluidExtractorTileEntity.getFluidStackTank(), matrixStack, startX + 127, startY + 14, this.fluidExtractorTileEntity.getFluidLevel() / (double) this.fluidExtractorTileEntity.getCapacity(), 59);
     }
 
-    private void drawFluidTank(FluidStack fluid, int x, int y, double level, int height)
+    private void drawFluidTank(FluidStack fluid, MatrixStack matrixStack, int x, int y, double level, int height)
     {
         FluidUtils.drawFluidTankInGUI(fluid, x, y, level, height);
         Minecraft.getInstance().getTextureManager().bindTexture(GUI);
-        this.blit(x, y, 176, 44, 16, 59);
+        this.blit(matrixStack, x, y, 176, 44, 16, 59);
     }
 
     private boolean isMouseWithinRegion(int x, int y, int width, int height, int mouseX, int mouseY)

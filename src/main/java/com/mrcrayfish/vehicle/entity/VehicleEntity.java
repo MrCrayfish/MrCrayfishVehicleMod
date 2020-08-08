@@ -29,6 +29,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.server.SAnimateHandPacket;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.IndirectEntityDamageSource;
@@ -39,7 +40,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -115,7 +116,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
     {
         if(!world.isRemote && !player.isCrouching())
         {
@@ -132,7 +133,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                         SyncedPlayerData.instance().set(player, ModDataKeys.TRAILER, -1);
                     }
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
 
             ItemStack heldItem = player.getHeldItem(hand);
@@ -160,7 +161,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                         }
                     }
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
             else if(heldItem.getItem() == ModItems.HAMMER.get() && this.getRidingEntity() instanceof EntityJack)
             {
@@ -185,7 +186,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                                 double width = this.getWidth() * 2;
                                 double height = this.getHeight() * 1.5;
 
-                                Vec3d heldOffset = this.getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
+                                Vector3d heldOffset = this.getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
                                 double x = this.getPosX() + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
                                 double y = this.getPosY() + height * rand.nextFloat();
                                 double z = this.getPosZ() + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
@@ -199,7 +200,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                         this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
                     }
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
             else if(this.canBeRidden(player))
             {
@@ -211,10 +212,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                         this.getSeatTracker().setSeatIndex(seatIndex, player.getUniqueID());
                     }
                 }
-                return true;
+                return ActionResultType.SUCCESS;
             }
         }
-        return true;
+        return ActionResultType.SUCCESS;
     }
 
     @Override
@@ -397,7 +398,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public boolean onLivingFall(float distance, float damageMultiplier)
     {
         if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getMotion().getY() < -1.0F)
         {
@@ -613,13 +614,13 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      * Gets the absolute position of a part in the world
      *
      * @param position the position definition of the part
-     * @return a Vec3d containing the exact location
+     * @return a Vector3d containing the exact location
      */
-    public Vec3d getPartPositionAbsoluteVec(PartPosition position, float partialTicks)
+    public Vector3d getPartPositionAbsoluteVec(PartPosition position, float partialTicks)
     {
         VehicleProperties properties = this.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        Vec3d partVec = Vec3d.ZERO;
+        Vector3d partVec = Vector3d.ZERO;
         partVec = partVec.add(0, 0.5, 0);
         partVec = partVec.scale(position.getScale());
         partVec = partVec.add(0, -0.5, 0);
@@ -751,7 +752,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
                     passenger.setPosition(this.getPosX() + seatVec.x, this.getPosY() + seatVec.y, this.getPosZ() + seatVec.z);
                     this.applyYawToEntity(passenger);
                 }

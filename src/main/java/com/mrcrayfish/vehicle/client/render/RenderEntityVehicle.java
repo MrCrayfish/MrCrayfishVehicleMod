@@ -5,11 +5,11 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -41,7 +41,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
 
         matrixStack.push();
         wrapper.applyPreRotations(entity, matrixStack, partialTicks);
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(-entityYaw));
         this.setupBreakAnimation(entity, matrixStack, partialTicks);
         wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
         matrixStack.pop();
@@ -54,7 +54,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         if(timeSinceHit > 0.0F)
         {
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(MathHelper.sin(timeSinceHit) * timeSinceHit));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(MathHelper.sin(timeSinceHit) * timeSinceHit));
         }
     }
 }

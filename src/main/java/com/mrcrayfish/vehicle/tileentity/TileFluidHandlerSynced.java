@@ -78,7 +78,7 @@ public class TileFluidHandlerSynced extends TileFluidHandler
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        this.read(pkt.getNbtCompound());
+        this.read(null, pkt.getNbtCompound());
     }
 
     public FluidTank getFluidTank()

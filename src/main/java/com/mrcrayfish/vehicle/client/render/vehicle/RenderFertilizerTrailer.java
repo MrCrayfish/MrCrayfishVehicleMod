@@ -8,10 +8,10 @@ import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -50,11 +50,11 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
                             matrixStack.translate(0, layer * 0.1 + j * 0.0625, 0);
                             matrixStack.translate((layerIndex % width) * 0.5, 0, (float) (layerIndex / width) * 0.75);
                             matrixStack.translate(0.5 * (layer % 2), 0, 0);
-                            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(90F));
-                            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(47F * index));
-                            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(2F * layerIndex));
+                            matrixStack.rotate(Vector3f.XP.rotationDegrees(90F));
+                            matrixStack.rotate(Vector3f.ZP.rotationDegrees(47F * index));
+                            matrixStack.rotate(Vector3f.XP.rotationDegrees(2F * layerIndex));
                             matrixStack.translate(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                            Minecraft.getInstance().getItemRenderer().func_229111_a_(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.DEFAULT_LIGHT, RenderUtil.getModel(stack));
+                            Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(stack));
                         }
                         matrixStack.pop();
                         index++;
@@ -72,11 +72,11 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
         matrixStack.push();
         {
             matrixStack.translate(0, -0.5, -0.4375);
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(90F));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(90F));
             float wheelRotation = entity.prevWheelRotation + (entity.wheelRotation - entity.prevWheelRotation) * partialTicks;
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-wheelRotation));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-wheelRotation));
             matrixStack.scale((float) 1.25, (float) 1.25, (float) 1.25);
-            RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         }
         matrixStack.pop();
     }

@@ -24,13 +24,13 @@ public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
         matrixStack.push();
 
         matrixStack.translate(0, 0.4, -0.15);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-45F));
         matrixStack.scale(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 

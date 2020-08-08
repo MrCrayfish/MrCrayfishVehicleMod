@@ -203,9 +203,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         if(compound.contains("Vehicle", Constants.NBT.TAG_STRING))
         {
             this.entityId = new ResourceLocation(compound.getString("Vehicle"));

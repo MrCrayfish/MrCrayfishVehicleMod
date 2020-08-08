@@ -9,7 +9,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.List;
@@ -67,9 +67,9 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
                 else
                 {
                     VehicleProperties properties = vehicle.getProperties();
-                    Vec3d vehicleVec = vehicle.getPositionVector();
-                    Vec3d towBarVec = properties.getTowBarPosition();
-                    towBarVec = new Vec3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + properties.getBodyPosition().getZ());
+                    Vector3d vehicleVec = vehicle.getPositionVec();
+                    Vector3d towBarVec = properties.getTowBarPosition();
+                    towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + properties.getBodyPosition().getZ());
                     if(vehicle instanceof LandVehicleEntity)
                     {
                         LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
@@ -87,8 +87,8 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
                         if(trailer.getPullingEntity() != null)
                             continue;
 
-                        Vec3d trailerVec = trailer.getPositionVector();
-                        Vec3d hitchVec = new Vec3d(0, 0, -trailer.getHitchOffset() / 16.0);
+                        Vector3d trailerVec = trailer.getPositionVec();
+                        Vector3d hitchVec = new Vector3d(0, 0, -trailer.getHitchOffset() / 16.0);
                         trailerVec = trailerVec.add(hitchVec.rotateYaw((float) Math.toRadians(-trailer.rotationYaw)));
                         AxisAlignedBB hitchBox = new AxisAlignedBB(trailerVec.x, trailerVec.y, trailerVec.z, trailerVec.x, trailerVec.y, trailerVec.z).grow(0.25);
                         if(towBarBox.intersects(hitchBox))

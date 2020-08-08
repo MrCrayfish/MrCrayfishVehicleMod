@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.client.util.HermiteInterpolator;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -134,9 +135,9 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         if(compound.contains("FuelingEntity", Constants.NBT.TAG_INT))
         {
             this.fuelingEntityId = compound.getInt("FuelingEntity");

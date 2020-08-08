@@ -10,6 +10,7 @@ import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -52,7 +53,7 @@ public class MessageAttachChest implements IMessage<MessageAttachChest>
                 Entity targetEntity = world.getEntityByID(message.entityId);
                 if(targetEntity instanceof IAttachableChest)
                 {
-                    float reachDistance = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+                    float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                     if(player.getDistance(targetEntity) < reachDistance)
                     {
                         IAttachableChest attachableChest = (IAttachableChest) targetEntity;

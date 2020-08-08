@@ -10,7 +10,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.UUID;
@@ -91,5 +91,5 @@ public interface Proxy
 
     default void syncPlayerSeat(int entityId, int seatIndex, UUID uuid) {}
 
-    default void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vec3d motion) {}
+    default void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vector3d motion) {}
 }

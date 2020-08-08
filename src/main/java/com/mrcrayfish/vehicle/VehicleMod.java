@@ -108,7 +108,6 @@ public class VehicleMod
         HeldVehicleDataHandler.register();
         VehicleProperties.register();
         ItemLookup.init();
-        ModLootFunctions.register();
         ModDataKeys.register();
     }
 

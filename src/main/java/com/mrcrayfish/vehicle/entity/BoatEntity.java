@@ -1,12 +1,12 @@
 package com.mrcrayfish.vehicle.entity;
 
 import net.minecraft.entity.EntityType;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -64,7 +64,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
             this.setMotion(this.getMotion().add(0, -0.08, 0));
             if(this.previousState == State.UNDER_WATER || this.previousState == State.IN_WATER)
             {
-                this.setMotion(new Vec3d(this.vehicleMotionX, this.getMotion().y, this.vehicleMotionZ));
+                this.setMotion(new Vector3d(this.vehicleMotionX, this.getMotion().y, this.vehicleMotionZ));
                 this.vehicleMotionX = 0;
                 this.vehicleMotionZ = 0;
             }
@@ -99,22 +99,20 @@ public abstract class BoatEntity extends PoweredVehicleEntity
         boolean inWater = false;
         this.waterLevel = Double.MIN_VALUE;
 
-        try(BlockPos.PooledMutable pooledMutable = BlockPos.PooledMutable.retain())
+        BlockPos.Mutable pooledMutable = new BlockPos.Mutable();
+        for(int x = minX; x < maxX; x++)
         {
-            for(int x = minX; x < maxX; x++)
+            for(int y = minY; y < maxY; y++)
             {
-                for(int y = minY; y < maxY; y++)
+                for(int z = minZ; z < maxZ; z++)
                 {
-                    for(int z = minZ; z < maxZ; z++)
+                    pooledMutable.setPos(x, y, z);
+                    FluidState fluidState = this.world.getFluidState(pooledMutable);
+                    if(fluidState.isTagged(FluidTags.WATER))
                     {
-                        pooledMutable.setPos(x, y, z);
-                        IFluidState fluidState = this.world.getFluidState(pooledMutable);
-                        if(fluidState.isTagged(FluidTags.WATER))
-                        {
-                            float waterLevel = (float) y + fluidState.getActualHeight(this.world, pooledMutable);
-                            this.waterLevel = Math.max((double) waterLevel, this.waterLevel);
-                            inWater |= boundingBox.minY < (double) waterLevel;
-                        }
+                        float waterLevel = (float) y + fluidState.getActualHeight(this.world, pooledMutable);
+                        this.waterLevel = Math.max((double) waterLevel, this.waterLevel);
+                        inWater |= boundingBox.minY < (double) waterLevel;
                     }
                 }
             }
@@ -136,24 +134,22 @@ public abstract class BoatEntity extends PoweredVehicleEntity
         int maxZ = MathHelper.ceil(axisalignedbb.maxZ);
         boolean underWater = false;
 
-        try(BlockPos.PooledMutable pooledMutable = BlockPos.PooledMutable.retain())
+        BlockPos.Mutable pooledMutable = new BlockPos.Mutable();
+        for(int x = minX; x < maxX; x++)
         {
-            for(int x = minX; x < maxX; x++)
+            for(int y = minY; y < maxY; y++)
             {
-                for(int y = minY; y < maxY; y++)
+                for(int z = minZ; z < maxZ; z++)
                 {
-                    for(int z = minZ; z < maxZ; z++)
+                    pooledMutable.setPos(x, y, z);
+                    FluidState fluidState = this.world.getFluidState(pooledMutable);
+                    if(fluidState.isTagged(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.getActualHeight(this.world, pooledMutable)))
                     {
-                        pooledMutable.setPos(x, y, z);
-                        IFluidState fluidState = this.world.getFluidState(pooledMutable);
-                        if(fluidState.isTagged(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.getActualHeight(this.world, pooledMutable)))
+                        if(!fluidState.isSource())
                         {
-                            if(!fluidState.isSource())
-                            {
-                                return State.UNDER_FLOWING_WATER;
-                            }
-                            underWater = true;
+                            return State.UNDER_FLOWING_WATER;
                         }
+                        underWater = true;
                     }
                 }
             }

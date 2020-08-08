@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -62,7 +62,7 @@ public class VehicleEntityTrailer extends TrailerEntity
     {
         if(passenger instanceof VehicleEntity)
         {
-            Vec3d offset = ((VehicleEntity) passenger).getProperties().getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
+            Vector3d offset = ((VehicleEntity) passenger).getProperties().getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
             passenger.setPosition(this.getPosX() + offset.x, this.getPosY() + getMountedYOffset() + offset.y, this.getPosZ() + offset.z);
             passenger.prevRotationYaw = this.prevRotationYaw;
             passenger.rotationYaw = this.rotationYaw;

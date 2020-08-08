@@ -13,14 +13,14 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -52,8 +52,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -73,12 +71,6 @@ public class BlockVehicleCrate extends BlockRotatedObject
     public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
     {
         return true;
-    }
-
-    @Override
-    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
-        return false;
     }
 
     @Override
@@ -123,7 +115,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
 
     private boolean isBelowBlockTopSolid(IWorldReader reader, BlockPos pos)
     {
-        return reader.getBlockState(pos.down()).func_224755_d(reader, pos.down(), Direction.UP);
+        return reader.getBlockState(pos.down()).isSolidSide(reader, pos.down(), Direction.UP);
     }
 
     @Override
@@ -153,7 +145,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
         {
             if(world.isRemote)
             {
-                this.spawnCrateOpeningParticles(world, pos, state);
+                this.spawnCrateOpeningParticles((ClientWorld) world, pos, state);
             }
             else
             {
@@ -163,7 +155,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @OnlyIn(Dist.CLIENT)
-    private void spawnCrateOpeningParticles(World world, BlockPos pos, BlockState state)
+    private void spawnCrateOpeningParticles(ClientWorld world, BlockPos pos, BlockState state)
     {
         double y = 0.875;
         double x, z;
@@ -218,7 +210,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
             }
         }
 
-        if(Screen.hasShiftDown())
+        /*if(Screen.hasShiftDown())
         {
             String info = I18n.format(this.getTranslationKey() + ".info", vehicle);
             list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
@@ -226,7 +218,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
         else
         {
             list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
-        }
+        }*/
     }
 
     //TODO turn this into a builder
@@ -267,7 +259,7 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, IFluidState fluid)
+    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid)
     {
         if(!world.isRemote && !player.isCreative())
         {

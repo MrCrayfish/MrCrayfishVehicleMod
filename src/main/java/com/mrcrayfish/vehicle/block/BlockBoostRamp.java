@@ -20,10 +20,12 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -74,8 +76,8 @@ public class BlockBoostRamp extends BlockRotatedObject
     {
         if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getTranslationKey() + ".info");
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            ITextProperties info = new TranslationTextComponent(this.getTranslationKey() + ".info");
+            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(info, 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
         }
         else
         {
@@ -107,8 +109,8 @@ public class BlockBoostRamp extends BlockRotatedObject
                 poweredVehicle.setLaunching(2);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = speedMultiplier;
-                Vec3d motion = poweredVehicle.getMotion();
-                poweredVehicle.setMotion(new Vec3d(motion.x, (poweredVehicle.currentSpeed * 0.5) / 20F + 0.1, motion.z));
+                Vector3d motion = poweredVehicle.getMotion();
+                poweredVehicle.setMotion(new Vector3d(motion.x, (poweredVehicle.currentSpeed * 0.5) / 20F + 0.1, motion.z));
             }
         }
     }

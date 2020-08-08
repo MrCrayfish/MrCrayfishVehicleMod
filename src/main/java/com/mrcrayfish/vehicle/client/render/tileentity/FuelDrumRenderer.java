@@ -53,7 +53,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
 
         RenderSystem.pushMatrix();
         RenderSystem.enableDepthTest();
-        RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
+        RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
         RenderSystem.translated(0.5, 1.25, 0.5);
         RenderSystem.rotatef(-Minecraft.getInstance().player.rotationYaw, 0.0F, 1.0F, 0.0F);
         RenderSystem.rotatef(Minecraft.getInstance().player.rotationPitch, 1.0F, 0.0F, 0.0F);
@@ -67,7 +67,7 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
         double offsetWidth = width / 2.0;
 
         FluidStack stack = tank.getFluid();
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(tank.getFluid().getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
             float minU = sprite.getMinU();
@@ -116,9 +116,9 @@ public class FuelDrumRenderer extends TileEntityRenderer<FuelDrumTileEntity>
         RenderSystem.enableTexture();
 
         RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-        String name = stack.getDisplayName().getFormattedText();
+        String name = stack.getDisplayName().getString();
         int nameWidth = fontRendererIn.getStringWidth(name) / 2;
-        fontRendererIn.drawString(name, -nameWidth, -14, -1);
+        fontRendererIn.drawString(matrixStack, name, -nameWidth, -14, -1);
 
         RenderSystem.enableLighting();
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);

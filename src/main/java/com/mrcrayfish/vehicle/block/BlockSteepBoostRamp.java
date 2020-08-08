@@ -22,10 +22,12 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -71,15 +73,14 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        if(Screen.hasShiftDown())
+        /*if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getTranslationKey() + ".info");
-            list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            list.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150).stream().map((Function<ITextProperties, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
         }
         else
         {
             list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
-        }
+        }*/
     }
 
     @Override
@@ -106,8 +107,8 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
                 poweredVehicle.setLaunching(3);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = speedMultiplier;
-                Vec3d motion = poweredVehicle.getMotion();
-                poweredVehicle.setMotion(new Vec3d(motion.x, poweredVehicle.currentSpeed / 20F + 0.1, motion.z));
+                Vector3d motion = poweredVehicle.getMotion();
+                poweredVehicle.setMotion(new Vector3d(motion.x, poweredVehicle.currentSpeed / 20F + 0.1, motion.z));
             }
         }
     }

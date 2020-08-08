@@ -339,9 +339,9 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         if(compound.contains("Items", Constants.NBT.TAG_LIST))
         {
             this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);

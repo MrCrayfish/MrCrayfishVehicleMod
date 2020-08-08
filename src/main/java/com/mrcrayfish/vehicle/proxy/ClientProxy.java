@@ -56,19 +56,19 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.IFutureReloadListener;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -141,15 +141,15 @@ public class ClientProxy implements Proxy
 
     private void setupRenderLayers()
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.cutout());
-        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.translucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.getCutout());
+        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.getTranslucent());
     }
 
     private void registerEntityRenders()
@@ -618,7 +618,7 @@ public class ClientProxy implements Proxy
         if(entity instanceof IStorage)
         {
             IStorage wrapper = (IStorage) entity;
-            wrapper.getInventory().read(compound);
+            wrapper.getInventory().read(compound.getList("Inventory", Constants.NBT.TAG_COMPOUND));
         }
     }
 
@@ -968,10 +968,10 @@ public class ClientProxy implements Proxy
     }
 
     @Override
-    public void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vec3d motion)
+    public void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vector3d motion)
     {
         Minecraft mc = Minecraft.getInstance();
-        World world = mc.world;
+        ClientWorld world = mc.world;
         if(world != null)
         {
             DiggingParticle particle = new DiggingParticle(world, x, y, z, motion.x, motion.y, motion.z, state);

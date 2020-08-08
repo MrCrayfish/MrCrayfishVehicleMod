@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 /**
@@ -59,9 +59,9 @@ public class MiniBikeEntity extends MotorcycleEntity
     }
 
     @Override
-    public Vec3d getEngineSmokePosition()
+    public Vector3d getEngineSmokePosition()
     {
-        return new Vec3d(0, 0.55, 0);
+        return new Vector3d(0, 0.55, 0);
     }
 
     @Override

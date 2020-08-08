@@ -26,7 +26,7 @@ import java.util.function.BiFunction;
  */
 public class ModEntities
 {
-    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = new DeferredRegister<>(ForgeRegistries.ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<EntityType<ATVEntity>> ATV = registerVehicle("atv", ATVEntity::new, 1.5F, 1.0F);
     public static final RegistryObject<EntityType<DuneBuggyEntity>> DUNE_BUGGY = registerVehicle("dune_buggy", DuneBuggyEntity::new, 0.75F, 0.75F);

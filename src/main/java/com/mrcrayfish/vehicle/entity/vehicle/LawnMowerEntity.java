@@ -17,7 +17,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
@@ -43,7 +43,7 @@ public class LawnMowerEntity extends LandVehicleEntity
         if(!world.isRemote && this.getControllingPassenger() != null)
         {
             AxisAlignedBB axisAligned = this.getBoundingBox().grow(0.25);
-            Vec3d lookVec = this.getLookVec().scale(0.5);
+            Vector3d lookVec = this.getLookVec().scale(0.5);
             int minX = MathHelper.floor(axisAligned.minX + lookVec.x);
             int maxX = MathHelper.ceil(axisAligned.maxX + lookVec.x);
             int minZ = MathHelper.floor(axisAligned.minZ + lookVec.z);

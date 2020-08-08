@@ -102,7 +102,7 @@ public class RenderUtil
         matrixStack.translate(-0.5, -0.5, -0.5);
         if(!model.isBuiltInRenderer())
         {
-            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.func_228783_h_());
+            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.getCutoutBlockType());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
         matrixStack.pop();
@@ -116,7 +116,8 @@ public class RenderUtil
         if(!model.isBuiltInRenderer())
         {
             Minecraft mc = Minecraft.getInstance();
-            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.func_228019_au_().func_228489_c_().getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(stage)), matrixStack.getLast());
+            MatrixStack.Entry entry = matrixStack.getLast();
+            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.getRenderTypeBuffers().getCrumblingBufferSource().getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(stage)), entry.getMatrix(), entry.getNormal());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
         matrixStack.pop();
@@ -138,17 +139,17 @@ public class RenderUtil
             matrixStack.translate(-0.5, -0.5, -0.5);
             if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
             {
-                RenderType renderType = RenderTypeLookup.func_228389_a_(stack);
-                if(isGui && Objects.equals(renderType, Atlases.func_228784_i_()))
+                RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false); //TODO test what this flag does
+                if(isGui && Objects.equals(renderType, Atlases.getTranslucentCullBlockType()))
                 {
-                    renderType = Atlases.func_228785_j_();
+                    renderType = Atlases.getTranslucentCullBlockType();
                 }
-                IVertexBuilder vertexBuilder = ItemRenderer.func_229113_a_(renderTypeBuffer, renderType, true, stack.hasEffect());
+                IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(renderTypeBuffer, renderType, true, stack.hasEffect());
                 renderModel(model, stack, -1, lightTexture, overlayTexture, matrixStack, vertexBuilder);
             }
             else
             {
-                stack.getItem().getItemStackTileEntityRenderer().render(stack, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
+                stack.getItem().getItemStackTileEntityRenderer().func_239207_a_(stack, transformType, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
             }
 
             matrixStack.pop();
@@ -188,7 +189,7 @@ public class RenderUtil
             float red = (float) (tintColor >> 16 & 255) / 255.0F;
             float green = (float) (tintColor >> 8 & 255) / 255.0F;
             float blue = (float) (tintColor & 255) / 255.0F;
-            vertexBuilder.addVertexData(entry, quad, red, green, blue, lightTexture, overlayTexture);
+            vertexBuilder.addVertexData(entry, quad, red, green, blue, lightTexture, overlayTexture, true);
         }
     }
 

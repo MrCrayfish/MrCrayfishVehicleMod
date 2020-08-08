@@ -11,7 +11,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.JetSkiEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Author: MrCrayfish
@@ -28,12 +28,12 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         matrixStack.push();
 
         matrixStack.translate(0, 0.355, 0.225);
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-45F));
+        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-45F));
 
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(turnRotation));
+        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModels.ATV_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
@@ -75,7 +75,7 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = -seatVec.x * scale;
             double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
@@ -84,8 +84,8 @@ public class RenderJetSki extends AbstractRenderVehicle<JetSkiEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(turnAngleNormal * currentSpeedNormal * 15F));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-8F * Math.min(1.0F, currentSpeedNormal)));
+            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
+            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }

@@ -32,8 +32,9 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -234,9 +235,9 @@ public class CommonEvents
             {
                 if(HeldVehicleDataHandler.isHoldingVehicle(player))
                 {
-                    //Vec3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
+                    //Vector3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
                     RayTraceResult result = player.pick(10.0, 0.0F, false);
-                    Vec3d clickedVec = result.getHitVec();
+                    Vector3d clickedVec = result.getHitVec();
                     if(clickedVec == null || event.getFace() != Direction.UP)
                     {
                         event.setCanceled(true);
@@ -260,7 +261,7 @@ public class CommonEvents
 
                                     //Sets the positions and spawns the entity
                                     float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                                    Vec3d heldOffset = ((VehicleEntity) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                                    Vector3d heldOffset = ((VehicleEntity) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
                                     entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
                                     entity.fallDistance = 0.0F;
@@ -295,7 +296,7 @@ public class CommonEvents
             if(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.RightClickItem)
             {
                 PlayerEntity player = event.getPlayer();
-                float reach = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+                float reach = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                 reach = player.isCreative() ? reach : reach - 0.5F;
                 RayTraceResult result = player.pick(reach, 0.0F, false);
                 if(result.getType() == RayTraceResult.Type.BLOCK)
@@ -349,7 +350,7 @@ public class CommonEvents
                 {
                     vehicle.read(tagCompound);
                     float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                    Vec3d heldOffset = ((VehicleEntity) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                    Vector3d heldOffset = ((VehicleEntity) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
                     vehicle.setPositionAndRotation(player.getPosX() + heldOffset.x * 0.0625D, player.getPosY() + player.getEyeHeight() + heldOffset.y * 0.0625D, player.getPosZ() + heldOffset.z * 0.0625D, rotation, 0F);
                     player.world.addEntity(vehicle);
                 }

@@ -14,14 +14,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -43,22 +43,22 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_((float) bodyPosition.getRotZ()));
+        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
         float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(additionalYaw));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(additionalYaw));
 
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 
         if(entity.canTowTrailer())
         {
             matrixStack.push();
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
-            Vec3d towBarOffset = properties.getTowBarPosition();
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+            Vector3d towBarOffset = properties.getTowBarPosition();
             matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
-            RenderUtil.renderColoredModel(this.renderVehicle.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+            RenderUtil.renderColoredModel(this.renderVehicle.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.pop();
         }
 
@@ -78,7 +78,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
             matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
             float wheelieProgress = MathHelper.lerp(partialTicks, entity.prevWheelieCount, entity.wheelieCount) / 4F;
             wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-30F * wheelieProgress));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
             matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
             matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.5, 0.0);
@@ -110,7 +110,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
             EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == entity && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
                 if(renderVehicle.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -119,17 +119,17 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
             }
             else
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
                 entity.playFuelPortCloseSound();
             }
         }
 
         if(entity.isKeyNeeded())
         {
-            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.DEFAULT_LIGHT);
+            this.renderPart(properties.getKeyPortPosition(), renderVehicle.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
             if(!entity.getKeyStack().isEmpty())
             {
-                this.renderKey(properties.getKeyPosition(), entity.getKeyStack(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                this.renderKey(properties.getKeyPosition(), entity.getKeyStack(), RenderUtil.getModel(entity.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             }
         }
 
@@ -152,7 +152,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
 
                     matrixStack.push();
                     {
-                        Vec3d frontAxelVec = properties.getFrontAxelVec();
+                        Vector3d frontAxelVec = properties.getFrontAxelVec();
                         frontAxelVec = frontAxelVec.scale(0.0625);
                         matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFFFFF);
@@ -161,9 +161,9 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
 
                     matrixStack.push();
                     {
-                        Vec3d frontAxelVec = properties.getFrontAxelVec();
+                        Vector3d frontAxelVec = properties.getFrontAxelVec();
                         frontAxelVec = frontAxelVec.scale(0.0625);
-                        Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
                         frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
                         matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFDD00);
@@ -172,7 +172,7 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
 
                     matrixStack.push();
                     {
-                        Vec3d rearAxelVec = properties.getRearAxelVec();
+                        Vector3d rearAxelVec = properties.getRearAxelVec();
                         rearAxelVec = rearAxelVec.scale(0.0625);
                         matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFFFFF);
@@ -181,18 +181,18 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
 
                     matrixStack.push();
                     {
-                        Vec3d frontAxelVec = properties.getFrontAxelVec();
+                        Vector3d frontAxelVec = properties.getFrontAxelVec();
                         frontAxelVec = frontAxelVec.scale(0.0625);
-                        Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.renderWheelAngle * 0.017453292F);
                         frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
-                        Vec3d rearAxelVec = properties.getRearAxelVec();
+                        Vector3d rearAxelVec = properties.getRearAxelVec();
                         rearAxelVec = rearAxelVec.scale(0.0625);
                         double deltaYaw = Math.toDegrees(Math.atan2(rearAxelVec.z - frontAxelVec.z, rearAxelVec.x - frontAxelVec.x)) + 90;
                         if(entity.isRearWheelSteering())
                         {
                             deltaYaw += 180;
                         }
-                        rearAxelVec = rearAxelVec.add(Vec3d.fromPitchYaw(0, (float) deltaYaw).scale(entity.getSpeed() / 20F));
+                        rearAxelVec = rearAxelVec.add(Vector3d.fromPitchYaw(0, (float) deltaYaw).scale(entity.getSpeed() / 20F));
                         matrixStack.translate(rearAxelVec.x, 0, rearAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFDD00);
                     }
@@ -200,11 +200,11 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
 
                     matrixStack.push();
                     {
-                        Vec3d nextFrontAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.wheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, entity.getSpeed() / 20F).rotateYaw(entity.wheelAngle * 0.017453292F);
                         nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
-                        Vec3d nextRearAxelVec = new Vec3d(0, 0, entity.getSpeed() / 20F);
+                        Vector3d nextRearAxelVec = new Vector3d(0, 0, entity.getSpeed() / 20F);
                         nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
-                        Vec3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5);
+                        Vector3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5);
                         nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
                         matrixStack.push();
                         {
@@ -236,8 +236,8 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuffer();
         buffer.begin(GL11.GL_LINES, DefaultVertexFormats.POSITION_COLOR);
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 0, 0).color(red, green, blue, 1.0F).endVertex();
-        buffer.pos(stack.getLast().getPositionMatrix(), 0, 2, 0).color(red, green, blue, 1.0F).endVertex();
+        buffer.pos(stack.getLast().getMatrix(), 0, 0, 0).color(red, green, blue, 1.0F).endVertex();
+        buffer.pos(stack.getLast().getMatrix(), 0, 2, 0).color(red, green, blue, 1.0F).endVertex();
         tessellator.draw();
         RenderSystem.disableDepthTest();
         RenderSystem.enableTexture();
@@ -253,19 +253,19 @@ public class RenderLandVehicleWrapper<T extends LandVehicleEntity & EntityRayTra
         if(wheel.getPosition() == Wheel.Position.FRONT)
         {
             float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(wheelAngle));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(wheelAngle));
         }
         if(vehicle.isMoving())
         {
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(-wheel.getWheelRotation(vehicle, partialTicks)));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(-wheel.getWheelRotation(vehicle, partialTicks)));
         }
         matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().offset, 0.0, 0.0);
         matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
         if(wheel.getSide() == Wheel.Side.RIGHT)
         {
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(180F));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
         }
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getWheelColor(), light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, vehicle.getWheelColor(), light, OverlayTexture.NO_OVERLAY);
         matrixStack.pop();
     }
 }

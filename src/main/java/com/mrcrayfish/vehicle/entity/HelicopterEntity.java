@@ -12,7 +12,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 /**
@@ -99,7 +99,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         this.vehicleMotionX = (-this.currentSpeed * this.dirX);
         this.vehicleMotionZ = (this.currentSpeed * this.dirZ);
 
-        Vec3d motion = this.getMotion();
+        Vector3d motion = this.getMotion();
         double motionY = motion.getY();
         this.updateLift();
         if(this.isFueled())
@@ -262,7 +262,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
      * Overridden to prevent players from taking fall damage when landing a plane
      */
     @Override
-    public boolean func_225503_b_(float distance, float damageMultiplier)
+    public boolean onLivingFall(float distance, float damageMultiplier)
     {
         return false;
     }

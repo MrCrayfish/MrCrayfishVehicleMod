@@ -15,10 +15,7 @@ import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector3f;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
@@ -35,7 +32,10 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent;
@@ -404,7 +404,7 @@ public class EntityRayTracer
         {
             /* Creates a new matrix for each part */
             Matrix4f matrix = new Matrix4f();
-            matrix.identity();
+            matrix.setIdentity();
             for (MatrixTransformation transform : entryPart.getValue())
             {
                 transform.transform(matrix);
@@ -550,7 +550,7 @@ public class EntityRayTracer
         for (int i = 0; i < 9; i += 3)
         {
             Vector4f vec = new Vector4f(triangle[i], triangle[i + 1], triangle[i + 2], 1);
-            vec.func_229372_a_(matrix);
+            vec.transform(matrix);
             triangleNew[i] = vec.getX();
             triangleNew[i + 1] = vec.getY();
             triangleNew[i + 2] = vec.getZ();
@@ -630,7 +630,7 @@ public class EntityRayTracer
             switch(type)
             {
                 case ROTATION:
-                    matrixStack.rotate(new Vector3f(this.x, this.y, this.z).func_229187_a_(this.angle));
+                    matrixStack.rotate(new Vector3f(this.x, this.y, this.z).rotationDegrees(this.angle));
                     break;
                 case TRANSLATION:
                     matrixStack.translate(this.x, this.y, this.z);
@@ -639,7 +639,7 @@ public class EntityRayTracer
                     matrixStack.scale(this.x, this.y, this.z);
                     break;
             }
-            matrix.multiply(matrixStack.getLast().getPositionMatrix());
+            matrix.mul(matrixStack.getLast().getMatrix());
         }
     }
 
@@ -774,8 +774,8 @@ public class EntityRayTracer
     private <T extends VehicleEntity> RayTraceResultRotated rayTraceEntities(boolean rightClick)
     {
         float reach = Minecraft.getInstance().playerController.getBlockReachDistance();
-        Vec3d eyeVec = Minecraft.getInstance().player.getEyePosition(1.0F);
-        Vec3d forwardVec = eyeVec.add(Minecraft.getInstance().player.getLook(1.0F).scale(reach));
+        Vector3d eyeVec = Minecraft.getInstance().player.getEyePosition(1.0F);
+        Vector3d forwardVec = eyeVec.add(Minecraft.getInstance().player.getLook(1.0F).scale(reach));
         AxisAlignedBB box = new AxisAlignedBB(eyeVec, eyeVec).grow(reach);
         RayTraceResultRotated closestRayTraceResult = null;
         double closestDistance = Double.MAX_VALUE;
@@ -828,7 +828,7 @@ public class EntityRayTracer
                     bypass = boxMC != null && boxMC.contains(eyeVec);
                 }
 
-                Vec3d hit = forwardVec;
+                Vector3d hit = forwardVec;
                 if(!bypass && result != null && result.getType() != Type.MISS)
                 {
                     /* Set hit to what MC thinks the player is looking at if the player is not
@@ -911,17 +911,17 @@ public class EntityRayTracer
      * @return the result of the raytrace
      */
     @Nullable
-    public RayTraceResultRotated rayTraceEntityRotated(VehicleEntity entity, Vec3d eyeVec, Vec3d forwardVec, double reach, boolean rightClick)
+    public RayTraceResultRotated rayTraceEntityRotated(VehicleEntity entity, Vector3d eyeVec, Vector3d forwardVec, double reach, boolean rightClick)
     {
-        Vec3d pos = entity.getPositionVector();
+        Vector3d pos = entity.getPositionVec();
         double angle = Math.toRadians(-entity.rotationYaw);
 
         // Rotate the ray trace vectors in the opposite direction as the entity's rotation yaw
-        Vec3d eyeVecRotated = rotateVecXZ(eyeVec, angle, pos);
-        Vec3d forwardVecRotated = rotateVecXZ(forwardVec, angle, pos);
+        Vector3d eyeVecRotated = rotateVecXZ(eyeVec, angle, pos);
+        Vector3d forwardVecRotated = rotateVecXZ(forwardVec, angle, pos);
 
         float[] eyes = new float[]{(float) eyeVecRotated.x, (float) eyeVecRotated.y, (float) eyeVecRotated.z};
-        Vec3d look = forwardVecRotated.subtract(eyeVecRotated).normalize().scale(reach);
+        Vector3d look = forwardVecRotated.subtract(eyeVecRotated).normalize().scale(reach);
         float[] direction = new float[]{(float) look.x, (float) look.y, (float) look.z};
 
         // Perform ray trace on the entity's interaction boxes
@@ -971,7 +971,7 @@ public class EntityRayTracer
      * 
      * @return the result of the part raytrace
      */
-    private static RayTraceResultTriangle rayTracePartTriangles(Entity entity, Vec3d pos, Vec3d eyeVecRotated, RayTraceResultTriangle lookPart, double distanceShortest, float[] eyes, float[] direction, @Nullable List<RayTracePart> partsApplicable, boolean invalidateParts, Map<RayTracePart, TriangleRayTraceList> parts)
+    private static RayTraceResultTriangle rayTracePartTriangles(Entity entity, Vector3d pos, Vector3d eyeVecRotated, RayTraceResultTriangle lookPart, double distanceShortest, float[] eyes, float[] direction, @Nullable List<RayTracePart> partsApplicable, boolean invalidateParts, Map<RayTracePart, TriangleRayTraceList> parts)
     {
         if(parts != null)
         {
@@ -1010,11 +1010,11 @@ public class EntityRayTracer
      * 
      * @return the passed vector rotated by 'angle' around 'rotationPoint'
      */
-    private static Vec3d rotateVecXZ(Vec3d vec, double angle, Vec3d rotationPoint)
+    private static Vector3d rotateVecXZ(Vector3d vec, double angle, Vector3d rotationPoint)
     {
         double x = rotationPoint.x + Math.cos(angle) * (vec.x - rotationPoint.x) - Math.sin(angle) * (vec.z - rotationPoint.z);
         double z = rotationPoint.z + Math.sin(angle) * (vec.x - rotationPoint.x) + Math.cos(angle) * (vec.z - rotationPoint.z);
-        return new Vec3d(x, vec.y, z);
+        return new Vector3d(x, vec.y, z);
     }
 
     /**
@@ -1035,10 +1035,10 @@ public class EntityRayTracer
         if(Config.CLIENT.renderOutlines.get())
         {
             matrixStack.push();
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-yaw));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(-yaw));
 
             RenderSystem.pushMatrix();
-            RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
+            RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
             RenderSystem.lineWidth(Math.max(2.0F, (float)Minecraft.getInstance().getMainWindow().getFramebufferWidth() / 1920.0F * 2.0F));
             RenderSystem.disableTexture();
             RenderSystem.disableLighting();
@@ -1263,9 +1263,9 @@ public class EntityRayTracer
             this.z = z;
         }
 
-        public Vec3d getHit()
+        public Vector3d getHit()
         {
-            return new Vec3d(x, y, z);
+            return new Vector3d(x, y, z);
         }
 
         public RayTracePart getPart()
@@ -1273,7 +1273,7 @@ public class EntityRayTracer
             return part;
         }
 
-        public double calculateAndSaveDistance(Vec3d eyeVec)
+        public double calculateAndSaveDistance(Vector3d eyeVec)
         {
             distance = eyeVec.distanceTo(getHit());
             return distance;
@@ -1295,7 +1295,7 @@ public class EntityRayTracer
          * 
          * @return new instance of this class, if the ray intersect the triangle - null if the ray does not
          */
-        public static RayTraceResultTriangle calculateIntercept(float[] eyes, float[] direction, Vec3d posEntity, float[] data, RayTracePart part)
+        public static RayTraceResultTriangle calculateIntercept(float[] eyes, float[] direction, Vector3d posEntity, float[] data, RayTracePart part)
         {
             float[] vec0 = {data[0] + (float) posEntity.x, data[1] + (float) posEntity.y, data[2] + (float) posEntity.z};
             float[] vec1 = {data[3] + (float) posEntity.x, data[4] + (float) posEntity.y, data[5] + (float) posEntity.z};
@@ -1419,7 +1419,7 @@ public class EntityRayTracer
         private final double distanceToEyes;
         private final boolean rightClick;
 
-        private RayTraceResultRotated(Entity entityHit, Vec3d hitVec, double distanceToEyes, RayTracePart partHit, boolean rightClick)
+        private RayTraceResultRotated(Entity entityHit, Vector3d hitVec, double distanceToEyes, RayTracePart partHit, boolean rightClick)
         {
             super(entityHit, hitVec);
             this.distanceToEyes = distanceToEyes;

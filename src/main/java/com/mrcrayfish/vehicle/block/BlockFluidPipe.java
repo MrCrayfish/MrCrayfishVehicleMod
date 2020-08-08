@@ -28,12 +28,14 @@ import net.minecraft.util.Util;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
@@ -61,7 +63,7 @@ public class BlockFluidPipe extends BlockObject
         BooleanProperty[] directions = new BooleanProperty[Direction.values().length];
         for(Direction facing : Direction.values())
         {
-            directions[facing.getIndex()] = BooleanProperty.create("pipe_" + facing.getName());
+            directions[facing.getIndex()] = BooleanProperty.create("pipe_" + facing.getName2());
         }
         return directions;
     });
@@ -91,8 +93,8 @@ public class BlockFluidPipe extends BlockObject
     {
         if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getTranslationKey() + ".info");
-            list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            ITextProperties info = new TranslationTextComponent(this.getTranslationKey() + ".info");
+            list.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(info, 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
         }
         else
         {
@@ -159,7 +161,7 @@ public class BlockFluidPipe extends BlockObject
     }
 
     @Nullable
-    protected Pair<AxisAlignedBB, Direction> getBox(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, Vec3d hitVec, @Nullable FluidPipeTileEntity pipe)
+    protected Pair<AxisAlignedBB, Direction> getBox(World world, BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Direction facing, Vector3d hitVec, @Nullable FluidPipeTileEntity pipe)
     {
         hitVec = hitVec.add(-pos.getX(), -pos.getY(), -pos.getZ());
         if(pipe == null || !(player.getHeldItem(hand).getItem() instanceof WrenchItem))

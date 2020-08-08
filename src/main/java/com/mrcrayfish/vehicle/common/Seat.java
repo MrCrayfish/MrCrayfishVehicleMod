@@ -1,34 +1,34 @@
 package com.mrcrayfish.vehicle.common;
 
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Author: MrCrayfish
  */
 public class Seat
 {
-    private Vec3d position;
+    private Vector3d position;
     private boolean driver;
     private float yawOffset;
 
-    public Seat(Vec3d position)
+    public Seat(Vector3d position)
     {
         this(position, false);
     }
 
-    public Seat(Vec3d position, float yawOffset)
+    public Seat(Vector3d position, float yawOffset)
     {
         this(position, false);
         this.yawOffset = yawOffset;
     }
 
-    public Seat(Vec3d position, boolean driver)
+    public Seat(Vector3d position, boolean driver)
     {
         this.position = position;
         this.driver = driver;
     }
 
-    public Vec3d getPosition()
+    public Vector3d getPosition()
     {
         return position;
     }

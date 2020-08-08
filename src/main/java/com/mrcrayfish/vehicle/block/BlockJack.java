@@ -27,12 +27,6 @@ public class BlockJack extends BlockObject
     }
 
     @Override
-    public boolean isNormalCube(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
-        return false;
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
         TileEntity tileEntity = worldIn.getTileEntity(pos);

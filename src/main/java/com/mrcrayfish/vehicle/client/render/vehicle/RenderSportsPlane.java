@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 
 /**
  * Author: MrCrayfish
@@ -33,7 +33,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.translate(0, -3 * 0.0625, 8 * 0.0625);
             matrixStack.translate(8 * 0.0625, 0, 0);
             matrixStack.translate(6 * 0.0625, 0, 0);
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-5F));
+            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-5F));
             this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
@@ -41,10 +41,10 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
         matrixStack.push();
         {
             matrixStack.translate(0, -3 * 0.0625, 8 * 0.0625);
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(180F));
+            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(180F));
             matrixStack.translate(8 * 0.0625, 0.0625, 0);
             matrixStack.translate(6 * 0.0625, 0, 0);
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(5F));
+            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(5F));
             this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
@@ -63,7 +63,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
         {
             float propellerRotation = entity.prevPropellerRotation + (entity.propellerRotation - entity.prevPropellerRotation) * partialTicks;
             matrixStack.translate(0, -1.5 * 0.0625, 22.2 * 0.0625);
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(propellerRotation));
+            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(propellerRotation));
             this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
@@ -84,16 +84,16 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
                     if(vehicle.isMoving())
                     {
                         float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
-                        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
+                        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
                     }
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 }
                 matrixStack.pop();
             }
             matrixStack.pop();
 
-            matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(legRotation));
+            matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(legRotation));
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.pop();
@@ -116,7 +116,7 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = seatVec.x * scale;
             double offsetY = (seatVec.y + player.getYOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
@@ -124,8 +124,8 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
             float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(bodyRoll));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-bodyPitch));
+            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
+            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
     }

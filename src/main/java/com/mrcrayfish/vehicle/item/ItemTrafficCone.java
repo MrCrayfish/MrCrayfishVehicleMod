@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -42,8 +43,7 @@ public class ItemTrafficCone extends BlockItem
     {
         if(Screen.hasShiftDown())
         {
-            String info = I18n.format("tile.vehicle.traffic_cone.info");
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent("tile.vehicle.traffic_cone.info"), 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
         }
         else
         {

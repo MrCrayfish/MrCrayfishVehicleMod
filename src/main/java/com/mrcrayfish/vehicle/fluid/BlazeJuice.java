@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.IFluidState;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
 import net.minecraft.util.ResourceLocation;
@@ -32,13 +32,13 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
     public static class Source extends BlazeJuice
     {
         @Override
-        public boolean isSource(IFluidState state)
+        public boolean isSource(FluidState state)
         {
             return true;
         }
 
         @Override
-        public int getLevel(IFluidState p_207192_1_)
+        public int getLevel(FluidState state)
         {
             return 8;
         }
@@ -47,20 +47,20 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
     public static class Flowing extends BlazeJuice
     {
         @Override
-        protected void fillStateContainer(StateContainer.Builder<Fluid, IFluidState> builder)
+        protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
         {
             super.fillStateContainer(builder);
             builder.add(LEVEL_1_8);
         }
 
         @Override
-        public int getLevel(IFluidState state)
+        public int getLevel(FluidState state)
         {
             return state.get(LEVEL_1_8);
         }
 
         @Override
-        public boolean isSource(IFluidState state)
+        public boolean isSource(FluidState state)
         {
             return false;
         }

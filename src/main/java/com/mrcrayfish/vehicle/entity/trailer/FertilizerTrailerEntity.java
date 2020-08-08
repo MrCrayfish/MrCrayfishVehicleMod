@@ -25,9 +25,10 @@ import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
@@ -76,13 +77,13 @@ public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public boolean processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
     {
         ItemStack heldItem = player.getHeldItem(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof SprayCanItem)) && player instanceof ServerPlayerEntity)
         {
             NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
-            return true;
+            return ActionResultType.SUCCESS;
         }
         return super.processInitialInteract(player, hand);
     }
@@ -113,19 +114,19 @@ public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
             }
             if(!fertilizer.isEmpty())
             {
-                Vec3d lookVec = this.getLookVec();
+                Vector3d lookVec = this.getLookVec();
                 boolean applied = this.applyFertilizer(lookVec.rotateYaw((float) Math.toRadians(90F)), 0);
-                applied |= this.applyFertilizer(Vec3d.ZERO, 1);
+                applied |= this.applyFertilizer(Vector3d.ZERO, 1);
                 applied |= this.applyFertilizer(lookVec.rotateYaw((float) Math.toRadians(-90F)), 2);
                 if(applied) fertilizer.shrink(1);
             }
         }
     }
 
-    private boolean applyFertilizer(Vec3d vec, int index)
+    private boolean applyFertilizer(Vector3d vec, int index)
     {
-        Vec3d prevPosVec = new Vec3d(prevPosX, prevPosY + 0.25, prevPosZ);
-        prevPosVec = prevPosVec.add(new Vec3d(0, 0, -1).rotateYaw(-this.rotationYaw * 0.017453292F));
+        Vector3d prevPosVec = new Vector3d(prevPosX, prevPosY + 0.25, prevPosZ);
+        prevPosVec = prevPosVec.add(new Vector3d(0, 0, -1).rotateYaw(-this.rotationYaw * 0.017453292F));
         BlockPos pos = new BlockPos(prevPosVec.x + vec.x, prevPosVec.y, prevPosVec.z + vec.z);
 
         if(lastPos[index] != null && lastPos[index].equals(pos))

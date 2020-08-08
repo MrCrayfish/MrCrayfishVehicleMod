@@ -36,7 +36,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -291,7 +291,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     {
         if(this.inventory != null)
         {
-            Vec3d target = new Vec3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(getPositionVector());
+            Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(this.getPositionVec());
             InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
             this.inventory = null;
             this.setChest(false);
@@ -316,7 +316,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     @Override
     public void openInventory(PlayerEntity player)
     {
-        Vec3d target = new Vec3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(getPositionVector());
+        Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(this.getPositionVec());
         this.world.playSound(null, target.x, target.y, target.z, SoundEvents.BLOCK_CHEST_OPEN, this.getSoundCategory(), 0.5F, 0.9F);
     }
 }

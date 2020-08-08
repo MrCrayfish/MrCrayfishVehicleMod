@@ -106,9 +106,9 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         if(compound.contains("PowerMode", Constants.NBT.TAG_INT))
         {
             this.powerMode = PowerMode.fromOrdinal(compound.getInt("PowerMode"));

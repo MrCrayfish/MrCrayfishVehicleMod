@@ -55,11 +55,11 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
                                 matrixStack.translate(0, layer * 0.05, 0);
                                 matrixStack.translate((layerIndex % width) * 0.75, 0, (float) (layerIndex / width) * 0.5);
                                 matrixStack.translate(0.7 * (layer % 2), 0, 0);
-                                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
-                                matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(47F * index));
-                                matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(2F * layerIndex));
+                                matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(90F));
+                                matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(47F * index));
+                                matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(2F * layerIndex));
                                 matrixStack.translate(layer * 0.001, layer * 0.001, layer * 0.001); // Fixes Z fighting
-                                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.DEFAULT_LIGHT, matrixStack, renderTypeBuffer);
+                                Minecraft.getInstance().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.NONE, light, OverlayTexture.NO_OVERLAY, matrixStack, renderTypeBuffer);
                             }
                             matrixStack.pop();
                             index++;
@@ -88,9 +88,9 @@ public class RenderSeederTrailer extends AbstractRenderTrailer<SeederTrailerEnti
         matrixStack.push();
         matrixStack.translate(offsetX, -0.65, 0.0);
         float wheelRotation = trailer.prevWheelRotation + (trailer.wheelRotation - trailer.prevWheelRotation) * partialTicks;
-        matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-wheelRotation));
+        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
         matrixStack.scale(0.75F, 0.75F, 0.75F);
-        RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+        RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.pop();
     }
 }

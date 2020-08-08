@@ -9,10 +9,10 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.BathEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -22,7 +22,7 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     @Override
     public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(90F));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
         this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
@@ -34,7 +34,7 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = seatVec.x * scale;
             double offsetY = (seatVec.y + player.getYOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
@@ -42,8 +42,8 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
             float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            matrixStack.rotate(Axis.POSITIVE_Z.func_229187_a_(bodyRoll));
-            matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(-bodyPitch));
+            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
+            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
     }

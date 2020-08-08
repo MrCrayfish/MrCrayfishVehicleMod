@@ -46,7 +46,7 @@ public class CommonUtils
     {
         if(player instanceof ServerPlayerEntity)
         {
-            ((ServerPlayerEntity) player).connection.sendPacket(new SChatPacket(new TranslationTextComponent(message), ChatType.GAME_INFO));
+            player.sendStatusMessage(new TranslationTextComponent(message), true);
         }
     }
 

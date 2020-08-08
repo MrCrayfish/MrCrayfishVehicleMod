@@ -9,6 +9,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkHooks;
 
@@ -54,7 +55,7 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
                 if(targetEntity instanceof IStorage)
                 {
                     IStorage storage = (IStorage) targetEntity;
-                    float reachDistance = (float) player.getAttribute(PlayerEntity.REACH_DISTANCE).getValue();
+                    float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
                     if(player.getDistance(targetEntity) < reachDistance)
                     {
                         if(targetEntity instanceof IAttachableChest)

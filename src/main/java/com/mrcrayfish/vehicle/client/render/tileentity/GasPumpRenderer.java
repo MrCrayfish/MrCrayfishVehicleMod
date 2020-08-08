@@ -18,9 +18,7 @@ import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Matrix4f;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.Vector4f;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
@@ -30,7 +28,9 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector4f;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -72,12 +72,12 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
         if(position == null)
             return;
 
-        Vec3d fuelVec = vehicle.getPartPositionAbsoluteVec(position, partialTicks);
+        Vector3d fuelVec = vehicle.getPartPositionAbsoluteVec(position, partialTicks);
         double fuelX = (double) blockPos.getX() - fuelVec.x;
         double fuelY = (double) blockPos.getY() - fuelVec.y;
         double fuelZ = (double) blockPos.getZ() - fuelVec.z;
 
-        Vec3d fuelRot = Vec3d.fromPitchYaw((float) position.getRotX(), (float) position.getRotY());
+        Vector3d fuelRot = Vector3d.fromPitchYaw((float) position.getRotX(), (float) position.getRotY());
         fuelRot = fuelRot.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)).normalize();*/
        
         matrixStack.push();
@@ -91,8 +91,8 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * partialTicks);
                 double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * partialTicks);
                 float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
-                Vec3d lookVec = Vec3d.fromPitchYaw(-20F, renderYawOffset);
-                Vec3d hoseVec = new Vec3d(-0.35 * side, -0.025, -0.025);
+                Vector3d lookVec = Vector3d.fromPitchYaw(-20F, renderYawOffset);
+                Vector3d hoseVec = new Vector3d(-0.35 * side, -0.025, -0.025);
                 if(entity instanceof AbstractClientPlayerEntity)
                 {
                     String skinType = ((AbstractClientPlayerEntity) entity).getSkinType();
@@ -106,12 +106,12 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 {
                     if(Minecraft.getInstance().gameSettings.thirdPersonView == 0)
                     {
-                        lookVec = Vec3d.fromPitchYaw(0F, entity.rotationYaw);
-                        hoseVec = new Vec3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
+                        lookVec = Vector3d.fromPitchYaw(0F, entity.rotationYaw);
+                        hoseVec = new Vector3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
                     }
                 }
-                HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vec3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vec3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
-                gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.6425, pos[1]), new Vec3d(0, -5, 0)), destPoint));
+                HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vector3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vector3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
+                gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vector3d(pos[0], 0.6425, pos[1]), new Vector3d(0, -5, 0)), destPoint));
             }
             else
             {
@@ -119,14 +119,14 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 {
                     gasPump.setRecentlyUsed(false);
                     double[] destPos = CollisionHelper.fixRotation(facing, 0.345, 1.06, 0.345, 1.06);
-                    HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vec3d(destPos[0], 0.1, destPos[1]), new Vec3d(0, 3, 0));
-                    gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vec3d(pos[0], 0.6425, pos[1]), new Vec3d(0, -5, 0)), destPoint));
+                    HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vector3d(destPos[0], 0.1, destPos[1]), new Vector3d(0, 3, 0));
+                    gasPump.setCachedSpline(new HermiteInterpolator(new HermiteInterpolator.Point(new Vector3d(pos[0], 0.6425, pos[1]), new Vector3d(0, -5, 0)), destPoint));
                 }
             }
 
-            //new HermiteInterpolator.Point(new Vec3d(-fuelX, -fuelY, -fuelZ), new Vec3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
-            //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.5 + v.y / 2, -z + v.z / 2), new Vec3d(v.x * 5, v.y, v.z * 5))
-            //new HermiteInterpolator.Point(new Vec3d(-x + v.x / 2, -y + 1.25, -z + v.z / 2), new Vec3d(-x + v.x * 10, -y, -z + v.z * 10))
+            //new HermiteInterpolator.Point(new Vector3d(-fuelX, -fuelY, -fuelZ), new Vector3d(fuelRot.x * 3, -fuelRot.y * 3, fuelRot.z * 3))
+            //new HermiteInterpolator.Point(new Vector3d(-x + v.x / 2, -y + 1.5 + v.y / 2, -z + v.z / 2), new Vector3d(v.x * 5, v.y, v.z * 5))
+            //new HermiteInterpolator.Point(new Vector3d(-x + v.x / 2, -y + 1.25, -z + v.z / 2), new Vector3d(-x + v.x * 10, -y, -z + v.z * 10))
 
             HermiteInterpolator spline = gasPump.getCachedSpline();
             if(spline != null)
@@ -144,7 +144,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 RenderSystem.pushMatrix();
                 RenderSystem.disableTexture();
                 RenderSystem.enableDepthTest();
-                RenderSystem.multMatrix(matrixStack.getLast().getPositionMatrix());
+                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
 
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder buffer = tessellator.getBuffer();
@@ -165,7 +165,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         HermiteInterpolator.Result end = spline.get(i, (float) (j + 1) / (float) segments);
 
                         Matrix4f startMatrix = new Matrix4f();
-                        startMatrix.identity();
+                        startMatrix.setIdentity();
                         EntityRayTracer.MatrixTransformation.createTranslation((float) start.getPoint().getX(), (float) start.getPoint().getY(), (float) start.getPoint().getZ()).transform(startMatrix);
                         if(i == 0 && j == 0)
                         {
@@ -179,7 +179,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         }
 
                         Matrix4f endMatrix = new Matrix4f();
-                        endMatrix.identity();
+                        endMatrix.setIdentity();
                         EntityRayTracer.MatrixTransformation.createTranslation((float) end.getPoint().x, (float) end.getPoint().y, (float) end.getPoint().z).transform(endMatrix);
                         if(i == spline.getSize() - 2 && j == segments - 1)
                         {
@@ -194,7 +194,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
 
                         Matrix4f startTemp = new Matrix4f(startMatrix);
                         Matrix4f endTemp = new Matrix4f(endMatrix);
-                        Matrix4f parent = matrixStack.getLast().getPositionMatrix();
+                        Matrix4f parent = matrixStack.getLast().getMatrix();
 
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
@@ -244,11 +244,11 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 {
                     double[] destPos = CollisionHelper.fixRotation(facing, 0.29, 1.06, 0.29, 1.06);
                     matrixStack.translate(destPos[0], 0.5, destPos[1]);
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
-                    matrixStack.rotate(Axis.POSITIVE_X.func_229187_a_(90F));
+                    matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(facing.getHorizontalIndex() * -90F));
+                    matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
+                    matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(90F));
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
-                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.DEFAULT_LIGHT);
+                    RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 }
                 matrixStack.pop();
             }
@@ -256,10 +256,10 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             matrixStack.push();
             {
                 matrixStack.translate(0.5, 0, 0.5);
-                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(facing.getHorizontalIndex() * -90F));
+                matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(facing.getHorizontalIndex() * -90F));
                 matrixStack.translate(-0.5, 0, -0.5);
                 matrixStack.translate(0.5, 11 * 0.0625, 3 * 0.0625);
-                matrixStack.rotate(Axis.POSITIVE_Y.func_229187_a_(180F));
+                matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
 
                 matrixStack.translate(0F, 0F, 0.01F);
 
@@ -272,7 +272,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         int amount = (int) Math.ceil(100 * (gasPump.getTank().getFluidAmount() / (double) gasPump.getTank().getCapacity()));
                         String percent = String.format("%d%%", amount);
                         int width = fontRenderer.getStringWidth(percent);
-                        fontRenderer.renderString(percent, -width / 2, 10, 16777215, false, matrixStack.getLast().getPositionMatrix(), renderTypeBuffer, false, 0, light);
+                        fontRenderer.renderString(percent, -width / 2, 10, 16777215, false, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, light);
                     }
                 }
                 matrixStack.pop();
@@ -283,7 +283,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     matrixStack.scale(0.01F, -0.01F, 0.01F);
                     FontRenderer fontRenderer = this.renderDispatcher.fontRenderer;
                     int width = fontRenderer.getStringWidth("Fuelium");
-                    fontRenderer.renderString("Fuelium", -width / 2, 10, 9761325, false, matrixStack.getLast().getPositionMatrix(), renderTypeBuffer, false, 0, light);
+                    fontRenderer.renderString("Fuelium", -width / 2, 10, 9761325, false, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, light);
                 }
                 matrixStack.pop();
             }
@@ -295,7 +295,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     private void createVertex(BufferBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray)
     {
         Vector4f vec = new Vector4f(0.0F, 0.0F, 0.0F, 1.0F);
-        vec.func_229372_a_(pos);
+        vec.transform(pos); //TODO test
         buffer.pos(vec.getX(), vec.getY(), vec.getZ()).color(red, gray, gray, 1.0F).endVertex();
     }
 }

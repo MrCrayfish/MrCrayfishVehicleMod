@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.inventory.IStorageBlock;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -35,9 +36,9 @@ public class WorkstationTileEntity extends TileEntitySynced implements IStorageB
     }
 
     @Override
-    public void read(CompoundNBT compound)
+    public void read(BlockState state, CompoundNBT compound)
     {
-        super.read(compound);
+        super.read(state, compound);
         ItemStackHelper.loadAllItems(compound, this.inventory);
     }
 

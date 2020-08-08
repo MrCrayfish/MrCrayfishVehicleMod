@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 /**
@@ -69,9 +69,9 @@ public class TractorEntity extends LandVehicleEntity
     }
 
     @Override
-    public Vec3d getEngineSmokePosition()
+    public Vector3d getEngineSmokePosition()
     {
-        return new Vec3d(-0.125, 1.9375, 1.125);
+        return new Vector3d(-0.125, 1.9375, 1.125);
     }
 
     @Override

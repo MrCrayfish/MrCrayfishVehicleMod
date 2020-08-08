@@ -44,9 +44,8 @@ public class StorageInventory extends Inventory implements INamedContainerProvid
         return this.wrapper.getStorageContainerProvider().createMenu(windowId, playerInventory, playerEntity);
     }
 
-    public CompoundNBT write()
+    public ListNBT write()
     {
-        CompoundNBT compound = new CompoundNBT();
         ListNBT tagList = new ListNBT();
         for(int i = 0; i < this.getSizeInventory(); i++)
         {
@@ -59,24 +58,20 @@ public class StorageInventory extends Inventory implements INamedContainerProvid
                 tagList.add(slotTag);
             }
         }
-        compound.put("Inventory", tagList);
-        return compound;
+        return tagList;
     }
 
-    public void read(CompoundNBT tagCompound)
+    @Override
+    public void read(ListNBT tagList)
     {
-        if(tagCompound.contains("Inventory", Constants.NBT.TAG_LIST))
+        this.clear();
+        for(int i = 0; i < tagList.size(); i++)
         {
-            this.clear();
-            ListNBT tagList = tagCompound.getList("Inventory", Constants.NBT.TAG_COMPOUND);
-            for(int i = 0; i < tagList.size(); i++)
+            CompoundNBT slotTag = tagList.getCompound(i);
+            byte slot = slotTag.getByte("Slot");
+            if(slot >= 0 && slot < this.getSizeInventory())
             {
-                CompoundNBT slotTag = tagList.getCompound(i);
-                byte slot = slotTag.getByte("Slot");
-                if(slot >= 0 && slot < this.getSizeInventory())
-                {
-                    this.setInventorySlotContents(slot, ItemStack.read(slotTag));
-                }
+                this.setInventorySlotContents(slot, ItemStack.read(slotTag));
             }
         }
     }

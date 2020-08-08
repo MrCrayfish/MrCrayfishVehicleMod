@@ -38,6 +38,6 @@ public class TileEntitySynced extends TileEntity
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt)
     {
-        this.read(pkt.getNbtCompound());
+        this.read(null, pkt.getNbtCompound());
     }
 }

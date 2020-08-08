@@ -8,10 +8,10 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SofacopterEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Vector3f;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 /**
  * Author: MrCrayfish
@@ -33,7 +33,7 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
         matrixStack.push();
         matrixStack.translate(0.0, 32 * 0.0625, 0.0);
         float bladeRotation = entity.prevBladeRotation + (entity.bladeRotation - entity.prevBladeRotation) * partialTicks;
-        matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(bladeRotation));
+        matrixStack.rotate(Vector3f.YP.rotationDegrees(bladeRotation));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
         this.renderDamagedPart(entity, SpecialModels.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.pop();
@@ -64,7 +64,7 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vec3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = -seatVec.x * scale;
             double offsetY = (seatVec.y + player.getYOffset() + 0.3) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
@@ -72,10 +72,10 @@ public class RenderCouchHelicopter extends AbstractRenderVehicle<SofacopterEntit
             float entityYaw = entity.prevRotationYaw + (entity.rotationYaw - entity.prevRotationYaw) * partialTicks;
 
             matrixStack.translate(offsetX, offsetY, offsetZ);
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(-entityYaw));
-            matrixStack.rotate(Vector3f.field_229183_f_.func_229187_a_(-(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks)));
-            matrixStack.rotate(Vector3f.field_229179_b_.func_229187_a_(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks));
-            matrixStack.rotate(Vector3f.field_229181_d_.func_229187_a_(entityYaw));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(-entityYaw));
+            matrixStack.rotate(Vector3f.ZP.rotationDegrees(-(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks)));
+            matrixStack.rotate(Vector3f.XP.rotationDegrees(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks));
+            matrixStack.rotate(Vector3f.YP.rotationDegrees(entityYaw));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }
