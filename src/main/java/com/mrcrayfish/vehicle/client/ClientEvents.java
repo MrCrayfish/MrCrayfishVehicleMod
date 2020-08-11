@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
@@ -14,6 +16,7 @@ import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.fluid.ModFluid;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
@@ -33,6 +36,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
@@ -53,6 +57,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.function.Consumer;
 
 /**
  * Author: MrCrayfish
@@ -587,15 +592,32 @@ public class ClientEvents
     @SubscribeEvent
     public void setLiquidFogDensity(EntityViewRenderEvent.FogDensity event)
     {
-        event.getInfo().getBlockAtCamera();
-        /*Block block = event.getState().getBlock(); //TODO do i need to fix this
-        boolean isSap = block == ModBlocks.ENDER_SAP.get();
-        if (isSap || block == ModBlocks.FUELIUM.get() || block == ModBlocks.BLAZE_JUICE.get())
+        alterFog(event, fluid ->
         {
-            GlStateManager.setFog(GlStateManager.FogMode.EXP);
-            event.setDensity(isSap ? 1 : 0.5F);
+            RenderSystem.fogMode(GlStateManager.FogMode.EXP);
+            event.setDensity(fluid.getFogDensity());
             event.setCanceled(true);
-        }*/
+        });
+    }
+
+    @SubscribeEvent
+    public void setLiquidFogColor(EntityViewRenderEvent.FogColors event)
+    {
+        alterFog(event, fluid ->
+        {
+            event.setRed(fluid.getFogRed());
+            event.setGreen(fluid.getFogGreen());
+            event.setBlue(fluid.getFogBlue());
+        });
+    }
+
+    private void alterFog(EntityViewRenderEvent event, Consumer<ModFluid> action)
+    {
+        Fluid fluid = event.getInfo().getFluidState().getFluid();
+        if(fluid instanceof ModFluid)
+        {
+            action.accept((ModFluid) fluid);
+        }
     }
 
     @SubscribeEvent

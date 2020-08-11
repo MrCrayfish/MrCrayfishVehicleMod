@@ -1,32 +1,20 @@
 package com.mrcrayfish.vehicle.fluid;
 
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.IFluidState;
-import net.minecraft.item.Item;
 import net.minecraft.state.StateContainer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvents;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.ForgeFlowingFluid;
 
 /**
  * Author: MrCrayfish
  */
-public abstract class BlazeJuice extends ForgeFlowingFluid
+public abstract class BlazeJuice extends ModFluid
 {
     public BlazeJuice()
     {
-        super(new Properties(() -> ModFluids.BLAZE_JUICE.get(), () -> ModFluids.FLOWING_BLAZE_JUICE.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.BLAZE_JUICE.get()));
-    }
-
-    @Override
-    public Item getFilledBucket()
-    {
-        return ModItems.BLAZE_JUICE_BUCKET.get();
+        super(ModFluids.BLAZE_JUICE, ModFluids.FLOWING_BLAZE_JUICE, ModBlocks.BLAZE_JUICE, ModItems.BLAZE_JUICE_BUCKET, 1000, 800, 0.5F, 254, 198, 0);
     }
 
     public static class Source extends BlazeJuice
@@ -38,7 +26,7 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
         }
 
         @Override
-        public int getLevel(IFluidState p_207192_1_)
+        public int getLevel(IFluidState state)
         {
             return 8;
         }
