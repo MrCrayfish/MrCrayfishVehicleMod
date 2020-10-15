@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.BoostTileEntity;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -77,7 +78,7 @@ public class BlockBoostRamp extends BlockRotatedObject
         if(Screen.hasShiftDown())
         {
             ITextProperties info = new TranslationTextComponent(this.getTranslationKey() + ".info");
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(info, 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
+            tooltip.addAll(RenderUtil.lines(info, 150));
         }
         else
         {

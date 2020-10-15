@@ -24,6 +24,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.HandSide;
@@ -104,7 +105,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 hoseVec = hoseVec.rotateYaw(-renderYawOffset * 0.017453292F);
                 if(entity.equals(Minecraft.getInstance().player))
                 {
-                    if(Minecraft.getInstance().gameSettings.thirdPersonView == 0)
+                    if(Minecraft.getInstance().gameSettings.func_243230_g() == PointOfView.FIRST_PERSON)
                     {
                         lookVec = Vector3d.fromPitchYaw(0F, entity.rotationYaw);
                         hoseVec = new Vector3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);

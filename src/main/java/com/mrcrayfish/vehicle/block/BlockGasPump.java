@@ -26,6 +26,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -197,9 +198,10 @@ public class BlockGasPump extends BlockRotatedObject
     {
         if(state.get(TOP))
         {
-            BlockPos pos = builder.get(LootParameters.POSITION);
-            if(pos != null)
+            Vector3d origin = builder.get(LootParameters.field_237457_g_);
+            if(origin != null)
             {
+                BlockPos pos = new BlockPos(origin);
                 TileEntity tileEntity = builder.getWorld().getTileEntity(pos.down());
                 if(tileEntity != null)
                 {

@@ -483,13 +483,13 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         }
     }
 
-    private void drawSlotTooltip(MatrixStack matrixStack, List<ITextProperties> text, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
+    private void drawSlotTooltip(MatrixStack matrixStack, List<ITextComponent> text, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
     {
         if(this.workstation.getStackInSlot(slot).isEmpty())
         {
             if(CommonUtils.isMouseWithin(mouseX, mouseY, startX + x, startY + y, 18, 18))
             {
-                this.renderTooltip(matrixStack, text, mouseX, mouseY);
+                this.renderTooltip(matrixStack, Lists.transform(text, ITextComponent::func_241878_f), mouseX, mouseY);
             }
         }
     }

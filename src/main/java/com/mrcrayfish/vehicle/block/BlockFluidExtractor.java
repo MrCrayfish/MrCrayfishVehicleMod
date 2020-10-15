@@ -31,7 +31,7 @@ public class BlockFluidExtractor extends BlockRotatedObject
 {
     public BlockFluidExtractor()
     {
-        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
+        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F).notSolid());
     }
 
     @Override

@@ -37,7 +37,7 @@ public class SprayCanItem extends Item implements IDyeable
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent("item.vehicle.spray_can.info"), 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
+            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent("item.vehicle.spray_can.info"), 150).stream().map(text -> new StringTextComponent(text.toString())).collect(Collectors.toList()));
         }
         else
         {

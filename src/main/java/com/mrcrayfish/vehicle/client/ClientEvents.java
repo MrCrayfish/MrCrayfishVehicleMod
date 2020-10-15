@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -60,7 +61,7 @@ import java.text.DecimalFormat;
 public class ClientEvents
 {
     private int lastSlot = -1;
-    private int originalPerspective = -1;
+    private PointOfView originalPointOfView = null;
     private double fuelingHandOffset;
     private int tickCounter;
     private boolean fueling;
@@ -81,14 +82,14 @@ public class ClientEvents
                         Entity entity = event.getEntityBeingMounted();
                         if(entity instanceof VehicleEntity)
                         {
-                            originalPerspective = Minecraft.getInstance().gameSettings.thirdPersonView;
-                            Minecraft.getInstance().gameSettings.thirdPersonView = 1;
+                            originalPointOfView = Minecraft.getInstance().gameSettings.func_243230_g();
+                            Minecraft.getInstance().gameSettings.func_243229_a(PointOfView.THIRD_PERSON_BACK);
                         }
                     }
-                    else if(originalPerspective != -1)
+                    else if(originalPointOfView != null)
                     {
-                        Minecraft.getInstance().gameSettings.thirdPersonView = originalPerspective;
-                        originalPerspective = -1;
+                        Minecraft.getInstance().gameSettings.func_243229_a(originalPointOfView);
+                        originalPointOfView = null;
                     }
                 }
             }
@@ -108,7 +109,7 @@ public class ClientEvents
             {
                 if(Minecraft.getInstance().gameSettings.keyBindTogglePerspective.isKeyDown())
                 {
-                    originalPerspective = -1;
+                    originalPointOfView = null;
                 }
             }
         }
@@ -217,7 +218,7 @@ public class ClientEvents
     {
         PlayerEntity player = event.getPlayer();
 
-        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().gameSettings.thirdPersonView == 0)
+        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().gameSettings.func_243230_g() == PointOfView.FIRST_PERSON)
             return;
 
         Entity ridingEntity = player.getRidingEntity();
@@ -306,7 +307,7 @@ public class ClientEvents
 
             if(player.getRidingEntity() == null)
             {
-                originalPerspective = -1;
+                originalPointOfView = null;
             }
 
             tickCounter++;

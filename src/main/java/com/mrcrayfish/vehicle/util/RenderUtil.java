@@ -23,12 +23,18 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -227,5 +233,11 @@ public class RenderUtil
             return RenderUtil.getModel(stack);
         }
         return null;
+    }
+
+    public static List<ITextComponent> lines(ITextProperties text, int maxWidth)
+    {
+        List<ITextProperties> lines = Minecraft.getInstance().fontRenderer.func_238420_b_().func_238362_b_(text, maxWidth, Style.EMPTY);
+        return lines.stream().map(t -> new StringTextComponent(t.getString())).collect(Collectors.toList());
     }
 }

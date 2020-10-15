@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.item;
 
+import com.google.common.collect.Lists;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
@@ -43,7 +46,7 @@ public class ItemTrafficCone extends BlockItem
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent("tile.vehicle.traffic_cone.info"), 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent("tile.vehicle.traffic_cone.info"), 150));
         }
         else
         {

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.item.WrenchItem;
 import com.mrcrayfish.vehicle.tileentity.FluidPipeTileEntity;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -94,7 +95,7 @@ public class BlockFluidPipe extends BlockObject
         if(Screen.hasShiftDown())
         {
             ITextProperties info = new TranslationTextComponent(this.getTranslationKey() + ".info");
-            list.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(info, 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
+            list.addAll(RenderUtil.lines(info, 150));
         }
         else
         {

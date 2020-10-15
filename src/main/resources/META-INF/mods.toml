@@ -1,5 +1,6 @@
 modLoader="javafml"
-loaderVersion="[32,)"
+loaderVersion="[34,)"
+license="GNU General Public License 3.0"
 
 [[mods]]
 modId="vehicle"
@@ -15,13 +16,13 @@ description="A mod that adds vehicles into Minecraft!"
 [[dependencies.vehicle]]
     modId="forge"
     mandatory=true
-    versionRange="[32.0.106,)"
+    versionRange="[34.1.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.vehicle]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.1,1.17)"
+    versionRange="[1.16.3,1.17)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.vehicle]]

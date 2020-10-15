@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.util.CommonUtils;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
@@ -43,7 +44,7 @@ public class JerryCanItem extends Item
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150).stream().map(text -> new StringTextComponent(text.getString())).collect(Collectors.toList()));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
         }
         else
         {
