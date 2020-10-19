@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.inventory.container;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.slot.SlotStorage;
 import com.mrcrayfish.vehicle.init.ModContainers;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
@@ -50,6 +51,14 @@ public class StorageContainer extends Container
     @Override
     public boolean canInteractWith(PlayerEntity playerIn)
     {
+        if(this.storageInventory instanceof Entity)
+        {
+            Entity entity = (Entity) this.storageInventory;
+            if(!entity.isAlive())
+            {
+                return false;
+            }
+        }
         return this.storageInventory.isUsableByPlayer(playerIn);
     }
 
