@@ -101,12 +101,12 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         int startY = (this.height - this.ySize) / 2;
 
         this.addButton(new Button(startX, startY, 15, 20, new StringTextComponent("<"), button -> {
-            this.loadVehicle((currentVehicle - 1) % this.vehicleTypes.size());
+            this.loadVehicle(Math.floorMod(currentVehicle - 1,  this.vehicleTypes.size()));
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
 
         this.addButton(new Button(startX + 161, startY, 15, 20, new StringTextComponent(">"), button -> {
-            this.loadVehicle((currentVehicle + 1) % this.vehicleTypes.size());
+            this.loadVehicle(Math.floorMod(currentVehicle + 1,  this.vehicleTypes.size()));
             Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
 
