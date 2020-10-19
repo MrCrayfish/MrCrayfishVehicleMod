@@ -129,13 +129,12 @@ public class ClientProxy implements Proxy
         //ModelLoaderRegistry.registerLoader(new ResourceLocation(Reference.MOD_ID, "ramp"), new CustomLoader());
 
         IResourceManager rm = Minecraft.getInstance().getResourceManager();
-        if (rm instanceof IReloadableResourceManager)
+        if(rm instanceof IReloadableResourceManager)
         {
-            ((IReloadableResourceManager) rm).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> CompletableFuture.runAsync(() ->
-            {
+            ((IReloadableResourceManager) rm).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> CompletableFuture.runAsync(() -> {
                 FluidUtils.clearCacheFluidColor();
                 EntityRayTracer.instance().clearDataForReregistration();
-            }, backgroundExecutor).thenCompose(stage::markCompleteAwaitingOthers));
+            }, backgroundExecutor).thenCompose(stage::markCompleteAwaitingOthers).whenComplete((aVoid, throwable) -> SpecialModels.clearModelCache()));
         }
     }
 
