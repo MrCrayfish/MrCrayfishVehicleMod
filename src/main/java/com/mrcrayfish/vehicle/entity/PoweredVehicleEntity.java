@@ -593,7 +593,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     int z = MathHelper.floor(this.getPosZ() + wheelZ);
                     BlockPos pos = new BlockPos(x, y, z);
                     BlockState state = this.world.getBlockState(pos);
-                    if(state.getMaterial() != Material.AIR && !state.getMaterial().isSolid())
+                    if(state.getMaterial() != Material.AIR && state.getMaterial().isSolid())
                     {
                         Vector3d dirVec = this.getVectorForRotation(this.rotationPitch, this.getModifiedRotationYaw() + 180F).add(0, 0.5, 0);
                         if(this.charging)
