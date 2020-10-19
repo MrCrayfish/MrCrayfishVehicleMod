@@ -40,10 +40,13 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModContainer;
+import net.minecraftforge.fml.ModList;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -77,7 +80,8 @@ public class CommonEvents
     @SubscribeEvent
     public void onMissingItem(RegistryEvent.MissingMappings<Item> event)
     {
-        for(RegistryEvent.MissingMappings.Mapping<Item> missing : event.getMappings())
+        ImmutableList<RegistryEvent.MissingMappings.Mapping<Item>> mappings = ImmutableList.copyOf(event.getMappings().stream().filter(e -> e.key.getNamespace().equals(Reference.MOD_ID)).collect(Collectors.toList()));
+        for(RegistryEvent.MissingMappings.Mapping<Item> missing : mappings)
         {
             if(missing.key.getNamespace().equals(Reference.MOD_ID) && IGNORE_ITEMS.contains(missing.key.getPath()))
             {
@@ -89,7 +93,8 @@ public class CommonEvents
     @SubscribeEvent
     public void onMissingSound(RegistryEvent.MissingMappings<SoundEvent> event)
     {
-        for(RegistryEvent.MissingMappings.Mapping<SoundEvent> missing : event.getMappings())
+        ImmutableList<RegistryEvent.MissingMappings.Mapping<SoundEvent>> mappings = ImmutableList.copyOf(event.getMappings().stream().filter(e -> e.key.getNamespace().equals(Reference.MOD_ID)).collect(Collectors.toList()));
+        for(RegistryEvent.MissingMappings.Mapping<SoundEvent> missing : mappings)
         {
             if(missing.key.getNamespace().equals(Reference.MOD_ID) && IGNORE_SOUNDS.contains(missing.key.getPath()))
             {
@@ -101,7 +106,8 @@ public class CommonEvents
     @SubscribeEvent
     public void onMissingEntity(RegistryEvent.MissingMappings<EntityType<?>> event)
     {
-        for(RegistryEvent.MissingMappings.Mapping<EntityType<?>> missing : event.getMappings())
+        ImmutableList<RegistryEvent.MissingMappings.Mapping<EntityType<?>>> mappings = ImmutableList.copyOf(event.getMappings().stream().filter(e -> e.key.getNamespace().equals(Reference.MOD_ID)).collect(Collectors.toList()));
+        for(RegistryEvent.MissingMappings.Mapping<EntityType<?>> missing : mappings)
         {
             if(missing.key.getNamespace().equals(Reference.MOD_ID) && IGNORE_ENTITIES.contains(missing.key.getPath()))
             {
