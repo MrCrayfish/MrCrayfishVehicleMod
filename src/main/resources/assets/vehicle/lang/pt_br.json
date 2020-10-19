@@ -146,7 +146,7 @@
     "vehicle.config.client.display.workstation_animation": "Animação da estação de trabalho",
     "vehicle.config.client.display.workstation_animation.tooltip": "Se verdadeiro, uma animação é executada ao trocar/passar os veículos na estação de trabalho",
     "vehicle.config.client.controller": "Controle",
-    "vehicle.config.client.controller.tooltip": "Opções de configuração para suporte ao controlador (Deve ter "Controllable"(mod) instalado)",
+    "vehicle.config.client.controller.tooltip": "Opções de configuração para suporte ao controlador (Deve ter o mod Controllable instalado)",
     "vehicle.config.client.controller.use_triggers": "Usar gatilhos",
     "vehicle.config.client.controller.use_triggers.tooltip": "Se verdadeiro, usará os gatilhos no controlador para controlar a aceleração do veículo.",
 
