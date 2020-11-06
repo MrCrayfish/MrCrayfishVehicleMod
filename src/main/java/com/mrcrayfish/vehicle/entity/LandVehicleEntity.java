@@ -113,9 +113,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
             PartPosition bodyPosition = properties.getBodyPosition();
             Vector3d nextFrontAxelVec = new Vector3d(0, 0, currentSpeed / 20F).rotateYaw(this.wheelAngle * 0.017453292F);
-            nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
+            nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625).scale(bodyPosition.getScale()));
             Vector3d nextRearAxelVec = new Vector3d(0, 0, currentSpeed / 20F);
-            nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
+            nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625).scale(bodyPosition.getScale()));
             double deltaYaw = Math.toDegrees(Math.atan2(nextRearAxelVec.z - nextFrontAxelVec.z, nextRearAxelVec.x - nextFrontAxelVec.x)) + 90;
             if(this.isRearWheelSteering())
             {

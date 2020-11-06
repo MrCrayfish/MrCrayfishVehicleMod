@@ -1359,7 +1359,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 wheelX += ((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset()) * scale;
 
                 /* Offsets the position to the wheel contact on the ground */
-                wheelY -= ((5 * 0.0625) / 2.0) * wheel.getScaleY();
+                wheelY -= ((5 * 0.0625) / 2.0) * scale * wheel.getScaleY();
 
                 /* Update the wheel position */
                 Vector3d wheelVec = new Vector3d(wheelX, wheelY, wheelZ).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F);
