@@ -125,7 +125,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.deltaYaw = (float) -deltaYaw;
 
             Vector3d nextVehicleVec = nextFrontAxelVec.add(nextRearAxelVec).scale(0.5);
-            nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(0.5));
+            nextVehicleVec = nextVehicleVec.subtract(properties.getFrontAxelVec().add(properties.getRearAxelVec()).scale(0.0625).scale(bodyPosition.getScale()).scale(0.5));
             nextVehicleVec = nextVehicleVec.scale(bodyPosition.getScale()).rotateYaw((-this.rotationYaw + 90) * 0.017453292F);
 
             float targetRotation = (float) Math.toDegrees(Math.atan2(nextVehicleVec.z, nextVehicleVec.x));
