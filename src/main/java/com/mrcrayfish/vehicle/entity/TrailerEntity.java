@@ -79,7 +79,8 @@ public abstract class TrailerEntity extends VehicleEntity
 
         if(this.pullingEntity != null && !this.world.isRemote)
         {
-            if(this.pullingEntity.getDistance(this) > Config.SERVER.trailerDetachThreshold.get())
+            double threshold = Config.SERVER.trailerDetachThreshold.get() + Math.abs(this.getHitchOffset() / 16.0) * this.getProperties().getBodyPosition().getScale();
+            if(this.pullingEntity.getDistance(this) > threshold)
             {
                 this.world.playSound(null, this.pullingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 this.pullingEntity = null;
