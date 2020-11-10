@@ -438,7 +438,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         matrixStack.rotate(quaternion);
 
         int vehicleIndex = this.transitioning ? prevCurrentVehicle : currentVehicle;
-        VehicleProperties properties = VehicleProperties.getProperties(this.cachedVehicle[vehicleIndex].getType());
+        VehicleProperties properties = this.cachedVehicle[vehicleIndex].getProperties();
         PartPosition position = PartPosition.DEFAULT;
         if(properties != null)
         {

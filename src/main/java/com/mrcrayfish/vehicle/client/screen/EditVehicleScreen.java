@@ -131,7 +131,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             matrixStack.scale(windowZoom / 10F, windowZoom / 10F, windowZoom / 10F);
             matrixStack.scale(22F, 22F, 22F);
 
-            VehicleProperties properties = VehicleProperties.getProperties(vehicle.getType());
+            VehicleProperties properties = vehicle.getProperties();
             PartPosition position = PartPosition.DEFAULT;
             if(properties != null)
             {
