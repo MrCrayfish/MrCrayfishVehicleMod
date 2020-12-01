@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.VehicleFuel;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.ItemJerryCan;
@@ -116,7 +117,8 @@ public class BlockGasPump extends BlockRotatedObject
                             if(handler instanceof FluidTank)
                             {
                                 FluidTank tank = (FluidTank) handler;
-                                if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                                //if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM)
+                                if (tank.getFluid() != null && !VehicleFuel.isFuel(tank))
                                 {
                                     return false;
                                 }
