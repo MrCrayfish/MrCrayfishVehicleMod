@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleConfig;
+import com.mrcrayfish.vehicle.VehicleFuel;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
 import com.mrcrayfish.vehicle.client.SpecialModels;
@@ -87,6 +88,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
     protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.FLOAT);
+    protected static final DataParameter<String> CURRENT_FUEL_NAME = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.STRING);
     protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<Boolean> HAS_WHEELS = EntityDataManager.createKey(EntityPoweredVehicle.class, DataSerializers.BOOLEAN);
@@ -166,6 +168,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         this.dataManager.register(HORN, false);
         this.dataManager.register(REQUIRES_FUEL, VehicleConfig.SERVER.fuelEnabled);
         this.dataManager.register(CURRENT_FUEL, 0F);
+        this.dataManager.register(CURRENT_FUEL_NAME, "");
         this.dataManager.register(FUEL_CAPACITY, 15000F);
         this.dataManager.register(NEEDS_KEY, false);
         this.dataManager.register(KEY_STACK, ItemStack.EMPTY);
@@ -249,7 +252,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
                     FluidStack stack = gasPumpTank.getFluidTank().drain(200, true);
                     if(stack != null)
                     {
-                        stack.amount = this.addFuel(stack.amount);
+                        stack.amount = this.addFuel(stack.getFluid().getName(), stack.amount);
                         if(stack.amount > 0)
                         {
                             gasPumpTank.getFluidTank().fill(stack, true);
@@ -261,12 +264,14 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         }
 
         ItemStack stack = player.getHeldItem(hand);
-        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        //if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan && this.getCurrentFuelName() == ModFluids.FUELIUM.getName())
         {
             ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
             int rate = jerryCan.getFillRate(stack);
             int drained = jerryCan.drain(stack, rate);
-            int remaining = this.addFuel(drained);
+            //int remaining = this.addFuel(drained);
+            int remaining = this.addFuel(ModFluids.FUELIUM.getName(), drained);
             jerryCan.fill(stack, remaining);
         }
     }
@@ -442,9 +447,15 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
             float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
             float currentFuel = this.getCurrentFuel();
-            currentFuel -= fuelConsumption * normalSpeed * VehicleConfig.SERVER.fuelConsumptionFactor;
-            if(currentFuel < 0F) currentFuel = 0F;
+            //currentFuel -= fuelConsumption * normalSpeed * VehicleConfig.SERVER.fuelConsumptionFactor;
+            double consume = fuelConsumption * normalSpeed * VehicleFuel.getFuelConsumptionFactorForFuel(this.getCurrentFuelName());
+            currentFuel -= consume;
+            if(currentFuel < 0F)
+                {
+                currentFuel = 0F;
+                }
             this.setCurrentFuel(currentFuel);
+            //System.out.println("currentSpeed:"+currentSpeed+", normalSpeed:"+normalSpeed+", this.getCurrentFuelName():"+this.getCurrentFuelName()+"/"+VehicleFuel.getFuelConsumptionFactorForFuel(this.getCurrentFuelName())+",consume:"+consume+" currentFuel:"+currentFuel);
         }
 
         this.prevAcceleration = this.getAcceleration();
@@ -713,6 +724,10 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         {
             this.setCurrentFuel(compound.getFloat("currentFuel"));
         }
+        if(compound.hasKey("currentFuelName", Constants.NBT.TAG_STRING))
+        {
+            this.setCurrentFuelName(compound.getString("currentFuelName"));
+        }
         if(compound.hasKey("fuelCapacity", Constants.NBT.TAG_INT))
         {
             this.setFuelCapacity(compound.getInteger("fuelCapacity"));
@@ -744,6 +759,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         compound.setFloat("stepHeight", this.stepHeight);
         compound.setBoolean("requiresFuel", this.requiresFuel());
         compound.setFloat("currentFuel", this.getCurrentFuel());
+        compound.setString("currentFuelName", this.getCurrentFuelName());
         compound.setFloat("fuelCapacity", this.getFuelCapacity());
         compound.setBoolean("keyNeeded", this.isKeyNeeded());
         CommonUtils.writeItemStackToTag(compound, "keyStack", this.getKeyStack());
@@ -1038,6 +1054,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return this.dataManager.get(CURRENT_FUEL);
     }
 
+    public void setCurrentFuelName(String fuel)
+    {
+        this.dataManager.set(CURRENT_FUEL_NAME, fuel);
+    }
+
+    public String getCurrentFuelName()
+    {
+        return this.dataManager.get(CURRENT_FUEL_NAME);
+    }
+
     public void setFuelCapacity(float capacity)
     {
         this.dataManager.set(FUEL_CAPACITY, capacity);
@@ -1058,15 +1084,24 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         return fuelConsumption;
     }
 
-    public int addFuel(int fuel)
+    public int addFuel(String fuelName,int fuel)
     {
+        //System.out.println("addFuel ("+fuelName+", "+fuel+") getCurrentFuelName:"+this.getCurrentFuelName());
         if(!this.requiresFuel())
             return fuel;
         float currentFuel = this.getCurrentFuel();
+        //System.out.println("currentFuel:"+currentFuel);
+        if (currentFuel > 0.0 && this.getCurrentFuelName() != fuelName)
+            {
+            //System.out.println("ret0");
+            return 0;
+            }
         currentFuel += fuel;
         int remaining = Math.max(0, Math.round(currentFuel - this.getFuelCapacity()));
         currentFuel = Math.min(currentFuel, this.getFuelCapacity());
         this.setCurrentFuel(currentFuel);
+        this.setCurrentFuelName(fuelName);
+        //System.out.println("ret remaining: "+remaining);
         return remaining;
     }
 

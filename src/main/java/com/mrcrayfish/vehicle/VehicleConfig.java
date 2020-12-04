@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle;
 
+import java.util.Map;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -26,6 +27,11 @@ public class VehicleConfig
 
     public static class Server
     {
+        @Config.Name("fuel list")
+        @Config.Comment("fuel: <Fuel Consumption Factor>")
+        @Config.LangKey(Reference.MOD_ID + ".config.server.fuel_list")
+        public Map<String, Double> fuel_list = VehicleFuel.getDefaultFuels();
+
         @Config.Name("Fuel Enabled")
         @Config.Comment("If true, vehicles will require fuel for them to be driven.")
         @Config.LangKey(Reference.MOD_ID + ".config.server.fuel_enabled")
@@ -73,11 +79,13 @@ public class VehicleConfig
         @Config.RangeInt(min = 1)
         public int pumpTransferAmount = 50;
 
+        /*
         @Config.Name("Fuel Consumption Factor")
         @Config.Comment("Change the amount of fuel vehicles consumes by multiplying the consumption rate by this factor")
         @Config.LangKey(Reference.MOD_ID + ".config.erver.fuel_consumption_modifier")
         @Config.RangeDouble(min = 0.0)
         public double fuelConsumptionFactor = 1.0;
+        */
     }
 
     public static class Client

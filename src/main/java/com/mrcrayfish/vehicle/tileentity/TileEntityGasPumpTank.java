@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.init.ModFluids;
+import com.mrcrayfish.vehicle.VehicleFuel;
+//import com.mrcrayfish.vehicle.init.ModFluids;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
@@ -23,7 +24,8 @@ public class TileEntityGasPumpTank extends TileFluidHandlerSynced
             @Override
             public boolean canFillFluidType(FluidStack fluid)
             {
-                return fluid.getFluid() == ModFluids.FUELIUM;
+                //return fluid.getFluid() == ModFluids.FUELIUM;
+                return  VehicleFuel.isFuel(fluid);
             }
         };
         tank.setCanFill(true);
