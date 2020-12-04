@@ -264,16 +264,16 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
         }
 
         ItemStack stack = player.getHeldItem(hand);
-        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        //if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan && this.getCurrentFuelName() == ModFluids.FUELIUM.getName())
         {
-            /*
             ItemJerryCan jerryCan = (ItemJerryCan) stack.getItem();
             int rate = jerryCan.getFillRate(stack);
             int drained = jerryCan.drain(stack, rate);
-            int remaining = this.addFuel(drained);
+            //int remaining = this.addFuel(drained);
+            int remaining = this.addFuel(ModFluids.FUELIUM.getName(), drained);
             jerryCan.fill(stack, remaining);
-            */
-        }
+        }        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
     }
 
     @Override
