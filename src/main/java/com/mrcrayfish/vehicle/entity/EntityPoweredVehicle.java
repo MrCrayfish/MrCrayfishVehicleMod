@@ -273,7 +273,7 @@ public abstract class EntityPoweredVehicle extends EntityVehicle implements IInv
             //int remaining = this.addFuel(drained);
             int remaining = this.addFuel(ModFluids.FUELIUM.getName(), drained);
             jerryCan.fill(stack, remaining);
-        }        if(!stack.isEmpty() && stack.getItem() instanceof ItemJerryCan)
+        }
     }
 
     @Override
