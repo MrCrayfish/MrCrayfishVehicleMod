@@ -180,10 +180,10 @@
     "vehicle.status.key_invalid": "此鑰匙不適合此載具",
     "vehicle.status.key_removed": "此載具不再鎖上",
 
-    "vehicle.tooltip.optional": "§b§7可選的",
+    "vehicle.tooltip.optional": "§b可選的",
     "vehicle.tooltip.required": "§c必需的",
     "vehicle.tooltip.not_applicable": "§7不適用",
-    "vehicle.tooltip.paint_color": "油漆顏色",
+    "vehicle.tooltip.paint_color": "§7油漆顏色",
     "vehicle.tooltip.engine": "引擎",
     "vehicle.tooltip.wheels": "§7輪子",
 
