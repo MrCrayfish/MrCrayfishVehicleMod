@@ -83,9 +83,9 @@
     "item.vehicle.ender_sap_bucket": "Secchio di linfa dell'end",
     "item.vehicle.blaze_juice_bucket": "Secchio di succo di blaze", 
 
-    "fluid.fuelium": "Carburelio",
-    "fluid.ender_sap": "Linfa dell'end",
-    "fluid.blaze_juice": "Succo di blaze",
+    "fluid.vehicle.fuelium": "Carburelio",
+    "fluid.vehicle.ender_sap": "Linfa dell'End",
+    "fluid.vehicle.blaze_juice": "Succo di blaze",
 
     "container.fluid_extractor": "Estrattore di liquidi",
     "container.fluid_mixer": "Miscelatore di liquidi",
