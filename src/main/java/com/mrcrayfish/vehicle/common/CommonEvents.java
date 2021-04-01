@@ -191,11 +191,11 @@ public class CommonEvents
 
         PlayerEntity player = event.getPlayer();
         World world = event.getWorld();
-        if(!world.isRemote)
+        if(!world.isRemote())
         {
-            if(event.getFace() == Direction.UP)
+            if(HeldVehicleDataHandler.isHoldingVehicle(player))
             {
-                if(HeldVehicleDataHandler.isHoldingVehicle(player))
+                if(event.getFace() == Direction.UP)
                 {
                     BlockPos pos = event.getPos();
                     TileEntity tileEntity = event.getWorld().getTileEntity(pos);
@@ -235,11 +235,8 @@ public class CommonEvents
                         return;
                     }
                 }
-            }
 
-            if(player.isCrouching())
-            {
-                if(HeldVehicleDataHandler.isHoldingVehicle(player))
+                if(player.isCrouching())
                 {
                     //Vector3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
                     RayTraceResult result = player.pick(10.0, 0.0F, false);
@@ -257,28 +254,27 @@ public class CommonEvents
                         if(entity instanceof VehicleEntity)
                         {
                             entity.read(tagCompound);
-                            MinecraftServer server = world.getServer();
-                            if(server != null && world.getEntityByID(entity.getEntityId()) == null) //TODO check this. Actually might not need
-                            {
-                                server.deferTask(() ->
-                                {
-                                    //Updates the player capability
-                                    HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
 
-                                    //Sets the positions and spawns the entity
-                                    float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                                    Vector3d heldOffset = ((VehicleEntity) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                            //Sets the positions and spawns the entity
+                            float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
+                            Vector3d heldOffset = ((VehicleEntity) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
 
-                                    entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
-                                    entity.fallDistance = 0.0F;
+                            entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+                            entity.fallDistance = 0.0F;
 
-                                    //Plays place sound
-                                    world.addEntity(entity);
-                                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                                });
-                                event.setCanceled(true);
-                                event.setCancellationResult(ActionResultType.SUCCESS);
-                            }
+                            //Checks if vehicle intersects with any blocks
+                            if(!world.hasNoCollisions(entity, entity.getBoundingBox().grow(0, -0.1, 0)))
+                                return;
+
+                            //Updates the player capability
+                            HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
+
+                            //Plays place sound
+                            world.addEntity(entity);
+                            world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+                            event.setCanceled(true);
+                            event.setCancellationResult(ActionResultType.SUCCESS);
                         }
                     });
                 }
@@ -287,6 +283,7 @@ public class CommonEvents
         else if(HeldVehicleDataHandler.isHoldingVehicle(player))
         {
             event.setCanceled(true);
+            event.setCancellationResult(ActionResultType.FAIL);
         }
     }
 
