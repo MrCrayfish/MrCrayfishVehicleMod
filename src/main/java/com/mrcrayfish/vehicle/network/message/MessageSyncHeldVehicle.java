@@ -43,6 +43,7 @@ public class MessageSyncHeldVehicle implements IMessage<MessageSyncHeldVehicle>
         if(supplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT)
         {
             supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncHeldVehicle(message.entityId, message.vehicleTag));
+            supplier.get().setPacketHandled(true);
         }
     }
 }
