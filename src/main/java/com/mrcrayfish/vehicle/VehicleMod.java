@@ -57,7 +57,6 @@ public class VehicleMod
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
-        new ModLootFunctions(); //Force to initialize static
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
@@ -68,6 +67,7 @@ public class VehicleMod
         VehicleProperties.register();
         ItemLookup.init();
         ModDataKeys.register();
+        ModLootFunctions.init(); //Force to initialize static
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
