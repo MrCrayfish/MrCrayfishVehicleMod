@@ -7,31 +7,32 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -59,12 +61,28 @@ import java.util.List;
 public class BlockVehicleCrate extends BlockRotatedObject
 {
     public static final List<ResourceLocation> REGISTERED_CRATES = new ArrayList<>();
-
-    private static final AxisAlignedBB PANEL = new Bounds(0, 0, 0, 16, 2, 16).toAABB(); //TODO add collisions back
+    private static final VoxelShape PANEL = makeCuboidShape(0, 0, 0, 16, 2, 16);
 
     public BlockVehicleCrate()
     {
-        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
+        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).variableOpacity().notSolid().hardnessAndResistance(1.5F, 5.0F));
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    {
+        REGISTERED_CRATES.forEach(resourceLocation ->
+        {
+            CompoundNBT blockEntityTag = new CompoundNBT();
+            blockEntityTag.putString("Vehicle", resourceLocation.toString());
+            blockEntityTag.putInt("EngineTier", EngineTier.WOOD.ordinal());
+            blockEntityTag.putInt("WheelType", WheelType.STANDARD.ordinal());
+            CompoundNBT itemTag = new CompoundNBT();
+            itemTag.put("BlockEntityTag", blockEntityTag);
+            ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());
+            stack.setTag(itemTag);
+            items.add(stack);
+        });
     }
 
     @Override
@@ -74,20 +92,11 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        return VoxelShapes.empty();
-    }
-
-    @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
-        return VoxelShapes.empty();
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if(te instanceof VehicleCrateTileEntity && ((VehicleCrateTileEntity)te).isOpened())
+            return PANEL;
         return VoxelShapes.fullCube();
     }
 

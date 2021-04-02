@@ -32,7 +32,7 @@ public class ModBlocks
     public static final RegistryObject<Block> FUEL_DRUM = register("fuel_drum", new BlockFuelDrum());
     public static final RegistryObject<Block> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new BlockIndustrialFuelDrum());
     public static final RegistryObject<Block> WORKSTATION = register("workstation", new BlockWorkstation());
-    public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new BlockVehicleCrate(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1)));
+    public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new BlockVehicleCrate(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Block> JACK = register("jack", new BlockJack());
     public static final RegistryObject<FlowingFluidBlock> FUELIUM = register("fuelium", new FlowingFluidBlock(ModFluids.FLOWING_FUELIUM, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> ENDER_SAP = register("ender_sap", new FlowingFluidBlock(ModFluids.FLOWING_ENDER_SAP, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
