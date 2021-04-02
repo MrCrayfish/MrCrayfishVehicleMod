@@ -194,31 +194,30 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        String vehicle = "vehicle";
+        ITextComponent vehicleName = EntityType.PIG.getName();
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null)
         {
             if(tagCompound.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
             {
                 CompoundNBT blockEntityTag = tagCompound.getCompound("BlockEntityTag");
-                vehicle = blockEntityTag.getString("Vehicle");
-                if(!Strings.isNullOrEmpty(vehicle))
+                String entityType = blockEntityTag.getString("Vehicle");
+                if(!Strings.isNullOrEmpty(entityType))
                 {
-                    vehicle = I18n.format("entity.vehicle." + vehicle.split(":")[1]);
-                    list.add(new StringTextComponent(TextFormatting.BLUE + vehicle));
+                    vehicleName = EntityType.byKey(entityType).orElse(EntityType.PIG).getName();
+                    list.add(vehicleName.deepCopy().mergeStyle(TextFormatting.BLUE));
                 }
             }
         }
 
-        /*if(Screen.hasShiftDown())
+        if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getTranslationKey() + ".info", vehicle);
-            list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info", vehicleName), 150));
         }
         else
         {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
-        }*/
+            list.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+        }
     }
 
     //TODO turn this into a builder

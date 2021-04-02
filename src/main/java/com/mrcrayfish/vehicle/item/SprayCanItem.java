@@ -47,9 +47,9 @@ public class SprayCanItem extends Item implements IDyeable
     @Override
     public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
-        if (Screen.hasShiftDown())
+        if(Screen.hasShiftDown())
         {
-            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent("item.vehicle.spray_can.info"), 150));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
         }
         else
         {
@@ -59,7 +59,7 @@ public class SprayCanItem extends Item implements IDyeable
             }
             else
             {
-                tooltip.add(new TranslationTextComponent("item.vehicle.spray_can.empty"));
+                tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".empty"));
             }
             tooltip.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
         }
