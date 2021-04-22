@@ -23,11 +23,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.util.text.*;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -238,6 +234,6 @@ public class RenderUtil
     public static List<ITextComponent> lines(ITextProperties text, int maxWidth)
     {
         List<ITextProperties> lines = Minecraft.getInstance().fontRenderer.func_238420_b_().func_238362_b_(text, maxWidth, Style.EMPTY);
-        return lines.stream().map(t -> new StringTextComponent(t.getString())).collect(Collectors.toList());
+        return lines.stream().map(t -> new StringTextComponent(t.getString()).mergeStyle(TextFormatting.GRAY)).collect(Collectors.toList());
     }
 }

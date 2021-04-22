@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class BlockWorkstation extends BlockRotatedObject
 {
-    private final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
+    private static final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
     public BlockWorkstation()
     {

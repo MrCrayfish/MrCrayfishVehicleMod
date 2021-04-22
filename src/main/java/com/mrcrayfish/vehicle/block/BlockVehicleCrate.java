@@ -7,31 +7,32 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.DiggingParticle;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -41,6 +42,7 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
@@ -59,12 +61,28 @@ import java.util.List;
 public class BlockVehicleCrate extends BlockRotatedObject
 {
     public static final List<ResourceLocation> REGISTERED_CRATES = new ArrayList<>();
-
-    private static final AxisAlignedBB PANEL = new Bounds(0, 0, 0, 16, 2, 16).toAABB(); //TODO add collisions back
+    private static final VoxelShape PANEL = makeCuboidShape(0, 0, 0, 16, 2, 16);
 
     public BlockVehicleCrate()
     {
-        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).hardnessAndResistance(1.5F, 5.0F).variableOpacity());
+        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).variableOpacity().notSolid().hardnessAndResistance(1.5F, 5.0F));
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    {
+        REGISTERED_CRATES.forEach(resourceLocation ->
+        {
+            CompoundNBT blockEntityTag = new CompoundNBT();
+            blockEntityTag.putString("Vehicle", resourceLocation.toString());
+            blockEntityTag.putInt("EngineTier", EngineTier.WOOD.ordinal());
+            blockEntityTag.putInt("WheelType", WheelType.STANDARD.ordinal());
+            CompoundNBT itemTag = new CompoundNBT();
+            itemTag.put("BlockEntityTag", blockEntityTag);
+            ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());
+            stack.setTag(itemTag);
+            items.add(stack);
+        });
     }
 
     @Override
@@ -74,20 +92,11 @@ public class BlockVehicleCrate extends BlockRotatedObject
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        return VoxelShapes.empty();
-    }
-
-    @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader worldIn, BlockPos pos)
-    {
-        return VoxelShapes.empty();
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
+        TileEntity te = worldIn.getTileEntity(pos);
+        if(te instanceof VehicleCrateTileEntity && ((VehicleCrateTileEntity)te).isOpened())
+            return PANEL;
         return VoxelShapes.fullCube();
     }
 
@@ -194,31 +203,30 @@ public class BlockVehicleCrate extends BlockRotatedObject
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        String vehicle = "vehicle";
+        ITextComponent vehicleName = EntityType.PIG.getName();
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null)
         {
             if(tagCompound.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
             {
                 CompoundNBT blockEntityTag = tagCompound.getCompound("BlockEntityTag");
-                vehicle = blockEntityTag.getString("Vehicle");
-                if(!Strings.isNullOrEmpty(vehicle))
+                String entityType = blockEntityTag.getString("Vehicle");
+                if(!Strings.isNullOrEmpty(entityType))
                 {
-                    vehicle = I18n.format("entity.vehicle." + vehicle.split(":")[1]);
-                    list.add(new StringTextComponent(TextFormatting.BLUE + vehicle));
+                    vehicleName = EntityType.byKey(entityType).orElse(EntityType.PIG).getName();
+                    list.add(vehicleName.deepCopy().mergeStyle(TextFormatting.BLUE));
                 }
             }
         }
 
-        /*if(Screen.hasShiftDown())
+        if(Screen.hasShiftDown())
         {
-            String info = I18n.format(this.getTranslationKey() + ".info", vehicle);
-            list.addAll(Minecraft.getInstance().fontRenderer.listFormattedStringToWidth(info, 150).stream().map((Function<String, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info", vehicleName), 150));
         }
         else
         {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
-        }*/
+            list.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+        }
     }
 
     //TODO turn this into a builder

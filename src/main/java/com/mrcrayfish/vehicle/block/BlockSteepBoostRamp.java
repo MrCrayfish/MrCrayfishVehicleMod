@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.BoostTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -70,17 +71,16 @@ public class BlockSteepBoostRamp extends BlockRotatedObject
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        /*if(Screen.hasShiftDown())
+        if(Screen.hasShiftDown())
         {
-            list.addAll(Minecraft.getInstance().fontRenderer.func_238425_b_(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150).stream().map((Function<ITextProperties, ITextComponent>) StringTextComponent::new).collect(Collectors.toList()));
+            list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
         }
         else
         {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
-        }*/
+            list.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+        }
     }
 
     @Override

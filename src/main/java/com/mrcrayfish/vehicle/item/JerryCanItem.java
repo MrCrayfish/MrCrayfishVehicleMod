@@ -7,8 +7,10 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -37,6 +39,17 @@ public class JerryCanItem extends Item
         super(properties);
         this.capacity = capacity;
         this.fillRate = fillRate;
+    }
+
+    @Override
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    {
+        if (this.isInGroup(group))
+        {
+            ItemStack stack = new ItemStack(this);
+            this.fill(stack, this.getCapacity(stack));
+            items.add(stack);
+        }
     }
 
     @Override

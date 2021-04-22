@@ -48,8 +48,7 @@ import java.util.Map;
 public class BlockGasPump extends BlockRotatedObject
 {
     public static final BooleanProperty TOP = BooleanProperty.create("top");
-
-    private final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
+    private static final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
     public BlockGasPump()
     {
@@ -59,14 +58,14 @@ public class BlockGasPump extends BlockRotatedObject
 
     private VoxelShape getShape(BlockState state)
     {
-        if(SHAPES.containsKey(state))
+        if (SHAPES.containsKey(state))
         {
             return SHAPES.get(state);
         }
         Direction direction = state.get(DIRECTION);
         boolean top = state.get(TOP);
         List<VoxelShape> shapes = new ArrayList<>();
-        if(top)
+        if (top)
         {
             shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(3, -16, 0, 13, 15, 16), Direction.EAST))[direction.getHorizontalIndex()]);
         }
@@ -86,80 +85,73 @@ public class BlockGasPump extends BlockRotatedObject
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
-        return this.getShape(state);
-    }
-
-    @Override
     public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(!world.isRemote)
+        if (world.isRemote())
+            return ActionResultType.SUCCESS;
+        if (state.get(TOP))
         {
-            if(state.get(TOP))
+            TileEntity tileEntity = world.getTileEntity(pos);
+            if (tileEntity instanceof GasPumpTileEntity)
             {
-                TileEntity tileEntity = world.getTileEntity(pos);
-                if(tileEntity instanceof GasPumpTileEntity)
+                GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
+                if (gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerEntity.getEntityId())
                 {
-                    GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
-                    if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerEntity.getEntityId())
-                    {
-                        gasPump.setFuelingEntity(null);
-                        world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    }
-                    else if(state.get(DIRECTION).rotateY().equals(result.getFace()))
-                    {
-                        gasPump.setFuelingEntity(playerEntity);
-                        world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    }
+                    gasPump.setFuelingEntity(null);
+                    world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                }
+                else if (state.get(DIRECTION).rotateY().equals(result.getFace()))
+                {
+                    gasPump.setFuelingEntity(playerEntity);
+                    world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
             }
-            else
-            {
-                ItemStack stack = playerEntity.getHeldItem(hand);
+        }
+        else
+        {
+            ItemStack stack = playerEntity.getHeldItem(hand);
 
-                if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+            if (FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+            {
+                return ActionResultType.CONSUME;
+            }
+
+            if (stack.getItem() instanceof JerryCanItem)
+            {
+                JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
+                if (jerryCan.isFull(stack))
                 {
-                    return ActionResultType.SUCCESS;
+                    return ActionResultType.CONSUME;
                 }
 
-                if(stack.getItem() instanceof JerryCanItem)
+                TileEntity tileEntity = world.getTileEntity(pos);
+                if (tileEntity != null)
                 {
-                    JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
-                    if(jerryCan.isFull(stack))
+                    IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
+                    if (handler instanceof FluidTank)
                     {
-                        return ActionResultType.SUCCESS;
-                    }
-
-                    TileEntity tileEntity = world.getTileEntity(pos);
-                    if(tileEntity != null)
-                    {
-                        IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
-                        if(handler instanceof FluidTank)
+                        FluidTank tank = (FluidTank) handler;
+                        if (tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
                         {
-                            FluidTank tank = (FluidTank) handler;
-                            if(tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
-                            {
-                                return ActionResultType.SUCCESS;
-                            }
-
-                            FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                            if(fluidStack != null)
-                            {
-                                int remaining = jerryCan.fill(stack, fluidStack.getAmount());
-                                if(remaining > 0)
-                                {
-                                    fluidStack.setAmount(remaining);
-                                    handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                                }
-                            }
-                            return ActionResultType.SUCCESS;
+                            return ActionResultType.CONSUME;
                         }
+
+                        FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
+                        if (fluidStack != null)
+                        {
+                            int remaining = jerryCan.fill(stack, fluidStack.getAmount());
+                            if (remaining > 0)
+                            {
+                                fluidStack.setAmount(remaining);
+                                handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                            }
+                        }
+                        return ActionResultType.CONSUME;
                     }
                 }
             }
         }
-        return ActionResultType.SUCCESS;
+        return ActionResultType.FAIL;
     }
 
     @Override
@@ -175,35 +167,34 @@ public class BlockGasPump extends BlockRotatedObject
     }
 
     @Override
-    public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
+    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        if(state.get(TOP))
+        if (!world.isRemote())
         {
-            if(worldIn.getBlockState(pos.down()).getBlock() instanceof BlockGasPump)
+            boolean top = state.get(TOP);
+            BlockPos blockpos = pos.offset(top ? Direction.DOWN : Direction.UP);
+            BlockState blockstate = world.getBlockState(blockpos);
+            if (blockstate.getBlock() == state.getBlock() && blockstate.get(TOP) != top)
             {
-                worldIn.setBlockState(pos.down(), Blocks.AIR.getDefaultState());
+                world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
+                world.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
             }
         }
-        else
-        {
-            if(worldIn.getBlockState(pos.up()).getBlock() instanceof BlockGasPump)
-            {
-                worldIn.setBlockState(pos.up(), Blocks.AIR.getDefaultState());
-            }
-        }
+
+        super.onBlockHarvested(world, pos, state, player);
     }
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-        if(state.get(TOP))
+        if (state.get(TOP))
         {
             Vector3d origin = builder.get(LootParameters.field_237457_g_);
-            if(origin != null)
+            if (origin != null)
             {
                 BlockPos pos = new BlockPos(origin);
                 TileEntity tileEntity = builder.getWorld().getTileEntity(pos.down());
-                if(tileEntity != null)
+                if (tileEntity != null)
                 {
                     builder = builder.withParameter(LootParameters.BLOCK_ENTITY, tileEntity);
                 }
@@ -229,7 +220,7 @@ public class BlockGasPump extends BlockRotatedObject
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        if(state.get(TOP))
+        if (state.get(TOP))
         {
             return new GasPumpTileEntity();
         }

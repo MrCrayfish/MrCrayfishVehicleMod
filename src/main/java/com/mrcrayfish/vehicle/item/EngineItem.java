@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,17 +47,16 @@ public class EngineItem extends PartItem
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        String tierName = I18n.format("vehicle.engine_tier." + this.engineTier.getTierName() + ".name");
-        tooltip.add(new StringTextComponent(this.engineTier.getTierColor() + TextFormatting.BOLD.toString() + tierName));
+        tooltip.add(new TranslationTextComponent("vehicle.engine_tier." + this.engineTier.getTierName() + ".name").mergeStyle(this.engineTier.getTierColor(), TextFormatting.BOLD));
         if(Screen.hasShiftDown())
         {
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.acceleration") + ": " + TextFormatting.RESET + this.engineTier.getAccelerationMultiplier() + "x"));
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.additional_max_speed") + ": " + TextFormatting.RESET + (this.engineTier.getAdditionalMaxSpeed() * 3.6) + "kph"));
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.engine_info.fuel_consumption") + ": " + TextFormatting.RESET + this.engineTier.getFuelConsumption() + "pt"));
+            tooltip.add(new TranslationTextComponent("vehicle.engine_info.acceleration").appendString(": ").mergeStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getAccelerationMultiplier() + "x").mergeStyle(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("vehicle.engine_info.additional_max_speed").appendString(": ").mergeStyle(TextFormatting.YELLOW).append(new StringTextComponent((this.engineTier.getAdditionalMaxSpeed() * 3.6) + "kph").mergeStyle(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("vehicle.engine_info.fuel_consumption").appendString(": ").mergeStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getFuelConsumption() + "pt").mergeStyle(TextFormatting.WHITE)));
         }
         else
         {
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
+            tooltip.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
         }
     }
 }

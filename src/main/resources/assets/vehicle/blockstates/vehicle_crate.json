@@ -1,10 +1,5 @@
 {
     "variants": {
-        "facing": {
-            "facing=north": { "model": "vehicle:block/vehicle_crate" },
-            "facing=east":  { "model": "vehicle:block/vehicle_crate" },
-            "facing=west":  { "model": "vehicle:block/vehicle_crate" },
-            "facing=south": { "model": "vehicle:block/vehicle_crate" }
-        }
+        "": { "model": "vehicle:block/vehicle_crate" }
     }
 }

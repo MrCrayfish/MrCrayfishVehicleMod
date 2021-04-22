@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
@@ -67,11 +68,11 @@ public class BlockFuelDrum extends BlockRotatedObject
     {
         if(Screen.hasShiftDown())
         {
-            list.addAll(RenderUtil.lines(new TranslationTextComponent("tile.vehicle.fuel_drum.info"), 150));
+            list.addAll(RenderUtil.lines(new TranslationTextComponent(ModBlocks.FUEL_DRUM.get().getTranslationKey() + ".info"), 150));
         }
         else
         {
-            list.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
+            list.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
         }
     }
 
