@@ -159,7 +159,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
             for(int i = 0; i < storage.getSizeInventory(); i++)
             {
                 ItemStack stack = storage.getStackInSlot(i);
-                if(!stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable)
+                if(!stack.isEmpty() && this.isSeed(stack))
                 {
                     return stack;
                 }
