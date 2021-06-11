@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;

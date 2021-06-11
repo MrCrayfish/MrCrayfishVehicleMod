@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client;
+package com.mrcrayfish.vehicle.client.handler;
 
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.vehicle.client.render.layer.LayerHeldVehicle;
@@ -22,7 +22,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public class HeldVehicleEvents
+public class HeldVehicleHandler
 {
     private static boolean setupExtraLayers = false;
 

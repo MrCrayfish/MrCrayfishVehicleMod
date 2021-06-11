@@ -2,8 +2,8 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
-import com.mrcrayfish.vehicle.client.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.ISpecialModel;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;

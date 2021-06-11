@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.network.ClientPlayHandler;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -48,7 +48,16 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     @Override
     public void handle(MessageSyncInventory message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncStorageInventory(message.entityId, message.compound));
-        supplier.get().setPacketHandled(true);
+        IMessage.enqueueTask(supplier, () -> ClientPlayHandler.handleSyncInventory(message));
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
+    }
+
+    public CompoundNBT getCompound()
+    {
+        return this.compound;
     }
 }

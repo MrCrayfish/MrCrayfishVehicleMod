@@ -15,4 +15,10 @@ public interface IMessage<T>
     T decode(PacketBuffer buffer);
 
     void handle(T message, Supplier<NetworkEvent.Context> supplier);
+
+    static void enqueueTask(Supplier<NetworkEvent.Context> supplier, Runnable runnable)
+    {
+        supplier.get().enqueueWork(runnable);
+        supplier.get().setPacketHandled(true);
+    }
 }

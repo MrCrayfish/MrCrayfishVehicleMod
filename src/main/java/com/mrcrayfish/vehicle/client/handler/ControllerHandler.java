@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client;
+package com.mrcrayfish.vehicle.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
@@ -7,6 +7,7 @@ import com.mrcrayfish.controllable.event.AvailableActionsEvent;
 import com.mrcrayfish.controllable.event.ControllerEvent;
 import com.mrcrayfish.controllable.event.RenderPlayerPreviewEvent;
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.client.ClientHandler;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
@@ -14,7 +15,6 @@ import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
-import com.mrcrayfish.vehicle.proxy.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -28,10 +28,12 @@ import org.lwjgl.glfw.GLFW;
 import java.util.Map;
 
 /**
+ * Manages controller input
+ *
  * Author: MrCrayfish
  */
 @OnlyIn(Dist.CLIENT)
-public class ControllerEvents
+public class ControllerHandler
 {
     @SubscribeEvent
     public void onButtonInput(ControllerEvent.ButtonInput event)
@@ -185,7 +187,7 @@ public class ControllerEvents
     public static boolean isRightClicking()
     {
         boolean isRightClicking = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
-        isRightClicking |= ClientProxy.controllableLoaded && Controllable.getController() != null && Controllable.getController().getLTriggerValue() != 0.0F;
+        isRightClicking |= ClientHandler.isControllableLoaded() && Controllable.getController() != null && Controllable.getController().getLTriggerValue() != 0.0F;
         return isRightClicking;
     }
 }

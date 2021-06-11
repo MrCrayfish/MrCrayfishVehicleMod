@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.network.ClientPlayHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fluids.FluidStack;
@@ -40,7 +41,16 @@ public class MessageEntityFluid implements IMessage<MessageEntityFluid>
     @Override
     public void handle(MessageEntityFluid message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncEntityFluid(message.entityId, message.stack));
-        supplier.get().setPacketHandled(true);
+        IMessage.enqueueTask(supplier, () -> ClientPlayHandler.handleEntityFluid(message));
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
+    }
+
+    public FluidStack getStack()
+    {
+        return this.stack;
     }
 }

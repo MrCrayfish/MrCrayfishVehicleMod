@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAltitude;
 import com.mrcrayfish.vehicle.network.message.MessageTravelProperties;
@@ -216,15 +217,15 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         Entity entity = this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            AltitudeChange altitudeChange = VehicleMod.PROXY.getAltitudeChange();
+            AltitudeChange altitudeChange = VehicleHelper.getAltitudeChange();
             if(this.getAltitudeChange() != altitudeChange)
             {
                 this.setAltitudeChange(altitudeChange);
                 PacketHandler.instance.sendToServer(new MessageAltitude(altitudeChange));
             }
 
-            float travelDirection = VehicleMod.PROXY.getTravelDirection(this);
-            float travelSpeed = VehicleMod.PROXY.getTravelSpeed(this);
+            float travelDirection = VehicleHelper.getTravelDirection(this);
+            float travelSpeed = VehicleHelper.getTravelSpeed(this);
             this.setTravelDirection(travelDirection);
             this.setTravelSpeed(travelSpeed);
             PacketHandler.instance.sendToServer(new MessageTravelProperties(travelSpeed, travelDirection));

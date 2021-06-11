@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageFlaps;
 import net.minecraft.client.Minecraft;
@@ -74,7 +75,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            FlapDirection flapDirection = VehicleMod.PROXY.getFlapDirection();
+            FlapDirection flapDirection = VehicleHelper.getFlapDirection();
             if(this.getFlapDirection() != flapDirection)
             {
                 this.setFlapDirection(flapDirection);

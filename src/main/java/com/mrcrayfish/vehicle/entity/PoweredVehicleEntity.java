@@ -4,8 +4,9 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
-import com.mrcrayfish.vehicle.client.ISpecialModel;
-import com.mrcrayfish.vehicle.client.SpecialModels;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.client.model.ISpecialModel;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
@@ -600,7 +601,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         {
                             dirVec = dirVec.scale(this.currentSpeed / 3F);
                         }
-                        VehicleMod.PROXY.spawnWheelParticle(pos, state, this.getPosX() + wheelX, this.getPosY() + wheelY, this.getPosZ() + wheelZ, dirVec);
+                        if(this.world.isRemote())
+                        {
+                            VehicleHelper.spawnWheelParticle(pos, state, this.getPosX() + wheelX, this.getPosY() + wheelY, this.getPosZ() + wheelZ, dirVec);
+                        }
                     }
                 }
             }
@@ -627,32 +631,32 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         if(entity instanceof LivingEntity && entity.equals(Minecraft.getInstance().player))
         {
             LivingEntity livingEntity = (LivingEntity) entity;
-            float power = VehicleMod.PROXY.getPower(this);
+            float power = VehicleHelper.getPower(this);
             if(power != this.getPower())
             {
                 this.setPower(power);
                 PacketHandler.instance.sendToServer(new MessagePower(power));
             }
 
-            AccelerationDirection acceleration = VehicleMod.PROXY.getAccelerationDirection(livingEntity);
+            AccelerationDirection acceleration = VehicleHelper.getAccelerationDirection(livingEntity);
             if(this.getAcceleration() != acceleration)
             {
                 this.setAcceleration(acceleration);
                 PacketHandler.instance.sendToServer(new MessageAccelerating(acceleration));
             }
 
-            boolean horn = VehicleMod.PROXY.isHonking();
+            boolean horn = VehicleHelper.isHonking();
             this.setHorn(horn);
             PacketHandler.instance.sendToServer(new MessageHorn(horn));
 
-            TurnDirection direction = VehicleMod.PROXY.getTurnDirection(livingEntity);
+            TurnDirection direction = VehicleHelper.getTurnDirection(livingEntity);
             if(this.getTurnDirection() != direction)
             {
                 this.setTurnDirection(direction);
                 PacketHandler.instance.sendToServer(new MessageTurnDirection(direction));
             }
 
-            float targetTurnAngle = VehicleMod.PROXY.getTargetTurnAngle(this, false);
+            float targetTurnAngle = VehicleHelper.getTargetTurnAngle(this, false);
             this.setTargetTurnAngle(targetTurnAngle);
             PacketHandler.instance.sendToServer(new MessageTurnAngle(targetTurnAngle));
         }
@@ -796,7 +800,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625).rotateYaw(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
                     //Vector3d seatVec = Vector3d.ZERO;
                     passenger.setPosition(this.getPosX() - seatVec.x, this.getPosY() + seatVec.y + passenger.getYOffset(), this.getPosZ() - seatVec.z);
-                    if(VehicleMod.PROXY.canApplyVehicleYaw(passenger))
+                    if(this.world.isRemote() && VehicleHelper.canApplyVehicleYaw(passenger))
                     {
                         passenger.rotationYaw -= this.deltaYaw;
                         passenger.setRotationYawHead(passenger.rotationYaw);
@@ -1169,9 +1173,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
-        if(passenger instanceof PlayerEntity && world.isRemote)
+        if(passenger instanceof PlayerEntity && this.world.isRemote())
         {
-            VehicleMod.PROXY.playVehicleSound((PlayerEntity) passenger, this);
+            VehicleHelper.playVehicleSound((PlayerEntity) passenger, this);
         }
     }
 
@@ -1573,13 +1577,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         @OnlyIn(Dist.CLIENT)
         public void playOpenSound()
         {
-            VehicleMod.PROXY.playSound(this.openSound, this.openVolume, this.openPitch);
+            VehicleHelper.playSound(this.openSound, this.openVolume, this.openPitch);
         }
 
         @OnlyIn(Dist.CLIENT)
         public void playCloseSound()
         {
-            VehicleMod.PROXY.playSound(this.closeSound, this.closeVolume, this.closePitch);
+            VehicleHelper.playSound(this.closeSound, this.closeVolume, this.closePitch);
         }
     }
 }

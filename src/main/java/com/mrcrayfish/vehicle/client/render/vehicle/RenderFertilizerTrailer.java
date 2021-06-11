@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;

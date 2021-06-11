@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -15,6 +16,8 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.DistExecutor;
 
 /**
  * Author: MrCrayfish
@@ -67,7 +70,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            boolean drifting = VehicleMod.PROXY.isDrifting();
+            boolean drifting = VehicleHelper.isDrifting();
             if(this.isDrifting() != drifting)
             {
                 this.setDrifting(drifting);
@@ -154,16 +157,22 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     @Override
     protected void updateTurning()
     {
-        this.turnAngle = VehicleMod.PROXY.getTargetTurnAngle(this, this.isDrifting());
-        this.wheelAngle = this.turnAngle * Math.max(0.1F, 1.0F - Math.abs(currentSpeed / this.getMaxSpeed()));
+        this.turnAngle = 0F;
+
+        if(this.world.isRemote())
+        {
+            this.turnAngle = VehicleHelper.getTargetTurnAngle(this, this.isDrifting());
+        }
+
+        this.wheelAngle = this.turnAngle * Math.max(0.1F, 1.0F - Math.abs(this.currentSpeed / this.getMaxSpeed()));
 
         VehicleProperties properties = this.getProperties();
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
         {
-            this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
+            this.deltaYaw = this.wheelAngle * (this.currentSpeed / 30F) / 2F;
         }
 
-        if(world.isRemote)
+        if(this.world.isRemote)
         {
             this.targetWheelAngle = this.isDrifting() ? -35F * (this.turnAngle / (float) this.getMaxTurnAngle()) * this.getNormalSpeed() : this.wheelAngle - 35F * (this.turnAngle / (float) this.getMaxTurnAngle()) * drifting;
             this.renderWheelAngle = this.renderWheelAngle + (this.targetWheelAngle - this.renderWheelAngle) * (this.isDrifting() ? 0.35F : 0.5F);

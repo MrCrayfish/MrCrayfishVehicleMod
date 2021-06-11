@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.HeldVehicleEvents;
+import com.mrcrayfish.vehicle.client.handler.HeldVehicleHandler;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -55,7 +55,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
             {
                 matrixStack.push();
                 {
-                    HeldVehicleEvents.AnimationCounter counter = HeldVehicleEvents.idToCounter.get(playerEntity.getUniqueID());
+                    HeldVehicleHandler.AnimationCounter counter = HeldVehicleHandler.idToCounter.get(playerEntity.getUniqueID());
                     if(counter != null)
                     {
                         float width = this.cachedEntity.getWidth() / 2;

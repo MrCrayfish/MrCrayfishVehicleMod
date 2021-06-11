@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client;
+package com.mrcrayfish.vehicle.client.model;
 
 import net.minecraft.client.renderer.model.IBakedModel;
 

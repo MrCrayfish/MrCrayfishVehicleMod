@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.entity.vehicle.ShoppingCartEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

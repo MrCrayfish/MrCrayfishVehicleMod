@@ -2,13 +2,20 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.common.Mod;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -19,6 +26,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class VehicleProperties
 {
     private static final Map<EntityType<?>, VehicleProperties> PROPERTIES_MAP = new HashMap<>();
@@ -34,6 +42,19 @@ public class VehicleProperties
     public static VehicleProperties getProperties(EntityType<?> entityType)
     {
         return PROPERTIES_MAP.get(entityType);
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event)
+    {
+        PlayerEntity player = Minecraft.getInstance().player;
+        if(event.phase != TickEvent.Phase.END || player == null)
+            return;
+
+        if(!Config.CLIENT.reloadVehiclePropertiesEachTick.get())
+            return;
+
+        VehicleProperties.register();
     }
 
     public static void register()

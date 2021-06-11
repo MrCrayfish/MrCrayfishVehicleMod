@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
+import com.mrcrayfish.vehicle.client.handler.ControllerHandler;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
@@ -25,7 +26,7 @@ public interface RayTraceFunction
      */
     RayTraceFunction FUNCTION_FUELING = (rayTracer, result, player) ->
     {
-        if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent() && ControllerEvents.isRightClicking())
+        if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent() && ControllerHandler.isRightClicking())
         {
             Entity entity = result.getEntity();
             if(entity instanceof PoweredVehicleEntity)
@@ -46,7 +47,7 @@ public interface RayTraceFunction
         for(Hand hand : Hand.values())
         {
             ItemStack stack = player.getHeldItem(hand);
-            if(!stack.isEmpty() && stack.getItem() instanceof JerryCanItem && ControllerEvents.isRightClicking())
+            if(!stack.isEmpty() && stack.getItem() instanceof JerryCanItem && ControllerHandler.isRightClicking())
             {
                 Entity entity = result.getEntity();
                 if(entity instanceof PoweredVehicleEntity)

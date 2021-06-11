@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -96,7 +97,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         if(this.opened)
         {
             this.timer += 5;
-            if(this.world.isRemote)
+            if(this.world != null && this.world.isRemote())
             {
                 if(this.entityId != null && this.entity == null)
                 {
@@ -106,7 +107,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                         this.entity = entityType.create(this.world);
                         if(this.entity != null)
                         {
-                            VehicleMod.PROXY.playSound(SoundEvents.ENTITY_ITEM_BREAK, this.pos, 1.0F, 0.5F);
+                            VehicleHelper.playSound(SoundEvents.ENTITY_ITEM_BREAK, this.pos, 1.0F, 0.5F);
                             List<EntityDataManager.DataEntry<?>> entryList = this.entity.getDataManager().getAll();
                             if(entryList != null)
                             {
@@ -152,11 +153,11 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                 if(this.timer == 90 || this.timer == 110 || this.timer == 130 || this.timer == 150)
                 {
                     float pitch = (float) (0.9F + 0.2F * RAND.nextDouble());
-                    VehicleMod.PROXY.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND.get(), this.pos, 1.0F, pitch);
+                    VehicleHelper.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND.get(), this.pos, 1.0F, pitch);
                 }
                 if(this.timer == 150)
                 {
-                    VehicleMod.PROXY.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, this.pos, 1.0F, 1.0F);
+                    VehicleHelper.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, this.pos, 1.0F, 1.0F);
                     this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, false, this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5, 0, 0, 0);
                 }
             }

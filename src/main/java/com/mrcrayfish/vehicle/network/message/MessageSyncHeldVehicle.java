@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.network.ClientPlayHandler;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
@@ -42,8 +42,17 @@ public class MessageSyncHeldVehicle implements IMessage<MessageSyncHeldVehicle>
     {
         if(supplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT)
         {
-            supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncHeldVehicle(message.entityId, message.vehicleTag));
-            supplier.get().setPacketHandled(true);
+            IMessage.enqueueTask(supplier, () -> ClientPlayHandler.handleSyncHeldVehicle(message));
         }
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
+    }
+
+    public CompoundNBT getVehicleTag()
+    {
+        return this.vehicleTag;
     }
 }

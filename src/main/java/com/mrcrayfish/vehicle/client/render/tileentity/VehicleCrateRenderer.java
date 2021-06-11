@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.block.BlockRotatedObject;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.client.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
