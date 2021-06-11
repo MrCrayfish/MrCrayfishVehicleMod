@@ -25,9 +25,10 @@ minecraft {
             workingDirectory project.file('run')
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                examplemod {
+                vehicle {
                     source sourceSets.main
                 }
             }
@@ -37,9 +38,10 @@ minecraft {
             workingDirectory project.file('run')
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                modid {
+                vehicle {
                     source sourceSets.main
                 }
             }
@@ -50,9 +52,9 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'cgm', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'vehicle', '--all', '--output', file('src/generated/resources/')
             mods {
-                modid {
+                vehicle {
                     source sourceSets.main
                 }
             }
