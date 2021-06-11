@@ -76,7 +76,7 @@ public class CopyFluidTanks extends LootFunction
     }
 
     @Override
-    public LootFunctionType func_230425_b_()
+    public LootFunctionType getFunctionType()
     {
         return ModLootFunctions.COPY_FLUID_TANKS;
     }

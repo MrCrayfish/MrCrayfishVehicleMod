@@ -82,14 +82,14 @@ public class ClientEvents
                         Entity entity = event.getEntityBeingMounted();
                         if(entity instanceof VehicleEntity)
                         {
-                            originalPointOfView = Minecraft.getInstance().gameSettings.func_243230_g();
-                            Minecraft.getInstance().gameSettings.func_243229_a(PointOfView.THIRD_PERSON_BACK);
+                            this.originalPointOfView = Minecraft.getInstance().gameSettings.getPointOfView();
+                            Minecraft.getInstance().gameSettings.setPointOfView(PointOfView.THIRD_PERSON_BACK);
                         }
                     }
-                    else if(originalPointOfView != null)
+                    else if(this.originalPointOfView != null)
                     {
-                        Minecraft.getInstance().gameSettings.func_243229_a(originalPointOfView);
-                        originalPointOfView = null;
+                        Minecraft.getInstance().gameSettings.setPointOfView(this.originalPointOfView);
+                        this.originalPointOfView = null;
                     }
                 }
             }
@@ -218,7 +218,7 @@ public class ClientEvents
     {
         PlayerEntity player = event.getPlayer();
 
-        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().gameSettings.func_243230_g() == PointOfView.FIRST_PERSON)
+        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)
             return;
 
         Entity ridingEntity = player.getRidingEntity();

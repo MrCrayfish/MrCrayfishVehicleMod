@@ -65,7 +65,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             }
         }
 
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override

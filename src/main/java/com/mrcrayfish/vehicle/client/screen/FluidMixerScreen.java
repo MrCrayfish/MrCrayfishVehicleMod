@@ -97,7 +97,7 @@ public class FluidMixerScreen extends ContainerScreen<FluidMixerContainer>
             }
         }
 
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override

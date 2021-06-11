@@ -233,7 +233,7 @@ public class RenderUtil
 
     public static List<ITextComponent> lines(ITextProperties text, int maxWidth)
     {
-        List<ITextProperties> lines = Minecraft.getInstance().fontRenderer.func_238420_b_().func_238362_b_(text, maxWidth, Style.EMPTY);
+        List<ITextProperties> lines = Minecraft.getInstance().fontRenderer.getCharacterManager().func_238362_b_(text, maxWidth, Style.EMPTY);
         return lines.stream().map(t -> new StringTextComponent(t.getString()).mergeStyle(TextFormatting.GRAY)).collect(Collectors.toList());
     }
 }

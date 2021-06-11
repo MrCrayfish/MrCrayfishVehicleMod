@@ -38,12 +38,12 @@ public class MovingSoundHornRiding extends TickableSound
         PlayerEntity player = this.playerRef.get();
         if(vehicle == null || player == null)
         {
-            this.func_239509_o_();
+            this.finishPlaying();
             return;
         }
         if(!vehicle.isAlive() || player.getRidingEntity() == null || player.getRidingEntity() != vehicle || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
         {
-            this.func_239509_o_();
+            this.finishPlaying();
             return;
         }
         this.volume = vehicle.getHorn() ? 1.0F : 0.0F;
