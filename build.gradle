@@ -17,6 +17,8 @@ archivesBaseName = "vehicle-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 minecraft {
     mappings channel: 'snapshot', version: '20201028-1.16.3'
 
