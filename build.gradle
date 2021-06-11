@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -74,6 +77,14 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.12'
     compile fg.deobf('curse.maven:obfuscate-289380:3336021')
     compile fg.deobf('curse.maven:controllable-317269:3335987')
+}
+
+processResources {
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+        }
+    }
 }
 
 jar {
