@@ -25,7 +25,7 @@ public class InputHandler
         if(event.getAction() != GLFW.GLFW_PRESS)
             return;
 
-        if(KeyBinds.KEY_CYCLE_SEATS.isPressed())
+        if(KeyBinds.KEY_CYCLE_SEATS.isKeyDown())
         {
             if(minecraft.player.getRidingEntity() instanceof VehicleEntity)
             {
@@ -33,7 +33,7 @@ public class InputHandler
             }
         }
 
-        if(KeyBinds.KEY_HITCH_TRAILER.isPressed())
+        if(KeyBinds.KEY_HITCH_TRAILER.isKeyDown())
         {
             if(minecraft.player.getRidingEntity() instanceof VehicleEntity)
             {
