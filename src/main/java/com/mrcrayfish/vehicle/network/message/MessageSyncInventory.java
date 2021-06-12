@@ -22,7 +22,7 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     {
         this.entityId = entityId;
         CompoundNBT tag = new CompoundNBT();
-        tag.put("Inventory", storageInventory.write());
+        tag.put("Inventory", storageInventory.createTag());
         this.compound = tag;
     }
 
@@ -36,13 +36,13 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     public void encode(MessageSyncInventory message, PacketBuffer buffer)
     {
         buffer.writeInt(message.entityId);
-        buffer.writeCompoundTag(message.compound);
+        buffer.writeNbt(message.compound);
     }
 
     @Override
     public MessageSyncInventory decode(PacketBuffer buffer)
     {
-        return new MessageSyncInventory(buffer.readInt(), buffer.readCompoundTag());
+        return new MessageSyncInventory(buffer.readInt(), buffer.readNbt());
     }
 
     @Override

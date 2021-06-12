@@ -30,9 +30,9 @@ public class RecipeColorSprayCan extends SpecialRecipe
         ItemStack dyeableItem = ItemStack.EMPTY;
         List<ItemStack> dyes = Lists.newArrayList();
 
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof IDyeable)
@@ -45,7 +45,7 @@ public class RecipeColorSprayCan extends SpecialRecipe
                 }
                 else
                 {
-                    if(!stack.getItem().isIn(Tags.Items.DYES))
+                    if(!stack.getItem().is(Tags.Items.DYES))
                     {
                         return false;
                     }
@@ -58,14 +58,14 @@ public class RecipeColorSprayCan extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inventory)
+    public ItemStack assemble(CraftingInventory inventory)
     {
         ItemStack dyeableItem = ItemStack.EMPTY;
         List<DyeItem> dyes = Lists.newArrayList();
 
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof IDyeable)
@@ -91,7 +91,7 @@ public class RecipeColorSprayCan extends SpecialRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return width * height >= 2;
     }

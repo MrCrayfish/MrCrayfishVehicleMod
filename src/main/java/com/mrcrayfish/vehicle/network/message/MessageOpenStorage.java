@@ -50,20 +50,20 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                World world = player.world;
-                Entity targetEntity = world.getEntityByID(message.entityId);
+                World world = player.level;
+                Entity targetEntity = world.getEntity(message.entityId);
                 if(targetEntity instanceof IStorage)
                 {
                     IStorage storage = (IStorage) targetEntity;
                     float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-                    if(player.getDistance(targetEntity) < reachDistance)
+                    if(player.distanceTo(targetEntity) < reachDistance)
                     {
                         if(targetEntity instanceof IAttachableChest)
                         {
                             IAttachableChest attachableChest = (IAttachableChest) targetEntity;
                             if(attachableChest.hasChest())
                             {
-                                ItemStack stack = player.inventory.getCurrentItem();
+                                ItemStack stack = player.inventory.getSelected();
                                 if(stack.getItem() == ModItems.WRENCH.get())
                                 {
                                     ((IAttachableChest) targetEntity).removeChest();

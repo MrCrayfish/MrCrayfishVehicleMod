@@ -22,14 +22,14 @@ public class InventoryUtil
     public static void writeInventoryToNBT(CompoundNBT compound, String tagName, IInventory inventory)
     {
         ListNBT tagList = new ListNBT();
-        for(int i = 0; i < inventory.getSizeInventory(); i++)
+        for(int i = 0; i < inventory.getContainerSize(); i++)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 CompoundNBT stackTag = new CompoundNBT();
                 stackTag.putByte("Slot", (byte) i);
-                stack.write(stackTag);
+                stack.save(stackTag);
                 tagList.add(stackTag);
             }
         }
@@ -45,9 +45,9 @@ public class InventoryUtil
             {
                 CompoundNBT tagCompound = tagList.getCompound(i);
                 byte slot = tagCompound.getByte("Slot");
-                if(slot >= 0 && slot < t.getSizeInventory())
+                if(slot >= 0 && slot < t.getContainerSize())
                 {
-                    t.setInventorySlotContents(slot, ItemStack.read(tagCompound));
+                    t.setItem(slot, ItemStack.of(tagCompound));
                 }
             }
         }
@@ -56,9 +56,9 @@ public class InventoryUtil
 
     public static void dropInventoryItems(World worldIn, double x, double y, double z, IInventory inventory)
     {
-        for(int i = 0; i < inventory.getSizeInventory(); ++i)
+        for(int i = 0; i < inventory.getContainerSize(); ++i)
         {
-            ItemStack itemstack = inventory.getStackInSlot(i);
+            ItemStack itemstack = inventory.getItem(i);
 
             if(!itemstack.isEmpty())
             {
@@ -76,18 +76,18 @@ public class InventoryUtil
         while(!stack.isEmpty())
         {
             ItemEntity entity = new ItemEntity(worldIn, x + offsetX, y + offsetY, z + offsetZ, stack.split(RANDOM.nextInt(21) + 10));
-            entity.setMotion(RANDOM.nextGaussian() * 0.05D, RANDOM.nextGaussian() * 0.05D + 0.2D, RANDOM.nextGaussian() * 0.05D);
-            entity.setDefaultPickupDelay();
-            worldIn.addEntity(entity);
+            entity.setDeltaMovement(RANDOM.nextGaussian() * 0.05D, RANDOM.nextGaussian() * 0.05D + 0.2D, RANDOM.nextGaussian() * 0.05D);
+            entity.setDefaultPickUpDelay();
+            worldIn.addFreshEntity(entity);
         }
     }
 
     public static int getItemAmount(PlayerEntity player, Item item)
     {
         int amount = 0;
-        for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+        for(int i = 0; i < player.inventory.getContainerSize(); i++)
         {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+            ItemStack stack = player.inventory.getItem(i);
             if(!stack.isEmpty() && stack.getItem() == item)
             {
                 amount += stack.getCount();
@@ -99,7 +99,7 @@ public class InventoryUtil
     public static boolean hasItemAndAmount(PlayerEntity player, Item item, int amount)
     {
         int count = 0;
-        for(ItemStack stack : player.inventory.mainInventory)
+        for(ItemStack stack : player.inventory.items)
         {
             if(stack != null && stack.getItem() == item)
             {
@@ -113,9 +113,9 @@ public class InventoryUtil
     {
         if(hasItemAndAmount(player, item, amount))
         {
-            for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+            for(int i = 0; i < player.inventory.getContainerSize(); i++)
             {
-                ItemStack stack = player.inventory.getStackInSlot(i);
+                ItemStack stack = player.inventory.getItem(i);
                 if(!stack.isEmpty() && stack.getItem() == item)
                 {
                     if(amount - stack.getCount() < 0)
@@ -126,7 +126,7 @@ public class InventoryUtil
                     else
                     {
                         amount -= stack.getCount();
-                        player.inventory.mainInventory.set(i, ItemStack.EMPTY);
+                        player.inventory.items.set(i, ItemStack.EMPTY);
                         if(amount == 0) return true;
                     }
                 }
@@ -138,7 +138,7 @@ public class InventoryUtil
     public static int getItemStackAmount(PlayerEntity player, ItemStack find)
     {
         int count = 0;
-        for(ItemStack stack : player.inventory.mainInventory)
+        for(ItemStack stack : player.inventory.items)
         {
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
             {
@@ -151,7 +151,7 @@ public class InventoryUtil
     public static boolean hasItemStack(PlayerEntity player, ItemStack find)
     {
         int count = 0;
-        for(ItemStack stack : player.inventory.mainInventory)
+        for(ItemStack stack : player.inventory.items)
         {
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
             {
@@ -164,9 +164,9 @@ public class InventoryUtil
     public static boolean removeItemStack(PlayerEntity player, ItemStack find)
     {
         int amount = find.getCount();
-        for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+        for(int i = 0; i < player.inventory.getContainerSize(); i++)
         {
-            ItemStack stack = player.inventory.getStackInSlot(i);
+            ItemStack stack = player.inventory.getItem(i);
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
             {
                 if(amount - stack.getCount() < 0)
@@ -177,7 +177,7 @@ public class InventoryUtil
                 else
                 {
                     amount -= stack.getCount();
-                    player.inventory.mainInventory.set(i, ItemStack.EMPTY);
+                    player.inventory.items.set(i, ItemStack.EMPTY);
                     if(amount == 0) return true;
                 }
             }

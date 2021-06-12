@@ -31,7 +31,7 @@ public class HeldVehicleHandler
     {
         if(!setupExtraLayers)
         {
-            Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+            Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap();
             this.patchPlayerRender(skinMap.get("default"));
             this.patchPlayerRender(skinMap.get("slim"));
             setupExtraLayers = true;
@@ -40,7 +40,7 @@ public class HeldVehicleHandler
 
     private void patchPlayerRender(PlayerRenderer player)
     {
-        List<LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>> layers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, player, "field_177097_h");
+        List<LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>> layers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, player, "layers");
         if(layers != null)
         {
             layers.add(new LayerHeldVehicle(player));
@@ -56,21 +56,21 @@ public class HeldVehicleHandler
         PlayerEntity player = event.getPlayer();
 
         boolean holdingVehicle = HeldVehicleDataHandler.isHoldingVehicle(player);
-        if(holdingVehicle && !idToCounter.containsKey(player.getUniqueID()))
+        if(holdingVehicle && !idToCounter.containsKey(player.getUUID()))
         {
-            idToCounter.put(player.getUniqueID(), new AnimationCounter(40));
+            idToCounter.put(player.getUUID(), new AnimationCounter(40));
         }
-        else if(idToCounter.containsKey(player.getUniqueID()))
+        else if(idToCounter.containsKey(player.getUUID()))
         {
-            if(idToCounter.get(player.getUniqueID()).getProgress(event.getPartialTicks()) == 0F)
+            if(idToCounter.get(player.getUUID()).getProgress(event.getPartialTicks()) == 0F)
             {
-                idToCounter.remove(player.getUniqueID());
+                idToCounter.remove(player.getUUID());
                 return;
             }
             if(!holdingVehicle)
             {
-                AnimationCounter counter = idToCounter.get(player.getUniqueID());
-                player.renderYawOffset = player.getRotationYawHead() - (player.getRotationYawHead() - player.prevRenderYawOffset) * counter.getProgress(event.getPartialTicks());
+                AnimationCounter counter = idToCounter.get(player.getUUID());
+                player.yBodyRot = player.getYHeadRot() - (player.getYHeadRot() - player.yBodyRotO) * counter.getProgress(event.getPartialTicks());
             }
         }
         else
@@ -78,15 +78,15 @@ public class HeldVehicleHandler
             return;
         }
 
-        AnimationCounter counter = idToCounter.get(player.getUniqueID());
+        AnimationCounter counter = idToCounter.get(player.getUUID());
         counter.update(holdingVehicle);
         float progress = counter.getProgress(event.getPartialTicks());
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
-        model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(-5F * progress);
-        model.bipedRightArm.rotationPointY = (player.isCrouching() ? 3.0F : -0.5F) * progress;
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-180F * progress);
-        model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(5F * progress);
-        model.bipedLeftArm.rotationPointY = (player.isCrouching() ? 3.0F : -0.5F) * progress;
+        model.rightArm.xRot = (float) Math.toRadians(-180F * progress);
+        model.rightArm.zRot = (float) Math.toRadians(-5F * progress);
+        model.rightArm.y = (player.isCrouching() ? 3.0F : -0.5F) * progress;
+        model.leftArm.xRot = (float) Math.toRadians(-180F * progress);
+        model.leftArm.zRot = (float) Math.toRadians(5F * progress);
+        model.leftArm.y = (player.isCrouching() ? 3.0F : -0.5F) * progress;
     }
 
     public static class AnimationCounter

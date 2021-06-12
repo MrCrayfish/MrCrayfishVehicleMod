@@ -68,16 +68,16 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     }
 
     @Override
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType interact(PlayerEntity player, Hand hand)
     {
-        if(!world.isRemote && !player.isCrouching())
+        if(!level.isClientSide && !player.isCrouching())
         {
             if(FluidUtil.interactWithFluidHandler(player, hand, tank))
             {
                 return ActionResultType.SUCCESS;
             }
         }
-        return super.processInitialInteract(player, hand);
+        return super.interact(player, hand);
     }
 
     @Override
@@ -109,7 +109,7 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     {
         if(result.getPartHit() == CONNECTION_BOX && rightClick)
         {
-            PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getInstance().player.getEntityId()));
+            PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
             return true;
         }
         return super.processHit(result, rightClick);
@@ -122,9 +122,9 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
         if(compound.contains("Tank", Constants.NBT.TAG_COMPOUND))
         {
             this.tank.readFromNBT(compound.getCompound("Tank"));
@@ -132,9 +132,9 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
-        super.writeAdditional(compound);
+        super.addAdditionalSaveData(compound);
         CompoundNBT tankTag = new CompoundNBT();
         this.tank.writeToNBT(tankTag);
         compound.put("Tank", tankTag);
@@ -156,9 +156,9 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
 
     public void syncTank()
     {
-        if(!this.world.isRemote)
+        if(!this.level.isClientSide)
         {
-            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new MessageEntityFluid(this.getEntityId(), this.tank.getFluid()));
+            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new MessageEntityFluid(this.getId(), this.tank.getFluid()));
         }
     }
 
@@ -166,13 +166,13 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     public void writeSpawnData(PacketBuffer buffer)
     {
         super.writeSpawnData(buffer);
-        buffer.writeCompoundTag(this.tank.writeToNBT(new CompoundNBT()));
+        buffer.writeNbt(this.tank.writeToNBT(new CompoundNBT()));
     }
 
     @Override
     public void readSpawnData(PacketBuffer buffer)
     {
         super.readSpawnData(buffer);
-        this.tank.readFromNBT(buffer.readCompoundTag());
+        this.tank.readFromNBT(buffer.readNbt());
     }
 }

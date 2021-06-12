@@ -51,21 +51,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
 public class VehicleCrateBlock extends RotatedObjectBlock
 {
     public static final List<ResourceLocation> REGISTERED_CRATES = new ArrayList<>();
-    private static final VoxelShape PANEL = makeCuboidShape(0, 0, 0, 16, 2, 16);
+    private static final VoxelShape PANEL = box(0, 0, 0, 16, 2, 16);
 
     public VehicleCrateBlock()
     {
-        super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).variableOpacity().notSolid().hardnessAndResistance(1.5F, 5.0F));
+        super(AbstractBlock.Properties.of(Material.METAL, DyeColor.LIGHT_GRAY).dynamicShape().noOcclusion().strength(1.5F, 5.0F));
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items)
     {
         REGISTERED_CRATES.forEach(resourceLocation ->
         {
@@ -90,14 +92,14 @@ public class VehicleCrateBlock extends RotatedObjectBlock
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        TileEntity te = worldIn.getTileEntity(pos);
+        TileEntity te = worldIn.getBlockEntity(pos);
         if(te instanceof VehicleCrateTileEntity && ((VehicleCrateTileEntity)te).isOpened())
             return PANEL;
-        return VoxelShapes.fullCube();
+        return VoxelShapes.block();
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos)
+    public boolean canSurvive(BlockState state, IWorldReader reader, BlockPos pos)
     {
         return this.isBelowBlockTopSolid(reader, pos) && this.canOpen(reader, pos);
     }
@@ -106,7 +108,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
     {
         for(Direction side : Direction.Plane.HORIZONTAL)
         {
-            BlockPos adjacentPos = pos.offset(side);
+            BlockPos adjacentPos = pos.relative(side);
             BlockState state = reader.getBlockState(adjacentPos);
             if(state.isAir(reader, pos))
                 continue;
@@ -120,13 +122,13 @@ public class VehicleCrateBlock extends RotatedObjectBlock
 
     private boolean isBelowBlockTopSolid(IWorldReader reader, BlockPos pos)
     {
-        return reader.getBlockState(pos.down()).isSolidSide(reader, pos.down(), Direction.UP);
+        return reader.getBlockState(pos.below()).isFaceSturdy(reader, pos.below(), Direction.UP);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(result.getFace() == Direction.UP && playerEntity.getHeldItem(hand).getItem() == ModItems.WRENCH.get())
+        if(result.getDirection() == Direction.UP && playerEntity.getItemInHand(hand).getItem() == ModItems.WRENCH.get())
         {
             this.openCrate(world, pos, state, playerEntity);
             return ActionResultType.SUCCESS;
@@ -135,7 +137,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack)
+    public void setPlacedBy(World world, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack stack)
     {
         if(livingEntity instanceof PlayerEntity && ((PlayerEntity) livingEntity).isCreative())
         {
@@ -145,16 +147,16 @@ public class VehicleCrateBlock extends RotatedObjectBlock
 
     private void openCrate(World world, BlockPos pos, BlockState state, LivingEntity placer)
     {
-        TileEntity tileEntity = world.getTileEntity(pos);
+        TileEntity tileEntity = world.getBlockEntity(pos);
         if(tileEntity instanceof VehicleCrateTileEntity && this.canOpen(world, pos))
         {
-            if(world.isRemote)
+            if(world.isClientSide)
             {
                 this.spawnCrateOpeningParticles((ClientWorld) world, pos, state);
             }
             else
             {
-                ((VehicleCrateTileEntity) tileEntity).open(placer.getUniqueID());
+                ((VehicleCrateTileEntity) tileEntity).open(placer.getUUID());
             }
         }
     }
@@ -171,7 +173,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
             {
                 x = (j + 0.5D) / 4.0D;
                 z = (l + 0.5D) / 4.0D;
-                Minecraft.getInstance().particles.addEffect(factory.makeParticle(new BlockParticleData(ParticleTypes.BLOCK, state), world, pos.getX() + x, pos.getY() + y, pos.getZ() + z, x - 0.5D, y - 0.5D, z - 0.5D));
+                Minecraft.getInstance().particleEngine.add(factory.createParticle(new BlockParticleData(ParticleTypes.BLOCK, state), world, pos.getX() + x, pos.getY() + y, pos.getZ() + z, x - 0.5D, y - 0.5D, z - 0.5D));
             }
         }
     }
@@ -190,16 +192,16 @@ public class VehicleCrateBlock extends RotatedObjectBlock
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state)
+    public BlockRenderType getRenderShape(BlockState state)
     {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
-        ITextComponent vehicleName = EntityType.PIG.getName();
+        ITextComponent vehicleName = EntityType.PIG.getDescription();
         CompoundNBT tagCompound = stack.getTag();
         if(tagCompound != null)
         {
@@ -209,19 +211,19 @@ public class VehicleCrateBlock extends RotatedObjectBlock
                 String entityType = blockEntityTag.getString("Vehicle");
                 if(!Strings.isNullOrEmpty(entityType))
                 {
-                    vehicleName = EntityType.byKey(entityType).orElse(EntityType.PIG).getName();
-                    list.add(vehicleName.deepCopy().mergeStyle(TextFormatting.BLUE));
+                    vehicleName = EntityType.byString(entityType).orElse(EntityType.PIG).getDescription();
+                    list.add(vehicleName.copy().withStyle(TextFormatting.BLUE));
                 }
             }
         }
 
         if(Screen.hasShiftDown())
         {
-            list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info", vehicleName), 150));
+            list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info", vehicleName), 150));
         }
         else
         {
-            list.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+            list.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }
 
@@ -265,15 +267,15 @@ public class VehicleCrateBlock extends RotatedObjectBlock
     @Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid)
     {
-        if(!world.isRemote && !player.isCreative())
+        if(!world.isClientSide && !player.isCreative())
         {
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof VehicleCrateTileEntity)
             {
-                ItemStack drop = new ItemStack(Item.getItemFromBlock(this));
+                ItemStack drop = new ItemStack(Item.byBlock(this));
 
                 CompoundNBT tileEntityTag = new CompoundNBT();
-                tileEntity.write(tileEntityTag);
+                tileEntity.save(tileEntityTag);
                 tileEntityTag.remove("x");
                 tileEntityTag.remove("y");
                 tileEntityTag.remove("z");
@@ -283,8 +285,8 @@ public class VehicleCrateBlock extends RotatedObjectBlock
                 compound.put("BlockEntityTag", tileEntityTag);
                 drop.setTag(compound);
 
-                world.addEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-                return world.setBlockState(pos, Blocks.AIR.getDefaultState());
+                world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
+                return world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             }
         }
         return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);

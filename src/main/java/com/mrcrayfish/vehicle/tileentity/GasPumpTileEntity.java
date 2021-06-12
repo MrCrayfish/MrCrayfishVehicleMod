@@ -62,7 +62,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     @Nullable
     public FluidTank getTank()
     {
-        TileEntity tileEntity = this.world.getTileEntity(this.pos.down());
+        TileEntity tileEntity = this.level.getBlockEntity(this.worldPosition.below());
         if(tileEntity instanceof GasPumpTankTileEntity)
         {
             return ((GasPumpTankTileEntity) tileEntity).getFluidTank();
@@ -77,7 +77,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
 
     public void setFuelingEntity(@Nullable PlayerEntity entity)
     {
-        if(!this.world.isRemote)
+        if(!this.level.isClientSide)
         {
             if(this.fuelingEntity != null)
             {
@@ -87,8 +87,8 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
             this.fuelingEntityId = -1;
             if(entity != null)
             {
-                this.fuelingEntityId = entity.getEntityId();
-                SyncedPlayerData.instance().set(entity, ModDataKeys.GAS_PUMP, Optional.of(this.getPos()));
+                this.fuelingEntityId = entity.getId();
+                SyncedPlayerData.instance().set(entity, ModDataKeys.GAS_PUMP, Optional.of(this.getBlockPos()));
             }
             this.syncToClient();
         }
@@ -101,30 +101,30 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
         {
             if(this.fuelingEntity == null)
             {
-                Entity entity = this.world.getEntityByID(this.fuelingEntityId);
+                Entity entity = this.level.getEntity(this.fuelingEntityId);
                 if(entity instanceof PlayerEntity)
                 {
                     this.fuelingEntity = (PlayerEntity) entity;
                 }
-                else if(!this.world.isRemote)
+                else if(!this.level.isClientSide)
                 {
                     this.fuelingEntityId = -1;
                     this.syncFuelingEntity();
                 }
             }
         }
-        else if(this.world.isRemote && this.fuelingEntity != null)
+        else if(this.level.isClientSide && this.fuelingEntity != null)
         {
             this.fuelingEntity = null;
         }
 
-        if(!this.world.isRemote && this.fuelingEntity != null)
+        if(!this.level.isClientSide && this.fuelingEntity != null)
         {
-            if(Math.sqrt(this.fuelingEntity.getDistanceSq(this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5)) > Config.SERVER.maxHoseDistance.get() || !this.fuelingEntity.isAlive())
+            if(Math.sqrt(this.fuelingEntity.distanceToSqr(this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5)) > Config.SERVER.maxHoseDistance.get() || !this.fuelingEntity.isAlive())
             {
                 if(this.fuelingEntity.isAlive())
                 {
-                    this.world.playSound(null, this.fuelingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    this.level.playSound(null, this.fuelingEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
                 SyncedPlayerData.instance().set(this.fuelingEntity, ModDataKeys.GAS_PUMP, Optional.empty());
                 this.fuelingEntityId = -1;
@@ -135,9 +135,9 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("FuelingEntity", Constants.NBT.TAG_INT))
         {
             this.fuelingEntityId = compound.getInt("FuelingEntity");
@@ -145,17 +145,17 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         compound.putInt("FuelingEntity", this.fuelingEntityId);
-        return super.write(compound);
+        return super.save(compound);
     }
 
     private void syncFuelingEntity()
     {
         CompoundNBT compound = new CompoundNBT();
         compound.putInt("FuelingEntity", this.fuelingEntityId);
-        TileEntityUtil.sendUpdatePacket(this, super.write(compound));
+        TileEntityUtil.sendUpdatePacket(this, super.save(compound));
     }
 
     @Override
@@ -166,7 +166,7 @@ public class GasPumpTileEntity extends TileEntitySynced implements ITickableTile
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared()
+    public double getViewDistance()
     {
         return 65536.0D;
     }

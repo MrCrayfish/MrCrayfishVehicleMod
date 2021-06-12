@@ -30,12 +30,12 @@ public class CopyFluidTanks extends LootFunction
     }
 
     @Override
-    protected ItemStack doApply(ItemStack stack, LootContext context)
+    protected ItemStack run(ItemStack stack, LootContext context)
     {
-        BlockState state = context.get(LootParameters.BLOCK_STATE);
+        BlockState state = context.getParamOrNull(LootParameters.BLOCK_STATE);
         if(state != null && stack.getItem() == state.getBlock().asItem())
         {
-            TileEntity tileEntity = context.get(LootParameters.BLOCK_ENTITY);
+            TileEntity tileEntity = context.getParamOrNull(LootParameters.BLOCK_ENTITY);
             if(tileEntity != null)
             {
                 CompoundNBT tileEntityTag = new CompoundNBT();
@@ -76,7 +76,7 @@ public class CopyFluidTanks extends LootFunction
     }
 
     @Override
-    public LootFunctionType getFunctionType()
+    public LootFunctionType getType()
     {
         return ModLootFunctions.COPY_FLUID_TANKS;
     }

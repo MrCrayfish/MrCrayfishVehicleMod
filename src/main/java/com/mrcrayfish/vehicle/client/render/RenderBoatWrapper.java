@@ -28,21 +28,21 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRayTracer.IEntityRay
         if(!entity.isAlive())
             return;
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ()));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ()));
 
         //Applies leaning rotation caused by turning
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-        matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * -15F));
+        matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * -15F));
 
         //Makes the boat tilt up the faster it goes
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
 
         //this.renderRotationLine(matrixStack, 0xFF0000);
 
@@ -102,6 +102,6 @@ public class RenderBoatWrapper<T extends BoatEntity & EntityRayTracer.IEntityRay
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

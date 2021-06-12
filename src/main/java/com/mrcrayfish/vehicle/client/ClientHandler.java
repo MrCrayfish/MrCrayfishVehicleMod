@@ -89,8 +89,8 @@ public class ClientHandler
         IResourceManager manager = Minecraft.getInstance().getResourceManager();
         if(manager instanceof IReloadableResourceManager)
         {
-            ((IReloadableResourceManager) manager).addReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> {
-                return stage.markCompleteAwaitingOthers(Unit.INSTANCE).thenRun(() -> {
+            ((IReloadableResourceManager) manager).registerReloadListener((stage, resourceManager, preparationsProfiler, reloadProfiler, backgroundExecutor, gameExecutor) -> {
+                return stage.wait(Unit.INSTANCE).thenRun(() -> {
                     FluidUtils.clearCacheFluidColor();
                     EntityRayTracer.instance().clearDataForReregistration();
                     SpecialModels.clearModelCache();
@@ -108,15 +108,15 @@ public class ClientHandler
 
     private static void setupRenderLayers()
     {
-        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.getCutout());
-        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.getTranslucent());
-        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.getTranslucent());
+        RenderTypeLookup.setRenderLayer(ModBlocks.WORKSTATION.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FLUID_EXTRACTOR.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.GAS_PUMP.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModFluids.FUELIUM.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_FUELIUM.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.ENDER_SAP.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.translucent());
     }
 
     private static void setupVehicleRenders()
@@ -184,11 +184,11 @@ public class ClientHandler
 
     private static void setupScreenFactories()
     {
-        ScreenManager.registerFactory(ModContainers.FLUID_EXTRACTOR.get(), FluidExtractorScreen::new);
-        ScreenManager.registerFactory(ModContainers.FLUID_MIXER.get(), FluidMixerScreen::new);
-        ScreenManager.registerFactory(ModContainers.EDIT_VEHICLE.get(), EditVehicleScreen::new);
-        ScreenManager.registerFactory(ModContainers.WORKSTATION.get(), WorkstationScreen::new);
-        ScreenManager.registerFactory(ModContainers.STORAGE.get(), StorageScreen::new);
+        ScreenManager.register(ModContainers.FLUID_EXTRACTOR.get(), FluidExtractorScreen::new);
+        ScreenManager.register(ModContainers.FLUID_MIXER.get(), FluidMixerScreen::new);
+        ScreenManager.register(ModContainers.EDIT_VEHICLE.get(), EditVehicleScreen::new);
+        ScreenManager.register(ModContainers.WORKSTATION.get(), WorkstationScreen::new);
+        ScreenManager.register(ModContainers.STORAGE.get(), StorageScreen::new);
     }
 
     private static void setupItemColors()

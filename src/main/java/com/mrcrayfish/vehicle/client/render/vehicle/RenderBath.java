@@ -27,14 +27,14 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     @Override
     public void render(BathEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(90F));
         this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
     @Override
     public void applyPlayerRender(BathEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
@@ -42,13 +42,13 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
             Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = seatVec.x * scale;
-            double offsetY = (seatVec.y + player.getYOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetY = (seatVec.y + player.getMyRidingOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
             float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
-            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
+            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
+            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
     }
@@ -56,16 +56,16 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
     @Override
     public void applyPlayerModel(BathEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-80F);
-        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(5F);
-        model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(0F);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F);
-        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
-        model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(0F);
+        model.rightLeg.xRot = (float) Math.toRadians(-85F);
+        model.rightLeg.yRot = (float) Math.toRadians(10F);
+        model.leftLeg.xRot = (float) Math.toRadians(-85F);
+        model.leftLeg.yRot = (float) Math.toRadians(-10F);
+        model.rightArm.xRot = (float) Math.toRadians(-80F);
+        model.rightArm.yRot = (float) Math.toRadians(5F);
+        model.rightArm.zRot = (float) Math.toRadians(0F);
+        model.leftArm.xRot = (float) Math.toRadians(-80F);
+        model.leftArm.yRot = (float) Math.toRadians(-5F);
+        model.leftArm.zRot = (float) Math.toRadians(0F);
     }
 
     @Nullable

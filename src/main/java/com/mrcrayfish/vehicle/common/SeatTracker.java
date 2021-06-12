@@ -54,9 +54,9 @@ public class SeatTracker
             return;
         this.playerSeatMap.forcePut(uuid, index);
         VehicleEntity vehicle = this.vehicleRef.get();
-        if(vehicle != null && !vehicle.world.isRemote)
+        if(vehicle != null && !vehicle.level.isClientSide)
         {
-            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncPlayerSeat(vehicle.getEntityId(), index, uuid));
+            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncPlayerSeat(vehicle.getId(), index, uuid));
         }
     }
 
@@ -70,7 +70,7 @@ public class SeatTracker
         if(vehicle != null)
         {
             UUID uuid = this.playerSeatMap.inverse().get(index);
-            return vehicle.getPassengers().stream().noneMatch(entity -> entity.getUniqueID().equals(uuid));
+            return vehicle.getPassengers().stream().noneMatch(entity -> entity.getUUID().equals(uuid));
         }
         return false;
     }
@@ -83,7 +83,7 @@ public class SeatTracker
     public int getNextAvailableSeat()
     {
         VehicleEntity vehicle = this.vehicleRef.get();
-        if(vehicle != null && !vehicle.world.isRemote)
+        if(vehicle != null && !vehicle.level.isClientSide)
         {
             VehicleProperties properties = vehicle.getProperties();
             List<Seat> seats = properties.getSeats();
@@ -94,7 +94,7 @@ public class SeatTracker
                     return i;
                 }
                 UUID uuid = this.playerSeatMap.inverse().get(i);
-                if(vehicle.getPassengers().stream().noneMatch(entity -> entity.getUniqueID().equals(uuid)))
+                if(vehicle.getPassengers().stream().noneMatch(entity -> entity.getUUID().equals(uuid)))
                 {
                     this.playerSeatMap.remove(uuid);
                     return i;
@@ -107,7 +107,7 @@ public class SeatTracker
     public int getClosestAvailableSeatToPlayer(PlayerEntity player)
     {
         VehicleEntity vehicle = this.vehicleRef.get();
-        if(vehicle != null && !vehicle.world.isRemote)
+        if(vehicle != null && !vehicle.level.isClientSide)
         {
             VehicleProperties properties = vehicle.getProperties();
             List<Seat> seats = properties.getSeats();
@@ -125,10 +125,10 @@ public class SeatTracker
 
                 /* Get the real world distance to the seat and check if it's the closest */
                 Seat seat = seats.get(i);
-                Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
-                seatVec = seatVec.rotateYaw(-(vehicle.getModifiedRotationYaw()) * 0.017453292F);
-                seatVec = seatVec.add(vehicle.getPositionVec());
-                double distance = player.getDistanceSq(seatVec.x, seatVec.y - player.getHeight() / 2F, seatVec.z);
+                Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+                seatVec = seatVec.yRot(-(vehicle.getModifiedRotationYaw()) * 0.017453292F);
+                seatVec = seatVec.add(vehicle.position());
+                double distance = player.distanceToSqr(seatVec.x, seatVec.y - player.getBbHeight() / 2F, seatVec.z);
                 if(closestSeatIndex == -1 || distance < closestDistance)
                 {
                     closestSeatIndex = i;
@@ -146,7 +146,7 @@ public class SeatTracker
         ListNBT list = new ListNBT();
         this.playerSeatMap.forEach((uuid, seatIndex) -> {
             CompoundNBT seatTag = new CompoundNBT();
-            seatTag.putUniqueId("UUID", uuid);
+            seatTag.putUUID("UUID", uuid);
             seatTag.putInt("SeatIndex", seatIndex);
             list.add(seatTag);
         });
@@ -162,7 +162,7 @@ public class SeatTracker
             ListNBT list = compound.getList("PlayerSeatMap", Constants.NBT.TAG_COMPOUND);
             list.forEach(nbt -> {
                 CompoundNBT seatTag = (CompoundNBT) nbt;
-                UUID uuid = seatTag.getUniqueId("UUID");
+                UUID uuid = seatTag.getUUID("UUID");
                 int seatIndex = seatTag.getInt("SeatIndex");
                 this.playerSeatMap.put(uuid, seatIndex);
             });
@@ -173,7 +173,7 @@ public class SeatTracker
     {
         buffer.writeVarInt(this.playerSeatMap.size());
         this.playerSeatMap.forEach((uuid, seatIndex) -> {
-            buffer.writeUniqueId(uuid);
+            buffer.writeUUID(uuid);
             buffer.writeVarInt(seatIndex);
         });
     }
@@ -184,7 +184,7 @@ public class SeatTracker
         int size = buffer.readVarInt();
         for(int i = 0; i < size; i++)
         {
-            UUID uuid = buffer.readUniqueId();
+            UUID uuid = buffer.readUUID();
             int seatIndex = buffer.readVarInt();
             this.playerSeatMap.put(uuid, seatIndex);
         }

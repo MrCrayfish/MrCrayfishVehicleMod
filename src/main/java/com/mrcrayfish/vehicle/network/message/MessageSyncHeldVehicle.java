@@ -28,13 +28,13 @@ public class MessageSyncHeldVehicle implements IMessage<MessageSyncHeldVehicle>
     public void encode(MessageSyncHeldVehicle message, PacketBuffer buffer)
     {
         buffer.writeVarInt(message.entityId);
-        buffer.writeCompoundTag(message.vehicleTag);
+        buffer.writeNbt(message.vehicleTag);
     }
 
     @Override
     public MessageSyncHeldVehicle decode(PacketBuffer buffer)
     {
-        return new MessageSyncHeldVehicle(buffer.readVarInt(), buffer.readCompoundTag());
+        return new MessageSyncHeldVehicle(buffer.readVarInt(), buffer.readNbt());
     }
 
     @Override

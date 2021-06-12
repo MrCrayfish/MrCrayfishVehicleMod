@@ -26,6 +26,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
@@ -35,7 +37,7 @@ public class WorkstationBlock extends RotatedObjectBlock
 
     public WorkstationBlock()
     {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
+        super(AbstractBlock.Properties.of(Material.METAL).strength(1.0F));
     }
 
     private VoxelShape getShape(BlockState state)
@@ -44,10 +46,10 @@ public class WorkstationBlock extends RotatedObjectBlock
         {
             return SHAPES.get(state);
         }
-        Direction direction = state.get(DIRECTION);
+        Direction direction = state.getValue(DIRECTION);
         List<VoxelShape> shapes = new ArrayList<>();
-        shapes.add(Block.makeCuboidShape(0, 1, 0, 16, 16, 16));
-        shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(0, 16, 0, 16, 17.5, 2), Direction.SOUTH))[direction.getHorizontalIndex()]);
+        shapes.add(Block.box(0, 1, 0, 16, 16, 16));
+        shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.box(0, 16, 0, 16, 17.5, 2), Direction.SOUTH))[direction.get2DDataValue()]);
         VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
         SHAPES.put(state, shape);
         return shape;
@@ -60,17 +62,17 @@ public class WorkstationBlock extends RotatedObjectBlock
     }
 
     @Override
-    public VoxelShape getRenderShape(BlockState state, IBlockReader reader, BlockPos pos)
+    public VoxelShape getOcclusionShape(BlockState state, IBlockReader reader, BlockPos pos)
     {
         return this.getShape(state);
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(!world.isRemote)
+        if(!world.isClientSide)
         {
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof INamedContainerProvider)
             {
                 NetworkHooks.openGui((ServerPlayerEntity) playerEntity, (INamedContainerProvider) tileEntity, pos);

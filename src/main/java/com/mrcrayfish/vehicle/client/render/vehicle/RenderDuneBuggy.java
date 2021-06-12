@@ -31,35 +31,35 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
         double wheelScale = 1.0F;
 
         //Render the handles bars
-        matrixStack.push();
+        matrixStack.pushPose();
 
         matrixStack.translate(0.0, 0.0, 3.125 * 0.0625);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-22.5F));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-22.5F));
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(22.5F));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(turnRotation));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -0.2);
 
         this.renderDamagedPart(entity, SpecialModels.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0.0, -0.355, 0.33);
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             if(entity.isMoving())
             {
-                matrixStack.rotate(Vector3f.XP.rotationDegrees(-frontWheelSpin));
+                matrixStack.mulPose(Vector3f.XP.rotationDegrees(-frontWheelSpin));
             }
             matrixStack.scale((float) wheelScale, (float) wheelScale, (float) wheelScale);
-            matrixStack.rotate(Vector3f.YP.rotationDegrees(180F));
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
             IBakedModel wheelModel = RenderUtil.getWheelModel(entity);
             RenderUtil.renderColoredModel(wheelModel, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getWheelColor(), light, OverlayTexture.NO_OVERLAY);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
@@ -68,12 +68,12 @@ public class RenderDuneBuggy extends AbstractRenderVehicle<DuneBuggyEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 8F;
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-50F - turnRotation);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-50F + turnRotation);
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+        model.rightArm.xRot = (float) Math.toRadians(-50F - turnRotation);
+        model.leftArm.xRot = (float) Math.toRadians(-50F + turnRotation);
+        model.rightLeg.xRot = (float) Math.toRadians(-65F);
+        model.rightLeg.yRot = (float) Math.toRadians(30F);
+        model.leftLeg.xRot = (float) Math.toRadians(-65F);
+        model.leftLeg.yRot = (float) Math.toRadians(-30F);
     }
 
     @Nullable

@@ -47,20 +47,20 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     @Override
     public void render(GasPumpTileEntity gasPump, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
-        BlockPos blockPos = gasPump.getPos();
-        BlockState state = gasPump.getWorld().getBlockState(blockPos);
+        BlockPos blockPos = gasPump.getBlockPos();
+        BlockState state = gasPump.getLevel().getBlockState(blockPos);
         if(state.getBlock() != ModBlocks.GAS_PUMP.get())
         {
             return;
         }
 
-        boolean top = state.get(GasPumpBlock.TOP);
+        boolean top = state.getValue(GasPumpBlock.TOP);
         if(!top)
         {
             return;
         }
 
-        Direction facing = state.get(GasPumpBlock.DIRECTION);
+        Direction facing = state.getValue(GasPumpBlock.DIRECTION);
         double[] pos = CollisionHelper.fixRotation(facing, 0.640625, 1.078125, 0.640625, 1.078125);
 
        /* List<VehicleEntity> vehicles = te.getWorld().getEntitiesWithinAABB(VehicleEntity.class, new AxisAlignedBB(te.getPos()).grow(5.0));
@@ -81,34 +81,34 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
         Vector3d fuelRot = Vector3d.fromPitchYaw((float) position.getRotX(), (float) position.getRotY());
         fuelRot = fuelRot.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)).normalize();*/
        
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             if(gasPump.getFuelingEntity() != null)
             {
                 gasPump.setRecentlyUsed(true);
                 PlayerEntity entity = gasPump.getFuelingEntity();
-                double side = entity.getPrimaryHand() == HandSide.RIGHT ? 1 : -1;
-                double playerX = (double) blockPos.getX() - (entity.prevPosX + (entity.getPosX() - entity.prevPosX) * partialTicks);
-                double playerY = (double) blockPos.getY() - (entity.prevPosY + (entity.getPosY() - entity.prevPosY) * partialTicks);
-                double playerZ = (double) blockPos.getZ() - (entity.prevPosZ + (entity.getPosZ() - entity.prevPosZ) * partialTicks);
-                float renderYawOffset = entity.prevRenderYawOffset + (entity.renderYawOffset - entity.prevRenderYawOffset) * partialTicks;
-                Vector3d lookVec = Vector3d.fromPitchYaw(-20F, renderYawOffset);
+                double side = entity.getMainArm() == HandSide.RIGHT ? 1 : -1;
+                double playerX = (double) blockPos.getX() - (entity.xo + (entity.getX() - entity.xo) * partialTicks);
+                double playerY = (double) blockPos.getY() - (entity.yo + (entity.getY() - entity.yo) * partialTicks);
+                double playerZ = (double) blockPos.getZ() - (entity.zo + (entity.getZ() - entity.zo) * partialTicks);
+                float renderYawOffset = entity.yBodyRotO + (entity.yBodyRot - entity.yBodyRotO) * partialTicks;
+                Vector3d lookVec = Vector3d.directionFromRotation(-20F, renderYawOffset);
                 Vector3d hoseVec = new Vector3d(-0.35 * side, -0.025, -0.025);
                 if(entity instanceof AbstractClientPlayerEntity)
                 {
-                    String skinType = ((AbstractClientPlayerEntity) entity).getSkinType();
+                    String skinType = ((AbstractClientPlayerEntity) entity).getModelName();
                     if(skinType.equals("slim"))
                     {
                         hoseVec = hoseVec.add(0.03 * side, -0.03, 0.0);
                     }
                 }
-                hoseVec = hoseVec.rotateYaw(-renderYawOffset * 0.017453292F);
+                hoseVec = hoseVec.yRot(-renderYawOffset * 0.017453292F);
                 if(entity.equals(Minecraft.getInstance().player))
                 {
-                    if(Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)
+                    if(Minecraft.getInstance().options.getCameraType() == PointOfView.FIRST_PERSON)
                     {
-                        lookVec = Vector3d.fromPitchYaw(0F, entity.rotationYaw);
-                        hoseVec = new Vector3d(-0.25, 0.5, -0.25).rotateYaw(-entity.rotationYaw * 0.017453292F);
+                        lookVec = Vector3d.directionFromRotation(0F, entity.yRot);
+                        hoseVec = new Vector3d(-0.25, 0.5, -0.25).yRot(-entity.yRot * 0.017453292F);
                     }
                 }
                 HermiteInterpolator.Point destPoint = new HermiteInterpolator.Point(new Vector3d(-playerX + hoseVec.x, -playerY + 0.8 + hoseVec.y, -playerZ + hoseVec.z), new Vector3d(lookVec.x * 3, lookVec.y * 3, lookVec.z * 3));
@@ -137,7 +137,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 float hoseDiameter = 0.07F;
                 if(gasPump.getFuelingEntity() != null)
                 {
-                    red = (float) (Math.sqrt(gasPump.getFuelingEntity().getDistanceSq(gasPump.getPos().getX() + 0.5, gasPump.getPos().getY() + 0.5, gasPump.getPos().getZ() + 0.5)) / Config.SERVER.maxHoseDistance.get());
+                    red = (float) (Math.sqrt(gasPump.getFuelingEntity().distanceToSqr(gasPump.getBlockPos().getX() + 0.5, gasPump.getBlockPos().getY() + 0.5, gasPump.getBlockPos().getZ() + 0.5)) / Config.SERVER.maxHoseDistance.get());
                     red = red * red * red * red * red * red;
                     red = Math.max(red, gray);
                 }
@@ -145,10 +145,10 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 RenderSystem.pushMatrix();
                 RenderSystem.disableTexture();
                 RenderSystem.enableDepthTest();
-                RenderSystem.multMatrix(matrixStack.getLast().getMatrix());
+                RenderSystem.multMatrix(matrixStack.last().pose());
 
                 Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuffer();
+                BufferBuilder buffer = tessellator.getBuilder();
                 buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
 
                 /*buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
@@ -167,7 +167,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
 
                         Matrix4f startMatrix = new Matrix4f();
                         startMatrix.setIdentity();
-                        EntityRayTracer.MatrixTransformation.createTranslation((float) start.getPoint().getX(), (float) start.getPoint().getY(), (float) start.getPoint().getZ()).transform(startMatrix);
+                        EntityRayTracer.MatrixTransformation.createTranslation((float) start.getPoint().x(), (float) start.getPoint().y(), (float) start.getPoint().z()).transform(startMatrix);
                         if(i == 0 && j == 0)
                         {
                             EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
@@ -195,7 +195,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
 
                         Matrix4f startTemp = new Matrix4f(startMatrix);
                         Matrix4f endTemp = new Matrix4f(endMatrix);
-                        Matrix4f parent = matrixStack.getLast().getMatrix();
+                        Matrix4f parent = matrixStack.last().pose();
 
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
                         this.createVertex(buffer, parent, startTemp, red, gray);
@@ -233,7 +233,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         this.createVertex(buffer, parent, endTemp, red, gray);
                     }
                 }
-                tessellator.draw();
+                tessellator.end();
                 RenderSystem.enableTexture();
                 RenderSystem.disableDepthTest();
                 RenderSystem.popMatrix();
@@ -241,62 +241,62 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
 
             if(gasPump.getFuelingEntity() == null)
             {
-                matrixStack.push();
+                matrixStack.pushPose();
                 {
                     double[] destPos = CollisionHelper.fixRotation(facing, 0.29, 1.06, 0.29, 1.06);
                     matrixStack.translate(destPos[0], 0.5, destPos[1]);
-                    matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(facing.getHorizontalIndex() * -90F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
-                    matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(90F));
+                    matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(facing.get2DDataValue() * -90F));
+                    matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
+                    matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(90F));
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
                     RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 }
-                matrixStack.pop();
+                matrixStack.popPose();
             }
 
-            matrixStack.push();
+            matrixStack.pushPose();
             {
                 matrixStack.translate(0.5, 0, 0.5);
-                matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(facing.getHorizontalIndex() * -90F));
+                matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(facing.get2DDataValue() * -90F));
                 matrixStack.translate(-0.5, 0, -0.5);
                 matrixStack.translate(0.5, 11 * 0.0625, 3 * 0.0625);
-                matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
+                matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
 
                 matrixStack.translate(0F, 0F, 0.01F);
 
-                matrixStack.push();
+                matrixStack.pushPose();
                 {
                     matrixStack.scale(0.015F, -0.015F, 0.015F);
-                    FontRenderer fontRenderer = this.renderDispatcher.fontRenderer;
+                    FontRenderer fontRenderer = this.renderer.font;
                     if(gasPump.getTank() != null)
                     {
                         int amount = (int) Math.ceil(100 * (gasPump.getTank().getFluidAmount() / (double) gasPump.getTank().getCapacity()));
                         String percent = String.format("%d%%", amount);
-                        int width = fontRenderer.getStringWidth(percent);
-                        fontRenderer.renderString(percent, -width / 2, 10, 16777215, false, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, light);
+                        int width = fontRenderer.width(percent);
+                        fontRenderer.drawInBatch(percent, -width / 2, 10, 16777215, false, matrixStack.last().pose(), renderTypeBuffer, false, 0, light);
                     }
                 }
-                matrixStack.pop();
+                matrixStack.popPose();
 
-                matrixStack.push();
+                matrixStack.pushPose();
                 {
                     matrixStack.translate(0, 1 * 0.0625, 0);
                     matrixStack.scale(0.01F, -0.01F, 0.01F);
-                    FontRenderer fontRenderer = this.renderDispatcher.fontRenderer;
-                    int width = fontRenderer.getStringWidth("Fuelium");
-                    fontRenderer.renderString("Fuelium", -width / 2, 10, 9761325, false, matrixStack.getLast().getMatrix(), renderTypeBuffer, false, 0, light);
+                    FontRenderer fontRenderer = this.renderer.font;
+                    int width = fontRenderer.width("Fuelium");
+                    fontRenderer.drawInBatch("Fuelium", -width / 2, 10, 9761325, false, matrixStack.last().pose(), renderTypeBuffer, false, 0, light);
                 }
-                matrixStack.pop();
+                matrixStack.popPose();
             }
-            matrixStack.pop();
+            matrixStack.popPose();
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void createVertex(BufferBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray)
     {
         Vector4f vec = new Vector4f(0.0F, 0.0F, 0.0F, 1.0F);
         vec.transform(pos); //TODO test
-        buffer.pos(vec.getX(), vec.getY(), vec.getZ()).color(red, gray, gray, 1.0F).endVertex();
+        buffer.vertex(vec.x(), vec.y(), vec.z()).color(red, gray, gray, 1.0F).endVertex();
     }
 }

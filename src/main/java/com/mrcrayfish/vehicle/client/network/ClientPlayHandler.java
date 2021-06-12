@@ -25,24 +25,24 @@ public class ClientPlayHandler
 
     public static void handleSyncInventory(MessageSyncInventory message)
     {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         if(world == null)
             return;
 
-        Entity entity = world.getEntityByID(message.getEntityId());
+        Entity entity = world.getEntity(message.getEntityId());
         if(!(entity instanceof IStorage))
             return;
 
-        ((IStorage) entity).getInventory().read(message.getCompound().getList("Inventory", Constants.NBT.TAG_COMPOUND));
+        ((IStorage) entity).getInventory().fromTag(message.getCompound().getList("Inventory", Constants.NBT.TAG_COMPOUND));
     }
 
     public static void handleEntityFluid(MessageEntityFluid message)
     {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         if(world == null)
             return;
 
-        Entity entity = world.getEntityByID(message.getEntityId());
+        Entity entity = world.getEntity(message.getEntityId());
         if(entity == null)
             return;
 
@@ -62,7 +62,7 @@ public class ClientPlayHandler
         PlayerEntity player = Minecraft.getInstance().player;
         if(player != null)
         {
-            Entity entity = player.getEntityWorld().getEntityByID(message.getEntityId());
+            Entity entity = player.getCommandSenderWorld().getEntity(message.getEntityId());
             if(entity instanceof VehicleEntity)
             {
                 VehicleEntity vehicle = (VehicleEntity) entity;
@@ -73,10 +73,10 @@ public class ClientPlayHandler
 
     public static void handleSyncHeldVehicle(MessageSyncHeldVehicle message)
     {
-        World world = Minecraft.getInstance().world;
+        World world = Minecraft.getInstance().level;
         if(world != null)
         {
-            Entity entity = world.getEntityByID(message.getEntityId());
+            Entity entity = world.getEntity(message.getEntityId());
             if(entity instanceof PlayerEntity)
             {
                 HeldVehicleDataHandler.setHeldVehicle((PlayerEntity) entity, message.getVehicleTag());

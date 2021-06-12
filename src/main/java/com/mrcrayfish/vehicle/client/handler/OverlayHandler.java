@@ -28,27 +28,27 @@ public class OverlayHandler
             return;
 
         Minecraft mc = Minecraft.getInstance();
-        if(!mc.isGameFocused() || mc.gameSettings.hideGUI)
+        if(!mc.isWindowActive() || mc.options.hideGui)
             return;
 
         PlayerEntity player = mc.player;
         if(player == null)
             return;
 
-        Entity entity = player.getRidingEntity();
+        Entity entity = player.getVehicle();
         if(!(entity instanceof PoweredVehicleEntity))
             return;
 
         MatrixStack matrixStack = new MatrixStack();
         PoweredVehicleEntity vehicle = (PoweredVehicleEntity) entity;
         String speed = new DecimalFormat("0.0").format(vehicle.getKilometersPreHour());
-        mc.fontRenderer.drawStringWithShadow(matrixStack, TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
+        mc.font.drawShadow(matrixStack, TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
 
         if(vehicle.requiresFuel())
         {
             DecimalFormat format = new DecimalFormat("0.0");
             String fuel = format.format(vehicle.getCurrentFuel()) + "/" + format.format(vehicle.getFuelCapacity());
-            mc.fontRenderer.drawStringWithShadow(matrixStack, TextFormatting.BOLD + "Fuel: " + TextFormatting.YELLOW + fuel, 10, 25, Color.WHITE.getRGB());
+            mc.font.drawShadow(matrixStack, TextFormatting.BOLD + "Fuel: " + TextFormatting.YELLOW + fuel, 10, 25, Color.WHITE.getRGB());
         }
     }
 }

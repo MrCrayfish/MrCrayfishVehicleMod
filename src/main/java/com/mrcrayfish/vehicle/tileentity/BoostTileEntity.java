@@ -29,9 +29,9 @@ public class BoostTileEntity extends TileEntitySynced
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("SpeedMultiplier", Constants.NBT.TAG_FLOAT))
         {
             this.speedMultiplier = compound.getFloat("SpeedMultiplier");
@@ -39,10 +39,10 @@ public class BoostTileEntity extends TileEntitySynced
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         compound.putFloat("SpeedMultiplier", this.speedMultiplier);
-        return super.write(compound);
+        return super.save(compound);
     }
 }
 

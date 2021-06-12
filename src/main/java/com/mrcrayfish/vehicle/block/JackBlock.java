@@ -14,26 +14,28 @@ import net.minecraft.world.IBlockReader;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
 public class JackBlock extends ObjectBlock
 {
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 9, 15);
+    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 9, 15);
 
     public JackBlock()
     {
-        super(Block.Properties.create(Material.PISTON));
+        super(AbstractBlock.Properties.of(Material.PISTON));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        TileEntity tileEntity = worldIn.getTileEntity(pos);
+        TileEntity tileEntity = worldIn.getBlockEntity(pos);
         if(tileEntity instanceof JackTileEntity)
         {
             JackTileEntity jack = (JackTileEntity) tileEntity;
-            return VoxelShapes.create(SHAPE.getBoundingBox().expand(0, 0.5 * jack.getProgress(), 0));
+            return VoxelShapes.create(SHAPE.bounds().expandTowards(0, 0.5 * jack.getProgress(), 0));
         }
         return SHAPE;
     }
@@ -52,7 +54,7 @@ public class JackBlock extends ObjectBlock
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state)
+    public BlockRenderType getRenderShape(BlockState state)
     {
         return BlockRenderType.ENTITYBLOCK_ANIMATED;
     }

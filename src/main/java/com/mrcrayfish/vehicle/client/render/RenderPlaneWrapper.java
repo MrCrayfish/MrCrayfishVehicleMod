@@ -29,21 +29,21 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRayTracer.IEntityR
         if(!entity.isAlive())
             return;
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
         matrixStack.translate(0.0, 0.5, 0.0);
 
         float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-bodyPitch));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-bodyPitch));
 
         float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(-bodyRoll));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-bodyRoll));
 
         matrixStack.translate(0.0, -0.5, 0.0);
 
@@ -100,6 +100,6 @@ public class RenderPlaneWrapper<T extends PlaneEntity & EntityRayTracer.IEntityR
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

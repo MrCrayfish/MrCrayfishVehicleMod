@@ -25,7 +25,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
     }
 
     @Override
-    public ResourceLocation getEntityTexture(T entity)
+    public ResourceLocation getTextureLocation(T entity)
     {
         return null;
     }
@@ -36,15 +36,15 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
         if(!entity.isAlive())
             return;
 
-        if(entity.getRidingEntity() instanceof EntityJack)
+        if(entity.getVehicle() instanceof EntityJack)
             return;
 
-        matrixStack.push();
+        matrixStack.pushPose();
         wrapper.applyPreRotations(entity, matrixStack, partialTicks);
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(-entityYaw));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
         this.setupBreakAnimation(entity, matrixStack, partialTicks);
         wrapper.render(entity, matrixStack, renderTypeBuffer, partialTicks, light);
-        matrixStack.pop();
+        matrixStack.popPose();
 
         EntityRayTracer.instance().renderRayTraceElements(entity, matrixStack, entityYaw);
     }
@@ -54,7 +54,7 @@ public class RenderEntityVehicle<T extends VehicleEntity & EntityRayTracer.IEnti
         float timeSinceHit = (float) vehicle.getTimeSinceHit() - partialTicks;
         if(timeSinceHit > 0.0F)
         {
-            matrixStack.rotate(Vector3f.ZP.rotationDegrees(MathHelper.sin(timeSinceHit) * timeSinceHit));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(MathHelper.sin(timeSinceHit) * timeSinceHit));
         }
     }
 }

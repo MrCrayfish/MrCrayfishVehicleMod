@@ -47,15 +47,15 @@ public class ControllerHandler
             switch(event.getButton())
             {
                 case Buttons.A:
-                    if(player.getRidingEntity() instanceof PoweredVehicleEntity)
+                    if(player.getVehicle() instanceof PoweredVehicleEntity)
                     {
                         event.setCanceled(true);
                     }
                     break;
                 case Buttons.X:
-                    if(Minecraft.getInstance().currentScreen == null && player.getRidingEntity() instanceof VehicleEntity)
+                    if(Minecraft.getInstance().screen == null && player.getVehicle() instanceof VehicleEntity)
                     {
-                        VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
+                        VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
                         if(vehicle.canTowTrailer())
                         {
                             PacketHandler.instance.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
@@ -64,23 +64,23 @@ public class ControllerHandler
                     }
                     break;
                 case Buttons.SELECT:
-                    if(player.getRidingEntity() instanceof VehicleEntity)
+                    if(player.getVehicle() instanceof VehicleEntity)
                     {
-                        player.rotationYaw = player.getRidingEntity().rotationYaw;
-                        player.rotationPitch = 15F;
+                        player.yRot = player.getVehicle().yRot;
+                        player.xRot = 15F;
                         event.setCanceled(true);
                     }
                     break;
                 case Buttons.RIGHT_BUMPER:
                 case Buttons.LEFT_BUMPER:
-                    if(player.getRidingEntity() instanceof VehicleEntity)
+                    if(player.getVehicle() instanceof VehicleEntity)
                     {
                         event.setCanceled(true);
                     }
                     break;
                 case Buttons.RIGHT_TRIGGER:
                 case Buttons.LEFT_TRIGGER:
-                    if(Config.CLIENT.useTriggers.get() && player.getRidingEntity() instanceof VehicleEntity)
+                    if(Config.CLIENT.useTriggers.get() && player.getVehicle() instanceof VehicleEntity)
                     {
                         event.setCanceled(true);
                     }
@@ -95,7 +95,7 @@ public class ControllerHandler
     public void onControllerMove(ControllerEvent.Move event)
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if(player.getRidingEntity() instanceof VehicleEntity)
+        if(player.getVehicle() instanceof VehicleEntity)
         {
             event.setCanceled(true);
         }
@@ -107,7 +107,7 @@ public class ControllerHandler
         Map<Integer, Action> availableActions = event.getActions();
         Minecraft mc = Minecraft.getInstance();
         PlayerEntity player = mc.player;
-        if(player.getRidingEntity() instanceof VehicleEntity && mc.currentScreen == null)
+        if(player.getVehicle() instanceof VehicleEntity && mc.screen == null)
         {
             availableActions.remove(Buttons.RIGHT_BUMPER);
             availableActions.remove(Buttons.LEFT_BUMPER);
@@ -128,7 +128,7 @@ public class ControllerHandler
                 availableActions.put(Buttons.A, new Action("Accelerate", Action.Side.RIGHT));
             }
 
-            VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
+            VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
 
             if(vehicle instanceof PoweredVehicleEntity)
             {
@@ -160,11 +160,11 @@ public class ControllerHandler
         }
         else
         {
-            if(player.getRidingEntity() == null)
+            if(player.getVehicle() == null)
             {
-                if(mc.objectMouseOver != null && mc.objectMouseOver.getType() == RayTraceResult.Type.ENTITY)
+                if(mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.ENTITY)
                 {
-                    Entity entity = ((EntityRayTraceResult) mc.objectMouseOver).getEntity();
+                    Entity entity = ((EntityRayTraceResult) mc.hitResult).getEntity();
                     if(entity instanceof VehicleEntity)
                     {
                         availableActions.put(Buttons.LEFT_TRIGGER, new Action("Ride Vehicle", Action.Side.RIGHT));
@@ -178,7 +178,7 @@ public class ControllerHandler
     public void onRenderPlayerPreview(RenderPlayerPreviewEvent event)
     {
         PlayerEntity player = Minecraft.getInstance().player;
-        if(player.getRidingEntity() instanceof VehicleEntity)
+        if(player.getVehicle() instanceof VehicleEntity)
         {
             event.setCanceled(true);
         }
@@ -186,7 +186,7 @@ public class ControllerHandler
 
     public static boolean isRightClicking()
     {
-        boolean isRightClicking = GLFW.glfwGetMouseButton(Minecraft.getInstance().getMainWindow().getHandle(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
+        boolean isRightClicking = GLFW.glfwGetMouseButton(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_MOUSE_BUTTON_RIGHT) == GLFW.GLFW_PRESS;
         isRightClicking |= ClientHandler.isControllableLoaded() && Controllable.getController() != null && Controllable.getController().getLTriggerValue() != 0.0F;
         return isRightClicking;
     }

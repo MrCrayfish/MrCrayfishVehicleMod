@@ -39,7 +39,7 @@ public class PlayerModelHandler
     public void onPreRender(PlayerModelEvent.Render.Pre event)
     {
         PlayerEntity player = event.getPlayer();
-        Entity ridingEntity = player.getRidingEntity();
+        Entity ridingEntity = player.getVehicle();
         if(ridingEntity instanceof VehicleEntity)
         {
             VehicleEntity vehicle = (VehicleEntity) ridingEntity;
@@ -75,7 +75,7 @@ public class PlayerModelHandler
         if(!landVehicle.canWheelie())
             return;
 
-        int seatIndex = vehicle.getSeatTracker().getSeatIndex(player.getUniqueID());
+        int seatIndex = vehicle.getSeatTracker().getSeatIndex(player.getUUID());
         if(seatIndex == -1)
             return;
 
@@ -88,12 +88,12 @@ public class PlayerModelHandler
         double vehicleScale = properties.getBodyPosition().getScale();
         double playerScale = 32.0 / 30.0;
         double offsetX = -(seatVec.x * playerScale);
-        double offsetY = (seatVec.y + player.getYOffset()) * playerScale + 24 * 0.0625 - properties.getWheelOffset() * 0.0625 * vehicleScale;
+        double offsetY = (seatVec.y + player.getMyRidingOffset()) * playerScale + 24 * 0.0625 - properties.getWheelOffset() * 0.0625 * vehicleScale;
         double offsetZ = (seatVec.z * playerScale) - properties.getRearAxelVec().z * 0.0625 * vehicleScale;
         matrixStack.translate(offsetX, offsetY, offsetZ);
         float wheelieProgress = MathHelper.lerp(partialTicks, landVehicle.prevWheelieCount, landVehicle.wheelieCount) / 4F;
         wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
         matrixStack.translate(-offsetX, -offsetY, -offsetZ);
     }
 
@@ -102,7 +102,7 @@ public class PlayerModelHandler
     {
         PlayerEntity player = event.getPlayer();
 
-        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().gameSettings.getPointOfView() == PointOfView.FIRST_PERSON)
+        if(player.equals(Minecraft.getInstance().player) && Minecraft.getInstance().options.getCameraType() == PointOfView.FIRST_PERSON)
             return;
 
         if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())
@@ -126,7 +126,7 @@ public class PlayerModelHandler
     @SuppressWarnings({"unchecked", "rawtypes"})
     private void applyPassengerPose(PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        Entity ridingEntity = player.getRidingEntity();
+        Entity ridingEntity = player.getVehicle();
         if(!(ridingEntity instanceof VehicleEntity))
             return;
 

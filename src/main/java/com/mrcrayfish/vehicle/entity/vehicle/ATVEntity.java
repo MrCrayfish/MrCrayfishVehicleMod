@@ -7,6 +7,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.World;
 
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.FuelPortType;
+
 /**
  * Author: MrCrayfish
  */

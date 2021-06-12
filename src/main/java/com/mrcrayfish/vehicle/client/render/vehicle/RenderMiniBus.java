@@ -34,11 +34,11 @@ public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
     {
         this.renderDamagedPart(entity, SpecialModels.MINI_BUS_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         // Positions the steering wheel in the correct position
         matrixStack.translate(-0.2825, 0.225, 1.0625);
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-67.5F));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-67.5F));
         matrixStack.translate(0, -0.02, 0);
         matrixStack.scale(0.75F, 0.75F, 0.75F);
 
@@ -46,11 +46,11 @@ public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
 
         RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
@@ -61,10 +61,10 @@ public class RenderMiniBus extends AbstractRenderVehicle<MiniBusEntity>
             float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
+            model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
+            model.rightArm.yRot = (float) Math.toRadians(-7F);
+            model.leftArm.xRot = (float) Math.toRadians(-65F + turnRotation);
+            model.leftArm.yRot = (float) Math.toRadians(7F);
         }
     }
 

@@ -32,13 +32,13 @@ public class MessageSyncPlayerSeat implements IMessage<MessageSyncPlayerSeat>
     {
         buffer.writeVarInt(message.entityId);
         buffer.writeVarInt(message.seatIndex);
-        buffer.writeUniqueId(message.uuid);
+        buffer.writeUUID(message.uuid);
     }
 
     @Override
     public MessageSyncPlayerSeat decode(PacketBuffer buffer)
     {
-        return new MessageSyncPlayerSeat(buffer.readVarInt(), buffer.readVarInt(), buffer.readUniqueId());
+        return new MessageSyncPlayerSeat(buffer.readVarInt(), buffer.readVarInt(), buffer.readUUID());
     }
 
     @Override

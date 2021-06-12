@@ -40,10 +40,10 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
 
     public void setVehicle(VehicleEntity vehicle)
     {
-        this.jack = new EntityJack(ModEntities.JACK.get(), this.world, this.pos, 9 * 0.0625, vehicle.rotationYaw);
+        this.jack = new EntityJack(ModEntities.JACK.get(), this.level, this.worldPosition, 9 * 0.0625, vehicle.yRot);
         vehicle.startRiding(this.jack, true);
-        this.jack.updateRidden();
-        this.world.addEntity(this.jack);
+        this.jack.rideTick();
+        this.level.addFreshEntity(this.jack);
     }
 
     @Nullable
@@ -59,7 +59,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
 
         if(this.jack == null)
         {
-            List<EntityJack> jacks = this.world.getEntitiesWithinAABB(EntityJack.class, new AxisAlignedBB(this.pos));
+            List<EntityJack> jacks = this.level.getEntitiesOfClass(EntityJack.class, new AxisAlignedBB(this.worldPosition));
             if(jacks.size() > 0)
             {
                 this.jack = jacks.get(0);
@@ -77,19 +77,19 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
             {
                 if(!this.activated)
                 {
-                    this.world.playSound(null, this.pos, ModSounds.JACK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    this.level.playSound(null, this.worldPosition, ModSounds.JACK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     this.activated = true;
                 }
             }
             else if(this.activated)
             {
-                this.world.playSound(null, this.pos, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                this.level.playSound(null, this.worldPosition, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 this.activated = false;
             }
         }
         else if(this.activated)
         {
-            this.world.playSound(null, this.pos, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+            this.level.playSound(null, this.worldPosition, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             this.activated = false;
         }
 
@@ -110,16 +110,16 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
 
     private void moveCollidedEntities()
     {
-        BlockState state = this.world.getBlockState(this.getPos());
+        BlockState state = this.level.getBlockState(this.getBlockPos());
         if(state.getBlock() instanceof JackBlock)
         {
-            AxisAlignedBB boundingBox = state.getShape(this.world, this.pos).getBoundingBox().offset(this.pos);
-            List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.jack, boundingBox);
+            AxisAlignedBB boundingBox = state.getShape(this.level, this.worldPosition).bounds().move(this.worldPosition);
+            List<Entity> list = this.level.getEntities(this.jack, boundingBox);
             if(!list.isEmpty())
             {
                 for(Entity entity : list)
                 {
-                    if(entity.getPushReaction() != PushReaction.IGNORE)
+                    if(entity.getPistonPushReaction() != PushReaction.IGNORE)
                     {
                         AxisAlignedBB entityBoundingBox = entity.getBoundingBox();
                         double posY = boundingBox.maxY - entityBoundingBox.minY;
@@ -143,7 +143,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared()
+    public double getViewDistance()
     {
         return 65536.0D;
     }

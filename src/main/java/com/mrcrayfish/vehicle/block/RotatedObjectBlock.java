@@ -10,42 +10,44 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
 public abstract class RotatedObjectBlock extends ObjectBlock
 {
-    public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
+    public static final DirectionProperty DIRECTION = HorizontalBlock.FACING;
 
-    public RotatedObjectBlock(Block.Properties properties)
+    public RotatedObjectBlock(AbstractBlock.Properties properties)
     {
         super(properties);
-        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH));
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        return super.getStateForPlacement(context).with(DIRECTION, context.getPlacementHorizontalFacing());
+        return super.getStateForPlacement(context).setValue(DIRECTION, context.getHorizontalDirection());
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
-        super.fillStateContainer(builder);
+        super.createBlockStateDefinition(builder);
         builder.add(DIRECTION);
     }
 
     @Override
     public BlockState rotate(BlockState state, Rotation rotation)
     {
-        return state.with(DIRECTION, rotation.rotate(state.get(DIRECTION)));
+        return state.setValue(DIRECTION, rotation.rotate(state.getValue(DIRECTION)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirror)
     {
-        return state.rotate(mirror.toRotation(state.get(DIRECTION)));
+        return state.rotate(mirror.getRotation(state.getValue(DIRECTION)));
     }
 
 }

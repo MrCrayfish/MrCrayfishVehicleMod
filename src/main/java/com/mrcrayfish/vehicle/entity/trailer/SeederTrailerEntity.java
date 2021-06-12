@@ -72,31 +72,31 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    protected boolean canFitPassenger(Entity passenger)
+    protected boolean canAddPassenger(Entity passenger)
     {
         return false;
     }
 
     @Override
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType interact(PlayerEntity player, Hand hand)
     {
-        ItemStack heldItem = player.getHeldItem(hand);
+        ItemStack heldItem = player.getItemInHand(hand);
         if((heldItem.isEmpty() || !(heldItem.getItem() instanceof SprayCanItem)) && player instanceof ServerPlayerEntity)
         {
-            NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getEntityId()));
+            NetworkHooks.openGui((ServerPlayerEntity) player, this.getInventory(), buffer -> buffer.writeVarInt(this.getId()));
             return ActionResultType.SUCCESS;
         }
-        return super.processInitialInteract(player, hand);
+        return super.interact(player, hand);
     }
 
     @Override
     public void tick()
     {
         super.tick();
-        if(!this.world.isRemote && Config.SERVER.trailerInventorySyncCooldown.get() > 0 && inventoryTimer++ == Config.SERVER.trailerInventorySyncCooldown.get())
+        if(!this.level.isClientSide && Config.SERVER.trailerInventorySyncCooldown.get() > 0 && inventoryTimer++ == Config.SERVER.trailerInventorySyncCooldown.get())
         {
             this.inventoryTimer = 0;
-            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> SeederTrailerEntity.this), new MessageSyncInventory(this.getEntityId(), this.inventory));
+            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> SeederTrailerEntity.this), new MessageSyncInventory(this.getId(), this.inventory));
         }
     }
 
@@ -105,16 +105,16 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     {
         super.onUpdateVehicle();
 
-        Vector3d lookVec = this.getLookVec();
-        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(90F)).scale(0.85));
+        Vector3d lookVec = this.getLookAngle();
+        this.plantSeed(lookVec.yRot((float) Math.toRadians(90F)).scale(0.85));
         this.plantSeed(Vector3d.ZERO);
-        this.plantSeed(lookVec.rotateYaw((float) Math.toRadians(-90F)).scale(0.85));
+        this.plantSeed(lookVec.yRot((float) Math.toRadians(-90F)).scale(0.85));
     }
 
     private void plantSeed(Vector3d vec)
     {
-        BlockPos pos = new BlockPos(prevPosX + vec.x, prevPosY + 0.25, prevPosZ + vec.z);
-        if(world.isAirBlock(pos) && world.getBlockState(pos.down()).getBlock() instanceof FarmlandBlock)
+        BlockPos pos = new BlockPos(xo + vec.x, yo + 0.25, zo + vec.z);
+        if(level.isEmptyBlock(pos) && level.getBlockState(pos.below()).getBlock() instanceof FarmlandBlock)
         {
             ItemStack seed = this.getSeed();
             if(seed.isEmpty() && this.getPullingEntity() instanceof StorageTrailerEntity)
@@ -124,7 +124,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
             if(this.isSeed(seed))
             {
                 Block seedBlock = ((BlockNamedItem) seed.getItem()).getBlock();
-                this.world.setBlockState(pos, seedBlock.getDefaultState());
+                this.level.setBlockAndUpdate(pos, seedBlock.defaultBlockState());
                 seed.shrink(1);
             }
         }
@@ -132,9 +132,9 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
 
     private ItemStack getSeed()
     {
-        for(int i = 0; i < this.inventory.getSizeInventory(); i++)
+        for(int i = 0; i < this.inventory.getContainerSize(); i++)
         {
-            ItemStack stack = this.inventory.getStackInSlot(i);
+            ItemStack stack = this.inventory.getItem(i);
             if(this.isSeed(stack))
             {
                 return stack;
@@ -156,9 +156,9 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
         if(storageTrailer.getInventory() != null)
         {
             StorageInventory storage = storageTrailer.getInventory();
-            for(int i = 0; i < storage.getSizeInventory(); i++)
+            for(int i = 0; i < storage.getContainerSize(); i++)
             {
-                ItemStack stack = storage.getStackInSlot(i);
+                ItemStack stack = storage.getItem(i);
                 if(!stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable)
                 {
                     return stack;
@@ -174,9 +174,9 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
         if(compound.contains("Inventory", Constants.NBT.TAG_LIST))
         {
             this.initInventory();
@@ -185,9 +185,9 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
-        super.writeAdditional(compound);
+        super.addAdditionalSaveData(compound);
         if(this.inventory != null)
         {
             InventoryUtil.writeInventoryToNBT(compound, "Inventory", this.inventory);
@@ -201,12 +201,12 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
-            for(int i = 0; i < original.getSizeInventory(); i++)
+            for(int i = 0; i < original.getContainerSize(); i++)
             {
-                ItemStack stack = original.getStackInSlot(i);
+                ItemStack stack = original.getItem(i);
                 if(!stack.isEmpty())
                 {
-                    inventory.setInventorySlotContents(i, stack.copy());
+                    inventory.setItem(i, stack.copy());
                 }
             }
         }
@@ -218,7 +218,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
         super.onVehicleDestroyed(entity);
         if(inventory != null)
         {
-            InventoryHelper.dropInventoryItems(world, this, inventory);
+            InventoryHelper.dropContents(level, this, inventory);
         }
     }
 
@@ -265,7 +265,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
         {
             if(result.getPartHit() == CONNECTION_BOX)
             {
-                PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getInstance().player.getEntityId()));
+                PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
                 return true;
             }
         }
@@ -275,7 +275,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     @Override
     public boolean isStorageItem(ItemStack stack)
     {
-        return !stack.isEmpty() && stack.getItem().isIn(Tags.Items.SEEDS);
+        return !stack.isEmpty() && stack.getItem().is(Tags.Items.SEEDS);
     }
 
     @Override

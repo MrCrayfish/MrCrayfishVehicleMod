@@ -22,13 +22,13 @@ public class MessageAccelerating implements IMessage<MessageAccelerating>
 	@Override
 	public void encode(MessageAccelerating message, PacketBuffer buffer)
 	{
-		buffer.writeEnumValue(message.acceleration);
+		buffer.writeEnum(message.acceleration);
 	}
 
 	@Override
 	public MessageAccelerating decode(PacketBuffer buffer)
 	{
-		return new MessageAccelerating(buffer.readEnumValue(PoweredVehicleEntity.AccelerationDirection.class));
+		return new MessageAccelerating(buffer.readEnum(PoweredVehicleEntity.AccelerationDirection.class));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class MessageAccelerating implements IMessage<MessageAccelerating>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof PoweredVehicleEntity)
 				{
 					((PoweredVehicleEntity) riding).setAcceleration(message.acceleration);

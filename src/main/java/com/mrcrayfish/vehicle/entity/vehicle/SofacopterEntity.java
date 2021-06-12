@@ -15,7 +15,7 @@ public class SofacopterEntity extends HelicopterEntity
         super(type, worldIn);
         this.setFuelCapacity(40000F);
         this.setFuelConsumption(0.5F);
-        this.dataManager.set(COLOR, 11546150);
+        this.entityData.set(COLOR, 11546150);
     }
 
     @Override

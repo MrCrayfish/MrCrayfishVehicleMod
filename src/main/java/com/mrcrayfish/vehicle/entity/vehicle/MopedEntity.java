@@ -54,7 +54,7 @@ import java.util.Map;
  */
 public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 {
-    private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(MopedEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> CHEST = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
     private static final RayTracePart CHEST_BOX = new RayTracePart(new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375));
     private static final RayTracePart TRAY_BOX = new RayTracePart(createScaledBoundingBox(-4 * 0.0625, 8 * 0.0625 + 0.1, -4.5 * 0.0625, 4 * 0.0625, 9F * 0.0625F + 0.1, -12.5 * 0.0625, 1.2));
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () ->
@@ -78,10 +78,10 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.register(CHEST, false);
+        super.defineSynchedData();
+        this.entityData.define(CHEST, false);
     }
 
     @Override
@@ -121,9 +121,9 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
         if(compound.contains("Chest", Constants.NBT.TAG_BYTE))
         {
             this.setChest(compound.getBoolean("Chest"));
@@ -136,9 +136,9 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
-        super.writeAdditional(compound);
+        super.addAdditionalSaveData(compound);
         compound.putBoolean("Chest", this.hasChest());
         if(this.hasChest() && inventory != null)
         {
@@ -148,12 +148,12 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 
     public boolean hasChest()
     {
-        return this.dataManager.get(CHEST);
+        return this.entityData.get(CHEST);
     }
 
     public void setChest(boolean chest)
     {
-        this.dataManager.set(CHEST, chest);
+        this.entityData.set(CHEST, chest);
     }
 
     @Override
@@ -165,13 +165,13 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
             RayTracePart partHit = result.getPartHit();
             if(partHit == CHEST_BOX && this.hasChest())
             {
-                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getEntityId()));
-                Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
+                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
                 return true;
             }
             else if(partHit == TRAY_BOX && !this.hasChest())
             {
-                PacketHandler.instance.sendToServer(new MessageAttachChest(this.getEntityId()));
+                PacketHandler.instance.sendToServer(new MessageAttachChest(this.getId()));
                 return true;
             }
         }
@@ -214,10 +214,10 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
             RenderGlobal.drawSelectionBoundingBox(TRAY_BOX.getBox(), 0, 1, 0, 0.4F);
         }*/
         /*
-        IVertexBuilder ivertexbuilder = p_225619_2_.getBuffer(RenderType.func_228659_m_());
+        IVertexBuilder ivertexbuilder = p_225619_2_.getBuffer(RenderType.lines());
 
       for(VoxelShape voxelshape : this.collisionData) {
-         WorldRenderer.func_228431_a_(p_225619_1_, ivertexbuilder, voxelshape, -p_225619_3_, -p_225619_5_, -p_225619_7_, 1.0F, 1.0F, 1.0F, 1.0F);
+         WorldRenderer.renderVoxelShape(p_225619_1_, ivertexbuilder, voxelshape, -p_225619_3_, -p_225619_5_, -p_225619_7_, 1.0F, 1.0F, 1.0F, 1.0F);
       }
          */
     }
@@ -229,12 +229,12 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
-            for(int i = 0; i < original.getSizeInventory(); i++)
+            for(int i = 0; i < original.getContainerSize(); i++)
             {
-                ItemStack stack = original.getStackInSlot(i);
+                ItemStack stack = original.getItem(i);
                 if(!stack.isEmpty())
                 {
-                    this.inventory.setInventorySlotContents(i, stack.copy());
+                    this.inventory.setItem(i, stack.copy());
                 }
             }
         }
@@ -246,7 +246,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         super.onVehicleDestroyed(entity);
         if(this.hasChest() && inventory != null)
         {
-            InventoryHelper.dropInventoryItems(world, this, inventory);
+            InventoryHelper.dropContents(level, this, inventory);
         }
     }
 
@@ -264,7 +264,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     @Override
     public void attachChest(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+        if(!stack.isEmpty() && stack.getItem() == Item.byBlock(Blocks.CHEST))
         {
             this.setChest(true);
             this.initInventory();
@@ -279,7 +279,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
                     ItemStackHelper.loadAllItems(blockEntityTag, chestInventory);
                     for(int i = 0; i < chestInventory.size(); i++)
                     {
-                        this.inventory.setInventorySlotContents(i, chestInventory.get(i));
+                        this.inventory.setItem(i, chestInventory.get(i));
                     }
                 }
             }
@@ -291,12 +291,12 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     {
         if(this.inventory != null)
         {
-            Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(this.getPositionVec());
-            InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
+            Vector3d target = new Vector3d(0, 0.75, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+            InventoryUtil.dropInventoryItems(level, target.x, target.y, target.z, this.inventory);
             this.inventory = null;
             this.setChest(false);
-            world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            level.addFreshEntity(new ItemEntity(level, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
     }
 
@@ -314,9 +314,9 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public void openInventory(PlayerEntity player)
+    public void startOpen(PlayerEntity player)
     {
-        Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(this.getPositionVec());
-        this.world.playSound(null, target.x, target.y, target.z, SoundEvents.BLOCK_CHEST_OPEN, this.getSoundCategory(), 0.5F, 0.9F);
+        Vector3d target = new Vector3d(0, 0.75, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+        this.level.playSound(null, target.x, target.y, target.z, SoundEvents.CHEST_OPEN, this.getSoundSource(), 0.5F, 0.9F);
     }
 }

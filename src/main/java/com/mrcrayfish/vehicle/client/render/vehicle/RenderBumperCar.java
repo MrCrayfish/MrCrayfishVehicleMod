@@ -29,38 +29,38 @@ public class RenderBumperCar extends AbstractRenderVehicle<BumperCarEntity>
         this.renderDamagedPart(entity, SpecialModels.BUMPER_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 0.2, 0);
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(-45F));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-45F));
         matrixStack.translate(0, -0.02, 0);
         matrixStack.scale(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(turnRotation));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(turnRotation));
 
         RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
     public void applyPlayerModel(BumperCarEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+        model.rightLeg.xRot = (float) Math.toRadians(-85F);
+        model.rightLeg.yRot = (float) Math.toRadians(10F);
+        model.leftLeg.xRot = (float) Math.toRadians(-85F);
+        model.leftLeg.yRot = (float) Math.toRadians(-10F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
 
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
-        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
-        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
+        model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
+        model.rightArm.yRot = (float) Math.toRadians(-7F);
+        model.leftArm.xRot = (float) Math.toRadians(-65F + turnRotation);
+        model.leftArm.yRot = (float) Math.toRadians(7F);
     }
 
     @Nullable

@@ -22,13 +22,13 @@ public class MessageTurnDirection implements IMessage<MessageTurnDirection>
 	@Override
 	public void encode(MessageTurnDirection message, PacketBuffer buffer)
 	{
-		buffer.writeEnumValue(message.direction);
+		buffer.writeEnum(message.direction);
 	}
 
 	@Override
 	public MessageTurnDirection decode(PacketBuffer buffer)
 	{
-		return new MessageTurnDirection(buffer.readEnumValue(PoweredVehicleEntity.TurnDirection.class));
+		return new MessageTurnDirection(buffer.readEnum(PoweredVehicleEntity.TurnDirection.class));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class MessageTurnDirection implements IMessage<MessageTurnDirection>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof PoweredVehicleEntity)
 				{
 					((PoweredVehicleEntity) riding).setTurnDirection(message.direction);

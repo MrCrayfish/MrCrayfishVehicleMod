@@ -25,20 +25,20 @@ public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
         this.renderDamagedPart(entity, SpecialModels.LAWN_MOWER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.push();
+        matrixStack.pushPose();
 
         matrixStack.translate(0, 0.4, -0.15);
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-45F));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-45F));
         matrixStack.scale(0.9F, 0.9F, 0.9F);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
 
         this.renderDamagedPart(entity, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
@@ -47,14 +47,14 @@ public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
-        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(-7F);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
-        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(7F);
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
+        model.rightArm.xRot = (float) Math.toRadians(-55F - turnRotation);
+        model.rightArm.yRot = (float) Math.toRadians(-7F);
+        model.leftArm.xRot = (float) Math.toRadians(-55F + turnRotation);
+        model.leftArm.yRot = (float) Math.toRadians(7F);
+        model.rightLeg.xRot = (float) Math.toRadians(-65F);
+        model.rightLeg.yRot = (float) Math.toRadians(20F);
+        model.leftLeg.xRot = (float) Math.toRadians(-65F);
+        model.leftLeg.yRot = (float) Math.toRadians(-20F);
     }
 
     @Nullable

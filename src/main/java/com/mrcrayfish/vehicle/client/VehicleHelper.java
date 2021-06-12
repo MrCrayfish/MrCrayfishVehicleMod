@@ -63,47 +63,47 @@ public class VehicleHelper
     
     public static void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
-        Minecraft.getInstance().enqueue(() ->
+        Minecraft.getInstance().tell(() ->
         {
-            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle.getUniqueID(), uuid -> new HashMap<>());
+            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle.getUUID(), uuid -> new HashMap<>());
             if(vehicle.getRidingSound() != null && player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.ENGINE_RIDING);
-                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
                 {
                     sound = new MovingSoundVehicleRiding(player, vehicle);
                     soundMap.put(SoundType.ENGINE_RIDING, sound);
-                    Minecraft.getInstance().getSoundHandler().play(sound);
+                    Minecraft.getInstance().getSoundManager().play(sound);
                 }
             }
             if(vehicle.getMovingSound() != null && !player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.ENGINE);
-                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
                 {
                     sound = new MovingSoundVehicle(vehicle);
                     soundMap.put(SoundType.ENGINE, sound);
-                    Minecraft.getInstance().getSoundHandler().play(new MovingSoundVehicle(vehicle));
+                    Minecraft.getInstance().getSoundManager().play(new MovingSoundVehicle(vehicle));
                 }
             }
             if(vehicle.getHornSound() != null && !player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.HORN);
-                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
                 {
                     sound = new MovingSoundHorn(vehicle);
                     soundMap.put(SoundType.HORN, sound);
-                    Minecraft.getInstance().getSoundHandler().play(sound);
+                    Minecraft.getInstance().getSoundManager().play(sound);
                 }
             }
             if(vehicle.getHornRidingSound() != null && player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.HORN_RIDING);
-                if(sound == null || sound.isDonePlaying() || !Minecraft.getInstance().getSoundHandler().isPlaying(sound))
+                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
                 {
                     sound = new MovingSoundHornRiding(player, vehicle);
                     soundMap.put(SoundType.HORN_RIDING, sound);
-                    Minecraft.getInstance().getSoundHandler().play(sound);
+                    Minecraft.getInstance().getSoundManager().play(sound);
                 }
             }
         });
@@ -112,12 +112,12 @@ public class VehicleHelper
     public static void playSound(SoundEvent soundEvent, BlockPos pos, float volume, float pitch)
     {
         ISound sound = new SimpleSound(soundEvent, SoundCategory.BLOCKS, volume, pitch, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F);
-        Minecraft.getInstance().deferTask(() -> Minecraft.getInstance().getSoundHandler().play(sound));
+        Minecraft.getInstance().submitAsync(() -> Minecraft.getInstance().getSoundManager().play(sound));
     }
 
     public static void playSound(SoundEvent soundEvent, float volume, float pitch)
     {
-        Minecraft.getInstance().deferTask(() -> Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(soundEvent, volume, pitch)));
+        Minecraft.getInstance().submitAsync(() -> Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(soundEvent, volume, pitch)));
     }
 
     //@SubscribeEvent(priority = EventPriority.NORMAL, receiveCanceled = true)
@@ -170,9 +170,9 @@ public class VehicleHelper
             }
         }
 
-        GameSettings settings = Minecraft.getInstance().gameSettings;
-        boolean forward = settings.keyBindForward.isKeyDown();
-        boolean reverse = settings.keyBindBack.isKeyDown();
+        GameSettings settings = Minecraft.getInstance().options;
+        boolean forward = settings.keyUp.isDown();
+        boolean reverse = settings.keyDown.isDown();
         if(forward && reverse)
         {
             return PoweredVehicleEntity.AccelerationDirection.CHARGING;
@@ -214,11 +214,11 @@ public class VehicleHelper
                 }
             }
         }
-        if(entity.moveStrafing < 0)
+        if(entity.xxa < 0)
         {
             return PoweredVehicleEntity.TurnDirection.RIGHT;
         }
-        else if(entity.moveStrafing > 0)
+        else if(entity.xxa > 0)
         {
             return PoweredVehicleEntity.TurnDirection.LEFT;
         }
@@ -284,7 +284,7 @@ public class VehicleHelper
                 }
             }
         }
-        return Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown();
+        return Minecraft.getInstance().options.keyJump.isDown();
     }
 
     public static boolean isHonking()
@@ -300,13 +300,13 @@ public class VehicleHelper
                 }
             }
         }
-        return KeyBinds.KEY_HORN.isKeyDown();
+        return KeyBinds.KEY_HORN.isDown();
     }
 
     public static PlaneEntity.FlapDirection getFlapDirection()
     {
-        boolean flapUp = Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown();
-        boolean flapDown = Minecraft.getInstance().gameSettings.keyBindSprint.isKeyDown();
+        boolean flapUp = Minecraft.getInstance().options.keyJump.isDown();
+        boolean flapDown = Minecraft.getInstance().options.keySprint.isDown();
         if(ClientHandler.isControllableLoaded())
         {
             Controller controller = Controllable.getController();
@@ -321,8 +321,8 @@ public class VehicleHelper
 
     public static HelicopterEntity.AltitudeChange getAltitudeChange()
     {
-        boolean flapUp = Minecraft.getInstance().gameSettings.keyBindJump.isKeyDown();
-        boolean flapDown = Minecraft.getInstance().gameSettings.keyBindSprint.isKeyDown();
+        boolean flapUp = Minecraft.getInstance().options.keyJump.isDown();
+        boolean flapDown = Minecraft.getInstance().options.keySprint.isDown();
         if(ClientHandler.isControllableLoaded())
         {
             Controller controller = Controllable.getController();
@@ -347,7 +347,7 @@ public class VehicleHelper
                 if(xAxis != 0.0F || yAxis != 0.0F)
                 {
                     float angle = (float) Math.toDegrees(Math.atan2(-xAxis, yAxis)) + 180F;
-                    return vehicle.rotationYaw + angle;
+                    return vehicle.yRot + angle;
                 }
             }
         }
@@ -358,18 +358,18 @@ public class VehicleHelper
         {
             if(accelerationDirection == PoweredVehicleEntity.AccelerationDirection.FORWARD)
             {
-                return vehicle.rotationYaw + turnDirection.getDir() * -45F;
+                return vehicle.yRot + turnDirection.getDir() * -45F;
             }
             else if(accelerationDirection == PoweredVehicleEntity.AccelerationDirection.REVERSE)
             {
-                return vehicle.rotationYaw + 180F + turnDirection.getDir() * 45F;
+                return vehicle.yRot + 180F + turnDirection.getDir() * 45F;
             }
             else
             {
-                return vehicle.rotationYaw + turnDirection.getDir() * -90F;
+                return vehicle.yRot + turnDirection.getDir() * -90F;
             }
         }
-        return vehicle.rotationYaw;
+        return vehicle.yRot;
     }
 
     public static float getTravelSpeed(HelicopterEntity helicopter)
@@ -423,13 +423,13 @@ public class VehicleHelper
     public static void spawnWheelParticle(BlockPos pos, BlockState state, double x, double y, double z, Vector3d motion)
     {
         Minecraft mc = Minecraft.getInstance();
-        ClientWorld world = mc.world;
+        ClientWorld world = mc.level;
         if(world != null)
         {
             DiggingParticle particle = new DiggingParticle(world, x, y, z, motion.x, motion.y, motion.z, state);
-            particle.setBlockPos(pos);
-            particle.multiplyVelocity((float) motion.length());
-            mc.particles.addEffect(particle);
+            particle.init(pos);
+            particle.setPower((float) motion.length());
+            mc.particleEngine.add(particle);
         }
     }
 

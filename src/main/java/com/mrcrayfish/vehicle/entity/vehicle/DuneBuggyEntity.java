@@ -17,16 +17,16 @@ public class DuneBuggyEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(10);
-        this.stepHeight = 0.5F;
+        this.maxUpStep = 0.5F;
         this.setFuelCapacity(5000F);
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.set(WHEEL_TYPE, WheelType.PLASTIC.ordinal());
-        this.dataManager.set(COLOR, 0xF2B116);
+        super.defineSynchedData();
+        this.entityData.set(WHEEL_TYPE, WheelType.PLASTIC.ordinal());
+        this.entityData.set(COLOR, 0xF2B116);
     }
 
     @Override

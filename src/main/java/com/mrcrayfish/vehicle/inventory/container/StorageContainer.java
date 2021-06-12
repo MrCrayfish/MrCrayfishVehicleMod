@@ -22,8 +22,8 @@ public class StorageContainer extends Container
     {
         super(ModContainers.STORAGE.get(), windowId);
         this.storageInventory = storageInventory;
-        this.numRows = storageInventory.getSizeInventory() / 9;
-        storageInventory.openInventory(player);
+        this.numRows = storageInventory.getContainerSize() / 9;
+        storageInventory.startOpen(player);
         int yOffset = (this.numRows - 4) * 18;
 
         for(int i = 0; i < this.numRows; i++)
@@ -49,7 +49,7 @@ public class StorageContainer extends Container
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
         if(this.storageInventory instanceof Entity)
         {
@@ -59,39 +59,39 @@ public class StorageContainer extends Container
                 return false;
             }
         }
-        return this.storageInventory.isUsableByPlayer(playerIn);
+        return this.storageInventory.stillValid(playerIn);
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if(slot != null && slot.getHasStack())
+        if(slot != null && slot.hasItem())
         {
-            ItemStack itemstack1 = slot.getStack();
+            ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
 
             if(index < this.numRows * 9)
             {
-                if(!this.mergeItemStack(itemstack1, this.numRows * 9, this.inventorySlots.size(), true))
+                if(!this.moveItemStackTo(itemstack1, this.numRows * 9, this.slots.size(), true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(!this.mergeItemStack(itemstack1, 0, this.numRows * 9, false))
+            else if(!this.moveItemStackTo(itemstack1, 0, this.numRows * 9, false))
             {
                 return ItemStack.EMPTY;
             }
 
             if(itemstack1.isEmpty())
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else
             {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
@@ -99,10 +99,10 @@ public class StorageContainer extends Container
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn)
+    public void removed(PlayerEntity playerIn)
     {
-        super.onContainerClosed(playerIn);
-        this.storageInventory.closeInventory(playerIn);
+        super.removed(playerIn);
+        this.storageInventory.stopOpen(playerIn);
     }
 
     public IInventory getStorageInventory()

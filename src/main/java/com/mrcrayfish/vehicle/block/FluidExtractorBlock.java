@@ -24,6 +24,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
@@ -31,22 +33,22 @@ public class FluidExtractorBlock extends RotatedObjectBlock
 {
     public FluidExtractorBlock()
     {
-        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F).notSolid());
+        super(AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(1.0F).noOcclusion());
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(!world.isRemote)
+        if(!world.isClientSide)
         {
-            ItemStack stack = playerEntity.getHeldItem(hand);
+            ItemStack stack = playerEntity.getItemInHand(hand);
             if(stack.getItem() == Items.BUCKET)
             {
-                FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace());
+                FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection());
                 return ActionResultType.SUCCESS;
             }
 
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if(tileEntity instanceof FluidExtractorTileEntity)
             {
                 TileEntityUtil.sendUpdatePacket(tileEntity, (ServerPlayerEntity) playerEntity);
@@ -58,17 +60,17 @@ public class FluidExtractorBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
+    public void onRemove(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving)
     {
         if(state.getBlock() != newState.getBlock())
         {
-            TileEntity tileentity = worldIn.getTileEntity(pos);
+            TileEntity tileentity = worldIn.getBlockEntity(pos);
             if(tileentity instanceof IInventory)
             {
-                InventoryHelper.dropInventoryItems(worldIn, pos, (IInventory) tileentity);
-                worldIn.updateComparatorOutputLevel(pos, this);
+                InventoryHelper.dropContents(worldIn, pos, (IInventory) tileentity);
+                worldIn.updateNeighbourForOutputSignal(pos, this);
             }
-            super.onReplaced(state, worldIn, pos, newState, isMoving);
+            super.onRemove(state, worldIn, pos, newState, isMoving);
         }
     }
 

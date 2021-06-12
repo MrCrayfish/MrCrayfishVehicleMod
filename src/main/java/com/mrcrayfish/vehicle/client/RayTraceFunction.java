@@ -36,7 +36,7 @@ public interface RayTraceFunction
                 {
                     if(rayTracer.getContinuousInteractionTickCounter() % 2 == 0)
                     {
-                        PacketHandler.instance.sendToServer(new MessageFuelVehicle(result.getEntity().getEntityId(), Hand.MAIN_HAND));
+                        PacketHandler.instance.sendToServer(new MessageFuelVehicle(result.getEntity().getId(), Hand.MAIN_HAND));
                         poweredVehicle.fuelVehicle(player, Hand.MAIN_HAND);
                     }
                     return Hand.MAIN_HAND;
@@ -46,7 +46,7 @@ public interface RayTraceFunction
 
         for(Hand hand : Hand.values())
         {
-            ItemStack stack = player.getHeldItem(hand);
+            ItemStack stack = player.getItemInHand(hand);
             if(!stack.isEmpty() && stack.getItem() instanceof JerryCanItem && ControllerHandler.isRightClicking())
             {
                 Entity entity = result.getEntity();
@@ -60,7 +60,7 @@ public interface RayTraceFunction
                         {
                             if(rayTracer.getContinuousInteractionTickCounter() % 2 == 0)
                             {
-                                PacketHandler.instance.sendToServer(new MessageFuelVehicle(entity.getEntityId(), hand));
+                                PacketHandler.instance.sendToServer(new MessageFuelVehicle(entity.getId(), hand));
                             }
                             return hand;
                         }

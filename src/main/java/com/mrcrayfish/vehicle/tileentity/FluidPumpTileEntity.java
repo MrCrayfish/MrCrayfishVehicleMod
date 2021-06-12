@@ -41,16 +41,16 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
     @Override
     public void tick()
     {
-        if(this.powerMode != PowerMode.ALWAYS_ACTIVE && (this.world.isBlockPowered(this.pos) != (this.powerMode == PowerMode.REQUIRES_SIGNAL_ON)))
+        if(this.powerMode != PowerMode.ALWAYS_ACTIVE && (this.level.hasNeighborSignal(this.worldPosition) != (this.powerMode == PowerMode.REQUIRES_SIGNAL_ON)))
             return;
 
-        BlockState state = this.world.getBlockState(this.pos);
-        Direction facing = state.get(FluidPumpBlock.DIRECTION);
+        BlockState state = this.level.getBlockState(this.worldPosition);
+        Direction facing = state.getValue(FluidPumpBlock.DIRECTION);
 
         List<IFluidHandler> fluidHandlers = new ArrayList<>();
         for(Direction face : Direction.values())
         {
-            if(!this.getDisabledConnections()[face.getIndex()] && state.get(FluidPumpBlock.CONNECTED_PIPES[face.getIndex()]))
+            if(!this.getDisabledConnections()[face.get3DDataValue()] && state.getValue(FluidPumpBlock.CONNECTED_PIPES[face.get3DDataValue()]))
             {
                 IFluidHandler handler = this.getConnectedFluidHandler(face);
                 if (handler != null)
@@ -95,7 +95,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
         int filled;
         for(int i = 0; i < remainder && !fluidHandlers.isEmpty(); i++)
         {
-            int index = this.world.rand.nextInt(fluidHandlers.size());
+            int index = this.level.random.nextInt(fluidHandlers.size());
             filled = FluidUtils.transferFluid(this.tank, fluidHandlers.get(index), 1);
             remainder -= filled;
             if(filled == 0)
@@ -106,9 +106,9 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("PowerMode", Constants.NBT.TAG_INT))
         {
             this.powerMode = PowerMode.fromOrdinal(compound.getInt("PowerMode"));
@@ -116,10 +116,10 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         compound.putInt("PowerMode", this.powerMode.ordinal());
-        return super.write(compound);
+        return super.save(compound);
     }
 
     public enum PowerMode
@@ -138,7 +138,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
 
         public void notifyPlayerOfChange(PlayerEntity player)
         {
-            player.sendStatusMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(LANG_KEY_CHAT_PREFIX + "." + this.langKeyChat)), true);
+            player.displayClientMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(LANG_KEY_CHAT_PREFIX + "." + this.langKeyChat)), true);
         }
 
         @Nullable

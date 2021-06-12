@@ -40,10 +40,10 @@ public class LawnMowerEntity extends LandVehicleEntity
     {
         super.updateVehicle();
 
-        if(!world.isRemote && this.getControllingPassenger() != null)
+        if(!level.isClientSide && this.getControllingPassenger() != null)
         {
-            AxisAlignedBB axisAligned = this.getBoundingBox().grow(0.25);
-            Vector3d lookVec = this.getLookVec().scale(0.5);
+            AxisAlignedBB axisAligned = this.getBoundingBox().inflate(0.25);
+            Vector3d lookVec = this.getLookAngle().scale(0.5);
             int minX = MathHelper.floor(axisAligned.minX + lookVec.x);
             int maxX = MathHelper.ceil(axisAligned.maxX + lookVec.x);
             int minZ = MathHelper.floor(axisAligned.minZ + lookVec.z);
@@ -54,7 +54,7 @@ public class LawnMowerEntity extends LandVehicleEntity
                 for(int z = minZ; z < maxZ; z++)
                 {
                     BlockPos pos = new BlockPos(x, axisAligned.minY + 0.5, z);
-                    BlockState state = world.getBlockState(pos);
+                    BlockState state = level.getBlockState(pos);
 
                     StorageTrailerEntity trailer = null;
                     if(getTrailer() instanceof StorageTrailerEntity)
@@ -64,14 +64,14 @@ public class LawnMowerEntity extends LandVehicleEntity
 
                     if(state.getBlock() instanceof BushBlock)
                     {
-                        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) world, pos, null);
+                        List<ItemStack> drops = Block.getDrops(state, (ServerWorld) level, pos, null);
                         for(ItemStack stack : drops)
                         {
                             this.addItemToStorage(trailer, stack);
                         }
-                        world.setBlockState(pos, Blocks.AIR.getDefaultState());
-                        world.playSound(null, pos, state.getBlock().getSoundType(state, world, pos, this).getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                        world.playEvent(2001, pos, Block.getStateId(state));
+                        level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                        level.playSound(null, pos, state.getBlock().getSoundType(state, level, pos, this).getBreakSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        level.levelEvent(2001, pos, Block.getId(state));
                     }
                 }
             }
@@ -95,13 +95,13 @@ public class LawnMowerEntity extends LandVehicleEntity
                 }
                 else
                 {
-                    spawnItemStack(world, stack);
+                    spawnItemStack(level, stack);
                 }
             }
         }
         else
         {
-            spawnItemStack(world, stack);
+            spawnItemStack(level, stack);
         }
     }
 
@@ -109,10 +109,10 @@ public class LawnMowerEntity extends LandVehicleEntity
     {
         while(!stack.isEmpty())
         {
-            ItemEntity itemEntity = new ItemEntity(worldIn, prevPosX, prevPosY, prevPosZ, stack.split(rand.nextInt(21) + 10));
-            itemEntity.setPickupDelay(20);
-            itemEntity.setMotion(-this.getMotion().x / 4.0, rand.nextGaussian() * 0.05D + 0.2D, -this.getMotion().z / 4.0);
-            worldIn.addEntity(itemEntity);
+            ItemEntity itemEntity = new ItemEntity(worldIn, xo, yo, zo, stack.split(random.nextInt(21) + 10));
+            itemEntity.setPickUpDelay(20);
+            itemEntity.setDeltaMovement(-this.getDeltaMovement().x / 4.0, random.nextGaussian() * 0.05D + 0.2D, -this.getDeltaMovement().z / 4.0);
+            worldIn.addFreshEntity(itemEntity);
         }
     }
 

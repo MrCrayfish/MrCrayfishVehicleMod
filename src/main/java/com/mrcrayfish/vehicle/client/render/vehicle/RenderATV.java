@@ -35,19 +35,19 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         this.renderDamagedPart(entity, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Handle bar transformations
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.0, 0.3375, 0.25);
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-45F));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-45F));
         matrixStack.translate(0.0, -0.025, 0);
 
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 15F;
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
 
         RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, entity.getColor(), light, OverlayTexture.NO_OVERLAY);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
@@ -56,30 +56,30 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 12F;
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-65F - turnRotation);
-        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(15F);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-65F + turnRotation);
-        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-15F);
+        model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
+        model.rightArm.yRot = (float) Math.toRadians(15F);
+        model.leftArm.xRot = (float) Math.toRadians(-65F + turnRotation);
+        model.leftArm.yRot = (float) Math.toRadians(-15F);
 
         if(entity.getControllingPassenger() != player)
         {
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(15F);
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-20F);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(-15F);
-            model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
-            model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-            model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+            model.rightArm.xRot = (float) Math.toRadians(-20F);
+            model.rightArm.yRot = (float) Math.toRadians(0F);
+            model.rightArm.zRot = (float) Math.toRadians(15F);
+            model.leftArm.xRot = (float) Math.toRadians(-20F);
+            model.leftArm.yRot = (float) Math.toRadians(0F);
+            model.leftArm.zRot = (float) Math.toRadians(-15F);
+            model.rightLeg.xRot = (float) Math.toRadians(-85F);
+            model.rightLeg.yRot = (float) Math.toRadians(30F);
+            model.leftLeg.xRot = (float) Math.toRadians(-85F);
+            model.leftLeg.yRot = (float) Math.toRadians(-30F);
             return;
         }
 
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+        model.rightLeg.xRot = (float) Math.toRadians(-65F);
+        model.rightLeg.yRot = (float) Math.toRadians(30F);
+        model.leftLeg.xRot = (float) Math.toRadians(-65F);
+        model.leftLeg.yRot = (float) Math.toRadians(-30F);
     }
 
     @Nullable

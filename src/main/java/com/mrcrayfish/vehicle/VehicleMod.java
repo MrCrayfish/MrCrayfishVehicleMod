@@ -30,7 +30,7 @@ public class VehicleMod
     public static final ItemGroup CREATIVE_TAB = new ItemGroup("tabVehicle")
     {
         @Override
-        public ItemStack createIcon()
+        public ItemStack makeIcon()
         {
             return new ItemStack(ModItems.WOOD_SMALL_ENGINE.get());
         }

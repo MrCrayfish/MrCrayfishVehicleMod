@@ -30,6 +30,6 @@ public enum EngineType
 
     public String getEngineName()
     {
-        return I18n.format("vehicle.engine_type." + this.id + ".name");
+        return I18n.get("vehicle.engine_type." + this.id + ".name");
     }
 }

@@ -44,20 +44,20 @@ public class TileFluidHandlerSynced extends TileFluidHandler
 
     public void syncFluidToClient()
     {
-        if(this.world != null && !this.world.isRemote)
+        if(this.level != null && !this.level.isClientSide)
         {
             CompoundNBT compound = new CompoundNBT();
-            super.write(compound);
+            super.save(compound);
             TileEntityUtil.sendUpdatePacket(this, compound);
         }
     }
 
     public void syncFluidToPlayer(ServerPlayerEntity player)
     {
-        if(this.world != null && !this.world.isRemote)
+        if(this.level != null && !this.level.isClientSide)
         {
             CompoundNBT compound = new CompoundNBT();
-            super.write(compound);
+            super.save(compound);
             TileEntityUtil.sendUpdatePacket(this, compound);
         }
     }
@@ -65,20 +65,20 @@ public class TileFluidHandlerSynced extends TileFluidHandler
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(this.pos, 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.worldPosition, 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
-        this.read(null, pkt.getNbtCompound());
+        this.load(null, pkt.getTag());
     }
 
     public FluidTank getFluidTank()

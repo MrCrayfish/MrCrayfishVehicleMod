@@ -29,7 +29,7 @@ public class CameraHandler
         if(!Config.CLIENT.autoPerspective.get())
             return;
 
-        if(!event.getWorldObj().isRemote())
+        if(!event.getWorldObj().isClientSide())
             return;
 
         if(!event.getEntityMounting().equals(Minecraft.getInstance().player))
@@ -41,12 +41,12 @@ public class CameraHandler
             if(!(entity instanceof VehicleEntity))
                 return;
 
-            this.originalPointOfView = Minecraft.getInstance().gameSettings.getPointOfView();
-            Minecraft.getInstance().gameSettings.setPointOfView(PointOfView.THIRD_PERSON_BACK);
+            this.originalPointOfView = Minecraft.getInstance().options.getCameraType();
+            Minecraft.getInstance().options.setCameraType(PointOfView.THIRD_PERSON_BACK);
         }
         else if(this.originalPointOfView != null)
         {
-            Minecraft.getInstance().gameSettings.setPointOfView(this.originalPointOfView);
+            Minecraft.getInstance().options.setCameraType(this.originalPointOfView);
             this.originalPointOfView = null;
         }
     }
@@ -61,11 +61,11 @@ public class CameraHandler
         if(player == null)
             return;
 
-        Entity entity = player.getRidingEntity();
+        Entity entity = player.getVehicle();
         if(!(entity instanceof VehicleEntity))
             return;
 
-        if(!Minecraft.getInstance().gameSettings.keyBindTogglePerspective.isKeyDown())
+        if(!Minecraft.getInstance().options.keyTogglePerspective.isDown())
             return;
 
         this.originalPointOfView = null;
@@ -78,7 +78,7 @@ public class CameraHandler
         if(event.phase != TickEvent.Phase.END || player == null)
             return;
 
-        if(player.getRidingEntity() != null)
+        if(player.getVehicle() != null)
             return;
 
         this.originalPointOfView = null;
@@ -91,7 +91,7 @@ public class CameraHandler
         if(player == null)
             return;
 
-        Entity ridingEntity = player.getRidingEntity();
+        Entity ridingEntity = player.getVehicle();
         if(ridingEntity instanceof VehicleEntity)
         {
             event.setNewfov(1.0F);

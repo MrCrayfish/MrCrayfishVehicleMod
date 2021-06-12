@@ -18,21 +18,21 @@ public class ItemBoostRamp extends BlockItem
 {
     public ItemBoostRamp(Block block)
     {
-        super(block, new Item.Properties().group(VehicleMod.CREATIVE_TAB));
+        super(block, new Item.Properties().tab(VehicleMod.CREATIVE_TAB));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context)
     {
-        if(context.getFace() == Direction.UP)
+        if(context.getClickedFace() == Direction.UP)
         {
-            BlockState state = context.getWorld().getBlockState(context.getPos());
+            BlockState state = context.getLevel().getBlockState(context.getClickedPos());
             Block block = state.getBlock();
             if(block instanceof BoostRampBlock)
             {
-                if(!state.get(BoostRampBlock.STACKED))
+                if(!state.getValue(BoostRampBlock.STACKED))
                 {
-                    context.getWorld().setBlockState(context.getPos(), block.getDefaultState().with(BoostRampBlock.DIRECTION, state.get(BoostRampBlock.DIRECTION)).with(BoostRampBlock.STACKED, true));
+                    context.getLevel().setBlockAndUpdate(context.getClickedPos(), block.defaultBlockState().setValue(BoostRampBlock.DIRECTION, state.getValue(BoostRampBlock.DIRECTION)).setValue(BoostRampBlock.STACKED, true));
                 }
                 return ActionResultType.SUCCESS;
             }

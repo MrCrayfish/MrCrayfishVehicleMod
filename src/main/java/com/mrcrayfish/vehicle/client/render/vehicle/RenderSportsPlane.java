@@ -32,28 +32,28 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
     {
         this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE.getModel(), matrixStack, renderTypeBuffer, light);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             matrixStack.translate(0, -3 * 0.0625, 8 * 0.0625);
             matrixStack.translate(8 * 0.0625, 0, 0);
             matrixStack.translate(6 * 0.0625, 0, 0);
-            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-5F));
+            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-5F));
             this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             matrixStack.translate(0, -3 * 0.0625, 8 * 0.0625);
-            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(180F));
+            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(180F));
             matrixStack.translate(8 * 0.0625, 0.0625, 0);
             matrixStack.translate(6 * 0.0625, 0, 0);
-            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(5F));
+            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(5F));
             this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             matrixStack.translate(0, -0.5, 0);
             matrixStack.scale(0.85F, 0.85F, 0.85F);
@@ -61,61 +61,61 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             renderWheel(entity, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks, light);
             renderWheel(entity, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
 
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             float propellerRotation = entity.prevPropellerRotation + (entity.propellerRotation - entity.prevPropellerRotation) * partialTicks;
             matrixStack.translate(0, -1.5 * 0.0625, 22.2 * 0.0625);
-            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(propellerRotation));
+            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(propellerRotation));
             this.renderDamagedPart(entity, SpecialModels.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     private void renderWheel(SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks, int light)
     {
-        matrixStack.push();
+        matrixStack.pushPose();
         {
             matrixStack.translate(offsetX, offsetY, offsetZ);
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer, light);
 
-            matrixStack.push();
+            matrixStack.pushPose();
             {
                 matrixStack.translate(0, -2.25F / 16F, 0);
-                matrixStack.push();
+                matrixStack.pushPose();
                 {
                     if(vehicle.isMoving())
                     {
                         float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
-                        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
+                        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
                     }
                     matrixStack.scale(0.8F, 0.8F, 0.8F);
                     RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 }
-                matrixStack.pop();
+                matrixStack.popPose();
             }
-            matrixStack.pop();
+            matrixStack.popPose();
 
-            matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(legRotation));
+            matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(legRotation));
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
     public void applyPlayerModel(SportsPlaneEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(10F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-10F);
+        model.rightLeg.xRot = (float) Math.toRadians(-85F);
+        model.rightLeg.yRot = (float) Math.toRadians(10F);
+        model.leftLeg.xRot = (float) Math.toRadians(-85F);
+        model.leftLeg.yRot = (float) Math.toRadians(-10F);
     }
 
     @Override
     public void applyPlayerRender(SportsPlaneEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
@@ -123,13 +123,13 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = seatVec.x * scale;
-            double offsetY = (seatVec.y + player.getYOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetY = (seatVec.y + player.getMyRidingOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
             float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
-            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
-            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
+            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
+            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
     }

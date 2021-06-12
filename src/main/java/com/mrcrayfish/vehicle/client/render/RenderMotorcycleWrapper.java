@@ -30,21 +30,21 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRayTrace
         if(!entity.isAlive())
             return;
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
         float additionalYaw = entity.prevAdditionalYaw + (entity.additionalYaw - entity.prevAdditionalYaw) * partialTicks;
-        matrixStack.rotate(Vector3f.YP.rotationDegrees(additionalYaw));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(additionalYaw));
 
         //Applies leaning rotation caused by turning
         float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
         float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(turnAngleNormal * currentSpeedNormal * -20F));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(turnAngleNormal * currentSpeedNormal * -20F));
 
         //Translate the body
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
@@ -71,7 +71,7 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRayTrace
             matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
             float wheelieProgress = MathHelper.lerp(partialTicks, entity.prevWheelieCount, entity.wheelieCount) / 4F;
             wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
-            matrixStack.rotate(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
             matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
             matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.5, 0.0);
@@ -83,12 +83,12 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRayTrace
         //Render vehicle wheels
         if(entity.hasWheels())
         {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0.0, -8 * 0.0625, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
             IBakedModel wheelModel = RenderUtil.getWheelModel(entity);
             properties.getWheels().forEach(wheel -> this.renderWheel(entity, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
-            matrixStack.pop();
+            matrixStack.popPose();
         }
 
         //Render the engine if the vehicle has explicitly stated it should
@@ -130,6 +130,6 @@ public class RenderMotorcycleWrapper<T extends MotorcycleEntity & EntityRayTrace
 
         this.renderSteeringDebug(matrixStack, properties, entity);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 }

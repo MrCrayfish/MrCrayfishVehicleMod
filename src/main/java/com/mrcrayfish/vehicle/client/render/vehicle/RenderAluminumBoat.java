@@ -30,10 +30,10 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
 
     public RenderAluminumBoat()
     {
-        this.noWater = (new ModelRenderer(new Model(resource -> RenderType.getWaterMask()){
+        this.noWater = (new ModelRenderer(new Model(resource -> RenderType.waterMask()){
             @Override
-            public void render(MatrixStack p_225598_1_, IVertexBuilder p_225598_2_, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float p_225598_8_) {}
-        }, 0, 0)).setTextureSize(128, 64);
+            public void renderToBuffer(MatrixStack p_225598_1_, IVertexBuilder p_225598_2_, int p_225598_3_, int p_225598_4_, float p_225598_5_, float p_225598_6_, float p_225598_7_, float p_225598_8_) {}
+        }, 0, 0)).setTexSize(128, 64);
         this.noWater.addBox(-15F, -6F, -21F, 30, 8, 35, 0.0F);
     }
 
@@ -41,38 +41,38 @@ public class RenderAluminumBoat extends AbstractRenderVehicle<AluminumBoatEntity
     public void render(AluminumBoatEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(entity, SpecialModels.ALUMINUM_BOAT_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.getWaterMask());
+        IVertexBuilder buffer = renderTypeBuffer.getBuffer(RenderType.waterMask());
         this.noWater.render(matrixStack, buffer, light, OverlayTexture.NO_OVERLAY);
     }
 
     @Override
     public void applyPlayerModel(AluminumBoatEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-85F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
+        model.rightLeg.xRot = (float) Math.toRadians(-85F);
+        model.rightLeg.yRot = (float) Math.toRadians(20F);
+        model.leftLeg.xRot = (float) Math.toRadians(-85F);
+        model.leftLeg.yRot = (float) Math.toRadians(-20F);
     }
 
     @Override
     public void applyPlayerRender(AluminumBoatEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).mul(-1, 1, 1).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = -seatVec.x * scale;
-            double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetY = (seatVec.y + player.getMyRidingOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
 
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
-            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
-            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
+            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
+            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }

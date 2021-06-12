@@ -37,7 +37,7 @@ public class Serializers
         {
             CompoundNBT compound = new CompoundNBT();
             compound.putBoolean("Present", value.isPresent());
-            value.ifPresent(blockPos -> compound.putLong("BlockPos", value.get().toLong()));
+            value.ifPresent(blockPos -> compound.putLong("BlockPos", value.get().asLong()));
             return compound;
         }
 
@@ -47,7 +47,7 @@ public class Serializers
             CompoundNBT compound = (CompoundNBT) nbt;
             if(compound.getBoolean("Present"))
             {
-                BlockPos pos = BlockPos.fromLong(compound.getLong("BlockPos"));
+                BlockPos pos = BlockPos.of(compound.getLong("BlockPos"));
                 return Optional.of(pos);
             }
             return Optional.empty();

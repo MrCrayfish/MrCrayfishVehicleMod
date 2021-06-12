@@ -17,7 +17,7 @@ public class StateHelper
     public static RelativeDirection getRotation(IWorldReader world, BlockPos pos, Direction facing, RelativeDirection dir)
     {
         BlockPos target = getBlockPosRelativeTo(world, pos, facing, dir);
-        Direction other = world.getBlockState(target).get(RotatedObjectBlock.DIRECTION);
+        Direction other = world.getBlockState(target).getValue(RotatedObjectBlock.DIRECTION);
         return getDirectionRelativeTo(facing, other);
     }
 
@@ -32,13 +32,13 @@ public class StateHelper
         switch(dir)
         {
             case LEFT:
-                return pos.offset(facing.rotateY());
+                return pos.relative(facing.getClockWise());
             case RIGHT:
-                return pos.offset(facing.rotateYCCW());
+                return pos.relative(facing.getCounterClockWise());
             case UP:
-                return pos.offset(facing);
+                return pos.relative(facing);
             case DOWN:
-                return pos.offset(facing.getOpposite());
+                return pos.relative(facing.getOpposite());
             default:
                 return pos;
         }
@@ -46,7 +46,7 @@ public class StateHelper
 
     private static RelativeDirection getDirectionRelativeTo(Direction thisBlock, Direction otherBlock)
     {
-        int num = thisBlock.getHorizontalIndex() - otherBlock.getHorizontalIndex();
+        int num = thisBlock.get2DDataValue() - otherBlock.get2DDataValue();
         switch(num)
         {
             case -3:

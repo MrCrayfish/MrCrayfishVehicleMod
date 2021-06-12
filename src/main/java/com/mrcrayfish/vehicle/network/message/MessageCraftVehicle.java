@@ -50,14 +50,14 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
     @Override
     public void encode(MessageCraftVehicle message, PacketBuffer buffer)
     {
-        buffer.writeString(message.vehicleId, 128);
+        buffer.writeUtf(message.vehicleId, 128);
         buffer.writeBlockPos(message.pos);
     }
 
     @Override
     public MessageCraftVehicle decode(PacketBuffer buffer)
     {
-        return new MessageCraftVehicle(buffer.readString(128), buffer.readBlockPos());
+        return new MessageCraftVehicle(buffer.readUtf(128), buffer.readBlockPos());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -69,11 +69,11 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                World world = player.world;
-                if(!(player.openContainer instanceof WorkstationContainer))
+                World world = player.level;
+                if(!(player.containerMenu instanceof WorkstationContainer))
                     return;
 
-                WorkstationContainer workstation = (WorkstationContainer) player.openContainer;
+                WorkstationContainer workstation = (WorkstationContainer) player.containerMenu;
                 if(!workstation.getPos().equals(message.pos))
                     return;
 
@@ -110,7 +110,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                     engineType = entityPoweredVehicle.getEngineType();
 
                     WorkstationTileEntity workstationTileEntity = workstation.getTileEntity();
-                    ItemStack engine = workstationTileEntity.getStackInSlot(1);
+                    ItemStack engine = workstationTileEntity.getItem(1);
                     if(engine.isEmpty() || !(engine.getItem() instanceof EngineItem))
                     {
                         return;
@@ -191,7 +191,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                 }
 
                 ItemStack stack = VehicleCrateBlock.create(entityId, color, engineTier, wheelType, wheelColor);
-                world.addEntity(new ItemEntity(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
+                world.addFreshEntity(new ItemEntity(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
             }
         });
         supplier.get().setPacketHandled(true);

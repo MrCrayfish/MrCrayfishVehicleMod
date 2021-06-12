@@ -28,13 +28,13 @@ public class RenderHelicopterWrapper<T extends HelicopterEntity & EntityRayTrace
         if(!entity.isAlive())
             return;
 
-        matrixStack.push();
+        matrixStack.pushPose();
 
         VehicleProperties properties = entity.getProperties();
         PartPosition bodyPosition = properties.getBodyPosition();
-        matrixStack.rotate(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
-        matrixStack.rotate(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
         //Translate the body
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
@@ -88,13 +88,13 @@ public class RenderHelicopterWrapper<T extends HelicopterEntity & EntityRayTrace
             }
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
     public void applyPreRotations(T entity, MatrixStack matrixStack, float partialTicks)
     {
-        matrixStack.rotate(Vector3f.ZP.rotationDegrees(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks));
-        matrixStack.rotate(Vector3f.XP.rotationDegrees(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks));
     }
 }

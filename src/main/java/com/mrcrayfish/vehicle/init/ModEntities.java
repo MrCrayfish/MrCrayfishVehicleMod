@@ -80,7 +80,7 @@ public class ModEntities
 
     private static <T extends Entity> RegistryObject<EntityType<T>> registerEntity(String id, BiFunction<EntityType<T>, World, T> function, float width, float height)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).disableSummoning().immuneToFire().setShouldReceiveVelocityUpdates(true).build(id);
+        EntityType<T> type = EntityType.Builder.of(function::apply, EntityClassification.MISC).sized(width, height).setTrackingRange(256).setUpdateInterval(1).noSummon().fireImmune().setShouldReceiveVelocityUpdates(true).build(id);
         return ModEntities.ENTITY_TYPES.register(id, () -> type);
     }
 }

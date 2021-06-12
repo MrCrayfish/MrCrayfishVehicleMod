@@ -25,9 +25,9 @@ public class MovingSoundVehicleRiding extends TickableSound
         super(vehicle.getRidingSound(), SoundCategory.NEUTRAL);
         this.playerRef = new WeakReference<>(player);
         this.vehicleRef = new WeakReference<>(vehicle);
-        this.attenuationType = ISound.AttenuationType.NONE;
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.attenuation = ISound.AttenuationType.NONE;
+        this.looping = true;
+        this.delay = 0;
         this.volume = 0.001F;
     }
 
@@ -38,12 +38,12 @@ public class MovingSoundVehicleRiding extends TickableSound
         PlayerEntity player = this.playerRef.get();
         if(vehicle == null || player == null)
         {
-            this.finishPlaying();
+            this.stop();
             return;
         }
-        if(!vehicle.isAlive() || !vehicle.equals(player.getRidingEntity()) || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
+        if(!vehicle.isAlive() || !vehicle.equals(player.getVehicle()) || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
         {
-            this.finishPlaying();
+            this.stop();
             return;
         }
         this.volume = vehicle.getControllingPassenger() != null && vehicle.isEnginePowered() ? 1.0F : 0.0F;

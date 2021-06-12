@@ -45,18 +45,18 @@ public class EngineItem extends PartItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent("vehicle.engine_tier." + this.engineTier.getTierName() + ".name").mergeStyle(this.engineTier.getTierColor(), TextFormatting.BOLD));
+        tooltip.add(new TranslationTextComponent("vehicle.engine_tier." + this.engineTier.getTierName() + ".name").withStyle(this.engineTier.getTierColor(), TextFormatting.BOLD));
         if(Screen.hasShiftDown())
         {
-            tooltip.add(new TranslationTextComponent("vehicle.engine_info.acceleration").appendString(": ").mergeStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getAccelerationMultiplier() + "x").mergeStyle(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("vehicle.engine_info.additional_max_speed").appendString(": ").mergeStyle(TextFormatting.YELLOW).append(new StringTextComponent((this.engineTier.getAdditionalMaxSpeed() * 3.6) + "kph").mergeStyle(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("vehicle.engine_info.fuel_consumption").appendString(": ").mergeStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getFuelConsumption() + "pt").mergeStyle(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("vehicle.engine_info.acceleration").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getAccelerationMultiplier() + "x").withStyle(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("vehicle.engine_info.additional_max_speed").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent((this.engineTier.getAdditionalMaxSpeed() * 3.6) + "kph").withStyle(TextFormatting.WHITE)));
+            tooltip.add(new TranslationTextComponent("vehicle.engine_info.fuel_consumption").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getFuelConsumption() + "pt").withStyle(TextFormatting.WHITE)));
         }
         else
         {
-            tooltip.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+            tooltip.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }
 }

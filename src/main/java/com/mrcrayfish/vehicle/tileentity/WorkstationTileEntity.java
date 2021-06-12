@@ -36,21 +36,21 @@ public class WorkstationTileEntity extends TileEntitySynced implements IStorageB
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         ItemStackHelper.loadAllItems(compound, this.inventory);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         ItemStackHelper.saveAllItems(compound, this.inventory);
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean canPlaceItem(int index, ItemStack stack)
     {
         return index != 0 || (stack.getItem() instanceof DyeItem && this.inventory.get(index).getCount() < 1);
     }

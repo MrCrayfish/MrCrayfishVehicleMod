@@ -22,7 +22,7 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
 
     public MessagePickupVehicle(Entity targetEntity)
     {
-        this.entityId = targetEntity.getEntityId();
+        this.entityId = targetEntity.getId();
     }
 
     public MessagePickupVehicle(int entityId)
@@ -49,10 +49,10 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null && player.isCrouching())
             {
-                Entity targetEntity = player.world.getEntityByID(message.entityId);
+                Entity targetEntity = player.level.getEntity(message.entityId);
                 if(targetEntity != null)
                 {
-                    CommonEvents.pickUpVehicle(player.world, player, Hand.MAIN_HAND, targetEntity);
+                    CommonEvents.pickUpVehicle(player.level, player, Hand.MAIN_HAND, targetEntity);
                 }
             }
         });

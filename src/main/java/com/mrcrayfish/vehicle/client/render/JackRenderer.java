@@ -18,7 +18,7 @@ public class JackRenderer extends EntityRenderer<EntityJack>
     }
 
     @Override
-    public ResourceLocation getEntityTexture(EntityJack entity)
+    public ResourceLocation getTextureLocation(EntityJack entity)
     {
         return null;
     }

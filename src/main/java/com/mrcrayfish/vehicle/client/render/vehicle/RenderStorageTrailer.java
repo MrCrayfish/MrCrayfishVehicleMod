@@ -40,13 +40,13 @@ public class RenderStorageTrailer extends AbstractRenderTrailer<StorageTrailerEn
         this.renderWheel(entity, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
         this.renderWheel(entity, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, 0.0F, 2.0F, partialTicks, light);
 
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0, 0.0625, 0);
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
         matrixStack.scale(0.9F, 0.9F, 0.9F);
         ItemStack chest = new ItemStack(Blocks.CHEST);
         RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(chest));
-        matrixStack.pop();
+        matrixStack.popPose();
         /*//Render chest
         GlStateManager.pushMatrix(); //TODO add this back once I create a model class for chest
         {

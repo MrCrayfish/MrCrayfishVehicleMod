@@ -33,16 +33,18 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
 public class FuelDrumBlock extends RotatedObjectBlock
 {
-    private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
+    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 16, 15);
 
     public FuelDrumBlock()
     {
-        super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
+        super(AbstractBlock.Properties.of(Material.METAL).strength(1.0F));
     }
 
     @Override
@@ -58,25 +60,25 @@ public class FuelDrumBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
     {
         if(Screen.hasShiftDown())
         {
-            list.addAll(RenderUtil.lines(new TranslationTextComponent(ModBlocks.FUEL_DRUM.get().getTranslationKey() + ".info"), 150));
+            list.addAll(RenderUtil.lines(new TranslationTextComponent(ModBlocks.FUEL_DRUM.get().getDescriptionId() + ".info"), 150));
         }
         else
         {
-            list.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+            list.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(!world.isRemote)
+        if(!world.isClientSide)
         {
-            ItemStack stack = playerEntity.getHeldItem(hand);
-            if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+            ItemStack stack = playerEntity.getItemInHand(hand);
+            if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
             {
                 return ActionResultType.SUCCESS;
             }
@@ -89,7 +91,7 @@ public class FuelDrumBlock extends RotatedObjectBlock
                     return ActionResultType.SUCCESS;
                 }
 
-                TileEntity tileEntity = world.getTileEntity(pos);
+                TileEntity tileEntity = world.getBlockEntity(pos);
                 IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
                 if(handler instanceof FluidTank)
                 {

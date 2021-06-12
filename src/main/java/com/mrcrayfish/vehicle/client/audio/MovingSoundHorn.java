@@ -22,8 +22,8 @@ public class MovingSoundHorn extends TickableSound
     {
         super(vehicle.getHornSound(), SoundCategory.NEUTRAL);
         this.vehicleRef = new WeakReference<>(vehicle);
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.looping = true;
+        this.delay = 0;
         this.volume = 0.001F;
         this.pitch = 0.85F;
     }
@@ -34,20 +34,20 @@ public class MovingSoundHorn extends TickableSound
         PoweredVehicleEntity vehicle = this.vehicleRef.get();
         if(vehicle == null || Minecraft.getInstance().player == null)
         {
-            this.finishPlaying();
+            this.stop();
             return;
         }
         this.volume = vehicle.getHorn() ? 1.0F : 0.0F;
         if(vehicle.isAlive() && vehicle.getPassengers().size() > 0)
         {
             PlayerEntity localPlayer = Minecraft.getInstance().player;
-            this.x = (float) (vehicle.getPosX() + (localPlayer.getPosX() - vehicle.getPosX()) * 0.65);
-            this.y = (float) (vehicle.getPosY() + (localPlayer.getPosY() - vehicle.getPosY()) * 0.65);
-            this.z = (float) (vehicle.getPosZ() + (localPlayer.getPosZ() - vehicle.getPosZ()) * 0.65);
+            this.x = (float) (vehicle.getX() + (localPlayer.getX() - vehicle.getX()) * 0.65);
+            this.y = (float) (vehicle.getY() + (localPlayer.getY() - vehicle.getY()) * 0.65);
+            this.z = (float) (vehicle.getZ() + (localPlayer.getZ() - vehicle.getZ()) * 0.65);
         }
         else
         {
-            this.finishPlaying();
+            this.stop();
         }
     }
 }

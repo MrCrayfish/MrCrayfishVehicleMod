@@ -42,9 +42,9 @@ public class JerryCanItem extends Item
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items)
     {
-        if (this.isInGroup(group))
+        if (this.allowdedIn(group))
         {
             ItemStack stack = new ItemStack(this);
             this.fill(stack, this.getCapacity(stack));
@@ -53,17 +53,17 @@ public class JerryCanItem extends Item
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info"), 150));
         }
         else
         {
             String currentFuel = TextFormatting.RESET + FUEL_FORMAT.format(getCurrentFuel(stack) / (float) getCapacity(stack));
-            tooltip.add(new StringTextComponent(TextFormatting.AQUA + TextFormatting.BOLD.toString() + I18n.format(this.getTranslationKey() + ".fuel", currentFuel)));
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
+            tooltip.add(new StringTextComponent(TextFormatting.AQUA + TextFormatting.BOLD.toString() + I18n.get(this.getDescriptionId() + ".fuel", currentFuel)));
+            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.get("vehicle.info_help")));
         }
     }
 

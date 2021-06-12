@@ -127,11 +127,11 @@ public class CommonEvents
 
     public static boolean pickUpVehicle(World world, PlayerEntity player, Hand hand, Entity targetEntity)
     {
-        if(hand == Hand.MAIN_HAND && !world.isRemote && player.isCrouching() && !player.isSpectator() && Config.SERVER.pickUpVehicles.get())
+        if(hand == Hand.MAIN_HAND && !world.isClientSide && player.isCrouching() && !player.isSpectator() && Config.SERVER.pickUpVehicles.get())
         {
             if(!HeldVehicleDataHandler.isHoldingVehicle(player))
             {
-                if(targetEntity instanceof VehicleEntity && !targetEntity.isBeingRidden() && targetEntity.isAlive())
+                if(targetEntity instanceof VehicleEntity && !targetEntity.isVehicle() && targetEntity.isAlive())
                 {
                     CompoundNBT tagCompound = new CompoundNBT();
                     String id = getEntityString(targetEntity);
@@ -140,7 +140,7 @@ public class CommonEvents
                         ((VehicleEntity) targetEntity).setTrailer(null);
 
                         tagCompound.putString("id", id);
-                        targetEntity.writeWithoutTypeId(tagCompound);
+                        targetEntity.saveWithoutId(tagCompound);
 
                         //Updates the held vehicle capability
                         HeldVehicleDataHandler.setHeldVehicle(player, tagCompound);
@@ -149,31 +149,31 @@ public class CommonEvents
                         targetEntity.remove();
 
                         //Plays pick up sound
-                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), ModSounds.PICK_UP_VEHICLE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.PICK_UP_VEHICLE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         return true;
                     }
                 }
             }
-            else if(targetEntity instanceof TrailerEntity && !targetEntity.isBeingRidden() && targetEntity.isAlive())
+            else if(targetEntity instanceof TrailerEntity && !targetEntity.isVehicle() && targetEntity.isAlive())
             {
                 CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
-                Optional<EntityType<?>> optional = EntityType.byKey(tagCompound.getString("id"));
+                Optional<EntityType<?>> optional = EntityType.byString(tagCompound.getString("id"));
                 if(optional.isPresent())
                 {
                     EntityType<?> entityType = optional.get();
                     Entity vehicle = entityType.create(world);
                     if(vehicle instanceof VehicleEntity && ((VehicleEntity) vehicle).canMountTrailer())
                     {
-                        vehicle.read(tagCompound);
-                        vehicle.setPositionAndRotation(targetEntity.getPosX(), targetEntity.getPosY(), targetEntity.getPosZ(), targetEntity.rotationYaw, targetEntity.rotationPitch);
+                        vehicle.load(tagCompound);
+                        vehicle.absMoveTo(targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), targetEntity.yRot, targetEntity.xRot);
 
                         //Updates the player capability
                         HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
 
                         //Plays place sound
-                        world.addEntity(vehicle);
-                        world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        world.addFreshEntity(vehicle);
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                         vehicle.startRiding(targetEntity);
 
                         return true;
@@ -191,42 +191,42 @@ public class CommonEvents
 
         PlayerEntity player = event.getPlayer();
         World world = event.getWorld();
-        if(!world.isRemote())
+        if(!world.isClientSide())
         {
             if(HeldVehicleDataHandler.isHoldingVehicle(player))
             {
                 if(event.getFace() == Direction.UP)
                 {
                     BlockPos pos = event.getPos();
-                    TileEntity tileEntity = event.getWorld().getTileEntity(pos);
+                    TileEntity tileEntity = event.getWorld().getBlockEntity(pos);
                     if(tileEntity instanceof JackTileEntity)
                     {
                         JackTileEntity jack = (JackTileEntity) tileEntity;
                         if(jack.getJack() == null)
                         {
                             CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
-                            EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
+                            EntityType.byString(tagCompound.getString("id")).ifPresent(entityType ->
                             {
                                 Entity entity = entityType.create(world);
                                 if(entity instanceof VehicleEntity)
                                 {
-                                    entity.read(tagCompound);
+                                    entity.load(tagCompound);
 
                                     //Updates the player capability
                                     HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
 
                                     entity.fallDistance = 0.0F;
-                                    entity.rotationYaw = (player.getRotationYawHead() + 90F) % 360.0F;
+                                    entity.yRot = (player.getYHeadRot() + 90F) % 360.0F;
 
                                     jack.setVehicle((VehicleEntity) entity);
                                     if(jack.getJack() != null)
                                     {
                                         EntityJack entityJack = jack.getJack();
-                                        entityJack.updateRidden();
-                                        entity.setLocationAndAngles(entity.getPosX(), entity.getPosY(), entity.getPosZ(), entity.rotationYaw, entity.rotationPitch);
+                                        entityJack.rideTick();
+                                        entity.moveTo(entity.getX(), entity.getY(), entity.getZ(), entity.yRot, entity.xRot);
                                     }
-                                    world.addEntity(entity);
-                                    world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                    world.addFreshEntity(entity);
+                                    world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 }
                             });
                         }
@@ -240,7 +240,7 @@ public class CommonEvents
                 {
                     //Vector3d clickedVec = event.getHitVec(); //TODO WHY DID FORGE REMOVE THIS. GOING TO CREATE A PATCH
                     RayTraceResult result = player.pick(10.0, 0.0F, false);
-                    Vector3d clickedVec = result.getHitVec();
+                    Vector3d clickedVec = result.getLocation();
                     if(clickedVec == null || event.getFace() != Direction.UP)
                     {
                         event.setCanceled(true);
@@ -248,30 +248,30 @@ public class CommonEvents
                     }
 
                     CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
-                    EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
+                    EntityType.byString(tagCompound.getString("id")).ifPresent(entityType ->
                     {
-                        Entity entity = entityType.create(player.world);
+                        Entity entity = entityType.create(player.level);
                         if(entity instanceof VehicleEntity)
                         {
-                            entity.read(tagCompound);
+                            entity.load(tagCompound);
 
                             //Sets the positions and spawns the entity
-                            float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                            Vector3d heldOffset = ((VehicleEntity) entity).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
+                            float rotation = (player.getYHeadRot() + 90F) % 360.0F;
+                            Vector3d heldOffset = ((VehicleEntity) entity).getProperties().getHeldOffset().yRot((float) Math.toRadians(-player.getYHeadRot()));
 
-                            entity.setPositionAndRotation(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
+                            entity.absMoveTo(clickedVec.x + heldOffset.x * 0.0625D, clickedVec.y, clickedVec.z + heldOffset.z * 0.0625D, rotation, 0F);
                             entity.fallDistance = 0.0F;
 
                             //Checks if vehicle intersects with any blocks
-                            if(!world.hasNoCollisions(entity, entity.getBoundingBox().grow(0, -0.1, 0)))
+                            if(!world.noCollision(entity, entity.getBoundingBox().inflate(0, -0.1, 0)))
                                 return;
 
                             //Updates the player capability
                             HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
 
                             //Plays place sound
-                            world.addEntity(entity);
-                            world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                            world.addFreshEntity(entity);
+                            world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                             event.setCanceled(true);
                             event.setCancellationResult(ActionResultType.SUCCESS);
@@ -294,7 +294,7 @@ public class CommonEvents
             return;
 
         World world = event.getWorld();
-        if(world.isRemote)
+        if(world.isClientSide)
         {
             if(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.RightClickItem)
             {
@@ -346,16 +346,16 @@ public class CommonEvents
         {
             HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
 
-            EntityType.byKey(tagCompound.getString("id")).ifPresent(entityType ->
+            EntityType.byString(tagCompound.getString("id")).ifPresent(entityType ->
             {
-                Entity vehicle = entityType.create(player.world);
+                Entity vehicle = entityType.create(player.level);
                 if(vehicle instanceof VehicleEntity)
                 {
-                    vehicle.read(tagCompound);
-                    float rotation = (player.getRotationYawHead() + 90F) % 360.0F;
-                    Vector3d heldOffset = ((VehicleEntity) vehicle).getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-player.getRotationYawHead()));
-                    vehicle.setPositionAndRotation(player.getPosX() + heldOffset.x * 0.0625D, player.getPosY() + player.getEyeHeight() + heldOffset.y * 0.0625D, player.getPosZ() + heldOffset.z * 0.0625D, rotation, 0F);
-                    player.world.addEntity(vehicle);
+                    vehicle.load(tagCompound);
+                    float rotation = (player.getYHeadRot() + 90F) % 360.0F;
+                    Vector3d heldOffset = ((VehicleEntity) vehicle).getProperties().getHeldOffset().yRot((float) Math.toRadians(-player.getYHeadRot()));
+                    vehicle.absMoveTo(player.getX() + heldOffset.x * 0.0625D, player.getY() + player.getEyeHeight() + heldOffset.y * 0.0625D, player.getZ() + heldOffset.z * 0.0625D, rotation, 0F);
+                    player.level.addFreshEntity(vehicle);
                 }
             });
         }
@@ -367,13 +367,13 @@ public class CommonEvents
         if(event.phase == TickEvent.Phase.END)
         {
             PlayerEntity player = event.player;
-            World world = player.world;
+            World world = player.level;
             if(player.isCrouching())
             {
                 int trailerId = SyncedPlayerData.instance().get(player, ModDataKeys.TRAILER);
                 if(trailerId != -1)
                 {
-                    Entity entity = world.getEntityByID(trailerId);
+                    Entity entity = world.getEntity(trailerId);
                     if(entity instanceof TrailerEntity)
                     {
                         ((TrailerEntity) entity).setPullingEntity(null);
@@ -382,7 +382,7 @@ public class CommonEvents
                 }
             }
 
-            if(!world.isRemote && player.isSpectator())
+            if(!world.isClientSide && player.isSpectator())
             {
                 this.dropVehicle(player);
             }
@@ -390,7 +390,7 @@ public class CommonEvents
             Optional<BlockPos> pos = SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP);
             if(pos.isPresent())
             {
-                TileEntity tileEntity = world.getTileEntity(pos.get());
+                TileEntity tileEntity = world.getBlockEntity(pos.get());
                 if(!(tileEntity instanceof GasPumpTileEntity))
                 {
                     SyncedPlayerData.instance().set(player, ModDataKeys.GAS_PUMP, Optional.empty());

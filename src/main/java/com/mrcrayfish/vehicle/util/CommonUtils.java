@@ -28,7 +28,7 @@ public class CommonUtils
         if(!stack.isEmpty())
         {
             CompoundNBT tag = new CompoundNBT();
-            stack.write(tag);
+            stack.save(tag);
             compound.put(key, tag);
         }
     }
@@ -37,7 +37,7 @@ public class CommonUtils
     {
         if(compound.contains(key, Constants.NBT.TAG_COMPOUND))
         {
-            return ItemStack.read(compound.getCompound(key));
+            return ItemStack.of(compound.getCompound(key));
         }
         return ItemStack.EMPTY;
     }
@@ -46,7 +46,7 @@ public class CommonUtils
     {
         if(player instanceof ServerPlayerEntity)
         {
-            player.sendStatusMessage(new TranslationTextComponent(message), true);
+            player.displayClientMessage(new TranslationTextComponent(message), true);
         }
     }
 

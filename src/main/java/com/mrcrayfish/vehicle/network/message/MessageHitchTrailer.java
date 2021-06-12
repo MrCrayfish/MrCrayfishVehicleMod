@@ -49,10 +49,10 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                if(!(player.getRidingEntity() instanceof VehicleEntity))
+                if(!(player.getVehicle() instanceof VehicleEntity))
                     return;
 
-                VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
+                VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
                 if(!vehicle.canTowTrailer())
                     return;
 
@@ -61,40 +61,40 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
                     if(vehicle.getTrailer() != null)
                     {
                         vehicle.setTrailer(null);
-                        player.world.playSound(null, vehicle.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        player.level.playSound(null, vehicle.blockPosition(), SoundEvents.ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     }
                 }
                 else
                 {
                     VehicleProperties properties = vehicle.getProperties();
-                    Vector3d vehicleVec = vehicle.getPositionVec();
+                    Vector3d vehicleVec = vehicle.position();
                     Vector3d towBarVec = properties.getTowBarPosition();
                     towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + properties.getBodyPosition().getZ());
                     if(vehicle instanceof LandVehicleEntity)
                     {
                         LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
-                        vehicleVec = vehicleVec.add(towBarVec.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw + landVehicle.additionalYaw)));
+                        vehicleVec = vehicleVec.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot + landVehicle.additionalYaw)));
                     }
                     else
                     {
-                        vehicleVec = vehicleVec.add(towBarVec.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)));
+                        vehicleVec = vehicleVec.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
                     }
 
-                    AxisAlignedBB towBarBox = new AxisAlignedBB(vehicleVec.x, vehicleVec.y, vehicleVec.z, vehicleVec.x, vehicleVec.y, vehicleVec.z).grow(0.25);
-                    List<TrailerEntity> trailers = player.world.getEntitiesWithinAABB(TrailerEntity.class, vehicle.getBoundingBox().grow(5), input -> input.getPullingEntity() == null);
+                    AxisAlignedBB towBarBox = new AxisAlignedBB(vehicleVec.x, vehicleVec.y, vehicleVec.z, vehicleVec.x, vehicleVec.y, vehicleVec.z).inflate(0.25);
+                    List<TrailerEntity> trailers = player.level.getEntitiesOfClass(TrailerEntity.class, vehicle.getBoundingBox().inflate(5), input -> input.getPullingEntity() == null);
                     for(TrailerEntity trailer : trailers)
                     {
                         if(trailer.getPullingEntity() != null)
                             continue;
 
-                        Vector3d trailerVec = trailer.getPositionVec();
+                        Vector3d trailerVec = trailer.position();
                         Vector3d hitchVec = new Vector3d(0, 0, -trailer.getHitchOffset() / 16.0);
-                        trailerVec = trailerVec.add(hitchVec.rotateYaw((float) Math.toRadians(-trailer.rotationYaw)));
-                        AxisAlignedBB hitchBox = new AxisAlignedBB(trailerVec.x, trailerVec.y, trailerVec.z, trailerVec.x, trailerVec.y, trailerVec.z).grow(0.25);
+                        trailerVec = trailerVec.add(hitchVec.yRot((float) Math.toRadians(-trailer.yRot)));
+                        AxisAlignedBB hitchBox = new AxisAlignedBB(trailerVec.x, trailerVec.y, trailerVec.z, trailerVec.x, trailerVec.y, trailerVec.z).inflate(0.25);
                         if(towBarBox.intersects(hitchBox))
                         {
                             vehicle.setTrailer(trailer);
-                            player.world.playSound(null, vehicle.getPosition(), SoundEvents.BLOCK_ANVIL_PLACE, SoundCategory.PLAYERS, 1.0F, 1.5F);
+                            player.level.playSound(null, vehicle.blockPosition(), SoundEvents.ANVIL_PLACE, SoundCategory.PLAYERS, 1.0F, 1.5F);
                             return;
                         }
                     }

@@ -10,6 +10,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.lang.ref.WeakReference;
 
+import net.minecraft.client.audio.ISound.AttenuationType;
+
 /**
  * Author: MrCrayfish
  */
@@ -24,9 +26,9 @@ public class MovingSoundHornRiding extends TickableSound
         super(vehicle.getHornRidingSound(), SoundCategory.NEUTRAL);
         this.playerRef = new WeakReference<>(player);
         this.vehicleRef = new WeakReference<>(vehicle);
-        this.attenuationType = AttenuationType.NONE;
-        this.repeat = true;
-        this.repeatDelay = 0;
+        this.attenuation = AttenuationType.NONE;
+        this.looping = true;
+        this.delay = 0;
         this.volume = 0.001F;
         this.pitch = 0.85F;
     }
@@ -38,12 +40,12 @@ public class MovingSoundHornRiding extends TickableSound
         PlayerEntity player = this.playerRef.get();
         if(vehicle == null || player == null)
         {
-            this.finishPlaying();
+            this.stop();
             return;
         }
-        if(!vehicle.isAlive() || player.getRidingEntity() == null || player.getRidingEntity() != vehicle || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
+        if(!vehicle.isAlive() || player.getVehicle() == null || player.getVehicle() != vehicle || !player.equals(Minecraft.getInstance().player) || vehicle.getPassengers().size() == 0)
         {
-            this.finishPlaying();
+            this.stop();
             return;
         }
         this.volume = vehicle.getHorn() ? 1.0F : 0.0F;

@@ -20,7 +20,7 @@ public class KeyBinds
         public boolean isActive()
         {
             PlayerEntity player = Minecraft.getInstance().player;
-            if(player != null && player.getRidingEntity() instanceof VehicleEntity)
+            if(player != null && player.getVehicle() instanceof VehicleEntity)
             {
                 return KeyConflictContext.IN_GAME.isActive();
             }

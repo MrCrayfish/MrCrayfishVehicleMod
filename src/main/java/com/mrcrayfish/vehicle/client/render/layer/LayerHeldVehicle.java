@@ -38,38 +38,38 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
         CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(playerEntity);
         if(!tagCompound.isEmpty())
         {
-            Optional<EntityType<?>> optional = EntityType.byKey(tagCompound.getString("id"));
+            Optional<EntityType<?>> optional = EntityType.byString(tagCompound.getString("id"));
             if(optional.isPresent())
             {
                 EntityType<?> entityType = optional.get();
-                Entity entity = entityType.create(playerEntity.world);
+                Entity entity = entityType.create(playerEntity.level);
                 if(entity instanceof VehicleEntity)
                 {
-                    entity.read(tagCompound);
-                    entity.getDataManager().getAll().forEach(dataEntry -> entity.notifyDataManagerChange(dataEntry.getKey()));
+                    entity.load(tagCompound);
+                    entity.getEntityData().getAll().forEach(dataEntry -> entity.onSyncedDataUpdated(dataEntry.getAccessor()));
                     this.cachedType = (EntityType<VehicleEntity>) entityType;
                     this.cachedEntity = (VehicleEntity) entity;
                 }
             }
             if(this.cachedEntity != null && this.cachedType != null)
             {
-                matrixStack.push();
+                matrixStack.pushPose();
                 {
-                    HeldVehicleHandler.AnimationCounter counter = HeldVehicleHandler.idToCounter.get(playerEntity.getUniqueID());
+                    HeldVehicleHandler.AnimationCounter counter = HeldVehicleHandler.idToCounter.get(playerEntity.getUUID());
                     if(counter != null)
                     {
-                        float width = this.cachedEntity.getWidth() / 2;
+                        float width = this.cachedEntity.getBbWidth() / 2;
                         matrixStack.translate(0F, 1F - 1F * counter.getProgress(partialTicks), -0.5F * Math.sin(Math.PI * counter.getProgress(partialTicks)) - width * (1.0F - counter.getProgress(partialTicks)));
                     }
                     Vector3d heldOffset = this.cachedEntity.getProperties().getHeldOffset();
                     matrixStack.translate(heldOffset.x * 0.0625D, heldOffset.y * 0.0625D, heldOffset.z * 0.0625D);
-                    matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(180F));
-                    matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(-90F));
+                    matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(180F));
+                    matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(-90F));
                     matrixStack.translate(0F, playerEntity.isCrouching() ? 0.3125F : 0.5625F, 0F);
-                    EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getRenderManager().renderers.get(this.cachedType);
+                    EntityRenderer<VehicleEntity> render = (EntityRenderer<VehicleEntity>) Minecraft.getInstance().getEntityRenderDispatcher().renderers.get(this.cachedType);
                     render.render(this.cachedEntity, 0.0F, 0.0F, matrixStack, renderTypeBuffer, i);
                 }
-                matrixStack.pop();
+                matrixStack.popPose();
             }
         }
         else

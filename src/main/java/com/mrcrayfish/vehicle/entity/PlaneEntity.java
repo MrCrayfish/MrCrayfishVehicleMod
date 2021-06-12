@@ -15,14 +15,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.AccelerationDirection;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.TurnDirection;
+
 /**
  * Author: MrCrayfish
  */
 public abstract class PlaneEntity extends PoweredVehicleEntity
 {
     //TODO Create own data parameter system if problems continue to occur
-    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.createKey(PlaneEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(PlaneEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.INT);
+    private static final DataParameter<Float> LIFT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
 
     private float lift;
 
@@ -43,24 +46,24 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.register(FLAP_DIRECTION, FlapDirection.NONE.ordinal());
-        this.dataManager.register(LIFT, 0F);
+        super.defineSynchedData();
+        this.entityData.define(FLAP_DIRECTION, FlapDirection.NONE.ordinal());
+        this.entityData.define(LIFT, 0F);
     }
 
     @Override
     public void updateVehicleMotion()
     {
-        float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F; //Divide by 20 ticks
-        float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
+        float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F; //Divide by 20 ticks
+        float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
 
         this.updateLift();
 
         this.vehicleMotionX = (-this.currentSpeed * f1);
         this.vehicleMotionZ = (this.currentSpeed * f2);
-        this.setMotion(this.getMotion().add(0, this.lift - 0.05, 0));
+        this.setDeltaMovement(this.getDeltaMovement().add(0, this.lift - 0.05, 0));
     }
 
     @Override
@@ -85,7 +88,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
         if(this.isFlying())
         {
-            this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getMotion().getY(), currentSpeed / 20F));
+            this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getDeltaMovement().y(), currentSpeed / 20F));
             this.bodyRotationZ = (this.turnAngle / (float) getMaxTurnAngle()) * 20F;
         }
         else
@@ -106,9 +109,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             AccelerationDirection acceleration = getAcceleration();
             if(this.canDrive() && acceleration == AccelerationDirection.FORWARD)
             {
-                if(this.getMotion().getY() < 0)
+                if(this.getDeltaMovement().y() < 0)
                 {
-                    this.setMotion(this.getMotion().mul(1.0, 0.95, 1.0));
+                    this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.95, 1.0));
                 }
 
                 EngineTier engineTier = this.getEngineTier();
@@ -210,17 +213,17 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
-        super.writeAdditional(compound);
+        super.addAdditionalSaveData(compound);
         compound.putInt("FlapDirection", this.getFlapDirection().ordinal());
         compound.putFloat("Lift", this.getLift());
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
         if(compound.contains("FlapDirection", Constants.NBT.TAG_INT))
         {
             this.setFlapDirection(FlapDirection.values()[compound.getInt("FlapDirection")]);
@@ -233,22 +236,22 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     public void setFlapDirection(FlapDirection flapDirection)
     {
-        this.dataManager.set(FLAP_DIRECTION, flapDirection.ordinal());
+        this.entityData.set(FLAP_DIRECTION, flapDirection.ordinal());
     }
 
     public FlapDirection getFlapDirection()
     {
-        return FlapDirection.values()[this.dataManager.get(FLAP_DIRECTION)];
+        return FlapDirection.values()[this.entityData.get(FLAP_DIRECTION)];
     }
 
     public float getLift()
     {
-        return this.dataManager.get(LIFT);
+        return this.entityData.get(LIFT);
     }
 
     public void setLift(float lift)
     {
-        this.dataManager.set(LIFT, lift);
+        this.entityData.set(LIFT, lift);
     }
 
     public boolean isFlying()
@@ -260,7 +263,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      * Overridden to prevent players from taking fall damage when landing a plane
      */
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier)
+    public boolean causeFallDamage(float distance, float damageMultiplier)
     {
         return false;
     }

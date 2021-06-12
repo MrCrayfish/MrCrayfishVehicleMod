@@ -31,7 +31,7 @@ public class ItemTrafficCone extends BlockItem
 {
     public ItemTrafficCone(Block block)
     {
-        super(block, new Item.Properties().group(VehicleMod.CREATIVE_TAB));
+        super(block, new Item.Properties().tab(VehicleMod.CREATIVE_TAB));
     }
 
     @Nullable
@@ -42,15 +42,15 @@ public class ItemTrafficCone extends BlockItem
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info"), 150));
         }
         else
         {
-            tooltip.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+            tooltip.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }
 }

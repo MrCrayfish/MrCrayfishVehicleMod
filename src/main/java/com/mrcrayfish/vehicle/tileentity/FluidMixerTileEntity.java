@@ -137,7 +137,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             }
         }
 
-        public int size()
+        public int getCount()
         {
             return 9;
         }
@@ -149,7 +149,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     }
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     {
         return 7;
     }
@@ -168,47 +168,47 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getItem(int index)
     {
         return this.inventory.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
-        ItemStack stack = ItemStackHelper.getAndSplit(this.inventory, index, count);
+        ItemStack stack = ItemStackHelper.removeItem(this.inventory, index, count);
         if(!stack.isEmpty())
         {
-            this.markDirty();
+            this.setChanged();
         }
         return stack;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeItemNoUpdate(int index)
     {
-        return ItemStackHelper.getAndRemove(this.inventory, index);
+        return ItemStackHelper.takeItem(this.inventory, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
         this.inventory.set(index, stack);
-        if(stack.getCount() > this.getInventoryStackLimit())
+        if(stack.getCount() > this.getMaxStackSize())
         {
-            stack.setCount(this.getInventoryStackLimit());
+            stack.setCount(this.getMaxStackSize());
         }
-        this.markDirty();
+        this.setChanged();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     {
-        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.level.getBlockEntity(this.worldPosition) == this && player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D, (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean canPlaceItem(int index, ItemStack stack)
     {
         if(index == 0)
         {
@@ -222,7 +222,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     }
 
     @Override
-    public void clear()
+    public void clearContent()
     {
         this.inventory.clear();
     }
@@ -230,10 +230,10 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     @Override
     public void tick()
     {
-        if(!this.world.isRemote)
+        if(!this.level.isClientSide)
         {
-            ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
-            ItemStack fuel = this.getStackInSlot(SLOT_FUEL);
+            ItemStack ingredient = this.getItem(SLOT_INGREDIENT);
+            ItemStack fuel = this.getItem(SLOT_FUEL);
 
             if(this.currentRecipe == null && !ingredient.isEmpty())
             {
@@ -293,7 +293,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     @OnlyIn(Dist.CLIENT)
     public boolean canMix()
     {
-        ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
+        ItemStack ingredient = this.getItem(SLOT_INGREDIENT);
         if(!ingredient.isEmpty() && !this.tankBlaze.getFluid().isEmpty() && !this.tankEnderSap.getFluid().isEmpty())
         {
             if(this.currentRecipe == null)
@@ -310,11 +310,11 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
     private void shrinkItem(int index)
     {
-        ItemStack stack = this.getStackInSlot(index);
+        ItemStack stack = this.getItem(index);
         stack.shrink(1);
         if(stack.isEmpty())
         {
-            this.setInventorySlotContents(index, ItemStack.EMPTY);
+            this.setItem(index, ItemStack.EMPTY);
         }
     }
 
@@ -322,7 +322,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     {
         if(recipe == null)
             return false;
-        ItemStack ingredient = this.getStackInSlot(SLOT_INGREDIENT);
+        ItemStack ingredient = this.getItem(SLOT_INGREDIENT);
         if(ingredient.getItem() != recipe.getIngredient().getItem())
             return false;
         if(this.tankBlaze.getFluid().isEmpty())
@@ -339,12 +339,12 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("Items", Constants.NBT.TAG_LIST))
         {
-            this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
+            this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
             ItemStackHelper.loadAllItems(compound, this.inventory);
         }
         if(compound.contains("CustomName", Constants.NBT.TAG_STRING))
@@ -384,9 +384,9 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
-        super.write(compound);
+        super.save(compound);
 
         ItemStackHelper.saveAllItems(compound, this.inventory);
 
@@ -406,7 +406,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     @Override
     public CompoundNBT getUpdateTag()
     {
-        CompoundNBT tag = super.write(new CompoundNBT());
+        CompoundNBT tag = super.save(new CompoundNBT());
         this.writeTanks(tag);
         return tag;
     }
@@ -517,18 +517,18 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
     public Optional<FluidMixerRecipe> getRecipe()
     {
-        return this.world.getRecipeManager().getRecipe(RecipeType.FLUID_MIXER, this, this.world);
+        return this.level.getRecipeManager().getRecipeFor(RecipeType.FLUID_MIXER, this, this.level);
     }
 
     private boolean isValidIngredient(ItemStack ingredient)
     {
-        List<FluidMixerRecipe> recipes = this.world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_MIXER).map(recipe -> (FluidMixerRecipe) recipe).collect(Collectors.toList());
+        List<FluidMixerRecipe> recipes = this.level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_MIXER).map(recipe -> (FluidMixerRecipe) recipe).collect(Collectors.toList());
         return recipes.stream().anyMatch(recipe -> InventoryUtil.areItemStacksEqualIgnoreCount(ingredient, recipe.getIngredient()));
     }
 
     private boolean isValidFluid(FluidStack stack)
     {
-        List<FluidMixerRecipe> recipes = this.world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_MIXER).map(recipe -> (FluidMixerRecipe) recipe).collect(Collectors.toList());
+        List<FluidMixerRecipe> recipes = this.level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_MIXER).map(recipe -> (FluidMixerRecipe) recipe).collect(Collectors.toList());
         return recipes.stream().anyMatch(recipe ->
         {
             for(FluidEntry entry : recipe.getInputs())
@@ -571,11 +571,11 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     {
         if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
-            BlockState state = this.world.getBlockState(this.pos);
+            BlockState state = this.level.getBlockState(this.worldPosition);
             if(state.getProperties().contains(RotatedObjectBlock.DIRECTION))
             {
-                Direction direction = state.get(RotatedObjectBlock.DIRECTION);
-                if(facing == direction.rotateYCCW())
+                Direction direction = state.getValue(RotatedObjectBlock.DIRECTION);
+                if(facing == direction.getCounterClockWise())
                 {
                     return LazyOptional.of(() -> this.tankBlaze).cast();
                 }
@@ -583,14 +583,14 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
                 {
                     return LazyOptional.of(() -> this.tankEnderSap).cast();
                 }
-                if(facing == direction.rotateY())
+                if(facing == direction.getClockWise())
                 {
                     return LazyOptional.of(() -> this.tankFuelium).cast();
                 }
             }
             return LazyOptional.empty();
         }
-        else if(!this.removed && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        else if(!this.remove && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
             return this.itemHandler.cast();
         }

@@ -49,21 +49,21 @@ public class MessageAttachChest implements IMessage<MessageAttachChest>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                World world = player.world;
-                Entity targetEntity = world.getEntityByID(message.entityId);
+                World world = player.level;
+                Entity targetEntity = world.getEntity(message.entityId);
                 if(targetEntity instanceof IAttachableChest)
                 {
                     float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-                    if(player.getDistance(targetEntity) < reachDistance)
+                    if(player.distanceTo(targetEntity) < reachDistance)
                     {
                         IAttachableChest attachableChest = (IAttachableChest) targetEntity;
                         if(!attachableChest.hasChest())
                         {
-                            ItemStack stack = player.inventory.getCurrentItem();
+                            ItemStack stack = player.inventory.getSelected();
                             if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
                             {
                                 attachableChest.attachChest(stack);
-                                world.playSound(null, targetEntity.getPosX(), targetEntity.getPosY(), targetEntity.getPosZ(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                world.playSound(null, targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                             }
                         }
                     }

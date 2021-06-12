@@ -34,38 +34,38 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
         this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
-        matrixStack.push();
+        matrixStack.pushPose();
 
         matrixStack.translate(0.0, 0.0, 10.5 * 0.0625);
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-22.5F));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-22.5F));
 
         float wheelScale = 1.65F;
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 25F;
 
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(22.5F));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
 
         this.renderDamagedPart(entity, SpecialModels.MINI_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         if(entity.hasWheels())
         {
-            matrixStack.push();
+            matrixStack.pushPose();
             matrixStack.translate(0, -0.5 + 1.7 * 0.0625, 13 * 0.0625);
             float frontWheelSpin = entity.prevFrontWheelRotation + (entity.frontWheelRotation - entity.prevFrontWheelRotation) * partialTicks;
             if(entity.isMoving())
             {
-                matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
+                matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
             }
             matrixStack.scale(wheelScale, wheelScale, wheelScale);
-            matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
+            matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
             RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(entity)), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
-            matrixStack.pop();
+            matrixStack.popPose();
         }
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
@@ -74,20 +74,20 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
         float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 8F;
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F - turnRotation);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F + turnRotation);
+        model.rightArm.xRot = (float) Math.toRadians(-55F - turnRotation);
+        model.leftArm.xRot = (float) Math.toRadians(-55F + turnRotation);
         //model.bipedRightArm.offsetZ = -0.1F * wheelAngleNormal;
         //model.bipedLeftArm.offsetZ = 0.1F * wheelAngleNormal;
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+        model.rightLeg.xRot = (float) Math.toRadians(-65F);
+        model.rightLeg.yRot = (float) Math.toRadians(30F);
+        model.leftLeg.xRot = (float) Math.toRadians(-65F);
+        model.leftLeg.yRot = (float) Math.toRadians(-30F);
     }
 
     @Override
     public void applyPlayerRender(MiniBikeEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUniqueID());
+        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
@@ -95,12 +95,12 @@ public class RenderMiniBike extends AbstractRenderVehicle<MiniBikeEntity>
             Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = seatVec.x * scale;
-            double offsetY = (seatVec.y + player.getYOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
+            double offsetY = (seatVec.y + player.getMyRidingOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = -seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
             float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
-            matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 20F));
+            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 20F));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
         }
     }

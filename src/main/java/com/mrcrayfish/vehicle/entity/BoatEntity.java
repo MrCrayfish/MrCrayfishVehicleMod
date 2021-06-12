@@ -39,32 +39,32 @@ public abstract class BoatEntity extends PoweredVehicleEntity
         {
             if(this.state == State.UNDER_WATER)
             {
-                this.setMotion(this.getMotion().add(0, 0.08, 0));
+                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
             }
             else
             {
-                double floatingY = ((this.waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - this.getPosY())) / (double) this.getHeight();
-                this.setMotion(this.getMotion().add(0, floatingY * 0.05, 0));
-                if(Math.abs(floatingY) < 0.1 && this.getMotion().y > 0 && Math.abs(this.getMotion().y) < 0.1)
+                double floatingY = ((this.waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - this.getY())) / (double) this.getBbHeight();
+                this.setDeltaMovement(this.getDeltaMovement().add(0, floatingY * 0.05, 0));
+                if(Math.abs(floatingY) < 0.1 && this.getDeltaMovement().y > 0 && Math.abs(this.getDeltaMovement().y) < 0.1)
                 {
-                    this.setPosition(this.getPosX(), this.waterLevel - 0.35 + (0.25 * Math.min(1.0F, getNormalSpeed())), this.getPosZ());
-                    this.setMotion(this.getMotion().mul(1.0, 0.0, 1.0));
+                    this.setPos(this.getX(), this.waterLevel - 0.35 + (0.25 * Math.min(1.0F, getNormalSpeed())), this.getZ());
+                    this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.0, 1.0));
                 }
-                this.setMotion(this.getMotion().mul(1.0, 0.75, 1.0));
+                this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.75, 1.0));
             }
 
-            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F) / 20F;
-            float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F) / 20F;
+            float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F;
+            float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
             this.vehicleMotionX = (-currentSpeed * f1);
             this.vehicleMotionZ = (currentSpeed * f2);
-            this.setMotion(this.getMotion().mul(0.5, 1.0, 0.5));
+            this.setDeltaMovement(this.getDeltaMovement().multiply(0.5, 1.0, 0.5));
         }
         else if(this.state == State.IN_AIR)
         {
-            this.setMotion(this.getMotion().add(0, -0.08, 0));
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
             if(this.previousState == State.UNDER_WATER || this.previousState == State.IN_WATER)
             {
-                this.setMotion(new Vector3d(this.vehicleMotionX, this.getMotion().y, this.vehicleMotionZ));
+                this.setDeltaMovement(new Vector3d(this.vehicleMotionX, this.getDeltaMovement().y, this.vehicleMotionZ));
                 this.vehicleMotionX = 0;
                 this.vehicleMotionZ = 0;
             }
@@ -106,11 +106,11 @@ public abstract class BoatEntity extends PoweredVehicleEntity
             {
                 for(int z = minZ; z < maxZ; z++)
                 {
-                    pooledMutable.setPos(x, y, z);
-                    FluidState fluidState = this.world.getFluidState(pooledMutable);
-                    if(fluidState.isTagged(FluidTags.WATER))
+                    pooledMutable.set(x, y, z);
+                    FluidState fluidState = this.level.getFluidState(pooledMutable);
+                    if(fluidState.is(FluidTags.WATER))
                     {
-                        float waterLevel = (float) y + fluidState.getActualHeight(this.world, pooledMutable);
+                        float waterLevel = (float) y + fluidState.getHeight(this.level, pooledMutable);
                         this.waterLevel = Math.max((double) waterLevel, this.waterLevel);
                         inWater |= boundingBox.minY < (double) waterLevel;
                     }
@@ -141,9 +141,9 @@ public abstract class BoatEntity extends PoweredVehicleEntity
             {
                 for(int z = minZ; z < maxZ; z++)
                 {
-                    pooledMutable.setPos(x, y, z);
-                    FluidState fluidState = this.world.getFluidState(pooledMutable);
-                    if(fluidState.isTagged(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.getActualHeight(this.world, pooledMutable)))
+                    pooledMutable.set(x, y, z);
+                    FluidState fluidState = this.level.getFluidState(pooledMutable);
+                    if(fluidState.is(FluidTags.WATER) && height < (double) ((float) pooledMutable.getY() + fluidState.getHeight(this.level, pooledMutable)))
                     {
                         if(!fluidState.isSource())
                         {

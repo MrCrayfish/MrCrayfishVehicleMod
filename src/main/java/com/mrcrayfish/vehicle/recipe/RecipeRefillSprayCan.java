@@ -25,9 +25,9 @@ public class RecipeRefillSprayCan extends SpecialRecipe
         ItemStack sprayCan = ItemStack.EMPTY;
         ItemStack emptySprayCan = ItemStack.EMPTY;
 
-        for(int i = 0; i < inventory.getSizeInventory(); i++)
+        for(int i = 0; i < inventory.getContainerSize(); i++)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof SprayCanItem)
@@ -55,14 +55,14 @@ public class RecipeRefillSprayCan extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inventory)
+    public ItemStack assemble(CraftingInventory inventory)
     {
         ItemStack sprayCan = ItemStack.EMPTY;
         ItemStack emptySprayCan = ItemStack.EMPTY;
 
-        for(int i = 0; i < inventory.getSizeInventory(); i++)
+        for(int i = 0; i < inventory.getContainerSize(); i++)
         {
-            ItemStack stack = inventory.getStackInSlot(i);
+            ItemStack stack = inventory.getItem(i);
             if(!stack.isEmpty())
             {
                 if(stack.getItem() instanceof SprayCanItem)
@@ -98,7 +98,7 @@ public class RecipeRefillSprayCan extends SpecialRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return width * height >= 2;
     }

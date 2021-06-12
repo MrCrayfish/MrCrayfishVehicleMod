@@ -33,9 +33,9 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox()
+    public AxisAlignedBB getBoundingBoxForCulling()
     {
-        return this.getBoundingBox().grow(1.5);
+        return this.getBoundingBox().inflate(1.5);
     }
 
     @Override

@@ -54,7 +54,7 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
 
     public boolean isConnectionDisabled(Direction facing)
     {
-        return this.disabledConnections[facing.getIndex()];
+        return this.disabledConnections[facing.get3DDataValue()];
     }
 
     private void setConnectionDisabled(int indexFacing, boolean disabled)
@@ -65,22 +65,22 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
 
     public void setConnectionDisabled(Direction facing, boolean disabled)
     {
-        this.setConnectionDisabled(facing.getIndex(), disabled);
+        this.setConnectionDisabled(facing.get3DDataValue(), disabled);
     }
 
     @Override
     public void tick()
     {
-        if(this.world == null)
+        if(this.level == null)
             return;
 
         if(this.tank.getFluid().isEmpty())
             return;
 
-        if(this.world.isBlockPowered(pos))
+        if(this.level.hasNeighborSignal(worldPosition))
             return;
 
-        IFluidHandler handler = this.getConnectedFluidHandler(this.world.getBlockState(this.pos).get(FluidPipeBlock.DIRECTION));
+        IFluidHandler handler = this.getConnectedFluidHandler(this.level.getBlockState(this.worldPosition).getValue(FluidPipeBlock.DIRECTION));
         if(handler != null)
         {
             FluidUtils.transferFluid(this.tank, handler, this.transferAmount);
@@ -90,17 +90,17 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     @Nullable
     protected IFluidHandler getConnectedFluidHandler(Direction facing)
     {
-        BlockPos adjacentPos = this.pos.offset(facing);
-        TileEntity tileEntity = this.world.getTileEntity(adjacentPos);
+        BlockPos adjacentPos = this.worldPosition.relative(facing);
+        TileEntity tileEntity = this.level.getBlockEntity(adjacentPos);
         if(tileEntity != null)
         {
             IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).orElse(null);
             if(handler != null)
             {
-                BlockState adjacentState = this.world.getBlockState(adjacentPos);
+                BlockState adjacentState = this.level.getBlockState(adjacentPos);
                 if(adjacentState.getBlock() instanceof FluidPipeBlock)
                 {
-                    if(!adjacentState.get(FluidPipeBlock.CONNECTED_PIPES[facing.getOpposite().getIndex()]) || (tileEntity instanceof FluidPipeTileEntity && ((FluidPipeTileEntity) tileEntity).isConnectionDisabled(facing.getOpposite())))
+                    if(!adjacentState.getValue(FluidPipeBlock.CONNECTED_PIPES[facing.getOpposite().get3DDataValue()]) || (tileEntity instanceof FluidPipeTileEntity && ((FluidPipeTileEntity) tileEntity).isConnectionDisabled(facing.getOpposite())))
                     {
                         return null;
                     }
@@ -109,7 +109,7 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
             }
         }
 
-        List<Entity> fluidEntities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(adjacentPos), entity -> entity != null && entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).isPresent());
+        List<Entity> fluidEntities = level.getEntitiesOfClass(Entity.class, new AxisAlignedBB(adjacentPos), entity -> entity != null && entity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).isPresent());
         if(!fluidEntities.isEmpty())
         {
             return fluidEntities.get(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
@@ -119,9 +119,9 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("DisabledConnections", Constants.NBT.TAG_BYTE_ARRAY))
         {
             byte[] connections = compound.getByteArray("DisabledConnections");
@@ -133,10 +133,10 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         this.writeConnections(compound);
-        return super.write(compound);
+        return super.save(compound);
     }
 
     private void writeConnections(CompoundNBT compound)
@@ -151,11 +151,11 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
 
     private void syncDisabledConnections()
     {
-        if(this.world != null && !this.world.isRemote)
+        if(this.level != null && !this.level.isClientSide)
         {
             CompoundNBT compound = new CompoundNBT();
             this.writeConnections(compound);
-            TileEntityUtil.sendUpdatePacket(this, super.write(compound));
+            TileEntityUtil.sendUpdatePacket(this, super.save(compound));
         }
     }
 }

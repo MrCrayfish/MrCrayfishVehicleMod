@@ -30,21 +30,21 @@ public class SprayCanHandler
         if(event.phase != TickEvent.Phase.END || player == null)
             return;
 
-        int slot = player.inventory.currentItem;
+        int slot = player.inventory.selected;
         if(this.lastSlot == slot)
             return;
 
         this.lastSlot = slot;
 
-        if(player.inventory.getCurrentItem().isEmpty())
+        if(player.inventory.getSelected().isEmpty())
             return;
 
-        if(!(player.inventory.getCurrentItem().getItem() instanceof SprayCanItem))
+        if(!(player.inventory.getSelected().getItem() instanceof SprayCanItem))
             return;
 
-        SprayCanItem sprayCan = (SprayCanItem) player.inventory.getCurrentItem().getItem();
-        float pitch = 0.85F + 0.15F * sprayCan.getRemainingSprays(player.inventory.getCurrentItem());
-        Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(ModSounds.SPRAY_CAN_SHAKE.get(), pitch, 0.75F));
+        SprayCanItem sprayCan = (SprayCanItem) player.inventory.getSelected().getItem();
+        float pitch = 0.85F + 0.15F * sprayCan.getRemainingSprays(player.inventory.getSelected());
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(ModSounds.SPRAY_CAN_SHAKE.get(), pitch, 0.75F));
     }
 
     @SubscribeEvent
@@ -79,21 +79,21 @@ public class SprayCanHandler
      */
     static void applySprayCanPose(PlayerEntity player, PlayerModel<?> model)
     {
-        if(player.getRidingEntity() != null)
+        if(player.getVehicle() != null)
             return;
 
-        boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
-        ItemStack rightItem = rightHanded ? player.getHeldItemMainhand() : player.getHeldItemOffhand();
-        ItemStack leftItem = rightHanded ? player.getHeldItemOffhand() : player.getHeldItemMainhand();
+        boolean rightHanded = player.getMainArm() == HandSide.RIGHT;
+        ItemStack rightItem = rightHanded ? player.getMainHandItem() : player.getOffhandItem();
+        ItemStack leftItem = rightHanded ? player.getOffhandItem() : player.getMainHandItem();
         if(!rightItem.isEmpty() && rightItem.getItem() instanceof SprayCanItem)
         {
-            copyModelAngles(model.bipedHead, model.bipedRightArm);
-            model.bipedRightArm.rotateAngleX += Math.toRadians(-80F);
+            copyModelAngles(model.head, model.rightArm);
+            model.rightArm.xRot += Math.toRadians(-80F);
         }
         if(!leftItem.isEmpty() && leftItem.getItem() instanceof SprayCanItem)
         {
-            model.bipedLeftArm.copyModelAngles(model.bipedHead);
-            model.bipedLeftArm.rotateAngleX += Math.toRadians(-80F);
+            model.leftArm.copyFrom(model.head);
+            model.leftArm.xRot += Math.toRadians(-80F);
         }
     }
 
@@ -105,8 +105,8 @@ public class SprayCanHandler
      */
     private static void copyModelAngles(ModelRenderer source, ModelRenderer target)
     {
-        target.rotateAngleX = source.rotateAngleX;
-        target.rotateAngleY = source.rotateAngleY;
-        target.rotateAngleZ = source.rotateAngleZ;
+        target.xRot = source.xRot;
+        target.yRot = source.yRot;
+        target.zRot = source.zRot;
     }
 }

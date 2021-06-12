@@ -49,13 +49,13 @@ public class MessageAttachTrailer implements IMessage<MessageAttachTrailer>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                World world = player.world;
-                Entity trailerEntity = world.getEntityByID(message.trailerId);
+                World world = player.level;
+                Entity trailerEntity = world.getEntity(message.trailerId);
                 if(trailerEntity instanceof TrailerEntity)
                 {
                     TrailerEntity trailer = (TrailerEntity) trailerEntity;
-                    Entity entity = world.getEntityByID(message.entityId);
-                    if(entity instanceof PlayerEntity && entity.getRidingEntity() == null)
+                    Entity entity = world.getEntity(message.entityId);
+                    if(entity instanceof PlayerEntity && entity.getVehicle() == null)
                     {
                         trailer.setPullingEntity(entity);
                         SyncedPlayerData.instance().set((PlayerEntity) entity, ModDataKeys.TRAILER, message.trailerId);

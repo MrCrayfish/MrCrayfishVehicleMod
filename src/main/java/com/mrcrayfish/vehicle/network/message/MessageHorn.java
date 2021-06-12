@@ -39,7 +39,7 @@ public class MessageHorn implements IMessage<MessageHorn>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof PoweredVehicleEntity)
 				{
 					((PoweredVehicleEntity) riding).setHorn(message.horn);

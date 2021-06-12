@@ -9,17 +9,19 @@ import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.world.IBlockReader;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
 public class TrafficConeBlock extends ObjectBlock
 {
-    private static final VoxelShape COLLISION_SHAPE = Block.makeCuboidShape(2, 0, 2, 14, 18, 14);
-    private static final VoxelShape SELECTION_SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
+    private static final VoxelShape COLLISION_SHAPE = Block.box(2, 0, 2, 14, 18, 14);
+    private static final VoxelShape SELECTION_SHAPE = Block.box(1, 0, 1, 15, 16, 15);
 
     public TrafficConeBlock()
     {
-        super(Block.Properties.create(Material.CLAY, MaterialColor.ORANGE_TERRACOTTA).hardnessAndResistance(0.5F));
+        super(AbstractBlock.Properties.of(Material.CLAY, MaterialColor.TERRACOTTA_ORANGE).strength(0.5F));
     }
 
     @Override

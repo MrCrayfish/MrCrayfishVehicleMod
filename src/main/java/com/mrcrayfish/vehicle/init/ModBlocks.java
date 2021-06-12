@@ -16,6 +16,8 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
@@ -32,18 +34,18 @@ public class ModBlocks
     public static final RegistryObject<Block> FUEL_DRUM = register("fuel_drum", new FuelDrumBlock());
     public static final RegistryObject<Block> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new IndustrialFuelDrumBlock());
     public static final RegistryObject<Block> WORKSTATION = register("workstation", new WorkstationBlock());
-    public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new VehicleCrateBlock(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB)));
+    public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new VehicleCrateBlock(), block -> new BlockItem(block, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Block> JACK = register("jack", new JackBlock());
-    public static final RegistryObject<FlowingFluidBlock> FUELIUM = register("fuelium", new FlowingFluidBlock(ModFluids.FLOWING_FUELIUM, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
-    public static final RegistryObject<FlowingFluidBlock> ENDER_SAP = register("ender_sap", new FlowingFluidBlock(ModFluids.FLOWING_ENDER_SAP, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
-    public static final RegistryObject<FlowingFluidBlock> BLAZE_JUICE = register("blaze_juice", new FlowingFluidBlock(ModFluids.FLOWING_BLAZE_JUICE, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
+    public static final RegistryObject<FlowingFluidBlock> FUELIUM = register("fuelium", new FlowingFluidBlock(ModFluids.FLOWING_FUELIUM, AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()), null);
+    public static final RegistryObject<FlowingFluidBlock> ENDER_SAP = register("ender_sap", new FlowingFluidBlock(ModFluids.FLOWING_ENDER_SAP, AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()), null);
+    public static final RegistryObject<FlowingFluidBlock> BLAZE_JUICE = register("blaze_juice", new FlowingFluidBlock(ModFluids.FLOWING_BLAZE_JUICE, AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()), null);
     //public static final Block BOOST_PAD = registerConstructor(new BlockBoostPad(), null);
     //public static final Block BOOST_RAMP = registerConstructor(new BlockBoostRamp(), null); //ItemBoostRamp::new
     //public static final Block STEEP_BOOST_RAMP = registerConstructor(new BlockSteepBoostRamp(), null);
 
     private static <T extends Block> RegistryObject<T> register(String id, T block)
     {
-        return register(id, block, block1 -> new BlockItem(block1, new Item.Properties().group(VehicleMod.CREATIVE_TAB)));
+        return register(id, block, block1 -> new BlockItem(block1, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     }
 
     private static <T extends Block> RegistryObject<T> register(String id, T block, @Nullable Function<T, BlockItem> supplier)

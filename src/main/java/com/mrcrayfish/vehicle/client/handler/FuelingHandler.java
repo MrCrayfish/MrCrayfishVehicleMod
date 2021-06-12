@@ -66,18 +66,18 @@ public class FuelingHandler
 
     static void applyFuelingPose(PlayerEntity player, PlayerModel<?> model)
     {
-        boolean rightHanded = player.getPrimaryHand() == HandSide.RIGHT;
+        boolean rightHanded = player.getMainArm() == HandSide.RIGHT;
         if(rightHanded)
         {
-            model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-20F);
-            model.bipedRightArm.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedRightArm.rotateAngleZ = (float) Math.toRadians(0F);
+            model.rightArm.xRot = (float) Math.toRadians(-20F);
+            model.rightArm.yRot = (float) Math.toRadians(0F);
+            model.rightArm.zRot = (float) Math.toRadians(0F);
         }
         else
         {
-            model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-20F);
-            model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(0F);
-            model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(0F);
+            model.leftArm.xRot = (float) Math.toRadians(-20F);
+            model.leftArm.yRot = (float) Math.toRadians(0F);
+            model.leftArm.zRot = (float) Math.toRadians(0F);
         }
     }
 
@@ -102,9 +102,9 @@ public class FuelingHandler
                 player.playSound(ModSounds.LIQUID_GLUG.get(), 0.3F, 1.0F);
             }
 
-            double offset = Math.sin((this.fuelTickCounter + minecraft.getRenderPartialTicks()) / 3.0) * 0.1;
+            double offset = Math.sin((this.fuelTickCounter + minecraft.getFrameTime()) / 3.0) * 0.1;
             matrixStack.translate(0, 0.35 + offset, -0.2);
-            matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-25F));
+            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-25F));
         }
 
         if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())
@@ -122,16 +122,16 @@ public class FuelingHandler
                 event.setCanceled(true);
 
                 boolean mainHand = event.getHand() == Hand.MAIN_HAND;
-                HandSide handSide = mainHand ? player.getPrimaryHand() : player.getPrimaryHand().opposite();
+                HandSide handSide = mainHand ? player.getMainArm() : player.getMainArm().getOpposite();
                 int handOffset = handSide == HandSide.RIGHT ? 1 : -1;
-                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-                int light = minecraft.getRenderManager().getPackedLight(player, event.getPartialTicks());
+                IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+                int light = minecraft.getEntityRenderDispatcher().getPackedLightCoords(player, event.getPartialTicks());
 
-                matrixStack.push();
+                matrixStack.pushPose();
                 matrixStack.translate(handOffset * 0.65, -0.27, -0.72);
-                matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(45F));
+                matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(45F));
                 RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY); //TODO check
-                matrixStack.pop();
+                matrixStack.popPose();
             }
         }
         else
@@ -148,9 +148,9 @@ public class FuelingHandler
             return;
 
         MatrixStack matrixStack = event.getMatrixStack();
-        matrixStack.push();
+        matrixStack.pushPose();
 
-        if(event.getModelPlayer().isChild)
+        if(event.getModelPlayer().young)
         {
             matrixStack.translate(0.0, 0.75, 0.0);
             matrixStack.scale(0.5F, 0.5F, 0.5F);
@@ -161,17 +161,17 @@ public class FuelingHandler
             matrixStack.translate(0.0, 0.2, 0.0);
         }
 
-        event.getModelPlayer().translateHand(HandSide.RIGHT, event.getMatrixStack());
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(180F));
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(180F));
-        boolean leftHanded = player.getPrimaryHand() == HandSide.LEFT;
+        event.getModelPlayer().translateToHand(HandSide.RIGHT, event.getMatrixStack());
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(180F));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
+        boolean leftHanded = player.getMainArm() == HandSide.LEFT;
         matrixStack.translate((leftHanded ? -1 : 1) / 16.0, 0.125, -0.625);
         matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
 
-        IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
+        IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
         RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.NO_OVERLAY);
 
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @SubscribeEvent

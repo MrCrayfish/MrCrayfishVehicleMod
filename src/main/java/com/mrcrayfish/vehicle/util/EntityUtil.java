@@ -21,7 +21,7 @@ public class EntityUtil
 
     public static <T extends Entity> EntityType<T> buildVehicleType(ResourceLocation id, BiFunction<EntityType<T>, World, T> function, float width, float height, boolean registerCrate)
     {
-        EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).build(id.toString());
+        EntityType<T> type = EntityType.Builder.of(function::apply, EntityClassification.MISC).sized(width, height).setTrackingRange(256).setUpdateInterval(1).fireImmune().setShouldReceiveVelocityUpdates(true).build(id.toString());
         if(registerCrate)
         {
             VehicleCrateBlock.registerVehicle(id);

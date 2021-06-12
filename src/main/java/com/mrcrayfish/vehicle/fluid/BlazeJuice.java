@@ -13,6 +13,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
+import net.minecraftforge.fluids.ForgeFlowingFluid.Properties;
+
 /**
  * Author: MrCrayfish
  */
@@ -20,11 +22,11 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
 {
     public BlazeJuice()
     {
-        super(new Properties(() -> ModFluids.BLAZE_JUICE.get(), () -> ModFluids.FLOWING_BLAZE_JUICE.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY)).block(() -> ModBlocks.BLAZE_JUICE.get()));
+        super(new Properties(() -> ModFluids.BLAZE_JUICE.get(), () -> ModFluids.FLOWING_BLAZE_JUICE.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_still"), new ResourceLocation(Reference.MOD_ID, "block/blaze_juice_flowing")).viscosity(800).sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY)).block(() -> ModBlocks.BLAZE_JUICE.get()));
     }
 
     @Override
-    public Item getFilledBucket()
+    public Item getBucket()
     {
         return ModItems.BLAZE_JUICE_BUCKET.get();
     }
@@ -38,7 +40,7 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
         }
 
         @Override
-        public int getLevel(FluidState state)
+        public int getAmount(FluidState state)
         {
             return 8;
         }
@@ -47,16 +49,16 @@ public abstract class BlazeJuice extends ForgeFlowingFluid
     public static class Flowing extends BlazeJuice
     {
         @Override
-        protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
+        protected void createFluidStateDefinition(StateContainer.Builder<Fluid, FluidState> builder)
         {
-            super.fillStateContainer(builder);
-            builder.add(LEVEL_1_8);
+            super.createFluidStateDefinition(builder);
+            builder.add(LEVEL);
         }
 
         @Override
-        public int getLevel(FluidState state)
+        public int getAmount(FluidState state)
         {
-            return state.get(LEVEL_1_8);
+            return state.getValue(LEVEL);
         }
 
         @Override

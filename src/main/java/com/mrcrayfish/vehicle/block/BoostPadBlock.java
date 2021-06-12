@@ -34,6 +34,8 @@ import net.minecraft.world.World;
 import javax.annotation.Nullable;
 import java.util.List;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
@@ -42,24 +44,24 @@ public class BoostPadBlock extends RotatedObjectBlock
     public static final BooleanProperty LEFT = BooleanProperty.create("left");
     public static final BooleanProperty RIGHT = BooleanProperty.create("right");
 
-    protected static final VoxelShape SHAPE = Block.makeCuboidShape(0, 0, 0, 16, 1, 16);
+    protected static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 1, 16);
 
     public BoostPadBlock()
     {
-        super(Block.Properties.create(Material.ROCK).hardnessAndResistance(0.6F));
-        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(LEFT, false).with(RIGHT, false));
+        super(AbstractBlock.Properties.of(Material.STONE).strength(0.6F));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(LEFT, false).setValue(RIGHT, false));
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info"), 150));
         }
         else
         {
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.format("vehicle.info_help")));
+            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.get("vehicle.info_help")));
         }
     }
 
@@ -76,15 +78,15 @@ public class BoostPadBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void onEntityCollision(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
+    public void entityInside(BlockState state, World worldIn, BlockPos pos, Entity entityIn)
     {
         if(entityIn instanceof PoweredVehicleEntity && entityIn.getControllingPassenger() != null)
         {
-            Direction facing = state.get(DIRECTION);
-            if(facing == entityIn.getHorizontalFacing())
+            Direction facing = state.getValue(DIRECTION);
+            if(facing == entityIn.getDirection())
             {
                 float speedMultiplier = 0.0F;
-                TileEntity tileEntity = worldIn.getTileEntity(pos);
+                TileEntity tileEntity = worldIn.getBlockEntity(pos);
                 if(tileEntity instanceof BoostTileEntity)
                 {
                     speedMultiplier = ((BoostTileEntity) tileEntity).getSpeedMultiplier();
@@ -103,15 +105,15 @@ public class BoostPadBlock extends RotatedObjectBlock
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos)
+    public BlockState updateShape(BlockState state, Direction facing, BlockState facingState, IWorld worldIn, BlockPos pos, BlockPos facingPos)
     {
-        return this.getBoostPadState(state, state.get(DIRECTION), worldIn, pos);
+        return this.getBoostPadState(state, state.getValue(DIRECTION), worldIn, pos);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        return this.getBoostPadState(super.getStateForPlacement(context), context.getPlacementHorizontalFacing(), context.getWorld(), context.getPos());
+        return this.getBoostPadState(super.getStateForPlacement(context), context.getHorizontalDirection(), context.getLevel(), context.getClickedPos());
     }
 
     private BlockState getBoostPadState(BlockState state, Direction direction, IWorld world, BlockPos pos)
@@ -120,23 +122,23 @@ public class BoostPadBlock extends RotatedObjectBlock
         {
             if(StateHelper.getRotation(world, pos, direction, StateHelper.RelativeDirection.LEFT) == StateHelper.RelativeDirection.DOWN)
             {
-                state = state.with(RIGHT, true);
+                state = state.setValue(RIGHT, true);
             }
         }
         if(StateHelper.getBlock(world, pos, direction, StateHelper.RelativeDirection.RIGHT) == this)
         {
             if(StateHelper.getRotation(world, pos, direction, StateHelper.RelativeDirection.RIGHT) == StateHelper.RelativeDirection.DOWN)
             {
-                state = state.with(LEFT, true);
+                state = state.setValue(LEFT, true);
             }
         }
         return state;
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
-        super.fillStateContainer(builder);
+        super.createBlockStateDefinition(builder);
         builder.add(LEFT);
         builder.add(RIGHT);
     }

@@ -39,7 +39,7 @@ public class MessageDrift implements IMessage<MessageDrift>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof LandVehicleEntity)
 				{
 					((LandVehicleEntity) riding).setDrifting(message.drifting);

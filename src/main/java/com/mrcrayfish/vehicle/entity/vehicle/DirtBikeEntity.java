@@ -8,6 +8,8 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.FuelPortType;
+
 /**
  * Author: MrCrayfish
  */

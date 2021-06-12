@@ -20,24 +20,24 @@ public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
     @Override
     public void render(CouchEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        matrixStack.push();
+        matrixStack.pushPose();
         matrixStack.translate(0.0, 0.0625, 0.0);
         //matrixStack.rotate(Vector3f.YP.rotationDegrees(90F));
         this.renderDamagedPart(entity, SpecialModels.RAINBOW_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     @Override
     public void applyPlayerModel(CouchEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        model.bipedRightArm.rotateAngleX = (float) Math.toRadians(-55F);
-        model.bipedRightArm.rotateAngleY = (float) Math.toRadians(25F);
-        model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-55F);
-        model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-25F);
-        model.bipedRightLeg.rotateAngleX = (float) Math.toRadians(-90F);
-        model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
-        model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
-        model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+        model.rightArm.xRot = (float) Math.toRadians(-55F);
+        model.rightArm.yRot = (float) Math.toRadians(25F);
+        model.leftArm.xRot = (float) Math.toRadians(-55F);
+        model.leftArm.yRot = (float) Math.toRadians(-25F);
+        model.rightLeg.xRot = (float) Math.toRadians(-90F);
+        model.rightLeg.yRot = (float) Math.toRadians(15F);
+        model.leftLeg.xRot = (float) Math.toRadians(-90F);
+        model.leftLeg.yRot = (float) Math.toRadians(-15F);
     }
 
     @Nullable

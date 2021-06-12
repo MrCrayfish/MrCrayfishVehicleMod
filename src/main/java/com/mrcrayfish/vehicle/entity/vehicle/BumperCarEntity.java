@@ -19,14 +19,14 @@ public class BumperCarEntity extends LandVehicleEntity
         super(type, worldIn);
         this.setMaxSpeed(10);
         this.setTurnSensitivity(20);
-        this.stepHeight = 0.625F;
+        this.maxUpStep = 0.625F;
         //TODO figure out fuel system
     }
 
     @Override
-    public void applyEntityCollision(Entity entityIn)
+    public void push(Entity entityIn)
     {
-        if(entityIn instanceof BumperCarEntity && this.isBeingRidden())
+        if(entityIn instanceof BumperCarEntity && this.isVehicle())
         {
             applyBumperCollision((BumperCarEntity) entityIn);
         }
@@ -34,8 +34,8 @@ public class BumperCarEntity extends LandVehicleEntity
 
     private void applyBumperCollision(BumperCarEntity entity)
     {
-        this.setMotion(this.getMotion().add(this.vehicleMotionX * 2, 0, this.vehicleMotionZ * 2));
-        world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.BONK.get(), SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
+        this.setDeltaMovement(this.getDeltaMovement().add(this.vehicleMotionX * 2, 0, this.vehicleMotionZ * 2));
+        level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.BONK.get(), SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
         this.currentSpeed *= 0.25F;
     }
 

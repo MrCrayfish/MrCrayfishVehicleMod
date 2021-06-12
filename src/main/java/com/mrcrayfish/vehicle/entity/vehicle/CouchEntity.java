@@ -16,7 +16,7 @@ public class CouchEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(10);
-        this.dataManager.set(COLOR, 11546150);
+        this.entityData.set(COLOR, 11546150);
     }
 
     @Override

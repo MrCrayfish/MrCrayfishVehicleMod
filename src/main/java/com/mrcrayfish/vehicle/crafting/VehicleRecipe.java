@@ -44,19 +44,19 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
     }
 
     @Override
-    public ItemStack getCraftingResult(WorkstationTileEntity inv)
+    public ItemStack assemble(WorkstationTileEntity inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }

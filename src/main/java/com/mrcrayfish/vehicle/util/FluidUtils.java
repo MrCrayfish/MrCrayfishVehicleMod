@@ -42,7 +42,7 @@ public class FluidUtils
         }
         else
         {
-            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(fluid.getFluid().getAttributes().getStillTexture());
             if(sprite != null)
             {
                 long totalRed = 0;
@@ -92,17 +92,17 @@ public class FluidUtils
         if(fluid == null || fluid.isEmpty())
             return;
 
-        TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasSpriteGetter(AtlasTexture.LOCATION_BLOCKS_TEXTURE).apply(fluid.getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(fluid.getFluid().getAttributes().getStillTexture());
         if(sprite != null)
         {
-            float minU = sprite.getMinU();
-            float maxU = sprite.getMaxU();
-            float minV = sprite.getMinV();
-            float maxV = sprite.getMaxV();
+            float minU = sprite.getU0();
+            float maxU = sprite.getU1();
+            float minV = sprite.getV0();
+            float maxV = sprite.getV1();
             float deltaV = maxV - minV;
             double tankLevel = percent * height;
 
-            Minecraft.getInstance().getTextureManager().bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
+            Minecraft.getInstance().getTextureManager().bind(AtlasTexture.LOCATION_BLOCKS);
 
             RenderSystem.enableBlend();
             int count = 1 + ((int) Math.ceil(tankLevel)) / 16;
@@ -120,12 +120,12 @@ public class FluidUtils
     private static void drawQuad(double x, double y, double width, double height, float minU, float minV, float maxU, float maxV)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.getBuilder();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
-        buffer.pos(x, y + height, 0).tex(minU, maxV).endVertex();
-        buffer.pos(x + width, y + height, 0).tex(maxU, maxV).endVertex();
-        buffer.pos(x + width, y, 0).tex(maxU, minV).endVertex();
-        buffer.pos(x, y, 0).tex(minU, minV).endVertex();
-        tessellator.draw();
+        buffer.vertex(x, y + height, 0).uv(minU, maxV).endVertex();
+        buffer.vertex(x + width, y + height, 0).uv(maxU, maxV).endVertex();
+        buffer.vertex(x + width, y, 0).uv(maxU, minV).endVertex();
+        buffer.vertex(x, y, 0).uv(minU, minV).endVertex();
+        tessellator.end();
     }
 }

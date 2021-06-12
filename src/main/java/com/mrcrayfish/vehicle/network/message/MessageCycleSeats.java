@@ -35,9 +35,9 @@ public class MessageCycleSeats implements IMessage<MessageCycleSeats>
             supplier.get().enqueueWork(() ->
             {
                 ServerPlayerEntity player = supplier.get().getSender();
-                if(player != null && player.getRidingEntity() instanceof VehicleEntity)
+                if(player != null && player.getVehicle() instanceof VehicleEntity)
                 {
-                    VehicleEntity vehicle = (VehicleEntity) player.getRidingEntity();
+                    VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
                     List<Seat> seats = vehicle.getProperties().getSeats();
 
                     /* No need to cycle if already full of passengers */
@@ -45,13 +45,13 @@ public class MessageCycleSeats implements IMessage<MessageCycleSeats>
                         return;
 
                     SeatTracker tracker = vehicle.getSeatTracker();
-                    int seatIndex = tracker.getSeatIndex(player.getUniqueID());
+                    int seatIndex = tracker.getSeatIndex(player.getUUID());
                     for(int i = 0; i < seats.size() - 1; i++)
                     {
                         int nextIndex = (seatIndex + (i + 1)) % seats.size();
                         if(tracker.isSeatAvailable(nextIndex))
                         {
-                            tracker.setSeatIndex(nextIndex, player.getUniqueID());
+                            tracker.setSeatIndex(nextIndex, player.getUUID());
                             return;
                         }
                     }

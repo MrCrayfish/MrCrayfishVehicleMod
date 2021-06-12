@@ -39,12 +39,12 @@ public class FluidPumpBlock extends FluidPipeBlock
 {
     //TODO add collisions
     private final VoxelShape[][] PUMP_BOX = new VoxelShape[][]{
-            {Block.makeCuboidShape(3, 0, 3, 13, 3, 13), Block.makeCuboidShape(4.5, 3, 4.5, 11.5, 4, 11.5)},
-            {Block.makeCuboidShape(3, 16, 3, 13, 13, 13), Block.makeCuboidShape(4.5, 13, 4.5, 11.5, 12, 11.5)},
-            {Block.makeCuboidShape(3, 3, 0, 13, 13, 3), Block.makeCuboidShape(4.5, 4.5, 3, 11.5, 11.5, 4)},
-            {Block.makeCuboidShape(3, 3, 16, 13, 13, 13), Block.makeCuboidShape(4.5, 4.5, 13, 11.5, 11.5, 12)},
-            {Block.makeCuboidShape(0, 3, 3, 3, 13, 13), Block.makeCuboidShape(3, 4.5, 4.5, 4, 11.5, 11.5)},
-            {Block.makeCuboidShape(16, 3, 3, 13, 13, 13), Block.makeCuboidShape(13, 4.5, 4.5, 12, 11.5, 11.5)}
+            {Block.box(3, 0, 3, 13, 3, 13), Block.box(4.5, 3, 4.5, 11.5, 4, 11.5)},
+            {Block.box(3, 16, 3, 13, 13, 13), Block.box(4.5, 13, 4.5, 11.5, 12, 11.5)},
+            {Block.box(3, 3, 0, 13, 13, 3), Block.box(4.5, 4.5, 3, 11.5, 11.5, 4)},
+            {Block.box(3, 3, 16, 13, 13, 13), Block.box(4.5, 4.5, 13, 11.5, 11.5, 12)},
+            {Block.box(0, 3, 3, 3, 13, 13), Block.box(3, 4.5, 4.5, 4, 11.5, 11.5)},
+            {Block.box(16, 3, 3, 13, 13, 13), Block.box(13, 4.5, 4.5, 12, 11.5, 11.5)}
     };
 
     @Override
@@ -52,31 +52,31 @@ public class FluidPumpBlock extends FluidPipeBlock
     {
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(super.getPipeShape(state, worldIn, pos));
-        Collections.addAll(shapes, PUMP_BOX[this.getCollisionFacing(state).getIndex()]);
+        Collections.addAll(shapes, PUMP_BOX[this.getCollisionFacing(state).get3DDataValue()]);
         return VoxelShapeHelper.combineAll(shapes);
     }
 
     @Override
     protected Direction getCollisionFacing(BlockState state)
     {
-        return state.get(DIRECTION).getOpposite();
+        return state.getValue(DIRECTION).getOpposite();
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult result)
     {
-        if(super.onBlockActivated(state, world, pos, player, hand, result) == ActionResultType.SUCCESS)
+        if(super.use(state, world, pos, player, hand, result) == ActionResultType.SUCCESS)
         {
             return ActionResultType.SUCCESS;
         }
         FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
-        AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getHitVec().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
+        AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
         if(pipe != null && housingBox != null)
         {
-            if(!world.isRemote)
+            if(!world.isClientSide)
             {
                 ((FluidPumpTileEntity) pipe).cyclePowerMode(player);
-                world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
             }
             return ActionResultType.SUCCESS;
         }
@@ -86,39 +86,39 @@ public class FluidPumpBlock extends FluidPipeBlock
     @Nullable
     public AxisAlignedBB getHousingBox(BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Vector3d hitVec, @Nullable FluidPipeTileEntity pipe)
     {
-        if(!(pipe instanceof FluidPumpTileEntity) || player.getHeldItem(hand).getItem() != ModItems.WRENCH.get())
+        if(!(pipe instanceof FluidPumpTileEntity) || player.getItemInHand(hand).getItem() != ModItems.WRENCH.get())
         {
             return null;
         }
 
-        VoxelShape[] boxesHousing = this.PUMP_BOX[getCollisionFacing(state).getIndex()];
+        VoxelShape[] boxesHousing = this.PUMP_BOX[getCollisionFacing(state).get3DDataValue()];
         for(VoxelShape box : boxesHousing)
         {
-            AxisAlignedBB boundingBox = box.getBoundingBox();
-            if(boundingBox.grow(0.001).contains(hitVec))
+            AxisAlignedBB boundingBox = box.bounds();
+            if(boundingBox.inflate(0.001).contains(hitVec))
             {
                 for(VoxelShape box2 : boxesHousing)
                 {
-                    boundingBox = boundingBox.union(box2.getBoundingBox());
+                    boundingBox = boundingBox.minmax(box2.bounds());
                 }
-                return boundingBox.offset(pos);
+                return boundingBox.move(pos);
             }
         }
         return null;
     }
 
     @Override
-    public BlockState updatePostPlacement(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
     {
-        return this.getPumpState(world, pos, state, state.get(DIRECTION));
+        return this.getPumpState(world, pos, state, state.getValue(DIRECTION));
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = super.getStateForPlacement(context).with(DIRECTION, context.getFace());
-        return this.getPumpState(context.getWorld(), context.getPos(), state, context.getFace());
+        BlockState state = super.getStateForPlacement(context).setValue(DIRECTION, context.getClickedFace());
+        return this.getPumpState(context.getLevel(), context.getClickedPos(), state, context.getClickedFace());
     }
 
     private BlockState getPumpState(IWorld world, BlockPos pos, BlockState state, Direction originalFacing)
@@ -129,21 +129,21 @@ public class FluidPumpBlock extends FluidPipeBlock
         {
             if(facing == originalFacing.getOpposite()) continue;
 
-            state = state.with(CONNECTED_PIPES[facing.getIndex()], false);
+            state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], false);
 
-            BlockPos adjacentPos = pos.offset(facing);
+            BlockPos adjacentPos = pos.relative(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
-            boolean enabled = !disabledConnections[facing.getIndex()];
+            boolean enabled = !disabledConnections[facing.get3DDataValue()];
             if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
             {
-                state = state.with(CONNECTED_PIPES[facing.getIndex()], enabled);
+                state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
             }
             else if(adjacentState.getBlock() == Blocks.LEVER)
             {
-                Direction leverFacing = adjacentState.get(LeverBlock.HORIZONTAL_FACING).getOpposite();
-                if(adjacentPos.offset(leverFacing).equals(pos))
+                Direction leverFacing = adjacentState.getValue(LeverBlock.FACING).getOpposite();
+                if(adjacentPos.relative(leverFacing).equals(pos))
                 {
-                    state = state.with(CONNECTED_PIPES[facing.getIndex()], true);
+                    state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], true);
                     if(pipe != null)
                     {
                         pipe.setConnectionDisabled(facing, false);
@@ -152,8 +152,8 @@ public class FluidPumpBlock extends FluidPipeBlock
             }
             else if(adjacentState.getBlock() != this)
             {
-                TileEntity tileEntity = world.getTileEntity(adjacentPos);
-                state = state.with(CONNECTED_PIPES[facing.getIndex()], enabled && tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent());
+                TileEntity tileEntity = world.getBlockEntity(adjacentPos);
+                state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled && tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent());
             }
         }
         return state;

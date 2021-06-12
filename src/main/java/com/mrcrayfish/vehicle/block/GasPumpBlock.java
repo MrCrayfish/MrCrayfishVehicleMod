@@ -42,6 +42,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.block.AbstractBlock;
+
 /**
  * Author: MrCrayfish
  */
@@ -52,8 +54,8 @@ public class GasPumpBlock extends RotatedObjectBlock
 
     public GasPumpBlock()
     {
-        super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
-        this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));
+        super(AbstractBlock.Properties.of(Material.HEAVY_METAL).strength(1.0F));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(DIRECTION, Direction.NORTH).setValue(TOP, false));
     }
 
     private VoxelShape getShape(BlockState state)
@@ -62,16 +64,16 @@ public class GasPumpBlock extends RotatedObjectBlock
         {
             return SHAPES.get(state);
         }
-        Direction direction = state.get(DIRECTION);
-        boolean top = state.get(TOP);
+        Direction direction = state.getValue(DIRECTION);
+        boolean top = state.getValue(TOP);
         List<VoxelShape> shapes = new ArrayList<>();
         if (top)
         {
-            shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(3, -16, 0, 13, 15, 16), Direction.EAST))[direction.getHorizontalIndex()]);
+            shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.box(3, -16, 0, 13, 15, 16), Direction.EAST))[direction.get2DDataValue()]);
         }
         else
         {
-            shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.makeCuboidShape(3, 0, 0, 13, 31, 16), Direction.EAST))[direction.getHorizontalIndex()]);
+            shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.box(3, 0, 0, 13, 31, 16), Direction.EAST))[direction.get2DDataValue()]);
         }
         VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
         SHAPES.put(state, shape);
@@ -85,22 +87,22 @@ public class GasPumpBlock extends RotatedObjectBlock
     }
 
     @Override
-    public ActionResultType onBlockActivated(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
+    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if (world.isRemote())
+        if (world.isClientSide())
             return ActionResultType.SUCCESS;
-        if (state.get(TOP))
+        if (state.getValue(TOP))
         {
-            TileEntity tileEntity = world.getTileEntity(pos);
+            TileEntity tileEntity = world.getBlockEntity(pos);
             if (tileEntity instanceof GasPumpTileEntity)
             {
                 GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
-                if (gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getEntityId() == playerEntity.getEntityId())
+                if (gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getId() == playerEntity.getId())
                 {
                     gasPump.setFuelingEntity(null);
                     world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                else if (state.get(DIRECTION).rotateY().equals(result.getFace()))
+                else if (state.getValue(DIRECTION).getClockWise().equals(result.getDirection()))
                 {
                     gasPump.setFuelingEntity(playerEntity);
                     world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
@@ -109,9 +111,9 @@ public class GasPumpBlock extends RotatedObjectBlock
         }
         else
         {
-            ItemStack stack = playerEntity.getHeldItem(hand);
+            ItemStack stack = playerEntity.getItemInHand(hand);
 
-            if (FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getFace()))
+            if (FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
             {
                 return ActionResultType.CONSUME;
             }
@@ -124,7 +126,7 @@ public class GasPumpBlock extends RotatedObjectBlock
                     return ActionResultType.CONSUME;
                 }
 
-                TileEntity tileEntity = world.getTileEntity(pos);
+                TileEntity tileEntity = world.getBlockEntity(pos);
                 if (tileEntity != null)
                 {
                     IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
@@ -155,45 +157,45 @@ public class GasPumpBlock extends RotatedObjectBlock
     }
 
     @Override
-    public boolean isValidPosition(BlockState state, IWorldReader reader, BlockPos pos)
+    public boolean canSurvive(BlockState state, IWorldReader reader, BlockPos pos)
     {
-        return reader.isAirBlock(pos) && reader.isAirBlock(pos.up());
+        return reader.isEmptyBlock(pos) && reader.isEmptyBlock(pos.above());
     }
 
     @Override
-    public void onBlockPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack)
     {
-        worldIn.setBlockState(pos.up(), state.with(TOP, true));
+        worldIn.setBlockAndUpdate(pos.above(), state.setValue(TOP, true));
     }
 
     @Override
-    public void onBlockHarvested(World world, BlockPos pos, BlockState state, PlayerEntity player)
+    public void playerWillDestroy(World world, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        if (!world.isRemote())
+        if (!world.isClientSide())
         {
-            boolean top = state.get(TOP);
-            BlockPos blockpos = pos.offset(top ? Direction.DOWN : Direction.UP);
+            boolean top = state.getValue(TOP);
+            BlockPos blockpos = pos.relative(top ? Direction.DOWN : Direction.UP);
             BlockState blockstate = world.getBlockState(blockpos);
-            if (blockstate.getBlock() == state.getBlock() && blockstate.get(TOP) != top)
+            if (blockstate.getBlock() == state.getBlock() && blockstate.getValue(TOP) != top)
             {
-                world.setBlockState(blockpos, Blocks.AIR.getDefaultState(), 35);
-                world.playEvent(player, 2001, blockpos, Block.getStateId(blockstate));
+                world.setBlock(blockpos, Blocks.AIR.defaultBlockState(), 35);
+                world.levelEvent(player, 2001, blockpos, Block.getId(blockstate));
             }
         }
 
-        super.onBlockHarvested(world, pos, state, player);
+        super.playerWillDestroy(world, pos, state, player);
     }
 
     @Override
     public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
     {
-        if (state.get(TOP))
+        if (state.getValue(TOP))
         {
-            Vector3d origin = builder.get(LootParameters.field_237457_g_);
+            Vector3d origin = builder.getOptionalParameter(LootParameters.ORIGIN);
             if (origin != null)
             {
                 BlockPos pos = new BlockPos(origin);
-                TileEntity tileEntity = builder.getWorld().getTileEntity(pos.down());
+                TileEntity tileEntity = builder.getLevel().getBlockEntity(pos.below());
                 if (tileEntity != null)
                 {
                     builder = builder.withParameter(LootParameters.BLOCK_ENTITY, tileEntity);
@@ -204,9 +206,9 @@ public class GasPumpBlock extends RotatedObjectBlock
     }
 
     @Override
-    protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
-        super.fillStateContainer(builder);
+        super.createBlockStateDefinition(builder);
         builder.add(TOP);
     }
 
@@ -220,7 +222,7 @@ public class GasPumpBlock extends RotatedObjectBlock
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        if (state.get(TOP))
+        if (state.getValue(TOP))
         {
             return new GasPumpTileEntity();
         }
