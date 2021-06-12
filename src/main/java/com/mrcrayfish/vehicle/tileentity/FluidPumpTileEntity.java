@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.block.BlockFluidPump;
+import com.mrcrayfish.vehicle.block.FluidPumpBlock;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.BlockState;
@@ -45,12 +45,12 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
             return;
 
         BlockState state = this.world.getBlockState(this.pos);
-        Direction facing = state.get(BlockFluidPump.DIRECTION);
+        Direction facing = state.get(FluidPumpBlock.DIRECTION);
 
         List<IFluidHandler> fluidHandlers = new ArrayList<>();
         for(Direction face : Direction.values())
         {
-            if(!this.getDisabledConnections()[face.getIndex()] && state.get(BlockFluidPump.CONNECTED_PIPES[face.getIndex()]))
+            if(!this.getDisabledConnections()[face.getIndex()] && state.get(FluidPumpBlock.CONNECTED_PIPES[face.getIndex()]))
             {
                 IFluidHandler handler = this.getConnectedFluidHandler(face);
                 if (handler != null)

@@ -2,8 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
@@ -1484,7 +1483,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         ResourceLocation entityId = this.getType().getRegistryName();
         if(entityId != null)
         {
-            return BlockVehicleCrate.create(entityId, this.getColor(), engineTier, wheelType, wheelColor);
+            return VehicleCrateBlock.create(entityId, this.getColor(), engineTier, wheelType, wheelColor);
         }
         return ItemStack.EMPTY;
     }

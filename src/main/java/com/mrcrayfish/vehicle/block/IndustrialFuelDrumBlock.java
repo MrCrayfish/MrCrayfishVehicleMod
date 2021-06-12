@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockIndustrialFuelDrum extends BlockFuelDrum
+public class IndustrialFuelDrumBlock extends FuelDrumBlock
 {
     @Nullable
     @Override

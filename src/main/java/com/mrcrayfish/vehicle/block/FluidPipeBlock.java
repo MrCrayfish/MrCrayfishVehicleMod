@@ -9,7 +9,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -50,13 +49,11 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidPipe extends BlockObject
+public class FluidPipeBlock extends ObjectBlock
 {
     public static final DirectionProperty DIRECTION = DirectionProperty.create("facing", Direction.values());
     public static final BooleanProperty[] CONNECTED_PIPES = Util.make(() ->
@@ -77,7 +74,7 @@ public class BlockFluidPipe extends BlockObject
             CENTER
     };
 
-    public BlockFluidPipe()
+    public FluidPipeBlock()
     {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(0.5F));
         BlockState defaultState = this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH);

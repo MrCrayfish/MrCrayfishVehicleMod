@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.block.BlockJack;
+import com.mrcrayfish.vehicle.block.JackBlock;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -111,7 +111,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
     private void moveCollidedEntities()
     {
         BlockState state = this.world.getBlockState(this.getPos());
-        if(state.getBlock() instanceof BlockJack)
+        if(state.getBlock() instanceof JackBlock)
         {
             AxisAlignedBB boundingBox = state.getShape(this.world, this.pos).getBoundingBox().offset(this.pos);
             List<Entity> list = this.world.getEntitiesWithinAABBExcludingEntity(this.jack, boundingBox);

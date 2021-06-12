@@ -25,9 +25,9 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidMixer extends BlockRotatedObject
+public class FluidMixerBlock extends RotatedObjectBlock
 {
-    public BlockFluidMixer()
+    public FluidMixerBlock()
     {
         super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
     }

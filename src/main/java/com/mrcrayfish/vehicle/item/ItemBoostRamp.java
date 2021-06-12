@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.block.BlockBoostRamp;
+import com.mrcrayfish.vehicle.block.BoostRampBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
@@ -28,11 +28,11 @@ public class ItemBoostRamp extends BlockItem
         {
             BlockState state = context.getWorld().getBlockState(context.getPos());
             Block block = state.getBlock();
-            if(block instanceof BlockBoostRamp)
+            if(block instanceof BoostRampBlock)
             {
-                if(!state.get(BlockBoostRamp.STACKED))
+                if(!state.get(BoostRampBlock.STACKED))
                 {
-                    context.getWorld().setBlockState(context.getPos(), block.getDefaultState().with(BlockBoostRamp.DIRECTION, state.get(BlockBoostRamp.DIRECTION)).with(BlockBoostRamp.STACKED, true));
+                    context.getWorld().setBlockState(context.getPos(), block.getDefaultState().with(BoostRampBlock.DIRECTION, state.get(BoostRampBlock.DIRECTION)).with(BoostRampBlock.STACKED, true));
                 }
                 return ActionResultType.SUCCESS;
             }

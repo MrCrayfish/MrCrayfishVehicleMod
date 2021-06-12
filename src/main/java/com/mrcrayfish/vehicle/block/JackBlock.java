@@ -17,11 +17,11 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockJack extends BlockObject
+public class JackBlock extends ObjectBlock
 {
     private static final VoxelShape SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 9, 15);
 
-    public BlockJack()
+    public JackBlock()
     {
         super(Block.Properties.create(Material.PISTON));
     }

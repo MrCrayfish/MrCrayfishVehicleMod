@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
+import com.mrcrayfish.vehicle.block.RotatedObjectBlock;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.GasPumpTankTileEntity;
@@ -35,7 +35,7 @@ public class GasPumpTankRenderer extends TileEntityRenderer<GasPumpTankTileEntit
 
         matrixStack.push();
 
-        Direction facing = state.get(BlockRotatedObject.DIRECTION);
+        Direction facing = state.get(RotatedObjectBlock.DIRECTION);
         matrixStack.translate(0.5, 0.5, 0.5);
         matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(facing.getHorizontalIndex() * -90F - 90F));
         matrixStack.translate(-0.5, -0.5, -0.5);

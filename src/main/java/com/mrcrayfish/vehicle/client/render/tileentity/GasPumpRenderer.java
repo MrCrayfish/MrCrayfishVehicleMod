@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.block.BlockGasPump;
+import com.mrcrayfish.vehicle.block.GasPumpBlock;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
@@ -54,13 +54,13 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             return;
         }
 
-        boolean top = state.get(BlockGasPump.TOP);
+        boolean top = state.get(GasPumpBlock.TOP);
         if(!top)
         {
             return;
         }
 
-        Direction facing = state.get(BlockGasPump.DIRECTION);
+        Direction facing = state.get(GasPumpBlock.DIRECTION);
         double[] pos = CollisionHelper.fixRotation(facing, 0.640625, 1.078125, 0.640625, 1.078125);
 
        /* List<VehicleEntity> vehicles = te.getWorld().getEntitiesWithinAABB(VehicleEntity.class, new AxisAlignedBB(te.getPos()).grow(5.0));

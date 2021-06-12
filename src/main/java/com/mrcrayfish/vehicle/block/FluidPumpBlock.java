@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidPump extends BlockFluidPipe
+public class FluidPumpBlock extends FluidPipeBlock
 {
     //TODO add collisions
     private final VoxelShape[][] PUMP_BOX = new VoxelShape[][]{

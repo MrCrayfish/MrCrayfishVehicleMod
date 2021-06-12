@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.block.BlockFluidExtractor;
+import com.mrcrayfish.vehicle.block.FluidExtractorBlock;
 import com.mrcrayfish.vehicle.tileentity.FluidExtractorTileEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -34,7 +34,7 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
     {
         matrixStack.push();
         matrixStack.translate(0.5, 0.5, 0.5);
-        Direction direction = tileEntity.getBlockState().get(BlockFluidExtractor.DIRECTION);
+        Direction direction = tileEntity.getBlockState().get(FluidExtractorBlock.DIRECTION);
         matrixStack.rotate(Vector3f.YP.rotationDegrees(direction.getHorizontalIndex() * -90F - 90F));
         matrixStack.translate(-0.5, -0.5, -0.5);
         float height = (float) (12.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));

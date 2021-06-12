@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.util;
 
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
+import com.mrcrayfish.vehicle.block.RotatedObjectBlock;
 import net.minecraft.block.Block;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
@@ -17,7 +17,7 @@ public class StateHelper
     public static RelativeDirection getRotation(IWorldReader world, BlockPos pos, Direction facing, RelativeDirection dir)
     {
         BlockPos target = getBlockPosRelativeTo(world, pos, facing, dir);
-        Direction other = world.getBlockState(target).get(BlockRotatedObject.DIRECTION);
+        Direction other = world.getBlockState(target).get(RotatedObjectBlock.DIRECTION);
         return getDirectionRelativeTo(facing, other);
     }
 

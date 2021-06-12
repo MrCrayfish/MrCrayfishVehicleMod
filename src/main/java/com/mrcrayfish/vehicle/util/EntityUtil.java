@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.util;
 
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
@@ -24,7 +24,7 @@ public class EntityUtil
         EntityType<T> type = EntityType.Builder.create(function::apply, EntityClassification.MISC).size(width, height).setTrackingRange(256).setUpdateInterval(1).immuneToFire().setShouldReceiveVelocityUpdates(true).build(id.toString());
         if(registerCrate)
         {
-            BlockVehicleCrate.registerVehicle(id);
+            VehicleCrateBlock.registerVehicle(id);
         }
         return type;
     }

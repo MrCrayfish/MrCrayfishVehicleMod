@@ -13,11 +13,11 @@ import net.minecraft.util.Rotation;
 /**
  * Author: MrCrayfish
  */
-public abstract class BlockRotatedObject extends BlockObject
+public abstract class RotatedObjectBlock extends ObjectBlock
 {
     public static final DirectionProperty DIRECTION = HorizontalBlock.HORIZONTAL_FACING;
 
-    public BlockRotatedObject(Block.Properties properties)
+    public RotatedObjectBlock(Block.Properties properties)
     {
         super(properties);
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH));

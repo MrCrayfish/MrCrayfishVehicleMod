@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -164,7 +163,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
             if(!this.world.isRemote && this.timer > 250)
             {
                 BlockState state = this.world.getBlockState(this.pos);
-                Direction facing = state.get(BlockVehicleCrate.DIRECTION);
+                Direction facing = state.get(VehicleCrateBlock.DIRECTION);
                 EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(this.entityId);
                 if(entityType != null)
                 {

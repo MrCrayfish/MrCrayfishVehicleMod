@@ -23,17 +23,17 @@ public class ModBlocks
 {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
-    public static final RegistryObject<Block> TRAFFIC_CONE = register("traffic_cone", new BlockTrafficCone(), ItemTrafficCone::new);
-    public static final RegistryObject<Block> FLUID_EXTRACTOR = register("fluid_extractor", new BlockFluidExtractor());
-    public static final RegistryObject<Block> FLUID_MIXER = register("fluid_mixer", new BlockFluidMixer());
-    public static final RegistryObject<Block> GAS_PUMP = register("gas_pump", new BlockGasPump());
-    public static final RegistryObject<Block> FLUID_PIPE = register("fluid_pipe", new BlockFluidPipe());
-    public static final RegistryObject<Block> FLUID_PUMP = register("fluid_pump", new BlockFluidPump());
-    public static final RegistryObject<Block> FUEL_DRUM = register("fuel_drum", new BlockFuelDrum());
-    public static final RegistryObject<Block> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new BlockIndustrialFuelDrum());
-    public static final RegistryObject<Block> WORKSTATION = register("workstation", new BlockWorkstation());
-    public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new BlockVehicleCrate(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB)));
-    public static final RegistryObject<Block> JACK = register("jack", new BlockJack());
+    public static final RegistryObject<Block> TRAFFIC_CONE = register("traffic_cone", new TrafficConeBlock(), ItemTrafficCone::new);
+    public static final RegistryObject<Block> FLUID_EXTRACTOR = register("fluid_extractor", new FluidExtractorBlock());
+    public static final RegistryObject<Block> FLUID_MIXER = register("fluid_mixer", new FluidMixerBlock());
+    public static final RegistryObject<Block> GAS_PUMP = register("gas_pump", new GasPumpBlock());
+    public static final RegistryObject<Block> FLUID_PIPE = register("fluid_pipe", new FluidPipeBlock());
+    public static final RegistryObject<Block> FLUID_PUMP = register("fluid_pump", new FluidPumpBlock());
+    public static final RegistryObject<Block> FUEL_DRUM = register("fuel_drum", new FuelDrumBlock());
+    public static final RegistryObject<Block> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new IndustrialFuelDrumBlock());
+    public static final RegistryObject<Block> WORKSTATION = register("workstation", new WorkstationBlock());
+    public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new VehicleCrateBlock(), block -> new BlockItem(block, new Item.Properties().maxStackSize(1).group(VehicleMod.CREATIVE_TAB)));
+    public static final RegistryObject<Block> JACK = register("jack", new JackBlock());
     public static final RegistryObject<FlowingFluidBlock> FUELIUM = register("fuelium", new FlowingFluidBlock(ModFluids.FLOWING_FUELIUM, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> ENDER_SAP = register("ender_sap", new FlowingFluidBlock(ModFluids.FLOWING_ENDER_SAP, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> BLAZE_JUICE = register("blaze_juice", new FlowingFluidBlock(ModFluids.FLOWING_BLAZE_JUICE, Block.Properties.create(Material.WATER).doesNotBlockMovement().hardnessAndResistance(100.0F).noDrops()), null);

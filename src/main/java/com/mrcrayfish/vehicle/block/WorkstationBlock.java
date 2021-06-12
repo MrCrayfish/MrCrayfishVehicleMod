@@ -29,11 +29,11 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class BlockWorkstation extends BlockRotatedObject
+public class WorkstationBlock extends RotatedObjectBlock
 {
     private static final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
-    public BlockWorkstation()
+    public WorkstationBlock()
     {
         super(Block.Properties.create(Material.IRON).hardnessAndResistance(1.0F));
     }

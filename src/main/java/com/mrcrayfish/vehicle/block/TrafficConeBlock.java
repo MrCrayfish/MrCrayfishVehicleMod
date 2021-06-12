@@ -12,12 +12,12 @@ import net.minecraft.world.IBlockReader;
 /**
  * Author: MrCrayfish
  */
-public class BlockTrafficCone extends BlockObject
+public class TrafficConeBlock extends ObjectBlock
 {
     private static final VoxelShape COLLISION_SHAPE = Block.makeCuboidShape(2, 0, 2, 14, 18, 14);
     private static final VoxelShape SELECTION_SHAPE = Block.makeCuboidShape(1, 0, 1, 15, 16, 15);
 
-    public BlockTrafficCone()
+    public TrafficConeBlock()
     {
         super(Block.Properties.create(Material.CLAY, MaterialColor.ORANGE_TERRACOTTA).hardnessAndResistance(0.5F));
     }

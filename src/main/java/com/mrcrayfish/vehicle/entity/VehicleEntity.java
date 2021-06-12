@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
@@ -712,7 +712,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         ResourceLocation entityId = this.getType().getRegistryName();
         if(entityId != null)
         {
-            return BlockVehicleCrate.create(entityId, this.getColor(), null, null, -1);
+            return VehicleCrateBlock.create(entityId, this.getColor(), null, null, -1);
         }
         return ItemStack.EMPTY;
     }

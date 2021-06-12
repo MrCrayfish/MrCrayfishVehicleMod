@@ -27,9 +27,9 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BlockFluidExtractor extends BlockRotatedObject
+public class FluidExtractorBlock extends RotatedObjectBlock
 {
-    public BlockFluidExtractor()
+    public FluidExtractorBlock()
     {
         super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F).notSolid());
     }

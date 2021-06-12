@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.EngineTier;
@@ -190,7 +190,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                     }
                 }
 
-                ItemStack stack = BlockVehicleCrate.create(entityId, color, engineTier, wheelType, wheelColor);
+                ItemStack stack = VehicleCrateBlock.create(entityId, color, engineTier, wheelType, wheelColor);
                 world.addEntity(new ItemEntity(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
             }
         });

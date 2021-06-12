@@ -5,9 +5,9 @@ import net.minecraft.block.Block;
 /**
  * Author: MrCrayfish
  */
-public class BlockObject extends Block
+public class ObjectBlock extends Block
 {
-    public BlockObject(Block.Properties properties)
+    public ObjectBlock(Block.Properties properties)
     {
         super(properties);
     }

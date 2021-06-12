@@ -8,7 +8,6 @@ import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
@@ -33,13 +32,11 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
  */
-public class BlockBoostRamp extends BlockRotatedObject
+public class BoostRampBlock extends RotatedObjectBlock
 {
     public static final BooleanProperty STACKED = BooleanProperty.create("stacked");
     public static final BooleanProperty LEFT = BooleanProperty.create("left");
@@ -67,7 +64,7 @@ public class BlockBoostRamp extends BlockRotatedObject
 
     private static final AxisAlignedBB BOUNDING_BOX_BOTTOM = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 0.5D, 1.0D);*/
 
-    public BlockBoostRamp()
+    public BoostRampBlock()
     {
         super(Block.Properties.create(Material.ROCK).hardnessAndResistance(1.0F));
     }

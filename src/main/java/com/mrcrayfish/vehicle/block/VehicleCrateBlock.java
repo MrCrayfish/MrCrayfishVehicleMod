@@ -6,7 +6,6 @@ import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
-import com.mrcrayfish.vehicle.util.Bounds;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -16,7 +15,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.particle.DiggingParticle;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.EntityType;
@@ -33,14 +31,12 @@ import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
@@ -58,12 +54,12 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class BlockVehicleCrate extends BlockRotatedObject
+public class VehicleCrateBlock extends RotatedObjectBlock
 {
     public static final List<ResourceLocation> REGISTERED_CRATES = new ArrayList<>();
     private static final VoxelShape PANEL = makeCuboidShape(0, 0, 0, 16, 2, 16);
 
-    public BlockVehicleCrate()
+    public VehicleCrateBlock()
     {
         super(Block.Properties.create(Material.IRON, DyeColor.LIGHT_GRAY).variableOpacity().notSolid().hardnessAndResistance(1.5F, 5.0F));
     }

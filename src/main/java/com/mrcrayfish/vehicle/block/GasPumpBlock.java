@@ -45,12 +45,12 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class BlockGasPump extends BlockRotatedObject
+public class GasPumpBlock extends RotatedObjectBlock
 {
     public static final BooleanProperty TOP = BooleanProperty.create("top");
     private static final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
 
-    public BlockGasPump()
+    public GasPumpBlock()
     {
         super(Block.Properties.create(Material.ANVIL).hardnessAndResistance(1.0F));
         this.setDefaultState(this.getStateContainer().getBaseState().with(DIRECTION, Direction.NORTH).with(TOP, false));

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
+import com.mrcrayfish.vehicle.block.RotatedObjectBlock;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
@@ -572,9 +572,9 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
         if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
         {
             BlockState state = this.world.getBlockState(this.pos);
-            if(state.getProperties().contains(BlockRotatedObject.DIRECTION))
+            if(state.getProperties().contains(RotatedObjectBlock.DIRECTION))
             {
-                Direction direction = state.get(BlockRotatedObject.DIRECTION);
+                Direction direction = state.get(RotatedObjectBlock.DIRECTION);
                 if(facing == direction.rotateYCCW())
                 {
                     return LazyOptional.of(() -> this.tankBlaze).cast();

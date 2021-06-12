@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.block.BlockRotatedObject;
+import com.mrcrayfish.vehicle.block.RotatedObjectBlock;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
@@ -43,7 +43,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
         
         matrixStack.push();
 
-        Direction facing = state.get(BlockRotatedObject.DIRECTION);
+        Direction facing = state.get(RotatedObjectBlock.DIRECTION);
         matrixStack.translate(0.5, 0.5, 0.5);
         matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees(facing.getHorizontalIndex() * -90F + 180F));
         matrixStack.translate(-0.5, -0.5, -0.5);

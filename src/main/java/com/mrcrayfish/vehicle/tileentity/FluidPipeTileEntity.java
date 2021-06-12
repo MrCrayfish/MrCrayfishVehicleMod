@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.block.BlockFluidPipe;
+import com.mrcrayfish.vehicle.block.FluidPipeBlock;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.TileEntityUtil;
@@ -80,7 +80,7 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
         if(this.world.isBlockPowered(pos))
             return;
 
-        IFluidHandler handler = this.getConnectedFluidHandler(this.world.getBlockState(this.pos).get(BlockFluidPipe.DIRECTION));
+        IFluidHandler handler = this.getConnectedFluidHandler(this.world.getBlockState(this.pos).get(FluidPipeBlock.DIRECTION));
         if(handler != null)
         {
             FluidUtils.transferFluid(this.tank, handler, this.transferAmount);
@@ -98,9 +98,9 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
             if(handler != null)
             {
                 BlockState adjacentState = this.world.getBlockState(adjacentPos);
-                if(adjacentState.getBlock() instanceof BlockFluidPipe)
+                if(adjacentState.getBlock() instanceof FluidPipeBlock)
                 {
-                    if(!adjacentState.get(BlockFluidPipe.CONNECTED_PIPES[facing.getOpposite().getIndex()]) || (tileEntity instanceof FluidPipeTileEntity && ((FluidPipeTileEntity) tileEntity).isConnectionDisabled(facing.getOpposite())))
+                    if(!adjacentState.get(FluidPipeBlock.CONNECTED_PIPES[facing.getOpposite().getIndex()]) || (tileEntity instanceof FluidPipeTileEntity && ((FluidPipeTileEntity) tileEntity).isConnectionDisabled(facing.getOpposite())))
                     {
                         return null;
                     }
