@@ -1,10 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -12,6 +14,8 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -76,5 +80,24 @@ public class RenderATV extends AbstractRenderVehicle<ATVEntity>
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(30F);
         model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
         model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-30F);
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (entityRayTracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(SpecialModels.ATV_BODY, parts, transforms);
+            EntityRayTracer.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.3375F, 0.25F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.025F, 0.0F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 1.05F));
+            EntityRayTracer.createFuelPartTransforms(ModEntities.ATV.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            EntityRayTracer.createKeyPortTransforms(ModEntities.ATV.get(), parts, transforms);
+        };
     }
 }

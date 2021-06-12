@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
@@ -11,8 +12,12 @@ import com.mrcrayfish.vehicle.entity.vehicle.BathEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.registries.ForgeRegistries;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -61,5 +66,16 @@ public class RenderBath extends AbstractRenderVehicle<BathEntity>
         model.bipedLeftArm.rotateAngleX = (float) Math.toRadians(-80F);
         model.bipedLeftArm.rotateAngleY = (float) Math.toRadians(-5F);
         model.bipedLeftArm.rotateAngleZ = (float) Math.toRadians(0F);
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (tracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(ForgeRegistries.ITEMS.getValue(new ResourceLocation("cfm:bath")), parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
+        };
     }
 }

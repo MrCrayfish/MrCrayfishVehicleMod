@@ -1,12 +1,16 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.CouchEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -34,5 +38,17 @@ public class RenderCouch extends AbstractRenderVehicle<CouchEntity>
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(15F);
         model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-90F);
         model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-15F);
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (tracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(SpecialModels.RAINBOW_SOFA, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.0625F, 0.0F));
+        };
     }
 }

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderTrailer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
@@ -12,6 +13,8 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -79,5 +82,15 @@ public class RenderFertilizerTrailer extends AbstractRenderTrailer<FertilizerTra
             RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         }
         matrixStack.pop();
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (tracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(SpecialModels.FERTILIZER_TRAILER, parts, transforms);
+        };
     }
 }

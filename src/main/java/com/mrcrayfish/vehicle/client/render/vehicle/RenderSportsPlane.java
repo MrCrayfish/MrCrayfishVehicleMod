@@ -2,12 +2,14 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -17,6 +19,8 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -128,5 +132,41 @@ public class RenderSportsPlane extends AbstractRenderVehicle<SportsPlaneEntity>
             matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);
         }
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (tracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE, parts, transforms);
+            EntityRayTracer.createFuelPartTransforms(ModEntities.SPORTS_PLANE.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            EntityRayTracer.createKeyPortTransforms(ModEntities.SPORTS_PLANE.get(), parts, transforms);
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WING, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0, -0.1875F, 0.5F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Z, 180F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.875F, 0.0625F, 0.0F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, 5F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WING, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.875F, -0.1875F, 0.5F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -5F));
+            transforms.add(EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
+            transforms.add(EntityRayTracer.MatrixTransformation.createScale(0.85F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.1875F, 1.5F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.1875F, 1.5F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(-0.46875F, -0.1875F, 0.125F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(-0.46875F, -0.1875F, 0.125F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, -100F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.46875F, -0.1875F, 0.125F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.46875F, -0.1875F, 0.125F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 100F));
+        };
     }
 }

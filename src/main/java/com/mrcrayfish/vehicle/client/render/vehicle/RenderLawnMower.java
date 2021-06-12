@@ -1,13 +1,17 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.vehicle.LawnMowerEntity;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.player.PlayerEntity;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -51,5 +55,23 @@ public class RenderLawnMower extends AbstractRenderVehicle<LawnMowerEntity>
         model.bipedRightLeg.rotateAngleY = (float) Math.toRadians(20F);
         model.bipedLeftLeg.rotateAngleX = (float) Math.toRadians(-65F);
         model.bipedLeftLeg.rotateAngleY = (float) Math.toRadians(-20F);
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (entityRayTracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(SpecialModels.LAWN_MOWER_BODY, parts, transforms);
+            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.4F, -0.15F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
+                    EntityRayTracer.MatrixTransformation.createScale(0.9F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 0.6F));
+            EntityRayTracer.createFuelPartTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+        };
     }
 }

@@ -2,12 +2,14 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Blocks;
@@ -21,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 
+import javax.annotation.Nullable;
 import java.util.Calendar;
 
 /**
@@ -159,5 +162,25 @@ public class RenderMoped extends AbstractRenderVehicle<MopedEntity>
         lid.render(matrixStack, vertexBuilder, lightTexture, overlayTexture);
         lock.render(matrixStack, vertexBuilder, lightTexture, overlayTexture);
         base.render(matrixStack, vertexBuilder, lightTexture, overlayTexture);
+    }
+
+    @Nullable
+    @Override
+    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    {
+        return (tracer, transforms, parts) ->
+        {
+            EntityRayTracer.createTransformListForPart(SpecialModels.MOPED_BODY, parts, transforms);
+            EntityRayTracer.createTransformListForPart(SpecialModels.MOPED_HANDLES, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.0625F, 0.0F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.835F, 0.525F),
+                    EntityRayTracer.MatrixTransformation.createScale(0.8F));
+            EntityRayTracer.createTransformListForPart(SpecialModels.MOPED_MUD_GUARD, parts, transforms,
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.0625F, 0.0F),
+                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.12F, 0.785F),
+                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -22.5F),
+                    EntityRayTracer.MatrixTransformation.createScale(0.9F));
+            EntityRayTracer.createFuelPartTransforms(ModEntities.MOPED.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+        };
     }
 }
