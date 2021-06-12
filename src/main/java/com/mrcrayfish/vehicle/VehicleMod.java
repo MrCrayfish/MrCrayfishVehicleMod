@@ -58,7 +58,6 @@ public class VehicleMod
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
         PacketHandler.register();
-        CustomDataSerializers.register();
         HeldVehicleDataHandler.register();
         VehicleProperties.register();
         ItemLookup.init();
