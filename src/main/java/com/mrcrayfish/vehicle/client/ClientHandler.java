@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.client.handler.ControllerHandler;
 import com.mrcrayfish.vehicle.client.handler.FuelingHandler;
 import com.mrcrayfish.vehicle.client.handler.HeldVehicleHandler;
 import com.mrcrayfish.vehicle.client.handler.InputHandler;
+import com.mrcrayfish.vehicle.client.handler.OverlayHandler;
 import com.mrcrayfish.vehicle.client.handler.PlayerModelHandler;
 import com.mrcrayfish.vehicle.client.handler.SprayCanHandler;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
@@ -74,6 +75,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(new FuelingHandler());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleHandler());
         MinecraftForge.EVENT_BUS.register(new InputHandler());
+        MinecraftForge.EVENT_BUS.register(new OverlayHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerModelHandler());
         MinecraftForge.EVENT_BUS.register(new SprayCanHandler());
 
