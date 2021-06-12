@@ -4,7 +4,6 @@ import com.mrcrayfish.vehicle.client.ClientHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
-import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
