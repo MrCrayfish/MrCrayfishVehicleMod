@@ -153,15 +153,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.vehicleMotionZ = (currentSpeed * f2);
         }
     }
-
     @Override
     protected void updateTurning()
     {
-        this.turnAngle = 0F;
-
         if(this.world.isRemote())
         {
             this.turnAngle = VehicleHelper.getTargetTurnAngle(this, this.isDrifting());
+        }
+        else
+        {
+            this.turnAngle = 0F;
         }
 
         this.wheelAngle = this.turnAngle * Math.max(0.1F, 1.0F - Math.abs(this.currentSpeed / this.getMaxSpeed()));
