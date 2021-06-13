@@ -100,7 +100,8 @@ public abstract class TrailerEntity extends VehicleEntity
         else if(!world.isRemote)
         {
             motion = this.getMotion();
-            this.move(MoverType.SELF, new Vector3d(motion.getX() * 0.75, motion.getY(), motion.getZ() * 0.75));
+            this.setMotion(0, 0, 0);
+            this.move(MoverType.SELF, this.getMotion());
         }
 
         this.doBlockCollisions();
