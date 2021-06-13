@@ -100,7 +100,7 @@ public abstract class TrailerEntity extends VehicleEntity
         else if(!world.isRemote)
         {
             motion = this.getMotion();
-            this.setMotion(0, 0, 0);
+            this.setMotion(this.getMotion().mul(0.8, 0.98, 0.8));
             this.move(MoverType.SELF, this.getMotion());
         }
 
