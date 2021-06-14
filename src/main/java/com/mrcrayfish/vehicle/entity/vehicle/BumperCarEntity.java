@@ -58,12 +58,6 @@ public class BumperCarEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.ELECTRIC_MOTOR;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

@@ -1,60 +1,8 @@
 package com.mrcrayfish.vehicle.client;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
-import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTraceResultRotated;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
-import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
-import com.mrcrayfish.vehicle.common.Seat;
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.init.ModDataKeys;
-import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.item.SprayCanItem;
-import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.network.message.MessageCycleSeats;
-import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
-import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
-import net.minecraftforge.client.event.FOVUpdateEvent;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import org.lwjgl.glfw.GLFW;
-
-import java.awt.*;
-import java.text.DecimalFormat;
 
 /**
  * Author: MrCrayfish

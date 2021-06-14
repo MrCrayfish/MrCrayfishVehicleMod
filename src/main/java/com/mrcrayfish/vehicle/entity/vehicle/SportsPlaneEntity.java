@@ -82,12 +82,6 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

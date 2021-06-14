@@ -43,12 +43,6 @@ public class BathEntity extends PlaneEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.NONE;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return false;

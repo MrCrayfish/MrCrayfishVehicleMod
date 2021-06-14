@@ -47,12 +47,6 @@ public class TractorEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
-    }
-
-    @Override
     public FuelPortType getFuelPortType()
     {
         return FuelPortType.DEFAULT;

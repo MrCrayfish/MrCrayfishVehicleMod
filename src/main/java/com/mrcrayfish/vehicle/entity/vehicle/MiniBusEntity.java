@@ -46,12 +46,6 @@ public class MiniBusEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

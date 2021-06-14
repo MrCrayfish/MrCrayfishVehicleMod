@@ -33,12 +33,6 @@ public class SmartCarEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.ELECTRIC_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 0.8F;

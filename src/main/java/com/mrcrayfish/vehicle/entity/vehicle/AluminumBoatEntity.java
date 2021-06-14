@@ -62,12 +62,6 @@ public class AluminumBoatEntity extends BoatEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 0.8F;

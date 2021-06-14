@@ -35,12 +35,6 @@ public class MiniBikeEntity extends MotorcycleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 0.5F;

@@ -32,12 +32,6 @@ public class CouchEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
-    }
-
-    @Override
     public boolean isLockable()
     {
         return false;

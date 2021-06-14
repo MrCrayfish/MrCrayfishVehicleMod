@@ -97,12 +97,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 0.5F;

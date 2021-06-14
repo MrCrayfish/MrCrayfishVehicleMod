@@ -60,12 +60,6 @@ public class ShoppingCartEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.NONE;
-    }
-
-    @Override
     public boolean isLockable()
     {
         return false;

@@ -60,12 +60,6 @@ public class JetSkiEntity extends BoatEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 1.2F;

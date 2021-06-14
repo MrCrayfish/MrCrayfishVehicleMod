@@ -129,12 +129,6 @@ public class LawnMowerEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return true;

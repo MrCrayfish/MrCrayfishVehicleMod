@@ -55,12 +55,6 @@ public class SpeedBoatEntity extends BoatEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 1.0F;

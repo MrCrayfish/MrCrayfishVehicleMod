@@ -19,12 +19,6 @@ public class SofacopterEntity extends HelicopterEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.ELECTRIC_MOTOR;
-    }
-
-    @Override
     public boolean canBeColored()
     {
         return false;

@@ -4,23 +4,19 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.mrcrayfish.vehicle.client.render.AbstractRenderVehicle;
+import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
-import com.mrcrayfish.vehicle.item.SprayCanItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.HandSide;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -48,10 +44,11 @@ public class PlayerModelHandler
         }
     }
 
+
     @SuppressWarnings("unchecked")
     private void applyPassengerTransformations(VehicleEntity vehicle, PlayerEntity player, MatrixStack matrixStack, IVertexBuilder builder, float partialTicks)
     {
-        AbstractRenderVehicle<VehicleEntity> render = (AbstractRenderVehicle<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
+        AbstractVehicleRenderer<VehicleEntity> render = (AbstractVehicleRenderer<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(render != null)
         {
             render.applyPlayerRender(vehicle, player, partialTicks, matrixStack, builder);
@@ -131,7 +128,7 @@ public class PlayerModelHandler
             return;
 
         VehicleEntity vehicle = (VehicleEntity) ridingEntity;
-        AbstractRenderVehicle<VehicleEntity> render = (AbstractRenderVehicle<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
+        AbstractVehicleRenderer<VehicleEntity> render = (AbstractVehicleRenderer<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(render != null)
         {
             render.applyPlayerModel(vehicle, player, model, partialTicks);

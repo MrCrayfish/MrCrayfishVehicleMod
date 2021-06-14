@@ -466,8 +466,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public abstract void updateVehicleMotion();
 
-    public abstract EngineType getEngineType();
-
     public FuelPortType getFuelPortType()
     {
         return FuelPortType.DEFAULT;
@@ -1104,7 +1102,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public boolean isEnginePowered()
     {
-        return ((this.getEngineType() == EngineType.NONE || this.hasEngine()) && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9) && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
+        return ((this.getProperties().getEngineType() == EngineType.NONE || this.hasEngine()) && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9) && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
     }
 
     public boolean canDrive()
@@ -1229,7 +1227,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.vehicleInventory = new Inventory(2);
 
         ItemStack engine = ItemLookup.getEngine(this);
-        if(this.getEngineType() != EngineType.NONE & !engine.isEmpty())
+        if(this.getProperties().getEngineType() != EngineType.NONE & !engine.isEmpty())
         {
             this.vehicleInventory.setItem(0, engine);
         }
@@ -1251,7 +1249,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(engine.getItem() instanceof EngineItem)
             {
                 EngineItem item = (EngineItem) engine.getItem();
-                if(item.getEngineType() == this.getEngineType())
+                if(item.getEngineType() == this.getProperties().getEngineType())
                 {
                     this.setEngine(true);
                     this.setEngineTier(item.getEngineTier());
@@ -1261,7 +1259,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     this.setEngine(false);
                 }
             }
-            else if(this.getEngineType() != EngineType.NONE)
+            else if(this.getProperties().getEngineType() != EngineType.NONE)
             {
                 this.setEngine(false);
             }
@@ -1308,7 +1306,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             // Spawns the engine if the vehicle has one
             ItemStack engine = ItemLookup.getEngine(this);
-            if(this.getEngineType() != EngineType.NONE && !engine.isEmpty())
+            if(this.getProperties().getEngineType() != EngineType.NONE && !engine.isEmpty())
             {
                 InventoryUtil.spawnItemStack(this.level, this.getX(), this.getY(), this.getZ(), engine);
             }

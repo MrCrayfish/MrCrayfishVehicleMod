@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * Author: MrCrayfish
@@ -35,6 +37,7 @@ public class Wheel
         this.render = render;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public float getWheelRotation(LandVehicleEntity vehicle, float partialTicks)
     {
         if(position == Position.REAR)

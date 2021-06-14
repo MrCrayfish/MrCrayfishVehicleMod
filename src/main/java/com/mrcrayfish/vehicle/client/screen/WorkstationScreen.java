@@ -147,14 +147,14 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         if(this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity)
         {
             PoweredVehicleEntity entityPoweredVehicle = (PoweredVehicleEntity) this.cachedVehicle[currentVehicle];
-            if(entityPoweredVehicle.getEngineType() != EngineType.NONE)
+            if(entityPoweredVehicle.getProperties().getEngineType() != EngineType.NONE)
             {
                 ItemStack engine = this.workstation.getItem(1);
                 if(!engine.isEmpty() && engine.getItem() instanceof EngineItem)
                 {
                     EngineItem engineItem = (EngineItem) engine.getItem();
                     EngineType engineType = engineItem.getEngineType();
-                    if(entityPoweredVehicle.getEngineType() != engineType)
+                    if(entityPoweredVehicle.getProperties().getEngineType() != engineType)
                     {
                         canCraft = false;
                         this.validEngine = false;
@@ -323,9 +323,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
 
-        if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).getEngineType() != EngineType.NONE)
+        if(vehicle instanceof PoweredVehicleEntity && vehicle.getProperties().getEngineType() != EngineType.NONE)
         {
-            String engineName = ((PoweredVehicleEntity) vehicle).getEngineType().getEngineName();
+            String engineName = vehicle.getProperties().getEngineType().getEngineName();
             this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent(engineName)), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
         else
@@ -364,12 +364,12 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         /* Slots */
         this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, this.cachedVehicle[currentVehicle].canBeColored());
-        boolean needsEngine = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) this.cachedVehicle[currentVehicle]).getEngineType() != EngineType.NONE;
+        boolean needsEngine = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && this.cachedVehicle[currentVehicle].getProperties().getEngineType() != EngineType.NONE;
         this.drawSlot(matrixStack, startX, startY, 206, 29, 80, 16, 1, !this.validEngine, needsEngine);
         boolean needsWheels = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) this.cachedVehicle[currentVehicle]).canChangeWheels();
         this.drawSlot(matrixStack, startX, startY, 226, 29, 80, 32, 2, needsWheels && this.workstation.getItem(2).isEmpty(), needsWheels);
 
-        this.drawCenteredString(matrixStack, this.font, this.cachedVehicle[currentVehicle].getName().getString(), startX + 88, startY + 6, Color.WHITE.getRGB());
+        drawCenteredString(matrixStack, this.font, this.cachedVehicle[currentVehicle].getName().getString(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         this.filteredMaterials = this.getMaterials();
         for(int i = 0; i < this.filteredMaterials.size(); i++)

@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
+import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
@@ -71,7 +71,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         int top = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, left, top, 0, 0, this.imageWidth, this.imageHeight);
 
-        if(this.vehicle.getEngineType() != EngineType.NONE)
+        if(this.vehicle.getProperties().getEngineType() != EngineType.NONE)
         {
             if(this.vehicleInventory.getItem(0).isEmpty())
             {
@@ -104,7 +104,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         minecraft.font.draw(matrixStack, this.title.getString(), 8, 6, 4210752);
         minecraft.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), 8, this.imageHeight - 96 + 2, 4210752);
 
-        RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
+        AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(wrapper != null)
         {
             int startX = (this.width - this.imageWidth) / 2;
@@ -147,7 +147,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             renderManager.setRenderShadow(false);
             renderManager.overrideCameraOrientation(quaternion);
             IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
-            wrapper.render(vehicle, matrixStack, renderTypeBuffer, Minecraft.getInstance().getFrameTime(), 15728880);
+            wrapper.setupTransformsAndRender(vehicle, matrixStack, renderTypeBuffer, Minecraft.getInstance().getFrameTime(), 15728880);
             renderTypeBuffer.endBatch();
             renderManager.setRenderShadow(true);
 
@@ -243,7 +243,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         {
             if(CommonUtils.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16, 18, 18))
             {
-                if(vehicle.getEngineType() != EngineType.NONE)
+                if(vehicle.getProperties().getEngineType() != EngineType.NONE)
                 {
                     this.renderTooltip(matrixStack, Lists.transform(Collections.singletonList(new StringTextComponent("Engine")), ITextComponent::getVisualOrderText), mouseX, mouseY); //TODO localise
                 }

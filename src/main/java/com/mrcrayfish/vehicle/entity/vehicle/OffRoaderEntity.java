@@ -32,12 +32,6 @@ public class OffRoaderEntity extends LandVehicleEntity
     }
 
     @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
-    }
-
-    @Override
     public float getMinEnginePitch()
     {
         return 0.8F;

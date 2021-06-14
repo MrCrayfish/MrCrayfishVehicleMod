@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.client.render.RenderVehicleWrapper;
+import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
@@ -89,10 +89,10 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                     matrixStack.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
                     matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(-passenger.yRot));
 
-                    RenderVehicleWrapper wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
+                    AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
                     if(wrapper != null)
                     {
-                        wrapper.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
+                        wrapper.setupTransformsAndRender(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
                     }
                 }
             }
