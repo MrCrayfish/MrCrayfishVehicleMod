@@ -121,6 +121,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
      */
     protected void renderPart(PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
+        if(position == null) return;
         matrixStack.pushPose();
         matrixStack.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
         matrixStack.translate(0.0, -0.5, 0.0);
@@ -135,6 +136,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
 
     protected void renderKey(PartPosition position, ItemStack stack, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
+        if(position == null) return;
         matrixStack.pushPose();
         matrixStack.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
         matrixStack.translate(0.0, -0.25, 0.0);
@@ -195,6 +197,11 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
     public void setCanTowTrailer(boolean canTowTrailer)
     {
         this.towTrailerProperty.setDefaultValue(canTowTrailer);
+    }
+
+    public void setColor(int color)
+    {
+        this.colorProperty.setDefaultValue(color);
     }
 
     protected static class PropertyFunction<V extends VehicleEntity, T>

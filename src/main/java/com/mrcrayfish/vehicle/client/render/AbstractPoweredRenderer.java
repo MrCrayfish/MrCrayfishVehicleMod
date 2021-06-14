@@ -3,6 +3,8 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.RayTraceFunction;
+import com.mrcrayfish.vehicle.common.ItemLookup;
+import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.WheelType;
@@ -21,6 +23,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
 {
     protected final PropertyFunction<T, Boolean> renderEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderEngine, true);
     protected final PropertyFunction<T, Boolean> hasEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::hasEngine, true);
+    protected final PropertyFunction<T, EngineTier> engineTierProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineTier, EngineTier.WOOD);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
     protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresFuel, true);
     protected final PropertyFunction<T, Integer> wheelColorProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelColor, -1);
@@ -37,27 +40,47 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         this.renderEngineProperty.setDefaultValue(renderEngine);
     }
 
-    public void setHasEngineProperty(boolean hasEngineProperty)
+    public void setHasEngine(boolean hasEngine)
     {
-        this.renderEngineProperty.setDefaultValue(hasEngineProperty);
+        this.renderEngineProperty.setDefaultValue(hasEngine);
     }
 
-    public void setRenderFuelPortProperty(boolean renderFuelPort)
+    public void setEngineTier(EngineTier engineTier)
+    {
+        this.engineTierProperty.setDefaultValue(engineTier);
+    }
+
+    public void setRenderFuelPort(boolean renderFuelPort)
     {
         this.renderFuelPortProperty.setDefaultValue(renderFuelPort);
     }
 
-    public void setRequiresFuelProperty(boolean requiresFuel)
+    public void setRequiresFuel(boolean requiresFuel)
     {
         this.requiresFuelProperty.setDefaultValue(requiresFuel);
+    }
+
+    public void setHasWheels(boolean hasWheels)
+    {
+        this.hasWheelsProperty.setDefaultValue(hasWheels);
+    }
+
+    public void setWheelType(WheelType type)
+    {
+        this.wheelTypeProperty.setDefaultValue(type);
+    }
+
+    public void setWheelColor(int wheelColor)
+    {
+        this.wheelColorProperty.setDefaultValue(wheelColor);
     }
 
     protected void renderEngine(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(this.renderEngineProperty.get(vehicle) && this.hasEngineProperty.get(vehicle))
         {
-            IBakedModel engineModel = RenderUtil.getEngineModel(vehicle);
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+            IBakedModel engineModel = RenderUtil.getModel(ItemLookup.getEngine(properties.getEngineType(), this.engineTierProperty.get(vehicle)));
             this.renderEngine(vehicle, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
         }
     }

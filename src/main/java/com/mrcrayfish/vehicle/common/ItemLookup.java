@@ -86,6 +86,11 @@ public class ItemLookup
         return ItemStack.EMPTY;
     }
 
+    public static ItemStack getEngine(EngineType type, EngineTier tier)
+    {
+        return new ItemStack(ENGINE_LOOKUP.getOrDefault(Pair.of(type, tier), Items.AIR));
+    }
+
     public static ItemStack getEngine(PoweredVehicleEntity entity)
     {
         if(entity.hasEngine())

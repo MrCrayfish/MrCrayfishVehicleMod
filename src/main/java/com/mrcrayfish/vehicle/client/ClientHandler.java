@@ -48,9 +48,8 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.function.Consumer;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -161,12 +160,13 @@ public class ClientHandler
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.JACK.get(), com.mrcrayfish.vehicle.client.render.JackRenderer::new);
     }
 
+    @SuppressWarnings("unchecked")
     private static <T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
     {
         VehicleProperties properties = VehicleProperties.getProperties(type);
         AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
         RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
-        VehicleRenderRegistry.registerRenderWrapper(type, renderer);
+        VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);
 
         EntityRayTracer.IRayTraceTransforms transforms = renderer.getRayTraceTransforms();
         if(transforms != null)

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
+import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -30,7 +31,7 @@ import java.util.Calendar;
 /**
  * Author: MrCrayfish
  */
-public class MopedRenderer extends AbstractLandVehicleRenderer<MopedEntity>
+public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
 {
     private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
     private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");

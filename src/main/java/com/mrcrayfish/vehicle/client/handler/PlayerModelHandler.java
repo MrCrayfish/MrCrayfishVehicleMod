@@ -44,11 +44,10 @@ public class PlayerModelHandler
         }
     }
 
-
     @SuppressWarnings("unchecked")
     private void applyPassengerTransformations(VehicleEntity vehicle, PlayerEntity player, MatrixStack matrixStack, IVertexBuilder builder, float partialTicks)
     {
-        AbstractVehicleRenderer<VehicleEntity> render = (AbstractVehicleRenderer<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
+        AbstractVehicleRenderer<VehicleEntity> render = (AbstractVehicleRenderer<VehicleEntity>) VehicleRenderRegistry.getRenderer((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(render != null)
         {
             render.applyPlayerRender(vehicle, player, partialTicks, matrixStack, builder);
@@ -128,7 +127,7 @@ public class PlayerModelHandler
             return;
 
         VehicleEntity vehicle = (VehicleEntity) ridingEntity;
-        AbstractVehicleRenderer<VehicleEntity> render = (AbstractVehicleRenderer<VehicleEntity>) VehicleRenderRegistry.getRender((EntityType<? extends VehicleEntity>) vehicle.getType());
+        AbstractVehicleRenderer<VehicleEntity> render = (AbstractVehicleRenderer<VehicleEntity>) VehicleRenderRegistry.getRenderer((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(render != null)
         {
             render.applyPlayerModel(vehicle, player, model, partialTicks);

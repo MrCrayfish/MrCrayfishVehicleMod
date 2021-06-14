@@ -35,6 +35,7 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
     }
 
     @Override
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public void render(JackTileEntity jack, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int i1)
     {
         if(!jack.hasLevel())
@@ -89,7 +90,7 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                     matrixStack.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
                     matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(-passenger.yRot));
 
-                    AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
+                    AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderer((EntityType<? extends VehicleEntity>) vehicle.getType());
                     if(wrapper != null)
                     {
                         wrapper.setupTransformsAndRender(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);

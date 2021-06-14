@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -86,7 +87,7 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
             matrixStack.pushPose();
             matrixStack.translate(0.0, -8 * 0.0625, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = RenderUtil.getWheelModel(vehicle);
+            IBakedModel wheelModel = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
             properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
             matrixStack.popPose();
         }

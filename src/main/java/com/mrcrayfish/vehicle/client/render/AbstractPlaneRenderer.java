@@ -67,42 +67,9 @@ public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTra
         //Render body
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
-        //Render the engine if the vehicle has explicitly stated it should
-        if(this.renderEngineProperty.get(vehicle) && this.hasEngineProperty.get(vehicle))
-        {
-            IBakedModel engineModel = RenderUtil.getEngineModel(vehicle);
-            this.renderEngine(vehicle, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
-        }
-
-        //Render the fuel port of the vehicle
-        if(vehicle != null && vehicle.shouldRenderFuelPort() && vehicle.requiresFuel())
-        {
-            PoweredVehicleEntity.FuelPortType fuelPortType = vehicle.getFuelPortType();
-            EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
-            if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == vehicle && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
-            {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
-                if(this.shouldRenderFuelLid())
-                {
-                    //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
-                }
-                vehicle.playFuelPortOpenSound();
-            }
-            else
-            {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
-                vehicle.playFuelPortCloseSound();
-            }
-        }
-
-        if(vehicle != null && vehicle.isKeyNeeded())
-        {
-            this.renderPart(properties.getKeyPortPosition(), this.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
-            if(!vehicle.getKeyStack().isEmpty())
-            {
-                this.renderKey(properties.getKeyPosition(), vehicle.getKeyStack(), RenderUtil.getModel(vehicle.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
-            }
-        }
+        this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderFuelPort(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderKeyPort(vehicle, matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }

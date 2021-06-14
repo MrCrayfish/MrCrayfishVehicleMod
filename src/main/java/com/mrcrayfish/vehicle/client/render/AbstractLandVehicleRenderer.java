@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -94,7 +95,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
             matrixStack.pushPose();
             matrixStack.translate(0.0, -8 * 0.0625, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = RenderUtil.getWheelModel(vehicle);
+            IBakedModel wheelModel = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
             properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
             matrixStack.popPose();
         }
@@ -107,8 +108,11 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         matrixStack.popPose();
     }
 
-    protected void renderSteeringDebug(MatrixStack matrixStack, VehicleProperties properties, T vehicle)
+    protected void renderSteeringDebug(MatrixStack matrixStack, VehicleProperties properties, @Nullable T vehicle)
     {
+        if(vehicle == null)
+            return;
+
         if(Config.CLIENT.renderSteeringDebug.get())
         {
             if(properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)

@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
+import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
@@ -27,7 +28,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class MiniBikeRenderer extends AbstractLandVehicleRenderer<MiniBikeEntity>
+public class MiniBikeRenderer extends AbstractMotorcycleRenderer<MiniBikeEntity>
 {
     public MiniBikeRenderer(VehicleProperties defaultProperties)
     {

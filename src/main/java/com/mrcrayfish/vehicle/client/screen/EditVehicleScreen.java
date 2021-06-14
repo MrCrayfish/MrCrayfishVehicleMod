@@ -104,7 +104,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         minecraft.font.draw(matrixStack, this.title.getString(), 8, 6, 4210752);
         minecraft.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), 8, this.imageHeight - 96 + 2, 4210752);
 
-        AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderWrapper((EntityType<? extends VehicleEntity>) vehicle.getType());
+        AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRendererFunction((EntityType<? extends VehicleEntity>) vehicle.getType());
         if(wrapper != null)
         {
             int startX = (this.width - this.imageWidth) / 2;

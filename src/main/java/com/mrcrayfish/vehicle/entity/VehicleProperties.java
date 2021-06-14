@@ -68,7 +68,8 @@ public class VehicleProperties
                 .addSeat(new Seat(new Vector3d(7, 6, -15)))
                 .addSeat(new Seat(new Vector3d(-7, 6, 3)))
                 .addSeat(new Seat(new Vector3d(7, 6, 3)))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setColoured(true));
         
         VehicleProperties.setProperties(ModEntities.ATV.get(), new VehicleProperties()
                 .setAxleOffset(-1.5F)
@@ -88,7 +89,9 @@ public class VehicleProperties
                 .setRearAxelVec(0, -10.5)
                 .addSeat(new Seat(new Vector3d(0, 5, -3), true))
                 .addSeat(new Seat(new Vector3d(0, 5.5, -12)))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
         
         VehicleProperties.setProperties(ModEntities.BUMPER_CAR.get(), new VehicleProperties()
                 .setAxleOffset(-1.5F)
@@ -105,7 +108,9 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 8.5)
                 .setRearAxelVec(0, -8.5)
                 .addSeat(new Seat(new Vector3d(0, 1, -6), true))
-                .setEngineType(EngineType.ELECTRIC_MOTOR));
+                .setEngineType(EngineType.ELECTRIC_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.DIRT_BIKE.get(), new VehicleProperties()
                 .setAxleOffset(0.0F)
@@ -122,7 +127,9 @@ public class VehicleProperties
                 .setRearAxelVec(0, -11.61)
                 .addSeat(new Seat(new Vector3d(0, 8, -2), true))
                 .addSeat(new Seat(new Vector3d(0, 9, -9)))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.DUNE_BUGGY.get(), new VehicleProperties()
                 .setAxleOffset(-2.3F)
@@ -138,7 +145,8 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 5.3)
                 .setRearAxelVec(0, -5.7)
                 .addSeat(new Seat(new Vector3d(0, 2, -3), true))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true));
 
         VehicleProperties.setProperties(ModEntities.GO_KART.get(), new VehicleProperties()
                 .setAxleOffset(-2.5F)
@@ -155,7 +163,9 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 13.5)
                 .setRearAxelVec(0, -8.5)
                 .addSeat(new Seat(new Vector3d(0, -2, -1), true))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.GOLF_CART.get(), new VehicleProperties()
                 .setAxleOffset(-0.5F)
@@ -175,7 +185,9 @@ public class VehicleProperties
                 .addSeat(new Seat(new Vector3d(-5.5, 5, -6)))
                 .addSeat(new Seat(new Vector3d(5.5, 5, -15), 180F))
                 .addSeat(new Seat(new Vector3d(-5.5, 5, -15), 180F))
-                .setEngineType(EngineType.ELECTRIC_MOTOR));
+                .setEngineType(EngineType.ELECTRIC_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.JET_SKI.get(), new VehicleProperties()
                 .setWheelOffset(2.75F)
@@ -186,7 +198,8 @@ public class VehicleProperties
                 .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F))
                 .addSeat(new Seat(new Vector3d(0, 5, 0), true))
                 .addSeat(new Seat(new Vector3d(0, 5, -7)))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.LAWN_MOWER.get(), new VehicleProperties()
                 .setAxleOffset(-2.0F)
@@ -205,7 +218,9 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 13.5)
                 .setRearAxelVec(0, -10.7)
                 .addSeat(new Seat(new Vector3d(0, 7, -9), true))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.MINI_BIKE.get(), new VehicleProperties()
                 .setAxleOffset(-1.7F)
@@ -220,7 +235,9 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 13)
                 .setRearAxelVec(0, -6.7)
                 .addSeat(new Seat(new Vector3d(0, 7, -2), true))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.MINI_BUS.get(), new VehicleProperties()
                 .setAxleOffset(1.0F)
@@ -242,7 +259,9 @@ public class VehicleProperties
                 .addSeat(new Seat(new Vector3d(4.5, 2, -3)))
                 .addSeat(new Seat(new Vector3d(-4.5, 2, -3)))
                 .addSeat(new Seat(new Vector3d(4.5, 2, -15)))
-                .setEngineType(EngineType.LARGE_MOTOR));
+                .setEngineType(EngineType.LARGE_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.MOPED.get(), new VehicleProperties()
                 .setAxleOffset(-1.0F)
@@ -257,7 +276,9 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 14.5)
                 .setRearAxelVec(0, -6.7)
                 .addSeat(new Seat(new Vector3d(0, 4, -2), true))
-                .setEngineType(EngineType.SMALL_MOTOR));
+                .setEngineType(EngineType.SMALL_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.OFF_ROADER.get(), new VehicleProperties()
                 .setAxleOffset(-1.0F)
@@ -277,7 +298,9 @@ public class VehicleProperties
                 .addSeat(new Seat(new Vector3d(-5, 4, -3)))
                 .addSeat(new Seat(new Vector3d(5, 11.5, -14.5)))
                 .addSeat(new Seat(new Vector3d(-5, 3.5, -18.9)))
-                .setEngineType(EngineType.LARGE_MOTOR));
+                .setEngineType(EngineType.LARGE_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.SHOPPING_CART.get(), new VehicleProperties()
                 .setAxleOffset(-1.0F)
@@ -293,7 +316,8 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 9.5)
                 .setRearAxelVec(0, -10.5)
                 .addSeat(new Seat(new Vector3d(0, 7, -4), true))
-                .setEngineType(EngineType.NONE));
+                .setEngineType(EngineType.NONE)
+                .setCanChangeWheels(true));
 
         VehicleProperties.setProperties(ModEntities.SMART_CAR.get(), new VehicleProperties()
                 .setAxleOffset(-1.7F)
@@ -310,7 +334,9 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 12)
                 .setRearAxelVec(0, -12)
                 .addSeat(new Seat(new Vector3d(0, 0.5, -2), true))
-                .setEngineType(EngineType.ELECTRIC_MOTOR));
+                .setEngineType(EngineType.ELECTRIC_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.SPEED_BOAT.get(), new VehicleProperties()
                 .setWheelOffset(2.5F)
@@ -320,7 +346,8 @@ public class VehicleProperties
                 .setTrailerOffset(new Vector3d(0.0, -0.09375, -0.75))
                 .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F))
                 .addSeat(new Seat(new Vector3d(0, 0, 0), true))
-                .setEngineType(EngineType.LARGE_MOTOR));
+                .setEngineType(EngineType.LARGE_MOTOR)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.SPORTS_PLANE.get(), new VehicleProperties()
                 .setBodyPosition(new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8))
@@ -328,7 +355,8 @@ public class VehicleProperties
                 .setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5))
                 .setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.85F))
                 .addSeat(new Seat(new Vector3d(0, 6, 0), true))
-                .setEngineType(EngineType.LARGE_MOTOR));
+                .setEngineType(EngineType.LARGE_MOTOR)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.TRACTOR.get(), new VehicleProperties()
                 .setAxleOffset(-3.0F)
@@ -347,30 +375,37 @@ public class VehicleProperties
                 .setFrontAxelVec(0, 14.0)
                 .setRearAxelVec(0, -14.5)
                 .addSeat(new Seat(new Vector3d(0, 9, -14), true))
-                .setEngineType(EngineType.LARGE_MOTOR));
+                .setEngineType(EngineType.LARGE_MOTOR)
+                .setCanChangeWheels(true)
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.FERTILIZER.get(), new VehicleProperties()
                 .setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
-                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)));
+                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F))
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.FLUID_TRAILER.get(),  new VehicleProperties()
                 .setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setHeldOffset(new Vector3d(0D, 3D, 0D))
-                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)));
+                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F))
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.SEEDER.get(), new VehicleProperties()
                 .setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
-                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)));
+                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F))
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.STORAGE_TRAILER.get(), new VehicleProperties()
                 .setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setTowBarPosition(new Vector3d(0.0, 0.0, -12.0))
-                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)));
+                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F))
+                .setColoured(true));
 
         VehicleProperties.setProperties(ModEntities.VEHICLE_TRAILER.get(), new VehicleProperties()
                 .setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setHeldOffset(new Vector3d(0D, 3D, 0D))
-                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)));
+                .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F))
+                .setColoured(true));
 
         if(ModList.get().isLoaded("cfm"))
         {
@@ -397,7 +432,8 @@ public class VehicleProperties
                     .setFrontAxelVec(0, 7.0)
                     .setRearAxelVec(0, -7.0)
                     .addSeat(new Seat(new Vector3d(0, 5, 0), true))
-                    .setEngineType(EngineType.SMALL_MOTOR));
+                    .setEngineType(EngineType.SMALL_MOTOR)
+                    .setCanChangeWheels(true));
 
             VehicleProperties.setProperties(ModEntities.SOFACOPTER.get(), new VehicleProperties()
                     .setBodyPosition(new PartPosition(0, 0, 0.0625, 0, 0, 0, 1))
@@ -414,6 +450,7 @@ public class VehicleProperties
     private Vector3d heldOffset = Vector3d.ZERO;
     private Vector3d towBarVec = Vector3d.ZERO;
     private Vector3d trailerOffset = Vector3d.ZERO;
+    private boolean canChangeWheels;
     private List<Wheel> wheels = new ArrayList<>();
     private PartPosition bodyPosition = PartPosition.DEFAULT;
     private PartPosition enginePosition;
@@ -426,6 +463,7 @@ public class VehicleProperties
     private Vector3d rearAxelVec = null;
     private List<Seat> seats = new ArrayList<>();
     private EngineType engineType = EngineType.NONE;
+    private boolean coloured;
 
     public VehicleProperties setAxleOffset(float axleOffset)
     {
@@ -647,5 +685,27 @@ public class VehicleProperties
     public EngineType getEngineType()
     {
         return this.engineType;
+    }
+
+    public boolean canChangeWheels()
+    {
+        return this.canChangeWheels;
+    }
+
+    public VehicleProperties setCanChangeWheels(boolean canChangeWheels)
+    {
+        this.canChangeWheels = canChangeWheels;
+        return this;
+    }
+
+    public boolean isColoured()
+    {
+        return this.coloured;
+    }
+
+    public VehicleProperties setColoured(boolean coloured)
+    {
+        this.coloured = coloured;
+        return this;
     }
 }

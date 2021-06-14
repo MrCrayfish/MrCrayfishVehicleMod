@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.render.AbstractPlaneRenderer;
 import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
@@ -22,7 +23,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class BathModel extends AbstractVehicleRenderer<BathEntity>
+public class BathModel extends AbstractPlaneRenderer<BathEntity>
 {
     public BathModel(VehicleProperties defaultProperties)
     {
