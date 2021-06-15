@@ -25,7 +25,7 @@ public final class VehicleRenderRegistry
 
     @Nullable
     @SuppressWarnings("unchecked")
-    public static AbstractVehicleRenderer<?> getRendererFunction(EntityType<? extends VehicleEntity> type)
+    public static AbstractVehicleRenderer<?> getRendererFunction(EntityType<?> type)
     {
         VehicleProperties properties = VehicleProperties.getProperties(type);
         Function<VehicleProperties, AbstractVehicleRenderer<?>> rendererFunction = (Function<VehicleProperties, AbstractVehicleRenderer<?>>) RENDERER_FUNCTION_MAP.get(type);
@@ -33,7 +33,7 @@ public final class VehicleRenderRegistry
     }
 
     @Nullable
-    public static AbstractVehicleRenderer<?> getRenderer(EntityType<? extends VehicleEntity> type)
+    public static AbstractVehicleRenderer<?> getRenderer(EntityType<?> type)
     {
         return RENDERER_MAP.get(type);
     }
