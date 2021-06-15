@@ -14,10 +14,13 @@ import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -33,9 +36,6 @@ import java.util.Calendar;
  */
 public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
 {
-    private static final ResourceLocation TEXTURE_CHRISTMAS = new ResourceLocation("textures/entity/chest/christmas.png");
-    private static final ResourceLocation TEXTURE_NORMAL = new ResourceLocation("textures/entity/chest/normal.png");
-
     private final ModelRenderer lid;
     private final ModelRenderer base;
     private final ModelRenderer lock;
@@ -118,11 +118,15 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         if(this.hasChestProperty.get(vehicle))
         {
             matrixStack.pushPose();
-            matrixStack.translate(0, 0.25, -0.65);
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
+            matrixStack.translate(0, 0, 6.5 * 0.0625F);
             matrixStack.scale(0.5F, 0.5F, 0.5F);
-            ItemStack chest = new ItemStack(Blocks.CHEST);
-            RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(chest));
+            matrixStack.translate(-0.5, 0, 0);
+            //ItemStack chest = new ItemStack(Blocks.CHEST);
+            //RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(chest));
+            RenderMaterial renderMaterial = this.isChristmas ? Atlases.CHEST_XMAS_LOCATION : Atlases.CHEST_LOCATION;
+            IVertexBuilder builder = renderMaterial.buffer(renderTypeBuffer, RenderType::entityCutout);
+            this.renderChest(matrixStack, builder, this.lid, this.lock, this.base, 0.0F, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
     }
@@ -164,13 +168,13 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         }
     }
 
-    private void renderChest(MatrixStack matrixStack, IVertexBuilder vertexBuilder, ModelRenderer lid, ModelRenderer lock, ModelRenderer base, float p_228871_6_, int lightTexture, int overlayTexture)
+    private void renderChest(MatrixStack matrixStack, IVertexBuilder builder, ModelRenderer lid, ModelRenderer lock, ModelRenderer base, float openProgress, int lightTexture, int overlayTexture)
     {
-        lid.xRot = -(p_228871_6_ * ((float) Math.PI / 2F));
+        lid.xRot = -(openProgress * ((float) Math.PI / 2F));
         lock.xRot = lid.xRot;
-        lid.render(matrixStack, vertexBuilder, lightTexture, overlayTexture);
-        lock.render(matrixStack, vertexBuilder, lightTexture, overlayTexture);
-        base.render(matrixStack, vertexBuilder, lightTexture, overlayTexture);
+        lid.render(matrixStack, builder, lightTexture, overlayTexture);
+        lock.render(matrixStack, builder, lightTexture, overlayTexture);
+        base.render(matrixStack, builder, lightTexture, overlayTexture);
     }
 
     @Nullable

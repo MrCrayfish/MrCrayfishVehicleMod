@@ -46,7 +46,7 @@ public class EntityVehicleRenderer<T extends VehicleEntity & EntityRayTracer.IEn
         wrapper.setupTransformsAndRender(entity, matrixStack, renderTypeBuffer, partialTicks, light);
         matrixStack.popPose();
 
-        EntityRayTracer.instance().renderRayTraceElements(entity, matrixStack, entityYaw);
+        EntityRayTracer.instance().renderRayTraceElements(entity, matrixStack, renderTypeBuffer, entityYaw);
     }
 
     private void setupBreakAnimation(VehicleEntity vehicle, MatrixStack matrixStack, float partialTicks)

@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
@@ -17,6 +18,8 @@ import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -34,6 +37,8 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.RayTraceResult.Type;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -51,6 +56,7 @@ import org.lwjgl.opengl.GL11;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1032,7 +1038,7 @@ public class EntityRayTracer
      * @param matrixStack the matrix stack of the entity
      * @param yaw entity's rotation yaw
      */
-    public <T extends VehicleEntity & IEntityRayTraceable> void renderRayTraceElements(T entity, MatrixStack matrixStack, float yaw)
+    public <T extends VehicleEntity & IEntityRayTraceable> void renderRayTraceElements(T entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float yaw)
     {
         if(Config.CLIENT.renderOutlines.get())
         {
@@ -1043,19 +1049,23 @@ public class EntityRayTracer
             RenderSystem.multMatrix(matrixStack.last().pose());
             RenderSystem.lineWidth(Math.max(2.0F, (float)Minecraft.getInstance().getWindow().getWidth() / 1920.0F * 2.0F));
             RenderSystem.disableTexture();
-            RenderSystem.disableLighting();
             RenderSystem.enableDepthTest();
 
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder buffer = tessellator.getBuilder();
             this.renderRayTraceTriangles(entity, tessellator, buffer);
-            entity.drawInteractionBoxes(tessellator, buffer);
 
-            RenderSystem.enableLighting();
+            RenderSystem.disableDepthTest();
             RenderSystem.enableTexture();
             RenderSystem.popMatrix();
 
             matrixStack.popPose();
+
+            // Draw interaction boxes
+            IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.lines());
+            entity.getApplicableInteractionBoxes().stream().filter(rayTracePart -> rayTracePart.partBox != null).forEach(rayTracePart -> {
+                renderShape(matrixStack, builder, VoxelShapes.create(rayTracePart.partBox), 0.0F, 1.0F, 0.0F, 1.0F);
+            });
         }
     }
 
@@ -1085,6 +1095,15 @@ public class EntityRayTracer
                 }
             }
         }
+    }
+
+    private static void renderShape(MatrixStack matrixStack, IVertexBuilder builder, VoxelShape shape, float red, float green, float blue, float alpha)
+    {
+        Matrix4f pose = matrixStack.last().pose();
+        shape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
+            builder.vertex(pose, (float) minX, (float) minY, (float) minZ).color(red, green, blue, alpha).endVertex();
+            builder.vertex(pose, (float) maxX, (float) maxY, (float) maxZ).color(red, green, blue, alpha).endVertex();
+        });
     }
 
     /**
@@ -1543,11 +1562,10 @@ public class EntityRayTracer
          * 
          * @return box list - if null, all box are assumed to be applicable
          */
-        @Nullable
         @OnlyIn(Dist.CLIENT)
         default List<RayTracePart> getApplicableInteractionBoxes()
         {
-            return null;
+            return Collections.emptyList();
         }
 
         /**
@@ -1561,15 +1579,6 @@ public class EntityRayTracer
         {
             return null;
         }
-
-        /**
-         * Opportunity to draw representations of applicable interaction boxes for the entity
-         * 
-         * @param tessellator rendered plane tiler
-         * @param buffer tessellator's vertex buffer
-         */
-        @OnlyIn(Dist.CLIENT)
-        default void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer) {}
     }
 
     public interface IRayTraceTransforms

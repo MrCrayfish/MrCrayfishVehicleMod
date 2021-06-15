@@ -216,7 +216,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public void updateWheels()
     {
         VehicleProperties properties = this.getProperties();
-        double wheelCircumference = 16.0;
+        double wheelCircumference = 24.0;
         double vehicleScale = properties.getBodyPosition().getScale();
         double speed = this.getSpeed();
 

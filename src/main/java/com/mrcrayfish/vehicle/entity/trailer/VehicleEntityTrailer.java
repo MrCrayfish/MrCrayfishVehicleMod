@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -88,14 +90,6 @@ public class VehicleEntityTrailer extends TrailerEntity
     public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return Collections.singletonList(CONNECTION_BOX);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
-    {
-        //TODO fix rendering boxes
-        //RenderGlobal.drawSelectionBoundingBox(CONNECTION_BOX.getBox(), 0, 1, 0, 0.4F);
     }
 
     @Override

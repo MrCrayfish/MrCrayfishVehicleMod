@@ -644,6 +644,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
     }
 
+    protected static AxisAlignedBB createBoxScaled(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
+    {
+        return new AxisAlignedBB(x1 * 0.0625 * scale, y1 * 0.0625 * scale, z1 * 0.0625 * scale, x2 * 0.0625 * scale, y2 * 0.0625 * scale, z2 * 0.0625 * scale);
+    }
+
     @Override
     public void writeSpawnData(PacketBuffer buffer)
     {

@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
@@ -263,14 +265,6 @@ public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
     public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
     {
         return ImmutableList.of(CONNECTION_BOX);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
-    {
-        //TODO figure this out
-        //RenderGlobal.drawSelectionBoundingBox(CONNECTION_BOX.getBox(), 0, 1, 0, 0.4F);
     }
 
     @Override
