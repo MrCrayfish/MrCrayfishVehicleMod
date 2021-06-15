@@ -1059,13 +1059,13 @@ public class EntityRayTracer
             RenderSystem.enableTexture();
             RenderSystem.popMatrix();
 
-            matrixStack.popPose();
-
             // Draw interaction boxes
             IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.lines());
             entity.getApplicableInteractionBoxes().stream().filter(rayTracePart -> rayTracePart.partBox != null).forEach(rayTracePart -> {
                 renderShape(matrixStack, builder, VoxelShapes.create(rayTracePart.partBox), 0.0F, 1.0F, 0.0F, 1.0F);
             });
+
+            matrixStack.popPose();
         }
     }
 
