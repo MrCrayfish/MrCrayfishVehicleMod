@@ -171,6 +171,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
             else if(partHit == TRAY_BOX && !this.hasChest())
             {
                 PacketHandler.instance.sendToServer(new MessageAttachChest(this.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
                 return true;
             }
         }
