@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -112,9 +113,15 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
                     matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
                 }
             }
-            matrixStack.scale(1.3F, 1.3F, 1.3F);
-            IBakedModel model = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
-            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.wheelColorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+
+            VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+            Wheel wheel = properties.getFirstFrontWheel();
+            if(wheel != null)
+            {
+                matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
+                IBakedModel model = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
+                RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.wheelColorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+            }
             matrixStack.popPose();
         }
 
