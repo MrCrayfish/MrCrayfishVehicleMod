@@ -270,7 +270,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     {
         if(this.inventory != null)
         {
-            Vector3d target = new Vector3d(0, 0.75, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+            Vector3d target = this.getChestPosition();
             InventoryUtil.dropInventoryItems(level, target.x, target.y, target.z, this.inventory);
             this.inventory = null;
             this.setChest(false);
