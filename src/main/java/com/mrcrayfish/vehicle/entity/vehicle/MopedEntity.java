@@ -1,34 +1,30 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTracePart;
 import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.EntityRayTracer.TriangleRayTraceList;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachChest;
 import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.DoubleSidedInventory;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -41,7 +37,7 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -61,6 +57,7 @@ import java.util.Map;
 public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> CHEST_OPEN = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
     private static final RayTracePart CHEST_BOX = new RayTracePart(createBoxScaled(-3.5, 10.5, -7, 3.5, 17.5, -14, 1.2));
     private static final RayTracePart TRAY_BOX = new RayTracePart(createBoxScaled(-4, 9.5, -6.5, 4, 10.5, -14.5, 1.2));
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () ->
@@ -72,6 +69,11 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     });
 
     private StorageInventory inventory;
+
+    @OnlyIn(Dist.CLIENT)
+    private float openProgress;
+    @OnlyIn(Dist.CLIENT)
+    private float prevOpenProgress;
 
     public MopedEntity(EntityType<? extends MopedEntity> type, World worldIn)
     {
@@ -88,6 +90,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     {
         super.defineSynchedData();
         this.entityData.define(CHEST, false);
+        this.entityData.define(CHEST_OPEN, false);
     }
 
     @Override
@@ -295,7 +298,80 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     @Override
     public void startOpen(PlayerEntity player)
     {
-        Vector3d target = new Vector3d(0, 0.75, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+        Vector3d target = this.getChestPosition();
         this.level.playSound(null, target.x, target.y, target.z, SoundEvents.CHEST_OPEN, this.getSoundSource(), 0.5F, 0.9F);
+    }
+
+    @Override
+    public void tick()
+    {
+        super.tick();
+
+        if(this.hasChest())
+        {
+            // Updates the chest open state
+            if(!this.level.isClientSide())
+            {
+                this.entityData.set(CHEST_OPEN, this.getPlayerCountInChest() > 0);
+            }
+            else
+            {
+                // Updates the open progress for the animation
+                this.prevOpenProgress = this.openProgress;
+                if(this.entityData.get(CHEST_OPEN))
+                {
+                    this.openProgress = Math.min(1.0F, this.openProgress + 0.1F);
+                }
+                else
+                {
+                    float lastOpenProgress = this.openProgress;
+                    this.openProgress = Math.max(0.0F, this.openProgress - 0.1F);
+                    if(this.openProgress < 0.5F && lastOpenProgress >= 0.5F)
+                    {
+                        Vector3d target = this.getChestPosition();
+                        this.level.playLocalSound(target.x, target.y, target.z, SoundEvents.CHEST_CLOSE, this.getSoundSource(), 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F, false);
+                    }
+                }
+            }
+        }
+    }
+
+    protected Vector3d getChestPosition()
+    {
+        return new Vector3d(0, 0.75, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+    }
+
+    protected int getPlayerCountInChest()
+    {
+        if(!this.hasChest())
+        {
+            return 0;
+        }
+
+        int count = 0;
+        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(5.0F)))
+        {
+            if(player.containerMenu instanceof StorageContainer)
+            {
+                IInventory container = ((StorageContainer) player.containerMenu).getStorageInventory();
+                if(container == this)
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getOpenProgress()
+    {
+        return this.openProgress;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getPrevOpenProgress()
+    {
+        return this.prevOpenProgress;
     }
 }

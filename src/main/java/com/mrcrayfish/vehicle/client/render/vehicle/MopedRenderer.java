@@ -42,6 +42,8 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     public final boolean isChristmas;
 
     protected final PropertyFunction<MopedEntity, Boolean> hasChestProperty = new PropertyFunction<>(MopedEntity::hasChest, false);
+    protected final PropertyFunction<MopedEntity, Float> openProgressProperty = new PropertyFunction<>(MopedEntity::getOpenProgress, 0F);
+    protected final PropertyFunction<MopedEntity, Float> prevOpenProgressProperty = new PropertyFunction<>(MopedEntity::getPrevOpenProgress, 0F);
 
     public MopedRenderer(VehicleProperties properties)
     {
@@ -122,11 +124,12 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
             matrixStack.translate(0, 0, 6.5 * 0.0625F);
             matrixStack.scale(0.5F, 0.5F, 0.5F);
             matrixStack.translate(-0.5, 0, 0);
-            //ItemStack chest = new ItemStack(Blocks.CHEST);
-            //RenderUtil.renderModel(chest, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, RenderUtil.getModel(chest));
+            float progress = MathHelper.lerp(partialTicks, this.prevOpenProgressProperty.get(vehicle), this.openProgressProperty.get(vehicle));
+            progress = 1.0F - progress;
+            progress = 1.0F - progress * progress * progress;
             RenderMaterial renderMaterial = this.isChristmas ? Atlases.CHEST_XMAS_LOCATION : Atlases.CHEST_LOCATION;
             IVertexBuilder builder = renderMaterial.buffer(renderTypeBuffer, RenderType::entityCutout);
-            this.renderChest(matrixStack, builder, this.lid, this.lock, this.base, 0.0F, light, OverlayTexture.NO_OVERLAY);
+            this.renderChest(matrixStack, builder, this.lid, this.lock, this.base, progress, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
     }
