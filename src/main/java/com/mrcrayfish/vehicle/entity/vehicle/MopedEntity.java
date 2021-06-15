@@ -20,11 +20,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.DoubleSidedInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -36,8 +34,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -338,7 +334,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 
     protected Vector3d getChestPosition()
     {
-        return new Vector3d(0, 0.75, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+        return new Vector3d(0, 1.0, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
     }
 
     protected int getPlayerCountInChest()
