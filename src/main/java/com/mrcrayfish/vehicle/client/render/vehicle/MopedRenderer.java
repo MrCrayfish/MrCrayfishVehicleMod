@@ -58,7 +58,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         this.lid = new ModelRenderer(64, 64, 0, 0);
         this.lid.addBox(1.0F, 0.0F, 0.0F, 14.0F, 5.0F, 14.0F, 0.0F);
         this.lid.y = 9.0F;
-        this.lid.z = 1.0F;
+        this.lid.z = 1.0f;
         this.lock = new ModelRenderer(64, 64, 0, 0);
         this.lock.addBox(7.0F, -1.0F, 15.0F, 2.0F, 4.0F, 1.0F, 0.0F);
         this.lock.y = 8.0F;
@@ -71,31 +71,28 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
 
         matrixStack.pushPose();
 
-        matrixStack.translate(0.0, -0.0625, 11.5 * 0.0625);
+        matrixStack.translate(0.0, 0.0, 11.5 * 0.0625);
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-22.5F));
         if(vehicle != null)
         {
             float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
-            matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation / 2));
+            matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
         }
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -11.5 * 0.0625);
 
         //Render handles bars
         matrixStack.pushPose();
-        matrixStack.translate(0, 0.835, 0.525);
-        matrixStack.scale(0.8F, 0.8F, 0.8F);
+        matrixStack.translate(0, (12.2739 - 8) * 0.0625, (16.4071 - 8) * 0.0625);
         this.renderDamagedPart(vehicle, SpecialModels.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
 
         //Render front bar and mud guard
         matrixStack.pushPose();
         {
-            matrixStack.translate(0, -0.12, 0.785);
-            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-22.5F));
-            matrixStack.scale(0.9F, 0.9F, 0.9F);
+            matrixStack.translate(0, (4.1044 - 8) * 0.0625, (19.8181 - 8) * 0.0625);
             this.renderDamagedPart(vehicle, SpecialModels.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.popPose();
@@ -104,20 +101,21 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         if(this.hasWheelsProperty.get(vehicle))
         {
             matrixStack.pushPose();
-            matrixStack.translate(0, -0.4, 14.5 * 0.0625);
-            if(vehicle != null)
-            {
-                float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
-                if(vehicle.isMoving())
-                {
-                    matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
-                }
-            }
-
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
             Wheel wheel = properties.getFirstFrontWheel();
             if(wheel != null)
             {
+                matrixStack.translate(0.0, -8 * 0.0625, 0.0);
+                matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
+                matrixStack.translate(wheel.getOffsetX() * 0.0625, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+                if(vehicle != null)
+                {
+                    float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
+                    if(vehicle.isMoving())
+                    {
+                        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
+                    }
+                }
                 matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
                 IBakedModel model = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
                 RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.wheelColorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
@@ -147,17 +145,19 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     @Override
     public void applyPlayerModel(MopedEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
-        model.rightArm.xRot = (float) Math.toRadians(-75F - turnRotation);
-        model.rightArm.yRot = (float) Math.toRadians(7F);
-        //model.bipedRightArm.offsetZ -= 0.05 * wheelAngleNormal; //TODO figure out offsets
-        model.leftArm.xRot = (float) Math.toRadians(-75F + turnRotation);
-        model.leftArm.yRot = (float) Math.toRadians(-7F);
-        //model.bipedLeftArm.offsetZ -= 0.05 * -wheelAngleNormal;
-        model.rightLeg.xRot = (float) Math.toRadians(-55F);
-        model.leftLeg.xRot = (float) Math.toRadians(-55F);
+        model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
+        model.rightArm.yRot = (float) Math.toRadians(5F);
+        model.rightArm.z -= 1;
+        model.rightArm.z -= wheelAngleNormal * 2;
+        model.leftArm.xRot = (float) Math.toRadians(-65F + turnRotation);
+        model.leftArm.yRot = (float) Math.toRadians(-5F);
+        model.leftArm.z -= 1;
+        model.leftArm.z += wheelAngleNormal * 2;
+        model.rightLeg.xRot = (float) Math.toRadians(-62F);
+        model.leftLeg.xRot = (float) Math.toRadians(-62F);
     }
 
     @Override
