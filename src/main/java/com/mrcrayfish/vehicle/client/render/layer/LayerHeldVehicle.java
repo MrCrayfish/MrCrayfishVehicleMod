@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.render.layer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.handler.HeldVehicleHandler;
+import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.CachedVehicle;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
@@ -23,6 +24,7 @@ import java.util.Optional;
  */
 public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>
 {
+    private VehicleEntity vehicle;
     private CachedVehicle cachedVehicle;
     private float width = -1.0F;
 
@@ -30,8 +32,9 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
     {
         super(renderer);
     }
-
+    
     @Override
+    @SuppressWarnings("unchecked")
     public void render(MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, AbstractClientPlayerEntity player, float v, float v1, float partialTicks, float v3, float v4, float v5)
     {
         CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
@@ -47,6 +50,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                     if(entity instanceof VehicleEntity)
                     {
                         entity.load(tagCompound);
+                        this.vehicle = (VehicleEntity) entity;
                         this.width = entity.getBbWidth();
                         this.cachedVehicle = new CachedVehicle(entityType);
                     }
@@ -66,7 +70,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                 matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(180F));
                 matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(-90F));
                 matrixStack.translate(0F, player.isCrouching() ? 0.3125F : 0.5625F, 0F);
-                this.cachedVehicle.getRenderer().setupTransformsAndRender(null, matrixStack, renderTypeBuffer, partialTicks, light);
+                ((AbstractVehicleRenderer<VehicleEntity>)this.cachedVehicle.getRenderer()).setupTransformsAndRender(this.vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
                 matrixStack.popPose();
             }
         }
