@@ -268,7 +268,7 @@ public class VehicleProperties
                 .setWheelOffset(3.2F)
                 .setBodyPosition(new PartPosition(1.2))
                 .setFuelPortPosition(new PartPosition(-2.5, 4.2, -1.5, 0, -90, 0, 0.2))
-                .setHeldOffset(new Vector3d(7.0, 2.0, 0.0))
+                .setHeldOffset(new Vector3d(4.5, 2.0, 0.0))
                 .setTrailerOffset(new Vector3d(0.0, -0.03125, -0.65))
                 .setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F))
                 .addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 0.8F, true, true)
