@@ -24,7 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModItems
 {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
+    public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Reference.MOD_ID);
 
     public static final RegistryObject<Item> PANEL = register("panel", new Item(new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> STANDARD_WHEEL = register("standard_wheel", new WheelItem(WheelType.STANDARD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
@@ -61,6 +61,6 @@ public class ModItems
 
     private static <T extends Item> RegistryObject<T> register(String id, T item)
     {
-        return ModItems.ITEMS.register(id,() -> item);
+        return ModItems.REGISTER.register(id,() -> item);
     }
 }

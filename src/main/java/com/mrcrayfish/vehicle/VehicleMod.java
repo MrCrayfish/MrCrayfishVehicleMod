@@ -39,14 +39,14 @@ public class VehicleMod
     public VehicleMod()
     {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModBlocks.BLOCKS.register(eventBus);
-        ModItems.ITEMS.register(eventBus);
-        ModEntities.ENTITY_TYPES.register(eventBus);
-        ModTileEntities.TILE_ENTITY_TYPES.register(eventBus);
-        ModContainers.CONTAINER_TYPES.register(eventBus);
-        ModSounds.SOUNDS.register(eventBus);
-        ModRecipeSerializers.RECIPE_SERIALIZERS.register(eventBus);
-        ModFluids.FLUIDS.register(eventBus);
+        ModBlocks.REGISTER.register(eventBus);
+        ModItems.REGISTER.register(eventBus);
+        ModEntities.REGISTER.register(eventBus);
+        ModTileEntities.REGISTER.register(eventBus);
+        ModContainers.REGISTER.register(eventBus);
+        ModSounds.REGISTER.register(eventBus);
+        ModRecipeSerializers.REGISTER.register(eventBus);
+        ModFluids.REGISTER.register(eventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
@@ -56,9 +56,9 @@ public class VehicleMod
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
+        VehicleProperties.loadProperties();
         PacketHandler.register();
         HeldVehicleDataHandler.register();
-        VehicleProperties.register();
         ItemLookup.init();
         ModDataKeys.register();
         ModLootFunctions.init();

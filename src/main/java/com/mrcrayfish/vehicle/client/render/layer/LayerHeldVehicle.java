@@ -32,7 +32,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
     {
         super(renderer);
     }
-    
+
     @Override
     @SuppressWarnings("unchecked")
     public void render(MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, AbstractClientPlayerEntity player, float v, float v1, float partialTicks, float v3, float v4, float v5)

@@ -23,7 +23,7 @@ import net.minecraft.block.AbstractBlock;
  */
 public class ModBlocks
 {
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
+    public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, Reference.MOD_ID);
 
     public static final RegistryObject<Block> TRAFFIC_CONE = register("traffic_cone", new TrafficConeBlock(), ItemTrafficCone::new);
     public static final RegistryObject<Block> FLUID_EXTRACTOR = register("fluid_extractor", new FluidExtractorBlock());
@@ -52,8 +52,8 @@ public class ModBlocks
     {
         if(supplier != null)
         {
-            ModItems.ITEMS.register(id, () -> supplier.apply(block));
+            ModItems.REGISTER.register(id, () -> supplier.apply(block));
         }
-        return ModBlocks.BLOCKS.register(id, () -> block);
+        return ModBlocks.REGISTER.register(id, () -> block);
     }
 }

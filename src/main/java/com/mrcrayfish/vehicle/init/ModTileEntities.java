@@ -16,7 +16,7 @@ import java.util.function.Supplier;
  */
 public class ModTileEntities
 {
-    public static final DeferredRegister<TileEntityType<?>> TILE_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
+    public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<TileEntityType<FluidExtractorTileEntity>> FLUID_EXTRACTOR = register("fluid_extractor", FluidExtractorTileEntity::new, () -> new Block[]{ModBlocks.FLUID_EXTRACTOR.get()});
     public static final RegistryObject<TileEntityType<FluidPipeTileEntity>> FLUID_PIPE = register("fluid_pipe", FluidPipeTileEntity::new, () -> new Block[]{ModBlocks.FLUID_PIPE.get()});
@@ -33,6 +33,6 @@ public class ModTileEntities
 
     private static <T extends TileEntity> RegistryObject<TileEntityType<T>> register(String id, Supplier<T> factoryIn, Supplier<Block[]> validBlocksSupplier)
     {
-        return TILE_ENTITY_TYPES.register(id, () -> TileEntityType.Builder.of(factoryIn, validBlocksSupplier.get()).build(null));
+        return REGISTER.register(id, () -> TileEntityType.Builder.of(factoryIn, validBlocksSupplier.get()).build(null));
     }
 }

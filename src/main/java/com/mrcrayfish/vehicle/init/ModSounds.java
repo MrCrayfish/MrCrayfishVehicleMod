@@ -12,7 +12,7 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModSounds
 {
-    public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
+    public static final DeferredRegister<SoundEvent> REGISTER = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Reference.MOD_ID);
 
     //TODO update these in 1.16 update
     public static final RegistryObject<SoundEvent> HORN_MONO = register("horn_mono");
@@ -57,6 +57,6 @@ public class ModSounds
 
     private static RegistryObject<SoundEvent> register(String id)
     {
-        return ModSounds.SOUNDS.register(id, () -> new SoundEvent(new ResourceLocation(Reference.MOD_ID, id)));
+        return ModSounds.REGISTER.register(id, () -> new SoundEvent(new ResourceLocation(Reference.MOD_ID, id)));
     }
 }

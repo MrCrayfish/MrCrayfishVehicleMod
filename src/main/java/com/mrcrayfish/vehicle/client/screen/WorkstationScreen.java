@@ -9,7 +9,6 @@ import com.mrcrayfish.vehicle.client.render.AbstractPoweredRenderer;
 import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.CachedVehicle;
-import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
@@ -224,7 +223,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
     private void updateVehicleColor()
     {
-        if(cachedVehicle.getProperties().isColoured())
+        if(cachedVehicle.getProperties().isColored())
         {
             AbstractVehicleRenderer<?> renderer = cachedVehicle.getRenderer();
             ItemStack dyeStack = this.workstation.getItem(0);
@@ -304,7 +303,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         }
 
         VehicleProperties properties = cachedVehicle.getProperties();
-        if(properties.isColoured())
+        if(properties.isColored())
         {
             //TODO optional should have AQUA text formatting
             this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional"), new TranslationTextComponent("vehicle.tooltip.paint_color")), startX, startY, 186, 29, mouseX, mouseY, 0);
@@ -355,7 +354,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         /* Slots */
         VehicleProperties properties = cachedVehicle.getProperties();
-        this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, properties.isColoured());
+        this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, properties.isColored());
         boolean needsEngine = properties.getEngineType() != EngineType.NONE;
         this.drawSlot(matrixStack, startX, startY, 206, 29, 80, 16, 1, !this.validEngine, needsEngine);
         boolean needsWheels = properties.canChangeWheels();

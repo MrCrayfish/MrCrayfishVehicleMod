@@ -17,11 +17,11 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModRecipeSerializers
 {
-    public static final DeferredRegister<IRecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
+    public static final DeferredRegister<IRecipeSerializer<?>> REGISTER = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Reference.MOD_ID);
 
-    public static final RegistryObject<SpecialRecipeSerializer<RecipeColorSprayCan>> COLOR_SPRAY_CAN = RECIPE_SERIALIZERS.register("color_spray_can", () -> new SpecialRecipeSerializer<>(RecipeColorSprayCan::new));
-    public static final RegistryObject<SpecialRecipeSerializer<RecipeRefillSprayCan>> REFILL_SPRAY_CAN = RECIPE_SERIALIZERS.register("refill_spray_can", () -> new SpecialRecipeSerializer<>(RecipeRefillSprayCan::new));
-    public static final RegistryObject<FluidExtractorRecipeSerializer> FLUID_EXTRACTOR = RECIPE_SERIALIZERS.register("fluid_extractor", FluidExtractorRecipeSerializer::new);
-    public static final RegistryObject<FluidMixerRecipeSerializer> FLUID_MIXER = RECIPE_SERIALIZERS.register("fluid_mixer", FluidMixerRecipeSerializer::new);
-    public static final RegistryObject<VehicleRecipeSerializer> CRAFTING = RECIPE_SERIALIZERS.register("crafting", VehicleRecipeSerializer::new);
+    public static final RegistryObject<SpecialRecipeSerializer<RecipeColorSprayCan>> COLOR_SPRAY_CAN = REGISTER.register("color_spray_can", () -> new SpecialRecipeSerializer<>(RecipeColorSprayCan::new));
+    public static final RegistryObject<SpecialRecipeSerializer<RecipeRefillSprayCan>> REFILL_SPRAY_CAN = REGISTER.register("refill_spray_can", () -> new SpecialRecipeSerializer<>(RecipeRefillSprayCan::new));
+    public static final RegistryObject<FluidExtractorRecipeSerializer> FLUID_EXTRACTOR = REGISTER.register("fluid_extractor", FluidExtractorRecipeSerializer::new);
+    public static final RegistryObject<FluidMixerRecipeSerializer> FLUID_MIXER = REGISTER.register("fluid_mixer", FluidMixerRecipeSerializer::new);
+    public static final RegistryObject<VehicleRecipeSerializer> CRAFTING = REGISTER.register("crafting", VehicleRecipeSerializer::new);
 }
