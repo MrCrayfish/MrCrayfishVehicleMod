@@ -2,17 +2,27 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.KeyBinds;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.commons.io.FileUtils;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -33,6 +43,7 @@ import java.util.stream.Stream;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class VehicleProperties
 {
     private static final DecimalFormat FORMAT = new DecimalFormat("#.###");
@@ -386,6 +397,29 @@ public class VehicleProperties
         serialize(new ResourceLocation("vehicle", "bath"), new VehicleProperties().setBodyPosition(new PartPosition(1.0)).setHeldOffset(new Vector3d(4.0, 3.5, 0.0)).setTrailerOffset(new Vector3d(0.0, 0.0, -0.4375)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F)).addSeat(new Seat(new Vector3d(0, 0, 0), true)).setEngineType(EngineType.NONE));
         serialize(new ResourceLocation("vehicle", "sofa_car"), new VehicleProperties().setAxleOffset(-1.5F).setWheelOffset(5.0F).setBodyPosition(new PartPosition(0, -0.0625, 0, 0, 0, 0, 1.0)).setFuelPortPosition(new PartPosition(0, 2, 8, 0, 0, 0, 0.5)).setHeldOffset(new Vector3d(2.0, 2.0, 0.0)).setTrailerOffset(new Vector3d(0.0, 0.0, -0.25)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 0.0625F, 7.0F, 1.75F, false, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0625F, 7.0F, 1.75F, false, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 0.0625F, -7.0F, 1.75F, true, true).setFrontAxelVec(0, 7.0).setRearAxelVec(0, -7.0).addSeat(new Seat(new Vector3d(0, 5, 0), true)).setEngineType(EngineType.SMALL_MOTOR).setCanChangeWheels(true));
         serialize(new ResourceLocation("vehicle", "sofacopter"), new VehicleProperties().setBodyPosition(new PartPosition(0, 0, 0.0625, 0, 0, 0, 1)).setFuelPortPosition(new PartPosition(0.0, 1.5, 8.0, 0, 0, 0, 0.45)).setKeyPortPosition(new PartPosition(-9.25, 8, 5, 0, 0, 0, 0.8)).setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F)).addSeat(new Seat(new Vector3d(0, 0, 0), true)).setEngineType(EngineType.SMALL_MOTOR));
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void onKeyInput(InputEvent.KeyInputEvent event)
+    {
+        if(FMLLoader.isProduction())
+            return;
+
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.overlay != null)
+            return;
+
+        if(event.getAction() != GLFW.GLFW_PRESS)
+            return;
+
+        if(event.getKey() == GLFW.GLFW_KEY_RIGHT_BRACKET)
+        {
+            for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicles())
+            {
+                ID_TO_PROPERTIES.put(entityType.getRegistryName(), loadProperties(entityType.getRegistryName()));
+            }
+        }
     }
 
     public static class Serializer implements JsonDeserializer<VehicleProperties>, JsonSerializer<VehicleProperties>
