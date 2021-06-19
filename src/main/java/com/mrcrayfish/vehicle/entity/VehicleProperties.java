@@ -476,8 +476,8 @@ public class VehicleProperties
             JsonObject axles = JSONUtils.getAsJsonObject(object, "axles", new JsonObject());
             properties.setAxleOffset(JSONUtils.getAsFloat(axles, "offsetToGround", 0F));
             properties.setWheelOffset(JSONUtils.getAsFloat(axles, "wheelOffset", 0F));
-            properties.setFrontAxelVec(0, JSONUtils.getAsFloat(axles, "lengthToFront", 0F));
-            properties.setRearAxelVec(0, JSONUtils.getAsFloat(axles, "lengthToRear", 0F));
+            if(axles.has("lengthToFront")) properties.setFrontAxelVec(0, JSONUtils.getAsFloat(axles, "lengthToFront", 0F));
+            if(axles.has("lengthToRear")) properties.setRearAxelVec(0, JSONUtils.getAsFloat(axles, "lengthToRear", 0F));
 
             JsonObject display = JSONUtils.getAsJsonObject(object, "display", new JsonObject());
             properties.setHeldOffset(this.getAsVector3d(display, "held", Vector3d.ZERO));
