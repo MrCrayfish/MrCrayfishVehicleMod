@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.tileentity;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.GasPumpBlock;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
@@ -16,14 +16,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
@@ -32,7 +30,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector4f;
-import org.lwjgl.opengl.GL11;
 
 /**
  * Author: MrCrayfish
@@ -142,19 +139,9 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                     red = Math.max(red, gray);
                 }
 
-                RenderSystem.pushMatrix();
-                RenderSystem.disableTexture();
-                RenderSystem.enableDepthTest();
-                RenderSystem.multMatrix(matrixStack.last().pose());
+                matrixStack.pushPose();
 
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder buffer = tessellator.getBuilder();
-                buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-
-                /*buffer.pos(0, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                buffer.pos(1, 0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                buffer.pos(1, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();
-                buffer.pos(0, 1, 0).color(1.0F, 1.0F, 1.0F, 1.0F).endVertex();*/
+                IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.leash());
 
                 int segments = Config.CLIENT.hoseSegments.get();
                 for(int i = 0; i < spline.getSize() - 1; i++)
@@ -198,45 +185,43 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                         Matrix4f parent = matrixStack.last().pose();
 
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, -hoseDiameter / 2, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter / 2, hoseDiameter / 2, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(0, -hoseDiameter, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
 
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, -hoseDiameter, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
 
                         EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(0, hoseDiameter, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
 
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(-hoseDiameter, 0, 0).transform(startTemp);
-                        this.createVertex(buffer, parent, startTemp, red, gray);
+                        this.createVertex(builder, parent, startTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(0, 0, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                         EntityRayTracer.MatrixTransformation.createTranslation(hoseDiameter, 0, 0).transform(endTemp);
-                        this.createVertex(buffer, parent, endTemp, red, gray);
+                        this.createVertex(builder, parent, endTemp, red, gray, light);
                     }
                 }
-                tessellator.end();
-                RenderSystem.enableTexture();
-                RenderSystem.disableDepthTest();
-                RenderSystem.popMatrix();
+
+                matrixStack.popPose();
             }
 
             if(gasPump.getFuelingEntity() == null)
@@ -293,10 +278,10 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
         matrixStack.popPose();
     }
 
-    private void createVertex(BufferBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray)
+    private void createVertex(IVertexBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray, int light)
     {
         Vector4f vec = new Vector4f(0.0F, 0.0F, 0.0F, 1.0F);
         vec.transform(pos); //TODO test
-        buffer.vertex(vec.x(), vec.y(), vec.z()).color(red, gray, gray, 1.0F).endVertex();
+        buffer.vertex(parent, vec.x(), vec.y(), vec.z()).color(red, gray, gray, 1.0F).uv2(light).endVertex();
     }
 }
