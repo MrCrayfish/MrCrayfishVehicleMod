@@ -12,6 +12,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -33,38 +34,25 @@ import net.minecraft.block.AbstractBlock;
  */
 public class WorkstationBlock extends RotatedObjectBlock
 {
-    private static final Map<BlockState, VoxelShape> SHAPES = new HashMap<>();
+    private static final VoxelShape SHAPE = Util.make(() -> {
+        List<VoxelShape> shapes = new ArrayList<>();
+        shapes.add(Block.box(0, 1, 0, 16, 16, 16));
+        shapes.add(Block.box(1, 0, 1, 3, 1, 3));
+        shapes.add(Block.box(1, 0, 13, 3, 1, 15));
+        shapes.add(Block.box(13, 0, 1, 15, 1, 3));
+        shapes.add(Block.box(13, 0, 13, 15, 1, 15));
+        return VoxelShapeHelper.combineAll(shapes);
+    });
 
     public WorkstationBlock()
     {
         super(AbstractBlock.Properties.of(Material.METAL).strength(1.0F));
     }
 
-    private VoxelShape getShape(BlockState state)
-    {
-        if(SHAPES.containsKey(state))
-        {
-            return SHAPES.get(state);
-        }
-        Direction direction = state.getValue(DIRECTION);
-        List<VoxelShape> shapes = new ArrayList<>();
-        shapes.add(Block.box(0, 1, 0, 16, 16, 16));
-        shapes.add(VoxelShapeHelper.getRotatedShapes(VoxelShapeHelper.rotate(Block.box(0, 16, 0, 16, 17.5, 2), Direction.SOUTH))[direction.get2DDataValue()]);
-        VoxelShape shape = VoxelShapeHelper.combineAll(shapes);
-        SHAPES.put(state, shape);
-        return shape;
-    }
-
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader reader, BlockPos pos, ISelectionContext context)
     {
-        return this.getShape(state);
-    }
-
-    @Override
-    public VoxelShape getOcclusionShape(BlockState state, IBlockReader reader, BlockPos pos)
-    {
-        return this.getShape(state);
+        return SHAPE;
     }
 
     @Override

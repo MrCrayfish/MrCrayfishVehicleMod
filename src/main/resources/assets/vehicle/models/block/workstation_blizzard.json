@@ -3,7 +3,8 @@
 	"texture_size": [64, 64],
 	"textures": {
 		"particle": "vehicle:block/workstation",
-		"workstation": "vehicle:model/workstation"
+		"workstation": "vehicle:model/workstation",
+		"blizzard": "vehicle:block/blizzard"
 	},
 	"elements": [
 		{
@@ -101,16 +102,24 @@
 			}
 		},
 		{
-			"from": [3, 16, 3],
+			"from": [3, 16, 4],
 			"to": [9, 17, 11],
 			"rotation": {"angle": 22.5, "axis": "y", "origin": [6, 16.5, 7]},
 			"faces": {
 				"north": {"uv": [8.75, 5.75, 10.25, 6], "texture": "#workstation"},
-				"east": {"uv": [10.5, 3.75, 10.75, 5.75], "rotation": 90, "texture": "#workstation"},
+				"east": {"uv": [10.5, 3.75, 10.75, 5.5], "rotation": 90, "texture": "#workstation"},
 				"south": {"uv": [8.75, 6, 10.25, 6.25], "texture": "#workstation"},
-				"west": {"uv": [10.25, 3.75, 10.5, 5.75], "rotation": 90, "texture": "#workstation"},
-				"up": {"uv": [8.75, 3.75, 10.25, 5.75], "texture": "#workstation"},
+				"west": {"uv": [10.25, 3.75, 10.5, 5.5], "rotation": 90, "texture": "#workstation"},
+				"up": {"uv": [8.75, 3.75, 10.25, 5.5], "texture": "#workstation"},
 				"down": {"uv": [0, 0, 1.5, 2], "texture": "#missing"}
+			}
+		},
+		{
+			"from": [4, 16.025, 5],
+			"to": [8, 17.025, 8],
+			"rotation": {"angle": 22.5, "axis": "y", "origin": [6, 16.5, 7]},
+			"faces": {
+				"up": {"uv": [1, 1, 15, 12], "texture": "#blizzard"}
 			}
 		}
 	]
