@@ -76,8 +76,9 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
                 matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees((float) rotation * 90F));
             }
             matrixStack.translate(0.0, 0.5, 0.0);
-            matrixStack.translate(0, 0, -2 * 0.0625);
-            RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            matrixStack.translate(0, 0, -1.999 * 0.0625);
+            //if(i % 2 == 0) matrixStack.scale(-1, 1, 1);
+            RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE_SIDE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
 
@@ -87,9 +88,8 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
             matrixStack.pushPose();
             matrixStack.translate(0.5, 0.5, 0.5);
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-90F));
-            matrixStack.scale(1.005F, 1.005F, 1.005F);
-            matrixStack.translate(0, 0, (6 * 0.0625) * 0.998);
-            RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            matrixStack.translate(0, 0, (6.001 * 0.0625));
+            RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE_TOP.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
 
@@ -97,9 +97,8 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(90F));
-        matrixStack.scale(1.001F, 1.001F, 1.001F);
         matrixStack.translate(0, 0, (6 * 0.0625) * 0.998);
-        RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+        RenderUtil.renderColoredModel(SpecialModels.VEHICLE_CRATE_SIDE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.popPose();
 
         matrixStack.popPose();

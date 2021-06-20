@@ -50,7 +50,8 @@ public enum SpecialModels implements ISpecialModel
     FERTILIZER_TRAILER("trailer_fertilizer_body"),
     FLUID_TRAILER("trailer_fluid_body"),
 
-    VEHICLE_CRATE("vehicle_crate_panel"),
+    VEHICLE_CRATE_SIDE("vehicle_crate_panel_side"),
+    VEHICLE_CRATE_TOP("vehicle_crate_panel_top"),
     JACK_PISTON_HEAD("jack_piston_head"),
     SEED_SPIKER("seed_spiker"),
     NOZZLE("nozzle"),
