@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.network.message;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
+import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.EngineTier;
@@ -78,11 +80,14 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                     return;
 
                 ResourceLocation entityId = new ResourceLocation(message.vehicleId);
-                if(!entityId.getNamespace().equals(Reference.MOD_ID))
+                if(Config.SERVER.disabledVehicles.get().contains(entityId.toString()))
                     return;
 
-                EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(new ResourceLocation(message.vehicleId));
+                EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(entityId);
                 if(entityType == null)
+                    return;
+
+                if(!VehicleRegistry.getRegisteredVehicles().contains(entityType))
                     return;
 
                 VehicleRecipe recipe = VehicleRecipes.getRecipe(entityType, world);
