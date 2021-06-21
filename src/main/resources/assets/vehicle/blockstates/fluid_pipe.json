@@ -26,7 +26,7 @@
         },
         {
             "when": { "pipe_up": "true" },
-            "apply": { "model": "vehicle:block/fluid_pipe_connection", "x": -90 }
+            "apply": { "model": "vehicle:block/fluid_pipe_connection", "x": -90, "y": 180 }
         },
         {
             "when": { "pipe_down": "true" },
