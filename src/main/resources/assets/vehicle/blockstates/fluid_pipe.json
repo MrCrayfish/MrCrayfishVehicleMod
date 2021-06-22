@@ -1,51 +1,30 @@
 {
     "multipart": [
         {
-            "when": { "facing": "up" },
-            "apply": { "model": "vehicle:block/fluid_pipe", "x": -90 }
+            "apply": { "model": "vehicle:block/fluid_pipe" }
         },
         {
-            "when": { "facing": "down" },
-            "apply": { "model": "vehicle:block/fluid_pipe", "x": 90 }
-        },
-        {
-            "when": { "facing": "north" },
-            "apply": { "model": "vehicle:block/fluid_pipe", "y": 0 }
-        },
-        {
-            "when": { "facing": "east" },
-            "apply": { "model": "vehicle:block/fluid_pipe", "y": 90 }
-        },
-        {
-            "when": { "facing": "south" },
-            "apply": { "model": "vehicle:block/fluid_pipe", "y": 180 }
-        },
-        {
-            "when": { "facing": "west" },
-            "apply": { "model": "vehicle:block/fluid_pipe", "y": 270 }
-        },
-        {
-            "when": { "pipe_up": "true" },
+            "when": { "up": "true" },
             "apply": { "model": "vehicle:block/fluid_pipe_connection", "x": -90, "y": 180 }
         },
         {
-            "when": { "pipe_down": "true" },
+            "when": { "down": "true" },
             "apply": { "model": "vehicle:block/fluid_pipe_connection", "x": 90 }
         },
         {
-            "when": { "pipe_north": "true" },
+            "when": { "north": "true" },
             "apply": { "model": "vehicle:block/fluid_pipe_connection", "y": 0 }
         },
         {
-            "when": { "pipe_east": "true" },
+            "when": { "east": "true" },
             "apply": { "model": "vehicle:block/fluid_pipe_connection", "y": 90 }
         },
         {
-            "when": { "pipe_south": "true" },
+            "when": { "south": "true" },
             "apply": { "model": "vehicle:block/fluid_pipe_connection", "y": 180 }
         },
         {
-            "when": { "pipe_west": "true" },
+            "when": { "west": "true" },
             "apply": { "model": "vehicle:block/fluid_pipe_connection", "y": 270 }
         }
     ]

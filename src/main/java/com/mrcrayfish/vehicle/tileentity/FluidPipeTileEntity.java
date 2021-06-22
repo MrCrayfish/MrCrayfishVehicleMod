@@ -80,11 +80,11 @@ public class FluidPipeTileEntity extends TileFluidHandlerSynced implements ITick
         if(this.level.hasNeighborSignal(worldPosition))
             return;
 
-        IFluidHandler handler = this.getConnectedFluidHandler(this.level.getBlockState(this.worldPosition).getValue(FluidPipeBlock.DIRECTION));
+        /*IFluidHandler handler = this.getConnectedFluidHandler(this.level.getBlockState(this.worldPosition).getValue(FluidPipeBlock.DIRECTION));
         if(handler != null)
         {
             FluidUtils.transferFluid(this.tank, handler, this.transferAmount);
-        }
+        }*/
     }
 
     @Nullable

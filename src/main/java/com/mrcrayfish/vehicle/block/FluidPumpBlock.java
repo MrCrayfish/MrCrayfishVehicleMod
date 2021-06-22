@@ -4,6 +4,8 @@ import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.FluidPipeTileEntity;
 import com.mrcrayfish.vehicle.tileentity.FluidPumpTileEntity;
+import com.mrcrayfish.vehicle.tileentity.PipeTileEntity;
+import com.mrcrayfish.vehicle.tileentity.PumpTileEntity;
 import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -11,12 +13,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.DirectionProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -37,6 +40,8 @@ import java.util.List;
  */
 public class FluidPumpBlock extends FluidPipeBlock
 {
+    public static final DirectionProperty DIRECTION = BlockStateProperties.FACING;
+
     //TODO add collisions
     private final VoxelShape[][] PUMP_BOX = new VoxelShape[][]{
             {Block.box(3, 0, 3, 13, 3, 13), Block.box(4.5, 3, 4.5, 11.5, 4, 11.5)},
@@ -56,7 +61,6 @@ public class FluidPumpBlock extends FluidPipeBlock
         return VoxelShapeHelper.combineAll(shapes);
     }
 
-    @Override
     protected Direction getCollisionFacing(BlockState state)
     {
         return state.getValue(DIRECTION).getOpposite();
@@ -69,8 +73,15 @@ public class FluidPumpBlock extends FluidPipeBlock
         {
             return ActionResultType.SUCCESS;
         }
-        FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
-        AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
+
+        PipeTileEntity tileEntity = getPipeTileEntity(world, pos);
+        if(tileEntity instanceof PumpTileEntity)
+        {
+            ((PumpTileEntity) tileEntity).invalidatePipeNetwork();
+        }
+
+        //PipeTileEntity pipe = getPipeTileEntity(world, pos);
+        /*AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
         if(pipe != null && housingBox != null)
         {
             if(!world.isClientSide)
@@ -79,7 +90,7 @@ public class FluidPumpBlock extends FluidPipeBlock
                 world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
             }
             return ActionResultType.SUCCESS;
-        }
+        }*/
         return ActionResultType.SUCCESS;
     }
 
@@ -108,6 +119,36 @@ public class FluidPumpBlock extends FluidPipeBlock
     }
 
     @Override
+    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean p_220069_6_)
+    {
+        if(neighborBlock == ModBlocks.FLUID_PIPE.get())
+        {
+            this.invalidatePipeNetwork(world, pos);
+        }
+    }
+
+    @Override
+    public void onRemove(BlockState state, World world, BlockPos pos, BlockState replaceState, boolean what)
+    {
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        if(tileEntity instanceof PumpTileEntity)
+        {
+            ((PumpTileEntity) tileEntity).removePumpFromPipes();
+        }
+        super.onRemove(state, world, pos, replaceState, what);
+    }
+
+    @Override
+    protected void invalidatePipeNetwork(World world, BlockPos pos)
+    {
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        if(tileEntity instanceof PumpTileEntity)
+        {
+            ((PumpTileEntity) tileEntity).invalidatePipeNetwork();
+        }
+    }
+
+    @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
     {
         return this.getPumpState(world, pos, state, state.getValue(DIRECTION));
@@ -123,8 +164,8 @@ public class FluidPumpBlock extends FluidPipeBlock
 
     private BlockState getPumpState(IWorld world, BlockPos pos, BlockState state, Direction originalFacing)
     {
-        FluidPipeTileEntity pipe = getPipeTileEntity(world, pos);
-        boolean[] disabledConnections = FluidPipeTileEntity.getDisabledConnections(pipe);
+        PipeTileEntity pipe = getPipeTileEntity(world, pos);
+        boolean[] disabledConnections = this.getDisabledConnections(world, pos);
         for(Direction facing : Direction.values())
         {
             if(facing == originalFacing.getOpposite()) continue;
@@ -146,7 +187,7 @@ public class FluidPumpBlock extends FluidPipeBlock
                     state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], true);
                     if(pipe != null)
                     {
-                        pipe.setConnectionDisabled(facing, false);
+                        pipe.setConnectionState(facing, false);
                     }
                 }
             }
@@ -159,10 +200,17 @@ public class FluidPumpBlock extends FluidPipeBlock
         return state;
     }
 
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    {
+        super.createBlockStateDefinition(builder);
+        builder.add(DIRECTION);
+    }
+
     @Nullable
     @Override
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
-        return new FluidPumpTileEntity();
+        return new PumpTileEntity();
     }
 }

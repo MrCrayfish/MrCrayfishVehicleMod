@@ -45,7 +45,7 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
             return;
 
         BlockState state = this.level.getBlockState(this.worldPosition);
-        Direction facing = state.getValue(FluidPumpBlock.DIRECTION);
+        //Direction facing = state.getValue(FluidPumpBlock.DIRECTION);
 
         List<IFluidHandler> fluidHandlers = new ArrayList<>();
         for(Direction face : Direction.values())
@@ -64,11 +64,11 @@ public class FluidPumpTileEntity extends FluidPipeTileEntity
         if(outputCount == 0)
             return;
 
-        IFluidHandler handler = this.getConnectedFluidHandler(facing.getOpposite());
+        /*IFluidHandler handler = this.getConnectedFluidHandler(facing.getOpposite());
         if (handler != null)
         {
             FluidUtils.transferFluid(handler, this.tank, this.transferAmount);
-        }
+        }*/
 
         // Return and transfer full amount if one connection
         if (outputCount == 1)

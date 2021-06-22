@@ -19,8 +19,8 @@ public class ModTileEntities
     public static final DeferredRegister<TileEntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.TILE_ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<TileEntityType<FluidExtractorTileEntity>> FLUID_EXTRACTOR = register("fluid_extractor", FluidExtractorTileEntity::new, () -> new Block[]{ModBlocks.FLUID_EXTRACTOR.get()});
-    public static final RegistryObject<TileEntityType<FluidPipeTileEntity>> FLUID_PIPE = register("fluid_pipe", FluidPipeTileEntity::new, () -> new Block[]{ModBlocks.FLUID_PIPE.get()});
-    public static final RegistryObject<TileEntityType<FluidPumpTileEntity>> FLUID_PUMP = register("fluid_pump", FluidPumpTileEntity::new, () -> new Block[]{ModBlocks.FLUID_PUMP.get()});
+    public static final RegistryObject<TileEntityType<PipeTileEntity>> FLUID_PIPE = register("fluid_pipe", PipeTileEntity::new, () -> new Block[]{ModBlocks.FLUID_PIPE.get()});
+    public static final RegistryObject<TileEntityType<PumpTileEntity>> FLUID_PUMP = register("fluid_pump", PumpTileEntity::new, () -> new Block[]{ModBlocks.FLUID_PUMP.get()});
     public static final RegistryObject<TileEntityType<FuelDrumTileEntity>> FUEL_DRUM = register("fuel_drum", FuelDrumTileEntity::new, () -> new Block[]{ModBlocks.FUEL_DRUM.get()});
     public static final RegistryObject<TileEntityType<IndustrialFuelDrumTileEntity>> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", IndustrialFuelDrumTileEntity::new, () -> new Block[]{ModBlocks.INDUSTRIAL_FUEL_DRUM.get()});
     public static final RegistryObject<TileEntityType<FluidMixerTileEntity>> FLUID_MIXER = register("fluid_mixer", FluidMixerTileEntity::new, () -> new Block[]{ModBlocks.FLUID_MIXER.get()});
