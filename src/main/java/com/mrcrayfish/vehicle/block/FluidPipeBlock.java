@@ -41,6 +41,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -136,11 +137,27 @@ public class FluidPipeBlock extends ObjectBlock
         if(pipe != null && hit != null)
         {
             Direction direction = hit.getRight();
-            pipe.setConnectionState(direction, !pipe.isConnectionDisabled(direction));
-            BlockState newState = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !pipe.isConnectionDisabled(direction));
+            boolean enabled = !pipe.isConnectionDisabled(direction);
+            pipe.setConnectionState(direction, enabled);
+            BlockState newState = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !enabled);
             world.setBlockAndUpdate(pos, newState);
             world.sendBlockUpdated(pos, state, newState, 3 & 8);
+
+            // Also changes the state of the adjacent connection
+            BlockPos relativePos = pos.relative(direction);
+            PipeTileEntity adjacentPipe = getPipeTileEntity(world, relativePos);
+            if(adjacentPipe != null)
+            {
+                Direction opposite = direction.getOpposite();
+                adjacentPipe.setConnectionState(opposite, enabled);
+                BlockState relativeState = adjacentPipe.getBlockState();
+                BlockState newRelativeState = relativeState.setValue(CONNECTED_PIPES[opposite.get3DDataValue()], !enabled);
+                world.setBlockAndUpdate(relativePos, newRelativeState);
+                world.sendBlockUpdated(relativePos, relativeState, newRelativeState, 3 & 8);
+            }
+
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.IRON_GOLEM_STEP, SoundCategory.BLOCKS, 1.0F, 2.0F);
+
             return ActionResultType.SUCCESS;
         }
         return ActionResultType.FAIL;
