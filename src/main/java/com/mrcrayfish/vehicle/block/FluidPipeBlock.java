@@ -268,7 +268,7 @@ public class FluidPipeBlock extends ObjectBlock
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
     {
-        return this.getPipeState(state, world, pos);
+        return this.getPipeState(world, pos);
     }
 
     @Nullable
@@ -285,37 +285,26 @@ public class FluidPipeBlock extends ObjectBlock
             }
             else if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
             {
-                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
+                state = Objects.requireNonNull(state).setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
             }
         }
         return state;
     }
 
-    protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos)
+    protected BlockState getPipeState(IWorld world, BlockPos pos)
     {
+        BlockState state = this.defaultBlockState();
         boolean[] disabledConnections = this.getDisabledConnections(world, pos);
-        for(Direction facing : Direction.values())
+        for(Direction direction : Direction.values())
         {
-            state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], false);
-
-            BlockPos adjacentPos = pos.relative(facing);
-            BlockState adjacentState = world.getBlockState(adjacentPos);
-            boolean enabled = !disabledConnections[facing.get3DDataValue()];
-            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
+            TileEntity adjacentTileEntity = world.getBlockEntity(pos.relative(direction));
+            if(adjacentTileEntity instanceof PipeTileEntity)
             {
-                state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
+                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !disabledConnections[direction.get3DDataValue()]);
             }
-            else if(adjacentState.getBlock() == ModBlocks.FLUID_PUMP.get())
+            else if(adjacentTileEntity != null && adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
             {
-                state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
-            }
-            else
-            {
-                TileEntity tileEntity = world.getBlockEntity(adjacentPos);
-                if(tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent())
-                {
-                    state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
-                }
+                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !disabledConnections[direction.get3DDataValue()]);
             }
         }
         return state;
