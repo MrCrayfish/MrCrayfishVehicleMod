@@ -113,33 +113,25 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
             {
                 if(state.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
                 {
-                    TileEntity tileEntity = this.level.getBlockEntity(pos);
-                    if(tileEntity instanceof PipeTileEntity)
+                    TileEntity selfTileEntity = this.level.getBlockEntity(pos);
+                    if(selfTileEntity instanceof PipeTileEntity)
                     {
-                        PipeTileEntity pipeTileEntity = (PipeTileEntity) tileEntity;
+                        PipeTileEntity pipeTileEntity = (PipeTileEntity) selfTileEntity;
                         pipeTileEntity.addPump(this.worldPosition);
                         node.tileEntity = new WeakReference<>(pipeTileEntity);
                     }
 
                     BlockPos relativePos = pos.relative(direction);
-                    BlockState relativeState = this.level.getBlockState(relativePos);
-                    if(relativeState.getBlock() == ModBlocks.FLUID_PIPE.get())
+                    TileEntity relativeTileEntity = this.level.getBlockEntity(relativePos);
+                    if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
                     {
-                        node.nodes[direction.get3DDataValue()] = this.fluidNetwork.get(relativePos);
-                    }
-                    else
-                    {
-                        TileEntity relativeTileEntity = this.level.getBlockEntity(relativePos);
-                        if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
-                        {
-                            this.fluidHandlers.add(relativePos);
-                        }
+                        this.fluidHandlers.add(relativePos);
                     }
                 }
             }
         });
 
-        System.out.println("Generated fluid network. Found " + this.fluidNetwork.size() + " nodes!");
+        System.out.println("Generated fluid network. Found " + this.fluidNetwork.size() + " pipes and " + this.fluidHandlers.size() + " fluid handlers!");
     }
 
     public void removePumpFromPipes()
@@ -157,7 +149,6 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     private static class PipeNode
     {
         // There is a finite amount of possible vertices
-        private PipeNode[] nodes = new PipeNode[Direction.values().length];
         private WeakReference<PipeTileEntity> tileEntity;
     }
 }
