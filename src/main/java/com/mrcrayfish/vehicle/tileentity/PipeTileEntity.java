@@ -62,7 +62,7 @@ public class PipeTileEntity extends TileEntitySynced
         return this.disabledConnections[direction.get3DDataValue()];
     }
 
-    private void syncDisabledConnections()
+    public void syncDisabledConnections()
     {
         if(this.level != null && !this.level.isClientSide())
         {

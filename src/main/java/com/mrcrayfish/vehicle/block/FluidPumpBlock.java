@@ -209,7 +209,7 @@ public class FluidPumpBlock extends FluidPipeBlock
 
     @Nullable
     @Override
-    public TileEntity createTileEntity(BlockState state, IBlockReader world)
+    public PumpTileEntity createTileEntity(BlockState state, IBlockReader world)
     {
         return new PumpTileEntity();
     }
