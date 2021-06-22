@@ -167,7 +167,6 @@ public class FluidPipeBlock extends ObjectBlock
                 {
                     BlockPos adjacentPos = pos.relative(facing);
                     BlockState adjacentState = world.getBlockState(adjacentPos);
-                    TileEntity adjacentTileEntity = world.getBlockEntity(adjacentPos);
                     Block adjacentBlock = adjacentState.getBlock();
 
                     if(this == ModBlocks.FLUID_PUMP.get() && adjacentBlock == ModBlocks.FLUID_PUMP.get())
@@ -175,11 +174,16 @@ public class FluidPipeBlock extends ObjectBlock
                         return null;
                     }
 
-                    if((adjacentTileEntity == null || !adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent()) && adjacentBlock != ModBlocks.FLUID_PIPE.get())
+                    if(adjacentBlock != ModBlocks.FLUID_PIPE.get() && adjacentBlock != ModBlocks.FLUID_PUMP.get())
                     {
-                        return null;
+                        TileEntity adjacentTileEntity = world.getBlockEntity(adjacentPos);
+                        if(adjacentTileEntity == null || !adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent())
+                        {
+                            return null;
+                        }
                     }
                 }
+
                 if(world.getBlockState(pos.relative(facing)).getBlock() != Blocks.LEVER)
                 {
                     return new ImmutablePair<>(SIDES[i].bounds().move(pos), facing);
