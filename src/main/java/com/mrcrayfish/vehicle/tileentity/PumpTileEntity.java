@@ -82,7 +82,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                     continue;
 
                 BlockState selfState = this.level.getBlockState(pos);
-                if(selfState.getBlock() == ModBlocks.FLUID_PIPE.get())
+                if(selfState.getBlock() instanceof FluidPipeBlock)
                 {
                     if(!selfState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
                     {
