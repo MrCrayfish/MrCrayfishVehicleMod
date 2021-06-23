@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.item.FluidPipeItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageThrowVehicle;
 import com.mrcrayfish.vehicle.tileentity.GasPumpTileEntity;
@@ -39,7 +40,9 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
 
@@ -415,6 +418,15 @@ public class CommonEvents
         if(state.getBlock() != ModBlocks.GAS_PUMP.get() && SyncedPlayerData.instance().get(event.getPlayer(), ModDataKeys.GAS_PUMP).isPresent())
         {
             event.setCanceled(true);
+        }
+        else if(event.getItemStack().getItem() instanceof FluidPipeItem)
+        {
+            TileEntity relativeTileEntity = event.getWorld().getBlockEntity(event.getPos());
+            if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, event.getFace()).isPresent())
+            {
+                event.setUseBlock(Event.Result.DENY);
+                event.setUseItem(Event.Result.ALLOW);
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.init;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.*;
+import com.mrcrayfish.vehicle.item.FluidPipeItem;
 import com.mrcrayfish.vehicle.item.ItemTrafficCone;
 import net.minecraft.block.Block;
 import net.minecraft.block.FlowingFluidBlock;
@@ -29,8 +30,8 @@ public class ModBlocks
     public static final RegistryObject<Block> FLUID_EXTRACTOR = register("fluid_extractor", new FluidExtractorBlock());
     public static final RegistryObject<Block> FLUID_MIXER = register("fluid_mixer", new FluidMixerBlock());
     public static final RegistryObject<Block> GAS_PUMP = register("gas_pump", new GasPumpBlock());
-    public static final RegistryObject<Block> FLUID_PIPE = register("fluid_pipe", new FluidPipeBlock());
-    public static final RegistryObject<Block> FLUID_PUMP = register("fluid_pump", new FluidPumpBlock());
+    public static final RegistryObject<Block> FLUID_PIPE = register("fluid_pipe", new FluidPipeBlock(), FluidPipeItem::new);
+    public static final RegistryObject<Block> FLUID_PUMP = register("fluid_pump", new FluidPumpBlock(), FluidPipeItem::new);
     public static final RegistryObject<Block> FUEL_DRUM = register("fuel_drum", new FuelDrumBlock());
     public static final RegistryObject<Block> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new IndustrialFuelDrumBlock());
     public static final RegistryObject<Block> WORKSTATION = register("workstation", new WorkstationBlock());
