@@ -94,11 +94,12 @@ public class FluidPumpBlock extends FluidPipeBlock
                 {
                     pumpTileEntity.cyclePowerMode(player);
                     world.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                    return ActionResultType.SUCCESS;
                 }
             }
         }
 
-        return ActionResultType.SUCCESS;
+        return ActionResultType.PASS;
     }
 
     public boolean isLookingAtHousing(BlockState state, Vector3d hitVec)
