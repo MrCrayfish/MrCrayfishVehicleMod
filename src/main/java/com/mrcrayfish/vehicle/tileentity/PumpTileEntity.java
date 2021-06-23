@@ -3,16 +3,20 @@ package com.mrcrayfish.vehicle.tileentity;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.FluidPipeBlock;
 import com.mrcrayfish.vehicle.block.FluidPumpBlock;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
@@ -20,8 +24,10 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -32,6 +38,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     private boolean validatedNetwork;
     private Map<BlockPos, PipeNode> fluidNetwork = new HashMap<>();
     private List<Pair<BlockPos, Direction>> fluidHandlers = new ArrayList<>();
+    private PowerMode powerMode = PowerMode.REQUIRES_SIGNAL_ON;
 
     public PumpTileEntity()
     {
@@ -66,6 +73,9 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     private void pumpFluid()
     {
         if(this.fluidHandlers.isEmpty() || this.level == null)
+            return;
+
+        if(!this.powerMode.test(this))
             return;
 
         List<IFluidHandler> handlers = this.getFluidHandlersOnNetwork(this.level);
@@ -257,9 +267,67 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         return Optional.empty();
     }
 
+    public void cyclePowerMode(PlayerEntity player)
+    {
+        this.powerMode = PowerMode.values()[(this.powerMode.ordinal() + 1) % PowerMode.values().length];
+        this.powerMode.notifyPlayerOfChange(player);
+    }
+
+    @Override
+    public void load(BlockState state, CompoundNBT compound)
+    {
+        super.load(state, compound);
+        if(compound.contains("PowerMode", Constants.NBT.TAG_INT))
+        {
+            this.powerMode = PowerMode.fromOrdinal(compound.getInt("PowerMode"));
+        }
+    }
+
+    @Override
+    public CompoundNBT save(CompoundNBT compound)
+    {
+        compound.putInt("PowerMode", this.powerMode.ordinal());
+        return super.save(compound);
+    }
+
     private static class PipeNode
     {
         // There is a finite amount of possible vertices
         private WeakReference<PipeTileEntity> tileEntity;
+    }
+
+    public enum PowerMode
+    {
+        ALWAYS_ACTIVE("always", input -> true),
+        REQUIRES_SIGNAL_ON("on", input -> Objects.requireNonNull(input.level).hasNeighborSignal(input.worldPosition)),
+        REQUIRES_SIGNAL_OFF("off", input -> !Objects.requireNonNull(input.level).hasNeighborSignal(input.worldPosition));
+
+        private static final String LANG_KEY_CHAT_PREFIX = Reference.MOD_ID + ".chat.pump.power";
+        private String key;
+        private Function<PumpTileEntity, Boolean> function;
+
+        PowerMode(String key, Function<PumpTileEntity, Boolean> function)
+        {
+            this.key = String.join(".", LANG_KEY_CHAT_PREFIX, key);
+            this.function = function;
+        }
+
+        public boolean test(PumpTileEntity pump)
+        {
+            return this.function.apply(pump);
+        }
+
+        public void notifyPlayerOfChange(PlayerEntity player) //TODO change. See EntityRenderer#renderNameTag
+        {
+            player.displayClientMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(this.key)), true);
+        }
+
+        @Nullable
+        public static PowerMode fromOrdinal(int ordinal)
+        {
+            if(ordinal < 0 || ordinal >= values().length)
+                return null;
+            return values()[ordinal];
+        }
     }
 }

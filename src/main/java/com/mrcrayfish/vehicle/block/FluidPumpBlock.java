@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.block;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.FluidPipeTileEntity;
-import com.mrcrayfish.vehicle.tileentity.FluidPumpTileEntity;
 import com.mrcrayfish.vehicle.tileentity.PipeTileEntity;
 import com.mrcrayfish.vehicle.tileentity.PumpTileEntity;
 import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
@@ -20,15 +19,19 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -44,12 +47,12 @@ public class FluidPumpBlock extends FluidPipeBlock
 
     //TODO add collisions
     private final VoxelShape[][] PUMP_BOX = new VoxelShape[][]{
-            {Block.box(3, 0, 3, 13, 3, 13), Block.box(4.5, 3, 4.5, 11.5, 4, 11.5)},
-            {Block.box(3, 16, 3, 13, 13, 13), Block.box(4.5, 13, 4.5, 11.5, 12, 11.5)},
-            {Block.box(3, 3, 0, 13, 13, 3), Block.box(4.5, 4.5, 3, 11.5, 11.5, 4)},
-            {Block.box(3, 3, 16, 13, 13, 13), Block.box(4.5, 4.5, 13, 11.5, 11.5, 12)},
-            {Block.box(0, 3, 3, 3, 13, 13), Block.box(3, 4.5, 4.5, 4, 11.5, 11.5)},
-            {Block.box(16, 3, 3, 13, 13, 13), Block.box(13, 4.5, 4.5, 12, 11.5, 11.5)}
+            {Block.box(3, 0, 3, 13, 4, 13), Block.box(4, 3, 4, 12, 4, 12)},
+            {Block.box(3, 12, 3, 13, 16, 13), Block.box(4, 13, 4, 12, 12, 12)},
+            {Block.box(3, 3, 0, 13, 13, 4), Block.box(4, 4, 3, 12, 12, 4)},
+            {Block.box(3, 3, 12, 13, 13, 16), Block.box(4, 4, 13, 12, 12, 12)},
+            {Block.box(0, 3, 3, 4, 13, 13), Block.box(3, 4, 4, 4, 12, 12)},
+            {Block.box(12, 3, 3, 16, 13, 13), Block.box(13, 4, 4, 12, 12, 12)}
     };
 
     @Override
@@ -74,48 +77,42 @@ public class FluidPumpBlock extends FluidPipeBlock
             return ActionResultType.SUCCESS;
         }
 
-        PipeTileEntity tileEntity = getPipeTileEntity(world, pos);
-        if(tileEntity instanceof PumpTileEntity)
+        if(!world.isClientSide())
         {
-            ((PumpTileEntity) tileEntity).invalidatePipeNetwork();
+            PipeTileEntity tileEntity = getPipeTileEntity(world, pos);
+            if(tileEntity instanceof PumpTileEntity)
+            {
+                PumpTileEntity pumpTileEntity = (PumpTileEntity) tileEntity;
+
+                if(!FMLLoader.isProduction())
+                {
+                    pumpTileEntity.invalidatePipeNetwork();
+                }
+
+                Vector3d localHitVec = result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ());
+                if(player.getItemInHand(hand).getItem() == ModItems.WRENCH.get() && this.isLookingAtHousing(state, localHitVec))
+                {
+                    pumpTileEntity.cyclePowerMode(player);
+                    world.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                }
+            }
         }
 
-        //PipeTileEntity pipe = getPipeTileEntity(world, pos);
-        /*AxisAlignedBB housingBox = this.getHousingBox(pos, state, player, hand, result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ()), pipe);
-        if(pipe != null && housingBox != null)
-        {
-            if(!world.isClientSide)
-            {
-                ((FluidPumpTileEntity) pipe).cyclePowerMode(player);
-                world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
-            }
-            return ActionResultType.SUCCESS;
-        }*/
         return ActionResultType.SUCCESS;
     }
 
-    @Nullable
-    public AxisAlignedBB getHousingBox(BlockPos pos, BlockState state, PlayerEntity player, Hand hand, Vector3d hitVec, @Nullable FluidPipeTileEntity pipe)
+    public boolean isLookingAtHousing(BlockState state, Vector3d hitVec)
     {
-        if(!(pipe instanceof FluidPumpTileEntity) || player.getItemInHand(hand).getItem() != ModItems.WRENCH.get())
+        VoxelShape[] shapes = this.PUMP_BOX[this.getCollisionFacing(state).get3DDataValue()];
+        for(VoxelShape shape : shapes)
         {
-            return null;
-        }
-
-        VoxelShape[] boxesHousing = this.PUMP_BOX[getCollisionFacing(state).get3DDataValue()];
-        for(VoxelShape box : boxesHousing)
-        {
-            AxisAlignedBB boundingBox = box.bounds();
+            AxisAlignedBB boundingBox = shape.bounds();
             if(boundingBox.inflate(0.001).contains(hitVec))
             {
-                for(VoxelShape box2 : boxesHousing)
-                {
-                    boundingBox = boundingBox.minmax(box2.bounds());
-                }
-                return boundingBox.move(pos);
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
     @Override
