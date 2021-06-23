@@ -75,6 +75,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         while(!queue.isEmpty())
         {
             BlockPos pos = queue.poll();
+
             for(Direction direction : Direction.values())
             {
                 BlockPos relativePos = pos.relative(direction);
@@ -84,10 +85,11 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                 BlockState selfState = this.level.getBlockState(pos);
                 if(selfState.getBlock() instanceof FluidPipeBlock)
                 {
-                    if(!selfState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
-                    {
+                    if(selfState.getValue(FluidPipeBlock.POWERED))
                         continue;
-                    }
+
+                    if(!selfState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
+                        continue;
                 }
 
                 BlockState relativeState = this.level.getBlockState(relativePos);
@@ -120,6 +122,9 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                         pipeTileEntity.addPump(this.worldPosition);
                         node.tileEntity = new WeakReference<>(pipeTileEntity);
                     }
+
+                    if(state.getValue(FluidPipeBlock.POWERED))
+                        continue;
 
                     BlockPos relativePos = pos.relative(direction);
                     TileEntity relativeTileEntity = this.level.getBlockEntity(relativePos);

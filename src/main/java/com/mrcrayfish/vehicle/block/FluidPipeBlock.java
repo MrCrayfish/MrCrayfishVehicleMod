@@ -19,6 +19,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
@@ -30,6 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.ITextProperties;
@@ -41,7 +43,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -52,15 +53,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
  */
 public class FluidPipeBlock extends ObjectBlock
 {
-    public static final BooleanProperty[] CONNECTED_PIPES = Stream.of(Direction.values()).map(dir -> BooleanProperty.create(dir.getName())).collect(Collectors.toList()).toArray(new BooleanProperty[0]);
+    public static final BooleanProperty[] CONNECTED_PIPES = {BlockStateProperties.DOWN, BlockStateProperties.UP, BlockStateProperties.NORTH, BlockStateProperties.SOUTH, BlockStateProperties.WEST, BlockStateProperties.EAST};
+    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
 
     protected static final VoxelShape CENTER = Block.box(5, 5, 5, 11, 11, 11);
     protected static final VoxelShape[] SIDES = {
@@ -73,7 +73,7 @@ public class FluidPipeBlock extends ObjectBlock
     public FluidPipeBlock()
     {
         super(AbstractBlock.Properties.of(Material.METAL).strength(0.5F));
-        BlockState defaultState = this.getStateDefinition().any();
+        BlockState defaultState = this.getStateDefinition().any().setValue(POWERED, false);
         for(BooleanProperty property : CONNECTED_PIPES)
         {
             defaultState = defaultState.setValue(property, false);
@@ -239,13 +239,33 @@ public class FluidPipeBlock extends ObjectBlock
         {
             this.invalidatePipeNetwork(world, pos);
         }
+
+        BlockState newState = this.getPoweredState(state, world, pos);
+        if(state != newState)
+        {
+            this.invalidatePipeNetwork(world, pos);
+            world.setBlock(pos, newState, 4);
+        }
+    }
+
+    protected BlockState getPoweredState(BlockState state, World world, BlockPos pos)
+    {
+        boolean powered = world.hasNeighborSignal(pos);
+        if(powered != state.getValue(POWERED))
+        {
+            state = state.setValue(POWERED, powered);
+        }
+        return state;
     }
 
     @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState replaceState, boolean what)
     {
         this.invalidatePipeNetwork(world, pos);
-        super.onRemove(state, world, pos, replaceState, what);
+        if(!state.is(replaceState.getBlock()))
+        {
+            super.onRemove(state, world, pos, replaceState, what);
+        }
     }
 
     protected void invalidatePipeNetwork(World world, BlockPos pos)
@@ -268,35 +288,36 @@ public class FluidPipeBlock extends ObjectBlock
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
     {
-        return this.getPipeState(world, pos);
+        return this.getPipeState(state, world, pos);
     }
 
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = super.getStateForPlacement(context);
+        BlockState state = this.defaultBlockState();
         for(Direction direction : Direction.values())
         {
             TileEntity relativeTileEntity = context.getLevel().getBlockEntity(context.getClickedPos().relative(direction));
             if(relativeTileEntity instanceof PipeTileEntity)
             {
-                state = Objects.requireNonNull(state).setValue(CONNECTED_PIPES[direction.get3DDataValue()], !((PipeTileEntity) relativeTileEntity).isConnectionDisabled(direction.getOpposite()));
+                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !((PipeTileEntity) relativeTileEntity).isConnectionDisabled(direction.getOpposite()));
             }
             else if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
             {
-                state = Objects.requireNonNull(state).setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
+                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
             }
         }
-        return state;
+        return this.getPoweredState(state, context.getLevel(), context.getClickedPos());
     }
 
-    protected BlockState getPipeState(IWorld world, BlockPos pos)
+    protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos)
     {
-        BlockState state = this.defaultBlockState();
         boolean[] disabledConnections = this.getDisabledConnections(world, pos);
         for(Direction direction : Direction.values())
         {
+            state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], false);
+
             TileEntity adjacentTileEntity = world.getBlockEntity(pos.relative(direction));
             if(adjacentTileEntity instanceof PipeTileEntity)
             {
@@ -311,10 +332,17 @@ public class FluidPipeBlock extends ObjectBlock
     }
 
     @Override
+    public VoxelShape getBlockSupportShape(BlockState state, IBlockReader reader, BlockPos pos)
+    {
+        return VoxelShapes.block();
+    }
+
+    @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
         super.createBlockStateDefinition(builder);
         builder.add(CONNECTED_PIPES);
+        builder.add(POWERED);
     }
 
     @Override
