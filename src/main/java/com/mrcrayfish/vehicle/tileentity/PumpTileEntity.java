@@ -2,16 +2,21 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.FluidPipeBlock;
 import com.mrcrayfish.vehicle.block.FluidPumpBlock;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.util.FluidUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayDeque;
@@ -20,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Set;
 
@@ -30,7 +36,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
 {
     private boolean validatedNetwork;
     private Map<BlockPos, PipeNode> fluidNetwork = new HashMap<>();
-    private List<BlockPos> fluidHandlers = new ArrayList<>();
+    private List<Pair<BlockPos, Direction>> fluidHandlers = new ArrayList<>();
 
     public PumpTileEntity()
     {
@@ -40,10 +46,15 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     @Override
     public void tick()
     {
-        if(!this.validatedNetwork && this.level != null && !this.level.isClientSide())
+        if(this.level != null && !this.level.isClientSide())
         {
-            this.validatedNetwork = true;
-            this.generatePipeNetwork();
+            if(!this.validatedNetwork)
+            {
+                this.validatedNetwork = true;
+                this.generatePipeNetwork();
+            }
+
+            this.pumpFluid();
         }
     }
 
@@ -55,6 +66,67 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     public void invalidatePipeNetwork()
     {
         this.validatedNetwork = false;
+    }
+
+    private void pumpFluid()
+    {
+        if(this.fluidHandlers.isEmpty() || this.level == null)
+            return;
+
+        List<IFluidHandler> handlers = new ArrayList<>();
+        this.fluidHandlers.forEach(pair ->
+        {
+            if(this.level.isLoaded(pair.getLeft()))
+            {
+                TileEntity tileEntity = this.level.getBlockEntity(pair.getLeft());
+                if(tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, pair.getRight()).isPresent())
+                {
+                    Optional<IFluidHandler> handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, pair.getRight()).resolve();
+                    handler.ifPresent(handlers::add);
+                }
+            }
+        });
+
+        if(handlers.isEmpty())
+            return;
+
+        BlockState selfState = this.getBlockState();
+        Direction direction = selfState.getValue(FluidPumpBlock.DIRECTION);
+        TileEntity tileEntity = this.level.getBlockEntity(this.worldPosition.relative(direction.getOpposite()));
+        if(tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent())
+        {
+            Optional<IFluidHandler> handlerOptional = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).resolve();
+            if(!handlerOptional.isPresent())
+                return;
+
+            IFluidHandler handler = handlerOptional.get();
+            int outputCount = handlers.size();
+            int remainder = Math.min(handler.getFluidInTank(0).getAmount(), Config.SERVER.pumpTransferAmount.get());
+            int amount = remainder / outputCount;
+            if(amount > 0)
+            {
+                handlers.removeIf(targetHandler -> FluidUtils.transferFluid(handler, targetHandler, amount) < amount);
+            }
+
+            // Randomly distribute to the remaining non-full connections the proportion that would otherwise be lost in the above truncation
+            remainder %= outputCount;
+            if(handlers.size() == 1)
+            {
+                FluidUtils.transferFluid(handler, handlers.get(0), remainder);
+            }
+
+            int filled;
+            for(int i = 0; i < remainder && !handlers.isEmpty(); i++)
+            {
+                int index = this.level.random.nextInt(handlers.size());
+                filled = FluidUtils.transferFluid(handler, handlers.get(index), 1);
+                remainder -= filled;
+                if(filled == 0)
+                {
+                    handlers.remove(index);
+                }
+            }
+        }
     }
 
     // This can probably be improved...
@@ -130,7 +202,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                     TileEntity relativeTileEntity = this.level.getBlockEntity(relativePos);
                     if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
                     {
-                        this.fluidHandlers.add(relativePos);
+                        this.fluidHandlers.add(Pair.of(relativePos, direction.getOpposite()));
                     }
                 }
             }
