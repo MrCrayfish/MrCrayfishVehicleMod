@@ -174,9 +174,10 @@ public class FluidPumpBlock extends FluidPipeBlock
         boolean[] disabledConnections = this.getDisabledConnections(world, pos);
         for(Direction facing : Direction.values())
         {
-            if(facing == originalFacing.getOpposite()) continue;
-
             state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], false);
+
+            if(facing == originalFacing.getOpposite())
+                continue;
 
             BlockPos adjacentPos = pos.relative(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
