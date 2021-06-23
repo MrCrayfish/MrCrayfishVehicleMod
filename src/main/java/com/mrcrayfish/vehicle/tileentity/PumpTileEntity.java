@@ -13,27 +13,22 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Author: MrCrayfish
  */
 public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntity
 {
+    private int lastHandlerIndex;
     private boolean validatedNetwork;
     private Map<BlockPos, PipeNode> fluidNetwork = new HashMap<>();
     private List<Pair<BlockPos, Direction>> fluidHandlers = new ArrayList<>();
@@ -73,63 +68,64 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         if(this.fluidHandlers.isEmpty() || this.level == null)
             return;
 
-        List<IFluidHandler> handlers = new ArrayList<>();
-        this.fluidHandlers.forEach(pair ->
-        {
-            if(this.level.isLoaded(pair.getLeft()))
-            {
-                TileEntity tileEntity = this.level.getBlockEntity(pair.getLeft());
-                if(tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, pair.getRight()).isPresent())
-                {
-                    Optional<IFluidHandler> handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, pair.getRight()).resolve();
-                    handler.ifPresent(handlers::add);
-                }
-            }
-        });
-
+        List<IFluidHandler> handlers = this.getFluidHandlersOnNetwork(this.level);
         if(handlers.isEmpty())
             return;
 
-        BlockState selfState = this.getBlockState();
-        Direction direction = selfState.getValue(FluidPumpBlock.DIRECTION);
-        TileEntity tileEntity = this.level.getBlockEntity(this.worldPosition.relative(direction.getOpposite()));
-        if(tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction).isPresent())
+        Optional<IFluidHandler> source = this.getSourceFluidHandler(this.level);
+        if(!source.isPresent())
+            return;
+
+        IFluidHandler sourceHandler = source.get();
+        int outputCount = handlers.size();
+        int remainingAmount = Math.min(sourceHandler.getFluidInTank(0).getAmount(), Config.SERVER.pumpTransferAmount.get());
+        int splitAmount = remainingAmount / outputCount;
+        if(splitAmount > 0)
         {
-            Optional<IFluidHandler> handlerOptional = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).resolve();
-            if(!handlerOptional.isPresent())
-                return;
-
-            IFluidHandler handler = handlerOptional.get();
-            int outputCount = handlers.size();
-            int remainder = Math.min(handler.getFluidInTank(0).getAmount(), Config.SERVER.pumpTransferAmount.get());
-            int amount = remainder / outputCount;
-            if(amount > 0)
+            Iterator<IFluidHandler> it = handlers.listIterator();
+            while(it.hasNext())
             {
-                handlers.removeIf(targetHandler -> FluidUtils.transferFluid(handler, targetHandler, amount) < amount);
-            }
-
-            // Randomly distribute to the remaining non-full connections the proportion that would otherwise be lost in the above truncation
-            remainder %= outputCount;
-            if(handlers.size() == 1)
-            {
-                FluidUtils.transferFluid(handler, handlers.get(0), remainder);
-            }
-
-            int filled;
-            for(int i = 0; i < remainder && !handlers.isEmpty(); i++)
-            {
-                int index = this.level.random.nextInt(handlers.size());
-                filled = FluidUtils.transferFluid(handler, handlers.get(index), 1);
-                remainder -= filled;
-                if(filled == 0)
+                int transferredAmount = FluidUtils.transferFluid(sourceHandler, it.next(), splitAmount);
+                remainingAmount -= transferredAmount;
+                if(transferredAmount < splitAmount)
                 {
-                    handlers.remove(index);
+                    // Remove fluid handler since it's full
+                    it.remove();
+
+                    // Adds the remaining fluid to the split amount
+                    int deltaAmount = splitAmount - transferredAmount;
+                    splitAmount += deltaAmount / handlers.size();
+                    remainingAmount += deltaAmount % handlers.size();
                 }
+            }
+        }
+
+        // Ignore distributing if no fluid is remaining
+        if(remainingAmount <= 0)
+            return;
+
+        // If only one fluid handler left, just transfer the maximum amount of remaining fluid
+        if(handlers.size() == 1)
+        {
+            FluidUtils.transferFluid(sourceHandler, handlers.get(0), remainingAmount);
+            return;
+        }
+
+        // Distributes the remaining fluid over handlers
+        while(remainingAmount > 0 && !handlers.isEmpty())
+        {
+            int index = this.lastHandlerIndex++ % handlers.size();
+            int transferred = FluidUtils.transferFluid(sourceHandler, handlers.get(index), 1);
+            remainingAmount -= transferred;
+            if(transferred == 0)
+            {
+                this.lastHandlerIndex--;
+                handlers.remove(index);
             }
         }
     }
 
-    // This can probably be improved...
+    // This can probably be optimised...
     private void generatePipeNetwork()
     {
         Preconditions.checkNotNull(this.level);
@@ -137,6 +133,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         // Removes the pump from the old network pipes
         this.removePumpFromPipes();
 
+        this.lastHandlerIndex = 0;
         this.fluidHandlers.clear();
         this.fluidNetwork.clear();
 
@@ -221,6 +218,43 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                 tileEntity.removePump(this.worldPosition);
             }
         });
+    }
+
+    public List<IFluidHandler> getFluidHandlersOnNetwork(World world)
+    {
+        List<IFluidHandler> handlers = new ArrayList<>();
+        this.fluidHandlers.forEach(pair ->
+        {
+            if(world.isLoaded(pair.getLeft()))
+            {
+                TileEntity tileEntity = world.getBlockEntity(pair.getLeft());
+                if(tileEntity != null)
+                {
+                    LazyOptional<IFluidHandler> lazyOptional = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, pair.getRight());
+                    if(lazyOptional.isPresent())
+                    {
+                        Optional<IFluidHandler> handler = lazyOptional.resolve();
+                        handler.ifPresent(handlers::add);
+                    }
+                }
+            }
+        });
+        return handlers;
+    }
+
+    public Optional<IFluidHandler> getSourceFluidHandler(World world)
+    {
+        Direction direction = this.getBlockState().getValue(FluidPumpBlock.DIRECTION);
+        TileEntity tileEntity = world.getBlockEntity(this.worldPosition.relative(direction.getOpposite()));
+        if(tileEntity != null)
+        {
+            LazyOptional<IFluidHandler> lazyOptional = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction);
+            if(lazyOptional.isPresent())
+            {
+                return lazyOptional.resolve();
+            }
+        }
+        return Optional.empty();
     }
 
     private static class PipeNode
