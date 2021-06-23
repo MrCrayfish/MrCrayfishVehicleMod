@@ -1,0 +1,6 @@
+{
+	"parent": "vehicle:block/fluid_pipe",
+	"textures": {
+		"1": "vehicle:model/powered_fluid_pipe"
+	}
+}

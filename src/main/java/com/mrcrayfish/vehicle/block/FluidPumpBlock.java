@@ -30,6 +30,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.loading.FMLLoader;
 
@@ -122,6 +123,13 @@ public class FluidPumpBlock extends FluidPipeBlock
         if(neighborBlock == ModBlocks.FLUID_PIPE.get())
         {
             this.invalidatePipeNetwork(world, pos);
+        }
+
+        BlockState newState = this.getPoweredState(state, world, pos);
+        if(state != newState)
+        {
+            this.invalidatePipeNetwork(world, pos);
+            world.setBlock(pos, newState, Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
         }
     }
 

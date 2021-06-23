@@ -1,28 +1,52 @@
 {
     "multipart": [
         {
-            "when": { "facing": "up" },
+            "when": { "facing": "up", "powered": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "x": -90 }
         },
         {
-            "when": { "facing": "down" },
+            "when": { "facing": "down", "powered": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "x": 90 }
         },
         {
-            "when": { "facing": "north" },
+            "when": { "facing": "north", "powered": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 0 }
         },
         {
-            "when": { "facing": "east" },
+            "when": { "facing": "east", "powered": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 90 }
         },
         {
-            "when": { "facing": "south" },
+            "when": { "facing": "south", "powered": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 180 }
         },
         {
-            "when": { "facing": "west" },
+            "when": { "facing": "west", "powered": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 270 }
+        },
+        {
+            "when": { "facing": "up", "powered": "true" },
+            "apply": { "model": "vehicle:block/powered_fluid_pump", "x": -90 }
+        },
+        {
+            "when": { "facing": "down", "powered": "true" },
+            "apply": { "model": "vehicle:block/powered_fluid_pump", "x": 90 }
+        },
+        {
+            "when": { "facing": "north", "powered": "true" },
+            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 0 }
+        },
+        {
+            "when": { "facing": "east", "powered": "true" },
+            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 90 }
+        },
+        {
+            "when": { "facing": "south", "powered": "true" },
+            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 180 }
+        },
+        {
+            "when": { "facing": "west", "powered": "true" },
+            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 270 }
         },
         {
             "when": { "up": "true" },
