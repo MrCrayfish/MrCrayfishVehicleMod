@@ -299,18 +299,7 @@ public class FluidPipeBlock extends ObjectBlock
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
         BlockState state = this.defaultBlockState();
-        for(Direction direction : Direction.values())
-        {
-            TileEntity relativeTileEntity = context.getLevel().getBlockEntity(context.getClickedPos().relative(direction));
-            if(relativeTileEntity instanceof PipeTileEntity)
-            {
-                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !((PipeTileEntity) relativeTileEntity).isConnectionDisabled(direction.getOpposite()));
-            }
-            else if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
-            {
-                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
-            }
-        }
+        state = this.getPipeState(state, context.getLevel(), context.getClickedPos());
         return this.getPoweredState(state, context.getLevel(), context.getClickedPos());
     }
 
@@ -320,26 +309,32 @@ public class FluidPipeBlock extends ObjectBlock
         for(Direction direction : Direction.values())
         {
             state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], false);
-
-            TileEntity adjacentTileEntity = world.getBlockEntity(pos.relative(direction));
-            if(adjacentTileEntity instanceof PipeTileEntity)
+            if(this.canPipeConnectTo(world, pos, direction))
             {
-                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !disabledConnections[direction.get3DDataValue()]);
-            }
-            else if(adjacentTileEntity != null && adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
-            {
-                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !disabledConnections[direction.get3DDataValue()]);
-            }
-            else
-            {
-                BlockState adjacentState = world.getBlockState(pos.relative(direction));
-                if(adjacentState.getBlock() == Blocks.LEVER && adjacentState.getValue(LeverBlock.FACING) == direction && adjacentState.getValue(LeverBlock.FACE) == AttachFace.WALL)
-                {
-                    state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
-                }
+                boolean enabled = !disabledConnections[direction.get3DDataValue()] || world.getBlockState(pos.relative(direction)).getBlock() == Blocks.LEVER;
+                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], enabled);
             }
         }
         return state;
+    }
+
+    protected boolean canPipeConnectTo(IWorld world, BlockPos pos, Direction direction)
+    {
+        BlockPos relativePos = pos.relative(direction);
+        TileEntity adjacentTileEntity = world.getBlockEntity(relativePos);
+        if(adjacentTileEntity instanceof PipeTileEntity)
+        {
+            return true;
+        }
+        else if(adjacentTileEntity != null && adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
+        {
+            return true;
+        }
+        else
+        {
+            BlockState adjacentState = world.getBlockState(pos);
+            return adjacentState.getBlock() == Blocks.LEVER && adjacentState.getValue(LeverBlock.FACING) == direction && adjacentState.getValue(LeverBlock.FACE) == AttachFace.WALL;
+        }
     }
 
     @Override
