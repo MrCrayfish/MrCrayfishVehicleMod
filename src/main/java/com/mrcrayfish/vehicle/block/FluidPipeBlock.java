@@ -10,6 +10,7 @@ import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.LeverBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
@@ -19,6 +20,7 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.AttachFace;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -326,6 +328,14 @@ public class FluidPipeBlock extends ObjectBlock
             else if(adjacentTileEntity != null && adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
             {
                 state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !disabledConnections[direction.get3DDataValue()]);
+            }
+            else
+            {
+                BlockState adjacentState = world.getBlockState(pos.relative(direction));
+                if(adjacentState.getBlock() == Blocks.LEVER && adjacentState.getValue(LeverBlock.FACING) == direction && adjacentState.getValue(LeverBlock.FACE) == AttachFace.WALL)
+                {
+                    state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], true);
+                }
             }
         }
         return state;
