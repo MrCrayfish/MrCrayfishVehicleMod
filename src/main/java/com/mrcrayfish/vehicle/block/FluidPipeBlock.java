@@ -253,7 +253,7 @@ public class FluidPipeBlock extends ObjectBlock
     protected BlockState getDisabledState(BlockState state, World world, BlockPos pos)
     {
         boolean powered = world.hasNeighborSignal(pos);
-        state.setValue(DISABLED, powered);
+        state = state.setValue(DISABLED, powered);
         return state;
     }
 
