@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.item.WrenchItem;
 import com.mrcrayfish.vehicle.tileentity.PipeTileEntity;
@@ -230,6 +231,11 @@ public class FluidPipeBlock extends ObjectBlock
                 }
             }
             world.setBlockEntity(pos, tileEntity);
+
+            if(!(this instanceof FluidPumpBlock))
+            {
+                FluidNetworkHandler.instance().addPipeForUpdate(tileEntity);
+            }
         }
     }
 
