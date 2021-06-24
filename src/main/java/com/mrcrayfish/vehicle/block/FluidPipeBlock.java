@@ -248,6 +248,11 @@ public class FluidPipeBlock extends ObjectBlock
         {
             this.invalidatePipeNetwork(world, pos);
         }
+
+        if(state != this.getPipeState(state, world, pos))
+        {
+            this.invalidatePipeNetwork(world, pos);
+        }
     }
 
     protected BlockState getDisabledState(BlockState state, World world, BlockPos pos)
