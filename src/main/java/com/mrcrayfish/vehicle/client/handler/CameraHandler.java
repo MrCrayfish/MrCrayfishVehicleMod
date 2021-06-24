@@ -12,8 +12,6 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
-import java.util.Objects;
-
 /**
  * Manages changing the point of view of the camera when mounting and dismount vehicles
  *

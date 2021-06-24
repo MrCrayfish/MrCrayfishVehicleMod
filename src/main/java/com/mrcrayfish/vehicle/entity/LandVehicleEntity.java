@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -18,10 +17,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.DistExecutor;
-
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.AccelerationDirection;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.TurnDirection;
 
 /**
  * Author: MrCrayfish

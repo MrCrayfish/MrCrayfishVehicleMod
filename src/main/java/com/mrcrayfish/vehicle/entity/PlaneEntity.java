@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageFlaps;
@@ -14,9 +13,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.AccelerationDirection;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.TurnDirection;
 
 /**
  * Author: MrCrayfish

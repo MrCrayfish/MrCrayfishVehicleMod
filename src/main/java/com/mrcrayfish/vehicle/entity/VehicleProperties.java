@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.client.KeyBinds;
 import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;

@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.client.handler;
 
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
-import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import net.minecraft.client.Minecraft;

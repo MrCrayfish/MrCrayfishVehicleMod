@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import net.minecraft.block.SoundType;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;

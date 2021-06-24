@@ -10,8 +10,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.lang.ref.WeakReference;
 
-import net.minecraft.client.audio.ISound.AttenuationType;
-
 /**
  * Author: MrCrayfish
  */

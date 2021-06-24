@@ -1,8 +1,7 @@
 package com.mrcrayfish.vehicle.block;
 
-import net.minecraft.block.Block;
-
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 
 /**
  * Author: MrCrayfish

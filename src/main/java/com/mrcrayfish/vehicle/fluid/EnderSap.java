@@ -13,8 +13,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.ForgeFlowingFluid;
 
-import net.minecraftforge.fluids.ForgeFlowingFluid.Properties;
-
 /**
  * Author: MrCrayfish
  */

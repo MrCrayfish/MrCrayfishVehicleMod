@@ -31,7 +31,6 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fml.loading.FMLLoader;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAltitude;
@@ -15,9 +14,6 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.AccelerationDirection;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity.TurnDirection;
 
 /**
  * Author: MrCrayfish
