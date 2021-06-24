@@ -54,7 +54,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -63,7 +62,7 @@ import java.util.Set;
 public class FluidPipeBlock extends ObjectBlock
 {
     public static final BooleanProperty[] CONNECTED_PIPES = {BlockStateProperties.DOWN, BlockStateProperties.UP, BlockStateProperties.NORTH, BlockStateProperties.SOUTH, BlockStateProperties.WEST, BlockStateProperties.EAST};
-    public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
+    public static final BooleanProperty DISABLED = BlockStateProperties.POWERED;
 
     protected static final VoxelShape CENTER = Block.box(5, 5, 5, 11, 11, 11);
     protected static final VoxelShape[] SIDES = {
@@ -76,7 +75,7 @@ public class FluidPipeBlock extends ObjectBlock
     public FluidPipeBlock()
     {
         super(AbstractBlock.Properties.of(Material.METAL).strength(0.5F));
-        BlockState defaultState = this.getStateDefinition().any().setValue(POWERED, false);
+        BlockState defaultState = this.getStateDefinition().any().setValue(DISABLED, true);
         for(BooleanProperty property : CONNECTED_PIPES)
         {
             defaultState = defaultState.setValue(property, false);
@@ -238,35 +237,32 @@ public class FluidPipeBlock extends ObjectBlock
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean p_220069_6_)
     {
-        if(neighborBlock == ModBlocks.FLUID_PIPE.get())
+        BlockState neighborState = world.getBlockState(neighborPos);
+        if(neighborBlock == ModBlocks.FLUID_PIPE.get() || neighborState.getBlock() == ModBlocks.FLUID_PIPE.get())
         {
             this.invalidatePipeNetwork(world, pos);
         }
 
-        BlockState newState = this.getPoweredState(state, world, pos);
-        if(state != newState)
+        boolean powered = world.hasNeighborSignal(pos);
+        if(state.getValue(DISABLED) != powered)
         {
             this.invalidatePipeNetwork(world, pos);
-            world.setBlock(pos, newState, Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
         }
     }
 
-    protected BlockState getPoweredState(BlockState state, World world, BlockPos pos)
+    protected BlockState getDisabledState(BlockState state, World world, BlockPos pos)
     {
         boolean powered = world.hasNeighborSignal(pos);
-        if(powered != state.getValue(POWERED))
-        {
-            state = state.setValue(POWERED, powered);
-        }
+        state.setValue(DISABLED, powered);
         return state;
     }
 
     @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState replaceState, boolean what)
     {
-        this.invalidatePipeNetwork(world, pos);
         if(!state.is(replaceState.getBlock()))
         {
+            this.invalidatePipeNetwork(world, pos);
             super.onRemove(state, world, pos, replaceState, what);
         }
     }
@@ -300,7 +296,7 @@ public class FluidPipeBlock extends ObjectBlock
     {
         BlockState state = this.defaultBlockState();
         state = this.getPipeState(state, context.getLevel(), context.getClickedPos());
-        return this.getPoweredState(state, context.getLevel(), context.getClickedPos());
+        return this.getDisabledState(state, context.getLevel(), context.getClickedPos());
     }
 
     protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos)
@@ -332,7 +328,7 @@ public class FluidPipeBlock extends ObjectBlock
         }
         else
         {
-            BlockState adjacentState = world.getBlockState(pos);
+            BlockState adjacentState = world.getBlockState(relativePos);
             return adjacentState.getBlock() == Blocks.LEVER && adjacentState.getValue(LeverBlock.FACING) == direction && adjacentState.getValue(LeverBlock.FACE) == AttachFace.WALL;
         }
     }
@@ -348,7 +344,7 @@ public class FluidPipeBlock extends ObjectBlock
     {
         super.createBlockStateDefinition(builder);
         builder.add(CONNECTED_PIPES);
-        builder.add(POWERED);
+        builder.add(DISABLED);
     }
 
     @Override

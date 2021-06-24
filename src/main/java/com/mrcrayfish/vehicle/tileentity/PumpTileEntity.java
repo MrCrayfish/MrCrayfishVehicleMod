@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.FluidPipeBlock;
 import com.mrcrayfish.vehicle.block.FluidPumpBlock;
+import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
@@ -164,7 +165,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                 BlockState selfState = this.level.getBlockState(pos);
                 if(selfState.getBlock() instanceof FluidPipeBlock)
                 {
-                    if(selfState.getValue(FluidPipeBlock.POWERED))
+                    if(this.level.hasNeighborSignal(pos))
                         continue;
 
                     if(!selfState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
@@ -200,9 +201,10 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                         PipeTileEntity pipeTileEntity = (PipeTileEntity) selfTileEntity;
                         pipeTileEntity.addPump(this.worldPosition);
                         node.tileEntity = new WeakReference<>(pipeTileEntity);
+                        FluidNetworkHandler.instance().addPipeForUpdate(pipeTileEntity);
                     }
 
-                    if(state.getValue(FluidPipeBlock.POWERED))
+                    if(this.level.hasNeighborSignal(pos))
                         continue;
 
                     BlockPos relativePos = pos.relative(direction);
@@ -226,6 +228,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
             if(tileEntity != null)
             {
                 tileEntity.removePump(this.worldPosition);
+                FluidNetworkHandler.instance().addPipeForUpdate(tileEntity);
             }
         });
     }

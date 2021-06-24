@@ -113,6 +113,13 @@ public class FuelDrumBlock extends RotatedObjectBlock
                     return ActionResultType.SUCCESS;
                 }
             }
+
+            TileEntity tileEntity = world.getBlockEntity(pos);
+            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
+            if(handler instanceof FluidTank)
+            {
+                System.out.println(((FluidTank) handler).getFluidAmount());
+            }
         }
         return ActionResultType.SUCCESS;
     }

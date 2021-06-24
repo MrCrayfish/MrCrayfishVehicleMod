@@ -83,10 +83,10 @@ public class FluidPumpBlock extends FluidPipeBlock
             {
                 PumpTileEntity pumpTileEntity = (PumpTileEntity) tileEntity;
 
-                if(!FMLLoader.isProduction())
+                /*if(!FMLLoader.isProduction())
                 {
                     pumpTileEntity.invalidatePipeNetwork();
-                }
+                }*/
 
                 Vector3d localHitVec = result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ());
                 if(player.getItemInHand(hand).getItem() == ModItems.WRENCH.get() && this.isLookingAtHousing(state, localHitVec))
@@ -118,26 +118,30 @@ public class FluidPumpBlock extends FluidPipeBlock
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean p_220069_6_)
     {
-        if(neighborBlock == ModBlocks.FLUID_PIPE.get())
+        BlockState neighborState = world.getBlockState(neighborPos);
+        if(neighborBlock == ModBlocks.FLUID_PIPE.get() || neighborState.getBlock() == ModBlocks.FLUID_PIPE.get())
         {
             this.invalidatePipeNetwork(world, pos);
         }
 
-        BlockState newState = this.getPoweredState(state, world, pos);
-        if(state != newState)
+        boolean powered = world.hasNeighborSignal(pos);
+        if(state.getValue(DISABLED) != powered)
         {
             this.invalidatePipeNetwork(world, pos);
-            world.setBlock(pos, newState, Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
+            world.setBlock(pos, state.setValue(DISABLED, powered), Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
         }
     }
 
     @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState replaceState, boolean what)
     {
-        TileEntity tileEntity = world.getBlockEntity(pos);
-        if(tileEntity instanceof PumpTileEntity)
+        if(!state.is(replaceState.getBlock()))
         {
-            ((PumpTileEntity) tileEntity).removePumpFromPipes();
+            TileEntity tileEntity = world.getBlockEntity(pos);
+            if(tileEntity instanceof PumpTileEntity)
+            {
+                ((PumpTileEntity) tileEntity).removePumpFromPipes();
+            }
         }
         super.onRemove(state, world, pos, replaceState, what);
     }
@@ -163,7 +167,8 @@ public class FluidPumpBlock extends FluidPipeBlock
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
         BlockState state = super.getStateForPlacement(context).setValue(DIRECTION, context.getClickedFace());
-        return this.getPumpState(context.getLevel(), context.getClickedPos(), state, context.getClickedFace());
+        state = this.getPumpState(context.getLevel(), context.getClickedPos(), state, context.getClickedFace());
+        return this.getDisabledState(state, context.getLevel(), context.getClickedPos());
     }
 
     private BlockState getPumpState(IWorld world, BlockPos pos, BlockState state, Direction originalFacing)

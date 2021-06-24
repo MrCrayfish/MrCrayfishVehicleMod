@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle;
 
 import com.mrcrayfish.vehicle.client.ClientHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -52,6 +53,7 @@ public class VehicleMod
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
+        MinecraftForge.EVENT_BUS.register(FluidNetworkHandler.instance());
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
