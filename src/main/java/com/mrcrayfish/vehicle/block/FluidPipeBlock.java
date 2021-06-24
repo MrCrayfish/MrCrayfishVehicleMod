@@ -62,7 +62,7 @@ import java.util.Set;
 public class FluidPipeBlock extends ObjectBlock
 {
     public static final BooleanProperty[] CONNECTED_PIPES = {BlockStateProperties.DOWN, BlockStateProperties.UP, BlockStateProperties.NORTH, BlockStateProperties.SOUTH, BlockStateProperties.WEST, BlockStateProperties.EAST};
-    public static final BooleanProperty DISABLED = BlockStateProperties.POWERED;
+    public static final BooleanProperty DISABLED = BooleanProperty.create("disabled");
 
     protected static final VoxelShape CENTER = Block.box(5, 5, 5, 11, 11, 11);
     protected static final VoxelShape[] SIDES = {

@@ -1,52 +1,52 @@
 {
     "multipart": [
         {
-            "when": { "facing": "up", "powered": "false" },
+            "when": { "facing": "up", "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "x": -90 }
         },
         {
-            "when": { "facing": "down", "powered": "false" },
+            "when": { "facing": "down", "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "x": 90 }
         },
         {
-            "when": { "facing": "north", "powered": "false" },
+            "when": { "facing": "north", "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 0 }
         },
         {
-            "when": { "facing": "east", "powered": "false" },
+            "when": { "facing": "east", "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 90 }
         },
         {
-            "when": { "facing": "south", "powered": "false" },
+            "when": { "facing": "south", "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 180 }
         },
         {
-            "when": { "facing": "west", "powered": "false" },
+            "when": { "facing": "west", "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pump", "y": 270 }
         },
         {
-            "when": { "facing": "up", "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pump", "x": -90 }
+            "when": { "facing": "up", "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pump", "x": -90 }
         },
         {
-            "when": { "facing": "down", "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pump", "x": 90 }
+            "when": { "facing": "down", "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pump", "x": 90 }
         },
         {
-            "when": { "facing": "north", "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 0 }
+            "when": { "facing": "north", "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pump", "y": 0 }
         },
         {
-            "when": { "facing": "east", "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 90 }
+            "when": { "facing": "east", "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pump", "y": 90 }
         },
         {
-            "when": { "facing": "south", "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 180 }
+            "when": { "facing": "south", "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pump", "y": 180 }
         },
         {
-            "when": { "facing": "west", "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pump", "y": 270 }
+            "when": { "facing": "west", "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pump", "y": 270 }
         },
         {
             "when": { "up": "true" },

@@ -1,12 +1,12 @@
 {
     "multipart": [
         {
-            "when": { "powered": "false" },
+            "when": { "disabled": "false" },
             "apply": { "model": "vehicle:block/fluid_pipe" }
         },
         {
-            "when": { "powered": "true" },
-            "apply": { "model": "vehicle:block/powered_fluid_pipe" }
+            "when": { "disabled": "true" },
+            "apply": { "model": "vehicle:block/disabled_fluid_pipe" }
         },
         {
             "when": { "up": "true" },
