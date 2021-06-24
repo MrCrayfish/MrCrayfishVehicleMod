@@ -13,6 +13,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.AttachFace;
 import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
@@ -171,6 +172,7 @@ public class FluidPumpBlock extends FluidPipeBlock
         return this.getDisabledState(state, context.getLevel(), context.getClickedPos());
     }
 
+    //TODO clean up this trash holy duplicate code
     private BlockState getPumpState(IWorld world, BlockPos pos, BlockState state, Direction originalFacing)
     {
         PipeTileEntity pipe = getPipeTileEntity(world, pos);
@@ -191,8 +193,25 @@ public class FluidPumpBlock extends FluidPipeBlock
             }
             else if(adjacentState.getBlock() == Blocks.LEVER)
             {
-                Direction leverFacing = adjacentState.getValue(LeverBlock.FACING).getOpposite();
-                if(adjacentPos.relative(leverFacing).equals(pos))
+                boolean connected = false;
+                AttachFace attachFace = adjacentState.getValue(LeverBlock.FACE);
+                if(facing.getAxis() != Direction.Axis.Y)
+                {
+                    if(adjacentState.getValue(LeverBlock.FACING) == facing && attachFace == AttachFace.WALL)
+                    {
+                        connected = true;
+                    }
+                }
+                else if(facing == Direction.UP && attachFace == AttachFace.FLOOR)
+                {
+                    connected = true;
+                }
+                else if(facing == Direction.DOWN && attachFace == AttachFace.CEILING)
+                {
+                    connected = true;
+                }
+
+                if(connected)
                 {
                     state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], true);
                     if(pipe != null)

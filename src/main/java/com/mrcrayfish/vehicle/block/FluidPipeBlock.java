@@ -329,7 +329,20 @@ public class FluidPipeBlock extends ObjectBlock
         else
         {
             BlockState adjacentState = world.getBlockState(relativePos);
-            return adjacentState.getBlock() == Blocks.LEVER && adjacentState.getValue(LeverBlock.FACING) == direction && adjacentState.getValue(LeverBlock.FACE) == AttachFace.WALL;
+            if(adjacentState.getBlock() == Blocks.LEVER)
+            {
+                AttachFace attachFace = adjacentState.getValue(LeverBlock.FACE);
+                if(direction.getAxis() != Direction.Axis.Y)
+                {
+                    return adjacentState.getValue(LeverBlock.FACING) == direction && attachFace == AttachFace.WALL;
+                }
+                else if(direction == Direction.UP && attachFace == AttachFace.FLOOR)
+                {
+                    return true;
+                }
+                return direction == Direction.DOWN && attachFace == AttachFace.CEILING;
+            }
+            return false;
         }
     }
 
