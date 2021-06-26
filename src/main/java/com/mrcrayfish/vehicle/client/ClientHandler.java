@@ -13,6 +13,7 @@ import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.EntityVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
+import com.mrcrayfish.vehicle.client.render.tileentity.FluidPumpRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.GasPumpRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.GasPumpTankRenderer;
@@ -185,6 +186,7 @@ public class ClientHandler
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.JACK.get(), com.mrcrayfish.vehicle.client.render.tileentity.JackRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP.get(), GasPumpRenderer::new);
         ClientRegistry.bindTileEntityRenderer(ModTileEntities.GAS_PUMP_TANK.get(), GasPumpTankRenderer::new);
+        ClientRegistry.bindTileEntityRenderer(ModTileEntities.FLUID_PUMP.get(), FluidPumpRenderer::new);
     }
 
     private static void setupScreenFactories()

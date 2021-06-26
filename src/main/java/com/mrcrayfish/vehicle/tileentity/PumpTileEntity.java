@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import com.mrcrayfish.vehicle.util.TileEntityUtil;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -59,6 +60,11 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
 
             this.pumpFluid();
         }
+    }
+
+    public PowerMode getPowerMode()
+    {
+        return this.powerMode;
     }
 
     public Map<BlockPos, PipeNode> getFluidNetwork()
@@ -270,10 +276,15 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         return Optional.empty();
     }
 
-    public void cyclePowerMode(PlayerEntity player)
+    public void cyclePowerMode()
     {
         this.powerMode = PowerMode.values()[(this.powerMode.ordinal() + 1) % PowerMode.values().length];
-        this.powerMode.notifyPlayerOfChange(player);
+        if(this.level != null && !this.level.isClientSide())
+        {
+            CompoundNBT compound = new CompoundNBT();
+            this.writePowerMode(compound);
+            TileEntityUtil.sendUpdatePacket(this, super.save(compound));
+        }
     }
 
     @Override
@@ -291,6 +302,11 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     {
         compound.putInt("PowerMode", this.powerMode.ordinal());
         return super.save(compound);
+    }
+
+    private void writePowerMode(CompoundNBT compound)
+    {
+        compound.putInt("PowerMode", this.powerMode.ordinal());
     }
 
     private static class PipeNode
@@ -323,6 +339,11 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         public void notifyPlayerOfChange(PlayerEntity player) //TODO change. See EntityRenderer#renderNameTag
         {
             player.displayClientMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(this.key)), true);
+        }
+
+        public String getKey()
+        {
+            return this.key;
         }
 
         @Nullable
