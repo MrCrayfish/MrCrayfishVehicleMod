@@ -1,7 +1,23 @@
 package com.mrcrayfish.vehicle.client;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mrcrayfish.vehicle.block.FluidPumpBlock;
+import com.mrcrayfish.vehicle.init.ModBlocks;
+import com.mrcrayfish.vehicle.init.ModItems;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.World;
 import net.minecraftforge.client.event.DrawHighlightEvent;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
@@ -12,6 +28,34 @@ public class ClientEvents
     @SubscribeEvent
     public void renderCustomBlockHighlights(DrawHighlightEvent.HighlightBlock event)
     {
+        BlockRayTraceResult target = event.getTarget();
+        Entity entity = event.getInfo().getEntity();
+        if(!(entity instanceof PlayerEntity))
+            return;
+
+        PlayerEntity player = (PlayerEntity) entity;
+        World world = player.level;
+        BlockPos pos = target.getBlockPos();
+        BlockState state = world.getBlockState(pos);
+        if(state.getBlock() == ModBlocks.FLUID_PUMP.get() && player.getMainHandItem().getItem() == ModItems.WRENCH.get())
+        {
+            FluidPumpBlock fluidPumpBlock = (FluidPumpBlock) state.getBlock();
+            if(fluidPumpBlock.isLookingAtHousing(state, target.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ())))
+            {
+                event.setCanceled(true);
+                VoxelShape baseShape = FluidPumpBlock.PUMP_BOX[state.getValue(FluidPumpBlock.DIRECTION).getOpposite().get3DDataValue()];
+                IVertexBuilder builder = event.getBuffers().getBuffer(RenderType.lines());
+                MatrixStack matrixStack = event.getMatrix();
+                matrixStack.pushPose();
+                Vector3d position = event.getInfo().getPosition();
+                matrixStack.translate(-position.x, -position.y, -position.z);
+                matrixStack.translate(pos.getX(), pos.getY(), pos.getZ());
+                EntityRayTracer.renderShape(matrixStack, builder, baseShape, 0.0F, 1.0F, 0.0F, 1.0F);
+                EntityRayTracer.renderShape(matrixStack, builder, fluidPumpBlock.getPipeShape(state, world, pos), 0.0F, 0.0F, 0.0F, 0.4F);
+                matrixStack.popPose();
+            }
+        }
+
         /*BlockRayTraceResult target = event.getTarget();
         Entity player = event.getInfo().getRenderViewEntity();
         World world = player.world;
@@ -147,19 +191,17 @@ public class ClientEvents
         GlStateManager.disableBlend();*/
     }
 
-    @SubscribeEvent
+    /*@SubscribeEvent
     public void setLiquidFogDensity(EntityViewRenderEvent.FogDensity event)
     {
         event.getInfo().getBlockAtCamera();
-        /*Block block = event.getState().getBlock(); //TODO do i need to fix this
+        *//*Block block = event.getState().getBlock(); //TODO do i need to fix this
         boolean isSap = block == ModBlocks.ENDER_SAP.get();
         if (isSap || block == ModBlocks.FUELIUM.get() || block == ModBlocks.BLAZE_JUICE.get())
         {
             GlStateManager.setFog(GlStateManager.FogMode.EXP);
             event.setDensity(isSap ? 1 : 0.5F);
             event.setCanceled(true);
-        }*/
-    }
-
-
+        }*//*
+    }*/
 }

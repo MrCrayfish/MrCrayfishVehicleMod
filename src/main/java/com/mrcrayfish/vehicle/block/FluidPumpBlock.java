@@ -24,6 +24,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
@@ -34,6 +35,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,21 +47,32 @@ public class FluidPumpBlock extends FluidPipeBlock
     public static final DirectionProperty DIRECTION = BlockStateProperties.FACING;
 
     //TODO add collisions
-    private final VoxelShape[][] PUMP_BOX = new VoxelShape[][]{
-            {Block.box(3, 0, 3, 13, 4, 13), Block.box(4, 3, 4, 12, 4, 12)},
-            {Block.box(3, 12, 3, 13, 16, 13), Block.box(4, 13, 4, 12, 12, 12)},
-            {Block.box(3, 3, 0, 13, 13, 4), Block.box(4, 4, 3, 12, 12, 4)},
-            {Block.box(3, 3, 12, 13, 13, 16), Block.box(4, 4, 13, 12, 12, 12)},
-            {Block.box(0, 3, 3, 4, 13, 13), Block.box(3, 4, 4, 4, 12, 12)},
-            {Block.box(12, 3, 3, 16, 13, 13), Block.box(13, 4, 4, 12, 12, 12)}
+    public static final VoxelShape[] PUMP_BOX = new VoxelShape[]{
+            Block.box(3, 0, 3, 13, 4, 13),
+            Block.box(3, 12, 3, 13, 16, 13),
+            Block.box(3, 3, 0, 13, 13, 4),
+            Block.box(3, 3, 12, 13, 13, 16),
+            Block.box(0, 3, 3, 4, 13, 13),
+            Block.box(12, 3, 3, 16, 13, 13)
     };
 
     @Override
-    protected VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        return this.getPumpShape(state, worldIn, pos);
+    }
+
+    @Override
+    public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        return this.getPumpShape(state, worldIn, pos);
+    }
+
+    protected VoxelShape getPumpShape(BlockState state, IBlockReader worldIn, BlockPos pos)
     {
         List<VoxelShape> shapes = new ArrayList<>();
         shapes.add(super.getPipeShape(state, worldIn, pos));
-        Collections.addAll(shapes, PUMP_BOX[this.getCollisionFacing(state).get3DDataValue()]);
+        shapes.add(PUMP_BOX[this.getCollisionFacing(state).get3DDataValue()]);
         return VoxelShapeHelper.combineAll(shapes);
     }
 
@@ -91,7 +104,7 @@ public class FluidPumpBlock extends FluidPipeBlock
                 Vector3d localHitVec = result.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ());
                 if(player.getItemInHand(hand).getItem() == ModItems.WRENCH.get() && this.isLookingAtHousing(state, localHitVec))
                 {
-                    pumpTileEntity.cyclePowerMode(player);
+                    pumpTileEntity.cyclePowerMode();
                     world.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
                     return ActionResultType.SUCCESS;
                 }
@@ -103,16 +116,9 @@ public class FluidPumpBlock extends FluidPipeBlock
 
     public boolean isLookingAtHousing(BlockState state, Vector3d hitVec)
     {
-        VoxelShape[] shapes = this.PUMP_BOX[this.getCollisionFacing(state).get3DDataValue()];
-        for(VoxelShape shape : shapes)
-        {
-            AxisAlignedBB boundingBox = shape.bounds();
-            if(boundingBox.inflate(0.001).contains(hitVec))
-            {
-                return true;
-            }
-        }
-        return false;
+        VoxelShape shape = PUMP_BOX[this.getCollisionFacing(state).get3DDataValue()];
+        AxisAlignedBB boundingBox = shape.bounds();
+        return boundingBox.inflate(0.001).contains(hitVec);
     }
 
     @Override

@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -49,10 +50,15 @@ public class FluidPumpRenderer extends TileEntityRenderer<PumpTileEntity>
         if(!result.getBlockPos().equals(tileEntity.getBlockPos()))
             return;
 
+        BlockPos pos = tileEntity.getBlockPos();
+        BlockState state = tileEntity.getBlockState();
+        FluidPumpBlock fluidPumpBlock = (FluidPumpBlock) state.getBlock();
+        if(!fluidPumpBlock.isLookingAtHousing(state, this.renderer.cameraHitResult.getLocation().add(-pos.getX(), -pos.getY(), -pos.getZ())))
+            return;
+
         matrixStack.pushPose();
         matrixStack.translate(0.5, 0.5, 0.5);
 
-        BlockState state = tileEntity.getBlockState();
         Direction direction = state.getValue(FluidPumpBlock.DIRECTION);
         matrixStack.translate(-direction.getStepX() * 0.35, -direction.getStepY() * 0.35, -direction.getStepZ() * 0.35);
 

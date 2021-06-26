@@ -117,7 +117,7 @@ public class FluidPipeBlock extends ObjectBlock
         return this.getPipeShape(state, worldIn, pos);
     }
 
-    protected VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
+    public VoxelShape getPipeShape(BlockState state, IBlockReader worldIn, BlockPos pos)
     {
         List<VoxelShape> shapes = new ArrayList<>();
         boolean[] disabledConnections = this.getDisabledConnections(worldIn, pos);

@@ -81,6 +81,7 @@ public class ClientHandler
         MinecraftForge.EVENT_BUS.register(new OverlayHandler());
         MinecraftForge.EVENT_BUS.register(new PlayerModelHandler());
         MinecraftForge.EVENT_BUS.register(new SprayCanHandler());
+        MinecraftForge.EVENT_BUS.register(new ClientEvents());
 
         setupCustomBlockModels();
         setupRenderLayers();

@@ -1097,7 +1097,7 @@ public class EntityRayTracer
         }
     }
 
-    private static void renderShape(MatrixStack matrixStack, IVertexBuilder builder, VoxelShape shape, float red, float green, float blue, float alpha)
+    public static void renderShape(MatrixStack matrixStack, IVertexBuilder builder, VoxelShape shape, float red, float green, float blue, float alpha)
     {
         Matrix4f pose = matrixStack.last().pose();
         shape.forAllEdges((minX, minY, minZ, maxX, maxY, maxZ) -> {
