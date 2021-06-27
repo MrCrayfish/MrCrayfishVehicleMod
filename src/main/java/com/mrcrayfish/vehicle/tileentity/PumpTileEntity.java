@@ -40,7 +40,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
     private boolean validatedNetwork;
     private Map<BlockPos, PipeNode> fluidNetwork = new HashMap<>();
     private List<Pair<BlockPos, Direction>> fluidHandlers = new ArrayList<>();
-    private PowerMode powerMode = PowerMode.REQUIRES_SIGNAL_ON;
+    private PowerMode powerMode = PowerMode.ALWAYS_ACTIVE;
 
     public PumpTileEntity()
     {
@@ -154,6 +154,9 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         this.fluidHandlers.clear();
         this.fluidNetwork.clear();
 
+        if(!this.powerMode.test(this))
+            return;
+
         // Finds all the pipes in the network
         Set<BlockPos> visited = new HashSet<>();
         Queue<BlockPos> queue = new ArrayDeque<>();
@@ -171,7 +174,7 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                 BlockState selfState = this.level.getBlockState(pos);
                 if(selfState.getBlock() instanceof FluidPipeBlock)
                 {
-                    if(this.level.hasNeighborSignal(pos))
+                    if(!(selfState.getBlock() instanceof FluidPumpBlock) && this.level.hasNeighborSignal(pos))
                         continue;
 
                     if(!selfState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
@@ -284,6 +287,10 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
             CompoundNBT compound = new CompoundNBT();
             this.writePowerMode(compound);
             TileEntityUtil.sendUpdatePacket(this, super.save(compound));
+            BlockState state = this.getBlockState();
+            state = ((FluidPumpBlock) state.getBlock()).getDisabledState(state, this.level, this.worldPosition);
+            this.level.setBlock(this.worldPosition, state, Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
+            this.invalidatePipeNetwork();
         }
     }
 

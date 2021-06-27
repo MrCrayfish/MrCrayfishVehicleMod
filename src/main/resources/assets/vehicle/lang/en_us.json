@@ -168,9 +168,9 @@
     "vehicle.config.server.max_hose_distance": "Max Hose Distance",
     "vehicle.config.server.max_hose_distance.tooltip": "The maximum distance before the hose from the gas pump or fluid hose breaks",
 
-    "vehicle.chat.pump.power": "§bPower Mode:§r %s",
-    "vehicle.chat.pump.power.off": "Requires Signal",
-    "vehicle.chat.pump.power.on": "Requires No Signal",
+    "vehicle.chat.pump.power": "Power Mode: ",
+    "vehicle.chat.pump.power.off": "Requires No Signal",
+    "vehicle.chat.pump.power.on": "Requires Signal",
     "vehicle.chat.pump.power.always": "Always Active",
 
     "vehicle.status.invalid_owner": "You are not the owner of this vehicle",

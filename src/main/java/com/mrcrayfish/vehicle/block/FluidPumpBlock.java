@@ -130,11 +130,11 @@ public class FluidPumpBlock extends FluidPipeBlock
             this.invalidatePipeNetwork(world, pos);
         }
 
-        boolean powered = world.hasNeighborSignal(pos);
-        if(state.getValue(DISABLED) != powered)
+        boolean disabled = this.getDisabledState(state, world, pos).getValue(DISABLED);
+        if(state.getValue(DISABLED) != disabled)
         {
             this.invalidatePipeNetwork(world, pos);
-            world.setBlock(pos, state.setValue(DISABLED, powered), Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
+            world.setBlock(pos, state.setValue(DISABLED, disabled), Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
         }
     }
 
@@ -175,6 +175,20 @@ public class FluidPumpBlock extends FluidPipeBlock
         BlockState state = super.getStateForPlacement(context).setValue(DIRECTION, context.getClickedFace());
         state = this.getPumpState(context.getLevel(), context.getClickedPos(), state, context.getClickedFace());
         return this.getDisabledState(state, context.getLevel(), context.getClickedPos());
+    }
+
+    @Override
+    public BlockState getDisabledState(BlockState state, World world, BlockPos pos)
+    {
+        boolean disabled = true;
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        if(tileEntity instanceof PumpTileEntity)
+        {
+            PumpTileEntity pump = (PumpTileEntity) tileEntity;
+            disabled = !pump.getPowerMode().test(pump);
+        }
+        state = state.setValue(DISABLED, disabled);
+        return state;
     }
 
     //TODO clean up this trash holy duplicate code
