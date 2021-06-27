@@ -2,8 +2,8 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
 	"texture_size": [32, 32],
 	"textures": {
-		"1": "vehicle:model/fluid_pipe",
-		"particle": "vehicle:model/fluid_pipe"
+		"particle": "vehicle:block/dark_metal",
+		"1": "vehicle:model/fluid_pipe"
 	},
 	"elements": [
 		{
