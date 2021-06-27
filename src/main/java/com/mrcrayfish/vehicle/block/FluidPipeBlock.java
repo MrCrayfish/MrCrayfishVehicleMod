@@ -262,8 +262,8 @@ public class FluidPipeBlock extends ObjectBlock
 
     protected BlockState getDisabledState(BlockState state, World world, BlockPos pos)
     {
-        boolean powered = world.hasNeighborSignal(pos);
-        state = state.setValue(DISABLED, powered);
+        boolean disabled = world.hasNeighborSignal(pos);
+        state = state.setValue(DISABLED, disabled);
         return state;
     }
 
@@ -306,7 +306,29 @@ public class FluidPipeBlock extends ObjectBlock
     {
         BlockState state = this.defaultBlockState();
         state = this.getPipeState(state, context.getLevel(), context.getClickedPos());
-        return this.getDisabledState(state, context.getLevel(), context.getClickedPos());
+        state = this.getDisabledState(state, context.getLevel(), context.getClickedPos());
+        if(!state.getValue(DISABLED))
+        {
+            state = state.setValue(DISABLED, true);
+            for(Direction direction : Direction.values())
+            {
+                TileEntity tileEntity = context.getLevel().getBlockEntity(context.getClickedPos().relative(direction));
+                if(tileEntity instanceof PipeTileEntity)
+                {
+                    PipeTileEntity pipeTileEntity = (PipeTileEntity) tileEntity;
+                    if(!pipeTileEntity.getDisabledConnections()[direction.getOpposite().get3DDataValue()])
+                    {
+                        BlockState relativeState = pipeTileEntity.getBlockState();
+                        if(!relativeState.getValue(DISABLED))
+                        {
+                            state = state.setValue(DISABLED, false);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return state;
     }
 
     protected BlockState getPipeState(BlockState state, IWorld world, BlockPos pos)
