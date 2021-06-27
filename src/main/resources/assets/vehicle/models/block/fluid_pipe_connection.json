@@ -3,18 +3,18 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"particle": "vehicle:block/dark_metal",
-		"1": "vehicle:model/fluid_pipe"
+		"fluid_pipe": "vehicle:model/fluid_pipe"
 	},
 	"elements": [
 		{
 			"from": [5, 5, 0],
 			"to": [11, 11, 5],
 			"faces": {
-				"north": {"uv": [6, 0, 9, 3], "texture": "#1"},
-				"east": {"uv": [3, 6, 5.5, 9], "texture": "#1"},
-				"west": {"uv": [6, 3, 8.5, 6], "texture": "#1"},
-				"up": {"uv": [8.5, 8.5, 5.5, 6], "texture": "#1"},
-				"down": {"uv": [11.5, 3, 8.5, 5.5], "texture": "#1"}
+				"north": {"uv": [6, 0, 9, 3], "texture": "#fluid_pipe"},
+				"east": {"uv": [3, 6, 5.5, 9], "texture": "#fluid_pipe"},
+				"west": {"uv": [6, 3, 8.5, 6], "texture": "#fluid_pipe"},
+				"up": {"uv": [8.5, 8.5, 5.5, 6], "texture": "#fluid_pipe"},
+				"down": {"uv": [11.5, 3, 8.5, 5.5], "texture": "#fluid_pipe"}
 			}
 		}
 	],

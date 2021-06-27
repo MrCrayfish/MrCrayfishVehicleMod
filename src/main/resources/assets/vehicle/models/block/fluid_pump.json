@@ -3,7 +3,7 @@
 	"texture_size": [32, 32],
 	"textures": {
 		"particle": "vehicle:block/dark_metal",
-		"3": "vehicle:model/fluid_pump"
+		"fluid_pump": "vehicle:model/fluid_pump"
 	},
 	"elements": [
 		{
@@ -11,33 +11,33 @@
 			"from": [3, 3, 12],
 			"to": [13, 13, 16],
 			"faces": {
-				"north": {"uv": [0, 0, 5, 5], "texture": "#3"},
-				"east": {"uv": [5, 0, 7, 5], "texture": "#3"},
-				"south": {"uv": [0, 5, 5, 10], "texture": "#3"},
-				"west": {"uv": [5, 5, 7, 10], "texture": "#3"},
-				"up": {"uv": [12, 2, 7, 0], "texture": "#3", "tintindex": 0},
-				"down": {"uv": [12, 2, 7, 4], "texture": "#3"}
+				"north": {"uv": [0, 0, 5, 5], "texture": "#fluid_pump"},
+				"east": {"uv": [5, 0, 7, 5], "texture": "#fluid_pump"},
+				"south": {"uv": [0, 5, 5, 10], "texture": "#fluid_pump"},
+				"west": {"uv": [5, 5, 7, 10], "texture": "#fluid_pump"},
+				"up": {"uv": [12, 2, 7, 0], "texture": "#fluid_pump"},
+				"down": {"uv": [12, 2, 7, 4], "texture": "#fluid_pump"}
 			}
 		},
 		{
 			"from": [5, 5, 11],
 			"to": [11, 11, 16],
 			"faces": {
-				"east": {"uv": [6, 10, 8.5, 13], "texture": "#3"},
-				"west": {"uv": [10, 7, 12.5, 10], "texture": "#3"},
-				"up": {"uv": [11.5, 12.5, 8.5, 10], "texture": "#3"},
-				"down": {"uv": [14.5, 10, 11.5, 12.5], "texture": "#3"}
+				"east": {"uv": [6, 10, 8.5, 13], "texture": "#fluid_pump"},
+				"west": {"uv": [10, 7, 12.5, 10], "texture": "#fluid_pump"},
+				"up": {"uv": [11.5, 12.5, 8.5, 10], "texture": "#fluid_pump"},
+				"down": {"uv": [14.5, 10, 11.5, 12.5], "texture": "#fluid_pump"}
 			}
 		},
 		{
 			"from": [5, 5, 5],
 			"to": [11, 11, 11],
 			"faces": {
-				"north": {"uv": [7, 4, 10, 7], "texture": "#3"},
-				"east": {"uv": [7, 7, 10, 10], "texture": "#3"},
-				"west": {"uv": [0, 10, 3, 13], "texture": "#3"},
-				"up": {"uv": [6, 13, 3, 10], "texture": "#3"},
-				"down": {"uv": [13, 4, 10, 7], "texture": "#3"}
+				"north": {"uv": [7, 4, 10, 7], "texture": "#fluid_pump"},
+				"east": {"uv": [7, 7, 10, 10], "texture": "#fluid_pump"},
+				"west": {"uv": [0, 10, 3, 13], "texture": "#fluid_pump"},
+				"up": {"uv": [6, 13, 3, 10], "texture": "#fluid_pump"},
+				"down": {"uv": [13, 4, 10, 7], "texture": "#fluid_pump"}
 			}
 		}
 	],
