@@ -180,7 +180,7 @@ public class FluidPumpBlock extends FluidPipeBlock
     @Override
     public BlockState getDisabledState(BlockState state, World world, BlockPos pos)
     {
-        boolean disabled = true;
+        boolean disabled = false;
         TileEntity tileEntity = world.getBlockEntity(pos);
         if(tileEntity instanceof PumpTileEntity)
         {
