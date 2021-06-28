@@ -1,20 +1,23 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        "II ",
-        "GGI",
-        "II "
+        "IRI",
+        "GGG",
+        "III"
     ],
     "key": {
         "I": {
             "item": "minecraft:iron_ingot"
         },
         "G": {
-            "item": "minecraft:glass"
+            "item": "minecraft:glass_pane"
+        },
+        "R": {
+            "item": "minecraft:redstone"
         }
     },
     "result": {
         "item": "vehicle:fluid_pipe",
-        "count": 4
+        "count": 8
     }
 }
