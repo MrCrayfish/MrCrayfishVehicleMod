@@ -109,10 +109,13 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                     // Remove fluid handler since it's full
                     it.remove();
 
-                    // Adds the remaining fluid to the split amount
-                    int deltaAmount = splitAmount - transferredAmount;
-                    splitAmount += deltaAmount / handlers.size();
-                    remainingAmount += deltaAmount % handlers.size();
+                    if(!handlers.isEmpty())
+                    {
+                        // Adds the remaining fluid to the split amount
+                        int deltaAmount = splitAmount - transferredAmount;
+                        splitAmount += deltaAmount / handlers.size();
+                        remainingAmount += deltaAmount % handlers.size();
+                    }
                 }
             }
         }
