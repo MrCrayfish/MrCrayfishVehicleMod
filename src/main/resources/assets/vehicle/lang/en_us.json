@@ -93,8 +93,8 @@
     "block.vehicle.boost_ramp.info": "Drive on this Boost Ramp to give your vehicle a speed boost and send it flying!",
     "block.vehicle.steep_boost_ramp.info": "Drive on this Steep Boost Ramp to give your vehicle a speed boost and send it flying high into the air!",
     "block.vehicle.traffic_cone.info": "Use this cone to block vehicles with it's extra collision height. It can also be used as a hat!",
-    "block.vehicle.fluid_pipe.info": "Use this pipe to transport fluids. The gray line on the pipe indicates the direction of travel. Fluid must be initially pumped in with a Fluid Pump or any other compatible pump for it to work. Pipe can be disabled with a direct redstone signal.",
-    "block.vehicle.fluid_pump.info": "Use this pump to extract fluid from any compatible fluid storage into a pipe or another fluid storage. For the pump to work, it must be directly powered by redstone.",
+    "block.vehicle.fluid_pipe.info": "Used to create a fluid link from a Fluid Pump to other fluid containers. Connections can be removed with a Wrench. If powered by redstone, the pipe will become disabled and prevent fluid from being transferred through it. Fluid pipes do not store fluid inside them.",
+    "block.vehicle.fluid_pump.info": "Used to pump fluids through a fluid link, which are created by Fluid Pipes. The pump will only work if the fluid link is connected to at one fluid storage. The Fluid Pump has three different power modes which can be changed with a Wrench.",
     "block.vehicle.fuel_drum.info": "This Fuel Drum can be used to store Fuelium or any other fluid. It is highly explosive, so keep it away from fire.",
     "block.vehicle.vehicle_crate.info": "A crate containing a %s. To open the crate, simply right click the top with a wrench.",
 
