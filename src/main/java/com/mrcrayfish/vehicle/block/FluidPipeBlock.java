@@ -304,15 +304,23 @@ public class FluidPipeBlock extends ObjectBlock
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
         BlockState state = this.defaultBlockState();
-        state = this.getPipeState(state, context.getLevel(), context.getClickedPos());
-        state = this.getDisabledState(state, context.getLevel(), context.getClickedPos());
+        state = this.getPipeState(state, world, pos);
+        state = this.getDisabledState(state, world, pos);
+        state = this.getPlacedDisabledState(state, world, pos);
+        return state;
+    }
+
+    protected BlockState getPlacedDisabledState(BlockState state, World world, BlockPos pos)
+    {
         if(!state.getValue(DISABLED))
         {
             state = state.setValue(DISABLED, true);
             for(Direction direction : Direction.values())
             {
-                TileEntity tileEntity = context.getLevel().getBlockEntity(context.getClickedPos().relative(direction));
+                TileEntity tileEntity = world.getBlockEntity(pos.relative(direction));
                 if(tileEntity instanceof PipeTileEntity)
                 {
                     PipeTileEntity pipeTileEntity = (PipeTileEntity) tileEntity;
