@@ -40,7 +40,7 @@ public class FluidExtractorRenderer extends TileEntityRenderer<FluidExtractorTil
         float height = (float) (12.0 * (tileEntity.getFluidLevel() / (double) tileEntity.getCapacity()));
         if(height > 0)
         {
-            this.drawFluid(tileEntity, matrixStack, typeBuffer, 10F * 0.0625F, 2F * 0.0625F, 0.01F * 0.0625F, 5.99F * 0.0625F, height * 0.0625F, (16 - 0.02F) * 0.0625F);
+            this.drawFluid(tileEntity, matrixStack, typeBuffer, 9F * 0.0625F, 2F * 0.0625F, 0.01F * 0.0625F, 6.99F * 0.0625F, height * 0.0625F, (16 - 0.02F) * 0.0625F);
         }
         matrixStack.popPose();
     }
