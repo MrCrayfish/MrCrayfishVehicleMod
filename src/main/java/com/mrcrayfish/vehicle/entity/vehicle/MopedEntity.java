@@ -90,15 +90,9 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.MOPED_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.MOPED_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_MOPED_ENGINE.get();
     }
 
     @Override

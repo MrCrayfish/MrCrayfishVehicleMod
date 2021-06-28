@@ -149,7 +149,7 @@ public class CommonEvents
                         targetEntity.remove();
 
                         //Plays pick up sound
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.PICK_UP_VEHICLE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        world.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.ENTITY_VEHICLE_PICK_UP.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
 
                         return true;
                     }

@@ -18,15 +18,9 @@ public class GolfCartEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
     }
 
     @Override

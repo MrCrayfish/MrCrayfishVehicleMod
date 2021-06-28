@@ -42,7 +42,7 @@ public class SprayCanHandler
 
         SprayCanItem sprayCan = (SprayCanItem) player.inventory.getSelected().getItem();
         float pitch = 0.85F + 0.15F * sprayCan.getRemainingSprays(player.inventory.getSelected());
-        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(ModSounds.SPRAY_CAN_SHAKE.get(), pitch, 0.75F));
+        Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(ModSounds.ITEM_SPRAY_CAN_SHAKE.get(), pitch, 0.75F));
     }
 
     @SubscribeEvent

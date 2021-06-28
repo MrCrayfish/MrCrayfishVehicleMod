@@ -59,13 +59,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
-    {
-        return null;
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
+    public SoundEvent getEngineSound()
     {
         return null;
     }

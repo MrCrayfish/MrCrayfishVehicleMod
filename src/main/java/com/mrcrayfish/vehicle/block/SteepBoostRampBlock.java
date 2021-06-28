@@ -94,7 +94,7 @@ public class SteepBoostRampBlock extends RotatedObjectBlock
                 PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                 if(!poweredVehicle.isBoosting())
                 {
-                    world.playSound(null, pos, ModSounds.BOOST_PAD.get(), SoundCategory.BLOCKS, 2.0F, 0.5F);
+                    world.playSound(null, pos, ModSounds.BLOCK_BOOST_PAD_BOOST.get(), SoundCategory.BLOCKS, 2.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(3);

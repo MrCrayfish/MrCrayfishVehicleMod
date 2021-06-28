@@ -42,15 +42,9 @@ public class SpeedBoatEntity extends BoatEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
     }
 
     @Override

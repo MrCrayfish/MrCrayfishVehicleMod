@@ -71,7 +71,7 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
                     entity.fallDistance = 0.0F;
 
                     player.level.addFreshEntity(entity);
-                    player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.PICK_UP_VEHICLE.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.ENTITY_VEHICLE_PICK_UP.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
                 }
             }
         });

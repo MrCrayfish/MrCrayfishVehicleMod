@@ -116,15 +116,9 @@ public class LawnMowerEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.ATV_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.ATV_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_ATV_ENGINE.get();
     }
 
     @Override

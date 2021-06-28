@@ -20,7 +20,7 @@ public class MovingSoundVehicle extends TickableSound
 
     public MovingSoundVehicle(PoweredVehicleEntity vehicle)
     {
-        super(vehicle.getMovingSound(), SoundCategory.NEUTRAL);
+        super(vehicle.getEngineSound(), SoundCategory.NEUTRAL);
         this.vehicleRef = new WeakReference<>(vehicle);
         this.looping = true;
         this.delay = 0;

@@ -22,15 +22,9 @@ public class GoKartEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.GO_KART_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_GO_KART_ENGINE.get();
     }
 
     @Override

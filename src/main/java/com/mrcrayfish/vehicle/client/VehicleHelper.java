@@ -45,7 +45,7 @@ public class VehicleHelper
         Minecraft.getInstance().tell(() ->
         {
             Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle.getUUID(), uuid -> new HashMap<>());
-            if(vehicle.getRidingSound() != null && player.equals(Minecraft.getInstance().player))
+            if(vehicle.getEngineSound() != null && player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.ENGINE_RIDING);
                 if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
@@ -55,7 +55,7 @@ public class VehicleHelper
                     Minecraft.getInstance().getSoundManager().play(sound);
                 }
             }
-            if(vehicle.getMovingSound() != null && !player.equals(Minecraft.getInstance().player))
+            if(vehicle.getEngineSound() != null && !player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.ENGINE);
                 if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
@@ -75,7 +75,7 @@ public class VehicleHelper
                     Minecraft.getInstance().getSoundManager().play(sound);
                 }
             }
-            if(vehicle.getHornRidingSound() != null && player.equals(Minecraft.getInstance().player))
+            if(vehicle.getHornSound() != null && player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.HORN_RIDING);
                 if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))

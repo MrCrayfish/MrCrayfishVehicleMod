@@ -22,15 +22,9 @@ public class DirtBikeEntity extends MotorcycleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.DIRT_BIKE_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.DIRT_BIKE_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_DIRT_BIKE_ENGINE.get();
     }
 
     @Override

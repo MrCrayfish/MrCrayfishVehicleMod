@@ -99,12 +99,12 @@ public class GasPumpBlock extends RotatedObjectBlock
                 if (gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getId() == playerEntity.getId())
                 {
                     gasPump.setFuelingEntity(null);
-                    world.playSound(null, pos, ModSounds.NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, ModSounds.BLOCK_GAS_PUMP_NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
                 else if (state.getValue(DIRECTION).getClockWise().equals(result.getDirection()))
                 {
                     gasPump.setFuelingEntity(playerEntity);
-                    world.playSound(null, pos, ModSounds.NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    world.playSound(null, pos, ModSounds.BLOCK_GAS_PUMP_NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
             }
         }

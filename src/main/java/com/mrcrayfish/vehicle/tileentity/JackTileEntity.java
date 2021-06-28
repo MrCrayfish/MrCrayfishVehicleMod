@@ -77,19 +77,19 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
             {
                 if(!this.activated)
                 {
-                    this.level.playSound(null, this.worldPosition, ModSounds.JACK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_JACK_HEAD_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     this.activated = true;
                 }
             }
             else if(this.activated)
             {
-                this.level.playSound(null, this.worldPosition, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_JACK_HEAD_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 this.activated = false;
             }
         }
         else if(this.activated)
         {
-            this.level.playSound(null, this.worldPosition, ModSounds.JACK_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+            this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_JACK_HEAD_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
             this.activated = false;
         }
 

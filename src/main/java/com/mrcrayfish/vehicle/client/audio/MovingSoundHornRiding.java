@@ -21,7 +21,7 @@ public class MovingSoundHornRiding extends TickableSound
 
     public MovingSoundHornRiding(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
-        super(vehicle.getHornRidingSound(), SoundCategory.NEUTRAL);
+        super(vehicle.getHornSound(), SoundCategory.NEUTRAL);
         this.playerRef = new WeakReference<>(player);
         this.vehicleRef = new WeakReference<>(vehicle);
         this.attenuation = AttenuationType.NONE;

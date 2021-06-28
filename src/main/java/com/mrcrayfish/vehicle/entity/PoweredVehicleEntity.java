@@ -189,19 +189,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
     }
 
-    public abstract SoundEvent getMovingSound();
-
-    public abstract SoundEvent getRidingSound();
+    public abstract SoundEvent getEngineSound();
 
     //TODO ability to change with nbt
     public SoundEvent getHornSound()
     {
-        return ModSounds.HORN_MONO.get();
-    }
-
-    public SoundEvent getHornRidingSound()
-    {
-        return ModSounds.HORN_STEREO.get();
+        return ModSounds.ENTITY_VEHICLE_HORN.get();
     }
 
     public void playFuelPortOpenSound()
@@ -1272,7 +1265,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     if(!this.hasWheels())
                     {
                         WheelItem wheelItem = (WheelItem) wheel.getItem();
-                        this.level.playSound(null, blockPosition(), ModSounds.AIR_WRENCH_GUN.get(), SoundCategory.BLOCKS, 1.0F, 1.1F);
+                        this.level.playSound(null, this.blockPosition(), ModSounds.BLOCK_JACK_AIR_WRENCH_GUN.get(), SoundCategory.BLOCKS, 1.0F, 1.1F);
                         this.setWheels(true);
                         this.setWheelType(wheelItem.getWheelType());
                         if(wheelItem.hasColor(wheel))
@@ -1283,7 +1276,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 }
                 else
                 {
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.AIR_WRENCH_GUN.get(), SoundCategory.BLOCKS, 1.0F, 0.8F);
+                    this.level.playSound(null, this.blockPosition(), ModSounds.BLOCK_JACK_AIR_WRENCH_GUN.get(), SoundCategory.BLOCKS, 1.0F, 0.8F);
                     this.setWheels(false);
                     this.setWheelColor(-1);
                 }
@@ -1537,8 +1530,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public enum FuelPortType
     {
-        DEFAULT(SpecialModels.FUEL_DOOR_CLOSED, SpecialModels.FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_OPEN.get(), 0.25F, 0.6F, ModSounds.FUEL_PORT_CLOSE.get(), 0.12F, 0.6F),
-        SMALL(SpecialModels.SMALL_FUEL_DOOR_CLOSED, SpecialModels.SMALL_FUEL_DOOR_OPEN, ModSounds.FUEL_PORT_2_OPEN.get(), 0.4F, 0.6F, ModSounds.FUEL_PORT_2_CLOSE.get(), 0.3F, 0.6F);
+        DEFAULT(SpecialModels.FUEL_DOOR_CLOSED, SpecialModels.FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_OPEN.get(), 0.25F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_CLOSE.get(), 0.12F, 0.6F),
+        SMALL(SpecialModels.SMALL_FUEL_DOOR_CLOSED, SpecialModels.SMALL_FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_SMALL_OPEN.get(), 0.4F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_SMALL_CLOSE.get(), 0.3F, 0.6F);
 
         private ISpecialModel closed;
         private ISpecialModel open;

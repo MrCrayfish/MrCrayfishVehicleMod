@@ -152,7 +152,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                 if(this.timer == 90 || this.timer == 110 || this.timer == 130 || this.timer == 150)
                 {
                     float pitch = (float) (0.9F + 0.2F * RAND.nextDouble());
-                    VehicleHelper.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND.get(), this.worldPosition, 1.0F, pitch);
+                    VehicleHelper.playSound(ModSounds.BLOCK_VEHICLE_CRATE_PANEL_LAND.get(), this.worldPosition, 1.0F, pitch);
                 }
                 if(this.timer == 150)
                 {

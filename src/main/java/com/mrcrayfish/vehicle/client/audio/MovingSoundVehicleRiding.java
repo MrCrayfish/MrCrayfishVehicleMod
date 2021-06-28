@@ -22,10 +22,11 @@ public class MovingSoundVehicleRiding extends TickableSound
 
     public MovingSoundVehicleRiding(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
-        super(vehicle.getRidingSound(), SoundCategory.NEUTRAL);
+        super(vehicle.getEngineSound(), SoundCategory.NEUTRAL);
         this.playerRef = new WeakReference<>(player);
         this.vehicleRef = new WeakReference<>(vehicle);
-        this.attenuation = ISound.AttenuationType.NONE;
+        this.attenuation = AttenuationType.NONE;
+        this.relative = true;
         this.looping = true;
         this.delay = 0;
         this.volume = 0.001F;

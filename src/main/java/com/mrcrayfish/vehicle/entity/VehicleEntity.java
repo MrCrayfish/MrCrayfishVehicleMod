@@ -155,7 +155,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                             if(this.getColor() != color)
                             {
                                 this.setColor(compound.getInt("Color"));
-                                player.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.SPRAY_CAN_SPRAY.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                player.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ITEM_SPRAY_CAN_SPRAY.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 compound.putInt("RemainingSprays", remainingSprays - 1);
                             }
                         }
@@ -169,7 +169,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 {
                     heldItem.hurtAndBreak(1, player, playerEntity -> player.broadcastBreakEvent(hand));
                     this.setHealth(this.getHealth() + 5F);
-                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.VEHICLE_THUD.get(), SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_VEHICLE_THUD.get(), SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * random.nextFloat());
                     player.swing(hand);
                     if(player instanceof ServerPlayerEntity)
                     {
@@ -404,14 +404,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             float damage = distance / 2F;
             this.hurt(DamageSource.FALL, damage);
-            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.VEHICLE_IMPACT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F);
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_VEHICLE_IMPACT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
         return true;
     }
 
     protected void onVehicleDestroyed(LivingEntity entity)
     {
-        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.VEHICLE_DESTROYED.get(), SoundCategory.AMBIENT, 1.0F, 0.5F);
+        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_VEHICLE_DESTROYED.get(), SoundCategory.AMBIENT, 1.0F, 0.5F);
 
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
         if(!isCreativeMode && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))

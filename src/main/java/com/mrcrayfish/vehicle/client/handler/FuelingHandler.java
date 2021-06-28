@@ -95,7 +95,7 @@ public class FuelingHandler
         {
             if(this.fuelTickCounter % 3 == 0)
             {
-                player.playSound(ModSounds.LIQUID_GLUG.get(), 0.3F, 1.0F);
+                player.playSound(ModSounds.ITEM_JERRY_CAN_LIQUID_GLUG.get(), 0.3F, 1.0F);
             }
 
             double offset = Math.sin((this.fuelTickCounter + minecraft.getFrameTime()) / 3.0) * 0.1;

@@ -94,7 +94,7 @@ public class BoostPadBlock extends RotatedObjectBlock
                 PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entityIn;
                 if(!poweredVehicle.isBoosting())
                 {
-                    worldIn.playSound(null, pos, ModSounds.BOOST_PAD.get(), SoundCategory.BLOCKS, 1.0F, 0.5F);
+                    worldIn.playSound(null, pos, ModSounds.BLOCK_BOOST_PAD_BOOST.get(), SoundCategory.BLOCKS, 1.0F, 0.5F);
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();

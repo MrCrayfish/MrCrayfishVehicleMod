@@ -20,15 +20,9 @@ public class TractorEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.TRACTOR_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.TRACTOR_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_TRACTOR_ENGINE.get();
     }
 
     @Override

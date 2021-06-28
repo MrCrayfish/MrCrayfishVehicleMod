@@ -69,15 +69,9 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.SPORTS_PLANE_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.SPORTS_PLANE_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_SPORTS_PLANE_ENGINE.get();
     }
 
     @Override
