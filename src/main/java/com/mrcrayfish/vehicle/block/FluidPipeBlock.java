@@ -12,6 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resources.I18n;
@@ -74,7 +75,7 @@ public class FluidPipeBlock extends ObjectBlock
 
     public FluidPipeBlock()
     {
-        super(AbstractBlock.Properties.of(Material.METAL).strength(0.5F));
+        super(AbstractBlock.Properties.of(Material.METAL).sound(SoundType.NETHERITE_BLOCK).strength(0.5F));
         BlockState defaultState = this.getStateDefinition().any().setValue(DISABLED, true);
         for(BooleanProperty property : CONNECTED_PIPES)
         {
