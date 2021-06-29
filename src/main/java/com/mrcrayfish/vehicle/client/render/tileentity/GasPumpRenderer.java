@@ -281,7 +281,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
     private void createVertex(IVertexBuilder buffer, Matrix4f parent, Matrix4f pos, float red, float gray, int light)
     {
         Vector4f vec = new Vector4f(0.0F, 0.0F, 0.0F, 1.0F);
-        vec.transform(pos); //TODO test
+        vec.transform(pos);
         buffer.vertex(parent, vec.x(), vec.y(), vec.z()).color(red, gray, gray, 1.0F).uv2(light).endVertex();
     }
 }

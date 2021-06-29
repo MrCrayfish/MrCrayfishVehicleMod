@@ -220,6 +220,21 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
             }
         });
 
+        // Gets fluid handler directly next to the pump
+        BlockState state = this.getBlockState();
+        for(Direction direction : Direction.values())
+        {
+            if(direction == state.getValue(FluidPumpBlock.DIRECTION).getOpposite())
+                continue;
+
+            BlockPos relativePos = this.worldPosition.relative(direction);
+            TileEntity relativeTileEntity = this.level.getBlockEntity(relativePos);
+            if(relativeTileEntity != null && relativeTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
+            {
+                this.fluidHandlers.add(Pair.of(relativePos, direction.getOpposite()));
+            }
+        }
+
         System.out.println("Generated fluid network. Found " + this.fluidNetwork.size() + " pipes and " + this.fluidHandlers.size() + " fluid handlers!");
     }
 
@@ -312,7 +327,6 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
 
     private static class PipeNode
     {
-        // There is a finite amount of possible vertices
         private WeakReference<PipeTileEntity> tileEntity;
     }
 
@@ -335,11 +349,6 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
         public boolean test(PumpTileEntity pump)
         {
             return this.function.apply(pump);
-        }
-
-        public void notifyPlayerOfChange(PlayerEntity player) //TODO change. See EntityRenderer#renderNameTag
-        {
-            player.displayClientMessage(new TranslationTextComponent(LANG_KEY_CHAT_PREFIX, new TranslationTextComponent(this.key)), true);
         }
 
         public String getKey()

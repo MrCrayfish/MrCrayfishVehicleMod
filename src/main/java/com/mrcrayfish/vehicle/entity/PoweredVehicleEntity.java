@@ -248,10 +248,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())
         {
             BlockPos pos = SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).get();
-            TileEntity tileEntity = level.getBlockEntity(pos);
+            TileEntity tileEntity = this.level.getBlockEntity(pos);
             if(tileEntity instanceof GasPumpTileEntity)
             {
-                tileEntity = level.getBlockEntity(pos.below());
+                tileEntity = this.level.getBlockEntity(pos.below());
                 if(tileEntity instanceof GasPumpTankTileEntity)
                 {
                     GasPumpTankTileEntity gasPumpTank = (GasPumpTankTileEntity) tileEntity;

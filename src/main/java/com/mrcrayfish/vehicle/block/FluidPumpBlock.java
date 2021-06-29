@@ -11,6 +11,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
+import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.AttachFace;
@@ -44,7 +45,6 @@ public class FluidPumpBlock extends FluidPipeBlock
 {
     public static final DirectionProperty DIRECTION = BlockStateProperties.FACING;
 
-    //TODO add collisions
     public static final VoxelShape[] PUMP_BOX = new VoxelShape[]{
             Block.box(3, 0, 3, 13, 4, 13),
             Block.box(3, 12, 3, 13, 16, 13),
@@ -133,6 +133,17 @@ public class FluidPumpBlock extends FluidPipeBlock
         {
             this.invalidatePipeNetwork(world, pos);
             world.setBlock(pos, state.setValue(DISABLED, disabled), Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
+        }
+
+        BlockState newState = this.getPumpState(world, pos, state, state.getValue(DIRECTION));
+        for(Direction direction : Direction.values())
+        {
+            int index = direction.get3DDataValue();
+            if(newState.getValue(CONNECTED_PIPES[index]) != state.getValue(CONNECTED_PIPES[index]))
+            {
+                this.invalidatePipeNetwork(world, pos);
+                break;
+            }
         }
     }
 
