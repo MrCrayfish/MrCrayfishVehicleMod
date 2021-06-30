@@ -1,7 +1,5 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.PipeTileEntity;
 import com.mrcrayfish.vehicle.tileentity.PumpTileEntity;
@@ -12,7 +10,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.AttachFace;
@@ -32,7 +29,6 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
 import javax.annotation.Nullable;
@@ -104,7 +100,8 @@ public class FluidPumpBlock extends FluidPipeBlock
                 if(player.getItemInHand(hand).getItem() == ModItems.WRENCH.get() && this.isLookingAtHousing(state, localHitVec))
                 {
                     pumpTileEntity.cyclePowerMode();
-                    world.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundCategory.BLOCKS, 1.0F, 0.5F);
+                    Vector3d vec = result.getLocation();
+                    world.playSound(null, vec.x(), vec.y(), vec.z(), SoundEvents.NETHERITE_BLOCK_HIT, SoundCategory.BLOCKS, 1.0F, 0.5F + 0.1F * world.random.nextFloat());
                     return ActionResultType.SUCCESS;
                 }
             }
