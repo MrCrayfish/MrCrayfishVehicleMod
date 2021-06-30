@@ -220,6 +220,13 @@ public class FluidPumpBlock extends FluidPipeBlock
             boolean enabled = !disabledConnections[facing.get3DDataValue()];
             if(adjacentState.getBlock() instanceof FluidPipeBlock)
             {
+                if(adjacentState.getBlock() instanceof FluidPumpBlock)
+                {
+                    if(adjacentState.getValue(DIRECTION) == facing)
+                    {
+                        enabled = false;
+                    }
+                }
                 state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
             }
             else if(adjacentState.getBlock() == Blocks.LEVER)
