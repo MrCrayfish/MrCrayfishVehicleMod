@@ -48,6 +48,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -240,21 +241,25 @@ public class FluidPipeBlock extends ObjectBlock
     @Override
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean p_220069_6_)
     {
-        BlockState neighborState = world.getBlockState(neighborPos);
-        if(neighborBlock == ModBlocks.FLUID_PIPE.get() || neighborState.getBlock() == ModBlocks.FLUID_PIPE.get())
+        boolean disabled = this.getDisabledState(state, world, pos).getValue(DISABLED);
+        if(state.getValue(DISABLED) != disabled)
         {
             this.invalidatePipeNetwork(world, pos);
+            if(state.getBlock() instanceof FluidPumpBlock)
+            {
+                world.setBlock(pos, state.setValue(DISABLED, disabled), Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
+            }
         }
 
-        boolean powered = world.hasNeighborSignal(pos);
-        if(state.getValue(DISABLED) != powered)
+        BlockState newState = this.getPipeState(state, world, pos);
+        for(Direction direction : Direction.values())
         {
-            this.invalidatePipeNetwork(world, pos);
-        }
-
-        if(state != this.getPipeState(state, world, pos))
-        {
-            this.invalidatePipeNetwork(world, pos);
+            int index = direction.get3DDataValue();
+            if(newState.getValue(CONNECTED_PIPES[index]) != state.getValue(CONNECTED_PIPES[index]))
+            {
+                this.invalidatePipeNetwork(world, pos);
+                break;
+            }
         }
     }
 

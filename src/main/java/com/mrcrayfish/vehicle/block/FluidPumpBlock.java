@@ -121,34 +121,6 @@ public class FluidPumpBlock extends FluidPipeBlock
     }
 
     @Override
-    public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean p_220069_6_)
-    {
-        BlockState neighborState = world.getBlockState(neighborPos);
-        if(neighborBlock instanceof FluidPipeBlock || neighborState.getBlock() instanceof FluidPipeBlock)
-        {
-            this.invalidatePipeNetwork(world, pos);
-        }
-
-        boolean disabled = this.getDisabledState(state, world, pos).getValue(DISABLED);
-        if(state.getValue(DISABLED) != disabled)
-        {
-            this.invalidatePipeNetwork(world, pos);
-            world.setBlock(pos, state.setValue(DISABLED, disabled), Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
-        }
-
-        BlockState newState = this.getPumpState(world, pos, state, state.getValue(DIRECTION));
-        for(Direction direction : Direction.values())
-        {
-            int index = direction.get3DDataValue();
-            if(newState.getValue(CONNECTED_PIPES[index]) != state.getValue(CONNECTED_PIPES[index]))
-            {
-                this.invalidatePipeNetwork(world, pos);
-                break;
-            }
-        }
-    }
-
-    @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState replaceState, boolean what)
     {
         if(!state.is(replaceState.getBlock()))
