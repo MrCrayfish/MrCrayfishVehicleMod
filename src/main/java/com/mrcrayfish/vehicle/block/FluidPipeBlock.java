@@ -361,7 +361,7 @@ public class FluidPipeBlock extends ObjectBlock
         TileEntity adjacentTileEntity = world.getBlockEntity(relativePos);
         if(adjacentTileEntity instanceof PipeTileEntity)
         {
-            return true;
+            return !((PipeTileEntity) adjacentTileEntity).isConnectionDisabled(direction.getOpposite());
         }
         else if(adjacentTileEntity != null && adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())
         {

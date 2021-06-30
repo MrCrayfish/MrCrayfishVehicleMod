@@ -153,9 +153,13 @@ public class FluidPumpBlock extends FluidPipeBlock
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
     {
-        BlockState state = super.getStateForPlacement(context).setValue(DIRECTION, context.getClickedFace());
-        state = this.getPumpState(context.getLevel(), context.getClickedPos(), state, context.getClickedFace());
-        return this.getDisabledState(state, context.getLevel(), context.getClickedPos());
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction face = context.getClickedFace();
+        BlockState state = super.getStateForPlacement(context).setValue(DIRECTION, face);
+        state = this.getPumpState(world, pos, state, face);
+        state = this.getDisabledState(state, world, pos);
+        return state;
     }
 
     @Override
@@ -192,6 +196,14 @@ public class FluidPumpBlock extends FluidPipeBlock
                 if(adjacentState.getBlock() instanceof FluidPumpBlock)
                 {
                     if(adjacentState.getValue(DIRECTION) == facing)
+                    {
+                        enabled = false;
+                    }
+                }
+                TileEntity adjacentTileEntity = world.getBlockEntity(adjacentPos);
+                if(adjacentTileEntity instanceof PipeTileEntity)
+                {
+                    if(((PipeTileEntity) adjacentTileEntity).isConnectionDisabled(facing.getOpposite()))
                     {
                         enabled = false;
                     }
