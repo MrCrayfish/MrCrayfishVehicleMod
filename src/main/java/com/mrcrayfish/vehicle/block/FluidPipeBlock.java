@@ -320,15 +320,23 @@ public class FluidPipeBlock extends ObjectBlock
             state = state.setValue(DISABLED, true);
             for(Direction direction : Direction.values())
             {
-                TileEntity tileEntity = world.getBlockEntity(pos.relative(direction));
-                if(tileEntity instanceof PipeTileEntity)
+                BlockPos relativePos = pos.relative(direction);
+                TileEntity relativeTileEntity = world.getBlockEntity(relativePos);
+                if(relativeTileEntity instanceof PipeTileEntity)
                 {
-                    PipeTileEntity pipeTileEntity = (PipeTileEntity) tileEntity;
+                    PipeTileEntity pipeTileEntity = (PipeTileEntity) relativeTileEntity;
                     if(!pipeTileEntity.getDisabledConnections()[direction.getOpposite().get3DDataValue()])
                     {
                         BlockState relativeState = pipeTileEntity.getBlockState();
                         if(!relativeState.getValue(DISABLED))
                         {
+                            if(relativeState.getBlock() instanceof FluidPumpBlock)
+                            {
+                                if(relativeState.getValue(FluidPumpBlock.DIRECTION) == direction)
+                                {
+                                    continue;
+                                }
+                            }
                             state = state.setValue(DISABLED, false);
                             break;
                         }
