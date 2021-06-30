@@ -148,6 +148,7 @@ public class FluidPipeBlock extends ObjectBlock
             BlockState newState = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], !enabled);
             world.setBlockAndUpdate(pos, newState);
             world.sendBlockUpdated(pos, state, newState, 3 & 8);
+            this.invalidatePipeNetwork(world, pos);
 
             // Also changes the state of the adjacent connection
             BlockPos relativePos = pos.relative(direction);
@@ -160,6 +161,8 @@ public class FluidPipeBlock extends ObjectBlock
                 BlockState newRelativeState = relativeState.setValue(CONNECTED_PIPES[opposite.get3DDataValue()], !enabled);
                 world.setBlockAndUpdate(relativePos, newRelativeState);
                 world.sendBlockUpdated(relativePos, relativeState, newRelativeState, 3 & 8);
+                FluidPipeBlock relativeBlock = (FluidPipeBlock) relativeState.getBlock();
+                relativeBlock.invalidatePipeNetwork(world, relativePos);
             }
 
             world.playSound(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, SoundEvents.IRON_GOLEM_STEP, SoundCategory.BLOCKS, 1.0F, 2.0F);
@@ -191,11 +194,6 @@ public class FluidPipeBlock extends ObjectBlock
                     BlockPos adjacentPos = pos.relative(facing);
                     BlockState adjacentState = world.getBlockState(adjacentPos);
                     Block adjacentBlock = adjacentState.getBlock();
-
-                    if(this == ModBlocks.FLUID_PUMP.get() && adjacentBlock == ModBlocks.FLUID_PUMP.get())
-                    {
-                        return null;
-                    }
 
                     if(adjacentBlock != ModBlocks.FLUID_PIPE.get() && adjacentBlock != ModBlocks.FLUID_PUMP.get())
                     {
