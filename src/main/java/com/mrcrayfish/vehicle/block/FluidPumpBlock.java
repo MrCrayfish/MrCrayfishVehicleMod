@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.PipeTileEntity;
@@ -123,7 +124,7 @@ public class FluidPumpBlock extends FluidPipeBlock
     public void neighborChanged(BlockState state, World world, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean p_220069_6_)
     {
         BlockState neighborState = world.getBlockState(neighborPos);
-        if(neighborBlock == ModBlocks.FLUID_PIPE.get() || neighborState.getBlock() == ModBlocks.FLUID_PIPE.get())
+        if(neighborBlock instanceof FluidPipeBlock || neighborState.getBlock() instanceof FluidPipeBlock)
         {
             this.invalidatePipeNetwork(world, pos);
         }
@@ -164,6 +165,8 @@ public class FluidPumpBlock extends FluidPipeBlock
     @Override
     protected void invalidatePipeNetwork(World world, BlockPos pos)
     {
+        super.invalidatePipeNetwork(world, pos);
+
         TileEntity tileEntity = world.getBlockEntity(pos);
         if(tileEntity instanceof PumpTileEntity)
         {
@@ -215,7 +218,7 @@ public class FluidPumpBlock extends FluidPipeBlock
             BlockPos adjacentPos = pos.relative(facing);
             BlockState adjacentState = world.getBlockState(adjacentPos);
             boolean enabled = !disabledConnections[facing.get3DDataValue()];
-            if(adjacentState.getBlock() == ModBlocks.FLUID_PIPE.get())
+            if(adjacentState.getBlock() instanceof FluidPipeBlock)
             {
                 state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
             }

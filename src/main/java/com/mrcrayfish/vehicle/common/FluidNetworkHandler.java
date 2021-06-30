@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.common;
 
 import com.mrcrayfish.vehicle.block.FluidPipeBlock;
 import com.mrcrayfish.vehicle.tileentity.PipeTileEntity;
+import com.mrcrayfish.vehicle.tileentity.PumpTileEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.RegistryKey;
@@ -42,8 +43,11 @@ public class FluidNetworkHandler
 
     public void addPipeForUpdate(PipeTileEntity tileEntity)
     {
-        this.dirty = true;
-        this.pipeUpdateMap.computeIfAbsent(tileEntity.getLevel().dimension(), key -> new HashSet<>()).add(tileEntity.getBlockPos());
+        if(!(tileEntity instanceof PumpTileEntity))
+        {
+            this.dirty = true;
+            this.pipeUpdateMap.computeIfAbsent(tileEntity.getLevel().dimension(), key -> new HashSet<>()).add(tileEntity.getBlockPos());
+        }
     }
 
     @SubscribeEvent

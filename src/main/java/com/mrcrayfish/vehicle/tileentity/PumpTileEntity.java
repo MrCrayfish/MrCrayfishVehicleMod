@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.block.FluidPipeBlock;
 import com.mrcrayfish.vehicle.block.FluidPumpBlock;
 import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
@@ -175,8 +176,11 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                         continue;
                 }
 
+                if(relativePos.equals(this.worldPosition))
+                    continue;
+
                 BlockState relativeState = this.level.getBlockState(relativePos);
-                if(relativeState.getBlock() == ModBlocks.FLUID_PIPE.get())
+                if(relativeState.getBlock() instanceof FluidPipeBlock)
                 {
                     if(relativeState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.getOpposite().get3DDataValue()]))
                     {
