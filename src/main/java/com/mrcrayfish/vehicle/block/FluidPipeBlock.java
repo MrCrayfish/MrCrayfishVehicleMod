@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.item.WrenchItem;
@@ -346,21 +345,29 @@ public class FluidPipeBlock extends ObjectBlock
         for(Direction direction : Direction.values())
         {
             state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], false);
-            if(this.canPipeConnectTo(world, pos, direction))
-            {
-                boolean enabled = !disabledConnections[direction.get3DDataValue()] || world.getBlockState(pos.relative(direction)).getBlock() == Blocks.LEVER;
-                state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], enabled);
-            }
+
+            if(disabledConnections[direction.get3DDataValue()] && world.getBlockState(pos.relative(direction)).getBlock() != Blocks.LEVER)
+                continue;
+
+            state = state.setValue(CONNECTED_PIPES[direction.get3DDataValue()], this.canPipeConnectTo(state, world, pos, direction));
         }
         return state;
     }
 
-    protected boolean canPipeConnectTo(IWorld world, BlockPos pos, Direction direction)
+    protected boolean canPipeConnectTo(BlockState state, IWorld world, BlockPos pos, Direction direction)
     {
         BlockPos relativePos = pos.relative(direction);
         TileEntity adjacentTileEntity = world.getBlockEntity(relativePos);
         if(adjacentTileEntity instanceof PipeTileEntity)
         {
+            BlockState relativeState = world.getBlockState(relativePos);
+            if(relativeState.getBlock() instanceof FluidPumpBlock)
+            {
+                if(relativeState.getValue(FluidPumpBlock.DIRECTION) == direction)
+                {
+                    return false;
+                }
+            }
             return !((PipeTileEntity) adjacentTileEntity).isConnectionDisabled(direction.getOpposite());
         }
         else if(adjacentTileEntity != null && adjacentTileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, direction.getOpposite()).isPresent())

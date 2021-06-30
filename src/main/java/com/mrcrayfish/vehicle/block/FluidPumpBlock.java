@@ -143,12 +143,6 @@ public class FluidPumpBlock extends FluidPipeBlock
         }
     }
 
-    @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos)
-    {
-        return this.getPumpState(world, pos, state, state.getValue(DIRECTION));
-    }
-
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
@@ -156,8 +150,8 @@ public class FluidPumpBlock extends FluidPipeBlock
         World world = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction face = context.getClickedFace();
-        BlockState state = super.getStateForPlacement(context).setValue(DIRECTION, face);
-        state = this.getPumpState(world, pos, state, face);
+        BlockState state = this.defaultBlockState().setValue(DIRECTION, face);
+        state = this.getPipeState(state, world, pos);
         state = this.getDisabledState(state, world, pos);
         return state;
     }
@@ -176,76 +170,12 @@ public class FluidPumpBlock extends FluidPipeBlock
         return state;
     }
 
-    //TODO clean up this trash holy duplicate code
-    private BlockState getPumpState(IWorld world, BlockPos pos, BlockState state, Direction originalFacing)
+    @Override
+    protected boolean canPipeConnectTo(BlockState state, IWorld world, BlockPos pos, Direction direction)
     {
-        PipeTileEntity pipe = getPipeTileEntity(world, pos);
-        boolean[] disabledConnections = this.getDisabledConnections(world, pos);
-        for(Direction facing : Direction.values())
-        {
-            state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], false);
-
-            if(facing == originalFacing.getOpposite())
-                continue;
-
-            BlockPos adjacentPos = pos.relative(facing);
-            BlockState adjacentState = world.getBlockState(adjacentPos);
-            boolean enabled = !disabledConnections[facing.get3DDataValue()];
-            if(adjacentState.getBlock() instanceof FluidPipeBlock)
-            {
-                if(adjacentState.getBlock() instanceof FluidPumpBlock)
-                {
-                    if(adjacentState.getValue(DIRECTION) == facing)
-                    {
-                        enabled = false;
-                    }
-                }
-                TileEntity adjacentTileEntity = world.getBlockEntity(adjacentPos);
-                if(adjacentTileEntity instanceof PipeTileEntity)
-                {
-                    if(((PipeTileEntity) adjacentTileEntity).isConnectionDisabled(facing.getOpposite()))
-                    {
-                        enabled = false;
-                    }
-                }
-                state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled);
-            }
-            else if(adjacentState.getBlock() == Blocks.LEVER)
-            {
-                boolean connected = false;
-                AttachFace attachFace = adjacentState.getValue(LeverBlock.FACE);
-                if(facing.getAxis() != Direction.Axis.Y)
-                {
-                    if(adjacentState.getValue(LeverBlock.FACING) == facing && attachFace == AttachFace.WALL)
-                    {
-                        connected = true;
-                    }
-                }
-                else if(facing == Direction.UP && attachFace == AttachFace.FLOOR)
-                {
-                    connected = true;
-                }
-                else if(facing == Direction.DOWN && attachFace == AttachFace.CEILING)
-                {
-                    connected = true;
-                }
-
-                if(connected)
-                {
-                    state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], true);
-                    if(pipe != null)
-                    {
-                        pipe.setConnectionState(facing, false);
-                    }
-                }
-            }
-            else if(adjacentState.getBlock() != this)
-            {
-                TileEntity tileEntity = world.getBlockEntity(adjacentPos);
-                state = state.setValue(CONNECTED_PIPES[facing.get3DDataValue()], enabled && tileEntity != null && tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, facing.getOpposite()).isPresent());
-            }
-        }
-        return state;
+        if(direction == state.getValue(DIRECTION).getOpposite())
+            return false;
+        return super.canPipeConnectTo(state, world, pos, direction);
     }
 
     @Override
