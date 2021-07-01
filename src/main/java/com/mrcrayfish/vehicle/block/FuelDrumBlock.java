@@ -76,48 +76,9 @@ public class FuelDrumBlock extends RotatedObjectBlock
     {
         if(!world.isClientSide)
         {
-            ItemStack stack = playerEntity.getItemInHand(hand);
             if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
             {
                 return ActionResultType.SUCCESS;
-            }
-
-            if(stack.getItem() instanceof JerryCanItem)
-            {
-                JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
-                if(jerryCan.isFull(stack))
-                {
-                    return ActionResultType.SUCCESS;
-                }
-
-                TileEntity tileEntity = world.getBlockEntity(pos);
-                IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
-                if(handler instanceof FluidTank)
-                {
-                    FluidTank tank = (FluidTank) handler;
-                    if(tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
-                    {
-                        return ActionResultType.SUCCESS;
-                    }
-                    FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                    if(!fluidStack.isEmpty())
-                    {
-                        int remaining = jerryCan.fill(stack, fluidStack.getAmount());
-                        if(remaining > 0)
-                        {
-                            fluidStack.setAmount(remaining);
-                            handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                        }
-                    }
-                    return ActionResultType.SUCCESS;
-                }
-            }
-
-            TileEntity tileEntity = world.getBlockEntity(pos);
-            IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
-            if(handler instanceof FluidTank)
-            {
-                System.out.println(((FluidTank) handler).getFluidAmount());
             }
         }
         return ActionResultType.SUCCESS;

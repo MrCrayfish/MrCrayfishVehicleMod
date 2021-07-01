@@ -34,14 +34,14 @@ public class FluidUtils
     @OnlyIn(Dist.CLIENT)
     public static int getAverageFluidColor(Fluid fluid)
     {
-        int fluidColor = -1;
-        Integer colorCashed = CACHE_FLUID_COLOR.get(fluid.getRegistryName());
-        if (colorCashed != null )
+        Integer cachedColor = CACHE_FLUID_COLOR.get(fluid.getRegistryName());
+        if(cachedColor != null)
         {
-            fluidColor = colorCashed;
+            return cachedColor;
         }
         else
         {
+            int fluidColor = -1;
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(AtlasTexture.LOCATION_BLOCKS).apply(fluid.getFluid().getAttributes().getStillTexture());
             if(sprite != null)
             {
@@ -63,12 +63,11 @@ public class FluidUtils
                         totalBlue += blue * blue;
                     }
                 }
-                fluidColor = (((int) Math.sqrt(totalRed / pixelCount) & 255) << 16)
-                        | (((int) Math.sqrt(totalGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(totalBlue / pixelCount) & 255));
+                fluidColor = (((int) Math.sqrt(totalRed / pixelCount) & 255) << 16) | (((int) Math.sqrt(totalGreen / pixelCount) & 255) << 8) | (((int) Math.sqrt(totalBlue / pixelCount) & 255));
             }
             CACHE_FLUID_COLOR.put(fluid.getRegistryName(), fluidColor);
+            return fluidColor;
         }
-        return fluidColor;
     }
 
     public static int transferFluid(IFluidHandler source, IFluidHandler target, int maxAmount)

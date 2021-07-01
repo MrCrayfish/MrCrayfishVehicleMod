@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
+import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
@@ -69,11 +70,14 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -270,13 +274,21 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
 
         ItemStack stack = player.getItemInHand(hand);
-        if(!stack.isEmpty() && stack.getItem() instanceof JerryCanItem)
+        if(stack.getItem() instanceof JerryCanItem)
         {
             JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
-            int rate = jerryCan.getFillRate(stack);
-            int drained = jerryCan.drain(stack, rate);
-            int remaining = this.addFuel(drained);
-            jerryCan.fill(stack, remaining);
+            Optional<IFluidHandlerItem> optional = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
+            if(optional.isPresent())
+            {
+                IFluidHandlerItem handler = optional.get();
+                if(!handler.getFluidInTank(0).isEmpty() && handler.getFluidInTank(0).getFluid() == ModFluids.FUELIUM.get())
+                {
+                    int transferAmount = Math.min(handler.getFluidInTank(0).getAmount(), jerryCan.getFillRate());
+                    transferAmount = (int) Math.min(Math.floor(this.getFuelCapacity() - this.getCurrentFuel()), transferAmount);
+                    handler.drain(transferAmount, IFluidHandler.FluidAction.EXECUTE);
+                    this.addFuel(transferAmount);
+                }
+            }
         }
     }
 

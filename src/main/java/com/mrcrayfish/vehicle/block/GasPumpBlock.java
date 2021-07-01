@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
-import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModSounds;
-import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.GasPumpTankTileEntity;
 import com.mrcrayfish.vehicle.tileentity.GasPumpTileEntity;
 import com.mrcrayfish.vehicle.util.VoxelShapeHelper;
@@ -31,11 +29,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -88,69 +82,32 @@ public class GasPumpBlock extends RotatedObjectBlock
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if (world.isClientSide())
+        if(world.isClientSide())
+        {
             return ActionResultType.SUCCESS;
-        if (state.getValue(TOP))
+        }
+
+        if(state.getValue(TOP))
         {
             TileEntity tileEntity = world.getBlockEntity(pos);
-            if (tileEntity instanceof GasPumpTileEntity)
+            if(tileEntity instanceof GasPumpTileEntity)
             {
                 GasPumpTileEntity gasPump = (GasPumpTileEntity) tileEntity;
-                if (gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getId() == playerEntity.getId())
+                if(gasPump.getFuelingEntity() != null && gasPump.getFuelingEntity().getId() == playerEntity.getId())
                 {
                     gasPump.setFuelingEntity(null);
                     world.playSound(null, pos, ModSounds.BLOCK_GAS_PUMP_NOZZLE_PUT_DOWN.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
-                else if (state.getValue(DIRECTION).getClockWise().equals(result.getDirection()))
+                else if(state.getValue(DIRECTION).getClockWise().equals(result.getDirection()))
                 {
                     gasPump.setFuelingEntity(playerEntity);
                     world.playSound(null, pos, ModSounds.BLOCK_GAS_PUMP_NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
             }
         }
-        else
+        else if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
         {
-            ItemStack stack = playerEntity.getItemInHand(hand);
-
-            if (FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
-            {
-                return ActionResultType.CONSUME;
-            }
-
-            if (stack.getItem() instanceof JerryCanItem)
-            {
-                JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
-                if (jerryCan.isFull(stack))
-                {
-                    return ActionResultType.CONSUME;
-                }
-
-                TileEntity tileEntity = world.getBlockEntity(pos);
-                if (tileEntity != null)
-                {
-                    IFluidHandler handler = tileEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY).orElse(null);
-                    if (handler instanceof FluidTank)
-                    {
-                        FluidTank tank = (FluidTank) handler;
-                        if (tank.getFluid() != null && tank.getFluid().getFluid() != ModFluids.FUELIUM.get())
-                        {
-                            return ActionResultType.CONSUME;
-                        }
-
-                        FluidStack fluidStack = handler.drain(50, IFluidHandler.FluidAction.EXECUTE);
-                        if (fluidStack != null)
-                        {
-                            int remaining = jerryCan.fill(stack, fluidStack.getAmount());
-                            if (remaining > 0)
-                            {
-                                fluidStack.setAmount(remaining);
-                                handler.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                            }
-                        }
-                        return ActionResultType.CONSUME;
-                    }
-                }
-            }
+            return ActionResultType.CONSUME;
         }
         return ActionResultType.FAIL;
     }

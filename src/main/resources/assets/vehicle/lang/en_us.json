@@ -42,7 +42,7 @@
     "item.vehicle.spray_can.empty": "No Color",
     "item.vehicle.jerry_can": "Jerry Can",
     "item.vehicle.jerry_can.info": "Use this Jerry Can to transport and fill vehicles with Fuelium. It can hold the equivalent of 5 buckets of Fuelium.",
-    "item.vehicle.jerry_can.fuel": "Fuel: %s",
+    "item.vehicle.jerry_can.empty": "Empty",
     "item.vehicle.industrial_jerry_can": "Industrial Jerry Can",
     "item.vehicle.industrial_jerry_can.info": "Use this Industrial Jerry Can to transport and fill vehicles with Fuelium. It can hold the equivalent of 15 buckets of Fuelium.",
     "item.vehicle.industrial_jerry_can.fuel": "Fuel: %s",
