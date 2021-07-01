@@ -174,6 +174,9 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
 
                     if(!selfState.getValue(FluidPipeBlock.CONNECTED_PIPES[direction.get3DDataValue()]))
                         continue;
+
+                    if(selfState.getBlock() instanceof FluidPumpBlock && selfState.getValue(FluidPumpBlock.DISABLED))
+                        continue;
                 }
 
                 if(relativePos.equals(this.worldPosition))
@@ -211,7 +214,10 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                         FluidNetworkHandler.instance().addPipeForUpdate(pipeTileEntity);
                     }
 
-                    if(this.level.hasNeighborSignal(pos))
+                    if(!(state.getBlock() instanceof FluidPumpBlock) && this.level.hasNeighborSignal(pos))
+                        continue;
+
+                    if(state.getBlock() instanceof FluidPumpBlock && state.getValue(FluidPumpBlock.DISABLED))
                         continue;
 
                     BlockPos relativePos = pos.relative(direction);
@@ -303,7 +309,6 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
             BlockState state = this.getBlockState();
             state = ((FluidPumpBlock) state.getBlock()).getDisabledState(state, this.level, this.worldPosition);
             this.level.setBlock(this.worldPosition, state, Constants.BlockFlags.BLOCK_UPDATE | Constants.BlockFlags.RERENDER_MAIN_THREAD);
-            this.invalidatePipeNetwork();
         }
     }
 

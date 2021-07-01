@@ -100,6 +100,7 @@ public class FluidPumpBlock extends FluidPipeBlock
                 if(player.getItemInHand(hand).getItem() == ModItems.WRENCH.get() && this.isLookingAtHousing(state, localHitVec))
                 {
                     pumpTileEntity.cyclePowerMode();
+                    this.invalidatePipeNetwork(world, pos);
                     Vector3d vec = result.getLocation();
                     world.playSound(null, vec.x(), vec.y(), vec.z(), SoundEvents.NETHERITE_BLOCK_HIT, SoundCategory.BLOCKS, 1.0F, 0.5F + 0.1F * world.random.nextFloat());
                     return ActionResultType.SUCCESS;
