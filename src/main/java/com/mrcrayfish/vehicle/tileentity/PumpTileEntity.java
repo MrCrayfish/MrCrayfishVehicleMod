@@ -244,8 +244,6 @@ public class PumpTileEntity extends PipeTileEntity implements ITickableTileEntit
                 this.fluidHandlers.add(Pair.of(relativePos, direction.getOpposite()));
             }
         }
-
-        System.out.println("Generated fluid network. Found " + this.fluidNetwork.size() + " pipes and " + this.fluidHandlers.size() + " fluid handlers!");
     }
 
     public void removePumpFromPipes()
