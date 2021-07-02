@@ -48,7 +48,11 @@ public class FuelingHandler
         EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
         if(result != null && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
         {
-            if(this.fueling)
+            if(this.fuelTickCounter % 20 == 0)
+            {
+                player.playSound(ModSounds.ITEM_JERRY_CAN_LIQUID_GLUG.get(), 0.6F, 1.0F + 0.1F * player.level.random.nextFloat());
+            }
+            if(!this.fueling)
             {
                 this.fuelTickCounter = 0;
                 this.fueling = true;
@@ -93,11 +97,6 @@ public class FuelingHandler
         EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
         if(result != null && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING) && event.getHand() == EntityRayTracer.instance().getContinuousInteractionHand())
         {
-            if(this.fuelTickCounter % 3 == 0)
-            {
-                player.playSound(ModSounds.ITEM_JERRY_CAN_LIQUID_GLUG.get(), 0.3F, 1.0F);
-            }
-
             double offset = Math.sin((this.fuelTickCounter + minecraft.getFrameTime()) / 3.0) * 0.1;
             matrixStack.translate(0, 0.35 + offset, -0.2);
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-25F));
