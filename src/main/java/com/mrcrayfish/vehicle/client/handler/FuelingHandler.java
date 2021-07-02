@@ -20,6 +20,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HandSide;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -50,7 +53,8 @@ public class FuelingHandler
         {
             if(this.fuelTickCounter % 20 == 0)
             {
-                player.playSound(ModSounds.ITEM_JERRY_CAN_LIQUID_GLUG.get(), 0.6F, 1.0F + 0.1F * player.level.random.nextFloat());
+                Vector3d vec = result.getLocation();
+                player.level.playSound(player, vec.x(), vec.y(), vec.z(), ModSounds.ITEM_JERRY_CAN_LIQUID_GLUG.get(), SoundCategory.PLAYERS, 0.6F, 1.0F + 0.1F * player.level.random.nextFloat());
             }
             if(!this.fueling)
             {
