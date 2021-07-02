@@ -73,6 +73,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
@@ -253,43 +254,49 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             BlockPos pos = SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).get();
             TileEntity tileEntity = this.level.getBlockEntity(pos);
-            if(tileEntity instanceof GasPumpTileEntity)
-            {
-                tileEntity = this.level.getBlockEntity(pos.below());
-                if(tileEntity instanceof GasPumpTankTileEntity)
-                {
-                    GasPumpTankTileEntity gasPumpTank = (GasPumpTankTileEntity) tileEntity;
-                    FluidStack stack = gasPumpTank.getFluidTank().drain(200, IFluidHandler.FluidAction.EXECUTE);
-                    if(!stack.isEmpty())
-                    {
-                        stack.setAmount(this.addFuel(stack.getAmount()));
-                        if(stack.getAmount() > 0)
-                        {
-                            gasPumpTank.getFluidTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
-                        }
-                    }
-                }
-            }
+            if(!(tileEntity instanceof GasPumpTileEntity))
+                return;
+
+            tileEntity = this.level.getBlockEntity(pos.below());
+            if(!(tileEntity instanceof GasPumpTankTileEntity))
+                return;
+
+            GasPumpTankTileEntity gasPumpTank = (GasPumpTankTileEntity) tileEntity;
+            FluidTank tank = gasPumpTank.getFluidTank();
+            FluidStack stack = tank.getFluid();
+            if(stack.isEmpty() || !Config.SERVER.validFuels.get().contains(stack.getFluid().getRegistryName().toString()))
+                return;
+
+            stack = tank.drain(200, IFluidHandler.FluidAction.EXECUTE);
+            if(stack.isEmpty())
+                return;
+
+            stack.setAmount(this.addFuel(stack.getAmount()));
+            if(stack.getAmount() <= 0)
+                return;
+
+            gasPumpTank.getFluidTank().fill(stack, IFluidHandler.FluidAction.EXECUTE);
             return;
         }
 
         ItemStack stack = player.getItemInHand(hand);
-        if(stack.getItem() instanceof JerryCanItem)
-        {
-            JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
-            Optional<IFluidHandlerItem> optional = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
-            if(optional.isPresent())
-            {
-                IFluidHandlerItem handler = optional.get();
-                if(!handler.getFluidInTank(0).isEmpty() && handler.getFluidInTank(0).getFluid() == ModFluids.FUELIUM.get())
-                {
-                    int transferAmount = Math.min(handler.getFluidInTank(0).getAmount(), jerryCan.getFillRate());
-                    transferAmount = (int) Math.min(Math.floor(this.getFuelCapacity() - this.getCurrentFuel()), transferAmount);
-                    handler.drain(transferAmount, IFluidHandler.FluidAction.EXECUTE);
-                    this.addFuel(transferAmount);
-                }
-            }
-        }
+        if(!(stack.getItem() instanceof JerryCanItem))
+            return;
+
+        JerryCanItem jerryCan = (JerryCanItem) stack.getItem();
+        Optional<IFluidHandlerItem> optional = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
+        if(!optional.isPresent())
+            return;
+
+        IFluidHandlerItem handler = optional.get();
+        FluidStack fluidStack = handler.getFluidInTank(0);
+        if(fluidStack.isEmpty() || !Config.SERVER.validFuels.get().contains(fluidStack.getFluid().getRegistryName().toString()))
+            return;
+
+        int transferAmount = Math.min(handler.getFluidInTank(0).getAmount(), jerryCan.getFillRate());
+        transferAmount = (int) Math.min(Math.floor(this.getFuelCapacity() - this.getCurrentFuel()), transferAmount);
+        handler.drain(transferAmount, IFluidHandler.FluidAction.EXECUTE);
+        this.addFuel(transferAmount);
     }
 
     @Override
