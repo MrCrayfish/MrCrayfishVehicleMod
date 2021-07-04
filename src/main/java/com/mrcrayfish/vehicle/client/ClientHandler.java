@@ -121,6 +121,8 @@ public class ClientHandler
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_ENDER_SAP.get(), RenderType.translucent());
         RenderTypeLookup.setRenderLayer(ModFluids.BLAZE_JUICE.get(), RenderType.translucent());
         RenderTypeLookup.setRenderLayer(ModFluids.FLOWING_BLAZE_JUICE.get(), RenderType.translucent());
+        RenderTypeLookup.setRenderLayer(ModBlocks.FUEL_DRUM.get(), RenderType.cutout());
+        RenderTypeLookup.setRenderLayer(ModBlocks.INDUSTRIAL_FUEL_DRUM.get(), RenderType.cutout());
     }
 
     private static void setupVehicleRenders()

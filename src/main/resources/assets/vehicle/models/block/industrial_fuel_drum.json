@@ -1,7 +1,6 @@
 {
-    "parent": "vehicle:block/fuel_drum",
-    "textures": {
-        "particle": "minecraft:block/blue_terracotta",
-        "1": "minecraft:block/blue_terracotta"
-    }
+	"parent": "vehicle:block/fuel_drum",
+	"textures": {
+		"fuel_drum": "vehicle:model/industrial_fuel_drum"
+	}
 }
