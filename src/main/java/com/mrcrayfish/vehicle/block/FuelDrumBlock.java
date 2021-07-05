@@ -1,8 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.mrcrayfish.vehicle.init.ModBlocks;
-import com.mrcrayfish.vehicle.init.ModFluids;
-import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.AbstractBlock;
@@ -12,10 +10,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.state.BooleanProperty;
+import net.minecraft.state.EnumProperty;
+import net.minecraft.state.StateContainer;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -25,11 +30,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -37,25 +38,33 @@ import java.util.List;
 /**
  * Author: MrCrayfish
  */
-public class FuelDrumBlock extends RotatedObjectBlock
+public class FuelDrumBlock extends Block
 {
-    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 16, 15);
+    public static final EnumProperty<Direction.Axis> AXIS = BlockStateProperties.AXIS;
+    public static final BooleanProperty INVERTED = BlockStateProperties.INVERTED;
+
+    private static final VoxelShape[] SHAPE = {
+            Block.box(0, 1, 1, 16, 15, 15),
+            Block.box(1, 0, 1, 15, 16, 15),
+            Block.box(1, 1, 0, 15, 15, 16)
+    };
 
     public FuelDrumBlock()
     {
         super(AbstractBlock.Properties.of(Material.METAL).strength(1.0F));
+        this.registerDefaultState(this.defaultBlockState().setValue(AXIS, Direction.Axis.Y).setValue(INVERTED, false));
     }
 
     @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        return SHAPE;
+        return SHAPE[state.getValue(AXIS).ordinal()];
     }
 
     @Override
     public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
-        return SHAPE;
+        return SHAPE[state.getValue(AXIS).ordinal()];
     }
 
     @Override
@@ -74,7 +83,7 @@ public class FuelDrumBlock extends RotatedObjectBlock
     @Override
     public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockRayTraceResult result)
     {
-        if(!world.isClientSide)
+        if(!world.isClientSide())
         {
             if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
             {
@@ -82,6 +91,41 @@ public class FuelDrumBlock extends RotatedObjectBlock
             }
         }
         return ActionResultType.SUCCESS;
+    }
+
+    @Override
+    public BlockState rotate(BlockState state, Rotation rotation)
+    {
+        switch(rotation)
+        {
+            case COUNTERCLOCKWISE_90:
+            case CLOCKWISE_90:
+                switch(state.getValue(AXIS))
+                {
+                    case X:
+                        return state.setValue(AXIS, Direction.Axis.Z);
+                    case Z:
+                        return state.setValue(AXIS, Direction.Axis.X);
+                    default:
+                        return state;
+                }
+            default:
+                return state;
+        }
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    {
+        builder.add(AXIS);
+        builder.add(INVERTED);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockItemUseContext context)
+    {
+        boolean inverted = context.getClickedFace().getAxisDirection() == Direction.AxisDirection.NEGATIVE;
+        return this.defaultBlockState().setValue(AXIS, context.getClickedFace().getAxis()).setValue(INVERTED, inverted);
     }
 
     @Override

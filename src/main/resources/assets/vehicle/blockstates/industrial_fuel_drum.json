@@ -1,20 +1,29 @@
 {
     "variants": {
-        "facing=north": {
+        "axis=x,inverted=false": {
             "model": "vehicle:block/industrial_fuel_drum",
-            "y": 0
-        },
-        "facing=east": {
-            "model": "vehicle:block/industrial_fuel_drum",
+            "x": 90,
             "y": 90
         },
-        "facing=south": {
+        "axis=x,inverted=true": {
             "model": "vehicle:block/industrial_fuel_drum",
-            "y": 180
+            "x": 90,
+            "y": -90
         },
-        "facing=west": {
+        "axis=y,inverted=false": {
+            "model": "vehicle:block/industrial_fuel_drum"
+        },
+        "axis=y,inverted=true": {
             "model": "vehicle:block/industrial_fuel_drum",
-            "y": 270
+            "x": 180
+        },
+        "axis=z,inverted=false": {
+            "model": "vehicle:block/industrial_fuel_drum",
+            "x": -90
+        },
+        "axis=z,inverted=true": {
+            "model": "vehicle:block/industrial_fuel_drum",
+            "x": 90
         }
     }
 }
