@@ -40,7 +40,7 @@ public class GasPumpTankRenderer extends TileEntityRenderer<GasPumpTankTileEntit
         matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(facing.get2DDataValue() * -90F - 90F));
         matrixStack.translate(-0.5, -0.5, -0.5);
         float height = 11.0F * (gasPump.getFluidTank().getFluidAmount() / (float) gasPump.getFluidTank().getCapacity());
-        if(height > 0) drawFluid(gasPump, matrixStack, renderTypeBuffer, 3.01F * 0.0625F, 3F * 0.0625F, 4F * 0.0625F, (10 - 0.02F) * 0.0625F, height * 0.0625F, (8 - 0.02F) * 0.0625F, light);
+        if(height > 0) this.drawFluid(gasPump, matrixStack, renderTypeBuffer, 2.01F * 0.0625F, 4F * 0.0625F, 5F * 0.0625F, (12 - 0.02F) * 0.0625F, height * 0.0625F, 6F * 0.0625F, light);
 
         matrixStack.popPose();
     }
