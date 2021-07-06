@@ -58,7 +58,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
         }
 
         Direction facing = state.getValue(GasPumpBlock.DIRECTION);
-        double[] pos = CollisionHelper.fixRotation(facing, 0.640625, 1.078125, 0.640625, 1.078125);
+        double[] pos = CollisionHelper.fixRotation(facing, 0.620625, 1.05, 0.620625, 1.05);
 
        /* List<VehicleEntity> vehicles = te.getWorld().getEntitiesWithinAABB(VehicleEntity.class, new AxisAlignedBB(te.getPos()).grow(5.0));
         if(vehicles.size() == 0)
@@ -129,7 +129,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             HermiteInterpolator spline = gasPump.getCachedSpline();
             if(spline != null)
             {
-                float gray = 0.1F;
+                float gray = 0.05F;
                 float red = gray;
                 float hoseDiameter = 0.07F;
                 if(gasPump.getFuelingEntity() != null)
