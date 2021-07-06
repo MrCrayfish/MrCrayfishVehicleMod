@@ -104,6 +104,7 @@ public class GasPumpBlock extends RotatedObjectBlock
                     world.playSound(null, pos, ModSounds.BLOCK_GAS_PUMP_NOZZLE_PICK_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
             }
+            return ActionResultType.SUCCESS;
         }
         else if(FluidUtil.interactWithFluidHandler(playerEntity, hand, world, pos, result.getDirection()))
         {
