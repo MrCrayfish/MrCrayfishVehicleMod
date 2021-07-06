@@ -107,7 +107,7 @@ public class Config
                 builder.comment("Configuration options for blocks").push("blocks");
                 {
                     builder.comment("Configuration options for Gas Pumps").push("gas_pump");
-                    this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks").translation(Reference.MOD_ID + ".config.server.max_hose_distance").defineInRange("maxHoseDistance", 6.0, 1.0, 20.0);
+                    this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks").translation(Reference.MOD_ID + ".config.server.max_hose_distance").defineInRange("maxHoseDistance", 10.0, 1.0, 100.0);
                     this.gasPumpCapacity = builder.comment("The fluid capacity of the gas pump in millibuckets").translation(Reference.MOD_ID + ".config.server.gas_pump_capacity").defineInRange("gasPumpCapacity", 50000, 1, Integer.MAX_VALUE);
                     builder.pop();
 
