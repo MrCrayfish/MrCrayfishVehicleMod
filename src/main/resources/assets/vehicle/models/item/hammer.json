@@ -1,32 +1,30 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
 	"textures": {
-		"0": "vehicle:model/hammer",
-		"particle": "vehicle:model/hammer"
+		"hammer": "vehicle:model/hammer"
 	},
 	"elements": [
 		{
 			"from": [7, 0, 7],
 			"to": [9, 13, 9],
 			"faces": {
-				"north": {"uv": [0, 0, 2, 13], "texture": "#0"},
-				"east": {"uv": [2, 0, 4, 13], "texture": "#0"},
-				"south": {"uv": [4, 0, 6, 13], "texture": "#0"},
-				"west": {"uv": [6, 0, 8, 13], "texture": "#0"},
-				"up": {"uv": [2, 15, 0, 13], "texture": "#0"},
-				"down": {"uv": [4, 13, 2, 15], "texture": "#0"}
+				"north": {"uv": [0, 0, 2, 13], "texture": "#hammer"},
+				"east": {"uv": [2, 0, 4, 13], "texture": "#hammer"},
+				"south": {"uv": [4, 0, 6, 13], "texture": "#hammer"},
+				"west": {"uv": [6, 0, 8, 13], "texture": "#hammer"},
+				"down": {"uv": [2, 13, 0, 15], "texture": "#hammer"}
 			}
 		},
 		{
 			"from": [5, 13, 6.5],
 			"to": [11, 16, 9.5],
 			"faces": {
-				"north": {"uv": [8, 0, 14, 3], "texture": "#0"},
-				"east": {"uv": [8, 12, 11, 15], "texture": "#0"},
-				"south": {"uv": [8, 3, 14, 6], "texture": "#0"},
-				"west": {"uv": [11, 12, 14, 15], "texture": "#0"},
-				"up": {"uv": [14, 9, 8, 6], "texture": "#0"},
-				"down": {"uv": [14, 9, 8, 12], "texture": "#0"}
+				"north": {"uv": [8, 0, 14, 3], "texture": "#hammer"},
+				"east": {"uv": [8, 12, 11, 15], "texture": "#hammer"},
+				"south": {"uv": [8, 3, 14, 6], "texture": "#hammer"},
+				"west": {"uv": [11, 12, 14, 15], "texture": "#hammer"},
+				"up": {"uv": [14, 9, 8, 6], "texture": "#hammer"},
+				"down": {"uv": [14, 9, 8, 12], "texture": "#hammer"}
 			}
 		}
 	],
