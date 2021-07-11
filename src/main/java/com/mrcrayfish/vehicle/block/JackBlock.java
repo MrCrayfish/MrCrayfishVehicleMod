@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
  */
 public class JackBlock extends ObjectBlock
 {
-    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 9, 15);
+    private static final VoxelShape SHAPE = Block.box(1, 0, 1, 15, 10, 15);
 
     public JackBlock()
     {

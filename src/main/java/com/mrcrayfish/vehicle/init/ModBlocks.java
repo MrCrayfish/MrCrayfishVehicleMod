@@ -36,6 +36,7 @@ public class ModBlocks
     public static final RegistryObject<Block> WORKSTATION = register("workstation", new WorkstationBlock());
     public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new VehicleCrateBlock(), block -> new BlockItem(block, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Block> JACK = register("jack", new JackBlock());
+    public static final RegistryObject<Block> JACK_HEAD = register("jack_head", new JackHeadBlock(), null);
     public static final RegistryObject<FlowingFluidBlock> FUELIUM = register("fuelium", new FlowingFluidBlock(ModFluids.FLOWING_FUELIUM, AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> ENDER_SAP = register("ender_sap", new FlowingFluidBlock(ModFluids.FLOWING_ENDER_SAP, AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()), null);
     public static final RegistryObject<FlowingFluidBlock> BLAZE_JUICE = register("blaze_juice", new FlowingFluidBlock(ModFluids.FLOWING_BLAZE_JUICE, AbstractBlock.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()), null);

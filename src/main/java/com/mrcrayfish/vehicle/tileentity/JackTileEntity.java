@@ -40,7 +40,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
 
     public void setVehicle(VehicleEntity vehicle)
     {
-        this.jack = new EntityJack(ModEntities.JACK.get(), this.level, this.worldPosition, 9 * 0.0625, vehicle.yRot);
+        this.jack = new EntityJack(ModEntities.JACK.get(), this.level, this.worldPosition, 11 * 0.0625, vehicle.yRot);
         vehicle.startRiding(this.jack, true);
         this.jack.rideTick();
         this.level.addFreshEntity(this.jack);

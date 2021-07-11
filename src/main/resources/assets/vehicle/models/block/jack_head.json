@@ -1,0 +1,34 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
+	"texture_size": [64, 64],
+	"textures": {
+		"particle": "vehicle:block/metal",
+		"jack": "vehicle:model/jack"
+	},
+	"elements": [
+		{
+			"from": [1, 7, 1],
+			"to": [15, 10, 15],
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 9.5, 8]},
+			"faces": {
+				"north": {"uv": [7, 3.5, 10.5, 4.25], "texture": "#jack"},
+				"east": {"uv": [7, 4.25, 10.5, 5], "texture": "#jack"},
+				"south": {"uv": [7, 5, 10.5, 5.75], "texture": "#jack"},
+				"west": {"uv": [7, 5.75, 10.5, 6.5], "texture": "#jack"},
+				"up": {"uv": [7, 3.5, 3.5, 0], "texture": "#jack"},
+				"down": {"uv": [7, 3.5, 3.5, 7], "texture": "#jack"}
+			}
+		},
+		{
+			"from": [6, -3, 6],
+			"to": [10, 7, 10],
+			"faces": {
+				"north": {"uv": [7, 6.5, 8, 9], "texture": "#jack"},
+				"east": {"uv": [8, 6.5, 9, 9], "texture": "#jack"},
+				"south": {"uv": [0, 8.75, 1, 11.25], "texture": "#jack"},
+				"west": {"uv": [1, 8.75, 2, 11.25], "texture": "#jack"},
+				"down": {"uv": [6, 8.75, 5, 9.75], "texture": "#jack"}
+			}
+		}
+	]
+}

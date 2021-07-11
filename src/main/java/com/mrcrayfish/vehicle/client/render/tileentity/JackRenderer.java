@@ -7,8 +7,11 @@ import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.JackTileEntity;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.PistonHeadBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -19,8 +22,11 @@ import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.Random;
 
@@ -60,15 +66,15 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
 
         matrixStack.pushPose();
         {
-            matrixStack.translate(0, -2 * 0.0625, 0);
             float progress = (jack.prevLiftProgress + (jack.liftProgress - jack.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
             matrixStack.translate(0, 0.5 * progress, 0);
 
             //Render the head
             BlockRendererDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
-            IBakedModel model = SpecialModels.JACK_PISTON_HEAD.getModel();
+            BlockState defaultState = ModBlocks.JACK_HEAD.get().defaultBlockState();
+            IBakedModel model = dispatcher.getBlockModel(ModBlocks.JACK_HEAD.get().defaultBlockState());
             IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.cutout());
-            dispatcher.getModelRenderer().tesselateBlock(jack.getLevel(), model, state, pos, matrixStack, builder, false, new Random(), state.getSeed(pos), OverlayTexture.NO_OVERLAY);
+            dispatcher.getModelRenderer().tesselateBlock(this.renderer.level, model, defaultState, pos, matrixStack, builder, false, this.renderer.level.random, 0L, light);
         }
         matrixStack.popPose();
 
@@ -80,8 +86,8 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                 Entity passenger = jackEntity.getPassengers().get(0);
                 if(passenger instanceof VehicleEntity && passenger.isAlive())
                 {
+                    matrixStack.translate(0, 1 * 0.0625, 0);
                     matrixStack.translate(0.5, 0.5, 0.5);
-                    matrixStack.translate(0, -1 * 0.0625, 0);
                     float progress = (jack.prevLiftProgress + (jack.liftProgress - jack.prevLiftProgress) * partialTicks) / (float) JackTileEntity.MAX_LIFT_PROGRESS;
                     matrixStack.translate(0, 0.5 * progress, 0);
 
@@ -90,7 +96,7 @@ public class JackRenderer extends TileEntityRenderer<JackTileEntity>
                     matrixStack.translate(-heldOffset.z * 0.0625, -heldOffset.y * 0.0625, -heldOffset.x * 0.0625);
                     matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(-passenger.yRot));
 
-                    AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderer((EntityType<? extends VehicleEntity>) vehicle.getType());
+                    AbstractVehicleRenderer wrapper = VehicleRenderRegistry.getRenderer(vehicle.getType());
                     if(wrapper != null)
                     {
                         wrapper.setupTransformsAndRender(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
