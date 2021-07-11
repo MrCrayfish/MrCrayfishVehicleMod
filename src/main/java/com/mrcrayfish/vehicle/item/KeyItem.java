@@ -5,7 +5,7 @@ import net.minecraft.item.Item;
 /**
  * Author: MrCrayfish
  */
-public class KeyItem extends Item implements IDyeable
+public class KeyItem extends Item
 {
     public KeyItem(Item.Properties properties)
     {

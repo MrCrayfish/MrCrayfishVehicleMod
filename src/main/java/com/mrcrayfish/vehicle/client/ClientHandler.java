@@ -215,7 +215,7 @@ public class ClientHandler
 
         ForgeRegistries.ITEMS.forEach(item ->
         {
-            if(item instanceof SprayCanItem || item instanceof KeyItem || (item instanceof PartItem && ((PartItem) item).isColored()))
+            if(item instanceof SprayCanItem || (item instanceof PartItem && ((PartItem) item).isColored()))
             {
                 Minecraft.getInstance().getItemColors().register(color, item);
             }
