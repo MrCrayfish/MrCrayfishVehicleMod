@@ -11,6 +11,6 @@ public class HammerItem extends SwordItem
 {
     public HammerItem(Item.Properties properties)
     {
-        super(ItemTier.WOOD, 3, -2.0F, properties);
+        super(ItemTier.WOOD, 3, -3.0F, properties);
     }
 }
