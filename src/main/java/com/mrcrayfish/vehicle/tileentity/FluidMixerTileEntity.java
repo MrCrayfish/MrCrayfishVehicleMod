@@ -65,6 +65,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     private int remainingFuel;
     private int fuelMaxProgress;
     private int extractionProgress;
+    private boolean mixing = false;
 
     private String customName;
 
@@ -253,11 +254,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
                 if(this.remainingFuel > 0)
                 {
-                    // Updates the enabled state of the fluid extractor
-                    if(this.remainingFuel == this.fuelMaxProgress && this.extractionProgress == 0)
-                    {
-                        this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, true), Constants.BlockFlags.DEFAULT);
-                    }
+                    this.setMixing(true);
 
                     if(this.extractionProgress++ == Config.SERVER.mixerMixTime.get())
                     {
@@ -273,11 +270,13 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
                 else
                 {
                     this.extractionProgress = 0;
+                    this.setMixing(false);
                 }
             }
             else
             {
                 this.extractionProgress = 0;
+                this.setMixing(false);
             }
 
             if(this.remainingFuel > 0)
@@ -288,7 +287,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
                 // Updates the enabled state of the fluid extractor
                 if(this.remainingFuel == 0)
                 {
-                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, false), Constants.BlockFlags.DEFAULT);
+                    this.setMixing(false);
                 }
             }
         }
@@ -609,6 +608,15 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             return this.itemHandler.cast();
         }
         return super.getCapability(cap, facing);
+    }
+
+    private void setMixing(boolean state)
+    {
+        if(this.mixing != state)
+        {
+            this.mixing = state;
+            this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, state), Constants.BlockFlags.DEFAULT);
+        }
     }
 }
 

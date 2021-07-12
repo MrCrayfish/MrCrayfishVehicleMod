@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.FluidExtractorBlock;
+import com.mrcrayfish.vehicle.block.FluidMixerBlock;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipe;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
@@ -58,6 +59,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     private int fuelMaxProgress;
     private int extractionProgress;
     private int capacity;
+    private boolean extracting;
 
     private String customName;
 
@@ -141,10 +143,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
             if(this.remainingFuel > 0 && this.canFillWithFluid(source))
             {
-                if(this.remainingFuel == this.fuelMaxProgress && this.extractionProgress == 0)
-                {
-                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidExtractorBlock.ENABLED, true), Constants.BlockFlags.DEFAULT);
-                }
+                this.setExtracting(true);
 
                 if(this.extractionProgress++ == Config.SERVER.extractorExtractTime.get())
                 {
@@ -157,6 +156,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             else
             {
                 this.extractionProgress = 0;
+                this.setExtracting(false);
             }
 
             if(this.remainingFuel > 0)
@@ -167,7 +167,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
                 // Updates the enabled state of the fluid extractor
                 if(this.remainingFuel == 0)
                 {
-                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidExtractorBlock.ENABLED, false), Constants.BlockFlags.DEFAULT);
+                    this.setExtracting(false);
                 }
             }
         }
@@ -438,5 +438,14 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
         if (!this.remove && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
             return this.itemHandler.cast();
         return super.getCapability(cap, side);
+    }
+
+    private void setExtracting(boolean state)
+    {
+        if(this.extracting != state)
+        {
+            this.extracting = state;
+            this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, state), Constants.BlockFlags.DEFAULT);
+        }
     }
 }
