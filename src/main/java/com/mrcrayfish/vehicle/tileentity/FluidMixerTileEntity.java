@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.block.FluidExtractorBlock;
+import com.mrcrayfish.vehicle.block.FluidMixerBlock;
 import com.mrcrayfish.vehicle.block.RotatedObjectBlock;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipe;
@@ -230,7 +232,7 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
     @Override
     public void tick()
     {
-        if(!this.level.isClientSide)
+        if(this.level != null && !this.level.isClientSide())
         {
             ItemStack ingredient = this.getItem(SLOT_INGREDIENT);
             ItemStack fuel = this.getItem(SLOT_FUEL);
@@ -251,6 +253,12 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
 
                 if(this.remainingFuel > 0)
                 {
+                    // Updates the enabled state of the fluid extractor
+                    if(this.remainingFuel == this.fuelMaxProgress && this.extractionProgress == 0)
+                    {
+                        this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, true), Constants.BlockFlags.DEFAULT);
+                    }
+
                     if(this.extractionProgress++ == Config.SERVER.mixerMixTime.get())
                     {
                         FluidMixerRecipe recipe = this.currentRecipe;
@@ -276,6 +284,12 @@ public class FluidMixerTileEntity extends TileEntitySynced implements IInventory
             {
                 this.remainingFuel--;
                 this.updateFuel(fuel);
+
+                // Updates the enabled state of the fluid extractor
+                if(this.remainingFuel == 0)
+                {
+                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, false), Constants.BlockFlags.DEFAULT);
+                }
             }
         }
     }
