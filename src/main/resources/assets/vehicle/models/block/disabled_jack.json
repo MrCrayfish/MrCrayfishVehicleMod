@@ -1,0 +1,6 @@
+{
+	"parent": "vehicle:block/jack",
+	"textures": {
+		"jack": "vehicle:model/disabled_jack"
+	}
+}

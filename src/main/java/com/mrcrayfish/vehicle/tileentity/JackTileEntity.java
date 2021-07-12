@@ -16,6 +16,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -55,6 +56,11 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
     @Override
     public void tick()
     {
+        if(!this.activated && this.liftProgress == 0 && this.prevLiftProgress == 1)
+        {
+            this.level.setBlock(this.worldPosition, this.getBlockState().setValue(JackBlock.ENABLED, false), Constants.BlockFlags.DEFAULT);
+        }
+
         this.prevLiftProgress = this.liftProgress;
 
         if(this.jack == null)
@@ -79,6 +85,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
                 {
                     this.level.playSound(null, this.worldPosition, ModSounds.BLOCK_JACK_HEAD_UP.get(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     this.activated = true;
+                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(JackBlock.ENABLED, true), Constants.BlockFlags.DEFAULT);
                 }
             }
             else if(this.activated)
@@ -101,7 +108,7 @@ public class JackTileEntity extends TileEntitySynced implements ITickableTileEnt
                 this.moveCollidedEntities();
             }
         }
-        else if(liftProgress > 0)
+        else if(this.liftProgress > 0)
         {
             this.liftProgress--;
             this.moveCollidedEntities();
