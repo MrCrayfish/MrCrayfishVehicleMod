@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.block.FluidExtractorBlock;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipe;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
@@ -121,7 +122,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     @Override
     public void tick()
     {
-        if(!this.level.isClientSide)
+        if(this.level != null && !this.level.isClientSide())
         {
             ItemStack source = this.getItem(SLOT_FLUID_SOURCE);
             ItemStack fuel = this.getItem(SLOT_FUEL_SOURCE);
@@ -140,6 +141,11 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
             if(this.remainingFuel > 0 && this.canFillWithFluid(source))
             {
+                if(this.remainingFuel == this.fuelMaxProgress && this.extractionProgress == 0)
+                {
+                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidExtractorBlock.ENABLED, true), Constants.BlockFlags.DEFAULT);
+                }
+
                 if(this.extractionProgress++ == Config.SERVER.extractorExtractTime.get())
                 {
                     this.tank.fill(this.currentRecipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
@@ -157,6 +163,12 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             {
                 this.remainingFuel--;
                 this.updateFuel(source, fuel);
+
+                // Updates the enabled state of the fluid extractor
+                if(this.remainingFuel == 0)
+                {
+                    this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidExtractorBlock.ENABLED, false), Constants.BlockFlags.DEFAULT);
+                }
             }
         }
     }

@@ -1,18 +1,34 @@
 {
     "variants": {
-        "facing=north": {
+        "enabled=false,facing=north": {
+            "model": "vehicle:block/disabled_fluid_extractor",
+            "y": 0
+        },
+        "enabled=true,facing=north": {
             "model": "vehicle:block/fluid_extractor",
             "y": 0
         },
-        "facing=east": {
+        "enabled=false,facing=east": {
+            "model": "vehicle:block/disabled_fluid_extractor",
+            "y": 90
+        },
+        "enabled=true,facing=east": {
             "model": "vehicle:block/fluid_extractor",
             "y": 90
         },
-        "facing=south": {
+        "enabled=false,facing=south": {
+            "model": "vehicle:block/disabled_fluid_extractor",
+            "y": 180
+        },
+        "enabled=true,facing=south": {
             "model": "vehicle:block/fluid_extractor",
             "y": 180
         },
-        "facing=west": {
+        "enabled=false,facing=west": {
+            "model": "vehicle:block/disabled_fluid_extractor",
+            "y": 270
+        },
+        "enabled=true,facing=west": {
             "model": "vehicle:block/fluid_extractor",
             "y": 270
         }
