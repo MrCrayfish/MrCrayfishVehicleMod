@@ -46,7 +46,6 @@ public class EngineItem extends PartItem
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent("vehicle.engine_tier." + this.engineTier.getTierName() + ".name").withStyle(this.engineTier.getTierColor(), TextFormatting.BOLD));
         if(Screen.hasShiftDown())
         {
             tooltip.add(new TranslationTextComponent("vehicle.engine_info.acceleration").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.engineTier.getAccelerationMultiplier() + "x").withStyle(TextFormatting.WHITE)));
