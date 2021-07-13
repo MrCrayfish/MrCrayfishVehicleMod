@@ -1,6 +1,6 @@
 {
     "parent": "vehicle:item/small_engine",
     "textures": {
-        "tier": "minecraft:block/iron_block"
+        "small_engine": "vehicle:model/iron_small_engine"
     }
 }
