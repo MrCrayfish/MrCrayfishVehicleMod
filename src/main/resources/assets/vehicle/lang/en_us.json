@@ -18,6 +18,7 @@
     "item.vehicle.iron_electric_engine": "Iron Electric Engine",
     "item.vehicle.gold_electric_engine": "Gold Electric Engine",
     "item.vehicle.diamond_electric_engine": "Diamond Electric Engine",
+    "item.vehicle.netherite_electric_engine": "Netherite Electric Engine",
     "item.vehicle.spray_can": "Spray Can",
     "item.vehicle.spray_can.info": "Use this spray can to paint vehicles. To add a color to the spray can, combine it with one or more dyes in a crafting table. You can also refill spray cans by placing them with a non-colored spray can in a crafting table.",
     "item.vehicle.spray_can.empty": "No Color",
