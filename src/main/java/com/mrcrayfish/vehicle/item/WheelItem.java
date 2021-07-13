@@ -25,12 +25,6 @@ public class WheelItem extends PartItem implements IDyeable
         this.wheelType = wheelType;
     }
 
-    @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
-    {
-        tooltip.add(new TranslationTextComponent("vehicle.wheel_type." + this.wheelType.getId() + ".name").withStyle(TextFormatting.AQUA));
-    }
-
     public WheelType getWheelType()
     {
         return this.wheelType;
