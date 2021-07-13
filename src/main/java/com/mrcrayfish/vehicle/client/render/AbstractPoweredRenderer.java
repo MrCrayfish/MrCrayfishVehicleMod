@@ -23,7 +23,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
 {
     protected final PropertyFunction<T, Boolean> renderEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderEngine, true);
     protected final PropertyFunction<T, Boolean> hasEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::hasEngine, true);
-    protected final PropertyFunction<T, EngineTier> engineTierProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineTier, EngineTier.WOOD);
+    protected final PropertyFunction<T, EngineTier> engineTierProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineTier, EngineTier.IRON);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
     protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresFuel, true);
     protected final PropertyFunction<T, Integer> wheelColorProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelColor, -1);

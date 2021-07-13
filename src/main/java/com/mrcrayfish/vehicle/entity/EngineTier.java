@@ -7,8 +7,6 @@ import net.minecraft.util.text.TextFormatting;
  */
 public enum EngineTier
 {
-    WOOD(0.75F, -2F, 0F, "wood", TextFormatting.WHITE),
-    STONE(1.0F, 0F, 0F, "stone", TextFormatting.DARK_GRAY),
     IRON(1.25F, 1F, 0F, "iron", TextFormatting.GRAY),
     GOLD(1.5F, 3F, 0F, "gold", TextFormatting.GOLD),
     DIAMOND(1.1F, 6F, 0F, "diamond", TextFormatting.AQUA);
@@ -57,7 +55,7 @@ public enum EngineTier
     {
         if(index < 0 || index >= values().length)
         {
-            return WOOD;
+            return IRON;
         }
         return EngineTier.values()[index];
     }

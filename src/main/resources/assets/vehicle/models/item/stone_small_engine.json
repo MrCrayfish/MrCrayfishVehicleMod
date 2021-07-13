@@ -1,6 +1,0 @@
-{
-    "parent": "vehicle:item/small_engine",
-    "textures": {
-        "tier": "minecraft:block/smooth_stone"
-    }
-}

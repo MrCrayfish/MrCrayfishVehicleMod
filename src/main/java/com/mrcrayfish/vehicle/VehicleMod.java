@@ -33,7 +33,7 @@ public class VehicleMod
         @Override
         public ItemStack makeIcon()
         {
-            return new ItemStack(ModItems.WOOD_SMALL_ENGINE.get());
+            return new ItemStack(ModItems.IRON_SMALL_ENGINE.get());
         }
     };
 

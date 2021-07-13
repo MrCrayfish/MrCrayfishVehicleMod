@@ -75,7 +75,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
         {
             CompoundNBT blockEntityTag = new CompoundNBT();
             blockEntityTag.putString("Vehicle", resourceLocation.toString());
-            blockEntityTag.putInt("EngineTier", EngineTier.WOOD.ordinal());
+            blockEntityTag.putInt("EngineTier", EngineTier.IRON.ordinal());
             blockEntityTag.putInt("WheelType", WheelType.STANDARD.ordinal());
             CompoundNBT itemTag = new CompoundNBT();
             itemTag.put("BlockEntityTag", blockEntityTag);

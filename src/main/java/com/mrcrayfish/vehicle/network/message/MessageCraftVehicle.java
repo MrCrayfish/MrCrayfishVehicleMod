@@ -161,7 +161,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                     }
                 }
 
-                EngineTier engineTier = EngineTier.WOOD;
+                EngineTier engineTier = EngineTier.IRON;
                 if(engineType != EngineType.NONE)
                 {
                     ItemStack engine = workstationTileEntity.getInventory().get(1);
