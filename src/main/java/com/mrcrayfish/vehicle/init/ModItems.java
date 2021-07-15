@@ -41,6 +41,7 @@ public class ModItems
     public static final RegistryObject<Item> IRON_LARGE_ENGINE = register("iron_large_engine", new EngineItem(EngineType.LARGE_MOTOR, EngineTier.IRON, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> GOLD_LARGE_ENGINE = register("gold_large_engine", new EngineItem(EngineType.LARGE_MOTOR, EngineTier.GOLD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> DIAMOND_LARGE_ENGINE = register("diamond_large_engine", new EngineItem(EngineType.LARGE_MOTOR, EngineTier.DIAMOND, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
+    public static final RegistryObject<Item> NETHERITE_LARGE_ENGINE = register("netherite_large_engine", new EngineItem(EngineType.LARGE_MOTOR, EngineTier.NETHERITE, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> IRON_ELECTRIC_ENGINE = register("iron_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.IRON, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> GOLD_ELECTRIC_ENGINE = register("gold_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.GOLD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> DIAMOND_ELECTRIC_ENGINE = register("diamond_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.DIAMOND, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
