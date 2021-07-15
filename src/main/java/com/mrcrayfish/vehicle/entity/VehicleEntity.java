@@ -717,7 +717,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         ResourceLocation entityId = this.getType().getRegistryName();
         if(entityId != null)
         {
-            return VehicleCrateBlock.create(entityId, this.getColor(), null, null, -1);
+            return VehicleCrateBlock.create(entityId, this.getColor(), null, ItemStack.EMPTY);
         }
         return ItemStack.EMPTY;
     }

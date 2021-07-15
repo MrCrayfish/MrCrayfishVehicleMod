@@ -8,12 +8,14 @@ import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.DuneBuggyEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -54,7 +56,8 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
 
         this.renderDamagedPart(vehicle, SpecialModels.DUNE_BUGGY_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
-        if(this.hasWheelsProperty.get(vehicle))
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
         {
             matrixStack.pushPose();
             matrixStack.translate(0.0, -0.355, 0.33);
@@ -68,7 +71,8 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
             }
             matrixStack.scale((float) wheelScale, (float) wheelScale, (float) wheelScale);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle))), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.wheelColorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+            int wheelColor = IDyeable.getColorFromStack(wheelStack);
+            RenderUtil.renderColoredModel(RenderUtil.getModel(wheelStack), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
 

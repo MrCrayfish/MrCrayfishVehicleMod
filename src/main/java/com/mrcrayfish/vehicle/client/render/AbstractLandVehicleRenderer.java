@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -90,13 +92,14 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
 
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
-        if(this.hasWheelsProperty.get(vehicle))
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
         {
             matrixStack.pushPose();
             matrixStack.translate(0.0, -8 * 0.0625, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
-            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
+            IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
+            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelStack, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
             matrixStack.popPose();
         }
 
@@ -216,7 +219,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         RenderSystem.enableTexture();
     }
 
-    protected void renderWheel(@Nullable T vehicle, Wheel wheel, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    protected void renderWheel(@Nullable T vehicle, Wheel wheel, ItemStack stack, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(!wheel.shouldRender())
             return;
@@ -238,7 +241,8 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         {
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
         }
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.wheelColorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+        int wheelColor = IDyeable.getColorFromStack(stack);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
         matrixStack.popPose();
     }
 }

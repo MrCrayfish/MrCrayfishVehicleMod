@@ -61,25 +61,6 @@ public class ItemLookup
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack getWheel(PoweredVehicleEntity entity)
-    {
-        if(entity.hasWheels())
-        {
-            ItemStack wheel = new ItemStack(WHEEL_LOOKUP.getOrDefault(entity.getWheelType(), Items.AIR));
-            if(!wheel.isEmpty() && wheel.getItem() instanceof WheelItem)
-            {
-                WheelItem wheelItem = (WheelItem) wheel.getItem();
-                int wheelColor = entity.getWheelColor();
-                if(wheelColor != -1)
-                {
-                    wheelItem.setColor(wheel, wheelColor);
-                }
-                return wheel;
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     public static ItemStack getEngine(EngineType type, EngineTier tier)
     {
         return new ItemStack(ENGINE_LOOKUP.getOrDefault(Pair.of(type, tier), Items.AIR));

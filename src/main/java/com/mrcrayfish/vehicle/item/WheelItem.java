@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
+import com.mrcrayfish.vehicle.entity.IWheelType;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
@@ -17,15 +18,15 @@ import java.util.List;
  */
 public class WheelItem extends PartItem implements IDyeable
 {
-    private WheelType wheelType;
+    private IWheelType wheelType;
 
-    public WheelItem(WheelType wheelType, Item.Properties properties)
+    public WheelItem(IWheelType wheelType, Item.Properties properties)
     {
         super(properties);
         this.wheelType = wheelType;
     }
 
-    public WheelType getWheelType()
+    public IWheelType getWheelType()
     {
         return this.wheelType;
     }

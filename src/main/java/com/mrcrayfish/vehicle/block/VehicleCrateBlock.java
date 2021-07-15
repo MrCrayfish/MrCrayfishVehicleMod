@@ -2,10 +2,12 @@ package com.mrcrayfish.vehicle.block;
 
 import com.google.common.base.Strings;
 import com.mrcrayfish.vehicle.entity.EngineTier;
+import com.mrcrayfish.vehicle.entity.IWheelType;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockRenderType;
@@ -76,7 +78,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
             CompoundNBT blockEntityTag = new CompoundNBT();
             blockEntityTag.putString("Vehicle", resourceLocation.toString());
             blockEntityTag.putInt("EngineTier", EngineTier.IRON.ordinal());
-            blockEntityTag.putInt("WheelType", WheelType.STANDARD.ordinal());
+            CommonUtils.writeItemStackToTag(blockEntityTag, "WheelStack", new ItemStack(ModItems.STANDARD_WHEEL.get()));
             CompoundNBT itemTag = new CompoundNBT();
             itemTag.put("BlockEntityTag", blockEntityTag);
             ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());
@@ -230,7 +232,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
     }
 
     //TODO turn this into a builder
-    public static ItemStack create(ResourceLocation entityId, int color, @Nullable EngineTier engineTier, @Nullable WheelType wheelType, int wheelColor)
+    public static ItemStack create(ResourceLocation entityId, int color, @Nullable EngineTier engineTier, ItemStack wheel)
     {
         CompoundNBT blockEntityTag = new CompoundNBT();
         blockEntityTag.putString("Vehicle", entityId.toString());
@@ -241,13 +243,9 @@ public class VehicleCrateBlock extends RotatedObjectBlock
             blockEntityTag.putInt("EngineTier", engineTier.ordinal());
         }
 
-        if(wheelType != null)
+        if(!wheel.isEmpty())
         {
-            blockEntityTag.putInt("WheelType", wheelType.ordinal());
-            if(wheelColor != -1)
-            {
-                blockEntityTag.putInt("WheelColor", wheelColor);
-            }
+            blockEntityTag.put("WheelStack", wheel.save(new CompoundNBT()));
         }
 
         CompoundNBT itemTag = new CompoundNBT();

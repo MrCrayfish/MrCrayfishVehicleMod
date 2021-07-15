@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -23,6 +24,7 @@ import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -93,7 +95,8 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         matrixStack.popPose();
 
         //Render front wheel
-        if(this.hasWheelsProperty.get(vehicle))
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
         {
             matrixStack.pushPose();
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
@@ -112,8 +115,9 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
                     }
                 }
                 matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
-                IBakedModel model = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
-                RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.wheelColorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+                IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
+                int wheelColor = IDyeable.getColorFromStack(wheelStack);
+                RenderUtil.renderColoredModel(wheelModel, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
             }
             matrixStack.popPose();
         }

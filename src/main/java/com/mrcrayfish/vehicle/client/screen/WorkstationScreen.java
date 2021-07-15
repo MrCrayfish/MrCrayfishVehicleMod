@@ -180,21 +180,11 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 ItemStack wheels = this.workstation.getItem(2);
                 if(!wheels.isEmpty() && wheels.getItem() instanceof WheelItem)
                 {
-                    if(wheels.getTag() != null)
-                    {
-                        CompoundNBT tagCompound = wheels.getTag();
-                        if(tagCompound.contains("Color", Constants.NBT.TAG_INT))
-                        {
-                            poweredRenderer.setWheelColor(tagCompound.getInt("Color"));
-                        }
-                    }
-                    WheelItem wheelItem = (WheelItem) wheels.getItem();
-                    poweredRenderer.setWheelType(wheelItem.getWheelType());
-                    poweredRenderer.setHasWheels(true);
+                    poweredRenderer.setWheelStack(wheels);
                 }
                 else
                 {
-                    poweredRenderer.setHasWheels(false);
+                    poweredRenderer.setWheelStack(ItemStack.EMPTY);
                     canCraft = false;
                 }
             }
@@ -257,7 +247,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         if(renderer instanceof AbstractLandVehicleRenderer<?>)
         {
             ((AbstractLandVehicleRenderer<?>) renderer).setHasEngine(false);
-            ((AbstractLandVehicleRenderer<?>) renderer).setHasWheels(false);
+            ((AbstractLandVehicleRenderer<?>) renderer).setWheelStack(ItemStack.EMPTY);
         }
 
         this.materials.clear();

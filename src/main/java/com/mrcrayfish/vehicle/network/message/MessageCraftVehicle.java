@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.IWheelType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.WheelType;
@@ -173,28 +174,18 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
                     }
                 }
 
-                int wheelColor = -1;
-                WheelType wheelType = null;
-                ItemStack wheel = workstationTileEntity.getInventory().get(2);
+                ItemStack wheelStack = ItemStack.EMPTY;
                 if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).canChangeWheels())
                 {
-                    if(wheel.getItem() instanceof WheelItem)
+                    ItemStack workstationWheelStack = workstationTileEntity.getInventory().get(2);
+                    if(workstationWheelStack.getItem() instanceof WheelItem)
                     {
-                        WheelItem wheelItem = (WheelItem) wheel.getItem();
-                        wheelType = wheelItem.getWheelType();
-                        if(wheel.getTag() != null)
-                        {
-                            CompoundNBT compound = wheel.getTag();
-                            if(compound.contains("Color", Constants.NBT.TAG_INT))
-                            {
-                                wheelColor = compound.getInt("Color");
-                            }
-                        }
+                        wheelStack = workstationWheelStack.copy();
                         workstationTileEntity.getInventory().set(2, ItemStack.EMPTY);
                     }
                 }
 
-                ItemStack stack = VehicleCrateBlock.create(entityId, color, engineTier, wheelType, wheelColor);
+                ItemStack stack = VehicleCrateBlock.create(entityId, color, engineTier, wheelStack);
                 world.addFreshEntity(new ItemEntity(world, message.pos.getX() + 0.5, message.pos.getY() + 1.125, message.pos.getZ() + 0.5, stack));
             }
         });

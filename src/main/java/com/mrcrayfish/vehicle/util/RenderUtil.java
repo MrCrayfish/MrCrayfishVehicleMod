@@ -199,42 +199,6 @@ public class RenderUtil
         }
     }
 
-    /**
-     * Gets an IBakedModel of the wheel currently on a powered vehicle.
-     * If there are no wheels installed on the vehicle, a null model will be returned.
-     *
-     * @param entity the powered vehicle to get the wheel model from
-     * @return an IBakedModel of the wheel or null if wheels are not present
-     */
-    @Nullable
-    public static IBakedModel getWheelModel(PoweredVehicleEntity entity)
-    {
-        ItemStack stack = ItemLookup.getWheel(entity);
-        if(!stack.isEmpty())
-        {
-            return RenderUtil.getModel(stack);
-        }
-        return null;
-    }
-
-    /**
-     * Gets an IBakedModel of the engine currently on a powered vehicle.
-     * If there is no engine installed in the vehicle, a null model will be returned.
-     *
-     * @param entity the powered vehicle to get the engine model from
-     * @return an IBakedModel of the engine or null if the engine is not present
-     */
-    @Nullable
-    public static IBakedModel getEngineModel(PoweredVehicleEntity entity)
-    {
-        ItemStack stack = ItemLookup.getEngine(entity);
-        if(!stack.isEmpty())
-        {
-            return RenderUtil.getModel(stack);
-        }
-        return null;
-    }
-
     public static List<ITextComponent> lines(ITextProperties text, int maxWidth)
     {
         List<ITextProperties> lines = Minecraft.getInstance().font.getSplitter().splitLines(text, maxWidth, Style.EMPTY);

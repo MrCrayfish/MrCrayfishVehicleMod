@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -82,13 +83,14 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
         //Render vehicle wheels
-        if(this.hasWheelsProperty.get(vehicle))
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
         {
             matrixStack.pushPose();
             matrixStack.translate(0.0, -8 * 0.0625, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle)));
-            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
+            IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
+            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelStack, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
             matrixStack.popPose();
         }
 

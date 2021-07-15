@@ -24,7 +24,6 @@ public class DuneBuggyEntity extends LandVehicleEntity
     public void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.set(WHEEL_TYPE, WheelType.PLASTIC.ordinal());
         this.entityData.set(COLOR, 0xF2B116);
     }
 

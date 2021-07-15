@@ -8,10 +8,12 @@ import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
@@ -39,8 +41,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
     private ResourceLocation entityId;
     private int color = VehicleEntity.DYE_TO_COLOR[0];
     private EngineTier engineTier = null;
-    private WheelType wheelType = null;
-    private int wheelColor = -1;
+    private ItemStack wheelStack = ItemStack.EMPTY;
     private boolean opened = false;
     private int timer;
     private UUID opener;
@@ -124,18 +125,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                                     entityPoweredVehicle.setEngine(true);
                                     entityPoweredVehicle.setEngineTier(this.engineTier);
                                 }
-                                if(this.wheelType != null)
+                                if(!this.wheelStack.isEmpty())
                                 {
-                                    entityPoweredVehicle.setWheels(true);
-                                    entityPoweredVehicle.setWheelType(this.wheelType);
-                                    if(this.wheelColor != -1)
-                                    {
-                                        entityPoweredVehicle.setWheelColor(this.wheelColor);
-                                    }
-                                }
-                                else
-                                {
-                                    entityPoweredVehicle.setWheels(false);
+                                    entityPoweredVehicle.setWheelStack(this.wheelStack);
                                 }
                             }
                         }
@@ -183,13 +175,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                                 poweredVehicle.setEngine(true);
                                 poweredVehicle.setEngineTier(this.engineTier);
                             }
-                            if(this.wheelType != null)
+                            if(!this.wheelStack.isEmpty())
                             {
-                                poweredVehicle.setWheelType(this.wheelType);
-                                if(this.wheelColor != -1)
-                                {
-                                    poweredVehicle.setWheelColor(this.wheelColor);
-                                }
+                                poweredVehicle.setWheelStack(this.wheelStack);
                             }
                         }
                         entity.absMoveTo(this.worldPosition.getX() + 0.5, this.worldPosition.getY(), this.worldPosition.getZ() + 0.5, facing.get2DDataValue() * 90F + 180F, 0F);
@@ -218,13 +206,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         {
             this.engineTier = EngineTier.getType(compound.getInt("EngineTier"));
         }
-        if(compound.contains("WheelType", Constants.NBT.TAG_INT))
+        if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
         {
-            this.wheelType = WheelType.getType(compound.getInt("WheelType"));
-        }
-        if(compound.contains("WheelColor", Constants.NBT.TAG_INT))
-        {
-            this.wheelColor = compound.getInt("WheelColor");
+            this.wheelStack = ItemStack.of(compound.getCompound("WheelStack"));
         }
         if(compound.contains("Opener", Constants.NBT.TAG_STRING))
         {
@@ -251,13 +235,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         {
             compound.putInt("EngineTier", this.engineTier.ordinal());
         }
-        if(this.wheelType != null)
+        if(!this.wheelStack.isEmpty())
         {
-            compound.putInt("WheelType", this.wheelType.ordinal());
-            if(this.wheelColor != -1)
-            {
-                compound.putInt("WheelColor", this.wheelColor);
-            }
+            CommonUtils.writeItemStackToTag(compound, "WheelStack", this.wheelStack);
         }
         compound.putInt("Color", this.color);
         compound.putBoolean("Opened", this.opened);

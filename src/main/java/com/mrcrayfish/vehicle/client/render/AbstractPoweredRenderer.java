@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.entity.EngineTier;
+import com.mrcrayfish.vehicle.entity.IWheelType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.WheelType;
@@ -12,9 +13,11 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -26,9 +29,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
     protected final PropertyFunction<T, EngineTier> engineTierProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineTier, EngineTier.IRON);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
     protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresFuel, true);
-    protected final PropertyFunction<T, Integer> wheelColorProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelColor, -1);
-    protected final PropertyFunction<T, Boolean> hasWheelsProperty = new PropertyFunction<>(PoweredVehicleEntity::hasWheels, true);
-    protected final PropertyFunction<T, WheelType> wheelTypeProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelType, WheelType.STANDARD);
+    protected final PropertyFunction<T, ItemStack> wheelStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelStack, ItemStack.EMPTY);
 
     public AbstractPoweredRenderer(VehicleProperties defaultProperties)
     {
@@ -60,19 +61,9 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         this.requiresFuelProperty.setDefaultValue(requiresFuel);
     }
 
-    public void setHasWheels(boolean hasWheels)
+    public void setWheelStack(ItemStack wheel)
     {
-        this.hasWheelsProperty.setDefaultValue(hasWheels);
-    }
-
-    public void setWheelType(WheelType type)
-    {
-        this.wheelTypeProperty.setDefaultValue(type);
-    }
-
-    public void setWheelColor(int wheelColor)
-    {
-        this.wheelColorProperty.setDefaultValue(wheelColor);
+        this.wheelStackProperty.setDefaultValue(wheel);
     }
 
     protected void renderEngine(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)

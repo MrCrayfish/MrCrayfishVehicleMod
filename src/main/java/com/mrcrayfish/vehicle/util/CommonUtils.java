@@ -25,9 +25,7 @@ public class CommonUtils
     {
         if(!stack.isEmpty())
         {
-            CompoundNBT tag = new CompoundNBT();
-            stack.save(tag);
-            compound.put(key, tag);
+            compound.put(key, stack.save(new CompoundNBT()));
         }
     }
 

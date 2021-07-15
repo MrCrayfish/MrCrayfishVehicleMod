@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 
@@ -58,7 +59,8 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
 
         this.renderDamagedPart(vehicle, SpecialModels.DIRT_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
-        if(this.hasWheelsProperty.get(vehicle))
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
             Wheel wheel = properties.getWheels().stream().filter(wheel1 -> wheel1.getPosition() == Wheel.Position.FRONT).findFirst().orElse(null);
@@ -77,7 +79,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
                 }
                 matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
                 matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
-                RenderUtil.renderColoredModel(RenderUtil.getModel(ItemLookup.getWheel(this.wheelTypeProperty.get(vehicle), this.wheelColorProperty.get(vehicle))), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+                RenderUtil.renderColoredModel(RenderUtil.getModel(wheelStack), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 matrixStack.popPose();
             }
         }
