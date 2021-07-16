@@ -14,6 +14,7 @@ import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
@@ -35,7 +36,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
@@ -44,7 +44,6 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -154,24 +153,23 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 if(!engine.isEmpty() && engine.getItem() instanceof EngineItem)
                 {
                     EngineItem engineItem = (EngineItem) engine.getItem();
-                    EngineType engineType = engineItem.getEngineType();
-                    if(properties.getEngineType() != engineType)
+                    IEngineType engineType = engineItem.getEngineType();
+                    if(properties.getEngineType() == engineType)
                     {
-                        canCraft = false;
-                        this.validEngine = false;
-                        poweredRenderer.setHasEngine(false);
+                        poweredRenderer.setEngineStack(engine);
                     }
                     else
                     {
-                        poweredRenderer.setEngineTier(engineItem.getEngineTier());
-                        poweredRenderer.setHasEngine(true);
+                        canCraft = false;
+                        this.validEngine = false;
+                        poweredRenderer.setEngineStack(ItemStack.EMPTY);
                     }
                 }
                 else
                 {
                     canCraft = false;
                     this.validEngine = false;
-                    poweredRenderer.setHasEngine(false);
+                    poweredRenderer.setEngineStack(ItemStack.EMPTY);
                 }
             }
 
@@ -246,7 +244,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         AbstractVehicleRenderer<?> renderer = cachedVehicle.getRenderer();
         if(renderer instanceof AbstractLandVehicleRenderer<?>)
         {
-            ((AbstractLandVehicleRenderer<?>) renderer).setHasEngine(false);
+            ((AbstractLandVehicleRenderer<?>) renderer).setEngineStack(ItemStack.EMPTY);
             ((AbstractLandVehicleRenderer<?>) renderer).setWheelStack(ItemStack.EMPTY);
         }
 
@@ -305,8 +303,8 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         if(properties.getEngineType() != EngineType.NONE)
         {
-            String engineName = properties.getEngineType().getEngineName();
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent(engineName)), startX, startY, 206, 29, mouseX, mouseY, 1);
+            TranslationTextComponent engineName = properties.getEngineType().getEngineName();
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
         else
         {

@@ -1,6 +1,6 @@
 {
     "general": {
-        "engineType": "electric_motor",
+        "engineType": "vehicle:electric_motor",
         "canBeColored": true,
         "canChangeWheels": true
     },

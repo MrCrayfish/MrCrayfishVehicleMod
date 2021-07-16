@@ -30,6 +30,7 @@ public class EditVehicleContainer extends Container
 
         this.addSlot(new Slot(EditVehicleContainer.this.vehicleInventory, 0, 8, 17)
         {
+            @Override
             public boolean mayPlace(ItemStack stack)
             {
                 return vehicle.getProperties().getEngineType() != EngineType.NONE && stack.getItem() instanceof EngineItem && ((EngineItem) stack.getItem()).getEngineType() == vehicle.getProperties().getEngineType();
@@ -44,6 +45,7 @@ public class EditVehicleContainer extends Container
 
         this.addSlot(new Slot(EditVehicleContainer.this.vehicleInventory, 1, 8, 35)
         {
+            @Override
             public boolean mayPlace(ItemStack stack)
             {
                 return vehicle.canChangeWheels() && stack.getItem() instanceof WheelItem;

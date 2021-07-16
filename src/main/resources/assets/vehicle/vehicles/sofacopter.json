@@ -1,6 +1,6 @@
 {
     "general": {
-        "engineType": "small_motor"
+        "engineType": "vehicle:small_motor"
     },
     "display": {
         "gui": {

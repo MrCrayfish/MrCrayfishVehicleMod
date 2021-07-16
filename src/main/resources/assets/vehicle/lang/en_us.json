@@ -1,9 +1,9 @@
 {
     "itemGroup.tabVehicle": "MrCrayfish's Vehicle Mod",
 
-    "vehicle.engine_type.small.name": "Small Engine",
-    "vehicle.engine_type.large.name": "Large Engine",
-    "vehicle.engine_type.electric.name": "Electric Engine",
+    "vehicle.engine_type.small_motor.name": "Small Engine",
+    "vehicle.engine_type.large_motor.name": "Large Engine",
+    "vehicle.engine_type.electric_motor.name": "Electric Engine",
 
     "vehicle.engine_info.acceleration": "Acceleration",
     "vehicle.engine_info.additional_max_speed": "Additional Max Speed",

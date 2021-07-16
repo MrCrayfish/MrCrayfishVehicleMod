@@ -1,11 +1,14 @@
 package com.mrcrayfish.vehicle.block;
 
 import com.google.common.base.Strings;
+import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.IWheelType;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.tileentity.VehicleCrateTileEntity;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -28,6 +31,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.BlockParticleData;
 import net.minecraft.particles.ParticleTypes;
@@ -77,8 +81,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
         {
             CompoundNBT blockEntityTag = new CompoundNBT();
             blockEntityTag.putString("Vehicle", resourceLocation.toString());
-            blockEntityTag.putInt("EngineTier", EngineTier.IRON.ordinal());
-            CommonUtils.writeItemStackToTag(blockEntityTag, "WheelStack", new ItemStack(ModItems.STANDARD_WHEEL.get()));
+            blockEntityTag.putBoolean("Creative", true);
             CompoundNBT itemTag = new CompoundNBT();
             itemTag.put("BlockEntityTag", blockEntityTag);
             ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());
@@ -231,23 +234,13 @@ public class VehicleCrateBlock extends RotatedObjectBlock
         }
     }
 
-    //TODO turn this into a builder
-    public static ItemStack create(ResourceLocation entityId, int color, @Nullable EngineTier engineTier, ItemStack wheel)
+    public static ItemStack create(ResourceLocation entityId, int color, ItemStack engine, ItemStack wheel)
     {
         CompoundNBT blockEntityTag = new CompoundNBT();
         blockEntityTag.putString("Vehicle", entityId.toString());
         blockEntityTag.putInt("Color", color);
-
-        if(engineTier != null)
-        {
-            blockEntityTag.putInt("EngineTier", engineTier.ordinal());
-        }
-
-        if(!wheel.isEmpty())
-        {
-            blockEntityTag.put("WheelStack", wheel.save(new CompoundNBT()));
-        }
-
+        blockEntityTag.put("EngineStack", engine.save(new CompoundNBT()));
+        blockEntityTag.put("WheelStack", wheel.save(new CompoundNBT()));
         CompoundNBT itemTag = new CompoundNBT();
         itemTag.put("BlockEntityTag", blockEntityTag);
         ItemStack stack = new ItemStack(ModBlocks.VEHICLE_CRATE.get());

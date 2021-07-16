@@ -15,6 +15,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+
 /**
  * Author: MrCrayfish
  */
@@ -114,10 +116,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         this.currentSpeed = this.getSpeed();
 
-        EngineTier engineTier = this.getEngineTier();
-        AccelerationDirection acceleration = this.getAcceleration();
-        TurnDirection turnDirection = this.getTurnDirection();
-        if(this.getControllingPassenger() != null)
+        Optional<IEngineTier> optional = this.getEngineTier();
+        if(this.getControllingPassenger() != null && optional.isPresent())
         {
             if(!this.isFlying())
             {
@@ -132,6 +132,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
                     float maxSpeed = this.getActualMaxSpeed() * this.getTravelSpeed();
                     if(this.currentSpeed < maxSpeed)
                     {
+                        IEngineTier engineTier = optional.get();
                         this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                         if(this.currentSpeed > maxSpeed)
                         {

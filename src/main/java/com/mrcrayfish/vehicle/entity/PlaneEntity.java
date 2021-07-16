@@ -14,6 +14,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.Optional;
+
 /**
  * Author: MrCrayfish
  */
@@ -100,7 +102,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         lift = 0;
         currentSpeed = this.getSpeed();
 
-        if(this.getControllingPassenger() != null)
+        Optional<IEngineTier> optional = this.getEngineTier();
+        if(this.getControllingPassenger() != null && optional.isPresent())
         {
             AccelerationDirection acceleration = getAcceleration();
             if(this.canDrive() && acceleration == AccelerationDirection.FORWARD)
@@ -110,7 +113,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
                     this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.95, 1.0));
                 }
 
-                EngineTier engineTier = this.getEngineTier();
+                IEngineTier engineTier = optional.get();
                 float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                 if(this.currentSpeed < this.getActualMaxSpeed())
                 {

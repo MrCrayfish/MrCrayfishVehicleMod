@@ -66,7 +66,7 @@ public class VehicleProperties
     private Vector3d frontAxelVec;
     private Vector3d rearAxelVec;
     private List<Seat> seats = new ArrayList<>();
-    private EngineType engineType = EngineType.NONE;
+    private IEngineType engineType = EngineType.NONE;
     private boolean colored;
 
     public VehicleProperties setAxleOffset(float axleOffset)
@@ -280,13 +280,13 @@ public class VehicleProperties
         return ImmutableList.copyOf(this.seats);
     }
 
-    public VehicleProperties setEngineType(EngineType type)
+    public VehicleProperties setEngineType(IEngineType type)
     {
         this.engineType = type;
         return this;
     }
 
-    public EngineType getEngineType()
+    public IEngineType getEngineType()
     {
         return this.engineType;
     }
@@ -315,7 +315,7 @@ public class VehicleProperties
 
     public static void loadProperties()
     {
-        for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicles())
+        for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
         {
             ID_TO_PROPERTIES.computeIfAbsent(entityType.getRegistryName(), VehicleProperties::loadProperties);
         }
@@ -342,10 +342,15 @@ public class VehicleProperties
 
     public static VehicleProperties getProperties(EntityType<?> entityType)
     {
-        VehicleProperties properties = ID_TO_PROPERTIES.get(entityType.getRegistryName());
+        return getProperties(entityType.getRegistryName());
+    }
+
+    public static VehicleProperties getProperties(ResourceLocation id)
+    {
+        VehicleProperties properties = ID_TO_PROPERTIES.get(id);
         if(properties == null)
         {
-            throw new IllegalArgumentException("No vehicle properties registered for " + entityType.getRegistryName());
+            throw new IllegalArgumentException("No vehicle properties registered for " + id);
         }
         return properties;
     }
@@ -414,7 +419,7 @@ public class VehicleProperties
 
         if(event.getKey() == GLFW.GLFW_KEY_RIGHT_BRACKET)
         {
-            for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicles())
+            for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
             {
                 ID_TO_PROPERTIES.put(entityType.getRegistryName(), loadProperties(entityType.getRegistryName()));
             }
@@ -429,7 +434,7 @@ public class VehicleProperties
             JsonObject object = new JsonObject();
 
             JsonObject general = new JsonObject();
-            if(src.engineType != EngineType.NONE) general.addProperty("engineType", src.engineType.name().toLowerCase(Locale.ENGLISH));
+            if(src.engineType != EngineType.NONE) general.addProperty("engineType", src.engineType.getId().toString());
             if(src.colored) general.addProperty("canBeColored", true);
             if(src.canChangeWheels) general.addProperty("canChangeWheels", true);
             if(general.size() > 0) object.add("general", general);
@@ -468,7 +473,7 @@ public class VehicleProperties
             VehicleProperties properties = new VehicleProperties();
 
             JsonObject general = JSONUtils.getAsJsonObject(object, "general", new JsonObject());
-            properties.setEngineType(this.getAsEnum(general, "engineType", EngineType.class, EngineType.NONE));
+            properties.setEngineType(this.getAsEngineType(general, "engineType", EngineType.NONE));
             properties.setColored(JSONUtils.getAsBoolean(general, "canBeColored", false));
             properties.setCanChangeWheels(JSONUtils.getAsBoolean(general, "canChangeWheels", false));
 
@@ -496,13 +501,16 @@ public class VehicleProperties
             return properties;
         }
 
-        private Vector3d getAsVector3d(JsonObject object, String memberName)
+        private IEngineType getAsEngineType(JsonObject object, String memberName, IEngineType defaultValue)
         {
-            if(object.has(memberName))
+            String rawId = JSONUtils.getAsString(object, memberName, "");
+            if(!rawId.isEmpty())
             {
-                return this.getAsVector3d(object, memberName, Vector3d.ZERO);
+                ResourceLocation id = new ResourceLocation(rawId);
+                IEngineType type = VehicleRegistry.getEngineTypeFromId(id);
+                return type != null ? type : defaultValue;
             }
-            throw new JsonSyntaxException("Missing " + memberName + ", expected to find a Vector3d");
+            return defaultValue;
         }
 
         private Vector3d getAsVector3d(JsonObject object, String memberName, Vector3d defaultValue)

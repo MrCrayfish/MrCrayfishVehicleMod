@@ -94,14 +94,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<Integer> TURN_SENSITIVITY = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.INT);
     protected static final DataParameter<Integer> MAX_TURN_ANGLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.INT);
     protected static final DataParameter<Integer> ACCELERATION_DIRECTION = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.INT);
-    protected static final DataParameter<Boolean> HAS_ENGINE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
-    public static final DataParameter<Integer> ENGINE_TIER = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.INT);
     protected static final DataParameter<Boolean> HORN = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
+    protected static final DataParameter<ItemStack> ENGINE_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
 
     public float prevCurrentSpeed;
@@ -172,14 +171,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(TURN_SENSITIVITY, 6);
         this.entityData.define(MAX_TURN_ANGLE, 45);
         this.entityData.define(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
-        this.entityData.define(HAS_ENGINE, false);
-        this.entityData.define(ENGINE_TIER, 0);
         this.entityData.define(HORN, false);
         this.entityData.define(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get());
         this.entityData.define(CURRENT_FUEL, 0F);
         this.entityData.define(FUEL_CAPACITY, 15000F);
         this.entityData.define(NEEDS_KEY, false);
         this.entityData.define(KEY_STACK, ItemStack.EMPTY);
+        this.entityData.define(ENGINE_STACK, ItemStack.EMPTY);
         this.entityData.define(WHEEL_STACK, ItemStack.EMPTY);
 
         List<Wheel> wheels = this.getProperties().getWheels();
@@ -483,7 +481,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         float wheelModifier = this.getWheelModifier();
         this.currentSpeed = this.getSpeed();
 
-        EngineTier engineTier = this.getEngineTier();
+        Optional<IEngineTier> optional = this.getEngineTier();
         AccelerationDirection acceleration = this.getAcceleration();
 
         /* Reset charging to false if acceleration is not charging */
@@ -492,7 +490,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.charging = false;
         }
 
-        if(this.getControllingPassenger() != null)
+        if(this.getControllingPassenger() != null && optional.isPresent())
         {
             if(this.canDrive())
             {
@@ -508,6 +506,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         float maxSpeed = this.getActualMaxSpeed() * wheelModifier * this.getPower();
                         if(this.currentSpeed < maxSpeed)
                         {
+                            IEngineTier engineTier = optional.get();
                             this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                             if(this.currentSpeed > maxSpeed)
                             {
@@ -525,6 +524,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 {
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
+                        IEngineTier engineTier = optional.get();
                         float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier * this.getPower();;
                         if(this.currentSpeed > maxSpeed)
                         {
@@ -686,13 +686,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             this.owner = compound.getUUID("Owner");
         }
-        if(compound.contains("HasEngine", Constants.NBT.TAG_BYTE))
+        if(compound.contains("EngineStack", Constants.NBT.TAG_COMPOUND))
         {
-            this.setEngine(compound.getBoolean("HasEngine"));
-        }
-        if(compound.contains("EngineTier", Constants.NBT.TAG_INT))
-        {
-            this.setEngineTier(EngineTier.getType(compound.getInt("EngineTier")));
+            this.setEngineStack(ItemStack.of(compound.getCompound("EngineStack")));
         }
         if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
         {
@@ -746,7 +742,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             compound.putUUID("Owner", this.owner);
         }
         compound.putBoolean("HasEngine", this.hasEngine());
-        compound.putInt("EngineTier", this.getEngineTier().ordinal());
+        CommonUtils.writeItemStackToTag(compound, "EngineStack", this.getEngineStack());
         CommonUtils.writeItemStackToTag(compound, "WheelStack", this.getWheelStack());
         compound.putFloat("MaxSpeed", this.getMaxSpeed());
         compound.putFloat("AccelerationSpeed", this.getAccelerationSpeed());
@@ -822,7 +818,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public float getActualMaxSpeed()
     {
-        return this.entityData.get(MAX_SPEED) + this.getEngineTier().getAdditionalMaxSpeed();
+        float maxSpeed = this.entityData.get(MAX_SPEED);
+        Optional<IEngineTier> engineTier = this.getEngineTier();
+        if(engineTier.isPresent()) maxSpeed += engineTier.get().getAdditionalMaxSpeed();
+        return maxSpeed;
     }
 
     public float getRealSpeed()
@@ -932,22 +931,22 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public boolean hasEngine()
     {
-        return this.entityData.get(HAS_ENGINE);
+        return !this.getEngineStack().isEmpty();
     }
 
-    public void setEngine(boolean hasEngine)
+    public void setEngineStack(ItemStack engine)
     {
-        this.entityData.set(HAS_ENGINE, hasEngine);
+        this.entityData.set(ENGINE_STACK, engine);
     }
 
-    public void setEngineTier(EngineTier engineTier)
+    public ItemStack getEngineStack()
     {
-        this.entityData.set(ENGINE_TIER, engineTier.ordinal());
+        return this.entityData.get(ENGINE_STACK);
     }
 
-    public EngineTier getEngineTier()
+    public Optional<IEngineTier> getEngineTier()
     {
-        return EngineTier.getType(this.entityData.get(ENGINE_TIER));
+        return IEngineTier.fromStack(this.getEngineStack());
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -1213,10 +1212,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         this.vehicleInventory = new Inventory(2);
 
-        ItemStack engine = ItemLookup.getEngine(this);
+        ItemStack engine = this.getEngineStack();
         if(this.getProperties().getEngineType() != EngineType.NONE & !engine.isEmpty())
         {
-            this.vehicleInventory.setItem(0, engine);
+            this.vehicleInventory.setItem(0, engine.copy());
         }
 
         ItemStack wheel = this.getWheelStack();
@@ -1230,7 +1229,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     private void updateSlots()
     {
-        if (!this.level.isClientSide())
+        if(!this.level.isClientSide())
         {
             ItemStack engine = this.vehicleInventory.getItem(0);
             if(engine.getItem() instanceof EngineItem)
@@ -1238,17 +1237,16 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 EngineItem item = (EngineItem) engine.getItem();
                 if(item.getEngineType() == this.getProperties().getEngineType())
                 {
-                    this.setEngine(true);
-                    this.setEngineTier(item.getEngineTier());
+                    this.setEngineStack(engine.copy());
                 }
                 else
                 {
-                    this.setEngine(false);
+                    this.setEngineStack(ItemStack.EMPTY);
                 }
             }
             else if(this.getProperties().getEngineType() != EngineType.NONE)
             {
-                this.setEngine(false);
+                this.setEngineStack(ItemStack.EMPTY);
             }
 
             ItemStack wheel = this.vehicleInventory.getItem(1);
@@ -1258,7 +1256,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 {
                     if(!this.hasWheelStack())
                     {
-                        WheelItem wheelItem = (WheelItem) wheel.getItem();
                         this.level.playSound(null, this.blockPosition(), ModSounds.BLOCK_JACK_AIR_WRENCH_GUN.get(), SoundCategory.BLOCKS, 1.0F, 1.1F);
                         this.setWheelStack(wheel.copy());
                     }
@@ -1449,10 +1446,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     @Override
     public ItemStack getPickedResult(RayTraceResult target)
     {
-        EngineTier engineTier = null;
+        ItemStack engine = ItemStack.EMPTY;
         if(this.hasEngine())
         {
-            engineTier = this.getEngineTier();
+            engine = this.getEngineStack();
         }
 
         ItemStack wheel = ItemStack.EMPTY;
@@ -1464,7 +1461,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         ResourceLocation entityId = this.getType().getRegistryName();
         if(entityId != null)
         {
-            return VehicleCrateBlock.create(entityId, this.getColor(), engineTier, wheel);
+            return VehicleCrateBlock.create(entityId, this.getColor(), engine, wheel);
         }
         return ItemStack.EMPTY;
     }

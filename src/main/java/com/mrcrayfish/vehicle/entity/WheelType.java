@@ -13,9 +13,9 @@ public enum WheelType implements IWheelType
     ALL_TERRAIN(0.85F, 0.85F, 0.85F),
     PLASTIC(0.5F, 0.5F, 0.5F);
 
-    float roadMultiplier;
-    float dirtMultiplier;
-    float snowMultiplier;
+    private final float roadMultiplier;
+    private final float dirtMultiplier;
+    private final float snowMultiplier;
 
     WheelType(float roadMultiplier, float dirtMultiplier, float snowMultiplier)
     {
@@ -27,30 +27,18 @@ public enum WheelType implements IWheelType
     @Override
     public float getRoadMultiplier()
     {
-        return roadMultiplier;
+        return this.roadMultiplier;
     }
 
     @Override
     public float getDirtMultiplier()
     {
-        return dirtMultiplier;
+        return this.dirtMultiplier;
     }
 
     @Override
     public float getSnowMultiplier()
     {
-        return snowMultiplier;
-    }
-
-    @Override
-    public void applyPhysics(PoweredVehicleEntity vehicle) {}
-
-    public static WheelType getType(int index)
-    {
-        if(index < 0 || index >= values().length)
-        {
-            return STANDARD;
-        }
-        return WheelType.values()[index];
+        return this.snowMultiplier;
     }
 }

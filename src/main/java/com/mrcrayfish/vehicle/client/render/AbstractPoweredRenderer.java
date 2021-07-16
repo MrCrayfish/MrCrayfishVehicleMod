@@ -26,9 +26,9 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
 {
     protected final PropertyFunction<T, Boolean> renderEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderEngine, true);
     protected final PropertyFunction<T, Boolean> hasEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::hasEngine, true);
-    protected final PropertyFunction<T, EngineTier> engineTierProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineTier, EngineTier.IRON);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
     protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresFuel, true);
+    protected final PropertyFunction<T, ItemStack> engineStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineStack, ItemStack.EMPTY);
     protected final PropertyFunction<T, ItemStack> wheelStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelStack, ItemStack.EMPTY);
 
     public AbstractPoweredRenderer(VehicleProperties defaultProperties)
@@ -41,14 +41,9 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         this.renderEngineProperty.setDefaultValue(renderEngine);
     }
 
-    public void setHasEngine(boolean hasEngine)
+    public void setEngineStack(ItemStack engine)
     {
-        this.renderEngineProperty.setDefaultValue(hasEngine);
-    }
-
-    public void setEngineTier(EngineTier engineTier)
-    {
-        this.engineTierProperty.setDefaultValue(engineTier);
+        this.engineStackProperty.setDefaultValue(engine);
     }
 
     public void setRenderFuelPort(boolean renderFuelPort)
@@ -71,7 +66,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         if(this.renderEngineProperty.get(vehicle) && this.hasEngineProperty.get(vehicle))
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            IBakedModel engineModel = RenderUtil.getModel(ItemLookup.getEngine(properties.getEngineType(), this.engineTierProperty.get(vehicle)));
+            IBakedModel engineModel = RenderUtil.getModel(this.engineStackProperty.get(vehicle));
             this.renderEngine(vehicle, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
         }
     }

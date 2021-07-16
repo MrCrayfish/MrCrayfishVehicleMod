@@ -2,18 +2,22 @@ package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.WheelType;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
@@ -40,7 +44,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
 
     private ResourceLocation entityId;
     private int color = VehicleEntity.DYE_TO_COLOR[0];
-    private EngineTier engineTier = null;
+    private ItemStack engineStack = ItemStack.EMPTY;
     private ItemStack wheelStack = ItemStack.EMPTY;
     private boolean opened = false;
     private int timer;
@@ -120,10 +124,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                             if(this.entity instanceof PoweredVehicleEntity)
                             {
                                 PoweredVehicleEntity entityPoweredVehicle = (PoweredVehicleEntity) this.entity;
-                                if(this.engineTier != null)
+                                if(this.engineStack != null)
                                 {
-                                    entityPoweredVehicle.setEngine(true);
-                                    entityPoweredVehicle.setEngineTier(this.engineTier);
+                                    entityPoweredVehicle.setEngineStack(this.engineStack);
                                 }
                                 if(!this.wheelStack.isEmpty())
                                 {
@@ -170,10 +173,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                         {
                             PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                             poweredVehicle.setOwner(this.opener);
-                            if(this.engineTier != null)
+                            if(!this.engineStack.isEmpty())
                             {
-                                poweredVehicle.setEngine(true);
-                                poweredVehicle.setEngineTier(this.engineTier);
+                                poweredVehicle.setEngineStack(this.engineStack);
                             }
                             if(!this.wheelStack.isEmpty())
                             {
@@ -202,13 +204,23 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         {
             this.color = compound.getInt("Color");
         }
-        if(compound.contains("EngineTier", Constants.NBT.TAG_INT))
+        if(compound.contains("EngineStack", Constants.NBT.TAG_COMPOUND))
         {
-            this.engineTier = EngineTier.getType(compound.getInt("EngineTier"));
+            this.engineStack = ItemStack.of(compound.getCompound("EngineStack"));
+        }
+        else if(compound.getBoolean("Creative"))
+        {
+            VehicleProperties properties = VehicleProperties.getProperties(this.entityId);
+            EngineItem engineItem = VehicleRegistry.getEngineItem(properties.getEngineType(), EngineTier.IRON);
+            this.engineStack = engineItem != null ? new ItemStack(engineItem) : ItemStack.EMPTY;
         }
         if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
         {
             this.wheelStack = ItemStack.of(compound.getCompound("WheelStack"));
+        }
+        else
+        {
+            this.wheelStack = new ItemStack(ModItems.STANDARD_WHEEL.get());
         }
         if(compound.contains("Opener", Constants.NBT.TAG_STRING))
         {
@@ -231,9 +243,9 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         {
             compound.putUUID("Opener", this.opener);
         }
-        if(this.engineTier != null)
+        if(!this.engineStack.isEmpty())
         {
-            compound.putInt("EngineTier", this.engineTier.ordinal());
+            CommonUtils.writeItemStackToTag(compound, "EngineStack", this.engineStack);
         }
         if(!this.wheelStack.isEmpty())
         {

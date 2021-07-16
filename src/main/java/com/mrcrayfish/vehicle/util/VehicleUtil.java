@@ -11,6 +11,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nullable;
@@ -28,9 +29,10 @@ public class VehicleUtil
 
     public static <T extends VehicleEntity> RegistryObject<EntityType<T>> createEntityType(DeferredRegister<EntityType<?>> deferredRegister, String name, BiFunction<EntityType<T>, World, T> function, float width, float height, boolean includeCrate)
     {
-        ResourceLocation id = new ResourceLocation(Reference.MOD_ID, name);
+        String modId = ObfuscationReflectionHelper.getPrivateValue(DeferredRegister.class, deferredRegister, "modid");
+        ResourceLocation id = new ResourceLocation(modId, name);
         EntityType<T> type = VehicleUtil.buildVehicleType(id, function, width, height);
-        VehicleRegistry.register(type);
+        VehicleRegistry.registerVehicleType(type);
         if(includeCrate) VehicleCrateBlock.registerVehicle(id);
         return deferredRegister.register(name, () -> type);
     }
