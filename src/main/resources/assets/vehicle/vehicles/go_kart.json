@@ -22,7 +22,7 @@
         "engine": {
             "translate": [ 0.0, 2.0, -9.0 ],
             "rotation": [ 0.0, 180.0, 0.0 ],
-            "scale": 1.2
+            "scale": 0.8
         }
     },
     "wheels": [

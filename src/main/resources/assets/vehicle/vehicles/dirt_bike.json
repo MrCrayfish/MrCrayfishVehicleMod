@@ -20,7 +20,7 @@
         "engine": {
             "translate": [ 0.0, 1.0, 0.0 ],
             "rotation": [ 0.0, 180.0, 0.0 ],
-            "scale": 0.85
+            "scale": 0.6
         },
         "fuelPort": {
             "translate": [ 0.0, 12.1, 3.0 ],
