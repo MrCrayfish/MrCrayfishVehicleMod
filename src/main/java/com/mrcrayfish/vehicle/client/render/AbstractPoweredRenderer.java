@@ -65,9 +65,13 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
     {
         if(this.renderEngineProperty.get(vehicle) && this.hasEngineProperty.get(vehicle))
         {
-            VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            IBakedModel engineModel = RenderUtil.getModel(this.engineStackProperty.get(vehicle));
-            this.renderEngine(vehicle, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
+            ItemStack engine = this.engineStackProperty.get(vehicle);
+            if(!engine.isEmpty())
+            {
+                VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+                IBakedModel engineModel = RenderUtil.getModel(this.engineStackProperty.get(vehicle));
+                this.renderEngine(vehicle, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
+            }
         }
     }
 
