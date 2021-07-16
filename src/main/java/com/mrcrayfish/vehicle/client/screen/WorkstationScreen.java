@@ -42,6 +42,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
@@ -294,30 +295,30 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         if(properties.isColored())
         {
             //TODO optional should have AQUA text formatting
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional"), new TranslationTextComponent("vehicle.tooltip.paint_color")), startX, startY, 186, 29, mouseX, mouseY, 0);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional").withStyle(TextFormatting.AQUA), new TranslationTextComponent("vehicle.tooltip.paint_color").withStyle(TextFormatting.GRAY)), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 186, 29, mouseX, mouseY, 0);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
 
         if(properties.getEngineType() != EngineType.NONE)
         {
             TranslationTextComponent engineName = properties.getEngineType().getEngineName();
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 206, 29, mouseX, mouseY, 1);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
 
         if(properties.canChangeWheels())
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 226, 29, mouseX, mouseY, 2);
         }
     }
 

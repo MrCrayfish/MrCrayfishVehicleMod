@@ -164,12 +164,12 @@
     "vehicle.status.key_invalid": "This key does not fit this vehicle",
     "vehicle.status.key_removed": "Vehicle is no longer locked",
 
-    "vehicle.tooltip.optional": "§bOptional",
-    "vehicle.tooltip.required": "§cRequired",
-    "vehicle.tooltip.not_applicable": "§7Not applicable",
-    "vehicle.tooltip.paint_color": "§7Paint Color",
+    "vehicle.tooltip.optional": "Optional",
+    "vehicle.tooltip.required": "Required",
+    "vehicle.tooltip.not_applicable": "Not applicable",
+    "vehicle.tooltip.paint_color": "Paint Color",
     "vehicle.tooltip.engine": "Engine",
-    "vehicle.tooltip.wheels": "§7Wheels",
+    "vehicle.tooltip.wheels": "Wheels",
 
     "key.categories.vehicle": "MrCrayfish's Vehicle Mod",
     "key.vehicle.cycle_seats": "Cycle Seats",
