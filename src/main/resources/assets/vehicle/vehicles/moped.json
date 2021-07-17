@@ -6,7 +6,6 @@
     },
     "axles": {
         "offsetToGround": -1.0,
-        "wheelOffset": 3.2,
         "lengthToFront": 14.5,
         "lengthToRear": -6.7
     },

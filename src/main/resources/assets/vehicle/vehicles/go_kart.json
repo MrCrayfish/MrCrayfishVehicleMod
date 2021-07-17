@@ -6,7 +6,6 @@
     },
     "axles": {
         "offsetToGround": -2.5,
-        "wheelOffset": 3.45,
         "lengthToFront": 13.5,
         "lengthToRear": -8.5
     },
@@ -30,26 +29,26 @@
             "side": "left",
             "position": "front",
             "offset": [ 9.0, 0.0, 13.5 ],
-            "scale": [ 1.0, 1.0, 1.0 ]
+            "scale": [ 0.625, 0.625, 0.625 ]
         },
         {
             "side": "right",
             "position": "front",
             "offset": [ 9.0, 0.0, 13.5 ],
-            "scale": [ 1.0, 1.0, 1.0 ]
+            "scale": [ 0.625, 0.625, 0.625 ]
         },
         {
             "side": "left",
             "position": "rear",
             "offset": [ 9.0, 0.0, -8.5 ],
-            "scale": [ 1.0, 1.0, 1.0 ],
+            "scale": [ 0.625, 0.625, 0.625 ],
             "particles": true
         },
         {
             "side": "right",
             "position": "rear",
             "offset": [ 9.0, 0.0, -8.5 ],
-            "scale": [ 1.0, 1.0, 1.0 ],
+            "scale": [ 0.625, 0.625, 0.625 ],
             "particles": true
         }
     ],

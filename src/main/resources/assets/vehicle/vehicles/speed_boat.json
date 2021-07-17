@@ -4,7 +4,7 @@
         "canBeColored": true
     },
     "axles": {
-        "wheelOffset": 2.5
+        "offsetToGround": 2.5
     },
     "display": {
         "held": [ 6.0, -0.5, 0.0 ],
