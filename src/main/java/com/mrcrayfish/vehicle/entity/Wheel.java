@@ -99,7 +99,7 @@ public class Wheel
 
     void updateScale(double scale)
     {
-        double xScale = this.scale.x;
+        double xScale = this.scale.x != 0.0 ? this.scale.x : scale;
         double yScale = this.scale.y != 0.0 ? this.scale.y : scale;
         double zScale = this.scale.z != 0.0 ? this.scale.z : scale;
         this.scale = new Vector3d(xScale, yScale, zScale);
