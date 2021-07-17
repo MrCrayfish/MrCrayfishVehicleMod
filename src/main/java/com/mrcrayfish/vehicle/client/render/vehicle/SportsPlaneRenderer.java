@@ -99,7 +99,7 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
                         float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
                         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
                     }
-                    matrixStack.scale(0.8F, 0.8F, 0.8F);
+                    matrixStack.scale(0.5F, 0.5F, 0.5F);
                     RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
                 }
                 matrixStack.popPose();
