@@ -10,8 +10,6 @@ import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -69,7 +67,7 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    protected boolean canFitPassenger(Entity passenger)
+    protected boolean canAddPassenger(Entity passenger)
     {
         return false;
     }
@@ -91,28 +89,19 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
-    {
-        //TODO figure this out how to render bounding boxes
-        //RenderGlobal.drawSelectionBoundingBox(CONNECTION_BOX.getBox(), 0, 1, 0, 0.4F);
-        //RenderGlobal.drawSelectionBoundingBox(CHEST_BOX.getBox(), 0, 1, 0, 0.4F);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(rightClick)
         {
             if(result.getPartHit() == CONNECTION_BOX)
             {
-                PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getInstance().player.getEntityId()));
+                PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
                 return true;
             }
             else if(result.getPartHit() == CHEST_BOX)
             {
-                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getEntityId()));
-                Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
+                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
                 return true;
             }
         }
@@ -120,9 +109,9 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
         if(compound.contains("Inventory", Constants.NBT.TAG_LIST))
         {
             this.initInventory();
@@ -131,9 +120,9 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
-        super.writeAdditional(compound);
+        super.addAdditionalSaveData(compound);
         if(this.inventory != null)
         {
             InventoryUtil.writeInventoryToNBT(compound, "Inventory", inventory);
@@ -147,12 +136,12 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
-            for(int i = 0; i < original.getSizeInventory(); i++)
+            for(int i = 0; i < original.getContainerSize(); i++)
             {
-                ItemStack stack = original.getStackInSlot(i);
+                ItemStack stack = original.getItem(i);
                 if(!stack.isEmpty())
                 {
-                    this.inventory.setInventorySlotContents(i, stack.copy());
+                    this.inventory.setItem(i, stack.copy());
                 }
             }
         }
@@ -164,7 +153,7 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
         super.onVehicleDestroyed(entity);
         if(this.inventory != null)
         {
-            InventoryHelper.dropInventoryItems(this.world, this, this.inventory);
+            InventoryHelper.dropContents(this.level, this, this.inventory);
         }
     }
 
@@ -181,9 +170,9 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public void openInventory(PlayerEntity player)
+    public void startOpen(PlayerEntity player)
     {
-        this.playSound(SoundEvents.BLOCK_CHEST_OPEN, 0.5F, 0.9F);
+        this.playSound(SoundEvents.CHEST_OPEN, 0.5F, 0.9F);
     }
 
     @Override

@@ -1,5 +1,36 @@
 {
     "variants": {
-        "": { "model": "vehicle:block/jack" }
+        "enabled=false,facing=north": {
+            "model": "vehicle:block/disabled_jack",
+            "y": 0
+        },
+        "enabled=true,facing=north": {
+            "model": "vehicle:block/jack",
+            "y": 0
+        },
+        "enabled=false,facing=east": {
+            "model": "vehicle:block/disabled_jack",
+            "y": 90
+        },
+        "enabled=true,facing=east": {
+            "model": "vehicle:block/jack",
+            "y": 90
+        },
+        "enabled=false,facing=south": {
+            "model": "vehicle:block/disabled_jack",
+            "y": 180
+        },
+        "enabled=true,facing=south": {
+            "model": "vehicle:block/jack",
+            "y": 180
+        },
+        "enabled=false,facing=west": {
+            "model": "vehicle:block/disabled_jack",
+            "y": 270
+        },
+        "enabled=true,facing=west": {
+            "model": "vehicle:block/jack",
+            "y": 270
+        }
     }
 }

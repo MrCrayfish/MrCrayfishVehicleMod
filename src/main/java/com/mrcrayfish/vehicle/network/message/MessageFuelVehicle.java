@@ -28,13 +28,13 @@ public class MessageFuelVehicle implements IMessage<MessageFuelVehicle>
     public void encode(MessageFuelVehicle message, PacketBuffer buffer)
     {
         buffer.writeInt(message.entityId);
-        buffer.writeEnumValue(message.hand);
+        buffer.writeEnum(message.hand);
     }
 
     @Override
     public MessageFuelVehicle decode(PacketBuffer buffer)
     {
-        return new MessageFuelVehicle(buffer.readInt(), buffer.readEnumValue(Hand.class));
+        return new MessageFuelVehicle(buffer.readInt(), buffer.readEnum(Hand.class));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class MessageFuelVehicle implements IMessage<MessageFuelVehicle>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                Entity targetEntity = player.world.getEntityByID(message.entityId);
+                Entity targetEntity = player.level.getEntity(message.entityId);
                 if(targetEntity instanceof PoweredVehicleEntity)
                 {
                     ((PoweredVehicleEntity) targetEntity).fuelVehicle(player, message.hand);

@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -17,25 +16,13 @@ public class SmartCarEntity extends LandVehicleEntity
         super(type, worldIn);
         this.setMaxSpeed(15F);
         this.setTurnSensitivity(12);
-        this.stepHeight = 1F;
+        this.maxUpStep = 1F;
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.ELECTRIC_MOTOR;
+        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
     }
 
     @Override

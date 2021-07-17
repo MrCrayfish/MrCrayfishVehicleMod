@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -22,15 +21,9 @@ public class MiniBusEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.MINI_BUS_ENGINE_MONO.get();
-}
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.MINI_BUS_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_MINI_BUS_ENGINE.get();
     }
 
     @Override
@@ -43,12 +36,6 @@ public class MiniBusEntity extends LandVehicleEntity
     public float getMaxEnginePitch()
     {
         return 1.25F;
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
     }
 
     @Override

@@ -3,57 +3,42 @@ package com.mrcrayfish.vehicle.entity;
 /**
  * Author: MrCrayfish
  */
-public enum WheelType
+public enum WheelType implements IWheelType
 {
-    STANDARD("stock", 0.9F, 0.8F, 0.5F),
-    SPORTS("sports", 1.0F, 0.75F, 0.5F),
-    RACING("racing", 1.1F, 0.7F, 0.5F),
-    OFF_ROAD("off_road", 0.75F, 1.0F, 0.85F),
-    SNOW("snow", 0.75F, 0.75F, 0.95F),
-    ALL_TERRAIN("all_terrain", 0.85F, 0.85F, 0.85F),
-    PLASTIC("plastic", 0.5F, 0.5F, 0.5F);
+    STANDARD(0.9F, 0.8F, 0.5F),
+    SPORTS(1.0F, 0.75F, 0.5F),
+    RACING(1.1F, 0.7F, 0.5F),
+    OFF_ROAD(0.75F, 1.0F, 0.85F),
+    SNOW(0.75F, 0.75F, 0.95F),
+    ALL_TERRAIN(0.85F, 0.85F, 0.85F),
+    PLASTIC(0.5F, 0.5F, 0.5F);
 
-    String id;
-    float roadMultiplier;
-    float dirtMultiplier;
-    float snowMultiplier;
+    private final float roadMultiplier;
+    private final float dirtMultiplier;
+    private final float snowMultiplier;
 
-    WheelType(String id, float roadMultiplier, float dirtMultiplier, float snowMultiplier)
+    WheelType(float roadMultiplier, float dirtMultiplier, float snowMultiplier)
     {
-        this.id = id;
         this.roadMultiplier = roadMultiplier;
         this.dirtMultiplier = dirtMultiplier;
         this.snowMultiplier = snowMultiplier;
     }
 
-    public String getId()
-    {
-        return id;
-    }
-
+    @Override
     public float getRoadMultiplier()
     {
-        return roadMultiplier;
+        return this.roadMultiplier;
     }
 
+    @Override
     public float getDirtMultiplier()
     {
-        return dirtMultiplier;
+        return this.dirtMultiplier;
     }
 
+    @Override
     public float getSnowMultiplier()
     {
-        return snowMultiplier;
-    }
-
-    public void applyPhysics(PoweredVehicleEntity vehicle) {}
-
-    public static WheelType getType(int index)
-    {
-        if(index < 0 || index >= values().length)
-        {
-            return STANDARD;
-        }
-        return WheelType.values()[index];
+        return this.snowMultiplier;
     }
 }

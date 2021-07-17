@@ -1,0 +1,6 @@
+{
+    "parent": "vehicle:item/electric_engine",
+    "textures": {
+        "electric_engine": "vehicle:model/netherite_electric_engine"
+    }
+}

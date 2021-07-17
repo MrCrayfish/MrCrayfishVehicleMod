@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -33,9 +32,9 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public AxisAlignedBB getRenderBoundingBox()
+    public AxisAlignedBB getBoundingBoxForCulling()
     {
-        return this.getBoundingBox().grow(1.5);
+        return this.getBoundingBox().inflate(1.5);
     }
 
     @Override
@@ -70,21 +69,9 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.SPORTS_PLANE_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.SPORTS_PLANE_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
+        return ModSounds.ENTITY_SPORTS_PLANE_ENGINE.get();
     }
 
     @Override

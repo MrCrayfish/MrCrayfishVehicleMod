@@ -105,23 +105,23 @@ public class FluidMixerRecipe implements IRecipe<FluidMixerTileEntity>
         if(index == -1) return false;
         Fluid inputTwo = fluidMixer.getBlazeTank().getFluid().getFluid();
         if(!inputTwo.equals(this.inputs[index].getFluid())) return false;
-        return InventoryUtil.areItemStacksEqualIgnoreCount(fluidMixer.getStackInSlot(FluidMixerTileEntity.SLOT_INGREDIENT), this.ingredient);
+        return InventoryUtil.areItemStacksEqualIgnoreCount(fluidMixer.getItem(FluidMixerTileEntity.SLOT_INGREDIENT), this.ingredient);
     }
 
     @Override
-    public ItemStack getCraftingResult(FluidMixerTileEntity inv)
+    public ItemStack assemble(FluidMixerTileEntity inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }

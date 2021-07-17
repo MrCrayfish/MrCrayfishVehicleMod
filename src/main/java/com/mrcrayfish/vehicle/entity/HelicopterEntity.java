@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAltitude;
 import com.mrcrayfish.vehicle.network.message.MessageTravelProperties;
@@ -15,15 +15,17 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
+import java.util.Optional;
+
 /**
  * Author: MrCrayfish
  */
 public abstract class HelicopterEntity extends PoweredVehicleEntity
 {
-    private static final DataParameter<Integer> ALTITUDE_CHANGE = EntityDataManager.createKey(HelicopterEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> LIFT = EntityDataManager.createKey(HelicopterEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> TRAVEL_DIRECTION = EntityDataManager.createKey(HelicopterEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> TRAVEL_SPEED = EntityDataManager.createKey(HelicopterEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> ALTITUDE_CHANGE = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.INT);
+    private static final DataParameter<Float> LIFT = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> TRAVEL_DIRECTION = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> TRAVEL_SPEED = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
 
     private float lift;
 
@@ -49,23 +51,17 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.register(ALTITUDE_CHANGE, AltitudeChange.NONE.ordinal());
-        this.dataManager.register(LIFT, 0F);
-        this.dataManager.register(TRAVEL_DIRECTION, 0F);
-        this.dataManager.register(TRAVEL_SPEED, 0F);
+        super.defineSynchedData();
+        this.entityData.define(ALTITUDE_CHANGE, AltitudeChange.NONE.ordinal());
+        this.entityData.define(LIFT, 0F);
+        this.entityData.define(TRAVEL_DIRECTION, 0F);
+        this.entityData.define(TRAVEL_SPEED, 0F);
     }
 
     @Override
-    public SoundEvent getMovingSound()
-    {
-        return null;
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
+    public SoundEvent getEngineSound()
     {
         return null;
     }
@@ -76,7 +72,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         Entity entity = this.getControllingPassenger();
         if(entity != null && this.isFlying())
         {
-            float deltaYaw = entity.getRotationYawHead() % 360.0F - rotationYaw;
+            float deltaYaw = entity.getYHeadRot() % 360.0F - yRot;
             while(deltaYaw < -180.0F)
             {
                 deltaYaw += 360.0F;
@@ -85,7 +81,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             {
                 deltaYaw -= 360.0F;
             }
-            this.rotationYaw = this.rotationYaw + deltaYaw * 0.15F;
+            this.yRot = this.yRot + deltaYaw * 0.15F;
         }
 
         float travelDirection = this.getTravelDirection();
@@ -99,8 +95,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         this.vehicleMotionX = (-this.currentSpeed * this.dirX);
         this.vehicleMotionZ = (this.currentSpeed * this.dirZ);
 
-        Vector3d motion = this.getMotion();
-        double motionY = motion.getY();
+        Vector3d motion = this.getDeltaMovement();
+        double motionY = motion.y();
         this.updateLift();
         if(this.isFueled())
         {
@@ -112,7 +108,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         {
             motionY -= (0.08D - 0.08D * this.getBladeSpeedNormal());
         }
-        this.setMotion(motion.getX(), motionY, motion.getZ());
+        this.setDeltaMovement(motion.x(), motionY, motion.z());
     }
 
     @Override
@@ -120,10 +116,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         this.currentSpeed = this.getSpeed();
 
-        EngineTier engineTier = this.getEngineTier();
-        AccelerationDirection acceleration = this.getAcceleration();
-        TurnDirection turnDirection = this.getTurnDirection();
-        if(this.getControllingPassenger() != null)
+        Optional<IEngineTier> optional = this.getEngineTier();
+        if(this.getControllingPassenger() != null && optional.isPresent())
         {
             if(!this.isFlying())
             {
@@ -138,6 +132,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
                     float maxSpeed = this.getActualMaxSpeed() * this.getTravelSpeed();
                     if(this.currentSpeed < maxSpeed)
                     {
+                        IEngineTier engineTier = optional.get();
                         this.currentSpeed += this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
                         if(this.currentSpeed > maxSpeed)
                         {
@@ -216,15 +211,15 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         Entity entity = this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            AltitudeChange altitudeChange = VehicleMod.PROXY.getAltitudeChange();
+            AltitudeChange altitudeChange = VehicleHelper.getAltitudeChange();
             if(this.getAltitudeChange() != altitudeChange)
             {
                 this.setAltitudeChange(altitudeChange);
                 PacketHandler.instance.sendToServer(new MessageAltitude(altitudeChange));
             }
 
-            float travelDirection = VehicleMod.PROXY.getTravelDirection(this);
-            float travelSpeed = VehicleMod.PROXY.getTravelSpeed(this);
+            float travelDirection = VehicleHelper.getTravelDirection(this);
+            float travelSpeed = VehicleHelper.getTravelSpeed(this);
             this.setTravelDirection(travelDirection);
             this.setTravelSpeed(travelSpeed);
             PacketHandler.instance.sendToServer(new MessageTravelProperties(travelSpeed, travelDirection));
@@ -246,14 +241,14 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
-        passenger.rotationYaw = this.rotationYaw;
+        passenger.yRot = this.yRot;
     }
 
     @Override
     protected void updateTurning() {}
 
     @Override
-    public double getMountedYOffset()
+    public double getPassengersRidingOffset()
     {
         return 0;
     }
@@ -262,29 +257,29 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
      * Overridden to prevent players from taking fall damage when landing a plane
      */
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier)
+    public boolean causeFallDamage(float distance, float damageMultiplier)
     {
         return false;
     }
 
     public void setAltitudeChange(AltitudeChange altitudeChange)
     {
-        this.dataManager.set(ALTITUDE_CHANGE, altitudeChange.ordinal());
+        this.entityData.set(ALTITUDE_CHANGE, altitudeChange.ordinal());
     }
 
     public AltitudeChange getAltitudeChange()
     {
-        return AltitudeChange.values()[this.dataManager.get(ALTITUDE_CHANGE)];
+        return AltitudeChange.values()[this.entityData.get(ALTITUDE_CHANGE)];
     }
 
     public float getLift()
     {
-        return this.dataManager.get(LIFT);
+        return this.entityData.get(LIFT);
     }
 
     public void setLift(float lift)
     {
-        this.dataManager.set(LIFT, lift);
+        this.entityData.set(LIFT, lift);
     }
 
     public boolean isFlying()
@@ -305,22 +300,22 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
 
     public float getTravelDirection()
     {
-        return this.dataManager.get(TRAVEL_DIRECTION);
+        return this.entityData.get(TRAVEL_DIRECTION);
     }
 
     public void setTravelDirection(float travelDirection)
     {
-        this.dataManager.set(TRAVEL_DIRECTION, travelDirection);
+        this.entityData.set(TRAVEL_DIRECTION, travelDirection);
     }
 
     public float getTravelSpeed()
     {
-        return this.dataManager.get(TRAVEL_SPEED);
+        return this.entityData.get(TRAVEL_SPEED);
     }
 
     public void setTravelSpeed(float travelSpeed)
     {
-        this.dataManager.set(TRAVEL_SPEED, travelSpeed);
+        this.entityData.set(TRAVEL_SPEED, travelSpeed);
     }
 
     public enum AltitudeChange

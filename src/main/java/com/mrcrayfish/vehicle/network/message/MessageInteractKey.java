@@ -26,7 +26,7 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
 
     public MessageInteractKey(Entity targetEntity)
     {
-        this.entityId = targetEntity.getEntityId();
+        this.entityId = targetEntity.getId();
     }
 
     private MessageInteractKey(int entityId)
@@ -55,13 +55,13 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                Entity targetEntity = player.world.getEntityByID(message.entityId);
+                Entity targetEntity = player.level.getEntity(message.entityId);
                 if(targetEntity instanceof PoweredVehicleEntity)
                 {
                     PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) targetEntity;
                     if(poweredVehicle.isKeyNeeded())
                     {
-                        ItemStack stack = player.getHeldItemMainhand();
+                        ItemStack stack = player.getMainHandItem();
                         if(!stack.isEmpty() && stack.getItem() == ModItems.WRENCH.get())
                         {
                             if(poweredVehicle.isOwner(player))
@@ -80,11 +80,11 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
                         {
                             if(!stack.isEmpty() && stack.getItem() == ModItems.KEY.get())
                             {
-                                UUID keyUuid = CommonUtils.getOrCreateStackTag(stack).getUniqueId("VehicleId");
-                                if(poweredVehicle.getUniqueID().equals(keyUuid))
+                                UUID keyUuid = CommonUtils.getOrCreateStackTag(stack).getUUID("VehicleId");
+                                if(poweredVehicle.getUUID().equals(keyUuid))
                                 {
                                     poweredVehicle.setKeyStack(stack.copy());
-                                    player.setItemStackToSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
+                                    player.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
                                 }
                                 else
                                 {

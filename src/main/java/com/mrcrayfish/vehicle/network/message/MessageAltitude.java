@@ -22,13 +22,13 @@ public class MessageAltitude implements IMessage<MessageAltitude>
 	@Override
 	public void encode(MessageAltitude message, PacketBuffer buffer)
 	{
-		buffer.writeEnumValue(message.altitudeChange);
+		buffer.writeEnum(message.altitudeChange);
 	}
 
 	@Override
 	public MessageAltitude decode(PacketBuffer buffer)
 	{
-		return new MessageAltitude(buffer.readEnumValue(HelicopterEntity.AltitudeChange.class));
+		return new MessageAltitude(buffer.readEnum(HelicopterEntity.AltitudeChange.class));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class MessageAltitude implements IMessage<MessageAltitude>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof HelicopterEntity)
 				{
 					((HelicopterEntity) riding).setAltitudeChange(message.altitudeChange);

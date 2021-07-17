@@ -28,6 +28,13 @@ public class Seat
         this.driver = driver;
     }
 
+    public Seat(Vector3d position, boolean driver, float yawOffset)
+    {
+        this.position = position;
+        this.driver = driver;
+        this.yawOffset = yawOffset;
+    }
+
     public Vector3d getPosition()
     {
         return position;

@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
@@ -15,13 +14,7 @@ public class SofacopterEntity extends HelicopterEntity
         super(type, worldIn);
         this.setFuelCapacity(40000F);
         this.setFuelConsumption(0.5F);
-        this.dataManager.set(COLOR, 11546150);
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.ELECTRIC_MOTOR;
+        this.entityData.set(COLOR, 11546150);
     }
 
     @Override

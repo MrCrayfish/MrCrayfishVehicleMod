@@ -1,0 +1,6 @@
+{
+	"parent": "vehicle:block/fluid_mixer",
+	"textures": {
+		"fluid_mixer": "vehicle:model/disabled_fluid_mixer"
+	}
+}

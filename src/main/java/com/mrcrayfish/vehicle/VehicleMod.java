@@ -1,20 +1,17 @@
 package com.mrcrayfish.vehicle;
 
+import com.mrcrayfish.vehicle.client.ClientHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
-import com.mrcrayfish.vehicle.entity.CustomDataSerializers;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.proxy.ClientProxy;
-import com.mrcrayfish.vehicle.proxy.Proxy;
-import com.mrcrayfish.vehicle.proxy.ServerProxy;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -30,48 +27,47 @@ import org.apache.logging.log4j.Logger;
 @Mod(Reference.MOD_ID)
 public class VehicleMod
 {
-    public static final Proxy PROXY = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
     public static final ItemGroup CREATIVE_TAB = new ItemGroup("tabVehicle")
     {
         @Override
-        public ItemStack createIcon()
+        public ItemStack makeIcon()
         {
-            return new ItemStack(ModItems.WOOD_SMALL_ENGINE.get());
+            return new ItemStack(ModItems.IRON_SMALL_ENGINE.get());
         }
     };
 
     public VehicleMod()
     {
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        ModBlocks.BLOCKS.register(eventBus);
-        ModItems.ITEMS.register(eventBus);
-        ModEntities.ENTITY_TYPES.register(eventBus);
-        ModTileEntities.TILE_ENTITY_TYPES.register(eventBus);
-        ModContainers.CONTAINER_TYPES.register(eventBus);
-        ModSounds.SOUNDS.register(eventBus);
-        ModRecipeSerializers.RECIPE_SERIALIZERS.register(eventBus);
-        ModFluids.FLUIDS.register(eventBus);
+        ModBlocks.REGISTER.register(eventBus);
+        ModItems.REGISTER.register(eventBus);
+        ModEntities.REGISTER.register(eventBus);
+        ModTileEntities.REGISTER.register(eventBus);
+        ModContainers.REGISTER.register(eventBus);
+        ModSounds.REGISTER.register(eventBus);
+        ModRecipeSerializers.REGISTER.register(eventBus);
+        ModFluids.REGISTER.register(eventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
+        MinecraftForge.EVENT_BUS.register(FluidNetworkHandler.instance());
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
+        VehicleProperties.loadProperties();
         PacketHandler.register();
-        CustomDataSerializers.register();
         HeldVehicleDataHandler.register();
-        VehicleProperties.register();
         ItemLookup.init();
         ModDataKeys.register();
-        ModLootFunctions.init(); //Force to initialize static
+        ModLootFunctions.init();
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
     {
-        PROXY.setupClient();
+        ClientHandler.setup();
     }
 }

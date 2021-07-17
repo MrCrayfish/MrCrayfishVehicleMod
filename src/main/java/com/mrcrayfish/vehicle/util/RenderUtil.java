@@ -23,7 +23,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Direction;
-import net.minecraft.util.text.*;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.ITextProperties;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.Style;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
 import javax.annotation.Nullable;
@@ -44,13 +48,13 @@ public class RenderUtil
     public static void drawTexturedModalRect(double x, double y, int textureX, int textureY, double width, double height)
     {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(7, DefaultVertexFormats.POSITION_TEX);
-        bufferbuilder.pos(x, y + height, 0).tex(((float) textureX * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
-        bufferbuilder.pos(x + width, y + height, 0).tex(((float) (textureX + width) * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
-        bufferbuilder.pos(x + width, y, 0).tex(((float) (textureX + width) * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
-        bufferbuilder.pos(x + 0, y, 0).tex(((float) textureX * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
-        tessellator.draw();
+        bufferbuilder.vertex(x, y + height, 0).uv(((float) textureX * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.vertex(x + width, y + height, 0).uv(((float) (textureX + width) * 0.00390625F), ((float) (textureY + height) * 0.00390625F)).endVertex();
+        bufferbuilder.vertex(x + width, y, 0).uv(((float) (textureX + width) * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
+        bufferbuilder.vertex(x + 0, y, 0).uv(((float) textureX * 0.00390625F), ((float) textureY * 0.00390625F)).endVertex();
+        tessellator.end();
     }
 
     /**
@@ -72,13 +76,13 @@ public class RenderUtil
         RenderSystem.defaultBlendFunc();
         RenderSystem.shadeModel(7425);
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder bufferbuilder = tessellator.getBuffer();
+        BufferBuilder bufferbuilder = tessellator.getBuilder();
         bufferbuilder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_COLOR);
-        bufferbuilder.pos((double)right, (double)top, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
-        bufferbuilder.pos((double)left, (double)top, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
-        bufferbuilder.pos((double)left, (double)bottom, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
-        bufferbuilder.pos((double)right, (double)bottom, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
-        tessellator.draw();
+        bufferbuilder.vertex((double)right, (double)top, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
+        bufferbuilder.vertex((double)left, (double)top, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
+        bufferbuilder.vertex((double)left, (double)bottom, 0).color(greenStart, blueStart, alphaStart, redStart).endVertex();
+        bufferbuilder.vertex((double)right, (double)bottom, 0).color(greenEnd, blueEnd, alphaEnd, redEnd).endVertex();
+        tessellator.end();
         RenderSystem.shadeModel(7424);
         RenderSystem.disableBlend();
         RenderSystem.enableAlphaTest();
@@ -88,48 +92,48 @@ public class RenderUtil
     public static void scissor(int x, int y, int width, int height) //TODO might need fixing. I believe I rewrote this in a another mod
     {
         Minecraft mc = Minecraft.getInstance();
-        int scale = (int) mc.getMainWindow().getGuiScaleFactor();
-        GL11.glScissor(x * scale, mc.getMainWindow().getHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
+        int scale = (int) mc.getWindow().getGuiScale();
+        GL11.glScissor(x * scale, mc.getWindow().getScreenHeight() - y * scale - height * scale, Math.max(0, width * scale), Math.max(0, height * scale));
     }
 
     public static IBakedModel getModel(ItemStack stack)
     {
-        return Minecraft.getInstance().getItemRenderer().getItemModelMesher().getItemModel(stack);
+        return Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(stack);
     }
 
     public static void renderColoredModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int color, int lightTexture, int overlayTexture)
     {
-        matrixStack.push();
+        matrixStack.pushPose();
         net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
         matrixStack.translate(-0.5, -0.5, -0.5);
-        if(!model.isBuiltInRenderer())
+        if(!model.isCustomRenderer())
         {
-            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.getCutoutBlockType());
+            IVertexBuilder vertexBuilder = renderTypeBuffer.getBuffer(Atlases.cutoutBlockSheet());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void renderDamagedVehicleModel(IBakedModel model, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, int stage, int color, int lightTexture, int overlayTexture)
     {
-        matrixStack.push();
+        matrixStack.pushPose();
         net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
         matrixStack.translate(-0.5, -0.5, -0.5);
-        if(!model.isBuiltInRenderer())
+        if(!model.isCustomRenderer())
         {
             Minecraft mc = Minecraft.getInstance();
-            MatrixStack.Entry entry = matrixStack.getLast();
-            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.getRenderTypeBuffers().getCrumblingBufferSource().getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(stage)), entry.getMatrix(), entry.getNormal());
+            MatrixStack.Entry entry = matrixStack.last();
+            IVertexBuilder vertexBuilder = new MatrixApplyingVertexBuilder(mc.renderBuffers().crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(stage)), entry.pose(), entry.normal());
             renderModel(model, ItemStack.EMPTY, color, lightTexture, overlayTexture, matrixStack, vertexBuilder);
         }
-        matrixStack.pop();
+        matrixStack.popPose();
     }
 
     public static void renderModel(ItemStack stack, ItemCameraTransforms.TransformType transformType, boolean leftHanded, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int lightTexture, int overlayTexture, IBakedModel model)
     {
         if(!stack.isEmpty())
         {
-            matrixStack.push();
+            matrixStack.pushPose();
             boolean isGui = transformType == ItemCameraTransforms.TransformType.GUI;
             boolean tridentFlag = isGui || transformType == ItemCameraTransforms.TransformType.GROUND || transformType == ItemCameraTransforms.TransformType.FIXED;
             if(stack.getItem() == Items.TRIDENT && tridentFlag)
@@ -139,22 +143,22 @@ public class RenderUtil
 
             model = net.minecraftforge.client.ForgeHooksClient.handleCameraTransforms(matrixStack, model, transformType, leftHanded);
             matrixStack.translate(-0.5, -0.5, -0.5);
-            if(!model.isBuiltInRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
+            if(!model.isCustomRenderer() && (stack.getItem() != Items.TRIDENT || tridentFlag))
             {
-                RenderType renderType = RenderTypeLookup.func_239219_a_(stack, false); //TODO test what this flag does
-                if(isGui && Objects.equals(renderType, Atlases.getTranslucentCullBlockType()))
+                RenderType renderType = RenderTypeLookup.getRenderType(stack, false); //TODO test what this flag does
+                if(isGui && Objects.equals(renderType, Atlases.translucentCullBlockSheet()))
                 {
-                    renderType = Atlases.getTranslucentCullBlockType();
+                    renderType = Atlases.translucentCullBlockSheet();
                 }
-                IVertexBuilder vertexBuilder = ItemRenderer.getBuffer(renderTypeBuffer, renderType, true, stack.hasEffect());
+                IVertexBuilder vertexBuilder = ItemRenderer.getFoilBuffer(renderTypeBuffer, renderType, true, stack.hasFoil());
                 renderModel(model, stack, -1, lightTexture, overlayTexture, matrixStack, vertexBuilder);
             }
             else
             {
-                stack.getItem().getItemStackTileEntityRenderer().func_239207_a_(stack, transformType, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
+                stack.getItem().getItemStackTileEntityRenderer().renderByItem(stack, transformType, matrixStack, renderTypeBuffer, lightTexture, overlayTexture);
             }
 
-            matrixStack.pop();
+            matrixStack.popPose();
         }
     }
 
@@ -173,11 +177,11 @@ public class RenderUtil
     private static void renderQuads(MatrixStack matrixStack, IVertexBuilder vertexBuilder, List<BakedQuad> quads, ItemStack stack, int color, int lightTexture, int overlayTexture)
     {
         boolean useItemColor = !stack.isEmpty() && color == -1;
-        MatrixStack.Entry entry = matrixStack.getLast();
+        MatrixStack.Entry entry = matrixStack.last();
         for(BakedQuad quad : quads)
         {
             int tintColor = 0xFFFFFF;
-            if(quad.hasTintIndex())
+            if(quad.isTinted())
             {
                 if(useItemColor)
                 {
@@ -195,45 +199,9 @@ public class RenderUtil
         }
     }
 
-    /**
-     * Gets an IBakedModel of the wheel currently on a powered vehicle.
-     * If there are no wheels installed on the vehicle, a null model will be returned.
-     *
-     * @param entity the powered vehicle to get the wheel model from
-     * @return an IBakedModel of the wheel or null if wheels are not present
-     */
-    @Nullable
-    public static IBakedModel getWheelModel(PoweredVehicleEntity entity)
-    {
-        ItemStack stack = ItemLookup.getWheel(entity);
-        if(!stack.isEmpty())
-        {
-            return RenderUtil.getModel(stack);
-        }
-        return null;
-    }
-
-    /**
-     * Gets an IBakedModel of the engine currently on a powered vehicle.
-     * If there is no engine installed in the vehicle, a null model will be returned.
-     *
-     * @param entity the powered vehicle to get the engine model from
-     * @return an IBakedModel of the engine or null if the engine is not present
-     */
-    @Nullable
-    public static IBakedModel getEngineModel(PoweredVehicleEntity entity)
-    {
-        ItemStack stack = ItemLookup.getEngine(entity);
-        if(!stack.isEmpty())
-        {
-            return RenderUtil.getModel(stack);
-        }
-        return null;
-    }
-
     public static List<ITextComponent> lines(ITextProperties text, int maxWidth)
     {
-        List<ITextProperties> lines = Minecraft.getInstance().fontRenderer.func_238420_b_().func_238362_b_(text, maxWidth, Style.EMPTY);
-        return lines.stream().map(t -> new StringTextComponent(t.getString()).mergeStyle(TextFormatting.GRAY)).collect(Collectors.toList());
+        List<ITextProperties> lines = Minecraft.getInstance().font.getSplitter().splitLines(text, maxWidth, Style.EMPTY);
+        return lines.stream().map(t -> new StringTextComponent(t.getString()).withStyle(TextFormatting.GRAY)).collect(Collectors.toList());
     }
 }

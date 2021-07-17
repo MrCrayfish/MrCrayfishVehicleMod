@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.network.ClientPlayHandler;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -31,13 +31,13 @@ public class MessageSyncPlayerSeat implements IMessage<MessageSyncPlayerSeat>
     {
         buffer.writeVarInt(message.entityId);
         buffer.writeVarInt(message.seatIndex);
-        buffer.writeUniqueId(message.uuid);
+        buffer.writeUUID(message.uuid);
     }
 
     @Override
     public MessageSyncPlayerSeat decode(PacketBuffer buffer)
     {
-        return new MessageSyncPlayerSeat(buffer.readVarInt(), buffer.readVarInt(), buffer.readUniqueId());
+        return new MessageSyncPlayerSeat(buffer.readVarInt(), buffer.readVarInt(), buffer.readUUID());
     }
 
     @Override
@@ -45,8 +45,22 @@ public class MessageSyncPlayerSeat implements IMessage<MessageSyncPlayerSeat>
     {
         if(supplier.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT)
         {
-            supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncPlayerSeat(message.entityId, message.seatIndex, message.uuid));
-            supplier.get().setPacketHandled(true);
+            IMessage.enqueueTask(supplier, () -> ClientPlayHandler.handleSyncPlayerSeat(message));
         }
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
+    }
+
+    public int getSeatIndex()
+    {
+        return this.seatIndex;
+    }
+
+    public UUID getUuid()
+    {
+        return this.uuid;
     }
 }

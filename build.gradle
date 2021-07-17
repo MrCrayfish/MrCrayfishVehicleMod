@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
@@ -17,17 +20,20 @@ archivesBaseName = "vehicle-mod"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
+sourceSets.main.resources { srcDir 'src/generated/resources' }
+
 minecraft {
-    mappings channel: 'snapshot', version: '20200723-1.16.1'
+    mappings channel: "official", version: "1.16.5"
 
     runs {
         client {
             workingDirectory project.file('run')
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                examplemod {
+                vehicle {
                     source sourceSets.main
                 }
             }
@@ -37,9 +43,10 @@ minecraft {
             workingDirectory project.file('run')
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
             mods {
-                modid {
+                vehicle {
                     source sourceSets.main
                 }
             }
@@ -50,9 +57,9 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.logging.console.level', 'debug'
-            args '--mod', 'cgm', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'vehicle', '--all', '--output', file('src/generated/resources/')
             mods {
-                modid {
+                vehicle {
                     source sourceSets.main
                 }
             }
@@ -67,9 +74,18 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.3-34.1.42'
-    compile fg.deobf('curse.maven:obfuscate-289380:3169370')
-    compile fg.deobf('curse.maven:controllable-317269:3197856')
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.12'
+    compile fg.deobf('curse.maven:obfuscate-289380:3336021')
+    compile fg.deobf('curse.maven:controllable-317269:3335987')
+    compile fg.deobf('curse.maven:configured-457570:3340535')
+}
+
+processResources {
+    doLast {
+        fileTree(dir: outputs.files.asPath, include: "**/*.json").each {
+            File file -> file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+        }
+    }
 }
 
 jar {

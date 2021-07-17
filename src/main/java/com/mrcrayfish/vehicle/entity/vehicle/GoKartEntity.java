@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -18,26 +17,14 @@ public class GoKartEntity extends LandVehicleEntity
         super(type, worldIn);
         this.setMaxSpeed(20F);
         this.setTurnSensitivity(12);
-        this.stepHeight = 0.625F;
+        this.maxUpStep = 0.625F;
         this.setFuelConsumption(0.5F);
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.GO_KART_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.GO_KART_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
+        return ModSounds.ENTITY_GO_KART_ENGINE.get();
     }
 
     @Override

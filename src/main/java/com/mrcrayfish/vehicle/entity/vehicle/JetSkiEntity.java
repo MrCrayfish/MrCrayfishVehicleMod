@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.entity.BoatEntity;
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
@@ -36,33 +35,21 @@ public class JetSkiEntity extends BoatEntity
             {
                 for(int i = 0; i < 5; i++)
                 {
-                    this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() + ((double) this.rand.nextFloat() - 0.5D) * (double) this.getWidth(), this.getBoundingBox().minY + 0.1D, this.getPosZ() + ((double) this.rand.nextFloat() - 0.5D) * (double) this.getWidth(), -this.getMotion().x * 4.0D, 1.5D, -this.getMotion().z * 4.0D);
+                    this.level.addParticle(ParticleTypes.SPLASH, this.getX() + ((double) this.random.nextFloat() - 0.5D) * (double) this.getBbWidth(), this.getBoundingBox().minY + 0.1D, this.getZ() + ((double) this.random.nextFloat() - 0.5D) * (double) this.getBbWidth(), -this.getDeltaMovement().x * 4.0D, 1.5D, -this.getDeltaMovement().z * 4.0D);
                 }
 
                 for(int i = 0; i < 5; i++)
                 {
-                    this.world.addParticle(ParticleTypes.BUBBLE, this.getPosX() + ((double) this.rand.nextFloat() - 0.5D) * (double) this.getWidth(), this.getBoundingBox().minY + 0.1D, this.getPosZ() + ((double) this.rand.nextFloat() - 0.5D) * (double) this.getWidth(), -this.getMotion().x * 2.0D, 0.0D, -this.getMotion().z * 2.0D);
+                    this.level.addParticle(ParticleTypes.BUBBLE, this.getX() + ((double) this.random.nextFloat() - 0.5D) * (double) this.getBbWidth(), this.getBoundingBox().minY + 0.1D, this.getZ() + ((double) this.random.nextFloat() - 0.5D) * (double) this.getBbWidth(), -this.getDeltaMovement().x * 2.0D, 0.0D, -this.getDeltaMovement().z * 2.0D);
                 }
             }
         }
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
+        return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
     }
 
     @Override

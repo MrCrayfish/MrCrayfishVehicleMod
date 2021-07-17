@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -20,21 +19,9 @@ public class OffRoaderEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.SPEED_BOAT_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.SPEED_BOAT_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
+        return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
     }
 
     @Override

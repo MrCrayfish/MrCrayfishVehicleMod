@@ -22,13 +22,13 @@ public class MessageFlaps implements IMessage<MessageFlaps>
 	@Override
 	public void encode(MessageFlaps message, PacketBuffer buffer)
 	{
-		buffer.writeEnumValue(message.flapDirection);
+		buffer.writeEnum(message.flapDirection);
 	}
 
 	@Override
 	public MessageFlaps decode(PacketBuffer buffer)
 	{
-		return new MessageFlaps(buffer.readEnumValue(PlaneEntity.FlapDirection.class));
+		return new MessageFlaps(buffer.readEnum(PlaneEntity.FlapDirection.class));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class MessageFlaps implements IMessage<MessageFlaps>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof PlaneEntity)
 				{
 					((PlaneEntity) riding).setFlapDirection(message.flapDirection);

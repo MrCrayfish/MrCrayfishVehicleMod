@@ -17,15 +17,15 @@ public class FuelSlot extends Slot
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack)
+    public boolean mayPlace(ItemStack stack)
     {
         return AbstractFurnaceTileEntity.isFuel(stack) || isBucket(stack);
     }
 
     @Override
-    public int getItemStackLimit(ItemStack stack)
+    public int getMaxStackSize(ItemStack stack)
     {
-        return isBucket(stack) ? 1 : super.getItemStackLimit(stack);
+        return isBucket(stack) ? 1 : super.getMaxStackSize(stack);
     }
 
     public static boolean isBucket(ItemStack stack)

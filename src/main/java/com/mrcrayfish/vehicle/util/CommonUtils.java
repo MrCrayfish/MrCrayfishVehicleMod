@@ -4,8 +4,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SChatPacket;
-import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
@@ -27,9 +25,7 @@ public class CommonUtils
     {
         if(!stack.isEmpty())
         {
-            CompoundNBT tag = new CompoundNBT();
-            stack.write(tag);
-            compound.put(key, tag);
+            compound.put(key, stack.save(new CompoundNBT()));
         }
     }
 
@@ -37,7 +33,7 @@ public class CommonUtils
     {
         if(compound.contains(key, Constants.NBT.TAG_COMPOUND))
         {
-            return ItemStack.read(compound.getCompound(key));
+            return ItemStack.of(compound.getCompound(key));
         }
         return ItemStack.EMPTY;
     }
@@ -46,7 +42,7 @@ public class CommonUtils
     {
         if(player instanceof ServerPlayerEntity)
         {
-            player.sendStatusMessage(new TranslationTextComponent(message), true);
+            player.displayClientMessage(new TranslationTextComponent(message), true);
         }
     }
 

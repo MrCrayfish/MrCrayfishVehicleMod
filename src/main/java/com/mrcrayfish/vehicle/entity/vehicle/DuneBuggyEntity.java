@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -17,34 +16,21 @@ public class DuneBuggyEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(10);
-        this.stepHeight = 0.5F;
+        this.maxUpStep = 0.5F;
         this.setFuelCapacity(5000F);
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.set(WHEEL_TYPE, WheelType.PLASTIC.ordinal());
-        this.dataManager.set(COLOR, 0xF2B116);
+        super.defineSynchedData();
+        this.entityData.set(COLOR, 0xF2B116);
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.ELECTRIC_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.ELECTRIC_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.ELECTRIC_MOTOR;
+        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
     }
 
     @Override

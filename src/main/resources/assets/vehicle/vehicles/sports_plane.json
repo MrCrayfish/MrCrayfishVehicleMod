@@ -1,0 +1,33 @@
+{
+    "general": {
+        "engineType": "vehicle:large_motor",
+        "canBeColored": true
+    },
+    "display": {
+        "gui": {
+            "scale": 0.85
+        }
+    },
+    "position": {
+        "body": {
+            "translate": [ 0.0, 0.688, -0.5 ],
+            "scale": 1.8
+        },
+        "fuelPort": {
+            "translate": [ -4.35, 4.0, -6.0 ],
+            "rotation": [ 0.0, -112.5, 0.0 ],
+            "scale": 0.25
+        },
+        "keyPort": {
+            "translate": [ 0.0, 3.75, 12.5 ],
+            "rotation": [ -67.5, 0.0, 0.0 ],
+            "scale": 0.5
+        }
+    },
+    "seats": [
+        {
+            "position": [ 0.0, 6.0, 0.0 ],
+            "driver": true
+        }
+    ]
+}

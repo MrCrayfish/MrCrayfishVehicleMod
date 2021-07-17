@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.block.FluidExtractorBlock;
+import com.mrcrayfish.vehicle.block.FluidMixerBlock;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipe;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
@@ -57,6 +59,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     private int fuelMaxProgress;
     private int extractionProgress;
     private int capacity;
+    private boolean extracting;
 
     private String customName;
 
@@ -106,7 +109,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
         }
 
-        public int size()
+        public int getCount()
         {
             return 5;
         }
@@ -121,10 +124,10 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     @Override
     public void tick()
     {
-        if(!this.world.isRemote)
+        if(this.level != null && !this.level.isClientSide())
         {
-            ItemStack source = this.getStackInSlot(SLOT_FLUID_SOURCE);
-            ItemStack fuel = this.getStackInSlot(SLOT_FUEL_SOURCE);
+            ItemStack source = this.getItem(SLOT_FLUID_SOURCE);
+            ItemStack fuel = this.getItem(SLOT_FUEL_SOURCE);
 
             if(this.currentRecipe == null && !source.isEmpty())
             {
@@ -140,6 +143,8 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
             if(this.remainingFuel > 0 && this.canFillWithFluid(source))
             {
+                this.setExtracting(true);
+
                 if(this.extractionProgress++ == Config.SERVER.extractorExtractTime.get())
                 {
                     this.tank.fill(this.currentRecipe.getResult().createStack(), IFluidHandler.FluidAction.EXECUTE);
@@ -151,12 +156,19 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
             else
             {
                 this.extractionProgress = 0;
+                this.setExtracting(false);
             }
 
             if(this.remainingFuel > 0)
             {
                 this.remainingFuel--;
                 this.updateFuel(source, fuel);
+
+                // Updates the enabled state of the fluid extractor
+                if(this.remainingFuel == 0)
+                {
+                    this.setExtracting(false);
+                }
             }
         }
     }
@@ -179,7 +191,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     @OnlyIn(Dist.CLIENT)
     public boolean canExtract()
     {
-        ItemStack ingredient = this.getStackInSlot(SLOT_FLUID_SOURCE);
+        ItemStack ingredient = this.getItem(SLOT_FLUID_SOURCE);
         if(!ingredient.isEmpty())
         {
             if(this.currentRecipe == null)
@@ -211,7 +223,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     }
 
     @Override
-    public int getSizeInventory()
+    public int getContainerSize()
     {
         return 2;
     }
@@ -230,47 +242,47 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getItem(int index)
     {
         return this.inventory.get(index);
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
-        ItemStack stack = ItemStackHelper.getAndSplit(this.inventory, index, count);
+        ItemStack stack = ItemStackHelper.removeItem(this.inventory, index, count);
         if(!stack.isEmpty())
         {
-            this.markDirty();
+            this.setChanged();
         }
         return stack;
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeItemNoUpdate(int index)
     {
-        return ItemStackHelper.getAndRemove(this.inventory, index);
+        return ItemStackHelper.takeItem(this.inventory, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
         this.inventory.set(index, stack);
-        if(stack.getCount() > this.getInventoryStackLimit())
+        if(stack.getCount() > this.getMaxStackSize())
         {
-            stack.setCount(this.getInventoryStackLimit());
+            stack.setCount(this.getMaxStackSize());
         }
-        this.markDirty();
+        this.setChanged();
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     {
-        return this.world.getTileEntity(this.pos) == this && player.getDistanceSq((double) this.pos.getX() + 0.5D, (double) this.pos.getY() + 0.5D, (double) this.pos.getZ() + 0.5D) <= 64.0D;
+        return this.level.getBlockEntity(this.worldPosition) == this && player.distanceToSqr((double) this.worldPosition.getX() + 0.5D, (double) this.worldPosition.getY() + 0.5D, (double) this.worldPosition.getZ() + 0.5D) <= 64.0D;
     }
 
     @Override
-    public boolean isItemValidForSlot(int index, ItemStack stack)
+    public boolean canPlaceItem(int index, ItemStack stack)
     {
         if(index == 0)
         {
@@ -284,7 +296,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     }
 
     @Override
-    public void clear()
+    public void clearContent()
     {
         this.inventory.clear();
     }
@@ -310,9 +322,9 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("ExtractionProgress", Constants.NBT.TAG_INT))
         {
             this.extractionProgress = compound.getInt("ExtractionProgress");
@@ -327,7 +339,7 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
         }
         if(compound.contains("Items", Constants.NBT.TAG_LIST))
         {
-            this.inventory = NonNullList.withSize(this.getSizeInventory(), ItemStack.EMPTY);
+            this.inventory = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
             ItemStackHelper.loadAllItems(compound, this.inventory);
         }
         if(compound.contains("CustomName", Constants.NBT.TAG_STRING))
@@ -337,9 +349,9 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
-        super.write(compound);
+        super.save(compound);
         compound.putInt("ExtractionProgress", this.extractionProgress);
         compound.putInt("RemainingFuel", this.remainingFuel);
         compound.putInt("FuelMaxProgress", this.fuelMaxProgress);
@@ -374,11 +386,11 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     private void shrinkItem(int index)
     {
-        ItemStack stack = this.getStackInSlot(index);
+        ItemStack stack = this.getItem(index);
         stack.shrink(1);
         if(stack.isEmpty())
         {
-            this.setInventorySlotContents(index, ItemStack.EMPTY);
+            this.setItem(index, ItemStack.EMPTY);
         }
     }
 
@@ -402,12 +414,12 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
 
     public Optional<FluidExtractorRecipe> getRecipe()
     {
-        return this.world.getRecipeManager().getRecipe(RecipeType.FLUID_EXTRACTOR, this, this.world);
+        return this.level.getRecipeManager().getRecipeFor(RecipeType.FLUID_EXTRACTOR, this, this.level);
     }
 
     public boolean isValidIngredient(ItemStack ingredient)
     {
-        List<FluidExtractorRecipe> recipes = this.world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_EXTRACTOR).map(recipe -> (FluidExtractorRecipe) recipe).collect(Collectors.toList());
+        List<FluidExtractorRecipe> recipes = this.level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.FLUID_EXTRACTOR).map(recipe -> (FluidExtractorRecipe) recipe).collect(Collectors.toList());
         return recipes.stream().anyMatch(recipe -> InventoryUtil.areItemStacksEqualIgnoreCount(ingredient, recipe.getIngredient()));
     }
 
@@ -423,8 +435,17 @@ public class FluidExtractorTileEntity extends TileFluidHandlerSynced implements 
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
     {
-        if (!this.removed && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
+        if (!this.remove && cap == net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY )
             return this.itemHandler.cast();
         return super.getCapability(cap, side);
+    }
+
+    private void setExtracting(boolean state)
+    {
+        if(this.extracting != state)
+        {
+            this.extracting = state;
+            this.level.setBlock(this.worldPosition, this.getBlockState().setValue(FluidMixerBlock.ENABLED, state), Constants.BlockFlags.DEFAULT);
+        }
     }
 }

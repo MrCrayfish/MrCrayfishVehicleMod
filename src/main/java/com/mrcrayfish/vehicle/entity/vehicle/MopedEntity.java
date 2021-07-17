@@ -7,21 +7,20 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTraceResultRotated;
 import com.mrcrayfish.vehicle.client.EntityRayTracer.TriangleRayTraceList;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachChest;
 import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
 import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.Item;
@@ -35,7 +34,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -54,9 +52,10 @@ import java.util.Map;
  */
 public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 {
-    private static final DataParameter<Boolean> CHEST = EntityDataManager.createKey(MopedEntity.class, DataSerializers.BOOLEAN);
-    private static final RayTracePart CHEST_BOX = new RayTracePart(new AxisAlignedBB(-0.31875, 0.7945, -0.978125, 0.31875, 1.4195, -0.34375));
-    private static final RayTracePart TRAY_BOX = new RayTracePart(createScaledBoundingBox(-4 * 0.0625, 8 * 0.0625 + 0.1, -4.5 * 0.0625, 4 * 0.0625, 9F * 0.0625F + 0.1, -12.5 * 0.0625, 1.2));
+    private static final DataParameter<Boolean> CHEST = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> CHEST_OPEN = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
+    private static final RayTracePart CHEST_BOX = new RayTracePart(createBoxScaled(-3.5, 10.5, -7, 3.5, 17.5, -14, 1.2));
+    private static final RayTracePart TRAY_BOX = new RayTracePart(createBoxScaled(-4, 9.5, -6.5, 4, 10.5, -14.5, 1.2));
     private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () ->
     {
         Map<RayTracePart, TriangleRayTraceList> map = new HashMap<>();
@@ -67,39 +66,33 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 
     private StorageInventory inventory;
 
+    @OnlyIn(Dist.CLIENT)
+    private float openProgress;
+    @OnlyIn(Dist.CLIENT)
+    private float prevOpenProgress;
+
     public MopedEntity(EntityType<? extends MopedEntity> type, World worldIn)
     {
         super(type, worldIn);
         this.setMaxSpeed(12F);
-        this.setTurnSensitivity(15);
+        this.setTurnSensitivity(5);
         this.setMaxTurnAngle(45);
         this.setFuelCapacity(12000F);
         this.setFuelConsumption(0.225F);
     }
 
     @Override
-    public void registerData()
+    public void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.register(CHEST, false);
+        super.defineSynchedData();
+        this.entityData.define(CHEST, false);
+        this.entityData.define(CHEST_OPEN, false);
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.MOPED_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.MOPED_ENGINE_STEREO.get();
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.SMALL_MOTOR;
+        return ModSounds.ENTITY_MOPED_ENGINE.get();
     }
 
     @Override
@@ -121,9 +114,9 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
-        super.readAdditional(compound);
+        super.readAdditionalSaveData(compound);
         if(compound.contains("Chest", Constants.NBT.TAG_BYTE))
         {
             this.setChest(compound.getBoolean("Chest"));
@@ -136,9 +129,9 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
-        super.writeAdditional(compound);
+        super.addAdditionalSaveData(compound);
         compound.putBoolean("Chest", this.hasChest());
         if(this.hasChest() && inventory != null)
         {
@@ -148,12 +141,12 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 
     public boolean hasChest()
     {
-        return this.dataManager.get(CHEST);
+        return this.entityData.get(CHEST);
     }
 
     public void setChest(boolean chest)
     {
-        this.dataManager.set(CHEST, chest);
+        this.entityData.set(CHEST, chest);
     }
 
     @Override
@@ -165,13 +158,14 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
             RayTracePart partHit = result.getPartHit();
             if(partHit == CHEST_BOX && this.hasChest())
             {
-                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getEntityId()));
-                Minecraft.getInstance().player.swingArm(Hand.MAIN_HAND);
+                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
                 return true;
             }
             else if(partHit == TRAY_BOX && !this.hasChest())
             {
-                PacketHandler.instance.sendToServer(new MessageAttachChest(this.getEntityId()));
+                PacketHandler.instance.sendToServer(new MessageAttachChest(this.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
                 return true;
             }
         }
@@ -201,27 +195,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         return boxes;
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
-    {
-        /*if(this.hasChest()) //TODO fix this
-        {
-            RenderGlobal.drawSelectionBoundingBox(CHEST_BOX.getBox(), 0, 1, 0, 0.4F);
-        }
-        else
-        {
-            RenderGlobal.drawSelectionBoundingBox(TRAY_BOX.getBox(), 0, 1, 0, 0.4F);
-        }*/
-        /*
-        IVertexBuilder ivertexbuilder = p_225619_2_.getBuffer(RenderType.func_228659_m_());
-
-      for(VoxelShape voxelshape : this.collisionData) {
-         WorldRenderer.func_228431_a_(p_225619_1_, ivertexbuilder, voxelshape, -p_225619_3_, -p_225619_5_, -p_225619_7_, 1.0F, 1.0F, 1.0F, 1.0F);
-      }
-         */
-    }
-
     private void initInventory()
     {
         StorageInventory original = this.inventory;
@@ -229,12 +202,12 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
-            for(int i = 0; i < original.getSizeInventory(); i++)
+            for(int i = 0; i < original.getContainerSize(); i++)
             {
-                ItemStack stack = original.getStackInSlot(i);
+                ItemStack stack = original.getItem(i);
                 if(!stack.isEmpty())
                 {
-                    this.inventory.setInventorySlotContents(i, stack.copy());
+                    this.inventory.setItem(i, stack.copy());
                 }
             }
         }
@@ -246,7 +219,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         super.onVehicleDestroyed(entity);
         if(this.hasChest() && inventory != null)
         {
-            InventoryHelper.dropInventoryItems(world, this, inventory);
+            InventoryHelper.dropContents(level, this, inventory);
         }
     }
 
@@ -264,7 +237,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     @Override
     public void attachChest(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() == Item.getItemFromBlock(Blocks.CHEST))
+        if(!stack.isEmpty() && stack.getItem() == Item.byBlock(Blocks.CHEST))
         {
             this.setChest(true);
             this.initInventory();
@@ -279,7 +252,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
                     ItemStackHelper.loadAllItems(blockEntityTag, chestInventory);
                     for(int i = 0; i < chestInventory.size(); i++)
                     {
-                        this.inventory.setInventorySlotContents(i, chestInventory.get(i));
+                        this.inventory.setItem(i, chestInventory.get(i));
                     }
                 }
             }
@@ -291,12 +264,12 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     {
         if(this.inventory != null)
         {
-            Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(this.getPositionVec());
-            InventoryUtil.dropInventoryItems(world, target.x, target.y, target.z, this.inventory);
+            Vector3d target = this.getChestPosition();
+            InventoryUtil.dropInventoryItems(level, target.x, target.y, target.z, this.inventory);
             this.inventory = null;
             this.setChest(false);
-            world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
-            world.addEntity(new ItemEntity(world, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
+            level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+            level.addFreshEntity(new ItemEntity(level, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
     }
 
@@ -314,9 +287,82 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public void openInventory(PlayerEntity player)
+    public void startOpen(PlayerEntity player)
     {
-        Vector3d target = new Vector3d(0, 0.75, -0.75).rotateYaw(-(this.rotationYaw - this.additionalYaw) * 0.017453292F).add(this.getPositionVec());
-        this.world.playSound(null, target.x, target.y, target.z, SoundEvents.BLOCK_CHEST_OPEN, this.getSoundCategory(), 0.5F, 0.9F);
+        Vector3d target = this.getChestPosition();
+        this.level.playSound(null, target.x, target.y, target.z, SoundEvents.CHEST_OPEN, this.getSoundSource(), 0.5F, 0.9F);
+    }
+
+    @Override
+    public void tick()
+    {
+        super.tick();
+
+        if(this.hasChest())
+        {
+            // Updates the chest open state
+            if(!this.level.isClientSide())
+            {
+                this.entityData.set(CHEST_OPEN, this.getPlayerCountInChest() > 0);
+            }
+            else
+            {
+                // Updates the open progress for the animation
+                this.prevOpenProgress = this.openProgress;
+                if(this.entityData.get(CHEST_OPEN))
+                {
+                    this.openProgress = Math.min(1.0F, this.openProgress + 0.1F);
+                }
+                else
+                {
+                    float lastOpenProgress = this.openProgress;
+                    this.openProgress = Math.max(0.0F, this.openProgress - 0.1F);
+                    if(this.openProgress < 0.5F && lastOpenProgress >= 0.5F)
+                    {
+                        Vector3d target = this.getChestPosition();
+                        this.level.playLocalSound(target.x, target.y, target.z, SoundEvents.CHEST_CLOSE, this.getSoundSource(), 0.5F, this.level.random.nextFloat() * 0.1F + 0.9F, false);
+                    }
+                }
+            }
+        }
+    }
+
+    protected Vector3d getChestPosition()
+    {
+        return new Vector3d(0, 1.0, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+    }
+
+    protected int getPlayerCountInChest()
+    {
+        if(!this.hasChest())
+        {
+            return 0;
+        }
+
+        int count = 0;
+        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, this.getBoundingBox().inflate(5.0F)))
+        {
+            if(player.containerMenu instanceof StorageContainer)
+            {
+                IInventory container = ((StorageContainer) player.containerMenu).getStorageInventory();
+                if(container == this)
+                {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getOpenProgress()
+    {
+        return this.openProgress;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getPrevOpenProgress()
+    {
+        return this.prevOpenProgress;
     }
 }

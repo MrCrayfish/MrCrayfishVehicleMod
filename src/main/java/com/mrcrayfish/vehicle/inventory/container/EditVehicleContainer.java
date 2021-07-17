@@ -26,17 +26,18 @@ public class EditVehicleContainer extends Container
         this.vehicleInventory = vehicleInventory;
         this.vehicle = vehicle;
 
-        this.vehicleInventory.openInventory(player);
+        this.vehicleInventory.startOpen(player);
 
         this.addSlot(new Slot(EditVehicleContainer.this.vehicleInventory, 0, 8, 17)
         {
-            public boolean isItemValid(ItemStack stack)
+            @Override
+            public boolean mayPlace(ItemStack stack)
             {
-                return vehicle.getEngineType() != EngineType.NONE && stack.getItem() instanceof EngineItem && ((EngineItem) stack.getItem()).getEngineType() == vehicle.getEngineType();
+                return vehicle.getProperties().getEngineType() != EngineType.NONE && stack.getItem() instanceof EngineItem && ((EngineItem) stack.getItem()).getEngineType() == vehicle.getProperties().getEngineType();
             }
 
             @Override
-            public int getSlotStackLimit()
+            public int getMaxStackSize()
             {
                 return 1;
             }
@@ -44,13 +45,14 @@ public class EditVehicleContainer extends Container
 
         this.addSlot(new Slot(EditVehicleContainer.this.vehicleInventory, 1, 8, 35)
         {
-            public boolean isItemValid(ItemStack stack)
+            @Override
+            public boolean mayPlace(ItemStack stack)
             {
                 return vehicle.canChangeWheels() && stack.getItem() instanceof WheelItem;
             }
 
             @Override
-            public int getSlotStackLimit()
+            public int getMaxStackSize()
             {
                 return 1;
             }
@@ -81,48 +83,48 @@ public class EditVehicleContainer extends Container
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player)
+    public boolean stillValid(PlayerEntity player)
     {
-        return vehicleInventory.isUsableByPlayer(player) && vehicle.isAlive() && vehicle.getDistance(player) < 8.0F;
+        return vehicleInventory.stillValid(player) && vehicle.isAlive() && vehicle.distanceTo(player) < 8.0F;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
         ItemStack stack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if(slot != null && slot.getHasStack())
+        if(slot != null && slot.hasItem())
         {
-            ItemStack slotStack = slot.getStack();
+            ItemStack slotStack = slot.getItem();
             stack = slotStack.copy();
 
-            if(index < vehicleInventory.getSizeInventory())
+            if(index < vehicleInventory.getContainerSize())
             {
-                if(!this.mergeItemStack(slotStack, vehicleInventory.getSizeInventory(), inventorySlots.size(), true))
+                if(!this.moveItemStackTo(slotStack, vehicleInventory.getContainerSize(), slots.size(), true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(this.getSlot(0).isItemValid(slotStack))
+            else if(this.getSlot(0).mayPlace(slotStack))
             {
-                if(!this.mergeItemStack(slotStack, 0, 1, false))
+                if(!this.moveItemStackTo(slotStack, 0, 1, false))
                 {
                     return ItemStack.EMPTY;
                 }
             }
-            else if(vehicleInventory.getSizeInventory() <= 1 || !this.mergeItemStack(slotStack, 1, vehicleInventory.getSizeInventory(), false))
+            else if(vehicleInventory.getContainerSize() <= 1 || !this.moveItemStackTo(slotStack, 1, vehicleInventory.getContainerSize(), false))
             {
                 return ItemStack.EMPTY;
             }
 
             if(slotStack.isEmpty())
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else
             {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
 
@@ -130,9 +132,9 @@ public class EditVehicleContainer extends Container
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity player)
+    public void removed(PlayerEntity player)
     {
-        super.onContainerClosed(player);
-        vehicleInventory.closeInventory(player);
+        super.removed(player);
+        vehicleInventory.stopOpen(player);
     }
 }

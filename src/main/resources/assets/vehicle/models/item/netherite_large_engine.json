@@ -1,0 +1,6 @@
+{
+	"parent": "vehicle:item/large_engine",
+	"textures": {
+		"large_engine": "vehicle:model/netherite_large_engine"
+	}
+}

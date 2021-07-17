@@ -22,7 +22,7 @@ public interface IDyeable
     default int getColor(ItemStack stack)
     {
         CompoundNBT compound = stack.getTag();
-        return compound != null ? compound.getInt("Color") : 0;
+        return compound != null ? compound.getInt("Color") : -1;
     }
 
     default void setColor(ItemStack stack, int color)
@@ -58,7 +58,7 @@ public interface IDyeable
 
             for(DyeItem dyeitem : dyes)
             {
-                float[] colorComponents = dyeitem.getDyeColor().getColorComponentValues();
+                float[] colorComponents = dyeitem.getDyeColor().getTextureDiffuseColors();
                 int red = (int) (colorComponents[0] * 255.0F);
                 int green = (int) (colorComponents[1] * 255.0F);
                 int blue = (int) (colorComponents[2] * 255.0F);
@@ -89,5 +89,14 @@ public interface IDyeable
             dyeable.setColor(resultStack, finalColor);
             return resultStack;
         }
+    }
+
+    static int getColorFromStack(ItemStack stack)
+    {
+        if(stack.getItem() instanceof IDyeable)
+        {
+            return ((IDyeable) stack.getItem()).getColor(stack);
+        }
+        return -1;
     }
 }

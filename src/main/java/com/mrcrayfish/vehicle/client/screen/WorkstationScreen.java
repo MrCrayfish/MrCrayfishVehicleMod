@@ -4,13 +4,17 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
+import com.mrcrayfish.vehicle.client.render.AbstractPoweredRenderer;
+import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.client.render.CachedVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
 import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
@@ -32,18 +36,15 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.ITextProperties;
 import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.Constants;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -58,16 +59,16 @@ import java.util.stream.Collectors;
 public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 {
     private static final ResourceLocation GUI = new ResourceLocation("vehicle:textures/gui/workstation.png");
-
-    private List<EntityType<?>> vehicleTypes;
-    private List<MaterialItem> materials;
-    private List<MaterialItem> filteredMaterials;
+    private static CachedVehicle cachedVehicle;
+    private static CachedVehicle prevCachedVehicle;
     private static int currentVehicle = 0;
-    private static int prevCurrentVehicle = 0;
     private static boolean showRemaining = false;
-    private VehicleEntity[] cachedVehicle;
-    private PlayerInventory playerInventory;
-    private WorkstationTileEntity workstation;
+
+    private final List<EntityType<?>> vehicleTypes;
+    private final List<MaterialItem> materials;
+    private List<MaterialItem> filteredMaterials;
+    private final PlayerInventory playerInventory;
+    private final WorkstationTileEntity workstation;
     private Button btnCraft;
     private CheckBox checkBoxMaterials;
     private boolean validEngine;
@@ -80,40 +81,39 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.workstation = container.getTileEntity();
-        this.xSize = 289;
-        this.ySize = 202;
+        this.imageWidth = 289;
+        this.imageHeight = 202;
         this.materials = new ArrayList<>();
-        this.vehicleTypes = this.getVehicleTypes(playerInventory.player.world);
+        this.vehicleTypes = this.getVehicleTypes(playerInventory.player.level);
         this.vehicleTypes.sort(Comparator.comparing(type -> type.getRegistryName().getPath()));
-        this.cachedVehicle = new VehicleEntity[this.vehicleTypes.size()];
     }
 
     private List<EntityType<?>> getVehicleTypes(World world)
     {
-        return world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTING).map(recipe -> (VehicleRecipe) recipe).map(VehicleRecipe::getVehicle).collect(Collectors.toList());
+        return world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTING).map(recipe -> (VehicleRecipe) recipe).map(VehicleRecipe::getVehicle).filter(entityType -> !Config.SERVER.disabledVehicles.get().contains(Objects.requireNonNull(entityType.getRegistryName()).toString())).collect(Collectors.toList());
     }
 
     @Override
     public void init()
     {
         super.init();
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
+        int startX = (this.width - this.imageWidth) / 2;
+        int startY = (this.height - this.imageHeight) / 2;
 
         this.addButton(new Button(startX, startY, 15, 20, new StringTextComponent("<"), button -> {
             this.loadVehicle(Math.floorMod(currentVehicle - 1,  this.vehicleTypes.size()));
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
 
         this.addButton(new Button(startX + 161, startY, 15, 20, new StringTextComponent(">"), button -> {
             this.loadVehicle(Math.floorMod(currentVehicle + 1,  this.vehicleTypes.size()));
-            Minecraft.getInstance().getSoundHandler().play(SimpleSound.master(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
 
         this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, new StringTextComponent("Craft"), button -> {
-            ResourceLocation registryName = this.cachedVehicle[currentVehicle].getType().getRegistryName();
+            ResourceLocation registryName = this.vehicleTypes.get(currentVehicle).getRegistryName();
             Objects.requireNonNull(registryName, "Vehicle registry name must not be null!");
-            PacketHandler.instance.sendToServer(new MessageCraftVehicle(registryName.toString(), this.workstation.getPos()));
+            PacketHandler.instance.sendToServer(new MessageCraftVehicle(registryName.toString(), this.workstation.getBlockPos()));
         }));
 
         this.btnCraft.active = false;
@@ -144,58 +144,46 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }
 
-        if(this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity)
+        if(cachedVehicle.getRenderer() instanceof AbstractPoweredRenderer)
         {
-            PoweredVehicleEntity entityPoweredVehicle = (PoweredVehicleEntity) this.cachedVehicle[currentVehicle];
-            if(entityPoweredVehicle.getEngineType() != EngineType.NONE)
+            AbstractPoweredRenderer<?> poweredRenderer = (AbstractPoweredRenderer<?>) cachedVehicle.getRenderer();
+            VehicleProperties properties = cachedVehicle.getProperties();
+            if(properties.getEngineType() != EngineType.NONE)
             {
-                ItemStack engine = this.workstation.getStackInSlot(1);
+                ItemStack engine = this.workstation.getItem(1);
                 if(!engine.isEmpty() && engine.getItem() instanceof EngineItem)
                 {
                     EngineItem engineItem = (EngineItem) engine.getItem();
-                    EngineType engineType = engineItem.getEngineType();
-                    if(entityPoweredVehicle.getEngineType() != engineType)
+                    IEngineType engineType = engineItem.getEngineType();
+                    if(properties.getEngineType() == engineType)
                     {
-                        canCraft = false;
-                        this.validEngine = false;
-                        entityPoweredVehicle.setEngine(false);
+                        poweredRenderer.setEngineStack(engine);
                     }
                     else
                     {
-                        entityPoweredVehicle.setEngineTier(engineItem.getEngineTier());
-                        entityPoweredVehicle.setEngine(true);
-                        entityPoweredVehicle.notifyDataManagerChange(PoweredVehicleEntity.ENGINE_TIER);
+                        canCraft = false;
+                        this.validEngine = false;
+                        poweredRenderer.setEngineStack(ItemStack.EMPTY);
                     }
                 }
                 else
                 {
                     canCraft = false;
                     this.validEngine = false;
-                    entityPoweredVehicle.setEngine(false);
+                    poweredRenderer.setEngineStack(ItemStack.EMPTY);
                 }
             }
 
-            if(entityPoweredVehicle.canChangeWheels())
+            if(cachedVehicle.getProperties().canChangeWheels())
             {
-                ItemStack wheels = this.workstation.getStackInSlot(2);
+                ItemStack wheels = this.workstation.getItem(2);
                 if(!wheels.isEmpty() && wheels.getItem() instanceof WheelItem)
                 {
-                    if(wheels.getTag() != null)
-                    {
-                        CompoundNBT tagCompound = wheels.getTag();
-                        if(tagCompound.contains("Color", Constants.NBT.TAG_INT))
-                        {
-                            entityPoweredVehicle.setWheelColor(tagCompound.getInt("Color"));
-                        }
-                    }
-                    WheelItem wheelItem = (WheelItem) wheels.getItem();
-                    entityPoweredVehicle.setWheelType(wheelItem.getWheelType());
-                    entityPoweredVehicle.setWheels(true);
-                    entityPoweredVehicle.notifyDataManagerChange(PoweredVehicleEntity.WHEEL_COLOR);
+                    poweredRenderer.setWheelStack(wheels);
                 }
                 else
                 {
-                    entityPoweredVehicle.setWheels(false);
+                    poweredRenderer.setWheelStack(ItemStack.EMPTY);
                     canCraft = false;
                 }
             }
@@ -219,24 +207,22 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             this.vehicleScale = Math.min(30, this.vehicleScale + 6);
         }
 
-        if(this.cachedVehicle[currentVehicle].canBeColored())
+        this.updateVehicleColor();
+    }
+
+    private void updateVehicleColor()
+    {
+        if(cachedVehicle.getProperties().isColored())
         {
-            if(!this.workstation.getStackInSlot(0).isEmpty())
+            AbstractVehicleRenderer<?> renderer = cachedVehicle.getRenderer();
+            ItemStack dyeStack = this.workstation.getItem(0);
+            if(dyeStack.getItem() instanceof DyeItem)
             {
-                ItemStack stack = this.workstation.getStackInSlot(0);
-                if(stack.getItem() instanceof DyeItem)
-                {
-                    DyeItem dyeItem = (DyeItem) stack.getItem();
-                    this.cachedVehicle[currentVehicle].setColor(dyeItem.getDyeColor().getColorValue());
-                }
-                else
-                {
-                    this.cachedVehicle[currentVehicle].setColor(VehicleEntity.DYE_TO_COLOR[0]);
-                }
+                renderer.setColor(((DyeItem) dyeStack.getItem()).getDyeColor().getColorValue());
             }
             else
             {
-                this.cachedVehicle[currentVehicle].setColor(VehicleEntity.DYE_TO_COLOR[0]);
+                renderer.setColor(VehicleEntity.DYE_TO_COLOR[0]);
             }
         }
     }
@@ -249,28 +235,23 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         return result;
     }
 
+    @SuppressWarnings({"unchecked"})
     private void loadVehicle(int index)
     {
-        prevCurrentVehicle = currentVehicle;
+        prevCachedVehicle = cachedVehicle;
+        cachedVehicle = new CachedVehicle(this.vehicleTypes.get(index));
+        currentVehicle = index;
 
-        if(this.cachedVehicle[index] == null)
+        AbstractVehicleRenderer<?> renderer = cachedVehicle.getRenderer();
+        if(renderer instanceof AbstractLandVehicleRenderer<?>)
         {
-            VehicleEntity vehicle = (VehicleEntity) this.vehicleTypes.get(index).create(this.minecraft.world);
-            java.util.List<EntityDataManager.DataEntry<?>> entryList = vehicle.getDataManager().getAll();
-            if(entryList != null)
-            {
-                entryList.forEach(dataEntry -> vehicle.notifyDataManagerChange(dataEntry.getKey()));
-            }
-            if(vehicle instanceof PoweredVehicleEntity)
-            {
-                ((PoweredVehicleEntity) vehicle).setEngine(false);
-                ((PoweredVehicleEntity) vehicle).setWheels(false);
-            }
-            this.cachedVehicle[index] = vehicle;
+            ((AbstractLandVehicleRenderer<?>) renderer).setEngineStack(ItemStack.EMPTY);
+            ((AbstractLandVehicleRenderer<?>) renderer).setWheelStack(ItemStack.EMPTY);
         }
 
         this.materials.clear();
-        VehicleRecipe recipe = VehicleRecipes.getRecipe(this.cachedVehicle[index].getType(), this.minecraft.world);
+
+        VehicleRecipe recipe = VehicleRecipes.getRecipe(cachedVehicle.getType(), this.minecraft.level);
         if(recipe != null)
         {
             for(int i = 0; i < recipe.getMaterials().size(); i++)
@@ -281,9 +262,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }
 
-        currentVehicle = index;
-
-        if(Config.CLIENT.workstationAnimation.get() && prevCurrentVehicle != currentVehicle)
+        if(Config.CLIENT.workstationAnimation.get() && prevCachedVehicle != null && prevCachedVehicle != cachedVehicle)
         {
             this.transitioning = true;
         }
@@ -294,10 +273,10 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     {
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
 
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
+        int startX = (this.width - this.imageWidth) / 2;
+        int startY = (this.height - this.imageHeight) / 2;
         for(int i = 0; i < filteredMaterials.size(); i++)
         {
             int itemX = startX + 186;
@@ -312,49 +291,49 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }
 
-        VehicleEntity vehicle = this.cachedVehicle[currentVehicle];
-        if(vehicle.canBeColored())
+        VehicleProperties properties = cachedVehicle.getProperties();
+        if(properties.isColored())
         {
             //TODO optional should have AQUA text formatting
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional"), new TranslationTextComponent("vehicle.tooltip.paint_color")), startX, startY, 186, 29, mouseX, mouseY, 0);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional").withStyle(TextFormatting.AQUA), new TranslationTextComponent("vehicle.tooltip.paint_color").withStyle(TextFormatting.GRAY)), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 186, 29, mouseX, mouseY, 0);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 186, 29, mouseX, mouseY, 0);
         }
 
-        if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).getEngineType() != EngineType.NONE)
+        if(properties.getEngineType() != EngineType.NONE)
         {
-            String engineName = ((PoweredVehicleEntity) vehicle).getEngineType().getEngineName();
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent(engineName)), startX, startY, 206, 29, mouseX, mouseY, 1);
+            TranslationTextComponent engineName = properties.getEngineType().getEngineName();
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 206, 29, mouseX, mouseY, 1);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 206, 29, mouseX, mouseY, 1);
         }
 
-        if(vehicle instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) vehicle).canChangeWheels())
+        if(properties.canChangeWheels())
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required"), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 226, 29, mouseX, mouseY, 2);
         }
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         /* Fixes partial ticks to use percentage from 0 to 1 */
-        partialTicks = this.minecraft.getRenderPartialTicks();
+        partialTicks = this.minecraft.getFrameTime();
 
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
+        int startX = (this.width - this.imageWidth) / 2;
+        int startY = (this.height - this.imageHeight) / 2;
 
         RenderSystem.enableBlend();
 
-        this.minecraft.getTextureManager().bindTexture(GUI);
+        this.minecraft.getTextureManager().bind(GUI);
         this.blit(matrixStack, startX, startY + 80, 0, 134, 176, 122);
         this.blit(matrixStack, startX + 180, startY, 176, 54, 6, 208);
         this.blit(matrixStack, startX + 186, startY, 182, 54, 57, 208);
@@ -363,30 +342,31 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         this.blit(matrixStack, startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
 
         /* Slots */
-        this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, this.cachedVehicle[currentVehicle].canBeColored());
-        boolean needsEngine = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) this.cachedVehicle[currentVehicle]).getEngineType() != EngineType.NONE;
+        VehicleProperties properties = cachedVehicle.getProperties();
+        this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, properties.isColored());
+        boolean needsEngine = properties.getEngineType() != EngineType.NONE;
         this.drawSlot(matrixStack, startX, startY, 206, 29, 80, 16, 1, !this.validEngine, needsEngine);
-        boolean needsWheels = this.cachedVehicle[currentVehicle] instanceof PoweredVehicleEntity && ((PoweredVehicleEntity) this.cachedVehicle[currentVehicle]).canChangeWheels();
-        this.drawSlot(matrixStack, startX, startY, 226, 29, 80, 32, 2, needsWheels && this.workstation.getStackInSlot(2).isEmpty(), needsWheels);
+        boolean needsWheels = properties.canChangeWheels();
+        this.drawSlot(matrixStack, startX, startY, 226, 29, 80, 32, 2, needsWheels && this.workstation.getItem(2).isEmpty(), needsWheels);
 
-        this.drawCenteredString(matrixStack, this.font, this.cachedVehicle[currentVehicle].getName().getString(), startX + 88, startY + 6, Color.WHITE.getRGB());
+        drawCenteredString(matrixStack, this.font, cachedVehicle.getType().getDescription(), startX + 88, startY + 6, Color.WHITE.getRGB());
 
         this.filteredMaterials = this.getMaterials();
         for(int i = 0; i < this.filteredMaterials.size(); i++)
         {
             RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            this.minecraft.getTextureManager().bindTexture(GUI);
+            this.minecraft.getTextureManager().bind(GUI);
 
             MaterialItem materialItem = this.filteredMaterials.get(i);
             ItemStack stack = materialItem.stack;
             if(stack.isEmpty())
             {
-                RenderHelper.disableStandardItemLighting();
+                RenderHelper.turnOff();
                 this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 19, 80, 19);
             }
             else
             {
-                RenderHelper.disableStandardItemLighting();
+                RenderHelper.turnOff();
                 if(materialItem.isEnabled())
                 {
                     this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 0, 80, 19);
@@ -397,14 +377,14 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-                String name = stack.getDisplayName().getString();
-                if(this.font.getStringWidth(name) > 55)
+                String name = stack.getHoverName().getString();
+                if(this.font.width(name) > 55)
                 {
-                    name = this.font.func_238412_a_(stack.getDisplayName().getString(), 50).trim() + "...";
+                    name = this.font.plainSubstrByWidth(stack.getHoverName().getString(), 50).trim() + "...";
                 }
-                this.font.drawString(matrixStack, name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
+                this.font.draw(matrixStack, name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
 
-                Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
+                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
 
                 if(this.checkBoxMaterials.isToggled())
                 {
@@ -413,7 +393,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                     stack.setCount(stack.getCount() - count);
                 }
 
-                Minecraft.getInstance().getItemRenderer().renderItemOverlayIntoGUI(this.font, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
+                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
             }
         }
 
@@ -433,35 +413,28 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         matrixStack.scale(scale, scale, scale);
 
         Quaternion quaternion = Axis.POSITIVE_X.rotationDegrees(-5F);
-        Quaternion quaternion1 = Axis.POSITIVE_Y.rotationDegrees(-(this.minecraft.player.ticksExisted + partialTicks));
-        quaternion.multiply(quaternion1);
-        matrixStack.rotate(quaternion);
+        Quaternion quaternion1 = Axis.POSITIVE_Y.rotationDegrees(-(this.minecraft.player.tickCount + partialTicks));
+        quaternion.mul(quaternion1);
+        matrixStack.mulPose(quaternion);
 
-        int vehicleIndex = this.transitioning ? prevCurrentVehicle : currentVehicle;
-        VehicleProperties properties = this.cachedVehicle[vehicleIndex].getProperties();
-        PartPosition position = PartPosition.DEFAULT;
-        if(properties != null)
-        {
-            position = properties.getDisplayPosition();
-        }
+        CachedVehicle transitionVehicle = this.transitioning ? prevCachedVehicle : cachedVehicle;
 
+        PartPosition position = transitionVehicle.getProperties().getDisplayPosition();
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.rotate(Axis.POSITIVE_X.rotationDegrees((float) position.getRotX()));
-        matrixStack.rotate(Axis.POSITIVE_Y.rotationDegrees((float) position.getRotY()));
-        matrixStack.rotate(Axis.POSITIVE_Z.rotationDegrees((float) position.getRotZ()));
+        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees((float) position.getRotX()));
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees((float) position.getRotY()));
+        matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees((float) position.getRotZ()));
         matrixStack.translate(position.getX(), position.getY(), position.getZ());
 
-        EntityRendererManager renderManager = Minecraft.getInstance().getRenderManager();
+        EntityRendererManager renderManager = Minecraft.getInstance().getEntityRenderDispatcher();
         renderManager.setRenderShadow(false);
-        renderManager.setCameraOrientation(quaternion);
-        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().getRenderTypeBuffers().getBufferSource();
-        RenderSystem.runAsFancy(() -> {
-            renderManager.renderEntityStatic(this.cachedVehicle[vehicleIndex], 0.0, 0.0, 0.0, 0.0F, 1.0F, matrixStack, renderTypeBuffer, 15728880);
-        });
-        renderTypeBuffer.finish();
+        renderManager.overrideCameraOrientation(quaternion);
+        IRenderTypeBuffer.Impl renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        RenderSystem.runAsFancy(() -> transitionVehicle.getRenderer().setupTransformsAndRender(null, matrixStack, renderTypeBuffer, partialTicks, 15728880));
+        renderTypeBuffer.endBatch();
         renderManager.setRenderShadow(true);
 
-        matrixStack.pop();
+        matrixStack.popPose();
 
         RenderSystem.popMatrix();
     }
@@ -470,7 +443,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     {
         int textureOffset = required ? 18 : 0;
         this.blit(matrixStack, startX + x, startY + y, 128 + textureOffset, 0, 18, 18);
-        if(this.workstation.getStackInSlot(slot).isEmpty())
+        if(this.workstation.getItem(slot).isEmpty())
         {
             if(applicable)
             {
@@ -485,11 +458,11 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
     private void drawSlotTooltip(MatrixStack matrixStack, List<ITextComponent> text, int startX, int startY, int x, int y, int mouseX, int mouseY, int slot)
     {
-        if(this.workstation.getStackInSlot(slot).isEmpty())
+        if(this.workstation.getItem(slot).isEmpty())
         {
             if(CommonUtils.isMouseWithin(mouseX, mouseY, startX + x, startY + y, 18, 18))
             {
-                this.renderTooltip(matrixStack, Lists.transform(text, ITextComponent::func_241878_f), mouseX, mouseY);
+                this.renderTooltip(matrixStack, Lists.transform(text, ITextComponent::getVisualOrderText), mouseX, mouseY);
             }
         }
     }
@@ -506,9 +479,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.drawString(matrixStack, this.playerInventory.getDisplayName().getString(), 8, 109, 4210752);
+        this.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), 8, 109, 4210752);
     }
 
     public static class MaterialItem

@@ -23,14 +23,14 @@ import java.util.Optional;
 public class VehicleRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<VehicleRecipe>
 {
     @Override
-    public VehicleRecipe read(ResourceLocation recipeId, JsonObject json)
+    public VehicleRecipe fromJson(ResourceLocation recipeId, JsonObject json)
     {
         ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
-        JsonArray input = JSONUtils.getJsonArray(json, "materials");
+        JsonArray input = JSONUtils.getAsJsonArray(json, "materials");
         for(int i = 0; i < input.size(); i++)
         {
             JsonObject itemObject = input.get(i).getAsJsonObject();
-            String itemName = JSONUtils.getString(itemObject, "item");
+            String itemName = JSONUtils.getAsString(itemObject, "item");
             ResourceLocation id = new ResourceLocation(itemName);
             if(id.getNamespace().equals("cfm") && !ModList.get().isLoaded("cfm"))
                 continue;
@@ -41,8 +41,8 @@ public class VehicleRecipeSerializer extends net.minecraftforge.registries.Forge
         {
             throw new com.google.gson.JsonSyntaxException("Missing vehicle entry");
         }
-        ResourceLocation vehicle = new ResourceLocation(JSONUtils.getString(json, "vehicle"));
-        Optional<EntityType<?>> optional = EntityType.byKey(JSONUtils.getString(json, "vehicle"));
+        ResourceLocation vehicle = new ResourceLocation(JSONUtils.getAsString(json, "vehicle"));
+        Optional<EntityType<?>> optional = EntityType.byString(JSONUtils.getAsString(json, "vehicle"));
         if(!optional.isPresent())
         {
             throw new com.google.gson.JsonSyntaxException("Invalid vehicle entity: " + vehicle.toString());
@@ -52,7 +52,7 @@ public class VehicleRecipeSerializer extends net.minecraftforge.registries.Forge
 
     @Nullable
     @Override
-    public VehicleRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+    public VehicleRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
     {
         EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(buffer.readResourceLocation());
         ImmutableList.Builder<ItemStack> builder = ImmutableList.builder();
@@ -65,7 +65,7 @@ public class VehicleRecipeSerializer extends net.minecraftforge.registries.Forge
     }
 
     @Override
-    public void write(PacketBuffer buffer, VehicleRecipe recipe)
+    public void toNetwork(PacketBuffer buffer, VehicleRecipe recipe)
     {
         buffer.writeResourceLocation(recipe.getVehicle().getRegistryName());
         buffer.writeVarInt(recipe.getMaterials().size());
@@ -85,9 +85,9 @@ public class VehicleRecipeSerializer extends net.minecraftforge.registries.Forge
         {
             buffer.writeBoolean(true);
             Item item = stack.getItem();
-            buffer.writeVarInt(Item.getIdFromItem(item));
+            buffer.writeVarInt(Item.getId(item));
             buffer.writeVarInt(stack.getCount());
-            buffer.writeCompoundTag(stack.getTag());
+            buffer.writeNbt(stack.getTag());
         }
     }
 
@@ -97,8 +97,8 @@ public class VehicleRecipeSerializer extends net.minecraftforge.registries.Forge
         {
             int id = buffer.readVarInt();
             int count = buffer.readVarInt();
-            ItemStack itemstack = new ItemStack(Item.getItemById(id), count);
-            itemstack.readShareTag(buffer.readCompoundTag());
+            ItemStack itemstack = new ItemStack(Item.byId(id), count);
+            itemstack.readShareTag(buffer.readNbt());
             return itemstack;
         }
         return ItemStack.EMPTY;

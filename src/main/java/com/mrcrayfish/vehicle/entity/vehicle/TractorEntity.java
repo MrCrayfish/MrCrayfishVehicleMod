@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -21,15 +20,9 @@ public class TractorEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
-        return ModSounds.TRACTOR_ENGINE_MONO.get();
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return ModSounds.TRACTOR_ENGINE_STEREO.get();
+        return ModSounds.ENTITY_TRACTOR_ENGINE.get();
     }
 
     @Override
@@ -42,12 +35,6 @@ public class TractorEntity extends LandVehicleEntity
     public float getMaxEnginePitch()
     {
         return 1.6F;
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.LARGE_MOTOR;
     }
 
     @Override

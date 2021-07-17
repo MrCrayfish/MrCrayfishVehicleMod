@@ -1,0 +1,54 @@
+{
+    "general": {
+        "canChangeWheels": true
+    },
+    "axles": {
+        "offsetToGround": -1.0,
+        "lengthToFront": 9.5,
+        "lengthToRear": -10.5
+    },
+    "display": {
+        "held": [ 4.0, 9.25, 0.0 ],
+        "trailer": [ 0.0, -0.031, -0.25 ],
+        "gui": {
+            "scale": 1.45
+        }
+    },
+    "position": {
+        "body": {
+            "scale": 1.05
+        }
+    },
+    "wheels": [
+        {
+            "side": "left",
+            "position": "none",
+            "offset": [ 5.75, 0.0, -10.5 ],
+            "scale": [ 0.47, 0.47, 0.47 ]
+        },
+        {
+            "side": "right",
+            "position": "none",
+            "offset": [ 5.75, 0.0, -10.5 ],
+            "scale": [ 0.47, 0.47, 0.47 ]
+        },
+        {
+            "side": "left",
+            "position": "front",
+            "offset": [ 4.0, 0.0, 9.5 ],
+            "scale": [ 0.47, 0.47, 0.47 ]
+        },
+        {
+            "side": "right",
+            "position": "front",
+            "offset": [ 4.0, 0.0, 9.5 ],
+            "scale": [ 0.47, 0.47, 0.47 ]
+        }
+    ],
+    "seats": [
+        {
+            "position": [ 0.0, 7.0, -4.0 ],
+            "driver": true
+        }
+    ]
+}

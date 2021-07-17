@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
@@ -61,11 +61,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 {
     public static final int[] DYE_TO_COLOR = new int[] {16383998, 16351261, 13061821, 3847130, 16701501, 8439583, 15961002, 4673362, 10329495, 1481884, 8991416, 3949738, 8606770, 6192150, 11546150, 1908001};
 
-    protected static final DataParameter<Integer> COLOR = EntityDataManager.createKey(VehicleEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(VehicleEntity.class, DataSerializers.VARINT);
-    private static final DataParameter<Float> MAX_HEALTH = EntityDataManager.createKey(VehicleEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Float> HEALTH = EntityDataManager.createKey(VehicleEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> TRAILER = EntityDataManager.createKey(VehicleEntity.class, DataSerializers.VARINT);
+    protected static final DataParameter<Integer> COLOR = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
+    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
+    private static final DataParameter<Float> MAX_HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Float> HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> TRAILER = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
 
     protected UUID trailerId;
     protected TrailerEntity trailer = null;
@@ -87,15 +87,15 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected void registerData()
+    protected void defineSynchedData()
     {
-        this.dataManager.register(TIME_SINCE_HIT, 0);
-        this.dataManager.register(MAX_HEALTH, 100F);
-        this.dataManager.register(HEALTH, 100F);
-        this.dataManager.register(COLOR, 16383998);
-        this.dataManager.register(TRAILER, -1);
+        this.entityData.define(TIME_SINCE_HIT, 0);
+        this.entityData.define(MAX_HEALTH, 100F);
+        this.entityData.define(HEALTH, 100F);
+        this.entityData.define(COLOR, 16383998);
+        this.entityData.define(TRAILER, -1);
 
-        if(this.world.isRemote)
+        if(this.level.isClientSide)
         {
             this.onClientInit();
         }
@@ -110,22 +110,22 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected final void playStepSound(BlockPos pos, BlockState blockIn) {}
 
     @Override //TODO hmmmmmmmm
-    public AxisAlignedBB getRenderBoundingBox()
+    public AxisAlignedBB getBoundingBoxForCulling()
     {
-        return this.getBoundingBox().grow(1);
+        return this.getBoundingBox().inflate(1);
     }
 
     @Override
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
+    public ActionResultType interact(PlayerEntity player, Hand hand)
     {
-        if(!world.isRemote && !player.isCrouching())
+        if(!level.isClientSide && !player.isCrouching())
         {
             int trailerId = SyncedPlayerData.instance().get(player, ModDataKeys.TRAILER);
             if(trailerId != -1)
             {
-                if(this.getRidingEntity() == null && this.canTowTrailer() && this.getTrailer() == null)
+                if(this.getVehicle() == null && this.canTowTrailer() && this.getTrailer() == null)
                 {
-                    Entity entity = world.getEntityByID(trailerId);
+                    Entity entity = level.getEntity(trailerId);
                     if(entity instanceof TrailerEntity && entity != this)
                     {
                         TrailerEntity trailer = (TrailerEntity) entity;
@@ -136,7 +136,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 return ActionResultType.SUCCESS;
             }
 
-            ItemStack heldItem = player.getHeldItem(hand);
+            ItemStack heldItem = player.getItemInHand(hand);
             if(heldItem.getItem() instanceof SprayCanItem)
             {
                 if(this.canBeColored())
@@ -155,7 +155,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                             if(this.getColor() != color)
                             {
                                 this.setColor(compound.getInt("Color"));
-                                player.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.SPRAY_CAN_SPRAY.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                player.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ITEM_SPRAY_CAN_SPRAY.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
                                 compound.putInt("RemainingSprays", remainingSprays - 1);
                             }
                         }
@@ -163,53 +163,53 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 }
                 return ActionResultType.SUCCESS;
             }
-            else if(heldItem.getItem() == ModItems.HAMMER.get() && this.getRidingEntity() instanceof EntityJack)
+            else if(heldItem.getItem() == ModItems.HAMMER.get() && this.getVehicle() instanceof EntityJack)
             {
                 if(this.getHealth() < this.getMaxHealth())
                 {
-                    heldItem.damageItem(1, player, playerEntity -> player.sendBreakAnimation(hand));
+                    heldItem.hurtAndBreak(1, player, playerEntity -> player.broadcastBreakEvent(hand));
                     this.setHealth(this.getHealth() + 5F);
-                    this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_THUD.get(), SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * rand.nextFloat());
-                    player.swingArm(hand);
+                    this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_VEHICLE_THUD.get(), SoundCategory.PLAYERS, 1.0F, 0.8F + 0.4F * random.nextFloat());
+                    player.swing(hand);
                     if(player instanceof ServerPlayerEntity)
                     {
-                        ((ServerPlayerEntity) player).connection.sendPacket(new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
+                        ((ServerPlayerEntity) player).connection.send(new SAnimateHandPacket(player, hand == Hand.MAIN_HAND ? 0 : 3));
                     }
                     if(this.getHealth() == this.getMaxHealth())
                     {
-                        if(world instanceof ServerWorld)
+                        if(level instanceof ServerWorld)
                         {
                             //TODO send as single packet instead of multiple
-                            int count = (int) (50 * (this.getWidth() * this.getHeight()));
+                            int count = (int) (50 * (this.getBbWidth() * this.getBbHeight()));
                             for(int i = 0; i < count; i++)
                             {
-                                double width = this.getWidth() * 2;
-                                double height = this.getHeight() * 1.5;
+                                double width = this.getBbWidth() * 2;
+                                double height = this.getBbHeight() * 1.5;
 
-                                Vector3d heldOffset = this.getProperties().getHeldOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-                                double x = this.getPosX() + width * rand.nextFloat() - width / 2 + heldOffset.z * 0.0625;
-                                double y = this.getPosY() + height * rand.nextFloat();
-                                double z = this.getPosZ() + width * rand.nextFloat() - width / 2 + heldOffset.x * 0.0625;
+                                Vector3d heldOffset = this.getProperties().getHeldOffset().yRot((float) Math.toRadians(-this.yRot));
+                                double x = this.getX() + width * random.nextFloat() - width / 2 + heldOffset.z * 0.0625;
+                                double y = this.getY() + height * random.nextFloat();
+                                double z = this.getZ() + width * random.nextFloat() - width / 2 + heldOffset.x * 0.0625;
 
-                                double d0 = rand.nextGaussian() * 0.02D;
-                                double d1 = rand.nextGaussian() * 0.02D;
-                                double d2 = rand.nextGaussian() * 0.02D;
-                                ((ServerWorld) this.world).spawnParticle(ParticleTypes.HAPPY_VILLAGER, x, y, z, 1, d0, d1, d2, 1.0);
+                                double d0 = random.nextGaussian() * 0.02D;
+                                double d1 = random.nextGaussian() * 0.02D;
+                                double d2 = random.nextGaussian() * 0.02D;
+                                ((ServerWorld) this.level).sendParticles(ParticleTypes.HAPPY_VILLAGER, x, y, z, 1, d0, d1, d2, 1.0);
                             }
                         }
-                        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
+                        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.PLAYER_LEVELUP, SoundCategory.PLAYERS, 1.0F, 1.5F);
                     }
                 }
                 return ActionResultType.SUCCESS;
             }
-            else if(this.canBeRidden(player))
+            else if(this.canRide(player))
             {
                 int seatIndex = this.seatTracker.getClosestAvailableSeatToPlayer(player);
                 if(seatIndex != -1)
                 {
                     if(player.startRiding(this))
                     {
-                        this.getSeatTracker().setSeatIndex(seatIndex, player.getUniqueID());
+                        this.getSeatTracker().setSeatIndex(seatIndex, player.getUUID());
                     }
                 }
                 return ActionResultType.SUCCESS;
@@ -219,7 +219,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected void readAdditional(CompoundNBT compound)
+    protected void readAdditionalSaveData(CompoundNBT compound)
     {
         if(compound.contains("Color", Constants.NBT.TAG_INT_ARRAY))
         {
@@ -247,9 +247,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             this.setHealth(compound.getFloat("Health"));
         }
-        if(compound.hasUniqueId("Trailer"))
+        if(compound.hasUUID("Trailer"))
         {
-            this.trailerId = compound.getUniqueId("Trailer");
+            this.trailerId = compound.getUUID("Trailer");
         }
         if(compound.contains("SeatTracker", Constants.NBT.TAG_COMPOUND))
         {
@@ -258,7 +258,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected void writeAdditional(CompoundNBT compound)
+    protected void addAdditionalSaveData(CompoundNBT compound)
     {
         compound.putIntArray("Color", this.getColorRGB());
         compound.putFloat("MaxHealth", this.getMaxHealth());
@@ -267,7 +267,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         //TODO make it save the entity
         if(this.trailerId != null)
         {
-            compound.putUniqueId("Trailer", this.trailerId);
+            compound.putUUID("Trailer", this.trailerId);
         }
 
         compound.put("SeatTracker", this.seatTracker.write());
@@ -285,7 +285,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         this.prevPosY = this.getPosY();
         this.prevPosZ = this.getPosZ();*/
 
-        if(!this.world.isRemote)
+        if(!this.level.isClientSide)
         {
             if(this.searchDelay <= 0)
             {
@@ -294,8 +294,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     /* Updates periodically to ensure the client knows the vehicle/trailer connection.
                      * There is often problems on loading worlds that it doesn't sync correctly, so this
                      * is the fix. */
-                    this.dataManager.set(TRAILER, trailer.getEntityId());
-                    this.trailer.getDataManager().set(TrailerEntity.PULLING_ENTITY, this.getEntityId());
+                    this.entityData.set(TRAILER, trailer.getId());
+                    this.trailer.getEntityData().set(TrailerEntity.PULLING_ENTITY, this.getId());
                     this.searchDelay = Config.SERVER.trailerSyncCooldown.get();
                 }
                 else
@@ -309,16 +309,16 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             }
         }
 
-        if(this.world.isRemote)
+        if(this.level.isClientSide)
         {
-            int entityId = this.dataManager.get(TRAILER);
+            int entityId = this.entityData.get(TRAILER);
             if(entityId != -1)
             {
-                Entity entity = this.world.getEntityByID(this.dataManager.get(TRAILER));
+                Entity entity = this.level.getEntity(this.entityData.get(TRAILER));
                 if(entity instanceof TrailerEntity)
                 {
                     this.trailer = (TrailerEntity) entity;
-                    this.trailerId = trailer.getUniqueID();
+                    this.trailerId = trailer.getUUID();
                 }
                 else if(this.trailer != null)
                 {
@@ -333,7 +333,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             }
         }
 
-        if(!this.world.isRemote && this.trailer != null && (!this.trailer.isAlive() || this.trailer.getPullingEntity() != this))
+        if(!this.level.isClientSide && this.trailer != null && (!this.trailer.isAlive() || this.trailer.getPullingEntity() != this))
         {
             this.setTrailer(null);
         }
@@ -345,10 +345,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     private void findTrailer()
     {
-        if(!this.world.isRemote && this.trailerId != null && this.trailer == null)
+        if(!this.level.isClientSide && this.trailerId != null && this.trailer == null)
         {
-            ServerWorld server = (ServerWorld) this.world;
-            Entity entity = server.getEntityByUuid(this.trailerId);
+            ServerWorld server = (ServerWorld) this.level;
+            Entity entity = server.getEntity(this.trailerId);
             if(entity instanceof TrailerEntity)
             {
                 this.setTrailer((TrailerEntity) entity);
@@ -361,16 +361,16 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected abstract void onUpdateVehicle();
 
     @Override
-    public boolean attackEntityFrom(DamageSource source, float amount)
+    public boolean hurt(DamageSource source, float amount)
     {
         if(this.isInvulnerableTo(source))
         {
             return false;
         }
-        else if(!this.world.isRemote && this.isAlive())
+        else if(!this.level.isClientSide && this.isAlive())
         {
-            Entity trueSource = source.getTrueSource();
-            if(source instanceof IndirectEntityDamageSource && trueSource != null && this.isPassenger(trueSource))
+            Entity trueSource = source.getEntity();
+            if(source instanceof IndirectEntityDamageSource && trueSource != null && this.hasPassenger(trueSource))
             {
                 return false;
             }
@@ -398,25 +398,25 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public boolean onLivingFall(float distance, float damageMultiplier)
+    public boolean causeFallDamage(float distance, float damageMultiplier)
     {
-        if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getMotion().getY() < -1.0F)
+        if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getDeltaMovement().y() < -1.0F)
         {
             float damage = distance / 2F;
-            this.attackEntityFrom(DamageSource.FALL, damage);
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_IMPACT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F);
+            this.hurt(DamageSource.FALL, damage);
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_VEHICLE_IMPACT.get(), SoundCategory.AMBIENT, 1.0F, 1.0F);
         }
         return true;
     }
 
     protected void onVehicleDestroyed(LivingEntity entity)
     {
-        this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), ModSounds.VEHICLE_DESTROYED.get(), SoundCategory.AMBIENT, 1.0F, 0.5F);
+        this.level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_VEHICLE_DESTROYED.get(), SoundCategory.AMBIENT, 1.0F, 0.5F);
 
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
-        if(!isCreativeMode && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
+        if(!isCreativeMode && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
         {
-            VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getType(), this.world);
+            VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getType(), this.level);
             if(recipe != null)
             {
                 List<ItemStack> materials = recipe.getMaterials();
@@ -425,8 +425,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     ItemStack copy = stack.copy();
                     int shrink = copy.getCount() / 2;
                     if(shrink > 0)
-                        copy.shrink(this.rand.nextInt(shrink + 1));
-                    InventoryUtil.spawnItemStack(this.world, this.getPosX(), this.getPosY(), this.getPosZ(), copy);
+                        copy.shrink(this.random.nextInt(shrink + 1));
+                    InventoryUtil.spawnItemStack(this.level, this.getX(), this.getY(), this.getZ(), copy);
                 }
             }
         }
@@ -442,29 +442,29 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     private void tickLerp()
     {
-        if(this.canPassengerSteer())
+        if(this.isControlledByLocalInstance())
         {
             this.lerpSteps = 0;
-            this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
+            this.setPacketCoordinates(this.getX(), this.getY(), this.getZ());
         }
 
         if(this.lerpSteps > 0)
         {
-            double d0 = this.getPosX() + (this.lerpX - this.getPosX()) / (double) this.lerpSteps;
-            double d1 = this.getPosY() + (this.lerpY - this.getPosY()) / (double) this.lerpSteps;
-            double d2 = this.getPosZ() + (this.lerpZ - this.getPosZ()) / (double) this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
-            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
+            double d0 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
+            double d1 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
+            double d2 = this.getZ() + (this.lerpZ - this.getZ()) / (double) this.lerpSteps;
+            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.yRot);
+            this.yRot = (float) ((double) this.yRot + d3 / (double) this.lerpSteps);
+            this.xRot = (float) ((double) this.xRot + (this.lerpPitch - (double) this.xRot) / (double) this.lerpSteps);
             --this.lerpSteps;
-            this.setPosition(d0, d1, d2);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
+            this.setPos(d0, d1, d2);
+            this.setRot(this.yRot, this.xRot);
         }
     }
 
 
     @Override
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
+    public void lerpTo(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
     {
         this.lerpX = x;
         this.lerpY = y;
@@ -475,7 +475,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected boolean canBeRidden(Entity entityIn)
+    protected boolean canRide(Entity entityIn)
     {
         return true;
     }
@@ -484,47 +484,47 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
-        if(this.canPassengerSteer() && this.lerpSteps > 0)
+        if(this.isControlledByLocalInstance() && this.lerpSteps > 0)
         {
             this.lerpSteps = 0;
-            this.setPosition(this.lerpX, this.lerpY, this.lerpZ);
-            this.rotationYaw = (float) this.lerpYaw;
-            this.rotationPitch = (float) this.lerpPitch;
+            this.setPos(this.lerpX, this.lerpY, this.lerpZ);
+            this.yRot = (float) this.lerpYaw;
+            this.xRot = (float) this.lerpPitch;
         }
     }
 
     protected void applyYawToEntity(Entity passenger)
     {
-        int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
+        int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
         if(seatIndex != -1)
         {
             VehicleProperties properties = this.getProperties();
             Seat seat = properties.getSeats().get(seatIndex);
-            passenger.setRenderYawOffset(this.getModifiedRotationYaw() + seat.getYawOffset());
-            float f = MathHelper.wrapDegrees(passenger.rotationYaw - this.getModifiedRotationYaw() + seat.getYawOffset());
+            passenger.setYBodyRot(this.getModifiedRotationYaw() + seat.getYawOffset());
+            float f = MathHelper.wrapDegrees(passenger.yRot - this.getModifiedRotationYaw() + seat.getYawOffset());
             float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-            passenger.prevRotationYaw += f1 - f;
-            passenger.rotationYaw += f1 - f;
-            passenger.setRotationYawHead(passenger.rotationYaw);
+            passenger.yRotO += f1 - f;
+            passenger.yRot += f1 - f;
+            passenger.setYHeadRot(passenger.yRot);
         }
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void applyOrientationToEntity(Entity entityToUpdate)
+    public void onPassengerTurned(Entity entityToUpdate)
     {
         this.applyYawToEntity(entityToUpdate);
     }
 
     @Override
-    public void addVelocity(double x, double y, double z) {}
+    public void push(double x, double y, double z) {}
 
     /**
      * Sets the time to count down from since the last time entity was hit.
      */
     public void setTimeSinceHit(int timeSinceHit)
     {
-        this.dataManager.set(TIME_SINCE_HIT, timeSinceHit);
+        this.entityData.set(TIME_SINCE_HIT, timeSinceHit);
     }
 
     /**
@@ -532,7 +532,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     public int getTimeSinceHit()
     {
-        return this.dataManager.get(TIME_SINCE_HIT);
+        return this.entityData.get(TIME_SINCE_HIT);
     }
 
     /**
@@ -540,7 +540,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     public void setMaxHealth(float maxHealth)
     {
-        this.dataManager.set(MAX_HEALTH, maxHealth);
+        this.entityData.set(MAX_HEALTH, maxHealth);
     }
 
     /**
@@ -548,7 +548,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     public float getMaxHealth()
     {
-        return this.dataManager.get(MAX_HEALTH);
+        return this.entityData.get(MAX_HEALTH);
     }
 
     /**
@@ -556,7 +556,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     public void setHealth(float health)
     {
-        this.dataManager.set(HEALTH, Math.min(this.getMaxHealth(), health));
+        this.entityData.set(HEALTH, Math.min(this.getMaxHealth(), health));
     }
 
     /**
@@ -564,13 +564,13 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     public float getHealth()
     {
-        return this.dataManager.get(HEALTH);
+        return this.entityData.get(HEALTH);
     }
 
     //TODO look into this and why its here. May have to send vanilla event to client
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void performHurtAnimation()
+    public void animateHurt()
     {
         this.setTimeSinceHit(10);
     }
@@ -584,24 +584,24 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         if(this.canBeColored())
         {
-            this.dataManager.set(COLOR, color);
+            this.entityData.set(COLOR, color);
         }
     }
 
     public void setColorRGB(int r, int g, int b)
     {
         int color = ((r & 0xFF) << 16) | ((g & 0xFF) << 8) | ((b & 0xFF));
-        this.dataManager.set(COLOR, color);
+        this.entityData.set(COLOR, color);
     }
 
     public int getColor()
     {
-        return this.dataManager.get(COLOR);
+        return this.entityData.get(COLOR);
     }
 
     public int[] getColorRGB()
     {
-        int color = this.dataManager.get(COLOR);
+        int color = this.entityData.get(COLOR);
         return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
     }
 
@@ -632,10 +632,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         partVec = partVec.add(0, -0.5, 0);
         partVec = partVec.add(0, 0.5, 0);
         partVec = partVec.add(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-        partVec = partVec.rotateYaw(-(this.prevRotationYaw + (this.rotationYaw - this.prevRotationYaw) * partialTicks) * 0.017453292F);
-        partVec = partVec.add(this.prevPosX + (this.getPosX() - this.prevPosX) * partialTicks, 0, 0);
-        partVec = partVec.add(0, this.prevPosY + (this.getPosY() - this.prevPosY) * partialTicks, 0);
-        partVec = partVec.add(0, 0, this.prevPosZ + (this.getPosZ() - this.prevPosZ) * partialTicks);
+        partVec = partVec.yRot(-(this.yRotO + (this.yRot - this.yRotO) * partialTicks) * 0.017453292F);
+        partVec = partVec.add(this.xo + (this.getX() - this.xo) * partialTicks, 0, 0);
+        partVec = partVec.add(0, this.yo + (this.getY() - this.yo) * partialTicks, 0);
+        partVec = partVec.add(0, 0, this.zo + (this.getZ() - this.zo) * partialTicks);
         return partVec;
     }
 
@@ -644,17 +644,22 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return new AxisAlignedBB(x1 * scale, y1 * scale, z1 * scale, x2 * scale, y2 * scale, z2 * scale);
     }
 
+    protected static AxisAlignedBB createBoxScaled(double x1, double y1, double z1, double x2, double y2, double z2, double scale)
+    {
+        return new AxisAlignedBB(x1 * 0.0625 * scale, y1 * 0.0625 * scale, z1 * 0.0625 * scale, x2 * 0.0625 * scale, y2 * 0.0625 * scale, z2 * 0.0625 * scale);
+    }
+
     @Override
     public void writeSpawnData(PacketBuffer buffer)
     {
-        buffer.writeFloat(this.rotationYaw);
+        buffer.writeFloat(this.yRot);
         this.seatTracker.write(buffer);
     }
 
     @Override
     public void readSpawnData(PacketBuffer buffer)
     {
-        this.rotationYaw = this.prevRotationYaw = buffer.readFloat();
+        this.yRot = this.yRotO = buffer.readFloat();
         this.seatTracker.read(buffer);
     }
 
@@ -668,9 +673,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         if(trailer != null)
         {
             this.trailer = trailer;
-            this.trailerId = trailer.getUniqueID();
+            this.trailerId = trailer.getUUID();
             trailer.setPullingEntity(this);
-            this.dataManager.set(TRAILER, trailer.getEntityId());
+            this.entityData.set(TRAILER, trailer.getId());
         }
         else
         {
@@ -680,7 +685,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             }
             this.trailer = null;
             this.trailerId = null;
-            this.dataManager.set(TRAILER, -1);
+            this.entityData.set(TRAILER, -1);
         }
     }
 
@@ -696,14 +701,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return trailer;
     }
 
-    public VehicleProperties getProperties()
+    public final VehicleProperties getProperties()
     {
         return VehicleProperties.getProperties(this.getType());
     }
 
     public float getModifiedRotationYaw()
     {
-        return this.rotationYaw;
+        return this.yRot;
     }
 
     @Override
@@ -712,13 +717,13 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         ResourceLocation entityId = this.getType().getRegistryName();
         if(entityId != null)
         {
-            return BlockVehicleCrate.create(entityId, this.getColor(), null, null, -1);
+            return VehicleCrateBlock.create(entityId, this.getColor(), null, ItemStack.EMPTY);
         }
         return ItemStack.EMPTY;
     }
 
     @Override
-    public IPacket<?> createSpawnPacket()
+    public IPacket<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
     }
@@ -729,31 +734,31 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    protected boolean canFitPassenger(Entity passenger)
+    protected boolean canAddPassenger(Entity passenger)
     {
         return this.getPassengers().size() < this.getProperties().getSeats().size();
     }
 
     @Override
-    public void updatePassenger(Entity passenger)
+    public void positionRider(Entity passenger)
     {
-        super.updatePassenger(passenger);
+        super.positionRider(passenger);
         this.updatePassengerPosition(passenger);
     }
 
     protected void updatePassengerPosition(Entity passenger)
     {
-        if(this.isPassenger(passenger))
+        if(this.hasPassenger(passenger))
         {
-            int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUniqueID());
+            int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
             if(seatIndex != -1)
             {
                 VehicleProperties properties = this.getProperties();
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).rotateYaw(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
-                    passenger.setPosition(this.getPosX() + seatVec.x, this.getPosY() + seatVec.y, this.getPosZ() + seatVec.z);
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).yRot(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
+                    passenger.setPos(this.getX() + seatVec.x, this.getY() + seatVec.y, this.getZ() + seatVec.z);
                     this.applyYawToEntity(passenger);
                 }
             }

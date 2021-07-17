@@ -36,8 +36,8 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
         super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.fluidExtractorTileEntity = container.getFluidExtractor();
-        this.xSize = 176;
-        this.ySize = 166;
+        this.imageWidth = 176;
+        this.imageHeight = 166;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
         this.renderBackground(matrixStack); //TODO do I need this?
         super.render(matrixStack, mouseX, mouseY, partialTicks);
 
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
+        int startX = (this.width - this.imageWidth) / 2;
+        int startY = (this.height - this.imageHeight) / 2;
 
         if(this.fluidExtractorTileEntity.getFluidStackTank() != null)
         {
@@ -56,34 +56,34 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
             {
                 if(stack.getAmount() > 0)
                 {
-                    this.renderTooltip(matrixStack, Lists.transform(Arrays.asList(new StringTextComponent(stack.getDisplayName().getString()), new StringTextComponent(TextFormatting.GRAY.toString() + this.fluidExtractorTileEntity.getFluidLevel() + "/" + this.fluidExtractorTileEntity.getCapacity() + " mB")), ITextComponent::func_241878_f), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Lists.transform(Arrays.asList(new StringTextComponent(stack.getDisplayName().getString()), new StringTextComponent(TextFormatting.GRAY.toString() + this.fluidExtractorTileEntity.getFluidLevel() + "/" + this.fluidExtractorTileEntity.getCapacity() + " mB")), ITextComponent::getVisualOrderText), mouseX, mouseY);
                 }
                 else
                 {
-                    this.renderTooltip(matrixStack, Lists.transform(Collections.singletonList(new StringTextComponent("No Fluid")), ITextComponent::func_241878_f), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, Lists.transform(Collections.singletonList(new StringTextComponent("No Fluid")), ITextComponent::getVisualOrderText), mouseX, mouseY);
                 }
             }
         }
 
-        this.func_230459_a_(matrixStack, mouseX, mouseY);
+        this.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
     @Override
-    protected void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        this.minecraft.fontRenderer.drawString(matrixStack, this.fluidExtractorTileEntity.getDisplayName().getString(), 8, 6, 4210752);
-        this.minecraft.fontRenderer.drawString(matrixStack, this.playerInventory.getDisplayName().getString(), 8, this.ySize - 96 + 2, 4210752);
+        this.minecraft.font.draw(matrixStack, this.fluidExtractorTileEntity.getDisplayName().getString(), 8, 6, 4210752);
+        this.minecraft.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), 8, this.imageHeight - 96 + 2, 4210752);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
     {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        int startX = (this.width - this.xSize) / 2;
-        int startY = (this.height - this.ySize) / 2;
+        int startX = (this.width - this.imageWidth) / 2;
+        int startY = (this.height - this.imageHeight) / 2;
 
-        this.minecraft.getTextureManager().bindTexture(GUI);
-        this.blit(matrixStack, startX, startY, 0, 0, this.xSize, this.ySize);
+        this.minecraft.getTextureManager().bind(GUI);
+        this.blit(matrixStack, startX, startY, 0, 0, this.imageWidth, this.imageHeight);
 
         if(this.fluidExtractorTileEntity.getRemainingFuel() >= 0)
         {
@@ -116,7 +116,7 @@ public class FluidExtractorScreen extends ContainerScreen<FluidExtractorContaine
     private void drawFluidTank(FluidStack fluid, MatrixStack matrixStack, int x, int y, double level, int height)
     {
         FluidUtils.drawFluidTankInGUI(fluid, x, y, level, height);
-        Minecraft.getInstance().getTextureManager().bindTexture(GUI);
+        Minecraft.getInstance().getTextureManager().bind(GUI);
         this.blit(matrixStack, x, y, 176, 44, 16, 59);
     }
 

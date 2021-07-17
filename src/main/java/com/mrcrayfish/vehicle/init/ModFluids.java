@@ -15,12 +15,12 @@ import net.minecraftforge.registries.ForgeRegistries;
  */
 public class ModFluids
 {
-    public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
+    public static final DeferredRegister<Fluid> REGISTER = DeferredRegister.create(ForgeRegistries.FLUIDS, Reference.MOD_ID);
 
-    public static final RegistryObject<Fluid> FUELIUM = FLUIDS.register("fuelium", Fuelium.Source::new);
-    public static final RegistryObject<FlowingFluid> FLOWING_FUELIUM = FLUIDS.register("flowing_fuelium", Fuelium.Flowing::new);
-    public static final RegistryObject<Fluid> ENDER_SAP = FLUIDS.register("ender_sap", EnderSap.Source::new);
-    public static final RegistryObject<FlowingFluid> FLOWING_ENDER_SAP = FLUIDS.register("flowing_ender_sap", EnderSap.Flowing::new);
-    public static final RegistryObject<Fluid> BLAZE_JUICE = FLUIDS.register("blaze_juice", BlazeJuice.Source::new);
-    public static final RegistryObject<FlowingFluid> FLOWING_BLAZE_JUICE = FLUIDS.register("flowing_blaze_juice", BlazeJuice.Flowing::new);
+    public static final RegistryObject<Fluid> FUELIUM = REGISTER.register("fuelium", Fuelium.Source::new);
+    public static final RegistryObject<FlowingFluid> FLOWING_FUELIUM = REGISTER.register("flowing_fuelium", Fuelium.Flowing::new);
+    public static final RegistryObject<Fluid> ENDER_SAP = REGISTER.register("ender_sap", EnderSap.Source::new);
+    public static final RegistryObject<FlowingFluid> FLOWING_ENDER_SAP = REGISTER.register("flowing_ender_sap", EnderSap.Flowing::new);
+    public static final RegistryObject<Fluid> BLAZE_JUICE = REGISTER.register("blaze_juice", BlazeJuice.Source::new);
+    public static final RegistryObject<FlowingFluid> FLOWING_BLAZE_JUICE = REGISTER.register("flowing_blaze_juice", BlazeJuice.Flowing::new);
 }

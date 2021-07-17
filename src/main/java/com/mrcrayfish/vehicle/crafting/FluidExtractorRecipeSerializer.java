@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 public class FluidExtractorRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FluidExtractorRecipe>
 {
     @Override
-    public FluidExtractorRecipe read(ResourceLocation recipeId, JsonObject json)
+    public FluidExtractorRecipe fromJson(ResourceLocation recipeId, JsonObject json)
     {
         if(!json.has("ingredient"))
         {
@@ -32,17 +32,17 @@ public class FluidExtractorRecipeSerializer extends net.minecraftforge.registrie
 
     @Nullable
     @Override
-    public FluidExtractorRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+    public FluidExtractorRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
     {
-        ItemStack ingredient = buffer.readItemStack();
+        ItemStack ingredient = buffer.readItem();
         FluidEntry result = FluidEntry.read(buffer);
         return new FluidExtractorRecipe(recipeId, ingredient, result);
     }
 
     @Override
-    public void write(PacketBuffer buffer, FluidExtractorRecipe recipe)
+    public void toNetwork(PacketBuffer buffer, FluidExtractorRecipe recipe)
     {
-        buffer.writeItemStack(recipe.getIngredient());
+        buffer.writeItem(recipe.getIngredient());
         recipe.getResult().write(buffer);
     }
 }

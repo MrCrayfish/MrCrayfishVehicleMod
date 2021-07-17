@@ -43,13 +43,13 @@ public class FluidEntry
         {
             throw new com.google.gson.JsonSyntaxException("Invalid fluid entry, missing fluid and amount");
         }
-        ResourceLocation fluidId = new ResourceLocation(JSONUtils.getString(object, "fluid"));
+        ResourceLocation fluidId = new ResourceLocation(JSONUtils.getAsString(object, "fluid"));
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(fluidId);
         if(fluid == null)
         {
             throw new com.google.gson.JsonSyntaxException("Invalid fluid entry, unknown fluid: " + fluidId.toString());
         }
-        int amount = JSONUtils.getInt(object, "amount");
+        int amount = JSONUtils.getAsInt(object, "amount");
         if(amount < 1)
         {
             throw new com.google.gson.JsonSyntaxException("Invalid fluid entry, amount must be more than zero");
@@ -59,13 +59,13 @@ public class FluidEntry
 
     public void write(PacketBuffer buffer)
     {
-        buffer.writeString(this.fluid.getRegistryName().toString(), 256);
+        buffer.writeUtf(this.fluid.getRegistryName().toString(), 256);
         buffer.writeInt(this.amount);
     }
 
     public static FluidEntry read(PacketBuffer buffer)
     {
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(buffer.readString(256)));
+        Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(buffer.readUtf(256)));
         int amount = buffer.readInt();
         return new FluidEntry(fluid, amount);
     }

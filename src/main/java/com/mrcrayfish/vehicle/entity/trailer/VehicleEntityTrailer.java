@@ -6,8 +6,6 @@ import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.vector.Vector3d;
@@ -40,7 +38,7 @@ public class VehicleEntityTrailer extends TrailerEntity
     }
 
     @Override
-    public double getMountedYOffset()
+    public double getPassengersRidingOffset()
     {
         return 8 * 0.0625;
     }
@@ -52,25 +50,25 @@ public class VehicleEntityTrailer extends TrailerEntity
     }
 
     @Override
-    protected boolean canBeRidden(Entity entityIn)
+    protected boolean canRide(Entity entityIn)
     {
         return true;
     }
 
     @Override
-    public void updatePassenger(Entity passenger)
+    public void positionRider(Entity passenger)
     {
         if(passenger instanceof VehicleEntity)
         {
-            Vector3d offset = ((VehicleEntity) passenger).getProperties().getTrailerOffset().rotateYaw((float) Math.toRadians(-this.rotationYaw));
-            passenger.setPosition(this.getPosX() + offset.x, this.getPosY() + getMountedYOffset() + offset.y, this.getPosZ() + offset.z);
-            passenger.prevRotationYaw = this.prevRotationYaw;
-            passenger.rotationYaw = this.rotationYaw;
+            Vector3d offset = ((VehicleEntity) passenger).getProperties().getTrailerOffset().yRot((float) Math.toRadians(-this.yRot));
+            passenger.setPos(this.getX() + offset.x, this.getY() + getPassengersRidingOffset() + offset.y, this.getZ() + offset.z);
+            passenger.yRotO = this.yRotO;
+            passenger.yRot = this.yRot;
         }
     }
 
     @Override
-    protected boolean canFitPassenger(Entity passenger)
+    protected boolean canAddPassenger(Entity passenger)
     {
         return passenger instanceof VehicleEntity && this.getPassengers().size() == 0;
     }
@@ -92,19 +90,11 @@ public class VehicleEntityTrailer extends TrailerEntity
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void drawInteractionBoxes(Tessellator tessellator, BufferBuilder buffer)
-    {
-        //TODO fix rendering boxes
-        //RenderGlobal.drawSelectionBoundingBox(CONNECTION_BOX.getBox(), 0, 1, 0, 0.4F);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
     public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
     {
         if(result.getPartHit() == CONNECTION_BOX && rightClick)
         {
-            PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getEntityId(), Minecraft.getInstance().player.getEntityId()));
+            PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
             return true;
         }
         return super.processHit(result, rightClick);

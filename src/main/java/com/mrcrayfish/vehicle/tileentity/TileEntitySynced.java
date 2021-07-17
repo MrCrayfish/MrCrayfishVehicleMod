@@ -18,26 +18,26 @@ public class TileEntitySynced extends TileEntity
 
     public void syncToClient()
     {
-        this.markDirty();
+        this.setChanged();
         TileEntityUtil.sendUpdatePacket(this);
     }
 
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(this.getPos(), 0, this.getUpdateTag());
+        return new SUpdateTileEntityPacket(this.getBlockPos(), 0, this.getUpdateTag());
     }
 
     @Override
     public void onDataPacket(final NetworkManager net, final SUpdateTileEntityPacket pkt)
     {
-        this.read(null, pkt.getNbtCompound());
+        this.load(null, pkt.getTag());
     }
 }

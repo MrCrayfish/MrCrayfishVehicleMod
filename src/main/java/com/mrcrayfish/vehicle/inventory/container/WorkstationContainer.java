@@ -24,18 +24,18 @@ public class WorkstationContainer extends Container
     {
         super(ModContainers.WORKSTATION.get(), windowId);
         this.workstationTileEntity = workstationTileEntity;
-        this.pos = workstationTileEntity.getPos();
+        this.pos = workstationTileEntity.getBlockPos();
 
         this.addSlot(new Slot(workstationTileEntity, 0, 187, 30)
         {
             @Override
-            public boolean isItemValid(ItemStack stack)
+            public boolean mayPlace(ItemStack stack)
             {
                 return stack.getItem() instanceof DyeItem;
             }
 
             @Override
-            public int getSlotStackLimit()
+            public int getMaxStackSize()
             {
                 return 1;
             }
@@ -44,13 +44,13 @@ public class WorkstationContainer extends Container
         this.addSlot(new Slot(workstationTileEntity, 1, 207, 30)
         {
             @Override
-            public boolean isItemValid(ItemStack stack)
+            public boolean mayPlace(ItemStack stack)
             {
                 return stack.getItem() instanceof EngineItem;
             }
 
             @Override
-            public int getSlotStackLimit()
+            public int getMaxStackSize()
             {
                 return 1;
             }
@@ -59,13 +59,13 @@ public class WorkstationContainer extends Container
         this.addSlot(new Slot(workstationTileEntity, 2, 227, 30)
         {
             @Override
-            public boolean isItemValid(ItemStack stack)
+            public boolean mayPlace(ItemStack stack)
             {
                 return stack.getItem() instanceof WheelItem;
             }
 
             @Override
-            public int getSlotStackLimit()
+            public int getMaxStackSize()
             {
                 return 1;
             }
@@ -86,25 +86,25 @@ public class WorkstationContainer extends Container
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
         return true;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
         ItemStack stack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if(slot != null && slot.getHasStack())
+        if(slot != null && slot.hasItem())
         {
-            ItemStack slotStack = slot.getStack();
+            ItemStack slotStack = slot.getItem();
             stack = slotStack.copy();
 
             if(index < 3)
             {
-                if(!this.mergeItemStack(slotStack, 3, 36, false))
+                if(!this.moveItemStackTo(slotStack, 3, 36, false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -113,33 +113,33 @@ public class WorkstationContainer extends Container
             {
                 if(slotStack.getItem() instanceof DyeItem)
                 {
-                    if(!this.mergeItemStack(slotStack, 0, 1, false))
+                    if(!this.moveItemStackTo(slotStack, 0, 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(slotStack.getItem() instanceof EngineItem)
                 {
-                    if(!this.mergeItemStack(slotStack, 1, 2, false))
+                    if(!this.moveItemStackTo(slotStack, 1, 2, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(slotStack.getItem() instanceof WheelItem)
                 {
-                    if(!this.mergeItemStack(slotStack, 2, 3, false))
+                    if(!this.moveItemStackTo(slotStack, 2, 3, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(index < 31)
                 {
-                    if(!this.mergeItemStack(slotStack, 31, 39, false))
+                    if(!this.moveItemStackTo(slotStack, 31, 39, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index < 39 && !this.mergeItemStack(slotStack, 3, 31, false))
+                else if(index < 39 && !this.moveItemStackTo(slotStack, 3, 31, false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -147,11 +147,11 @@ public class WorkstationContainer extends Container
 
             if(slotStack.isEmpty())
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else
             {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if(slotStack.getCount() == stack.getCount())

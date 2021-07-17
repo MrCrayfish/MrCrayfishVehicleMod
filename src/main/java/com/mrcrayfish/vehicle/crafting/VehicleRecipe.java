@@ -3,7 +3,9 @@ package com.mrcrayfish.vehicle.crafting;
 import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.init.ModRecipeSerializers;
 import com.mrcrayfish.vehicle.tileentity.WorkstationTileEntity;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -44,19 +46,19 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
     }
 
     @Override
-    public ItemStack getCraftingResult(WorkstationTileEntity inv)
+    public ItemStack assemble(WorkstationTileEntity inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }
@@ -77,5 +79,25 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
     public IRecipeType<?> getType()
     {
         return RecipeType.CRAFTING;
+    }
+
+    public boolean hasMaterials(PlayerEntity player)
+    {
+        for(ItemStack stack : this.getMaterials())
+        {
+            if(!InventoryUtil.hasItemStack(player, stack))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void consumeMaterials(PlayerEntity player)
+    {
+        for(ItemStack stack : this.getMaterials())
+        {
+            InventoryUtil.removeItemStack(player, stack);
+        }
     }
 }

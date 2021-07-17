@@ -1,0 +1,71 @@
+{
+    "general": {
+        "engineType": "vehicle:large_motor",
+        "canBeColored": true,
+        "canChangeWheels": true
+    },
+    "axles": {
+        "offsetToGround": -3.0,
+        "lengthToFront": 14.0,
+        "lengthToRear": -14.5
+    },
+    "display": {
+        "held": [ 0.0, 3.5, 0.0 ],
+        "gui": {
+            "scale": 1.25
+        }
+    },
+    "position": {
+        "engine": {
+            "translate": [ 0.0, 6.0, 7.5 ],
+            "scale": 0.85
+        },
+        "fuelPort": {
+            "translate": [ -6.0, 9.5, -0.5 ],
+            "rotation": [ 0.0, -90.0, 0.0 ],
+            "scale": 0.3
+        },
+        "keyPort": {
+            "translate": [ -2.75, 12.0, -1.75 ],
+            "rotation": [ -45.0, 0.0, 0.0 ],
+            "scale": 0.5
+        },
+        "towBar": [ 0.0, 0.0, -24.5 ]
+    },
+    "wheels": [
+        {
+            "side": "left",
+            "position": "front",
+            "offset": [ 8.0, 0.0, 14.0 ],
+            "scale": [ 0.938, 1.4, 1.4 ],
+            "particles": true
+        },
+        {
+            "side": "right",
+            "position": "front",
+            "offset": [ 8.0, 0.0, 14.0 ],
+            "scale": [ 0.938, 1.4, 1.4 ],
+            "particles": true
+        },
+        {
+            "side": "left",
+            "position": "rear",
+            "offset": [ 8.0, 5.5, -14.5 ],
+            "scale": [ 1.875, 2.8, 2.8 ],
+            "particles": true
+        },
+        {
+            "side": "right",
+            "position": "rear",
+            "offset": [ 8.0, 5.5, -14.5 ],
+            "scale": [ 1.875, 2.8, 2.8 ],
+            "particles": true
+        }
+    ],
+    "seats": [
+        {
+            "position": [ 0.0, 9.0, -14.0 ],
+            "driver": true
+        }
+    ]
+}

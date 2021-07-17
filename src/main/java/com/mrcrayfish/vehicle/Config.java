@@ -3,6 +3,9 @@ package com.mrcrayfish.vehicle;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Author: MrCrayfish
  */
@@ -79,6 +82,8 @@ public class Config
         public final ForgeConfigSpec.IntValue fuelDrumCapacity;
         public final ForgeConfigSpec.IntValue industrialFuelDrumCapacity;
         public final ForgeConfigSpec.DoubleValue fuelConsumptionFactor;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> disabledVehicles;
+        public final ForgeConfigSpec.ConfigValue<List<? extends String>> validFuels;
 
         Server(ForgeConfigSpec.Builder builder)
         {
@@ -89,6 +94,8 @@ public class Config
                 this.vehicleDamage = builder.comment("If true, vehicles will take damage.").translation(Reference.MOD_ID + ".config.server.vehicle_damage").define("vehicleDamage", true);
                 this.pickUpVehicles = builder.comment("Allows players to pick up vehicles by crouching and right clicking").translation(Reference.MOD_ID + ".config.server.pick_up_vehicles").define("pickUpVehicles", true);
                 this.fuelConsumptionFactor = builder.comment("Change the amount of fuel vehicles consumes by multiplying the consumption rate by this factor").translation(Reference.MOD_ID + ".config.server.fuel_consumption_modifier").defineInRange("fuelConsumptionModifier", 1.0, 0.0, Double.MAX_VALUE);
+                this.disabledVehicles = builder.comment("A list of vehicles that are prevented from being crafted in the workstation").defineList("disabledVehicles", Collections.emptyList(), o -> true);
+                this.validFuels = builder.comment("A list of fluids that can be used as fuel for vehicles").defineList("validFuels", Collections.singletonList("vehicle:fuelium"), o -> true);
                 builder.pop();
 
                 builder.comment("Configuration options for trailers").push("trailer");
@@ -100,7 +107,7 @@ public class Config
                 builder.comment("Configuration options for blocks").push("blocks");
                 {
                     builder.comment("Configuration options for Gas Pumps").push("gas_pump");
-                    this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks").translation(Reference.MOD_ID + ".config.server.max_hose_distance").defineInRange("maxHoseDistance", 6.0, 1.0, 20.0);
+                    this.maxHoseDistance = builder.comment("The maximum distance before the hose from the gas pump or fluid hose breaks").translation(Reference.MOD_ID + ".config.server.max_hose_distance").defineInRange("maxHoseDistance", 10.0, 1.0, 100.0);
                     this.gasPumpCapacity = builder.comment("The fluid capacity of the gas pump in millibuckets").translation(Reference.MOD_ID + ".config.server.gas_pump_capacity").defineInRange("gasPumpCapacity", 50000, 1, Integer.MAX_VALUE);
                     builder.pop();
 

@@ -17,10 +17,10 @@ import javax.annotation.Nullable;
 public class FluidMixerRecipeSerializer extends net.minecraftforge.registries.ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<FluidMixerRecipe>
 {
     @Override
-    public FluidMixerRecipe read(ResourceLocation recipeId, JsonObject json)
+    public FluidMixerRecipe fromJson(ResourceLocation recipeId, JsonObject json)
     {
-        String s = JSONUtils.getString(json, "group", "");
-        JsonArray input = JSONUtils.getJsonArray(json, "input");
+        String s = JSONUtils.getAsString(json, "group", "");
+        JsonArray input = JSONUtils.getAsJsonArray(json, "input");
         if(input.size() != 2)
         {
             throw new com.google.gson.JsonSyntaxException("Invalid input, must only have two objects");
@@ -34,23 +34,23 @@ public class FluidMixerRecipeSerializer extends net.minecraftforge.registries.Fo
 
     @Nullable
     @Override
-    public FluidMixerRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+    public FluidMixerRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer)
     {
         FluidEntry inputOne = FluidEntry.read(buffer);
         FluidEntry inputTwo = FluidEntry.read(buffer);
-        ItemStack ingredient = buffer.readItemStack();
+        ItemStack ingredient = buffer.readItem();
         FluidEntry result = FluidEntry.read(buffer);
         return new FluidMixerRecipe(recipeId, inputOne, inputTwo, ingredient, result);
     }
 
     @Override
-    public void write(PacketBuffer buffer, FluidMixerRecipe recipe)
+    public void toNetwork(PacketBuffer buffer, FluidMixerRecipe recipe)
     {
         for(FluidEntry entry : recipe.getInputs())
         {
             entry.write(buffer);
         }
-        buffer.writeItemStack(recipe.getIngredient());
+        buffer.writeItem(recipe.getIngredient());
         recipe.getResult().write(buffer);
     }
 }

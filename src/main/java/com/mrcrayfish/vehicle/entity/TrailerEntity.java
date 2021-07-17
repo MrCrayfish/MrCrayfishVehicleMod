@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  */
 public abstract class TrailerEntity extends VehicleEntity
 {
-    public static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.createKey(TrailerEntity.class, DataSerializers.VARINT);
+    public static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.defineId(TrailerEntity.class, DataSerializers.INT);
 
     private Entity pullingEntity;
 
@@ -32,18 +32,18 @@ public abstract class TrailerEntity extends VehicleEntity
     public TrailerEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        this.stepHeight = 1.0F;
+        this.maxUpStep = 1.0F;
     }
 
     @Override
-    protected void registerData()
+    protected void defineSynchedData()
     {
-        super.registerData();
-        this.dataManager.register(PULLING_ENTITY, -1);
+        super.defineSynchedData();
+        this.entityData.define(PULLING_ENTITY, -1);
     }
 
     @Override
-    public boolean canBeCollidedWith()
+    public boolean isPickable()
     {
         return true;
     }
@@ -53,15 +53,15 @@ public abstract class TrailerEntity extends VehicleEntity
     {
         this.prevWheelRotation = this.wheelRotation;
 
-        Vector3d motion = this.getMotion();
-        this.setMotion(motion.getX(), motion.getY() - 0.08, motion.getZ());
+        Vector3d motion = this.getDeltaMovement();
+        this.setDeltaMovement(motion.x(), motion.y() - 0.08, motion.z());
 
-        if(this.world.isRemote)
+        if(this.level.isClientSide)
         {
-            int entityId = this.dataManager.get(PULLING_ENTITY);
+            int entityId = this.entityData.get(PULLING_ENTITY);
             if(entityId != -1)
             {
-                Entity entity = this.world.getEntityByID(this.dataManager.get(PULLING_ENTITY));
+                Entity entity = this.level.getEntity(this.entityData.get(PULLING_ENTITY));
                 if(entity instanceof PlayerEntity || (entity instanceof VehicleEntity && ((VehicleEntity) entity).canTowTrailer()))
                 {
                     this.pullingEntity = entity;
@@ -77,12 +77,12 @@ public abstract class TrailerEntity extends VehicleEntity
             }
         }
 
-        if(this.pullingEntity != null && !this.world.isRemote)
+        if(this.pullingEntity != null && !this.level.isClientSide)
         {
             double threshold = Config.SERVER.trailerDetachThreshold.get() + Math.abs(this.getHitchOffset() / 16.0) * this.getProperties().getBodyPosition().getScale();
-            if(this.pullingEntity.getDistance(this) > threshold)
+            if(this.pullingEntity.distanceTo(this) > threshold)
             {
-                this.world.playSound(null, this.pullingEntity.getPosition(), SoundEvents.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                this.level.playSound(null, this.pullingEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 this.pullingEntity = null;
                 return;
             }
@@ -97,21 +97,21 @@ public abstract class TrailerEntity extends VehicleEntity
             }
             this.updatePullingMotion();
         }
-        else if(!world.isRemote)
+        else if(!level.isClientSide)
         {
-            motion = this.getMotion();
-            this.move(MoverType.SELF, new Vector3d(motion.getX() * 0.75, motion.getY(), motion.getZ() * 0.75));
+            motion = this.getDeltaMovement();
+            this.move(MoverType.SELF, new Vector3d(motion.x() * 0.75, motion.y(), motion.z() * 0.75));
         }
 
-        this.doBlockCollisions();
+        this.checkInsideBlocks();
 
-        float speed = (float) (Math.sqrt(Math.pow(this.getPosX() - this.prevPosX, 2) + Math.pow(this.getPosY() - this.prevPosY, 2) + Math.pow(this.getPosZ() - this.prevPosZ, 2)) * 20);
+        float speed = (float) (Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getY() - this.yo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20);
         wheelRotation -= 90F * (speed / 10F);
     }
 
     private void updatePullingMotion()
     {
-        Vector3d towBar = pullingEntity.getPositionVec();
+        Vector3d towBar = pullingEntity.position();
         if(pullingEntity instanceof VehicleEntity)
         {
             VehicleEntity vehicle = (VehicleEntity) pullingEntity;
@@ -120,49 +120,49 @@ public abstract class TrailerEntity extends VehicleEntity
             if(vehicle instanceof LandVehicleEntity)
             {
                 LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
-                towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw + landVehicle.additionalYaw)));
+                towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot + landVehicle.additionalYaw)));
             }
             else
             {
-                towBar = towBar.add(towBarVec.rotateYaw((float) Math.toRadians(-vehicle.rotationYaw)));
+                towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
             }
         }
 
-        this.rotationYaw = (float) Math.toDegrees(Math.atan2(towBar.z - this.getPosZ(), towBar.x - this.getPosX()) - Math.toRadians(90F));
-        double deltaRot = (double) (this.prevRotationYaw - this.rotationYaw);
+        this.yRot = (float) Math.toDegrees(Math.atan2(towBar.z - this.getZ(), towBar.x - this.getX()) - Math.toRadians(90F));
+        double deltaRot = (double) (this.yRotO - this.yRot);
         if (deltaRot < -180.0D)
         {
-            this.prevRotationYaw += 360.0F;
+            this.yRotO += 360.0F;
         }
         else if (deltaRot >= 180.0D)
         {
-            this.prevRotationYaw -= 360.0F;
+            this.yRotO -= 360.0F;
         }
 
-        Vector3d vec = new Vector3d(0, 0, this.getHitchOffset() * 0.0625).rotateYaw((float) Math.toRadians(-this.rotationYaw)).add(towBar);
-        Vector3d motion = this.getMotion();
-        this.setMotion(vec.x - this.getPosX(), motion.getY(), vec.z - this.getPosZ());
-        this.move(MoverType.SELF, this.getMotion());
+        Vector3d vec = new Vector3d(0, 0, this.getHitchOffset() * 0.0625).yRot((float) Math.toRadians(-this.yRot)).add(towBar);
+        Vector3d motion = this.getDeltaMovement();
+        this.setDeltaMovement(vec.x - this.getX(), motion.y(), vec.z - this.getZ());
+        this.move(MoverType.SELF, this.getDeltaMovement());
     }
 
     @Override
-    public double getMountedYOffset()
+    public double getPassengersRidingOffset()
     {
         return 0.0;
     }
 
     public boolean setPullingEntity(Entity pullingEntity)
     {
-        if(pullingEntity instanceof PlayerEntity || (pullingEntity instanceof VehicleEntity && pullingEntity.getRidingEntity() == null && ((VehicleEntity) pullingEntity).canTowTrailer()))
+        if(pullingEntity instanceof PlayerEntity || (pullingEntity instanceof VehicleEntity && pullingEntity.getVehicle() == null && ((VehicleEntity) pullingEntity).canTowTrailer()))
         {
             this.pullingEntity = pullingEntity;
-            this.dataManager.set(PULLING_ENTITY, pullingEntity.getEntityId());
+            this.entityData.set(PULLING_ENTITY, pullingEntity.getId());
             return true;
         }
         else
         {
             this.pullingEntity = null;
-            this.dataManager.set(PULLING_ENTITY, -1);
+            this.entityData.set(PULLING_ENTITY, -1);
             return false;
         }
     }
@@ -175,7 +175,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void setPositionAndRotationDirect(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
+    public void lerpTo(double x, double y, double z, float yaw, float pitch, int posRotationIncrements, boolean teleport)
     {
         this.lerpX = x;
         this.lerpY = y;
@@ -194,7 +194,7 @@ public abstract class TrailerEntity extends VehicleEntity
     public abstract double getHitchOffset();
 
     @Override
-    protected boolean canBeRidden(Entity entityIn)
+    protected boolean canRide(Entity entityIn)
     {
         return false;
     }

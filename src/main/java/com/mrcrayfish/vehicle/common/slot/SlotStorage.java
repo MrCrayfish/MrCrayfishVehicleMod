@@ -18,7 +18,7 @@ public class SlotStorage extends Slot
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack)
+    public boolean mayPlace(ItemStack stack)
     {
         return storageInventory.isStorageItem(stack);
     }

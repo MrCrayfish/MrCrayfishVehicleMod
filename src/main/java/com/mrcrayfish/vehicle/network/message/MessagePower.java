@@ -39,7 +39,7 @@ public class MessagePower implements IMessage<MessagePower>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getRidingEntity();
+				Entity riding = player.getVehicle();
 				if(riding instanceof PoweredVehicleEntity)
 				{
 					((PoweredVehicleEntity) riding).setPower(message.power);

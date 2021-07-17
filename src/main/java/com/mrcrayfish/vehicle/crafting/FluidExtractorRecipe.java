@@ -39,24 +39,24 @@ public class FluidExtractorRecipe implements IRecipe<FluidExtractorTileEntity>
     @Override
     public boolean matches(FluidExtractorTileEntity fluidExtractor, World worldIn)
     {
-        ItemStack source = fluidExtractor.getStackInSlot(FluidExtractorTileEntity.SLOT_FLUID_SOURCE);
+        ItemStack source = fluidExtractor.getItem(FluidExtractorTileEntity.SLOT_FLUID_SOURCE);
         return InventoryUtil.areItemStacksEqualIgnoreCount(source, this.ingredient);
     }
 
     @Override
-    public ItemStack getCraftingResult(FluidExtractorTileEntity inv)
+    public ItemStack assemble(FluidExtractorTileEntity inv)
     {
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return true;
     }
 
     @Override
-    public ItemStack getRecipeOutput()
+    public ItemStack getResultItem()
     {
         return ItemStack.EMPTY;
     }

@@ -1,0 +1,15 @@
+{
+    "display": {
+        "held": [ 4.0, 3.5, 0.0 ],
+        "trailer": [ 0.0, 0.0, -0.438 ],
+        "gui": {
+            "translate": [ 0.0, 0.0, -0.25 ],
+            "scale": 1.5
+        }
+    },
+    "seats": [
+        {
+            "driver": true
+        }
+    ]
+}

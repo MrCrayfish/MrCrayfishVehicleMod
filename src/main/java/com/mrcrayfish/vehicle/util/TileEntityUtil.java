@@ -26,7 +26,7 @@ public class TileEntityUtil
         SUpdateTileEntityPacket packet = tileEntity.getUpdatePacket();
         if(packet != null)
         {
-            sendUpdatePacket(tileEntity.getWorld(), tileEntity.getPos(), packet);
+            sendUpdatePacket(tileEntity.getLevel(), tileEntity.getBlockPos(), packet);
         }
     }
 
@@ -37,8 +37,8 @@ public class TileEntityUtil
      */
     public static void sendUpdatePacket(TileEntity tileEntity, CompoundNBT compound)
     {
-        SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket(tileEntity.getPos(), 0, compound);
-        sendUpdatePacket(tileEntity.getWorld(), tileEntity.getPos(), packet);
+        SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket(tileEntity.getBlockPos(), 0, compound);
+        sendUpdatePacket(tileEntity.getLevel(), tileEntity.getBlockPos(), packet);
     }
 
     /**
@@ -65,8 +65,8 @@ public class TileEntityUtil
      */
     public static void sendUpdatePacket(TileEntity tileEntity, CompoundNBT compound, ServerPlayerEntity player)
     {
-        SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket(tileEntity.getPos(), 0, compound);
-        player.connection.sendPacket(packet);
+        SUpdateTileEntityPacket packet = new SUpdateTileEntityPacket(tileEntity.getBlockPos(), 0, compound);
+        player.connection.send(packet);
     }
 
     private static void sendUpdatePacket(World world, BlockPos pos, SUpdateTileEntityPacket packet)
@@ -74,8 +74,8 @@ public class TileEntityUtil
         if(world instanceof ServerWorld)
         {
             ServerWorld server = (ServerWorld) world;
-            Stream<ServerPlayerEntity> players = server.getChunkProvider().chunkManager.getTrackingPlayers(new ChunkPos(pos), false);
-            players.forEach(player -> player.connection.sendPacket(packet));
+            Stream<ServerPlayerEntity> players = server.getChunkSource().chunkMap.getPlayers(new ChunkPos(pos), false);
+            players.forEach(player -> player.connection.send(packet));
         }
     }
 }

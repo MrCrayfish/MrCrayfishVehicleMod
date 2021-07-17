@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.network.ClientPlayHandler;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
@@ -22,7 +22,7 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     {
         this.entityId = entityId;
         CompoundNBT tag = new CompoundNBT();
-        tag.put("Inventory", storageInventory.write());
+        tag.put("Inventory", storageInventory.createTag());
         this.compound = tag;
     }
 
@@ -36,19 +36,28 @@ public class MessageSyncInventory implements IMessage<MessageSyncInventory>
     public void encode(MessageSyncInventory message, PacketBuffer buffer)
     {
         buffer.writeInt(message.entityId);
-        buffer.writeCompoundTag(message.compound);
+        buffer.writeNbt(message.compound);
     }
 
     @Override
     public MessageSyncInventory decode(PacketBuffer buffer)
     {
-        return new MessageSyncInventory(buffer.readInt(), buffer.readCompoundTag());
+        return new MessageSyncInventory(buffer.readInt(), buffer.readNbt());
     }
 
     @Override
     public void handle(MessageSyncInventory message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> VehicleMod.PROXY.syncStorageInventory(message.entityId, message.compound));
-        supplier.get().setPacketHandled(true);
+        IMessage.enqueueTask(supplier, () -> ClientPlayHandler.handleSyncInventory(message));
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
+    }
+
+    public CompoundNBT getCompound()
+    {
+        return this.compound;
     }
 }

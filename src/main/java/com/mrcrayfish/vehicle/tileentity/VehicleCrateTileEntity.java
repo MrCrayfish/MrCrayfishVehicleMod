@@ -1,17 +1,23 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.block.BlockVehicleCrate;
+import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.WheelType;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
+import com.mrcrayfish.vehicle.item.EngineItem;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
@@ -38,9 +44,8 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
 
     private ResourceLocation entityId;
     private int color = VehicleEntity.DYE_TO_COLOR[0];
-    private EngineTier engineTier = null;
-    private WheelType wheelType = null;
-    private int wheelColor = -1;
+    private ItemStack engineStack = ItemStack.EMPTY;
+    private ItemStack wheelStack = ItemStack.EMPTY;
     private boolean opened = false;
     private int timer;
     private UUID opener;
@@ -56,7 +61,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
     public void setEntityId(ResourceLocation entityId)
     {
         this.entityId = entityId;
-        this.markDirty();
+        this.setChanged();
     }
 
     public ResourceLocation getEntityId()
@@ -96,21 +101,21 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         if(this.opened)
         {
             this.timer += 5;
-            if(this.world.isRemote)
+            if(this.level != null && this.level.isClientSide())
             {
                 if(this.entityId != null && this.entity == null)
                 {
                     EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(this.entityId);
                     if(entityType != null)
                     {
-                        this.entity = entityType.create(this.world);
+                        this.entity = entityType.create(this.level);
                         if(this.entity != null)
                         {
-                            VehicleMod.PROXY.playSound(SoundEvents.ENTITY_ITEM_BREAK, this.pos, 1.0F, 0.5F);
-                            List<EntityDataManager.DataEntry<?>> entryList = this.entity.getDataManager().getAll();
+                            VehicleHelper.playSound(SoundEvents.ITEM_BREAK, this.worldPosition, 1.0F, 0.5F);
+                            List<EntityDataManager.DataEntry<?>> entryList = this.entity.getEntityData().getAll();
                             if(entryList != null)
                             {
-                                entryList.forEach(dataEntry -> this.entity.notifyDataManagerChange(dataEntry.getKey()));
+                                entryList.forEach(dataEntry -> this.entity.onSyncedDataUpdated(dataEntry.getAccessor()));
                             }
                             if(this.entity instanceof VehicleEntity)
                             {
@@ -119,23 +124,13 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                             if(this.entity instanceof PoweredVehicleEntity)
                             {
                                 PoweredVehicleEntity entityPoweredVehicle = (PoweredVehicleEntity) this.entity;
-                                if(this.engineTier != null)
+                                if(this.engineStack != null)
                                 {
-                                    entityPoweredVehicle.setEngine(true);
-                                    entityPoweredVehicle.setEngineTier(this.engineTier);
+                                    entityPoweredVehicle.setEngineStack(this.engineStack);
                                 }
-                                if(this.wheelType != null)
+                                if(!this.wheelStack.isEmpty())
                                 {
-                                    entityPoweredVehicle.setWheels(true);
-                                    entityPoweredVehicle.setWheelType(this.wheelType);
-                                    if(this.wheelColor != -1)
-                                    {
-                                        entityPoweredVehicle.setWheelColor(this.wheelColor);
-                                    }
-                                }
-                                else
-                                {
-                                    entityPoweredVehicle.setWheels(false);
+                                    entityPoweredVehicle.setWheelStack(this.wheelStack);
                                 }
                             }
                         }
@@ -152,22 +147,22 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                 if(this.timer == 90 || this.timer == 110 || this.timer == 130 || this.timer == 150)
                 {
                     float pitch = (float) (0.9F + 0.2F * RAND.nextDouble());
-                    VehicleMod.PROXY.playSound(ModSounds.VEHICLE_CRATE_PANEL_LAND.get(), this.pos, 1.0F, pitch);
+                    VehicleHelper.playSound(ModSounds.BLOCK_VEHICLE_CRATE_PANEL_LAND.get(), this.worldPosition, 1.0F, pitch);
                 }
                 if(this.timer == 150)
                 {
-                    VehicleMod.PROXY.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE, this.pos, 1.0F, 1.0F);
-                    this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, false, this.pos.getX() + 0.5, this.pos.getY() + 0.5, this.pos.getZ() + 0.5, 0, 0, 0);
+                    VehicleHelper.playSound(SoundEvents.GENERIC_EXPLODE, this.worldPosition, 1.0F, 1.0F);
+                    this.level.addParticle(ParticleTypes.EXPLOSION_EMITTER, false, this.worldPosition.getX() + 0.5, this.worldPosition.getY() + 0.5, this.worldPosition.getZ() + 0.5, 0, 0, 0);
                 }
             }
-            if(!this.world.isRemote && this.timer > 250)
+            if(!this.level.isClientSide && this.timer > 250)
             {
-                BlockState state = this.world.getBlockState(this.pos);
-                Direction facing = state.get(BlockVehicleCrate.DIRECTION);
+                BlockState state = this.level.getBlockState(this.worldPosition);
+                Direction facing = state.getValue(VehicleCrateBlock.DIRECTION);
                 EntityType<?> entityType = ForgeRegistries.ENTITIES.getValue(this.entityId);
                 if(entityType != null)
                 {
-                    Entity entity = entityType.create(this.world);
+                    Entity entity = entityType.create(this.level);
                     if(entity != null)
                     {
                         if(entity instanceof VehicleEntity)
@@ -178,34 +173,29 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
                         {
                             PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
                             poweredVehicle.setOwner(this.opener);
-                            if(this.engineTier != null)
+                            if(!this.engineStack.isEmpty())
                             {
-                                poweredVehicle.setEngine(true);
-                                poweredVehicle.setEngineTier(this.engineTier);
+                                poweredVehicle.setEngineStack(this.engineStack);
                             }
-                            if(this.wheelType != null)
+                            if(!this.wheelStack.isEmpty())
                             {
-                                poweredVehicle.setWheelType(this.wheelType);
-                                if(this.wheelColor != -1)
-                                {
-                                    poweredVehicle.setWheelColor(this.wheelColor);
-                                }
+                                poweredVehicle.setWheelStack(this.wheelStack);
                             }
                         }
-                        entity.setPositionAndRotation(this.pos.getX() + 0.5, this.pos.getY(), this.pos.getZ() + 0.5, facing.getHorizontalIndex() * 90F + 180F, 0F);
-                        entity.setRotationYawHead(facing.getHorizontalIndex() * 90F + 180F);
-                        this.world.addEntity(entity);
+                        entity.absMoveTo(this.worldPosition.getX() + 0.5, this.worldPosition.getY(), this.worldPosition.getZ() + 0.5, facing.get2DDataValue() * 90F + 180F, 0F);
+                        entity.setYHeadRot(facing.get2DDataValue() * 90F + 180F);
+                        this.level.addFreshEntity(entity);
                     }
-                    this.world.setBlockState(this.pos, Blocks.AIR.getDefaultState());
+                    this.level.setBlockAndUpdate(this.worldPosition, Blocks.AIR.defaultBlockState());
                 }
             }
         }
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT compound)
+    public void load(BlockState state, CompoundNBT compound)
     {
-        super.read(state, compound);
+        super.load(state, compound);
         if(compound.contains("Vehicle", Constants.NBT.TAG_STRING))
         {
             this.entityId = new ResourceLocation(compound.getString("Vehicle"));
@@ -214,21 +204,27 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         {
             this.color = compound.getInt("Color");
         }
-        if(compound.contains("EngineTier", Constants.NBT.TAG_INT))
+        if(compound.contains("EngineStack", Constants.NBT.TAG_COMPOUND))
         {
-            this.engineTier = EngineTier.getType(compound.getInt("EngineTier"));
+            this.engineStack = ItemStack.of(compound.getCompound("EngineStack"));
         }
-        if(compound.contains("WheelType", Constants.NBT.TAG_INT))
+        else if(compound.getBoolean("Creative"))
         {
-            this.wheelType = WheelType.getType(compound.getInt("WheelType"));
+            VehicleProperties properties = VehicleProperties.getProperties(this.entityId);
+            EngineItem engineItem = VehicleRegistry.getEngineItem(properties.getEngineType(), EngineTier.IRON);
+            this.engineStack = engineItem != null ? new ItemStack(engineItem) : ItemStack.EMPTY;
         }
-        if(compound.contains("WheelColor", Constants.NBT.TAG_INT))
+        if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
         {
-            this.wheelColor = compound.getInt("WheelColor");
+            this.wheelStack = ItemStack.of(compound.getCompound("WheelStack"));
+        }
+        else
+        {
+            this.wheelStack = new ItemStack(ModItems.STANDARD_WHEEL.get());
         }
         if(compound.contains("Opener", Constants.NBT.TAG_STRING))
         {
-            this.opener = compound.getUniqueId("Opener");
+            this.opener = compound.getUUID("Opener");
         }
         if(compound.contains("Opened", Constants.NBT.TAG_BYTE))
         {
@@ -237,7 +233,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
         if(this.entityId != null)
         {
@@ -245,23 +241,19 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         }
         if(this.opener != null)
         {
-            compound.putUniqueId("Opener", this.opener);
+            compound.putUUID("Opener", this.opener);
         }
-        if(this.engineTier != null)
+        if(!this.engineStack.isEmpty())
         {
-            compound.putInt("EngineTier", this.engineTier.ordinal());
+            CommonUtils.writeItemStackToTag(compound, "EngineStack", this.engineStack);
         }
-        if(this.wheelType != null)
+        if(!this.wheelStack.isEmpty())
         {
-            compound.putInt("WheelType", this.wheelType.ordinal());
-            if(this.wheelColor != -1)
-            {
-                compound.putInt("WheelColor", this.wheelColor);
-            }
+            CommonUtils.writeItemStackToTag(compound, "WheelStack", this.wheelStack);
         }
         compound.putInt("Color", this.color);
         compound.putBoolean("Opened", this.opened);
-        return super.write(compound);
+        return super.save(compound);
     }
 
     @Override
@@ -272,7 +264,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public double getMaxRenderDistanceSquared()
+    public double getViewDistance()
     {
         return 65536.0D;
     }

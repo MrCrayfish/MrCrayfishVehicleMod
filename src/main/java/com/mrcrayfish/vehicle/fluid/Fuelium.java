@@ -20,11 +20,11 @@ public abstract class Fuelium extends ForgeFlowingFluid
 {
     public Fuelium()
     {
-        super(new Properties(() -> ModFluids.FUELIUM.get(), () -> ModFluids.FLOWING_FUELIUM.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).sound(SoundEvents.ITEM_BUCKET_FILL, SoundEvents.ITEM_BUCKET_EMPTY).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM.get()));
+        super(new Properties(() -> ModFluids.FUELIUM.get(), () -> ModFluids.FLOWING_FUELIUM.get(), FluidAttributes.builder(new ResourceLocation(Reference.MOD_ID, "block/fuelium_still"), new ResourceLocation(Reference.MOD_ID, "block/fuelium_flowing")).sound(SoundEvents.BUCKET_FILL, SoundEvents.BUCKET_EMPTY).density(900).viscosity(900)).block(() -> ModBlocks.FUELIUM.get()));
     }
 
     @Override
-    public Item getFilledBucket()
+    public Item getBucket()
     {
         return ModItems.FUELIUM_BUCKET.get();
     }
@@ -38,7 +38,7 @@ public abstract class Fuelium extends ForgeFlowingFluid
         }
 
         @Override
-        public int getLevel(FluidState state)
+        public int getAmount(FluidState state)
         {
             return 8;
         }
@@ -47,16 +47,16 @@ public abstract class Fuelium extends ForgeFlowingFluid
     public static class Flowing extends Fuelium
     {
         @Override
-        protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
+        protected void createFluidStateDefinition(StateContainer.Builder<Fluid, FluidState> builder)
         {
-            super.fillStateContainer(builder);
-            builder.add(LEVEL_1_8);
+            super.createFluidStateDefinition(builder);
+            builder.add(LEVEL);
         }
 
         @Override
-        public int getLevel(FluidState state)
+        public int getAmount(FluidState state)
         {
-            return state.get(LEVEL_1_8);
+            return state.getValue(LEVEL);
         }
 
         @Override

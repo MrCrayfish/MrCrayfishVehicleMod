@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -29,17 +28,17 @@ public class ShoppingCartEntity extends LandVehicleEntity
     {
         if(this.pusher != null)
         {
-            this.prevRotationYaw = this.rotationYaw;
-            this.prevPosX = this.getPosX();
-            this.prevPosY = this.getPosY();
-            this.prevPosZ = this.getPosZ();
-            float x = MathHelper.sin(-pusher.rotationYaw * 0.017453292F) * 1.3F;
-            float z = MathHelper.cos(-pusher.rotationYaw * 0.017453292F) * 1.3F;
-            this.setPosition(pusher.getPosX() + x, pusher.getPosY(), pusher.getPosZ() + z);
-            this.lastTickPosX = this.getPosX();
-            this.lastTickPosY = this.getPosY();
-            this.lastTickPosZ = this.getPosZ();
-            this.rotationYaw = pusher.rotationYaw;
+            this.yRotO = this.yRot;
+            this.xo = this.getX();
+            this.yo = this.getY();
+            this.zo = this.getZ();
+            float x = MathHelper.sin(-pusher.yRot * 0.017453292F) * 1.3F;
+            float z = MathHelper.cos(-pusher.yRot * 0.017453292F) * 1.3F;
+            this.setPos(pusher.getX() + x, pusher.getY(), pusher.getZ() + z);
+            this.xOld = this.getX();
+            this.yOld = this.getY();
+            this.zOld = this.getZ();
+            this.yRot = pusher.yRot;
         }
         else
         {
@@ -48,21 +47,9 @@ public class ShoppingCartEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
+    public SoundEvent getEngineSound()
     {
         return null;
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
-    {
-        return null;
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.NONE;
     }
 
     @Override

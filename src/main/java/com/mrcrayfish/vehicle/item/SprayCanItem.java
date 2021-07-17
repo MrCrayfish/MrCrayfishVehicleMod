@@ -1,9 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -19,7 +17,6 @@ import net.minecraftforge.common.util.Constants;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -34,9 +31,9 @@ public class SprayCanItem extends Item implements IDyeable
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items)
     {
-        if (this.isInGroup(group))
+        if (this.allowdedIn(group))
         {
             ItemStack stack = new ItemStack(this);
             this.refill(stack);
@@ -45,23 +42,23 @@ public class SprayCanItem extends Item implements IDyeable
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
+    public void appendHoverText(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag flag)
     {
         if(Screen.hasShiftDown())
         {
-            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getTranslationKey() + ".info"), 150));
+            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info"), 150));
         }
         else
         {
             if (this.hasColor(stack))
             {
-                tooltip.add(new TranslationTextComponent("item.color", new StringTextComponent(String.format("#%06X", this.getColor(stack))).mergeStyle(TextFormatting.DARK_GRAY)));
+                tooltip.add(new TranslationTextComponent("item.color", new StringTextComponent(String.format("#%06X", this.getColor(stack))).withStyle(TextFormatting.DARK_GRAY)));
             }
             else
             {
-                tooltip.add(new TranslationTextComponent(this.getTranslationKey() + ".empty"));
+                tooltip.add(new TranslationTextComponent(this.getDescriptionId() + ".empty"));
             }
-            tooltip.add(new TranslationTextComponent("vehicle.info_help").mergeStyle(TextFormatting.YELLOW));
+            tooltip.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }
 

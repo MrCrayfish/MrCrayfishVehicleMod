@@ -1,12 +1,13 @@
 modLoader="javafml"
 loaderVersion="[34,)"
 license="GNU General Public License 3.0"
+issueTrackerURL="https://github.com/MrCrayfish/MrCrayfishVehicleMod/issues"
 
 [[mods]]
 modId="vehicle"
 version="0.45.2"
 displayName="MrCrayfish's Vehicle Mod"
-updateJSONURL="https://raw.githubusercontent.com/MrCrayfish/ModUpdates/master/vehicle/update.json"
+updateJSONURL="https://mrcrayfish.com/modupdatejson?id=vehicle"
 displayURL="https://mrcrayfish.com/mods?id=vehicle"
 logoFile="vehicle_mod.png"
 credits="Phylogeny https://github.com/Phylogeny"

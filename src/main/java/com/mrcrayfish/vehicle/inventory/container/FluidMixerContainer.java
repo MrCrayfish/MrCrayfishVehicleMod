@@ -45,7 +45,7 @@ public class FluidMixerContainer extends Container
             this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 156));
         }
 
-        this.trackIntArray(fluidExtractor.getFluidMixerData());
+        this.addDataSlots(fluidExtractor.getFluidMixerData());
     }
 
     public FluidMixerTileEntity getFluidExtractor()
@@ -54,53 +54,53 @@ public class FluidMixerContainer extends Container
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
         return true;
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index)
     {
         ItemStack stack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
+        Slot slot = this.slots.get(index);
 
-        if(slot != null && slot.getHasStack())
+        if(slot != null && slot.hasItem())
         {
-            ItemStack slotStack = slot.getStack();
+            ItemStack slotStack = slot.getItem();
             stack = slotStack.copy();
 
             if(index == 0 || index == 1)
             {
-                if(!this.mergeItemStack(slotStack, 2, 38, true))
+                if(!this.moveItemStackTo(slotStack, 2, 38, true))
                 {
                     return ItemStack.EMPTY;
                 }
             }
             else
             {
-                if(this.fluidExtractor.isItemValidForSlot(1, slotStack))
+                if(this.fluidExtractor.canPlaceItem(1, slotStack))
                 {
-                    if(!this.mergeItemStack(slotStack, 1, 2, false))
+                    if(!this.moveItemStackTo(slotStack, 1, 2, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(ForgeHooks.getBurnTime(slotStack) > 0)
                 {
-                    if(!this.mergeItemStack(slotStack, 0, 1, false))
+                    if(!this.moveItemStackTo(slotStack, 0, 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
                 else if(index < 29)
                 {
-                    if(!this.mergeItemStack(slotStack, 29, 38, false))
+                    if(!this.moveItemStackTo(slotStack, 29, 38, false))
                     {
                         return ItemStack.EMPTY;
                     }
                 }
-                else if(index < 38 && !this.mergeItemStack(slotStack, 2, 29, false))
+                else if(index < 38 && !this.moveItemStackTo(slotStack, 2, 29, false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -108,11 +108,11 @@ public class FluidMixerContainer extends Container
 
             if(slotStack.isEmpty())
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
             else
             {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if(slotStack.getCount() == stack.getCount())

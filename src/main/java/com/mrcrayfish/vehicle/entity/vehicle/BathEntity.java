@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
@@ -19,13 +18,7 @@ public class BathEntity extends PlaneEntity
     }
 
     @Override
-    public SoundEvent getMovingSound()
-    {
-        return null;
-    }
-
-    @Override
-    public SoundEvent getRidingSound()
+    public SoundEvent getEngineSound()
     {
         return null;
     }
@@ -37,15 +30,9 @@ public class BathEntity extends PlaneEntity
         {
             for(int i = 0; i < 4; i++)
             {
-                this.world.addParticle(ParticleTypes.DRIPPING_WATER, this.getPosX() - 0.25 + 0.5 * rand.nextGaussian(), this.getPosY() + 0.5 * rand.nextGaussian(), this.getPosZ() - 0.25 + 0.5 * rand.nextGaussian(), 0, 0, 0);
+                this.level.addParticle(ParticleTypes.DRIPPING_WATER, this.getX() - 0.25 + 0.5 * random.nextGaussian(), this.getY() + 0.5 * random.nextGaussian(), this.getZ() - 0.25 + 0.5 * random.nextGaussian(), 0, 0, 0);
             }
         }
-    }
-
-    @Override
-    public EngineType getEngineType()
-    {
-        return EngineType.NONE;
     }
 
     @Override

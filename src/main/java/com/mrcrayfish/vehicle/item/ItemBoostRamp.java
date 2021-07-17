@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.item;
 
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.block.BlockBoostRamp;
+import com.mrcrayfish.vehicle.block.BoostRampBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
@@ -18,21 +18,21 @@ public class ItemBoostRamp extends BlockItem
 {
     public ItemBoostRamp(Block block)
     {
-        super(block, new Item.Properties().group(VehicleMod.CREATIVE_TAB));
+        super(block, new Item.Properties().tab(VehicleMod.CREATIVE_TAB));
     }
 
     @Override
     public ActionResultType onItemUseFirst(ItemStack stack, ItemUseContext context)
     {
-        if(context.getFace() == Direction.UP)
+        if(context.getClickedFace() == Direction.UP)
         {
-            BlockState state = context.getWorld().getBlockState(context.getPos());
+            BlockState state = context.getLevel().getBlockState(context.getClickedPos());
             Block block = state.getBlock();
-            if(block instanceof BlockBoostRamp)
+            if(block instanceof BoostRampBlock)
             {
-                if(!state.get(BlockBoostRamp.STACKED))
+                if(!state.getValue(BoostRampBlock.STACKED))
                 {
-                    context.getWorld().setBlockState(context.getPos(), block.getDefaultState().with(BlockBoostRamp.DIRECTION, state.get(BlockBoostRamp.DIRECTION)).with(BlockBoostRamp.STACKED, true));
+                    context.getLevel().setBlockAndUpdate(context.getClickedPos(), block.defaultBlockState().setValue(BoostRampBlock.DIRECTION, state.getValue(BoostRampBlock.DIRECTION)).setValue(BoostRampBlock.STACKED, true));
                 }
                 return ActionResultType.SUCCESS;
             }

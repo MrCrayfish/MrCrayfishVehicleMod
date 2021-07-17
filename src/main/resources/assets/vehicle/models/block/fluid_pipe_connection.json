@@ -1,83 +1,57 @@
 {
-    "__comment": "Model generated using MrCrayfish's Model Creator (https://mrcrayfish.com/tools?id=mc)",
-    "textures": {
-        "iron_block": "minecraft:block/iron_block"
-    },
-    "elements": [
-        {
-            "from": [ 6.5, 5.5, 0 ], 
-            "to": [ 9.5, 6.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 1, 15, 4, 16 ] },
-                "down": { "texture": "#iron_block", "uv": [ 6, 12, 9, 15 ], "rotation": 270 }
-            }
-        },
-        {
-            "from": [ 9.5, 6.5, 0 ], 
-            "to": [ 10.5, 9.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 0, 13, 1, 16 ] },
-                "east": { "texture": "#iron_block", "uv": [ 1, 1, 6, 4 ] }
-            }
-        },
-        {
-            "from": [ 5.5, 6.5, 0 ], 
-            "to": [ 6.5, 9.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 0, 13, 1, 16 ] },
-                "west": { "texture": "#iron_block", "uv": [ 1, 1, 6, 4 ] }
-            }
-        },
-        {
-            "from": [ 6.5, 9.5, 0 ], 
-            "to": [ 9.5, 10.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 1, 15, 4, 16 ] },
-                "up": { "texture": "#iron_block", "uv": [ 6, 12, 9, 15 ], "rotation": 270 }
-            }
-        },
-        {
-            "from": [ 5.5, 9.5, 0 ], 
-            "to": [ 6.5, 10.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
-                "west": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
-                "up": { "texture": "#iron_block", "uv": [ 0, 0, 1, 5 ] }
-            }
-        },
-        {
-            "from": [ 9.5, 9.5, 0 ], 
-            "to": [ 10.5, 10.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
-                "east": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
-                "up": { "texture": "#iron_block", "uv": [ 0, 5, 1, 10 ] }
-            }
-        },
-        {
-            "from": [ 9.5, 5.5, 0 ], 
-            "to": [ 10.5, 6.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
-                "east": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
-                "down": { "texture": "#iron_block", "uv": [ 0, 0, 1, 5 ] }
-            }
-        },
-        {
-            "from": [ 5.5, 5.5, 0 ], 
-            "to": [ 6.5, 6.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 0, 0, 1, 1 ] },
-                "west": { "texture": "#iron_block", "uv": [ 0, 0, 5, 1 ] },
-                "down": { "texture": "#iron_block", "uv": [ 0, 0, 1, 5 ] }
-            }
-        },
-        {
-            "from": [ 6.5, 6.5, 0 ], 
-            "to": [ 9.5, 9.5, 5 ], 
-            "faces": {
-                "north": { "texture": "#iron_block", "uv": [ 1, 1, 4, 4 ] }
-            }
-        }
-    ]
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"particle": "vehicle:block/dark_metal",
+		"fluid_pipe": "vehicle:model/fluid_pipe"
+	},
+	"elements": [
+		{
+			"from": [5, 5, 0],
+			"to": [11, 11, 5],
+			"faces": {
+				"north": {"uv": [6, 0, 9, 3], "texture": "#fluid_pipe"},
+				"east": {"uv": [3, 6, 5.5, 9], "texture": "#fluid_pipe"},
+				"west": {"uv": [6, 3, 8.5, 6], "texture": "#fluid_pipe"},
+				"up": {"uv": [8.5, 8.5, 5.5, 6], "texture": "#fluid_pipe"},
+				"down": {"uv": [11.5, 3, 8.5, 5.5], "texture": "#fluid_pipe"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, -45, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 255, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, -45, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"translation": [0, 2.5, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, -45, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"rotation": [0, -180, 0]
+		},
+		"fixed": {
+			"rotation": [0, -180, 0],
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }
