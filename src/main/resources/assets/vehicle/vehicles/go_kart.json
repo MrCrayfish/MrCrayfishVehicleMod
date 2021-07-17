@@ -29,26 +29,26 @@
             "side": "left",
             "position": "front",
             "offset": [ 9.0, 0.0, 13.5 ],
-            "scale": [ 0.625, 0.625, 0.625 ]
+            "scale": [ 0.8, 0.8, 0.8 ]
         },
         {
             "side": "right",
             "position": "front",
             "offset": [ 9.0, 0.0, 13.5 ],
-            "scale": [ 0.625, 0.625, 0.625 ]
+            "scale": [ 0.8, 0.8, 0.8 ]
         },
         {
             "side": "left",
             "position": "rear",
             "offset": [ 9.0, 0.0, -8.5 ],
-            "scale": [ 0.625, 0.625, 0.625 ],
+            "scale": [ 0.8, 0.8, 0.8 ],
             "particles": true
         },
         {
             "side": "right",
             "position": "rear",
             "offset": [ 9.0, 0.0, -8.5 ],
-            "scale": [ 0.625, 0.625, 0.625 ],
+            "scale": [ 0.8, 0.8, 0.8 ],
             "particles": true
         }
     ],
