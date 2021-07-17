@@ -148,25 +148,25 @@ public class VehicleProperties
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetZ, float scale, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, 0F, offsetZ, false, particles, render));
+        this.wheels.add(new Wheel(side, position, 4.0F, scale, scale, scale, offsetX, 0F, offsetZ, false, particles, render));
         return this;
     }
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scale, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, offsetY, offsetZ, false, particles, render));
+        this.wheels.add(new Wheel(side, position, 4.0F, scale, scale, scale, offsetX, offsetY, offsetZ, false, particles, render));
         return this;
     }
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scaleX, float scaleY, float scaleZ, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, false, particles, render));
+        this.wheels.add(new Wheel(side, position, 4.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, false, particles, render));
         return this;
     }
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scaleX, float scaleY, float scaleZ, boolean autoScale, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, autoScale, particles, render));
+        this.wheels.add(new Wheel(side, position, 4.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, autoScale, particles, render));
         return this;
     }
 
