@@ -570,7 +570,7 @@ public class VehicleProperties
                 {
                     JsonObject wheelObject = element.getAsJsonObject();
                     Vector3d offset = this.getAsVector3d(wheelObject, "offset", Vector3d.ZERO);
-                    Vector3d scale = this.getAsVector3d(wheelObject, "scale", new Vector3d(1, 1, 1));
+                    Vector3d scale = this.getAsVector3d(wheelObject, "scale", Vector3d.ZERO);
                     Wheel.Side side = this.getAsEnum(wheelObject, "side", Wheel.Side.class, Wheel.Side.NONE);
                     Wheel.Position position = this.getAsEnum(wheelObject, "position", Wheel.Position.class, Wheel.Position.NONE);
                     boolean autoScale = JSONUtils.getAsBoolean(wheelObject, "autoScale", false);
