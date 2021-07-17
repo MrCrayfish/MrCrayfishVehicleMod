@@ -3,12 +3,11 @@ import groovy.json.JsonSlurper
 
 buildscript {
     repositories {
-        maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
+        maven { url = 'https://maven.minecraftforge.net' }
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -18,7 +17,7 @@ version = "0.45.2-1.16.3"
 group = "com.mrcrayfish"
 archivesBaseName = "vehicle-mod"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
@@ -74,9 +73,10 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.12'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.1.58'
     compile fg.deobf('curse.maven:obfuscate-289380:3336021')
     compile fg.deobf('curse.maven:controllable-317269:3335987')
+    compile fg.deobf('curse.maven:catalogue-459701:3335979')
     compile fg.deobf('curse.maven:configured-457570:3340535')
 }
 
