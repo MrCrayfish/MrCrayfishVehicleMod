@@ -34,6 +34,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -158,7 +159,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
             for(int i = 0; i < storage.getSizeInventory(); i++)
             {
                 ItemStack stack = storage.getStackInSlot(i);
-                if(!stack.isEmpty() && this.isSeed(stack))
+                if(!stack.isEmpty() && stack.getItem() instanceof net.minecraftforge.common.IPlantable)
                 {
                     return stack;
                 }
@@ -274,8 +275,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     @Override
     public boolean isStorageItem(ItemStack stack)
     {
-
-        return !stack.isEmpty() && stack.getItem() instanceof BlockNamedItem && ((BlockNamedItem) stack.getItem()).getBlock() instanceof CropsBlock;
+        return !stack.isEmpty() && stack.getItem().isIn(Tags.Items.SEEDS);
     }
 
     @Override
