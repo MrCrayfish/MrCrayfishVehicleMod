@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.DuneBuggyEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.item.IDyeable;
@@ -36,9 +37,6 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
     {
         this.renderDamagedPart(vehicle, SpecialModels.DUNE_BUGGY_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
-
-        double wheelScale = 1.0F;
-
         //Render the handles bars
         matrixStack.pushPose();
 
@@ -59,21 +57,26 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
         ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
         if(!wheelStack.isEmpty())
         {
-            matrixStack.pushPose();
-            matrixStack.translate(0.0, -0.355, 0.33);
-            if(vehicle != null)
+            VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+            Wheel wheel = properties.getFirstFrontWheel();
+            if(wheel != null)
             {
-                float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
-                if(vehicle.isMoving())
+                matrixStack.pushPose();
+                matrixStack.translate(0.0, -0.355, 0.33);
+                if(vehicle != null)
                 {
-                    matrixStack.mulPose(Vector3f.XP.rotationDegrees(-frontWheelSpin));
+                    float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
+                    if(vehicle.isMoving())
+                    {
+                        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-frontWheelSpin));
+                    }
                 }
+                matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+                int wheelColor = IDyeable.getColorFromStack(wheelStack);
+                RenderUtil.renderColoredModel(RenderUtil.getModel(wheelStack), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
+                matrixStack.popPose();
             }
-            matrixStack.scale((float) wheelScale, (float) wheelScale, (float) wheelScale);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            int wheelColor = IDyeable.getColorFromStack(wheelStack);
-            RenderUtil.renderColoredModel(RenderUtil.getModel(wheelStack), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
-            matrixStack.popPose();
         }
 
         matrixStack.popPose();
