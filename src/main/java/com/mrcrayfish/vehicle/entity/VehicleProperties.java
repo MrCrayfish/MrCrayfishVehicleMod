@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
-import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -45,6 +44,7 @@ import java.util.stream.Stream;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class VehicleProperties
 {
+    private static final double WHEEL_RADIUS = 8.0;
     private static final DecimalFormat FORMAT = new DecimalFormat("#.###");
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(VehicleProperties.class, new Serializer()).create();
     private static final Map<ResourceLocation, VehicleProperties> ID_TO_PROPERTIES = new HashMap<>();
@@ -80,16 +80,29 @@ public class VehicleProperties
         return this.axleOffset;
     }
 
+    private void generateWheelScale()
+    {
+        this.getWheels().stream().filter(Wheel::isAutoScale).forEach(wheel -> {
+            double scale = ((this.wheelOffset + wheel.getOffsetY()) * 2) / WHEEL_RADIUS;
+            wheel.updateScale(scale);
+        });
+    }
+
     private void recalculateWheelOffset()
     {
-        this.getWheels().stream().max((w1, w2) -> (int) (this.getLowestSittingPosition(w1) - this.getLowestSittingPosition(w2))).ifPresent(wheel -> {
+        this.getWheels().stream().filter(wheel -> !wheel.isAutoScale()).max((w1, w2) -> (int) (this.getLowestSittingPosition(w1) - this.getLowestSittingPosition(w2))).ifPresent(wheel -> {
             this.wheelOffset = this.getLowestSittingPosition(wheel);
         });
     }
 
+    // (WHEEL_RADIUS * ?) / 2 - wheel.getOffsetY() = this.wheelOffset
+    // (WHEEL_RADIUS * ?) / 2 = this.wheelOffset + wheel.getOffsetY()
+    // WHEEL_RADIUS * ? = (this.wheelOffset + wheel.getOffsetY()) * 2
+    // ? = ((this.wheelOffset + wheel.getOffsetY()) * 2) / WHEEL_RADIUS
+
     private float getLowestSittingPosition(Wheel wheel)
     {
-        double radius = 8.0 * wheel.getScaleY();
+        double radius = WHEEL_RADIUS * wheel.getScaleY();
         double lowestPosition = radius / 2;
         lowestPosition -= wheel.getOffsetY();
         return (float) lowestPosition;
@@ -135,19 +148,25 @@ public class VehicleProperties
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetZ, float scale, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, 0F, offsetZ, particles, render));
+        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, 0F, offsetZ, false, particles, render));
         return this;
     }
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scale, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, offsetY, offsetZ, particles, render));
+        this.wheels.add(new Wheel(side, position, 2.0F, scale, scale, scale, offsetX, offsetY, offsetZ, false, particles, render));
         return this;
     }
 
     public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scaleX, float scaleY, float scaleZ, boolean particles, boolean render)
     {
-        this.wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, particles, render));
+        this.wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, false, particles, render));
+        return this;
+    }
+
+    public VehicleProperties addWheel(Wheel.Side side, Wheel.Position position, float offsetX, float offsetY, float offsetZ, float scaleX, float scaleY, float scaleZ, boolean autoScale, boolean particles, boolean render)
+    {
+        this.wheels.add(new Wheel(side, position, 2.0F, scaleX, scaleY, scaleZ, offsetX, offsetY, offsetZ, autoScale, particles, render));
         return this;
     }
 
@@ -337,6 +356,7 @@ public class VehicleProperties
         {
             VehicleProperties properties = GSON.fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), VehicleProperties.class);
             properties.recalculateWheelOffset();
+            properties.generateWheelScale();
             return properties;
         }
         catch(JsonParseException | IOException e)
@@ -394,7 +414,7 @@ public class VehicleProperties
         serialize(ModEntities.GO_KART.get(), new VehicleProperties().setAxleOffset(-2.5F).setBodyPosition(new PartPosition(1.0)).setEnginePosition(new PartPosition(0, 2, -9, 0, 180, 0, 0.8)).setHeldOffset(new Vector3d(3.0D, 0.5D, 0.0D)).setTrailerOffset(new Vector3d(0D, -0.03125D, -0.375D)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.5F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 13.5F, 0.625F, false, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 13.5F, 0.625F, false, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -8.5F, 0.625F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -8.5F, 0.625F, true, true).setFrontAxelVec(0, 13.5).setRearAxelVec(0, -8.5).addSeat(new Seat(new Vector3d(0, -2, -1), true)).setEngineType(EngineType.SMALL_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.GOLF_CART.get(), new VehicleProperties().setAxleOffset(-0.5F).setBodyPosition(new PartPosition(1.15)).setFuelPortPosition(new PartPosition(-13, 3.5, -6, 0, -90, 0, 0.25)).setKeyPortPosition(new PartPosition(-8.5, 2.75, 8.5, -67.5, 0, 0, 0.5)).setHeldOffset(new Vector3d(1.5D, 2.5D, 0.0D)).setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1.25F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.1F, false, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 16.0F, 1.1F, false, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, -12.5F, 1.1F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, -12.5F, 1.1F, true, true).setFrontAxelVec(0, 16.0).setRearAxelVec(0, -12.5).addSeat(new Seat(new Vector3d(5.5, 5, -6), true)).addSeat(new Seat(new Vector3d(-5.5, 5, -6))).addSeat(new Seat(new Vector3d(5.5, 5, -15), 180F)).addSeat(new Seat(new Vector3d(-5.5, 5, -15), 180F)).setEngineType(EngineType.ELECTRIC_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.JET_SKI.get(), new VehicleProperties().setAxleOffset(2.75F).setBodyPosition(new PartPosition(0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 1.25)).setFuelPortPosition(new PartPosition(0.0, 9.25, 8.5, -90, 0, 0, 0.35)).setHeldOffset(new Vector3d(6.0, 0.0, 0.0)).setTrailerOffset(new Vector3d(0.0, -0.09375, -0.65)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F)).addSeat(new Seat(new Vector3d(0, 5, 0), true)).addSeat(new Seat(new Vector3d(0, 5, -7))).setEngineType(EngineType.SMALL_MOTOR).setColored(true));
-        serialize(ModEntities.LAWN_MOWER.get(), new VehicleProperties().setAxleOffset(-2.0F).setBodyPosition(new PartPosition(1.25)).setFuelPortPosition(new PartPosition(-4.50, 9.5, 4.0, 0, -90, 0, 0.2)).setKeyPortPosition(new PartPosition(-5, 4.5, 6.5, -45, 0, 0, 0.5)).setHeldOffset(new Vector3d(12.0, -1.5, 0.0)).setTowBarPosition(new Vector3d(0.0, 0.0, -20.0)).setTrailerOffset(new Vector3d(0.0, -0.01, -1.0)).setDisplayPosition(new PartPosition(1.5F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 0.72F, false, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 0.72F, false, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 0.97F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 0.97F, true, true).setFrontAxelVec(0, 13.5).setRearAxelVec(0, -10.7).addSeat(new Seat(new Vector3d(0, 7, -9), true)).setEngineType(EngineType.SMALL_MOTOR).setCanChangeWheels(true).setColored(true));
+        serialize(ModEntities.LAWN_MOWER.get(), new VehicleProperties().setAxleOffset(-2.0F).setBodyPosition(new PartPosition(1.25)).setFuelPortPosition(new PartPosition(-4.50, 9.5, 4.0, 0, -90, 0, 0.2)).setKeyPortPosition(new PartPosition(-5, 4.5, 6.5, -45, 0, 0, 0.5)).setHeldOffset(new Vector3d(12.0, -1.5, 0.0)).setTowBarPosition(new Vector3d(0.0, 0.0, -20.0)).setTrailerOffset(new Vector3d(0.0, -0.01, -1.0)).setDisplayPosition(new PartPosition(1.5F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.0F, 0.0F, 0.0F, true, false, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 6.0F, 0.0F, 13.5F, 1.0F, 0.0F, 0.0F, true, false, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 0.97F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 5.0F, 0.8F, -10.7F, 0.97F, true, true).setFrontAxelVec(0, 13.5).setRearAxelVec(0, -10.7).addSeat(new Seat(new Vector3d(0, 7, -9), true)).setEngineType(EngineType.SMALL_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.MINI_BIKE.get(), new VehicleProperties().setAxleOffset(-1.7F).setBodyPosition(new PartPosition(1.05)).setEnginePosition(new PartPosition(0, 1, 2.5, 0, 180F, 0, 0.7)).setHeldOffset(new Vector3d(6.0, 0.0, 0.0)).setTrailerOffset(new Vector3d(0.0, -0.0625, -0.5)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0F, 1.5F)).addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 1.03F, true, true).addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, -0.5F + 1.7F * 0.0625F, 13.0F, 1.03F, true, false).setFrontAxelVec(0, 13).setRearAxelVec(0, -6.7).addSeat(new Seat(new Vector3d(0, 7, -2), true)).setEngineType(EngineType.SMALL_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.MINI_BUS.get(), new VehicleProperties().setAxleOffset(1.0F).setBodyPosition(new PartPosition(1.3)).setFuelPortPosition(new PartPosition(-12.0, 8.0, -8.75, 0, -90, 0, 0.25)).setKeyPortPosition(new PartPosition(0, 6.75, 19.5, -67.5, 0, 0, 0.5)).setHeldOffset(new Vector3d(0.0, 3.5, 0.0)).setTowBarPosition(new Vector3d(0.0, 0.0, -33.0)).setDisplayPosition(new PartPosition(1.0F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 0.9375F, 1.19F, 1.19F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 9.0F, 0.0F, 13.5F, 0.9375F, 1.19F, 1.19F, true, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 9.0F, 0.0F, -13.5F, 0.9375F, 1.19F, 1.19F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 9.0F, 0.0F, -13.5F, 0.9375F, 1.19F, 1.19F, true, true).setFrontAxelVec(0, 14.5).setRearAxelVec(0, -14.5).addSeat(new Seat(new Vector3d(4.5, 2, 11), true)).addSeat(new Seat(new Vector3d(-4.5, 2, 11))).addSeat(new Seat(new Vector3d(4.5, 2, -3))).addSeat(new Seat(new Vector3d(-4.5, 2, -3))).addSeat(new Seat(new Vector3d(4.5, 2, -15))).setEngineType(EngineType.LARGE_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.MOPED.get(), new VehicleProperties().setAxleOffset(-1.0F).setBodyPosition(new PartPosition(1.2)).setFuelPortPosition(new PartPosition(-2.5, 4.2, -1.5, 0, -90, 0, 0.2)).setHeldOffset(new Vector3d(4.5, 2.0, 0.0)).setTrailerOffset(new Vector3d(0.0, -0.03125, -0.65)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.25F, 0.0F, 0.0F, 0.0F, 1.5F)).addWheel(Wheel.Side.NONE, Wheel.Position.REAR, 0.0F, -6.7F, 0.8F, true, true).addWheel(Wheel.Side.NONE, Wheel.Position.FRONT, 0.0F, 0.0F, 14.0884F, 0.6F, 0.8F, 0.8F, true, false).setFrontAxelVec(0, 14.5).setRearAxelVec(0, -6.7).addSeat(new Seat(new Vector3d(0, 4, -1), true)).setEngineType(EngineType.SMALL_MOTOR).setCanChangeWheels(true).setColored(true));
@@ -403,7 +423,7 @@ public class VehicleProperties
         serialize(ModEntities.SMART_CAR.get(), new VehicleProperties().setAxleOffset(-1.7F).setBodyPosition(new PartPosition(1.25)).setFuelPortPosition(new PartPosition(-9.0, 8.7, -12.3, 0, -90, 0, 0.25)).setHeldOffset(new Vector3d(3.0, 1.0, 0.0)).setTowBarPosition(new Vector3d(0.0, 0.0, -24.5)).setDisplayPosition(new PartPosition(1.35F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 7F, 12F, 0.9375F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 7F, 12F, 0.9375F, true, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 7F, -12F, 0.9375F, false, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 7F, -12F, 0.9375F, false, true).setFrontAxelVec(0, 12).setRearAxelVec(0, -12).addSeat(new Seat(new Vector3d(0, 0.5, -2), true)).setEngineType(EngineType.ELECTRIC_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.SPEED_BOAT.get(), new VehicleProperties().setAxleOffset(2.5F).setBodyPosition(new PartPosition(0.0, -0.03125, 0.6875, 1.0)).setFuelPortPosition(new PartPosition(0.0, 5.25, -20.5, -90.0, 0.0, 0.0, 0.65)).setHeldOffset(new Vector3d(6.0, -0.5, 0.0)).setTrailerOffset(new Vector3d(0.0, -0.09375, -0.75)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.65F, 0.0F, 0.0F, 0.0F, 1.25F)).addSeat(new Seat(new Vector3d(0, 0, 0), true)).setEngineType(EngineType.LARGE_MOTOR).setColored(true));
         serialize(ModEntities.SPORTS_PLANE.get(), new VehicleProperties().setBodyPosition(new PartPosition(0, 11 * 0.0625, -8 * 0.0625, 0, 0, 0, 1.8)).setFuelPortPosition(new PartPosition(-4.35, 4, -6, 0, -112.5, 0, 0.25)).setKeyPortPosition(new PartPosition(0, 3.75, 12.5, -67.5, 0, 0, 0.5)).setDisplayPosition(new PartPosition(0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.85F)).addSeat(new Seat(new Vector3d(0, 6, 0), true)).setEngineType(EngineType.LARGE_MOTOR).setColored(true));
-        serialize(ModEntities.TRACTOR.get(), new VehicleProperties().setAxleOffset(-3.0F).setBodyPosition(new PartPosition(1.0)).setEnginePosition(new PartPosition(0, 6, 7.5, 0, 0, 0, 0.85)).setFuelPortPosition(new PartPosition(-6.0, 9.5, -0.5, 0, -90, 0, 0.3)).setKeyPortPosition(new PartPosition(-2.75, 12, -1.75, -45.0, 0, 0, 0.5)).setHeldOffset(new Vector3d(0.0, 3.5, 0.0)).setTowBarPosition(new Vector3d(0.0, 0.0, -24.5)).setDisplayPosition(new PartPosition(1.25F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 0.9375F, 1.4F, 1.4F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 0.9375F, 1.4F, 1.4F, true, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 1.875F, 2.8F, 2.8F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 1.875F, 2.8F, 2.8F, true, true).setFrontAxelVec(0, 14.0).setRearAxelVec(0, -14.5).addSeat(new Seat(new Vector3d(0, 9, -14), true)).setEngineType(EngineType.LARGE_MOTOR).setCanChangeWheels(true).setColored(true));
+        serialize(ModEntities.TRACTOR.get(), new VehicleProperties().setAxleOffset(-3.0F).setBodyPosition(new PartPosition(1.0)).setEnginePosition(new PartPosition(0, 6, 7.5, 0, 0, 0, 0.85)).setFuelPortPosition(new PartPosition(-6.0, 9.5, -0.5, 0, -90, 0, 0.3)).setKeyPortPosition(new PartPosition(-2.75, 12, -1.75, -45.0, 0, 0, 0.5)).setHeldOffset(new Vector3d(0.0, 3.5, 0.0)).setTowBarPosition(new Vector3d(0.0, 0.0, -24.5)).setDisplayPosition(new PartPosition(1.25F)).addWheel(Wheel.Side.LEFT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 0.9375F, 0F, 0F, true, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.FRONT, 8.0F, 0.0F, 14.0F, 0.9375F, 0F, 0F, true, true, true).addWheel(Wheel.Side.LEFT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 1.875F, 2.8F, 2.8F, true, true).addWheel(Wheel.Side.RIGHT, Wheel.Position.REAR, 8.0F, 5.5F, -14.5F, 1.875F, 2.8F, 2.8F, true, true).setFrontAxelVec(0, 14.0).setRearAxelVec(0, -14.5).addSeat(new Seat(new Vector3d(0, 9, -14), true)).setEngineType(EngineType.LARGE_MOTOR).setCanChangeWheels(true).setColored(true));
         serialize(ModEntities.FERTILIZER.get(), new VehicleProperties().setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)).setColored(true));
         serialize(ModEntities.FLUID_TRAILER.get(), new VehicleProperties().setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1)).setHeldOffset(new Vector3d(0D, 3D, 0D)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)).setColored(true));
         serialize(ModEntities.SEEDER.get(), new VehicleProperties().setBodyPosition(new PartPosition(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1)).setDisplayPosition(new PartPosition(0.0F, 0.0F, -0.15F, 0.0F, 0.0F, 0.0F, 1.35F)).setColored(true));
@@ -558,9 +578,10 @@ public class VehicleProperties
                     Vector3d scale = this.getAsVector3d(wheelObject, "scale", new Vector3d(1, 1, 1));
                     Wheel.Side side = this.getAsEnum(wheelObject, "side", Wheel.Side.class, Wheel.Side.NONE);
                     Wheel.Position position = this.getAsEnum(wheelObject, "position", Wheel.Position.class, Wheel.Position.NONE);
+                    boolean autoScale = JSONUtils.getAsBoolean(wheelObject, "autoScale", false);
                     boolean particles = JSONUtils.getAsBoolean(wheelObject, "particles", false);
                     boolean render = JSONUtils.getAsBoolean(wheelObject, "render", true);
-                    properties.addWheel(side, position, (float) offset.x, (float) offset.y, (float) offset.z, (float) scale.x, (float) scale.y, (float) scale.z, particles, render);
+                    properties.addWheel(side, position, (float) offset.x, (float) offset.y, (float) offset.z, (float) scale.x, (float) scale.y, (float) scale.z, autoScale, particles, render);
                 }
             }
         }
@@ -577,6 +598,7 @@ public class VehicleProperties
                     wheelObject.addProperty("position", wheel.getPosition().name().toLowerCase(Locale.ENGLISH));
                     this.addVector3dProperty(wheelObject, "offset", wheel.getOffset());
                     this.addVector3dProperty(wheelObject, "scale", wheel.getScale());
+                    if(wheel.isAutoScale()) wheelObject.addProperty("autoScale", wheel.isAutoScale());
                     if(wheel.shouldSpawnParticles()) wheelObject.addProperty("particles", wheel.shouldSpawnParticles());
                     if(!wheel.shouldRender()) wheelObject.addProperty("render", wheel.shouldRender());
                     wheels.add(wheelObject);

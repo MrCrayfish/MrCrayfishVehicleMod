@@ -4,10 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;
@@ -225,7 +225,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
             return;
 
         matrixStack.pushPose();
-        matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().offset, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+        matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset(), wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
         if(wheel.getPosition() == Wheel.Position.FRONT)
         {
             float wheelAngle = MathHelper.lerp(partialTicks, this.prevWheelAngleProperty.get(vehicle), this.wheelAngleProperty.get(vehicle));
@@ -235,7 +235,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         {
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-wheel.getWheelRotation(vehicle, partialTicks)));
         }
-        matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().offset, 0.0, 0.0);
+        matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
         matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
         if(wheel.getSide() == Wheel.Side.RIGHT)
         {

@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client.render;
+package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import net.minecraft.util.math.vector.Vector3d;
@@ -16,16 +16,18 @@ public class Wheel
     private Side side;
     private Position position;
 
+    private boolean autoScale;
     private boolean particles;
     private boolean render;
 
-    public Wheel(Side side, Position position, float width, float scaleX, float scaleY, float scaleZ, float offsetX, float offsetY, float offsetZ, boolean particles, boolean render)
+    public Wheel(Side side, Position position, float width, float scaleX, float scaleY, float scaleZ, float offsetX, float offsetY, float offsetZ, boolean autoScale, boolean particles, boolean render)
     {
         this.offset = new Vector3d(offsetX, offsetY, offsetZ);
         this.scale = new Vector3d(scaleX, scaleY, scaleZ);
         this.width = width;
         this.side = side;
         this.position = position;
+        this.autoScale = autoScale;
         this.particles = particles;
         this.render = render;
     }
@@ -93,6 +95,25 @@ public class Wheel
     public Position getPosition()
     {
         return position;
+    }
+
+    void updateScale(double scale)
+    {
+        double xScale = this.scale.x;
+        double yScale = this.scale.y != 0.0 ? this.scale.y : scale;
+        double zScale = this.scale.z != 0.0 ? this.scale.z : scale;
+        this.scale = new Vector3d(xScale, yScale, zScale);
+    }
+
+    /**
+     * Indicates that the wheel scale is to be generated. This is only used when loading vehicle
+     * properties and has no other significant use.
+     *
+     * @return true if the wheel auto scaled
+     */
+    public boolean isAutoScale()
+    {
+        return this.autoScale;
     }
 
     /**

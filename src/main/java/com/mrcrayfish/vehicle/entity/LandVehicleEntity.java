@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
-import com.mrcrayfish.vehicle.client.render.Wheel;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageDrift;

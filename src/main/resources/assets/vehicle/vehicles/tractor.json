@@ -37,14 +37,16 @@
             "side": "left",
             "position": "front",
             "offset": [ 8.0, 0.0, 14.0 ],
-            "scale": [ 0.938, 1.4, 1.4 ],
+            "scale": [ 0.938, 0.0, 0.0 ],
+            "autoScale": true,
             "particles": true
         },
         {
             "side": "right",
             "position": "front",
             "offset": [ 8.0, 0.0, 14.0 ],
-            "scale": [ 0.938, 1.4, 1.4 ],
+            "scale": [ 0.938, 0.0, 0.0 ],
+            "autoScale": true,
             "particles": true
         },
         {
