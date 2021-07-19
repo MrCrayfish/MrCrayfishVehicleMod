@@ -1,0 +1,22 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:speed_boat",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 80
+    },
+    {
+      "item": "minecraft:black_wool",
+      "count": 8
+    },
+    {
+      "tag": "forge:glass_panes",
+      "count": 4
+    },
+    {
+      "item": "vehicle:panel",
+      "count": 10
+    }
+  ]
+}

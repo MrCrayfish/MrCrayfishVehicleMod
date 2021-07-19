@@ -1,17 +1,13 @@
 {
   "type": "vehicle:workstation",
-  "vehicle": "vehicle:dirt_bike",
+  "vehicle": "vehicle:vehicle_trailer",
   "materials": [
     {
       "tag": "forge:ingots/iron",
-      "count": 32
+      "count": 48
     },
     {
       "item": "vehicle:panel",
-      "count": 2
-    },
-    {
-      "item": "minecraft:gray_wool",
       "count": 2
     }
   ]

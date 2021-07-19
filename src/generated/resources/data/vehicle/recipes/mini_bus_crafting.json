@@ -1,0 +1,26 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:mini_bus",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 128
+    },
+    {
+      "item": "minecraft:gray_wool",
+      "count": 5
+    },
+    {
+      "tag": "forge:glass_panes",
+      "count": 9
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 12
+    },
+    {
+      "item": "vehicle:panel",
+      "count": 16
+    }
+  ]
+}

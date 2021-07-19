@@ -1,0 +1,22 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:moped",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 36
+    },
+    {
+      "item": "minecraft:iron_bars",
+      "count": 2
+    },
+    {
+      "item": "minecraft:black_wool",
+      "count": 4
+    },
+    {
+      "item": "vehicle:panel",
+      "count": 6
+    }
+  ]
+}

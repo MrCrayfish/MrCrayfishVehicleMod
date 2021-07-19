@@ -1,0 +1,18 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:lawn_mower",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 48
+    },
+    {
+      "item": "minecraft:black_wool",
+      "count": 4
+    },
+    {
+      "item": "vehicle:panel",
+      "count": 8
+    }
+  ]
+}

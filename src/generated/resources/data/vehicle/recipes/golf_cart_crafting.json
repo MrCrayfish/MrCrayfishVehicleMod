@@ -1,0 +1,26 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:golf_cart",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 80
+    },
+    {
+      "item": "minecraft:iron_bars",
+      "count": 4
+    },
+    {
+      "item": "minecraft:white_wool",
+      "count": 8
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 12
+    },
+    {
+      "item": "vehicle:panel",
+      "count": 16
+    }
+  ]
+}

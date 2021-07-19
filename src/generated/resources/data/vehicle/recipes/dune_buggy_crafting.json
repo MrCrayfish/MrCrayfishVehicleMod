@@ -1,0 +1,18 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:dune_buggy",
+  "materials": [
+    {
+      "item": "minecraft:yellow_concrete",
+      "count": 8
+    },
+    {
+      "item": "minecraft:blue_concrete",
+      "count": 4
+    },
+    {
+      "item": "minecraft:red_concrete",
+      "count": 2
+    }
+  ]
+}
