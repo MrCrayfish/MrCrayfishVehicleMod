@@ -24,6 +24,7 @@ import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -362,6 +363,7 @@ public class RecipeGen extends RecipeProvider
         CustomRecipeBuilder.special(ModRecipeSerializers.COLOR_SPRAY_CAN.get()).save(consumer, "vehicle:color_spray_can");
         CustomRecipeBuilder.special(ModRecipeSerializers.REFILL_SPRAY_CAN.get()).save(consumer, "vehicle:refill_spray_can");
 
+        // Vehicles
         workstationCrafting(consumer, ModEntities.ALUMINUM_BOAT.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
         workstationCrafting(consumer, ModEntities.ATV.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(Items.IRON_BARS, 4), WorkstationIngredient.of(Items.BLACK_WOOL, 4), WorkstationIngredient.of(Items.REDSTONE, 6), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
         workstationCrafting(consumer, ModEntities.BUMPER_CAR.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 36), WorkstationIngredient.of(Items.REDSTONE, 8), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
@@ -380,18 +382,18 @@ public class RecipeGen extends RecipeProvider
         workstationCrafting(consumer, ModEntities.SPEED_BOAT.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(Items.BLACK_WOOL, 8), WorkstationIngredient.of(Tags.Items.GLASS_PANES, 4), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
         workstationCrafting(consumer, ModEntities.SPORTS_PLANE.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 180), WorkstationIngredient.of(Tags.Items.GLASS_PANES, 16), WorkstationIngredient.of(Items.REDSTONE, 18), WorkstationIngredient.of(ModItems.PANEL.get(), 32));
         workstationCrafting(consumer, ModEntities.TRACTOR.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 128), WorkstationIngredient.of(Items.BLACK_WOOL, 4), WorkstationIngredient.of(Items.REDSTONE, 8), WorkstationIngredient.of(ModItems.PANEL.get(), 16));
+
+        // Trailers
         workstationCrafting(consumer, ModEntities.FERTILIZER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 36), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
         workstationCrafting(consumer, ModEntities.FLUID_TRAILER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 48), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
         workstationCrafting(consumer, ModEntities.SEEDER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 42), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
         workstationCrafting(consumer, ModEntities.STORAGE_TRAILER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 36), WorkstationIngredient.of(ModItems.PANEL.get(), 2), WorkstationIngredient.of(Items.CHEST, 1));
         workstationCrafting(consumer, ModEntities.VEHICLE_TRAILER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 48), WorkstationIngredient.of(ModItems.PANEL.get(), 2));
 
-        /*
-        TODO Add support for optional crafting
-        workstationCrafting(consumer, ModEntities.BATH.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
-        workstationCrafting(consumer, ModEntities.SOFA.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
-        workstationCrafting(consumer, ModEntities.SOFACOPTER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
-        */
+        // Furniture
+        //workstationCrafting(consumer, new ResourceLocation("cfm:bath"), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
+        dependantWorkstationCrafting(consumer, "cfm", new ResourceLocation("vehicle:sofa"), WorkstationIngredient.of(new ResourceLocation("cfm:rainbow_sofa"), 1), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 8));
+        //workstationCrafting(consumer, new ResourceLocation("cfm:sofacopter"), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
 
         fluidExtracting(consumer, Items.BLAZE_ROD, FluidEntry.of(ModFluids.BLAZE_JUICE.get(), 450));
         fluidExtracting(consumer, Items.ENDER_PEARL, FluidEntry.of(ModFluids.ENDER_SAP.get(), 600));
@@ -406,8 +408,13 @@ public class RecipeGen extends RecipeProvider
 
     private static void workstationCrafting(Consumer<IFinishedRecipe> consumer, EntityType<? extends VehicleEntity> type, WorkstationIngredient ... materials)
     {
-        ResourceLocation id = Objects.requireNonNull(type.getRegistryName());
-        WorkstationRecipeBuilder.crafting(type, Arrays.asList(materials)).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_crafting"));
+        ResourceLocation entityId = Objects.requireNonNull(type.getRegistryName());
+        WorkstationRecipeBuilder.crafting(entityId, Arrays.asList(materials)).save(consumer, new ResourceLocation(entityId.getNamespace(), entityId.getPath() + "_crafting"));
+    }
+
+    private static void dependantWorkstationCrafting(Consumer<IFinishedRecipe> consumer, String modId, ResourceLocation entityId, WorkstationIngredient ... materials)
+    {
+        WorkstationRecipeBuilder.crafting(entityId, Arrays.asList(materials)).addCondition(new ModLoadedCondition(modId)).save(consumer, new ResourceLocation(entityId.getNamespace(), entityId.getPath() + "_crafting"));
     }
 
     private static void fluidExtracting(Consumer<IFinishedRecipe> consumer, IItemProvider provider, FluidEntry output)

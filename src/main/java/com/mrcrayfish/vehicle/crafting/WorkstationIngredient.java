@@ -9,8 +9,14 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Stream;
 
 /**
@@ -76,6 +82,11 @@ public class WorkstationIngredient extends Ingredient
         return new WorkstationIngredient(new Ingredient.TagList(tag), count);
     }
 
+    public static WorkstationIngredient of(ResourceLocation id, int count)
+    {
+        return new WorkstationIngredient(new MissingSingleItemList(id), count);
+    }
+
     public static class Serializer implements IIngredientSerializer<WorkstationIngredient>
     {
         public static final WorkstationIngredient.Serializer INSTANCE = new WorkstationIngredient.Serializer();
@@ -105,6 +116,36 @@ public class WorkstationIngredient extends Ingredient
             {
                 buffer.writeItem(stack);
             }
+        }
+    }
+
+    //
+
+    /**
+     * Allows ability to define an ingredient from another mod without depending. Serializes the data
+     * to be read by the regular {@link SingleItemList}. Only use this for generating data.
+     */
+    public static class MissingSingleItemList implements Ingredient.IItemList
+    {
+        private final ResourceLocation id;
+
+        public MissingSingleItemList(ResourceLocation id)
+        {
+            this.id = id;
+        }
+
+        @Override
+        public Collection<ItemStack> getItems()
+        {
+            return Collections.emptyList();
+        }
+
+        @Override
+        public JsonObject serialize()
+        {
+            JsonObject object = new JsonObject();
+            object.addProperty("item", this.id.toString());
+            return object;
         }
     }
 }
