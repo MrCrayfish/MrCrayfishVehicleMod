@@ -1,0 +1,43 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "vehicle:traffic_cone"
+    ]
+  },
+  "criteria": {
+    "has_orange_concrete": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:orange_concrete"
+          }
+        ]
+      }
+    },
+    "has_white_concrete": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "minecraft:white_concrete"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "vehicle:traffic_cone"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_orange_concrete",
+      "has_white_concrete",
+      "has_the_recipe"
+    ]
+  ]
+}

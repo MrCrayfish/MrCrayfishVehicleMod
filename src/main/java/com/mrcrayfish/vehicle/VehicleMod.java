@@ -5,18 +5,22 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
+import com.mrcrayfish.vehicle.datagen.RecipeGen;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 public class VehicleMod
 {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final ItemGroup CREATIVE_TAB = new ItemGroup("tabVehicle")
+    public static final ItemGroup CREATIVE_TAB = new ItemGroup("vehicle")
     {
         @Override
         public ItemStack makeIcon()
@@ -50,8 +54,9 @@ public class VehicleMod
         ModFluids.REGISTER.register(eventBus);
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, Config.serverSpec);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, Config.clientSpec);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onCommonSetup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onClientSetup);
+        eventBus.addListener(this::onCommonSetup);
+        eventBus.addListener(this::onClientSetup);
+        eventBus.addListener(this::onGatherData);
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
         MinecraftForge.EVENT_BUS.register(FluidNetworkHandler.instance());
     }
@@ -69,5 +74,11 @@ public class VehicleMod
     private void onClientSetup(FMLClientSetupEvent event)
     {
         ClientHandler.setup();
+    }
+
+    private void onGatherData(GatherDataEvent event)
+    {
+        DataGenerator generator = event.getGenerator();
+        generator.addProvider(new RecipeGen(generator));
     }
 }

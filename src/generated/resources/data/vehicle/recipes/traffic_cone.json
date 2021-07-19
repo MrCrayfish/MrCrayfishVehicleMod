@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "O",
+    "W",
+    "O"
+  ],
+  "key": {
+    "O": {
+      "item": "minecraft:orange_concrete"
+    },
+    "W": {
+      "item": "minecraft:white_concrete"
+    }
+  },
+  "result": {
+    "item": "vehicle:traffic_cone",
+    "count": 8
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " U ",
+    "UEU",
+    " U "
+  ],
+  "key": {
+    "U": {
+      "tag": "forge:gems/diamond"
+    },
+    "E": {
+      "item": "vehicle:gold_electric_engine"
+    }
+  },
+  "result": {
+    "item": "vehicle:diamond_electric_engine"
+  }
+}

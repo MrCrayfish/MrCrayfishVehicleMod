@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "HRH",
+    "IEI"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/iron"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "E": {
+      "item": "vehicle:iron_electric_engine"
+    }
+  },
+  "result": {
+    "item": "vehicle:fluid_mixer"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IFI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "forge:ingots/gold"
+    },
+    "F": {
+      "item": "vehicle:fuel_drum"
+    }
+  },
+  "result": {
+    "item": "vehicle:industrial_fuel_drum"
+  }
+}

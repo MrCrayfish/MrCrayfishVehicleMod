@@ -1,0 +1,26 @@
+{
+  "type": "vehicle:workstation",
+  "vehicle": "vehicle:atv",
+  "materials": [
+    {
+      "tag": "forge:ingots/iron",
+      "count": 80
+    },
+    {
+      "item": "minecraft:iron_bars",
+      "count": 4
+    },
+    {
+      "item": "minecraft:black_wool",
+      "count": 4
+    },
+    {
+      "item": "minecraft:redstone",
+      "count": 6
+    },
+    {
+      "item": "vehicle:panel",
+      "count": 8
+    }
+  ]
+}
