@@ -256,32 +256,4 @@ public class VehicleCrateBlock extends RotatedObjectBlock
             Collections.sort(REGISTERED_CRATES);
         }
     }
-
-    /*@Override
-    public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid)
-    {
-        if(!world.isClientSide && !player.isCreative())
-        {
-            TileEntity tileEntity = world.getBlockEntity(pos);
-            if(tileEntity instanceof VehicleCrateTileEntity)
-            {
-                ItemStack drop = new ItemStack(Item.byBlock(this));
-
-                CompoundNBT tileEntityTag = new CompoundNBT();
-                tileEntity.save(tileEntityTag);
-                tileEntityTag.remove("x");
-                tileEntityTag.remove("y");
-                tileEntityTag.remove("z");
-                tileEntityTag.remove("id");
-
-                CompoundNBT compound = new CompoundNBT();
-                compound.put("BlockEntityTag", tileEntityTag);
-                drop.setTag(compound);
-
-                world.addFreshEntity(new ItemEntity(world, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, drop));
-                return world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
-            }
-        }
-        return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
-    }*/
 }

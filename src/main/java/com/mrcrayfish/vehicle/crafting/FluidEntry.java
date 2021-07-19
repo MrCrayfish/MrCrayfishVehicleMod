@@ -37,7 +37,7 @@ public class FluidEntry
         return new FluidStack(this.fluid, this.amount);
     }
 
-    public static FluidEntry deserialize(JsonObject object)
+    public static FluidEntry fromJson(JsonObject object)
     {
         if(!object.has("fluid") || !object.has("amount"))
         {
@@ -55,6 +55,14 @@ public class FluidEntry
             throw new com.google.gson.JsonSyntaxException("Invalid fluid entry, amount must be more than zero");
         }
         return new FluidEntry(fluid, amount);
+    }
+
+    public JsonObject toJson()
+    {
+        JsonObject object = new JsonObject();
+        object.addProperty("fluid", this.fluid.getRegistryName().toString());
+        object.addProperty("amount", this.amount);
+        return object;
     }
 
     public void write(PacketBuffer buffer)

@@ -1,9 +1,11 @@
 package com.mrcrayfish.vehicle.datagen;
 
+import com.mrcrayfish.vehicle.crafting.FluidEntry;
 import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModRecipeSerializers;
 import net.minecraft.data.CustomRecipeBuilder;
@@ -13,14 +15,18 @@ import net.minecraft.data.RecipeProvider;
 import net.minecraft.data.ShapedRecipeBuilder;
 import net.minecraft.data.SmithingRecipeBuilder;
 import net.minecraft.entity.EntityType;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 import net.minecraftforge.common.Tags;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -386,6 +392,9 @@ public class RecipeGen extends RecipeProvider
         workstationCrafting(consumer, ModEntities.SOFA.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
         workstationCrafting(consumer, ModEntities.SOFACOPTER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
         */
+
+        fluidExtracting(consumer, Items.BLAZE_ROD, ModFluids.BLAZE_JUICE.get(), 450);
+        fluidExtracting(consumer, Items.ENDER_PEARL, ModFluids.ENDER_SAP.get(), 600);
     }
 
     private static void netheriteSmithing(Consumer<IFinishedRecipe> consumer, Item inputItem, Item resultItem)
@@ -396,7 +405,13 @@ public class RecipeGen extends RecipeProvider
 
     private static void workstationCrafting(Consumer<IFinishedRecipe> consumer, EntityType<? extends VehicleEntity> type, WorkstationIngredient ... materials)
     {
-        ResourceLocation id = type.getRegistryName();
+        ResourceLocation id = Objects.requireNonNull(type.getRegistryName());
         WorkstationRecipeBuilder.crafting(type, Arrays.asList(materials)).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_crafting"));
+    }
+
+    private static void fluidExtracting(Consumer<IFinishedRecipe> consumer, IItemProvider provider, Fluid fluid, int amount)
+    {
+        ResourceLocation id = Objects.requireNonNull(fluid.getRegistryName());
+        FluidExtractorRecipeBuilder.extracting(Ingredient.of(provider), new FluidEntry(fluid, amount)).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_extracting"));
     }
 }

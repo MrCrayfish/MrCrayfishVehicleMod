@@ -25,10 +25,10 @@ public class FluidMixerRecipeSerializer extends net.minecraftforge.registries.Fo
         {
             throw new com.google.gson.JsonSyntaxException("Invalid input, must only have two objects");
         }
-        FluidEntry inputOne = FluidEntry.deserialize(input.get(0).getAsJsonObject());
-        FluidEntry inputTwo = FluidEntry.deserialize(input.get(1).getAsJsonObject());
+        FluidEntry inputOne = FluidEntry.fromJson(input.get(0).getAsJsonObject());
+        FluidEntry inputTwo = FluidEntry.fromJson(input.get(1).getAsJsonObject());
         ItemStack ingredient = CraftingHelper.getItemStack(json.getAsJsonObject("ingredient"), false);
-        FluidEntry result = FluidEntry.deserialize(json.getAsJsonObject("result"));
+        FluidEntry result = FluidEntry.fromJson(json.getAsJsonObject("result"));
         return new FluidMixerRecipe(recipeId, inputOne, inputTwo, ingredient, result);
     }
 

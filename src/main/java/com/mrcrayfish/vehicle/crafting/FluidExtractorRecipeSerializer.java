@@ -26,7 +26,7 @@ public class FluidExtractorRecipeSerializer extends net.minecraftforge.registrie
         {
             throw new com.google.gson.JsonSyntaxException("Missing result, expected to find a fluid entry");
         }
-        FluidEntry result = FluidEntry.deserialize(json.getAsJsonObject("result"));
+        FluidEntry result = FluidEntry.fromJson(json.getAsJsonObject("result"));
         return new FluidExtractorRecipe(recipeId, ingredient, result);
     }
 
