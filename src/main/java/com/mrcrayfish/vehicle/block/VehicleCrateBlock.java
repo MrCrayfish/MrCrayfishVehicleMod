@@ -257,7 +257,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
         }
     }
 
-    @Override
+    /*@Override
     public boolean removedByPlayer(BlockState state, World world, BlockPos pos, PlayerEntity player, boolean willHarvest, FluidState fluid)
     {
         if(!world.isClientSide && !player.isCreative())
@@ -283,5 +283,5 @@ public class VehicleCrateBlock extends RotatedObjectBlock
             }
         }
         return super.removedByPlayer(state, world, pos, player, willHarvest, fluid);
-    }
+    }*/
 }
