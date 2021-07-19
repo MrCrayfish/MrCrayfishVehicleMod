@@ -32,7 +32,7 @@ import org.apache.logging.log4j.Logger;
 public class VehicleMod
 {
     public static final Logger LOGGER = LogManager.getLogger(Reference.MOD_ID);
-    public static final ItemGroup CREATIVE_TAB = new ItemGroup("vehicle")
+    public static final ItemGroup CREATIVE_TAB = new ItemGroup(Reference.MOD_ID)
     {
         @Override
         public ItemStack makeIcon()

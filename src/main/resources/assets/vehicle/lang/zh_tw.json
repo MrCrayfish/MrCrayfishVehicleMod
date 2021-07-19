@@ -1,5 +1,5 @@
 {
-    "itemGroup.tabVehicle": "MrCrayfish載具模組",
+    "itemGroup.vehicle": "MrCrayfish載具模組",
 
     "vehicle.engine_type.small.name": "小型引擎",
     "vehicle.engine_type.large.name": "大型引擎",

@@ -1,5 +1,5 @@
 {
-    "itemGroup.tabVehicle": "차량",
+    "itemGroup.vehicle": "차량",
 
     "vehicle.engine_type.small.name": "작은 엔진",
     "vehicle.engine_type.large.name": "큰 엔진",

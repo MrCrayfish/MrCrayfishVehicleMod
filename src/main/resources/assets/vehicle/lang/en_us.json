@@ -1,5 +1,5 @@
 {
-    "itemGroup.tabVehicle": "MrCrayfish's Vehicle Mod",
+    "itemGroup.vehicle": "MrCrayfish's Vehicle Mod",
 
     "vehicle.engine_type.small_motor.name": "Small Engine",
     "vehicle.engine_type.large_motor.name": "Large Engine",
