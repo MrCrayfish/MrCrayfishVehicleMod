@@ -1,9 +1,9 @@
 {
-    "type": "vehicle:crafting",
+    "type": "vehicle:workstation",
     "vehicle": "vehicle:speed_boat",
     "materials": [
         {
-            "item": "minecraft:iron_ingot",
+            "tag": "forge:ingots/iron",
             "count": 80
         },
         {

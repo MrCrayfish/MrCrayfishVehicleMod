@@ -11,8 +11,9 @@ import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.CachedVehicle;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -52,6 +53,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -90,7 +92,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
     private List<EntityType<?>> getVehicleTypes(World world)
     {
-        return world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTING).map(recipe -> (VehicleRecipe) recipe).map(VehicleRecipe::getVehicle).filter(entityType -> !Config.SERVER.disabledVehicles.get().contains(Objects.requireNonNull(entityType.getRegistryName()).toString())).collect(Collectors.toList());
+        return world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.WORKSTATION).map(recipe -> (WorkstationRecipe) recipe).map(WorkstationRecipe::getVehicle).filter(entityType -> !Config.SERVER.disabledVehicles.get().contains(Objects.requireNonNull(entityType.getRegistryName()).toString())).collect(Collectors.toList());
     }
 
     @Override
@@ -131,7 +133,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         for(MaterialItem material : this.materials)
         {
-            material.update();
+            material.tick();
         }
 
         boolean canCraft = true;
@@ -251,13 +253,13 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         this.materials.clear();
 
-        VehicleRecipe recipe = VehicleRecipes.getRecipe(cachedVehicle.getType(), this.minecraft.level);
+        WorkstationRecipe recipe = WorkstationRecipes.getRecipe(cachedVehicle.getType(), this.minecraft.level);
         if(recipe != null)
         {
             for(int i = 0; i < recipe.getMaterials().size(); i++)
             {
-                MaterialItem item = new MaterialItem(recipe.getMaterials().get(i).copy());
-                item.update();
+                MaterialItem item = new MaterialItem(recipe.getMaterials().get(i));
+                item.updateEnabledState();
                 this.materials.add(item);
             }
         }
@@ -284,9 +286,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             if(CommonUtils.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19))
             {
                 MaterialItem materialItem = this.filteredMaterials.get(i);
-                if(!materialItem.getStack().isEmpty())
+                if(materialItem != MaterialItem.EMPTY)
                 {
-                    this.renderTooltip(matrixStack, materialItem.getStack(), mouseX, mouseY);
+                    this.renderTooltip(matrixStack, materialItem.getDisplayStack(), mouseX, mouseY);
                 }
             }
         }
@@ -358,7 +360,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             this.minecraft.getTextureManager().bind(GUI);
 
             MaterialItem materialItem = this.filteredMaterials.get(i);
-            ItemStack stack = materialItem.stack;
+            ItemStack stack = materialItem.getDisplayStack();
             if(stack.isEmpty())
             {
                 RenderHelper.turnOff();
@@ -469,8 +471,8 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
     private List<MaterialItem> getMaterials()
     {
-        List<MaterialItem> materials = NonNullList.withSize(7, new MaterialItem(ItemStack.EMPTY));
-        List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : !materialItem.stack.isEmpty()).collect(Collectors.toList());
+        List<MaterialItem> materials = NonNullList.withSize(7, MaterialItem.EMPTY);
+        List<MaterialItem> filteredMaterials = this.materials.stream().filter(materialItem -> this.checkBoxMaterials.isToggled() ? !materialItem.isEnabled() : materialItem != MaterialItem.EMPTY).collect(Collectors.toList());
         for(int i = 0; i < filteredMaterials.size() && i < materials.size(); i++)
         {
             materials.set(i, filteredMaterials.get(i));
@@ -488,34 +490,59 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     {
         public static final MaterialItem EMPTY = new MaterialItem();
 
+        private long lastTime = System.currentTimeMillis();
+        private int displayIndex;
         private boolean enabled = false;
-        private ItemStack stack = ItemStack.EMPTY;
+        private WorkstationIngredient ingredient = null;
+        private final List<ItemStack> displayStacks = new ArrayList<>();
 
-        public MaterialItem()
+        public MaterialItem() {}
+
+        public MaterialItem(WorkstationIngredient ingredient)
         {
+            this.ingredient = ingredient;
+            Stream.of(ingredient.getItems()).forEach(stack -> {
+                ItemStack displayStack = stack.copy();
+                displayStack.setCount(ingredient.getCount());
+                this.displayStacks.add(displayStack);
+            });
         }
 
-        public MaterialItem(ItemStack stack)
+        public WorkstationIngredient getIngredient()
         {
-            this.stack = stack;
+            return this.ingredient;
         }
 
-        public ItemStack getStack()
+        public void tick()
         {
-            return stack;
-        }
+            if(this.ingredient == null)
+                return;
 
-        public void update()
-        {
-            if(!this.stack.isEmpty())
+            this.updateEnabledState();
+            long currentTime = System.currentTimeMillis();
+            if(currentTime - lastTime >= 1000)
             {
-                this.enabled = InventoryUtil.hasItemStack(Minecraft.getInstance().player, this.stack);
+                this.displayIndex = (this.displayIndex + 1) % this.displayStacks.size();
+                this.lastTime = currentTime;
+            }
+        }
+
+        public ItemStack getDisplayStack()
+        {
+            return this.ingredient != null ? this.displayStacks.get(this.displayIndex) : ItemStack.EMPTY;
+        }
+
+        public void updateEnabledState()
+        {
+            if(this.ingredient != null)
+            {
+                this.enabled = InventoryUtil.hasWorkstationIngredient(Minecraft.getInstance().player, this.ingredient);
             }
         }
 
         public boolean isEnabled()
         {
-            return this.stack.isEmpty() || this.enabled;
+            return this.ingredient == null || this.enabled;
         }
     }
 }

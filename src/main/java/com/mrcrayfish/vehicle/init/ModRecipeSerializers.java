@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.init;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.crafting.FluidExtractorRecipeSerializer;
 import com.mrcrayfish.vehicle.crafting.FluidMixerRecipeSerializer;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipeSerializer;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipeSerializer;
 import com.mrcrayfish.vehicle.recipe.RecipeColorSprayCan;
 import com.mrcrayfish.vehicle.recipe.RecipeRefillSprayCan;
 import net.minecraft.item.crafting.IRecipeSerializer;
@@ -23,5 +23,5 @@ public class ModRecipeSerializers
     public static final RegistryObject<SpecialRecipeSerializer<RecipeRefillSprayCan>> REFILL_SPRAY_CAN = REGISTER.register("refill_spray_can", () -> new SpecialRecipeSerializer<>(RecipeRefillSprayCan::new));
     public static final RegistryObject<FluidExtractorRecipeSerializer> FLUID_EXTRACTOR = REGISTER.register("fluid_extractor", FluidExtractorRecipeSerializer::new);
     public static final RegistryObject<FluidMixerRecipeSerializer> FLUID_MIXER = REGISTER.register("fluid_mixer", FluidMixerRecipeSerializer::new);
-    public static final RegistryObject<VehicleRecipeSerializer> CRAFTING = REGISTER.register("crafting", VehicleRecipeSerializer::new);
+    public static final RegistryObject<WorkstationRecipeSerializer> WORKSTATION = REGISTER.register("workstation", WorkstationRecipeSerializer::new);
 }

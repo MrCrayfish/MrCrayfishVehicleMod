@@ -3,8 +3,8 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -85,7 +85,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
             if(!VehicleRegistry.getRegisteredVehicleTypes().contains(entityType))
                 return;
 
-            VehicleRecipe recipe = VehicleRecipes.getRecipe(entityType, world);
+            WorkstationRecipe recipe = WorkstationRecipes.getRecipe(entityType, world);
             if(recipe == null || !recipe.hasMaterials(player))
                 return;
 

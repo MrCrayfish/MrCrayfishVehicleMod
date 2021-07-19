@@ -16,13 +16,13 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
+public class WorkstationRecipe implements IRecipe<WorkstationTileEntity>
 {
     private ResourceLocation id;
     private EntityType<?> vehicle;
-    private ImmutableList<ItemStack> materials;
+    private ImmutableList<WorkstationIngredient> materials;
 
-    public VehicleRecipe(ResourceLocation id, EntityType<?> vehicle, ImmutableList<ItemStack> materials)
+    public WorkstationRecipe(ResourceLocation id, EntityType<?> vehicle, ImmutableList<WorkstationIngredient> materials)
     {
         this.id = id;
         this.vehicle = vehicle;
@@ -31,12 +31,12 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
 
     public EntityType<?> getVehicle()
     {
-        return vehicle;
+        return this.vehicle;
     }
 
-    public ImmutableList<ItemStack> getMaterials()
+    public ImmutableList<WorkstationIngredient> getMaterials()
     {
-        return materials;
+        return this.materials;
     }
 
     @Override
@@ -72,20 +72,20 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModRecipeSerializers.CRAFTING.get();
+        return ModRecipeSerializers.WORKSTATION.get();
     }
 
     @Override
     public IRecipeType<?> getType()
     {
-        return RecipeType.CRAFTING;
+        return RecipeType.WORKSTATION;
     }
 
     public boolean hasMaterials(PlayerEntity player)
     {
-        for(ItemStack stack : this.getMaterials())
+        for(WorkstationIngredient ingredient : this.getMaterials())
         {
-            if(!InventoryUtil.hasItemStack(player, stack))
+            if(!InventoryUtil.hasWorkstationIngredient(player, ingredient))
             {
                 return false;
             }
@@ -95,9 +95,9 @@ public class VehicleRecipe implements IRecipe<WorkstationTileEntity>
 
     public void consumeMaterials(PlayerEntity player)
     {
-        for(ItemStack stack : this.getMaterials())
+        for(WorkstationIngredient ingredient : this.getMaterials())
         {
-            InventoryUtil.removeItemStack(player, stack);
+            InventoryUtil.removeWorkstationIngredient(player, ingredient);
         }
     }
 }

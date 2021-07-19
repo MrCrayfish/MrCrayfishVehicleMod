@@ -12,7 +12,7 @@ public class RecipeType
 {
     public static final IRecipeType<FluidExtractorRecipe> FLUID_EXTRACTOR = register("vehicle:fluid_extractor");
     public static final IRecipeType<FluidMixerRecipe> FLUID_MIXER = register("vehicle:fluid_mixer");
-    public static final IRecipeType<VehicleRecipe> CRAFTING = register("vehicle:crafting");
+    public static final IRecipeType<WorkstationRecipe> WORKSTATION = register("vehicle:workstation");
 
     static <T extends IRecipe<?>> IRecipeType<T> register(final String key)
     {

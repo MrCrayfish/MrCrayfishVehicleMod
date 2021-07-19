@@ -1,10 +1,12 @@
 package com.mrcrayfish.vehicle.util;
 
+import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.world.World;
@@ -161,6 +163,19 @@ public class InventoryUtil
         return find.getCount() <= count;
     }
 
+    public static boolean hasWorkstationIngredient(PlayerEntity player, WorkstationIngredient find)
+    {
+        int count = 0;
+        for(ItemStack stack : player.inventory.items)
+        {
+            if(!stack.isEmpty() && find.test(stack))
+            {
+                count += stack.getCount();
+            }
+        }
+        return find.getCount() <= count;
+    }
+
     public static boolean removeItemStack(PlayerEntity player, ItemStack find)
     {
         int amount = find.getCount();
@@ -168,6 +183,30 @@ public class InventoryUtil
         {
             ItemStack stack = player.inventory.getItem(i);
             if(!stack.isEmpty() && areItemStacksEqualIgnoreCount(stack, find))
+            {
+                if(amount - stack.getCount() < 0)
+                {
+                    stack.shrink(amount);
+                    return true;
+                }
+                else
+                {
+                    amount -= stack.getCount();
+                    player.inventory.items.set(i, ItemStack.EMPTY);
+                    if(amount == 0) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean removeWorkstationIngredient(PlayerEntity player, WorkstationIngredient find)
+    {
+        int amount = find.getCount();
+        for(int i = 0; i < player.inventory.getContainerSize(); i++)
+        {
+            ItemStack stack = player.inventory.getItem(i);
+            if(!stack.isEmpty() && find.test(stack))
             {
                 if(amount - stack.getCount() < 0)
                 {

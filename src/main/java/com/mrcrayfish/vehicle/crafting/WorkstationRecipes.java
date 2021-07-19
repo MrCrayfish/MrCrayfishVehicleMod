@@ -10,12 +10,12 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-public class VehicleRecipes
+public class WorkstationRecipes
 {
     @Nullable
-    public static VehicleRecipe getRecipe(EntityType<?> entityType, World world)
+    public static WorkstationRecipe getRecipe(EntityType<?> entityType, World world)
     {
-        List<VehicleRecipe> recipes = world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.CRAFTING).map(recipe -> (VehicleRecipe) recipe).collect(Collectors.toList());
+        List<WorkstationRecipe> recipes = world.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType() == RecipeType.WORKSTATION).map(recipe -> (WorkstationRecipe) recipe).collect(Collectors.toList());
         return recipes.stream().filter(recipe -> recipe.getVehicle() == entityType).findFirst().orElse(null);
     }
 }

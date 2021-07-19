@@ -7,8 +7,8 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipe;
-import com.mrcrayfish.vehicle.crafting.VehicleRecipes;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
+import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -416,10 +416,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         boolean isCreativeMode = entity instanceof PlayerEntity && ((PlayerEntity) entity).isCreative();
         if(!isCreativeMode && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
         {
-            VehicleRecipe recipe = VehicleRecipes.getRecipe(this.getType(), this.level);
+            WorkstationRecipe recipe = WorkstationRecipes.getRecipe(this.getType(), this.level);
             if(recipe != null)
             {
-                List<ItemStack> materials = recipe.getMaterials();
+                //TODO make vehicle inoperable instead of destroying
+                /*List<ItemStack> materials = recipe.getMaterials();
                 for(ItemStack stack : materials)
                 {
                     ItemStack copy = stack.copy();
@@ -427,7 +428,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     if(shrink > 0)
                         copy.shrink(this.random.nextInt(shrink + 1));
                     InventoryUtil.spawnItemStack(this.level, this.getX(), this.getY(), this.getZ(), copy);
-                }
+                }*/
             }
         }
     }

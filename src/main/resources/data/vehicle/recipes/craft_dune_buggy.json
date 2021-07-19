@@ -1,5 +1,5 @@
 {
-    "type": "vehicle:crafting",
+    "type": "vehicle:workstation",
     "vehicle": "vehicle:dune_buggy",
     "materials": [
         {
