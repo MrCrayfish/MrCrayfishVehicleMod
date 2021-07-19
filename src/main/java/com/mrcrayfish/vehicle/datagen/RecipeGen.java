@@ -393,8 +393,9 @@ public class RecipeGen extends RecipeProvider
         workstationCrafting(consumer, ModEntities.SOFACOPTER.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(ModItems.PANEL.get(), 10));
         */
 
-        fluidExtracting(consumer, Items.BLAZE_ROD, ModFluids.BLAZE_JUICE.get(), 450);
-        fluidExtracting(consumer, Items.ENDER_PEARL, ModFluids.ENDER_SAP.get(), 600);
+        fluidExtracting(consumer, Items.BLAZE_ROD, FluidEntry.of(ModFluids.BLAZE_JUICE.get(), 450));
+        fluidExtracting(consumer, Items.ENDER_PEARL, FluidEntry.of(ModFluids.ENDER_SAP.get(), 600));
+        fluidMixing(consumer, FluidEntry.of(ModFluids.ENDER_SAP.get(), 200),  FluidEntry.of(ModFluids.BLAZE_JUICE.get(), 200), Items.GLOWSTONE_DUST, FluidEntry.of(ModFluids.FUELIUM.get(), 400));
     }
 
     private static void netheriteSmithing(Consumer<IFinishedRecipe> consumer, Item inputItem, Item resultItem)
@@ -409,9 +410,15 @@ public class RecipeGen extends RecipeProvider
         WorkstationRecipeBuilder.crafting(type, Arrays.asList(materials)).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_crafting"));
     }
 
-    private static void fluidExtracting(Consumer<IFinishedRecipe> consumer, IItemProvider provider, Fluid fluid, int amount)
+    private static void fluidExtracting(Consumer<IFinishedRecipe> consumer, IItemProvider provider, FluidEntry output)
     {
-        ResourceLocation id = Objects.requireNonNull(fluid.getRegistryName());
-        FluidExtractorRecipeBuilder.extracting(Ingredient.of(provider), new FluidEntry(fluid, amount)).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_extracting"));
+        ResourceLocation id = Objects.requireNonNull(output.getFluid().getRegistryName());
+        FluidExtractorRecipeBuilder.extracting(Ingredient.of(provider), output).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_extracting"));
+    }
+
+    private static void fluidMixing(Consumer<IFinishedRecipe> consumer, FluidEntry inputOne, FluidEntry inputTwo, IItemProvider provider, FluidEntry output)
+    {
+        ResourceLocation id = Objects.requireNonNull(output.getFluid().getRegistryName());
+        FluidMixerRecipeBuilder.mixing(inputOne, inputTwo, Ingredient.of(provider), output).save(consumer, new ResourceLocation(id.getNamespace(), id.getPath() + "_mixing"));
     }
 }

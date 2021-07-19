@@ -77,4 +77,9 @@ public class FluidEntry
         int amount = buffer.readInt();
         return new FluidEntry(fluid, amount);
     }
+
+    public static FluidEntry of(Fluid fluid, int amount)
+    {
+        return new FluidEntry(fluid, amount);
+    }
 }

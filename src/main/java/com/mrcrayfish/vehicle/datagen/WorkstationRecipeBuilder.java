@@ -56,7 +56,7 @@ public class WorkstationRecipeBuilder
         private final List<WorkstationIngredient> ingredients;
         private final IRecipeSerializer<?> serializer;
 
-        public Result(ResourceLocation id, IRecipeSerializer<?> serializer, EntityType<? extends VehicleEntity> type, List<WorkstationIngredient> ingredients)
+        private Result(ResourceLocation id, IRecipeSerializer<?> serializer, EntityType<? extends VehicleEntity> type, List<WorkstationIngredient> ingredients)
         {
             this.id = id;
             this.serializer = serializer;
