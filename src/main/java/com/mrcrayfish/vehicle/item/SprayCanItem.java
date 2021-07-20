@@ -23,7 +23,7 @@ import java.util.List;
  */
 public class SprayCanItem extends Item implements IDyeable
 {
-    public static final int MAX_SPRAYS = 5;
+    public static final int MAX_SPRAYS = 20;
 
     public SprayCanItem(Item.Properties properties)
     {
