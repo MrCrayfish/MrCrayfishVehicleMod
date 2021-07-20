@@ -47,8 +47,8 @@ public class ModItems
     public static final RegistryObject<Item> DIAMOND_ELECTRIC_ENGINE = register("diamond_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.DIAMOND, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> NETHERITE_ELECTRIC_ENGINE = register("netherite_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.NETHERITE, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> SPRAY_CAN = register("spray_can", new SprayCanItem(new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
-    public static final RegistryObject<Item> JERRY_CAN = register("jerry_can", new JerryCanItem(5000, 100, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
-    public static final RegistryObject<Item> INDUSTRIAL_JERRY_CAN = register("industrial_jerry_can", new JerryCanItem(15000, 150, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
+    public static final RegistryObject<Item> JERRY_CAN = register("jerry_can", new JerryCanItem(5000, 500, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
+    public static final RegistryObject<Item> INDUSTRIAL_JERRY_CAN = register("industrial_jerry_can", new JerryCanItem(15000, 500, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> WRENCH = register("wrench", new WrenchItem(new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> HAMMER = register("hammer", new HammerItem(new Item.Properties().durability(200).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> KEY = register("key", new KeyItem(new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
