@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -11,7 +12,7 @@ public class FuelDrumTileEntity extends TileFluidHandlerSynced
 {
     public FuelDrumTileEntity()
     {
-        super(ModTileEntities.FUEL_DRUM.get(), Config.SERVER.fuelDrumCapacity.get());
+        super(ModTileEntities.FUEL_DRUM.get(), ModBlocks.FUEL_DRUM.get().getCapacity());
     }
 
     public FuelDrumTileEntity(TileEntityType<?> tileEntityType, int capacity)

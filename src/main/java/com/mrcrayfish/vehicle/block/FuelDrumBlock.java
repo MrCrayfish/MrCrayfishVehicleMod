@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.block;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.tileentity.FuelDrumTileEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -10,8 +11,10 @@ import net.minecraft.block.material.Material;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -20,17 +23,21 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Rotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -76,6 +83,22 @@ public class FuelDrumBlock extends Block
         }
         else
         {
+            CompoundNBT tag = stack.getTag();
+            if(tag != null && tag.contains("BlockEntityTag", Constants.NBT.TAG_COMPOUND))
+            {
+                CompoundNBT blockEntityTag = tag.getCompound("BlockEntityTag");
+                if(blockEntityTag.contains("FluidName", Constants.NBT.TAG_STRING))
+                {
+                    String fluidName = blockEntityTag.getString("FluidName");
+                    Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(fluidName));
+                    int amount = blockEntityTag.getInt("Amount");
+                    if(fluid != null && amount > 0)
+                    {
+                        list.add(new TranslationTextComponent(fluid.getAttributes().getTranslationKey()).withStyle(TextFormatting.BLUE));
+                        list.add(new StringTextComponent(amount + " / " + this.getCapacity() + "mb").withStyle(TextFormatting.GRAY));
+                    }
+                }
+            }
             list.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }
@@ -132,6 +155,11 @@ public class FuelDrumBlock extends Block
     public boolean hasTileEntity(BlockState state)
     {
         return true;
+    }
+
+    public int getCapacity()
+    {
+        return Config.SERVER.fuelDrumCapacity.get();
     }
 
     @Nullable

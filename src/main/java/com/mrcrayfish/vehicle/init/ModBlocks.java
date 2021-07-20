@@ -31,8 +31,8 @@ public class ModBlocks
     public static final RegistryObject<Block> GAS_PUMP = register("gas_pump", new GasPumpBlock());
     public static final RegistryObject<Block> FLUID_PIPE = register("fluid_pipe", new FluidPipeBlock(), FluidPipeItem::new);
     public static final RegistryObject<Block> FLUID_PUMP = register("fluid_pump", new FluidPumpBlock(), FluidPipeItem::new);
-    public static final RegistryObject<Block> FUEL_DRUM = register("fuel_drum", new FuelDrumBlock());
-    public static final RegistryObject<Block> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new IndustrialFuelDrumBlock());
+    public static final RegistryObject<FuelDrumBlock> FUEL_DRUM = register("fuel_drum", new FuelDrumBlock());
+    public static final RegistryObject<FuelDrumBlock> INDUSTRIAL_FUEL_DRUM = register("industrial_fuel_drum", new IndustrialFuelDrumBlock());
     public static final RegistryObject<Block> WORKSTATION = register("workstation", new WorkstationBlock());
     public static final RegistryObject<Block> VEHICLE_CRATE = register("vehicle_crate", new VehicleCrateBlock(), block -> new BlockItem(block, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Block> JACK = register("jack", new JackBlock());
