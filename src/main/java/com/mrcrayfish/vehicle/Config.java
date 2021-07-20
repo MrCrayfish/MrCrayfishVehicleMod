@@ -69,10 +69,8 @@ public class Config
         public final ForgeConfigSpec.IntValue trailerInventorySyncCooldown;
         public final ForgeConfigSpec.BooleanValue pickUpVehicles;
         public final ForgeConfigSpec.DoubleValue maxHoseDistance;
-        public final ForgeConfigSpec.IntValue pipeTransferAmount;
         public final ForgeConfigSpec.IntValue pumpTransferAmount;
         public final ForgeConfigSpec.IntValue gasPumpCapacity;
-        public final ForgeConfigSpec.IntValue pipeCapacity;
         public final ForgeConfigSpec.IntValue pumpCapacity;
         public final ForgeConfigSpec.IntValue extractorCapacity;
         public final ForgeConfigSpec.IntValue extractorExtractTime;
@@ -84,6 +82,9 @@ public class Config
         public final ForgeConfigSpec.DoubleValue fuelConsumptionFactor;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> disabledVehicles;
         public final ForgeConfigSpec.ConfigValue<List<? extends String>> validFuels;
+        public final ForgeConfigSpec.IntValue jerryCanCapacity;
+        public final ForgeConfigSpec.IntValue industrialJerryCanCapacity;
+        public final ForgeConfigSpec.IntValue jerryCanFillRate;
 
         Server(ForgeConfigSpec.Builder builder)
         {
@@ -111,11 +112,6 @@ public class Config
                     this.gasPumpCapacity = builder.comment("The fluid capacity of the gas pump in millibuckets").translation(Reference.MOD_ID + ".config.server.gas_pump_capacity").defineInRange("gasPumpCapacity", 50000, 1, Integer.MAX_VALUE);
                     builder.pop();
 
-                    builder.comment("Configuration options for fluid pipes").push("fluid_pipe");
-                    this.pipeTransferAmount = builder.comment("The amount of fluid a pipe will transfer each tick").translation(Reference.MOD_ID + ".config.server.pipe_transfer_amount").defineInRange("pipeTransferAmount", 50, 1, Integer.MAX_VALUE);
-                    this.pipeCapacity = builder.comment("The fluid capacity of the fluid pipe in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_pipe_capacity").defineInRange("pipeCapacity", 500, 1, Integer.MAX_VALUE);
-                    builder.pop();
-
                     builder.comment("Configuration options for fluid pumps").push("fluid_pump");
                     this.pumpTransferAmount = builder.comment("The amount of fluid a pump will transfer each tick").translation(Reference.MOD_ID + ".config.server.pump_transfer_amount").defineInRange("pumpTransferAmount", 50, 1, Integer.MAX_VALUE);
                     this.pumpCapacity = builder.comment("The fluid capacity of the fluid pump in millibuckets").translation(Reference.MOD_ID + ".config.server.fluid_pump_capacity").defineInRange("pumpCapacity", 500, 1, Integer.MAX_VALUE);
@@ -135,6 +131,16 @@ public class Config
                     builder.comment("Configuration options for fuel drums").push("fuel_drum");
                     this.fuelDrumCapacity = builder.comment("The fluid capacity of the fuel drum in millibuckets").translation(Reference.MOD_ID + ".config.server.fuel_drum_capacity").defineInRange("fuelDrumCapacity", 40000, 1, Integer.MAX_VALUE);
                     this.industrialFuelDrumCapacity = builder.comment("The fluid capacity of the industrial fuel drum in millibuckets").translation(Reference.MOD_ID + ".config.server.industrial_fuel_drum_capacity").defineInRange("industrialFuelDrumCapacity", 75000, 1, Integer.MAX_VALUE);
+                    builder.pop();
+                }
+                builder.pop();
+
+                builder.comment("Configuration options for items").push("items");
+                {
+                    builder.comment("Configuration options for jerry cans").push("jerry_can");
+                    this.jerryCanCapacity = builder.comment("The fluid capacity of the jerry can in millibuckets").translation(Reference.MOD_ID + ".config.server.jerry_can_capacity").defineInRange("jerryCanCapacity", 5000, 1, Integer.MAX_VALUE);
+                    this.industrialJerryCanCapacity = builder.comment("The fluid capacity of the industrial jerry can in millibuckets").translation(Reference.MOD_ID + ".config.server.industrial_jerry_can_capacity").defineInRange("industrialJerryCanCapacity", 15000, 1, Integer.MAX_VALUE);
+                    this.jerryCanFillRate = builder.comment("The amount of fluid transferred when pouring or filling a jerry can").translation(Reference.MOD_ID + ".config.server.jerry_can_fill_rate").defineInRange("fillRate", 500, 1, Integer.MAX_VALUE);
                     builder.pop();
                 }
                 builder.pop();

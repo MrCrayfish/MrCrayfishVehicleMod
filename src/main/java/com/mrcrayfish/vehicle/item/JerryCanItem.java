@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
-import com.mrcrayfish.vehicle.util.CommonUtils;
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.util.FluidUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,7 +20,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -32,6 +31,7 @@ import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Author: MrCrayfish
@@ -40,14 +40,12 @@ public class JerryCanItem extends Item
 {
     private final DecimalFormat FUEL_FORMAT = new DecimalFormat("0.#%");
 
-    private final int capacity;
-    private final int fillRate;
+    private final Supplier<Integer> capacitySupplier;
 
-    public JerryCanItem(int capacity, int fillRate, Item.Properties properties)
+    public JerryCanItem(Supplier<Integer> capacity, Item.Properties properties)
     {
         super(properties);
-        this.capacity = capacity;
-        this.fillRate = fillRate;
+        this.capacitySupplier = capacity;
     }
 
     @Override
@@ -75,7 +73,7 @@ public class JerryCanItem extends Item
                 if(!fluidStack.isEmpty())
                 {
                     tooltip.add(new TranslationTextComponent(fluidStack.getTranslationKey()).withStyle(TextFormatting.BLUE));
-                    tooltip.add(new StringTextComponent(this.getCurrentFuel(stack) + " / " + this.capacity + "mb").withStyle(TextFormatting.GRAY));
+                    tooltip.add(new StringTextComponent(this.getCurrentFuel(stack) + " / " + this.capacitySupplier.get() + "mb").withStyle(TextFormatting.GRAY));
                 }
                 else
                 {
@@ -105,11 +103,11 @@ public class JerryCanItem extends Item
                     {
                         if(context.getPlayer().isCrouching())
                         {
-                            FluidUtils.transferFluid(source, itemOptional.get(), this.fillRate);
+                            FluidUtils.transferFluid(source, itemOptional.get(), this.getFillRate());
                         }
                         else
                         {
-                            FluidUtils.transferFluid(itemOptional.get(), source, this.fillRate);
+                            FluidUtils.transferFluid(itemOptional.get(), source, this.getFillRate());
                         }
                         return ActionResultType.SUCCESS;
                     }
@@ -125,19 +123,14 @@ public class JerryCanItem extends Item
         return optional.map(handler -> handler.getFluidInTank(0).getAmount()).orElse(0);
     }
 
-    public boolean isFull(ItemStack stack)
-    {
-        return this.getCurrentFuel(stack) == this.capacity;
-    }
-
     public int getCapacity()
     {
-        return this.capacity;
+        return this.capacitySupplier.get();
     }
 
     public int getFillRate()
     {
-        return this.fillRate;
+        return Config.SERVER.jerryCanFillRate.get();
     }
 
     @Override
@@ -149,7 +142,7 @@ public class JerryCanItem extends Item
     @Override
     public double getDurabilityForDisplay(ItemStack stack)
     {
-        return 1.0 - (this.getCurrentFuel(stack) / (double) this.capacity);
+        return 1.0 - (this.getCurrentFuel(stack) / (double) this.capacitySupplier.get());
     }
 
     @Override
@@ -173,6 +166,6 @@ public class JerryCanItem extends Item
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
     {
-        return new FluidHandlerItemStack(stack, this.capacity);
+        return new FluidHandlerItemStack(stack, this.capacitySupplier.get());
     }
 }
