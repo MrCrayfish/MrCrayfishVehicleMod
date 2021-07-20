@@ -50,13 +50,13 @@ public class SprayCanItem extends Item implements IDyeable
         }
         else
         {
-            if (this.hasColor(stack))
+            if(this.hasColor(stack))
             {
-                tooltip.add(new TranslationTextComponent("item.color", new StringTextComponent(String.format("#%06X", this.getColor(stack))).withStyle(TextFormatting.DARK_GRAY)));
+                tooltip.add(new StringTextComponent(String.format("#%06X", this.getColor(stack))).withStyle(TextFormatting.BLUE));
             }
             else
             {
-                tooltip.add(new TranslationTextComponent(this.getDescriptionId() + ".empty"));
+                tooltip.add(new TranslationTextComponent(this.getDescriptionId() + ".empty").withStyle(TextFormatting.RED));
             }
             tooltip.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
