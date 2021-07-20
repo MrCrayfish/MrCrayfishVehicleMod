@@ -146,7 +146,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     {
                         if(!compound.contains("RemainingSprays", Constants.NBT.TAG_INT))
                         {
-                            compound.putInt("RemainingSprays", SprayCanItem.MAX_SPRAYS);
+                            compound.putInt("RemainingSprays", ModItems.SPRAY_CAN.get().getCapacity(heldItem));
                         }
                         int remainingSprays = compound.getInt("RemainingSprays");
                         if(compound.contains("Color", Constants.NBT.TAG_INT) && remainingSprays > 0)

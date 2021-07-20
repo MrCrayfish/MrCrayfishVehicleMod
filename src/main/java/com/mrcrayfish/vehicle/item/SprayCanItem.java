@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.item;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
@@ -8,6 +9,7 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -23,8 +25,6 @@ import java.util.List;
  */
 public class SprayCanItem extends Item implements IDyeable
 {
-    public static final int MAX_SPRAYS = 20;
-
     public SprayCanItem(Item.Properties properties)
     {
         super(properties);
@@ -101,7 +101,7 @@ public class SprayCanItem extends Item implements IDyeable
         CompoundNBT compound = stack.getTag();
         if (compound != null && compound.contains("RemainingSprays", Constants.NBT.TAG_INT))
         {
-            return 1.0 - (compound.getInt("RemainingSprays") / (double) this.getCapacity(stack));
+            return MathHelper.clamp(1.0 - (compound.getInt("RemainingSprays") / (double) this.getCapacity(stack)), 0.0, 1.0);
         }
         return 0.0;
     }
@@ -123,7 +123,7 @@ public class SprayCanItem extends Item implements IDyeable
         {
             return compound.getInt("Capacity");
         }
-        return MAX_SPRAYS;
+        return Config.SERVER.sprayCanCapacity.get();
     }
 
     public void refill(ItemStack stack)

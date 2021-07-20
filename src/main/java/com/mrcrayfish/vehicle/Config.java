@@ -85,6 +85,7 @@ public class Config
         public final ForgeConfigSpec.IntValue jerryCanCapacity;
         public final ForgeConfigSpec.IntValue industrialJerryCanCapacity;
         public final ForgeConfigSpec.IntValue jerryCanFillRate;
+        public final ForgeConfigSpec.IntValue sprayCanCapacity;
 
         Server(ForgeConfigSpec.Builder builder)
         {
@@ -141,6 +142,10 @@ public class Config
                     this.jerryCanCapacity = builder.comment("The fluid capacity of the jerry can in millibuckets").translation(Reference.MOD_ID + ".config.server.jerry_can_capacity").defineInRange("jerryCanCapacity", 5000, 1, Integer.MAX_VALUE);
                     this.industrialJerryCanCapacity = builder.comment("The fluid capacity of the industrial jerry can in millibuckets").translation(Reference.MOD_ID + ".config.server.industrial_jerry_can_capacity").defineInRange("industrialJerryCanCapacity", 15000, 1, Integer.MAX_VALUE);
                     this.jerryCanFillRate = builder.comment("The amount of fluid transferred when pouring or filling a jerry can").translation(Reference.MOD_ID + ".config.server.jerry_can_fill_rate").defineInRange("fillRate", 500, 1, Integer.MAX_VALUE);
+                    builder.pop();
+
+                    builder.comment("Configuration options for spray cans").push("spray_can");
+                    this.sprayCanCapacity = builder.comment("The amount of sprays before a spray can becomes empty").translation(Reference.MOD_ID + ".config.server.spray_can_capacity").defineInRange("sprayCanCapacity", 20, 1, Integer.MAX_VALUE);
                     builder.pop();
                 }
                 builder.pop();

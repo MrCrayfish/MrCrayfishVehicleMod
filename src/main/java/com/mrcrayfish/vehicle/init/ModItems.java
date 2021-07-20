@@ -47,7 +47,7 @@ public class ModItems
     public static final RegistryObject<Item> GOLD_ELECTRIC_ENGINE = register("gold_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.GOLD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> DIAMOND_ELECTRIC_ENGINE = register("diamond_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.DIAMOND, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> NETHERITE_ELECTRIC_ENGINE = register("netherite_electric_engine", new EngineItem(EngineType.ELECTRIC_MOTOR, EngineTier.NETHERITE, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
-    public static final RegistryObject<Item> SPRAY_CAN = register("spray_can", new SprayCanItem(new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
+    public static final RegistryObject<SprayCanItem> SPRAY_CAN = register("spray_can", new SprayCanItem(new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> JERRY_CAN = register("jerry_can", new JerryCanItem(Config.SERVER.jerryCanCapacity::get, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> INDUSTRIAL_JERRY_CAN = register("industrial_jerry_can", new JerryCanItem(Config.SERVER.industrialJerryCanCapacity::get, new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> WRENCH = register("wrench", new WrenchItem(new Item.Properties().stacksTo(1).tab(VehicleMod.CREATIVE_TAB)));
