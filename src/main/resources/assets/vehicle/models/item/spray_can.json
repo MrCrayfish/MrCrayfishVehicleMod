@@ -1,22 +1,22 @@
 {
-  "parent": "item/generated",
-  "loader": "forge:separate-perspective",
-  "gui_light": "side",
-  "base": {
-    "parent": "vehicle:item/spray_can_lid"
-  },
-  "perspectives": {
-    "third_person_right_hand": {
-      "parent": "vehicle:item/spray_can_held"
+    "parent": "item/generated",
+    "loader": "forge:separate-perspective",
+    "gui_light": "side",
+    "base": {
+        "parent": "vehicle:item/spray_can_default"
     },
-    "third_person_left_hand": {
-      "parent": "vehicle:item/spray_can_held"
-    },
-    "first_person_right_hand": {
-      "parent": "vehicle:item/spray_can_held"
-    },
-    "first_person_left_hand": {
-      "parent": "vehicle:item/spray_can_held"
+    "perspectives": {
+        "third_person_right_hand": {
+            "parent": "vehicle:item/spray_can_held"
+        },
+        "third_person_left_hand": {
+            "parent": "vehicle:item/spray_can_held"
+        },
+        "first_person_right_hand": {
+            "parent": "vehicle:item/spray_can_held"
+        },
+        "first_person_left_hand": {
+            "parent": "vehicle:item/spray_can_held"
+        }
     }
-  }
 }
