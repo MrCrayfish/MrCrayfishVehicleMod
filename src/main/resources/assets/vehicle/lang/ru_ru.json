@@ -85,7 +85,7 @@
 
     "container.fluid_extractor": "Экстрактор жидкости",
     "container.fluid_mixer": "Миксер жидкости",
-    "container.workstation": "Рабочая станция",
+    "container.vehicle.workstation": "Рабочая станция",
     "container.edit_vehicle.window_help": "Нажмите, чтобы переместить и повернуть",
 
     "vehicle.info_help": "Удерживайте SHIFT для деталей",

@@ -85,7 +85,7 @@
 
     "container.fluid_extractor": "액체 추출기",
     "container.fluid_mixer": "액체 혼합기",
-    "container.workstation": "워크스테이션",
+    "container.vehicle.workstation": "워크스테이션",
     "container.edit_vehicle.window_help": "클릭하여 이동하고 회전합니다.",
 
     "vehicle.info_help": "정보를 보려면 Shift를 누릅니다.",

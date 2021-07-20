@@ -69,7 +69,7 @@
 
     "container.fluid_extractor": "Fluid Extractor",
     "container.fluid_mixer": "Fluid Mixer",
-    "container.workstation": "Workstation",
+    "container.vehicle.workstation": "Workstation",
     "container.edit_vehicle.window_help": "Click to move and rotate",
 
     "vehicle.info_help": "Hold SHIFT for Info",
@@ -173,5 +173,8 @@
 
     "key.categories.vehicle": "MrCrayfish's Vehicle Mod",
     "key.vehicle.cycle_seats": "Cycle Seats",
-    "key.vehicle.horn": "Horn"
+    "key.vehicle.horn": "Horn",
+
+    "gui.vehicle.craft": "Craft",
+    "gui.vehicle.show_remaining": "Show Remaining"
 }

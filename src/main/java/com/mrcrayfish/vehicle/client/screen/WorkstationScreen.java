@@ -83,8 +83,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.workstation = container.getTileEntity();
-        this.imageWidth = 289;
-        this.imageHeight = 202;
+        this.imageWidth = 256;
+        this.imageHeight = 184;
+        this.inventoryLabelY = this.imageHeight - 93;
         this.materials = new ArrayList<>();
         this.vehicleTypes = this.getVehicleTypes(playerInventory.player.level);
         this.vehicleTypes.sort(Comparator.comparing(type -> type.getRegistryName().getPath()));
@@ -99,27 +100,25 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     public void init()
     {
         super.init();
-        int startX = (this.width - this.imageWidth) / 2;
-        int startY = (this.height - this.imageHeight) / 2;
 
-        this.addButton(new Button(startX, startY, 15, 20, new StringTextComponent("<"), button -> {
+        this.addButton(new Button(this.leftPos + 9, this.topPos + 18, 15, 20, new StringTextComponent("<"), button -> {
             this.loadVehicle(Math.floorMod(currentVehicle - 1,  this.vehicleTypes.size()));
             Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
 
-        this.addButton(new Button(startX + 161, startY, 15, 20, new StringTextComponent(">"), button -> {
+        this.addButton(new Button(this.leftPos + 153, this.topPos + 18, 15, 20, new StringTextComponent(">"), button -> {
             this.loadVehicle(Math.floorMod(currentVehicle + 1,  this.vehicleTypes.size()));
             Minecraft.getInstance().getSoundManager().play(SimpleSound.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
         }));
 
-        this.btnCraft = this.addButton(new Button(startX + 186, startY + 6, 97, 20, new StringTextComponent("Craft"), button -> {
+        this.btnCraft = this.addButton(new Button(this.leftPos + 172, this.topPos + 6, 97, 20, new TranslationTextComponent("gui.vehicle.craft"), button -> {
             ResourceLocation registryName = this.vehicleTypes.get(currentVehicle).getRegistryName();
             Objects.requireNonNull(registryName, "Vehicle registry name must not be null!");
             PacketHandler.instance.sendToServer(new MessageCraftVehicle(registryName.toString(), this.workstation.getBlockPos()));
         }));
 
         this.btnCraft.active = false;
-        this.checkBoxMaterials = this.addButton(new CheckBox(startX + 186, startY + 51, new StringTextComponent("Show Remaining")));
+        this.checkBoxMaterials = this.addButton(new CheckBox(this.leftPos + 172, this.topPos + 51,  new TranslationTextComponent("gui.vehicle.show_remaining")));
         this.checkBoxMaterials.setToggled(WorkstationScreen.showRemaining);
         this.loadVehicle(currentVehicle);
     }
@@ -264,7 +263,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
         }
 
-        if(Config.CLIENT.workstationAnimation.get() && prevCachedVehicle != null && prevCachedVehicle != cachedVehicle)
+        if(Config.CLIENT.workstationAnimation.get() && prevCachedVehicle != null && prevCachedVehicle.getType() != cachedVehicle.getType())
         {
             this.transitioning = true;
         }
@@ -281,8 +280,8 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         int startY = (this.height - this.imageHeight) / 2;
         for(int i = 0; i < filteredMaterials.size(); i++)
         {
-            int itemX = startX + 186;
-            int itemY = startY + i * 19 + 6 + 57;
+            int itemX = startX + 172;
+            int itemY = startY + i * 19 + 63;
             if(CommonUtils.isMouseWithin(mouseX, mouseY, itemX, itemY, 80, 19))
             {
                 MaterialItem materialItem = this.filteredMaterials.get(i);
@@ -296,31 +295,30 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         VehicleProperties properties = cachedVehicle.getProperties();
         if(properties.isColored())
         {
-            //TODO optional should have AQUA text formatting
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional").withStyle(TextFormatting.AQUA), new TranslationTextComponent("vehicle.tooltip.paint_color").withStyle(TextFormatting.GRAY)), startX, startY, 186, 29, mouseX, mouseY, 0);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional").withStyle(TextFormatting.AQUA), new TranslationTextComponent("vehicle.tooltip.paint_color").withStyle(TextFormatting.GRAY)), startX, startY, 172, 29, mouseX, mouseY, 0);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 186, 29, mouseX, mouseY, 0);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 172, 29, mouseX, mouseY, 0);
         }
 
         if(properties.getEngineType() != EngineType.NONE)
         {
             TranslationTextComponent engineName = properties.getEngineType().getEngineName();
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), engineName), startX, startY, 206, 29, mouseX, mouseY, 1);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), engineName), startX, startY, 192, 29, mouseX, mouseY, 1);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 206, 29, mouseX, mouseY, 1);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.engine"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 192, 29, mouseX, mouseY, 1);
         }
 
         if(properties.canChangeWheels())
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 226, 29, mouseX, mouseY, 2);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), new TranslationTextComponent("vehicle.tooltip.wheels")), startX, startY, 212, 29, mouseX, mouseY, 2);
         }
         else
         {
-            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 226, 29, mouseX, mouseY, 2);
+            this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.wheels"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 212, 29, mouseX, mouseY, 2);
         }
     }
 
@@ -336,22 +334,20 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         RenderSystem.enableBlend();
 
         this.minecraft.getTextureManager().bind(GUI);
-        this.blit(matrixStack, startX, startY + 80, 0, 134, 176, 122);
-        this.blit(matrixStack, startX + 180, startY, 176, 54, 6, 208);
-        this.blit(matrixStack, startX + 186, startY, 182, 54, 57, 208);
-        this.blit(matrixStack, startX + 186 + 57, startY, 220, 54, 23, 208);
-        this.blit(matrixStack, startX + 186 + 57 + 23, startY, 220, 54, 3, 208);
-        this.blit(matrixStack, startX + 186 + 57 + 23 + 3, startY, 236, 54, 20, 208);
+        this.blit(matrixStack, startX, startY, 0, 0, 173, 184);
+        blit(matrixStack, startX + 173, startY, 78, 184, 173, 0, 1, 184, 256, 256);
+        this.blit(matrixStack, startX + 251, startY, 174, 0, 24, 184);
+        this.blit(matrixStack, startX + 256, startY + 64, 12, 241, 12, 15);
 
         /* Slots */
         VehicleProperties properties = cachedVehicle.getProperties();
-        this.drawSlot(matrixStack, startX, startY, 186, 29, 80, 0, 0, false, properties.isColored());
+        this.drawSlot(matrixStack, startX, startY, 172, 29, 164, 184, 0, false, properties.isColored());
         boolean needsEngine = properties.getEngineType() != EngineType.NONE;
-        this.drawSlot(matrixStack, startX, startY, 206, 29, 80, 16, 1, !this.validEngine, needsEngine);
+        this.drawSlot(matrixStack, startX, startY, 192, 29, 164, 200, 1, !this.validEngine, needsEngine);
         boolean needsWheels = properties.canChangeWheels();
-        this.drawSlot(matrixStack, startX, startY, 226, 29, 80, 32, 2, needsWheels && this.workstation.getItem(2).isEmpty(), needsWheels);
+        this.drawSlot(matrixStack, startX, startY, 212, 29, 164, 216, 2, needsWheels && this.workstation.getItem(2).isEmpty(), needsWheels);
 
-        drawCenteredString(matrixStack, this.font, cachedVehicle.getType().getDescription(), startX + 88, startY + 6, Color.WHITE.getRGB());
+        drawCenteredString(matrixStack, this.font, cachedVehicle.getType().getDescription(), startX + 88, startY + 22, Color.WHITE.getRGB());
 
         this.filteredMaterials = this.getMaterials();
         for(int i = 0; i < this.filteredMaterials.size(); i++)
@@ -361,21 +357,16 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
             MaterialItem materialItem = this.filteredMaterials.get(i);
             ItemStack stack = materialItem.getDisplayStack();
-            if(stack.isEmpty())
-            {
-                RenderHelper.turnOff();
-                this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 19, 80, 19);
-            }
-            else
+            if(!stack.isEmpty())
             {
                 RenderHelper.turnOff();
                 if(materialItem.isEnabled())
                 {
-                    this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 0, 80, 19);
+                    this.blit(matrixStack, startX + 172, startY + i * 19 + 63, 0, 184, 80, 19);
                 }
                 else
                 {
-                    this.blit(matrixStack, startX + 186, startY + i * 19 + 6 + 57, 0, 38, 80, 19);
+                    this.blit(matrixStack, startX + 172, startY + i * 19 + 63, 0, 222, 80, 19);
                 }
 
                 RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
@@ -384,9 +375,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                 {
                     name = this.font.plainSubstrByWidth(stack.getHoverName().getString(), 50).trim() + "...";
                 }
-                this.font.draw(matrixStack, name, startX + 186 + 22, startY + i * 19 + 6 + 6 + 57, Color.WHITE.getRGB());
+                this.font.draw(matrixStack, name, startX + 172 + 22, startY + i * 19 + 6 + 63, Color.WHITE.getRGB());
 
-                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57);
+                Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(stack, startX + 172 + 2, startY + i * 19 + 1 + 63);
 
                 if(this.checkBoxMaterials.isToggled())
                 {
@@ -395,7 +386,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
                     stack.setCount(stack.getCount() - count);
                 }
 
-                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, stack, startX + 186 + 2, startY + i * 19 + 6 + 1 + 57, null);
+                Minecraft.getInstance().getItemRenderer().renderGuiItemDecorations(this.font, stack, startX + 172 + 2, startY + i * 19 + 1 + 63, null);
             }
         }
 
@@ -444,7 +435,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     private void drawSlot(MatrixStack matrixStack, int startX, int startY, int x, int y, int iconX, int iconY, int slot, boolean required, boolean applicable)
     {
         int textureOffset = required ? 18 : 0;
-        this.blit(matrixStack, startX + x, startY + y, 128 + textureOffset, 0, 18, 18);
+        this.blit(matrixStack, startX + x, startY + y, 198, 20 + textureOffset, 18, 18);
         if(this.workstation.getItem(slot).isEmpty())
         {
             if(applicable)
@@ -453,7 +444,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             }
             else
             {
-                this.blit(matrixStack, startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), 48, 16, 16);
+                this.blit(matrixStack, startX + x + 1, startY + y + 1, iconX + (required ? 16 : 0), 232, 16, 16);
             }
         }
     }
@@ -483,7 +474,8 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
     @Override
     protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        this.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), 8, 109, 4210752);
+        this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+        this.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), this.inventoryLabelX, this.inventoryLabelY, 4210752);
     }
 
     public static class MaterialItem

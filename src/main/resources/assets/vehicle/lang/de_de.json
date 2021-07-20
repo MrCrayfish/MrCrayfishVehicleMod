@@ -85,7 +85,7 @@
 
     "container.fluid_extractor": "Fl\u00fcssigkeitsabsauger",
     "container.fluid_mixer": "Fl\u00fcssigkeitsmischer",
-    "container.workstation": "Arbeitsplatz",
+    "container.vehicle.workstation": "Arbeitsplatz",
     "container.edit_vehicle.window_help": "Klicke zum bewegen und rotieren",
 
     "vehicle.info_help": "Halte UMSCHALTTASTE f\u00fcr Infos",

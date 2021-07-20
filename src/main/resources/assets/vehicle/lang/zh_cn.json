@@ -85,7 +85,7 @@
 
     "container.fluid_extractor": "流体提取机",
     "container.fluid_mixer": "流体混合器",
-    "container.workstation": "工作站",
+    "container.vehicle.workstation": "工作站",
     "container.edit_vehicle.window_help": "单击可移动和旋转",
 
     "vehicle.info_help": "按住 SHIFT 查看更多信息",

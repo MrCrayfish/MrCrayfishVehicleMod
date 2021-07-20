@@ -85,7 +85,7 @@
 
     "container.fluid_extractor": "\u0279o\u0287\u0254\u0250\u0279\u0287x\u018e p\u1d09n\ua781\u2132",
     "container.fluid_mixer": "\u0279\u01ddx\u1d09W p\u1d09n\ua781\u2132",
-    "container.workstation": "uo\u1d09\u0287\u0250\u0287s\u029e\u0279oM",
+    "container.vehicle.workstation": "uo\u1d09\u0287\u0250\u0287s\u029e\u0279oM",
     "container.edit_vehicle.window_help": "\u01dd\u0287\u0250\u0287o\u0279 pu\u0250 \u01dd\u028co\u026f o\u0287 \u029e\u0254\u1d09\ua781\u0186",
 
     "vehicle.info_help": "o\u025fuI \u0279o\u025f \u27d8\u2132IHS p\ua781oH",

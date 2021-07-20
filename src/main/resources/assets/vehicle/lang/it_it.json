@@ -89,7 +89,7 @@
 
     "container.fluid_extractor": "Estrattore di liquidi",
     "container.fluid_mixer": "Miscelatore di liquidi",
-    "container.workstation": "Stazione di lavoro",
+    "container.vehicle.workstation": "Stazione di lavoro",
     "container.edit_vehicle.window_help": "Clicca per muovere e girare",
 
     "vehicle.info_help": "Premi SHIFT per informazioni",

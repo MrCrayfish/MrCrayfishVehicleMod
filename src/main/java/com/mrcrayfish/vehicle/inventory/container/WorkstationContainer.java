@@ -26,7 +26,7 @@ public class WorkstationContainer extends Container
         this.workstationTileEntity = workstationTileEntity;
         this.pos = workstationTileEntity.getBlockPos();
 
-        this.addSlot(new Slot(workstationTileEntity, 0, 187, 30)
+        this.addSlot(new Slot(workstationTileEntity, 0, 173, 30)
         {
             @Override
             public boolean mayPlace(ItemStack stack)
@@ -41,7 +41,7 @@ public class WorkstationContainer extends Container
             }
         });
 
-        this.addSlot(new Slot(workstationTileEntity, 1, 207, 30)
+        this.addSlot(new Slot(workstationTileEntity, 1, 193, 30)
         {
             @Override
             public boolean mayPlace(ItemStack stack)
@@ -56,7 +56,7 @@ public class WorkstationContainer extends Container
             }
         });
 
-        this.addSlot(new Slot(workstationTileEntity, 2, 227, 30)
+        this.addSlot(new Slot(workstationTileEntity, 2, 213, 30)
         {
             @Override
             public boolean mayPlace(ItemStack stack)
@@ -71,17 +71,17 @@ public class WorkstationContainer extends Container
             }
         });
 
-        for(int x = 0; x < 3; x++)
+        for(int y = 0; y < 3; y++)
         {
-            for(int y = 0; y < 9; y++)
+            for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(playerInventory, y + x * 9 + 9, 8 + y * 18, 120 + x * 18));
+                this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 102 + y * 18));
             }
         }
 
         for(int x = 0; x < 9; x++)
         {
-            this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 178));
+            this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 160));
         }
     }
 

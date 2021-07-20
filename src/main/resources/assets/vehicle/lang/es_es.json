@@ -85,7 +85,7 @@
 
 "container.fluid_extractor": "Extractor Líquido",
 "container.fluid_mixer": "Mezclador Líquido",
-"container.workstation": "Puesto de Trabajo Vehicular",
+"container.vehicle.workstation": "Puesto de Trabajo Vehicular",
 "container.edit_vehicle.window_help": "Click para mover y rotar",
 
 "vehicle.info_help": "Mantén SHIFT para Info.",
