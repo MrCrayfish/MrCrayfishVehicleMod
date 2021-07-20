@@ -1,28 +1,58 @@
 {
-    "parent": "minecraft:block/pressure_plate_up",
-    "textures": {
-        "texture": "minecraft:block/white_concrete"
-    },
-    "display": {
-        "thirdperson_righthand": {
-            "rotation": [ 75, 45, 0 ],
-            "translation": [ 0, 2.5, 2],
-            "scale": [ 0.375, 0.375, 0.375 ]
-        },
-        "firstperson_righthand": {
-            "rotation": [ 0, 45, 0 ],
-            "translation": [ 0, 4.2, 0 ],
-            "scale": [ 0.40, 0.40, 0.40 ]
-        },
-        "firstperson_lefthand": {
-            "rotation": [ 0, 225, 0 ],
-            "translation": [ 0, 4.2, 0 ],
-            "scale": [ 0.40, 0.40, 0.40 ]
-        },
-        "gui": {
-            "rotation": [ 55, 200, 0 ],
-            "translation": [ 0, 3, 0],
-            "scale":[ 0.75, 0.75, 0.75 ]
-        }
-    }
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
+	"texture_size": [32, 32],
+	"textures": {
+		"metal_panel": "vehicle:model/metal_panel"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 1, 16],
+			"faces": {
+				"north": {"uv": [8, 0, 16, 0.5], "texture": "#metal_panel"},
+				"east": {"uv": [8, 0.5, 16, 1], "texture": "#metal_panel"},
+				"south": {"uv": [8, 1, 16, 1.5], "texture": "#metal_panel"},
+				"west": {"uv": [8, 1.5, 16, 2], "texture": "#metal_panel"},
+				"up": {"uv": [8, 8, 0, 0], "texture": "#metal_panel"},
+				"down": {"uv": [8, 8, 0, 16], "texture": "#metal_panel"}
+			}
+		}
+	],
+	"display": {
+		"thirdperson_righthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 2.5],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"thirdperson_lefthand": {
+			"rotation": [75, 45, 0],
+			"translation": [0, 2.5, 2.5],
+			"scale": [0.375, 0.375, 0.375]
+		},
+		"firstperson_righthand": {
+			"rotation": [0, 45, 0],
+			"translation": [0, 4.5, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"firstperson_lefthand": {
+			"rotation": [0, 225, 0],
+			"translation": [0, 4.5, 0],
+			"scale": [0.4, 0.4, 0.4]
+		},
+		"ground": {
+			"translation": [0, 3, 0],
+			"scale": [0.25, 0.25, 0.25]
+		},
+		"gui": {
+			"rotation": [30, 225, 0],
+			"translation": [0, 4, 0],
+			"scale": [0.625, 0.625, 0.625]
+		},
+		"head": {
+			"translation": [0, 14.5, 0]
+		},
+		"fixed": {
+			"scale": [0.5, 0.5, 0.5]
+		}
+	}
 }
