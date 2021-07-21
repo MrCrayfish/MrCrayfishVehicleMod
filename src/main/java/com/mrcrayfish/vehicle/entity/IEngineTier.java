@@ -20,11 +20,6 @@ public interface IEngineTier
         return 0.0F;
     }
 
-    default float getFuelConsumption()
-    {
-        return 0.0F;
-    }
-
     static Optional<IEngineTier> fromStack(ItemStack stack)
     {
         if(stack.getItem() instanceof EngineItem)

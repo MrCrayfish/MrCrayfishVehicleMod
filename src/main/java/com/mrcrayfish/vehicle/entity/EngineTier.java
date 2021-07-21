@@ -5,37 +5,29 @@ package com.mrcrayfish.vehicle.entity;
  */
 public enum EngineTier implements IEngineTier
 {
-    IRON(1.0F, 1F, 0F),
-    GOLD(1.15F, 3F, 0F),
-    DIAMOND(1.3F, 5F, 0F),
-    NETHERITE(1.45F, 7F, 0F);
+    IRON(1.0F, 0F),
+    GOLD(1.1F, 2F),
+    DIAMOND(1.2F, 5F),
+    NETHERITE(1.4F, 5F);
 
     private final float accelerationMultiplier;
     private final float additionalMaxSpeed;
-    private final float fuelConsumption;
 
-    EngineTier(float accelerationMultiplier, float additionalMaxSpeed, float fuelConsumption)
+    EngineTier(float accelerationMultiplier, float additionalMaxSpeed)
     {
         this.accelerationMultiplier = accelerationMultiplier;
         this.additionalMaxSpeed = additionalMaxSpeed;
-        this.fuelConsumption = fuelConsumption;
     }
 
     @Override
     public float getAccelerationMultiplier()
     {
-        return accelerationMultiplier;
+        return this.accelerationMultiplier;
     }
 
     @Override
     public float getAdditionalMaxSpeed()
     {
-        return additionalMaxSpeed;
-    }
-
-    @Override
-    public float getFuelConsumption()
-    {
-        return fuelConsumption;
+        return this.additionalMaxSpeed;
     }
 }
