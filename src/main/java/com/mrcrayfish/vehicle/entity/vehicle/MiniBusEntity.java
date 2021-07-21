@@ -15,7 +15,7 @@ public class MiniBusEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(15F);
-        this.setTurnSensitivity(2);
+        this.setTurnSensitivity(4);
         this.setFuelCapacity(30000F);
         this.setFuelConsumption(0.375F);
     }

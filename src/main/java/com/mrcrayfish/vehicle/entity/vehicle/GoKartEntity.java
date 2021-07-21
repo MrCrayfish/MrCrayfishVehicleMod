@@ -16,7 +16,6 @@ public class GoKartEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(20F);
-        this.setTurnSensitivity(12);
         this.maxUpStep = 0.625F;
         this.setFuelConsumption(0.5F);
     }

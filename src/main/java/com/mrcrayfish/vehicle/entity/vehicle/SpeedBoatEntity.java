@@ -16,7 +16,7 @@ public class SpeedBoatEntity extends BoatEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(20F);
-        this.setTurnSensitivity(15);
+        this.setTurnSensitivity(10);
         this.setFuelCapacity(25000F);
         this.setFuelConsumption(0.75F);
     }

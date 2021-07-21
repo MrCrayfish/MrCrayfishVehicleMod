@@ -16,7 +16,7 @@ public class DirtBikeEntity extends MotorcycleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(18F);
-        this.setTurnSensitivity(10);
+        this.setMaxTurnAngle(35);
         this.setFuelCapacity(20000F);
         this.setFuelConsumption(0.35F);
     }

@@ -16,7 +16,7 @@ public class JetSkiEntity extends BoatEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(15F);
-        this.setTurnSensitivity(15);
+        this.setTurnSensitivity(10);
         this.setFuelConsumption(0.5F);
     }
 

@@ -16,7 +16,6 @@ public class MiniBikeEntity extends MotorcycleEntity
     {
         super(type, worldIn);
         this.setMaxSpeed(18F);
-        this.setTurnSensitivity(12);
         this.setFuelCapacity(15000F);
         this.setFuelConsumption(0.375F);
     }
