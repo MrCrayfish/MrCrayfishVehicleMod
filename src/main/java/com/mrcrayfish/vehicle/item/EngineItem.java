@@ -49,15 +49,7 @@ public class EngineItem extends PartItem
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        if(Screen.hasShiftDown())
-        {
-            tooltip.add(new TranslationTextComponent("vehicle.engine_info.acceleration").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.tier.getAccelerationMultiplier() + "x").withStyle(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("vehicle.engine_info.additional_max_speed").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent((this.tier.getAdditionalMaxSpeed() * 3.6) + "kph").withStyle(TextFormatting.WHITE)));
-            tooltip.add(new TranslationTextComponent("vehicle.engine_info.fuel_consumption").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.tier.getFuelConsumption() + "pt").withStyle(TextFormatting.WHITE)));
-        }
-        else
-        {
-            tooltip.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
-        }
+        tooltip.add(new TranslationTextComponent("vehicle.engine_info.acceleration").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent(this.tier.getAccelerationMultiplier() + "x").withStyle(TextFormatting.GRAY)));
+        tooltip.add(new TranslationTextComponent("vehicle.engine_info.additional_max_speed").append(": ").withStyle(TextFormatting.YELLOW).append(new StringTextComponent((this.tier.getAdditionalMaxSpeed()) + "bps").withStyle(TextFormatting.GRAY)));
     }
 }
