@@ -52,19 +52,6 @@ public class BoostPadBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
-    {
-        if(Screen.hasShiftDown())
-        {
-            tooltip.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info"), 150));
-        }
-        else
-        {
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.get("vehicle.info_help")));
-        }
-    }
-
-    @Override
     public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
     {
         return SHAPE;

@@ -219,17 +219,16 @@ public class VehicleCrateBlock extends RotatedObjectBlock
                 if(!Strings.isNullOrEmpty(entityType))
                 {
                     vehicleName = EntityType.byString(entityType).orElse(EntityType.PIG).getDescription();
-                    list.add(vehicleName.copy().withStyle(TextFormatting.BLUE));
                 }
             }
         }
-
         if(Screen.hasShiftDown())
         {
             list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info", vehicleName), 150));
         }
         else
         {
+            list.add(vehicleName.copy().withStyle(TextFormatting.BLUE));
             list.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
         }
     }

@@ -71,20 +71,6 @@ public class BoostRampBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
-    {
-        if(Screen.hasShiftDown())
-        {
-            ITextProperties info = new TranslationTextComponent(this.getDescriptionId() + ".info");
-            tooltip.addAll(RenderUtil.lines(info, 150));
-        }
-        else
-        {
-            tooltip.add(new StringTextComponent(TextFormatting.YELLOW + I18n.get("vehicle.info_help")));
-        }
-    }
-
-    @Override
     public void entityInside(BlockState state, World world, BlockPos pos, Entity entity)
     {
         if(entity instanceof PoweredVehicleEntity && entity.getControllingPassenger() != null)

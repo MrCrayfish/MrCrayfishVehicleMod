@@ -64,19 +64,6 @@ public class SteepBoostRampBlock extends RotatedObjectBlock
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable IBlockReader reader, List<ITextComponent> list, ITooltipFlag advanced)
-    {
-        if(Screen.hasShiftDown())
-        {
-            list.addAll(RenderUtil.lines(new TranslationTextComponent(this.getDescriptionId() + ".info"), 150));
-        }
-        else
-        {
-            list.add(new TranslationTextComponent("vehicle.info_help").withStyle(TextFormatting.YELLOW));
-        }
-    }
-
-    @Override
     public void entityInside(BlockState state, World world, BlockPos pos, Entity entity)
     {
         if(entity instanceof PoweredVehicleEntity && entity.getControllingPassenger() != null)
