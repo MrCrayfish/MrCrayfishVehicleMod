@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
@@ -477,7 +478,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     protected void updateSpeed()
     {
-        float wheelModifier = this.getWheelModifier();
+        float surfaceModifier = SurfaceHelper.getSurfaceModifier(this);
         this.currentSpeed = this.getSpeed();
 
         Optional<IEngineTier> optional = this.getEngineTier();
@@ -502,7 +503,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     }
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
-                        float maxSpeed = this.getActualMaxSpeed() * wheelModifier * this.getPower();
+                        float maxSpeed = this.getActualMaxSpeed() * surfaceModifier * this.getPower();
                         if(this.currentSpeed < maxSpeed)
                         {
                             IEngineTier engineTier = optional.get();
@@ -524,7 +525,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     if(this.wheelsOnGround || this.canAccelerateInAir())
                     {
                         IEngineTier engineTier = optional.get();
-                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * wheelModifier * this.getPower();;
+                        float maxSpeed = -(4.0F + engineTier.getAdditionalMaxSpeed() / 2) * surfaceModifier * this.getPower();;
                         if(this.currentSpeed > maxSpeed)
                         {
                             this.currentSpeed -= this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
@@ -825,7 +826,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public float getRealSpeed()
     {
-        return this.currentSpeed / (this.getActualMaxSpeed() * this.getWheelModifier() * this.getPower());
+        return this.currentSpeed / (this.getActualMaxSpeed() * SurfaceHelper.getSurfaceModifier(this) * this.getPower());
     }
 
     public void setSpeed(float speed)
@@ -1348,54 +1349,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
     }
 
-    public float getWheelModifier()
-    {
-        float wheelModifier = 0F;
-        VehicleProperties properties = this.getProperties();
-        List<Wheel> wheels = properties.getWheels();
-        if(this.hasWheelStack() && wheels != null)
-        {
-            Optional<IWheelType> optional = this.getWheelType();
-            if(optional.isPresent())
-            {
-                int wheelCount = 0;
-                IWheelType wheelType = optional.get();
-                for(int i = 0; i < wheels.size(); i++)
-                {
-                    double wheelX = this.wheelPositions[i * 3];
-                    double wheelY = this.wheelPositions[i * 3 + 1];
-                    double wheelZ = this.wheelPositions[i * 3 + 2];
-                    int x = MathHelper.floor(this.getX() + wheelX);
-                    int y = MathHelper.floor(this.getY() + wheelY - 0.2D);
-                    int z = MathHelper.floor(this.getZ() + wheelZ);
-                    BlockPos pos = new BlockPos(x, y, z);
-                    BlockState state = this.level.getBlockState(pos);
-                    if(state.getMaterial() != Material.AIR)
-                    {
-                        if(state.getMaterial() == Material.TOP_SNOW || state.getMaterial() == Material.SNOW || (state.getBlock() == Blocks.GRASS_BLOCK && state.getValue(GrassBlock.SNOWY)))
-                        {
-                            wheelModifier += (1.0F - wheelType.getSnowMultiplier());
-                        }
-                        else if(state.getMaterial().isSolid())
-                        {
-                            wheelModifier += (1.0F - wheelType.getRoadMultiplier());
-                        }
-                        else
-                        {
-                            wheelModifier += (1.0F - wheelType.getDirtMultiplier());
-                        }
-                        wheelCount++;
-                    }
-                }
-                if(wheelCount > 0)
-                {
-                    wheelModifier /= (float) wheelCount;
-                }
-            }
-        }
-        return 1.0F - wheelModifier;
-    }
-
     protected void updateGroundState()
     {
         if(this.hasWheelStack())
@@ -1476,6 +1429,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
     {
         return new EditVehicleContainer(windowId, this.getVehicleInventory(), this, playerEntity, playerInventory);
+    }
+
+    public double[] getWheelPositions()
+    {
+        return this.wheelPositions;
     }
 
     public enum TurnDirection
