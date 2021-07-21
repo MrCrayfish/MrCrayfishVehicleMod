@@ -167,7 +167,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.turnAngle = 0F;
         }
 
-        this.wheelAngle = this.turnAngle * Math.max(0.1F, 1.0F - Math.abs(this.currentSpeed / this.getMaxSpeed()));
+        this.wheelAngle = this.turnAngle * Math.max(0.45F, 1.0F - Math.abs(this.currentSpeed / 20F));
 
         VehicleProperties properties = this.getProperties();
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)

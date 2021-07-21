@@ -229,7 +229,7 @@ public class VehicleHelper
 
             if(direction != PoweredVehicleEntity.TurnDirection.FORWARD)
             {
-                float amount = direction.getDir() * vehicle.getTurnSensitivity();
+                float amount = direction.getDir() * vehicle.getTurnSensitivity() * Math.max(0.65F, 1.0F - Math.abs(vehicle.getSpeed() / 20F));
                 if(drifting)
                 {
                     amount *= 0.45F;
@@ -247,7 +247,7 @@ public class VehicleHelper
         {
             return vehicle.turnAngle * 0.95F;
         }
-        return vehicle.turnAngle * 0.75F;
+        return vehicle.turnAngle * 0.85F;
     }
 
     public static boolean isDrifting()

@@ -169,7 +169,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(TURN_DIRECTION, TurnDirection.FORWARD.ordinal());
         this.entityData.define(TARGET_TURN_ANGLE, 0F);
         this.entityData.define(TURN_SENSITIVITY, 6);
-        this.entityData.define(MAX_TURN_ANGLE, 45);
+        this.entityData.define(MAX_TURN_ANGLE, 35);
         this.entityData.define(ACCELERATION_DIRECTION, AccelerationDirection.NONE.ordinal());
         this.entityData.define(HORN, false);
         this.entityData.define(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get());
@@ -565,8 +565,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected void updateTurning()
     {
         this.turnAngle = this.getTargetTurnAngle();
-        this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(currentSpeed / 30F));
-        this.deltaYaw = this.wheelAngle * (currentSpeed / 30F) / 2F;
+        this.wheelAngle = this.turnAngle * Math.max(0.45F, 1.0F - Math.abs(this.currentSpeed / 20F));
+        this.deltaYaw = this.wheelAngle * (this.currentSpeed / 30F) / 2F;
 
         if(level.isClientSide)
         {
