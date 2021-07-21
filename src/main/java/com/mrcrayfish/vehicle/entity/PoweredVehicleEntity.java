@@ -1376,7 +1376,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         {
                             wheelModifier += (1.0F - wheelType.getSnowMultiplier());
                         }
-                        else if(!state.getMaterial().isSolid())
+                        else if(state.getMaterial().isSolid())
                         {
                             wheelModifier += (1.0F - wheelType.getRoadMultiplier());
                         }
