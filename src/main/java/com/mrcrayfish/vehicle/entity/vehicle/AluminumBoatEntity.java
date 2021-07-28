@@ -15,9 +15,8 @@ public class AluminumBoatEntity extends BoatEntity
     public AluminumBoatEntity(EntityType<? extends AluminumBoatEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(10F);
-        this.setTurnSensitivity(5);
-        this.setMaxTurnAngle(20);
+        this.setSteeringSpeed(5);
+        this.setMaxSteeringAngle(20);
         this.setFuelCapacity(25000F);
         this.setFuelConsumption(0.5F);
     }
@@ -31,9 +30,9 @@ public class AluminumBoatEntity extends BoatEntity
     @Override
     public void createParticles()
     {
-        if(state == State.IN_WATER)
+        if(this.state == State.IN_WATER)
         {
-            if(this.getAcceleration() == AccelerationDirection.FORWARD)
+            if(this.getThrottle() > 0)
             {
                 for(int i = 0; i < 5; i++)
                 {
@@ -64,6 +63,12 @@ public class AluminumBoatEntity extends BoatEntity
     public float getMaxEnginePitch()
     {
         return 1.5F;
+    }
+
+    @Override
+    public void updateVehicleMotion()
+    {
+
     }
 
     @Override

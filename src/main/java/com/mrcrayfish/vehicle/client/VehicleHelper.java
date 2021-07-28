@@ -25,7 +25,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import java.util.HashMap;
@@ -168,86 +171,28 @@ public class VehicleHelper
         return PoweredVehicleEntity.AccelerationDirection.fromEntity(entity);
     }
 
-    public static PoweredVehicleEntity.TurnDirection getTurnDirection(LivingEntity entity)
+    @OnlyIn(Dist.CLIENT)
+    public static float getSteeringAngle(PoweredVehicleEntity vehicle, boolean drifting)
     {
-        if(ClientHandler.isControllableLoaded())
-        {
-            Controller controller = Controllable.getController();
-            if(controller != null)
-            {
-                if(controller.getLThumbStickXValue() > 0.0F)
-                {
-                    return PoweredVehicleEntity.TurnDirection.RIGHT;
-                }
-                if(controller.getLThumbStickXValue() < 0.0F)
-                {
-                    return PoweredVehicleEntity.TurnDirection.LEFT;
-                }
-                if(controller.getButtonsStates().getState(Buttons.DPAD_RIGHT))
-                {
-                    return PoweredVehicleEntity.TurnDirection.RIGHT;
-                }
-                if(controller.getButtonsStates().getState(Buttons.DPAD_LEFT))
-                {
-                    return PoweredVehicleEntity.TurnDirection.LEFT;
-                }
-            }
-        }
-        if(entity.xxa < 0)
-        {
-            return PoweredVehicleEntity.TurnDirection.RIGHT;
-        }
-        else if(entity.xxa > 0)
-        {
-            return PoweredVehicleEntity.TurnDirection.LEFT;
-        }
-        return PoweredVehicleEntity.TurnDirection.FORWARD;
-    }
-
-    public static float getTargetTurnAngle(PoweredVehicleEntity vehicle, boolean drifting)
-    {
-        PoweredVehicleEntity.TurnDirection direction = vehicle.getTurnDirection();
         if(vehicle.getControllingPassenger() != null)
         {
+            Entity entity = vehicle.getControllingPassenger();
+            if(!(entity instanceof LivingEntity))
+                return 0F;
+
+            LivingEntity livingEntity = (LivingEntity) entity;
+            float turnValue = MathHelper.clamp(livingEntity.xxa, -1.0F, 1.0F);
             if(ClientHandler.isControllableLoaded())
             {
                 Controller controller = Controllable.getController();
                 if(controller != null)
                 {
-                    float turnNormal = controller.getLThumbStickXValue();
-                    if(turnNormal != 0.0F)
-                    {
-                        float newTurnAngle = vehicle.turnAngle + ((vehicle.getMaxTurnAngle() * -turnNormal) - vehicle.turnAngle) * 0.15F;
-                        if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
-                        {
-                            return vehicle.getMaxTurnAngle() * direction.getDir();
-                        }
-                        return newTurnAngle;
-                    }
+                    turnValue = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
                 }
             }
-
-            if(direction != PoweredVehicleEntity.TurnDirection.FORWARD)
-            {
-                float amount = direction.getDir() * vehicle.getTurnSensitivity() * Math.max(0.65F, 1.0F - Math.abs(vehicle.getSpeed() / 20F));
-                if(drifting)
-                {
-                    amount *= 0.45F;
-                }
-                float newTurnAngle = vehicle.turnAngle + amount;
-                if(Math.abs(newTurnAngle) > vehicle.getMaxTurnAngle())
-                {
-                    return vehicle.getMaxTurnAngle() * direction.getDir();
-                }
-                return newTurnAngle;
-            }
+            return vehicle.steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - vehicle.steeringAngle) * 0.1F;
         }
-
-        if(drifting)
-        {
-            return vehicle.turnAngle * 0.95F;
-        }
-        return vehicle.turnAngle * 0.85F;
+        return vehicle.steeringAngle * 0.85F;
     }
 
     public static boolean isDrifting()
@@ -331,7 +276,8 @@ public class VehicleHelper
             }
         }
 
-        PoweredVehicleEntity.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
+        //TODO fix keyboard movement for heli
+        /*PoweredVehicleEntity.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
         PoweredVehicleEntity.TurnDirection turnDirection = vehicle.getTurnDirection();
         if(vehicle.getControllingPassenger() != null)
         {
@@ -347,7 +293,7 @@ public class VehicleHelper
             {
                 return vehicle.yRot + turnDirection.getDir() * -90F;
             }
-        }
+        }*/
         return vehicle.yRot;
     }
 
@@ -366,28 +312,32 @@ public class VehicleHelper
                 }
             }
         }
-        return helicopter.getAcceleration() != PoweredVehicleEntity.AccelerationDirection.NONE || helicopter.getTurnDirection() != PoweredVehicleEntity.TurnDirection.FORWARD ? 1.0F : 0.0F;
+        return 0F; //TODO fix heli travel speed
+        //return helicopter.getAcceleration() != PoweredVehicleEntity.AccelerationDirection.NONE || helicopter.getTurnDirection() != PoweredVehicleEntity.TurnDirection.FORWARD ? 1.0F : 0.0F;
     }
 
-    public static float getPower(PoweredVehicleEntity vehicle)
+    @OnlyIn(Dist.CLIENT)
+    public static float getThrottle(LivingEntity livingEntity)
     {
         if(ClientHandler.isControllableLoaded() && Config.CLIENT.useTriggers.get())
         {
             Controller controller = Controllable.getController();
             if(controller != null)
             {
-                PoweredVehicleEntity.AccelerationDirection accelerationDirection = vehicle.getAcceleration();
-                if(accelerationDirection == PoweredVehicleEntity.AccelerationDirection.FORWARD)
+                //Maybe add a dead zone option to controllable for triggers
+                boolean forward = MathHelper.clamp(controller.getRTriggerValue(), 0.0F, 1.0F) > 0.1F;
+                boolean reverse = MathHelper.clamp(controller.getLTriggerValue(), 0.0F, 1.0F) > 0.1F;
+                if(forward && !reverse)
                 {
-                    return controller.getRTriggerValue();
+                    return (controller.getRTriggerValue() - 0.1F) / 0.9F;
                 }
-                else if(accelerationDirection == PoweredVehicleEntity.AccelerationDirection.REVERSE)
+                else if(!forward && reverse)
                 {
-                    return controller.getLTriggerValue();
+                    return (controller.getLTriggerValue() - 0.1F) / 0.9F;
                 }
             }
         }
-        return 1.0F;
+        return MathHelper.clamp(livingEntity.zza, -1.0F, 1.0F);
     }
 
     public static boolean canApplyVehicleYaw(Entity passenger)

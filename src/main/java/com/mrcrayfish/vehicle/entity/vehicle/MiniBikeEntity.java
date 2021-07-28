@@ -15,7 +15,7 @@ public class MiniBikeEntity extends MotorcycleEntity
     public MiniBikeEntity(EntityType<? extends MiniBikeEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(18F);
+        //this.setMaxSpeed(18F);
         this.setFuelCapacity(15000F);
         this.setFuelConsumption(0.375F);
     }

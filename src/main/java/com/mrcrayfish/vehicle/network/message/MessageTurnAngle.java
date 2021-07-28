@@ -42,7 +42,7 @@ public class MessageTurnAngle implements IMessage<MessageTurnAngle>
 				Entity riding = player.getVehicle();
 				if(riding instanceof PoweredVehicleEntity)
 				{
-					((PoweredVehicleEntity) riding).setTargetTurnAngle(message.angle);
+					((PoweredVehicleEntity) riding).setSteeringAngle(message.angle);
 				}
 			}
 		});

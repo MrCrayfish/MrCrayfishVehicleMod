@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
@@ -49,5 +50,10 @@ public class CommonUtils
     public static boolean isMouseWithin(int mouseX, int mouseY, int x, int y, int width, int height)
     {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
+    }
+
+    public static float yaw(Vector3d vec)
+    {
+        return (float) (Math.toDegrees(Math.atan2(vec.z, vec.x)) - 90F);
     }
 }

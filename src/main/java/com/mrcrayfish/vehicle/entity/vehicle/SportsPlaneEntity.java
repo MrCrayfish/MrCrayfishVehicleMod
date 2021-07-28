@@ -24,9 +24,9 @@ public class SportsPlaneEntity extends PlaneEntity
     {
         super(type, worldIn);
         this.setAccelerationSpeed(0.5F);
-        this.setMaxSpeed(25F);
-        this.setMaxTurnAngle(25);
-        this.setTurnSensitivity(2);
+        //this.setMaxSpeed(25F);
+        this.setMaxSteeringAngle(25);
+        this.setSteeringSpeed(2);
         this.setFuelCapacity(75000F);
         this.setFuelConsumption(1.0F);
     }

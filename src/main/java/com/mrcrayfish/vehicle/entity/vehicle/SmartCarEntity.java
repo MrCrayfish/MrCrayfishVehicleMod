@@ -14,7 +14,7 @@ public class SmartCarEntity extends LandVehicleEntity
     public SmartCarEntity(EntityType<? extends SmartCarEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(15F);
+        //this.setMaxSpeed(15F);
         this.maxUpStep = 1F;
     }
 

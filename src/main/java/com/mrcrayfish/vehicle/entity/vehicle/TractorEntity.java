@@ -15,8 +15,8 @@ public class TractorEntity extends LandVehicleEntity
     public TractorEntity(EntityType<? extends TractorEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(6);
-        this.setTurnSensitivity(3);
+        //this.setMaxSpeed(6);
+        this.setSteeringSpeed(3);
     }
 
     @Override

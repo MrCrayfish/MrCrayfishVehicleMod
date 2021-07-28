@@ -56,7 +56,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
     public void applyPlayerModel(JetSkiEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
         float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
-        float wheelAngleNormal = wheelAngle / (float) entity.getMaxTurnAngle();
+        float wheelAngleNormal = wheelAngle / (float) entity.getMaxSteeringAngle();
         float turnRotation = wheelAngleNormal * 12F;
         model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
         model.rightArm.yRot = (float) Math.toRadians(15F);
@@ -93,12 +93,14 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
             double offsetY = (seatVec.y + player.getMyRidingOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
 
-            matrixStack.translate(offsetX, offsetY, offsetZ);
+
+            //TODO fix this
+            /*matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxTurnAngle();
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.steeringAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxSteeringAngle();
             matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
-            matrixStack.translate(-offsetX, -offsetY, -offsetZ);
+            matrixStack.translate(-offsetX, -offsetY, -offsetZ);*/
         }
     }
 

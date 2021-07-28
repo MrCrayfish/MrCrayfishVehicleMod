@@ -14,7 +14,7 @@ public class ATVEntity extends LandVehicleEntity
     public ATVEntity(EntityType<? extends ATVEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(15);
+        //this.setMaxSpeed(15);
         this.setFuelCapacity(20000F);
     }
 

@@ -16,8 +16,8 @@ public class BumperCarEntity extends LandVehicleEntity
     public BumperCarEntity(EntityType<? extends BumperCarEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(10);
-        this.setTurnSensitivity(20);
+        //this.setMaxSpeed(10);
+        this.setSteeringSpeed(20);
         this.maxUpStep = 0.625F;
         //TODO figure out fuel system
     }
@@ -33,9 +33,10 @@ public class BumperCarEntity extends LandVehicleEntity
 
     private void applyBumperCollision(BumperCarEntity entity)
     {
-        this.setDeltaMovement(this.getDeltaMovement().add(this.vehicleMotionX * 2, 0, this.vehicleMotionZ * 2));
+        //TODO reapply bump collision
+        /*this.setDeltaMovement(this.getDeltaMovement().add(this.vehicleMotionX * 2, 0, this.vehicleMotionZ * 2));
         level.playSound(null, this.getX(), this.getY(), this.getZ(), ModSounds.ENTITY_BUMPER_CAR_BONK.get(), SoundCategory.NEUTRAL, 1.0F, 0.6F + 0.1F * this.getNormalSpeed());
-        this.currentSpeed *= 0.25F;
+        this.currentSpeed *= 0.25F;*/
     }
 
     @Override

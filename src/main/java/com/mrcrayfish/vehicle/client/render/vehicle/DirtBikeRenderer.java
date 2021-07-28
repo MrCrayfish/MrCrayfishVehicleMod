@@ -115,7 +115,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
     @Override
     public void applyPlayerRender(DirtBikeEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
+        /*int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
@@ -127,10 +127,10 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
             double offsetZ = -seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.steeringAngle - entity.prevTurnAngle) * partialTicks) / 45F;
             matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 20F));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
-        }
+        }*/
     }
 
     @Nullable

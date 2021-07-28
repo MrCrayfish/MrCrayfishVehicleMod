@@ -41,7 +41,7 @@ public class OverlayHandler
 
         MatrixStack matrixStack = new MatrixStack();
         PoweredVehicleEntity vehicle = (PoweredVehicleEntity) entity;
-        String speed = new DecimalFormat("0.0").format(vehicle.getKilometersPreHour());
+        String speed = new DecimalFormat("0.0").format(vehicle.getSpeed());
         mc.font.drawShadow(matrixStack, TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
 
         if(vehicle.requiresFuel())

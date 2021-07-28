@@ -15,8 +15,8 @@ public class SpeedBoatEntity extends BoatEntity
     public SpeedBoatEntity(EntityType<? extends SpeedBoatEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(20F);
-        this.setTurnSensitivity(10);
+        //this.setMaxSpeed(20F);
+        this.setSteeringSpeed(10);
         this.setFuelCapacity(25000F);
         this.setFuelConsumption(0.75F);
     }
@@ -26,7 +26,7 @@ public class SpeedBoatEntity extends BoatEntity
     {
         if(state == State.IN_WATER)
         {
-            if(this.getAcceleration() == AccelerationDirection.FORWARD)
+            if(this.getThrottle() > 0)
             {
                 for(int i = 0; i < 5; i++)
                 {

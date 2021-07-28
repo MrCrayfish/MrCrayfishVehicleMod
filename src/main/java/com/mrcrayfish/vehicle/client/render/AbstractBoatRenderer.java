@@ -30,16 +30,17 @@ public abstract class AbstractBoatRenderer<T extends BoatEntity & EntityRayTrace
         matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ()));
 
-        if(vehicle != null)
+        //TODO add back boat rotation
+        /*if(vehicle != null)
         {
             //Applies leaning rotation caused by turning
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * partialTicks) / vehicle.getMaxSpeed();
-            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * partialTicks) / vehicle.getMaxTurnAngle();
+            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * partialTicks) / vehicle.getMaxSteeringAngle();
             matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * -15F));
 
             //Makes the boat tilt up the faster it goes
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
-        }
+        }*/
 
         //this.renderRotationLine(matrixStack, 0xFF0000);
 

@@ -22,9 +22,7 @@ public class PacketHandler
                 .serverAcceptedVersions(PROTOCOL_VERSION::equals)
                 .simpleChannel();
 
-        register(MessageTurnDirection.class, new MessageTurnDirection());
         register(MessageTurnAngle.class, new MessageTurnAngle());
-        register(MessageAccelerating.class, new MessageAccelerating());
         register(MessageDrift.class, new MessageDrift());
         register(MessageHorn.class, new MessageHorn());
         register(MessageThrowVehicle.class, new MessageThrowVehicle());
@@ -40,7 +38,7 @@ public class PacketHandler
         register(MessageSyncInventory.class, new MessageSyncInventory());
         register(MessageOpenStorage.class, new MessageOpenStorage());
         register(MessageTravelProperties.class, new MessageTravelProperties());
-        register(MessagePower.class, new MessagePower());
+        register(MessageThrottle.class, new MessageThrottle());
         register(MessageEntityFluid.class, new MessageEntityFluid());
         register(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());
         register(MessageCycleSeats.class, new MessageCycleSeats());

@@ -7,7 +7,6 @@ import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -24,7 +23,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -107,7 +105,7 @@ public class MiniBikeRenderer extends AbstractMotorcycleRenderer<MiniBikeEntity>
     @Override
     public void applyPlayerRender(MiniBikeEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
+        /*int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
@@ -119,10 +117,10 @@ public class MiniBikeRenderer extends AbstractMotorcycleRenderer<MiniBikeEntity>
             double offsetZ = -seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.steeringAngle - entity.prevTurnAngle) * partialTicks) / 45F;
             matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 20F));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
-        }
+        }*/
     }
 
     @Nullable

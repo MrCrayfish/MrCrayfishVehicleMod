@@ -23,7 +23,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     public BoatEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        this.setMaxTurnAngle(65);
+        this.setMaxSteeringAngle(65);
     }
 
     @Override
@@ -35,46 +35,53 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
-        if(this.state == State.IN_WATER || this.state == State.UNDER_WATER)
-        {
-            if(this.state == State.UNDER_WATER)
-            {
-                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
-            }
-            else
-            {
-                double floatingY = ((this.waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - this.getY())) / (double) this.getBbHeight();
-                this.setDeltaMovement(this.getDeltaMovement().add(0, floatingY * 0.05, 0));
-                if(Math.abs(floatingY) < 0.1 && this.getDeltaMovement().y > 0 && Math.abs(this.getDeltaMovement().y) < 0.1)
-                {
-                    this.setPos(this.getX(), this.waterLevel - 0.35 + (0.25 * Math.min(1.0F, getNormalSpeed())), this.getZ());
-                    this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.0, 1.0));
-                }
-                this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.75, 1.0));
-            }
 
-            float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F;
-            float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
-            this.vehicleMotionX = (-currentSpeed * f1);
-            this.vehicleMotionZ = (currentSpeed * f2);
-            this.setDeltaMovement(this.getDeltaMovement().multiply(0.5, 1.0, 0.5));
-        }
-        else if(this.state == State.IN_AIR)
-        {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
-            if(this.previousState == State.UNDER_WATER || this.previousState == State.IN_WATER)
-            {
-                this.setDeltaMovement(new Vector3d(this.vehicleMotionX, this.getDeltaMovement().y, this.vehicleMotionZ));
-                this.vehicleMotionX = 0;
-                this.vehicleMotionZ = 0;
-            }
-        }
-        else
-        {
-            this.vehicleMotionX *= 0.75F;
-            this.vehicleMotionZ *= 0.75F;
-        }
     }
+
+    //    @Override
+//    public void updateVehicleMotion()
+//    {
+//        if(this.state == State.IN_WATER || this.state == State.UNDER_WATER)
+//        {
+//            if(this.state == State.UNDER_WATER)
+//            {
+//                this.setDeltaMovement(this.getDeltaMovement().add(0, 0.08, 0));
+//            }
+//            else
+//            {
+//                //TODO fix boat movement
+//                /*double floatingY = ((this.waterLevel - 0.35D + (0.25D * Math.min(1.0F, getNormalSpeed())) - this.getY())) / (double) this.getBbHeight();
+//                this.setDeltaMovement(this.getDeltaMovement().add(0, floatingY * 0.05, 0));
+//                if(Math.abs(floatingY) < 0.1 && this.getDeltaMovement().y > 0 && Math.abs(this.getDeltaMovement().y) < 0.1)
+//                {
+//                    this.setPos(this.getX(), this.waterLevel - 0.35 + (0.25 * Math.min(1.0F, getNormalSpeed())), this.getZ());
+//                    this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.0, 1.0));
+//                }
+//                this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.75, 1.0));*/
+//            }
+//
+//            float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F;
+//            float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
+//            this.vehicleMotionX = (-currentSpeed * f1);
+//            this.vehicleMotionZ = (currentSpeed * f2);
+//            this.setDeltaMovement(this.getDeltaMovement().multiply(0.5, 1.0, 0.5));
+//        }
+//        else if(this.state == State.IN_AIR)
+//        {
+//            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
+//            if(this.previousState == State.UNDER_WATER || this.previousState == State.IN_WATER)
+//            {
+//                this.setDeltaMovement(new Vector3d(this.vehicleMotionX, this.getDeltaMovement().y, this.vehicleMotionZ));
+//                this.vehicleMotionX = 0;
+//                this.vehicleMotionZ = 0;
+//            }
+//        }
+//        else
+//        {
+//            this.vehicleMotionX *= 0.75F;
+//            this.vehicleMotionZ *= 0.75F;
+//        }
+//    }
 
     @Override
     public void updateVehicle()

@@ -15,8 +15,8 @@ public class JetSkiEntity extends BoatEntity
     public JetSkiEntity(EntityType<? extends JetSkiEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSpeed(15F);
-        this.setTurnSensitivity(10);
+        //this.setMaxSpeed(15F);
+        this.setSteeringSpeed(10);
         this.setFuelConsumption(0.5F);
     }
 
@@ -29,9 +29,9 @@ public class JetSkiEntity extends BoatEntity
     @Override
     public void createParticles()
     {
-        if(state == State.IN_WATER)
+        if(this.state == State.IN_WATER)
         {
-            if(this.getAcceleration() == AccelerationDirection.FORWARD)
+            if(this.getThrottle() > 0)
             {
                 for(int i = 0; i < 5; i++)
                 {

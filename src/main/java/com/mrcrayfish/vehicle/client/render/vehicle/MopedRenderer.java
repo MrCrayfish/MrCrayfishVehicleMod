@@ -161,7 +161,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     @Override
     public void applyPlayerRender(MopedEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
     {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
+        /*int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index != -1)
         {
             VehicleProperties properties = entity.getProperties();
@@ -173,10 +173,10 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
             double offsetZ = seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
             float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.turnAngle - entity.prevTurnAngle) * partialTicks) / 45F;
+            float turnAngleNormal = (entity.prevTurnAngle + (entity.steeringAngle - entity.prevTurnAngle) * partialTicks) / 45F;
             matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 20F));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
-        }
+        }*/
     }
 
     private void renderChest(MatrixStack matrixStack, IVertexBuilder builder, ModelRenderer lid, ModelRenderer lock, ModelRenderer base, float openProgress, int lightTexture, int overlayTexture)

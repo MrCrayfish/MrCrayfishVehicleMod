@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -36,7 +35,7 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
-        if(vehicle != null)
+        /*if(vehicle != null)
         {
             // Rotates the vehicle based on the entity yaw
             float additionalYaw = vehicle.prevAdditionalYaw + (vehicle.additionalYaw - vehicle.prevAdditionalYaw) * partialTicks;
@@ -44,9 +43,9 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
 
             //Applies leaning rotation caused by turning
             float currentSpeedNormal = (vehicle.prevCurrentSpeed + (vehicle.currentSpeed - vehicle.prevCurrentSpeed) * partialTicks) / vehicle.getMaxSpeed();
-            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.turnAngle - vehicle.prevTurnAngle) * partialTicks) / 45F;
+            float turnAngleNormal = (vehicle.prevTurnAngle + (vehicle.steeringAngle - vehicle.prevTurnAngle) * partialTicks) / 45F;
             matrixStack.mulPose(Vector3f.ZP.rotationDegrees(turnAngleNormal * currentSpeedNormal * -20F));
-        }
+        }*/
 
         //Translate the body
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());

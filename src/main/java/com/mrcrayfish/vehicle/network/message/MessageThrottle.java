@@ -8,31 +8,31 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessagePower implements IMessage<MessagePower>
+public class MessageThrottle implements IMessage<MessageThrottle>
 {
 	private float power;
 
-	public MessagePower() {}
+	public MessageThrottle() {}
 
-	public MessagePower(float power)
+	public MessageThrottle(float power)
 	{
 		this.power = power;
 	}
 
 	@Override
-	public void encode(MessagePower message, PacketBuffer buffer)
+	public void encode(MessageThrottle message, PacketBuffer buffer)
 	{
 		buffer.writeFloat(message.power);
 	}
 
 	@Override
-	public MessagePower decode(PacketBuffer buffer)
+	public MessageThrottle decode(PacketBuffer buffer)
 	{
-		return new MessagePower(buffer.readFloat());
+		return new MessageThrottle(buffer.readFloat());
 	}
 
 	@Override
-	public void handle(MessagePower message, Supplier<NetworkEvent.Context> supplier)
+	public void handle(MessageThrottle message, Supplier<NetworkEvent.Context> supplier)
 	{
 		supplier.get().enqueueWork(() ->
 		{
@@ -42,7 +42,7 @@ public class MessagePower implements IMessage<MessagePower>
 				Entity riding = player.getVehicle();
 				if(riding instanceof PoweredVehicleEntity)
 				{
-					((PoweredVehicleEntity) riding).setPower(message.power);
+					((PoweredVehicleEntity) riding).setThrottle(message.power);
 				}
 			}
 		});

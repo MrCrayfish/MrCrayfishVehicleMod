@@ -43,7 +43,7 @@ public class MovingSoundVehicle extends TickableSound
             this.x = (float) (vehicle.getX() + (localPlayer.getX() - vehicle.getX()) * 0.65);
             this.y = (float) (vehicle.getY() + (localPlayer.getY() - vehicle.getY()) * 0.65);
             this.z = (float) (vehicle.getZ() + (localPlayer.getZ() - vehicle.getZ()) * 0.65);
-            this.pitch = vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getActualSpeed());
+            this.pitch = (float) (vehicle.getMinEnginePitch() + (vehicle.getMaxEnginePitch() - vehicle.getMinEnginePitch()) * Math.abs(vehicle.getSpeed()));
         }
         else
         {

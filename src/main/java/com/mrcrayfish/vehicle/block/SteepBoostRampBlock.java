@@ -85,7 +85,7 @@ public class SteepBoostRampBlock extends RotatedObjectBlock
                 }
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(3);
-                poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
+                //poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
                 poweredVehicle.speedMultiplier = speedMultiplier;
                 Vector3d motion = poweredVehicle.getDeltaMovement();
                 poweredVehicle.setDeltaMovement(new Vector3d(motion.x, poweredVehicle.currentSpeed / 20F + 0.1, motion.z));

@@ -47,7 +47,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     protected HelicopterEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        this.setMaxSpeed(18F);
     }
 
     @Override
@@ -69,49 +68,55 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
-        Entity entity = this.getControllingPassenger();
-        if(entity != null && this.isFlying())
-        {
-            float deltaYaw = entity.getYHeadRot() % 360.0F - yRot;
-            while(deltaYaw < -180.0F)
-            {
-                deltaYaw += 360.0F;
-            }
-            while(deltaYaw >= 180.0F)
-            {
-                deltaYaw -= 360.0F;
-            }
-            this.yRot = this.yRot + deltaYaw * 0.15F;
-        }
 
-        float travelDirection = this.getTravelDirection();
-        if(this.getAcceleration() != AccelerationDirection.NONE || this.getTurnDirection() != TurnDirection.FORWARD)
-        {
-            float newDirX = MathHelper.sin(travelDirection * 0.017453292F) / 20F; //Divide by 20 ticks
-            float newDirZ = MathHelper.cos(travelDirection * 0.017453292F) / 20F;
-            this.dirX = this.dirX + (newDirX -this.dirX) * 0.05F;
-            this.dirZ = this.dirZ + (newDirZ - this.dirZ) * 0.05F;
-        }
-        this.vehicleMotionX = (-this.currentSpeed * this.dirX);
-        this.vehicleMotionZ = (this.currentSpeed * this.dirZ);
-
-        Vector3d motion = this.getDeltaMovement();
-        double motionY = motion.y();
-        this.updateLift();
-        if(this.isFueled())
-        {
-            motionY = this.lift * this.getBladeSpeedNormal();
-            motionY -= 0.05 + (1.0 - this.getBladeSpeedNormal()) * 0.45;
-
-        }
-        else
-        {
-            motionY -= (0.08D - 0.08D * this.getBladeSpeedNormal());
-        }
-        this.setDeltaMovement(motion.x(), motionY, motion.z());
     }
 
-    @Override
+    //    @Override
+//    public void updateVehicleMotion()
+//    {
+//        Entity entity = this.getControllingPassenger();
+//        if(entity != null && this.isFlying())
+//        {
+//            float deltaYaw = entity.getYHeadRot() % 360.0F - yRot;
+//            while(deltaYaw < -180.0F)
+//            {
+//                deltaYaw += 360.0F;
+//            }
+//            while(deltaYaw >= 180.0F)
+//            {
+//                deltaYaw -= 360.0F;
+//            }
+//            this.yRot = this.yRot + deltaYaw * 0.15F;
+//        }
+//
+//        float travelDirection = this.getTravelDirection();
+//        if(this.getThrottle() != 0 || this.getSteeringAngle() != 0)
+//        {
+//            float newDirX = MathHelper.sin(travelDirection * 0.017453292F) / 20F; //Divide by 20 ticks
+//            float newDirZ = MathHelper.cos(travelDirection * 0.017453292F) / 20F;
+//            this.dirX = this.dirX + (newDirX -this.dirX) * 0.05F;
+//            this.dirZ = this.dirZ + (newDirZ - this.dirZ) * 0.05F;
+//        }
+//        this.vehicleMotionX = (-this.currentSpeed * this.dirX);
+//        this.vehicleMotionZ = (this.currentSpeed * this.dirZ);
+//
+//        Vector3d motion = this.getDeltaMovement();
+//        double motionY = motion.y();
+//        this.updateLift();
+//        if(this.isFueled())
+//        {
+//            motionY = this.lift * this.getBladeSpeedNormal();
+//            motionY -= 0.05 + (1.0 - this.getBladeSpeedNormal()) * 0.45;
+//
+//        }
+//        else
+//        {
+//            motionY -= (0.08D - 0.08D * this.getBladeSpeedNormal());
+//        }
+//        this.setDeltaMovement(motion.x(), motionY, motion.z());
+//    }
+
+    /*@Override
     protected void updateSpeed()
     {
         this.currentSpeed = this.getSpeed();
@@ -158,7 +163,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         {
             this.currentSpeed *= 0.5;
         }
-    }
+    }*/
 
     @Override
     public void updateVehicle()
@@ -225,7 +230,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             PacketHandler.instance.sendToServer(new MessageTravelProperties(travelSpeed, travelDirection));
         }
 
-        if(this.isFlying())
+        //TODO reimplement body rotation
+        /*if(this.isFlying())
         {
             this.bodyRotationX = (this.dirX * 20F * 35F) * this.getActualSpeed();
             this.bodyRotationZ = (this.dirZ * 20F * 35F) * this.getActualSpeed();
@@ -234,7 +240,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         {
             this.bodyRotationX *= 0.5F;
             this.bodyRotationZ *= 0.5F;
-        }
+        }*/
     }
 
     @Override

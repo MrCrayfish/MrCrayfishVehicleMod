@@ -39,8 +39,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         super(entityType, worldIn);
         this.setAccelerationSpeed(0.5F);
-        this.setMaxSpeed(25F);
-        this.setTurnSensitivity(5);
+        //this.setMaxSpeed(25F);
+        this.setSteeringSpeed(5);
     }
 
     @Override
@@ -54,15 +54,21 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
-        float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F; //Divide by 20 ticks
-        float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
 
-        this.updateLift();
-
-        this.vehicleMotionX = (-this.currentSpeed * f1);
-        this.vehicleMotionZ = (this.currentSpeed * f2);
-        this.setDeltaMovement(this.getDeltaMovement().add(0, this.lift - 0.05, 0));
     }
+
+    //    @Override
+//    public void updateVehicleMotion()
+//    {
+//        float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F; //Divide by 20 ticks
+//        float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
+//
+//        this.updateLift();
+//
+//        this.vehicleMotionX = (-this.currentSpeed * f1);
+//        this.vehicleMotionZ = (this.currentSpeed * f2);
+//        this.setDeltaMovement(this.getDeltaMovement().add(0, this.lift - 0.05, 0));
+//    }
 
     @Override
     public void onClientUpdate()
@@ -87,7 +93,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         if(this.isFlying())
         {
             this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getDeltaMovement().y(), currentSpeed / 20F));
-            this.bodyRotationZ = (this.turnAngle / (float) getMaxTurnAngle()) * 20F;
+            this.bodyRotationZ = (this.steeringAngle / (float) getMaxSteeringAngle()) * 20F;
         }
         else
         {
@@ -96,7 +102,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         }
     }
 
-    @Override
+    /*@Override
     protected void updateSpeed()
     {
         lift = 0;
@@ -157,32 +163,32 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
                 this.currentSpeed *= 0.85F;
             }
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     protected void updateTurning()
     {
         TurnDirection direction = this.getTurnDirection();
         if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
         {
-            this.turnAngle += direction.dir * getTurnSensitivity();
-            if(Math.abs(this.turnAngle) > getMaxTurnAngle())
+            this.steeringAngle += direction.dir * getSteeringSpeed();
+            if(Math.abs(this.steeringAngle) > getMaxSteeringAngle())
             {
-                this.turnAngle = getMaxTurnAngle() * direction.dir;
+                this.steeringAngle = getMaxSteeringAngle() * direction.dir;
             }
         }
         else
         {
-            this.turnAngle *= 0.95;
+            this.steeringAngle *= 0.95;
         }
 
         if(this.isFlying())
         {
-            this.wheelAngle = this.turnAngle * Math.max(0.25F, 1.0F - Math.abs(Math.min(currentSpeed, 30F) / 30F));
+            this.wheelAngle = this.steeringAngle * Math.max(0.25F, 1.0F - Math.abs(Math.min(currentSpeed, 30F) / 30F));
         }
         else
         {
-            this.wheelAngle = this.turnAngle * Math.abs(Math.min(currentSpeed, 30F) / 30F);
+            this.wheelAngle = this.steeringAngle * Math.abs(Math.min(currentSpeed, 30F) / 30F);
         }
 
         this.deltaYaw = this.wheelAngle;
@@ -195,7 +201,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             this.deltaYaw *= 0.5 * (0.5 + 0.5 * (1.0F - Math.min(currentSpeed, 15F) / 15F));
         }
-    }
+    }*/
 
     public void updateLift()
     {
