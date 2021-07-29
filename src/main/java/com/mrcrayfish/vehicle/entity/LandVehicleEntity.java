@@ -13,6 +13,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -89,19 +90,19 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
             return;
 
-        float friction = -0.9F;
-        float drag = -0.001F;
-        float slipSpeed = 15F;
-        float traction = 0.1F;
-        float power = 10F;
-
+        float friction = 0.3F;
+        float drag = 0.001F;
+        float enginePower = 5F;
+        float traction = 0.8F;
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
 
         // Updates the acceleration. Applies drag and friction
-        Vector3d acceleration = forward.scale(power * this.getThrottle()).scale(0.05);
+        float forwardForce = enginePower * MathHelper.clamp(this.getThrottle(), -0.5F, 1.0F);
+
+        Vector3d acceleration = forward.scale(forwardForce).scale(0.05);
         if(this.velocity.length() < 0.01) this.velocity = Vector3d.ZERO;
-        Vector3d frictionForce = this.velocity.scale(friction).scale(0.05);
-        Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(drag).scale(0.05);
+        Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
+        Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
         acceleration = acceleration.add(dragForce).add(frictionForce);
 
         // Calculates the new heading based on the wheel positions
@@ -124,7 +125,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         Vector3d heading = frontWheel.subtract(rearWheel).normalize();
         if(heading.dot(this.velocity.normalize()) > 0)
         {
-            this.velocity = heading.scale(this.velocity.length());
+            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), traction);
+            //this.velocity = heading.scale(this.velocity.length());
         }
         else
         {

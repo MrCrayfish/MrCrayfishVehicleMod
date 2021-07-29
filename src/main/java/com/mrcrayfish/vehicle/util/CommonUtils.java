@@ -4,6 +4,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
@@ -55,5 +56,13 @@ public class CommonUtils
     public static float yaw(Vector3d vec)
     {
         return (float) (Math.toDegrees(Math.atan2(vec.z, vec.x)) - 90F);
+    }
+
+    public static Vector3d lerp(Vector3d start, Vector3d end, float time)
+    {
+        double x = MathHelper.lerp(time, start.x, end.x);
+        double y = MathHelper.lerp(time, start.y, end.y);
+        double z = MathHelper.lerp(time, start.z, end.z);
+        return new Vector3d(x, y, z);
     }
 }
