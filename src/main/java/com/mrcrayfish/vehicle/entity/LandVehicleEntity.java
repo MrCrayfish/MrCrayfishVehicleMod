@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.network.message.MessageDrift;
+import com.mrcrayfish.vehicle.network.message.MessageHandbrake;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -24,9 +24,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public abstract class LandVehicleEntity extends PoweredVehicleEntity
 {
-    private static final DataParameter<Boolean> DRIFTING = EntityDataManager.defineId(LandVehicleEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> HANDBRAKE = EntityDataManager.defineId(LandVehicleEntity.class, DataSerializers.BOOLEAN);
 
-    public float drifting;
     public float additionalYaw;
     public float prevAdditionalYaw;
 
@@ -48,7 +47,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.define(DRIFTING, false);
+        this.entityData.define(HANDBRAKE, false);
     }
 
     @Override
@@ -74,11 +73,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            boolean drifting = VehicleHelper.isDrifting();
-            if(this.isDrifting() != drifting)
+            boolean handbraking = VehicleHelper.isHandbraking();
+            if(this.isHandbraking() != handbraking)
             {
-                this.setDrifting(drifting);
-                PacketHandler.instance.sendToServer(new MessageDrift(drifting));
+                this.setHandbraking(handbraking);
+                PacketHandler.instance.sendToServer(new MessageHandbrake(handbraking));
             }
         }
     }
@@ -176,7 +175,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         if(this.level.isClientSide())
         {
-            this.steeringAngle = VehicleHelper.getSteeringAngle(this, this.isDrifting());
+            this.steeringAngle = VehicleHelper.getSteeringAngle(this, this.isHandbraking());
         }
         else
         {
@@ -267,18 +266,17 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         {
             this.yRot -= this.additionalYaw;
             this.additionalYaw = 0;
-            this.drifting = 0;
         }
     }
 
-    public void setDrifting(boolean drifting)
+    public void setHandbraking(boolean handbraking)
     {
-        this.entityData.set(DRIFTING, drifting);
+        this.entityData.set(HANDBRAKE, handbraking);
     }
 
-    public boolean isDrifting()
+    public boolean isHandbraking()
     {
-        return this.entityData.get(DRIFTING);
+        return this.entityData.get(HANDBRAKE);
     }
 
     @Override

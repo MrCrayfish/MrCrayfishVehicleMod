@@ -8,31 +8,31 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class MessageDrift implements IMessage<MessageDrift>
+public class MessageHandbrake implements IMessage<MessageHandbrake>
 {
-	private boolean drifting;
+	private boolean handbrake;
 
-	public MessageDrift() {}
+	public MessageHandbrake() {}
 
-	public MessageDrift(boolean drifting)
+	public MessageHandbrake(boolean handbrake)
 	{
-		this.drifting = drifting;
+		this.handbrake = handbrake;
 	}
 
 	@Override
-	public void encode(MessageDrift message, PacketBuffer buffer)
+	public void encode(MessageHandbrake message, PacketBuffer buffer)
 	{
-		buffer.writeBoolean(message.drifting);
+		buffer.writeBoolean(message.handbrake);
 	}
 
 	@Override
-	public MessageDrift decode(PacketBuffer buffer)
+	public MessageHandbrake decode(PacketBuffer buffer)
 	{
-		return new MessageDrift(buffer.readBoolean());
+		return new MessageHandbrake(buffer.readBoolean());
 	}
 
 	@Override
-	public void handle(MessageDrift message, Supplier<NetworkEvent.Context> supplier)
+	public void handle(MessageHandbrake message, Supplier<NetworkEvent.Context> supplier)
 	{
 		supplier.get().enqueueWork(() ->
 		{
@@ -42,7 +42,7 @@ public class MessageDrift implements IMessage<MessageDrift>
 				Entity riding = player.getVehicle();
 				if(riding instanceof LandVehicleEntity)
 				{
-					((LandVehicleEntity) riding).setDrifting(message.drifting);
+					((LandVehicleEntity) riding).setHandbraking(message.handbrake);
 				}
 			}
 		});

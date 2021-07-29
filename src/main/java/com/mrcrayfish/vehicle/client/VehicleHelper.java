@@ -195,7 +195,7 @@ public class VehicleHelper
         return vehicle.steeringAngle * 0.85F;
     }
 
-    public static boolean isDrifting()
+    public static boolean isHandbraking()
     {
         if(ClientHandler.isControllableLoaded())
         {

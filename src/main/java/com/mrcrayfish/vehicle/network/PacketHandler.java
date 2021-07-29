@@ -23,7 +23,7 @@ public class PacketHandler
                 .simpleChannel();
 
         register(MessageTurnAngle.class, new MessageTurnAngle());
-        register(MessageDrift.class, new MessageDrift());
+        register(MessageHandbrake.class, new MessageHandbrake());
         register(MessageHorn.class, new MessageHorn());
         register(MessageThrowVehicle.class, new MessageThrowVehicle());
         register(MessagePickupVehicle.class, new MessagePickupVehicle());
