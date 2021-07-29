@@ -230,7 +230,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         double wheelCircumference = 24.0;
         double vehicleScale = properties.getBodyPosition().getScale();
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        double speed = this.velocity.length() * forward.dot(this.velocity.normalize());
+        double direction = forward.dot(this.velocity.normalize());
+        double speed = this.velocity.length() * direction;
 
         Wheel frontWheel = properties.getFirstFrontWheel();
         if(frontWheel != null && !this.charging)
