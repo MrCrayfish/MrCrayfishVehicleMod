@@ -185,7 +185,7 @@ public class VehicleHelper
             if(ClientHandler.isControllableLoaded())
             {
                 Controller controller = Controllable.getController();
-                if(controller != null)
+                if(Controllable.getInput().isControllerInUse() && controller != null)
                 {
                     turnValue = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
                 }
