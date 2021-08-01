@@ -333,7 +333,7 @@ public class VehicleHelper
                 }
                 else if(!forward && reverse)
                 {
-                    return (controller.getLTriggerValue() - 0.1F) / 0.9F;
+                    return -(controller.getLTriggerValue() - 0.1F) / 0.9F;
                 }
             }
         }
