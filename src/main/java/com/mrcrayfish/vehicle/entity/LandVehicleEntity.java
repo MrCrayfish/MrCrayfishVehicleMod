@@ -103,6 +103,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
         Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
         acceleration = acceleration.add(dragForce).add(frictionForce);
+        this.velocity = this.velocity.add(acceleration);
 
         // Calculates the new heading based on the wheel positions
         PartPosition bodyPosition = properties.getBodyPosition();
@@ -132,19 +133,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.velocity = heading.scale(-1).scale(Math.min(this.velocity.length(), 5F));
         }
 
-        this.velocity = this.velocity.add(acceleration);
-
         // Calculates the difference from the old yaw to the new yaw
-        this.deltaYaw = CommonUtils.yaw(forward) - CommonUtils.yaw(heading);
-        if(this.deltaYaw < -180.0D)
-        {
-            this.deltaYaw += 360.0F;
-        }
-        else if(this.deltaYaw >= 180.0D)
-        {
-            this.deltaYaw -= 360.0F;
-        }
-        this.yRot -= this.deltaYaw;
+        float vehicleDeltaYaw = CommonUtils.yaw(forward) - CommonUtils.yaw(heading);
+        vehicleDeltaYaw = MathHelper.wrapDegrees(vehicleDeltaYaw);
+        this.yRot -= vehicleDeltaYaw;
+        this.deltaYaw = MathHelper.lerp(0.2F, this.deltaYaw, vehicleDeltaYaw);
 
         //TODO need to reintegrate
         //this.speedMultiplier
