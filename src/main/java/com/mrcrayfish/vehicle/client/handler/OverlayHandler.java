@@ -2,29 +2,39 @@ package com.mrcrayfish.vehicle.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.loading.FMLLoader;
 
-import java.awt.*;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
  */
 public class OverlayHandler
 {
+    private List<ITextComponent> stats = new ArrayList<>();
+
     @SubscribeEvent
-    public void onRenderTick(TickEvent.RenderTickEvent event)
+    public void onClientTick(TickEvent.ClientTickEvent event)
     {
-        if(!Config.CLIENT.enabledSpeedometer.get())
+        if(event.phase != TickEvent.Phase.END)
             return;
 
-        if(event.phase != TickEvent.Phase.END)
+        this.stats.clear();
+
+        if(!Config.CLIENT.enabledSpeedometer.get())
             return;
 
         Minecraft mc = Minecraft.getInstance();
@@ -39,16 +49,48 @@ public class OverlayHandler
         if(!(entity instanceof PoweredVehicleEntity))
             return;
 
-        MatrixStack matrixStack = new MatrixStack();
         PoweredVehicleEntity vehicle = (PoweredVehicleEntity) entity;
-        String speed = new DecimalFormat("0.0").format(vehicle.getSpeed());
-        mc.font.drawShadow(matrixStack, TextFormatting.BOLD + "BPS: " + TextFormatting.YELLOW + speed, 10, 10, Color.WHITE.getRGB());
+        DecimalFormat format = new DecimalFormat("0.00");
+        this.addStat("BPS", format.format(vehicle.getSpeed()));
 
         if(vehicle.requiresFuel())
         {
-            DecimalFormat format = new DecimalFormat("0.0");
             String fuel = format.format(vehicle.getCurrentFuel()) + "/" + format.format(vehicle.getFuelCapacity());
-            mc.font.drawShadow(matrixStack, TextFormatting.BOLD + "Fuel: " + TextFormatting.YELLOW + fuel, 10, 25, Color.WHITE.getRGB());
+            this.addStat("Fuel", fuel);
+        }
+
+        if(!FMLLoader.isProduction())
+        {
+            if(vehicle instanceof LandVehicleEntity)
+            {
+                LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
+                String traction = format.format(landVehicle.traction);
+                this.addStat("Traction", traction);
+
+                Vector3d forward = Vector3d.directionFromRotation(landVehicle.getRotationVector());
+                float side = (float) landVehicle.velocity.normalize().cross(forward.normalize()).length();
+                String sideString = format.format(side);
+                this.addStat("Side", sideString);
+            }
+        }
+    }
+
+    private void addStat(String label, String value)
+    {
+        this.stats.add(new StringTextComponent(label + ": ").withStyle(TextFormatting.BOLD).withStyle(TextFormatting.RESET).append(new StringTextComponent(value).withStyle(TextFormatting.YELLOW)));
+    }
+
+    @SubscribeEvent
+    public void onRenderTick(TickEvent.RenderTickEvent event)
+    {
+        if(event.phase != TickEvent.Phase.END)
+            return;
+
+        MatrixStack stack = new MatrixStack();
+        Minecraft mc = Minecraft.getInstance();
+        for(int i = 0; i < this.stats.size(); i++)
+        {
+            mc.font.drawShadow(stack, this.stats.get(i), 10, 10 + 15 * i, 0xFFFFFF);
         }
     }
 }
