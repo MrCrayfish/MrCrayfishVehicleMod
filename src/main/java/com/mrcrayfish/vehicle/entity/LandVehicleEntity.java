@@ -12,7 +12,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -28,6 +27,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
     public float additionalYaw;
     public float prevAdditionalYaw;
+    public float traction;
 
     @OnlyIn(Dist.CLIENT)
     public float frontWheelRotation;
@@ -89,21 +89,39 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
             return;
 
-        float friction = 0.3F;
+        float friction = 0.9F;
         float drag = 0.001F;
-        float enginePower = 5F;
-        float traction = 0.8F;
+        float enginePower = 15F;
+
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
 
-        // Updates the acceleration. Applies drag and friction
-        float forwardForce = enginePower * MathHelper.clamp(this.getThrottle(), -0.5F, 1.0F);
+        // Maybe this will be for low grip tyres
+        /*float side = 1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length();
+        friction *= MathHelper.clamp(side, 0.5F, 1.0F);*/
 
+        /* Traction so far will make the car more slippery when turning but it will slow it down */
+
+        // Updates the acceleration. Applies drag and friction
+        float forwardForce = enginePower * MathHelper.clamp(this.getThrottle(), -1.0F, 1.0F);
+        forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
         Vector3d acceleration = forward.scale(forwardForce).scale(0.05);
         if(this.velocity.length() < 0.01) this.velocity = Vector3d.ZERO;
         Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
         Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
         acceleration = acceleration.add(dragForce).add(frictionForce);
         this.velocity = this.velocity.add(acceleration);
+
+        if(this.isHandbraking())
+        {
+            this.traction = 0.05F;
+        }
+        else
+        {
+            float baseTraction = this.isHandbraking() ? 0.05F : 0.8F;
+            float targetTraction = acceleration.length() > 0 ? (float) (baseTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : baseTraction;
+            float side = MathHelper.clamp(1.0F - (float) (this.velocity.normalize().cross(forward.normalize()).length() / 0.25), 0.0F, 1.0F);
+            this.traction = this.traction + (targetTraction - this.traction) * 0.1F * side;
+        }
 
         // Calculates the new heading based on the wheel positions
         PartPosition bodyPosition = properties.getBodyPosition();
@@ -125,12 +143,12 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         Vector3d heading = frontWheel.subtract(rearWheel).normalize();
         if(heading.dot(this.velocity.normalize()) > 0)
         {
-            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), traction);
-            //this.velocity = heading.scale(this.velocity.length());
+            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), this.traction);
         }
         else
         {
-            this.velocity = heading.scale(-1).scale(Math.min(this.velocity.length(), 5F));
+            Vector3d reverse = heading.scale(-1).scale(Math.min(this.velocity.length(), 5F));
+            this.velocity = CommonUtils.lerp(this.velocity, reverse, this.traction);
         }
 
         // Calculates the difference from the old yaw to the new yaw
@@ -175,7 +193,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.steeringAngle = 0F;
         }
 
-        this.wheelAngle = this.steeringAngle * Math.max(0.45F, 1.0F - Math.abs(this.currentSpeed / 20F));
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        float targetAngle = this.isSliding() ? -this.steeringAngle : this.steeringAngle;
+        this.wheelAngle = this.wheelAngle + (targetAngle - this.wheelAngle) * 0.3F;
 
         VehicleProperties properties = this.getProperties();
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
@@ -232,6 +252,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             double rotation = (speed * 16) / frontWheelCircumference;
             this.frontWheelRotation -= rotation * 20F;
         }
+
+        if(this.isHandbraking())
+            return;
 
         Wheel rearWheel = properties.getFirstRearWheel();
         if(rearWheel != null)

@@ -1345,6 +1345,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.wheelPositions;
     }
 
+    public boolean isSliding()
+    {
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        return this.velocity.normalize().cross(forward.normalize()).length() > 0.3;
+    }
+
     public enum TurnDirection
     {
         LEFT(1), FORWARD(0), RIGHT(-1);
