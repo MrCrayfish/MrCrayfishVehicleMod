@@ -24,6 +24,7 @@ public abstract class TrailerEntity extends VehicleEntity
 {
     public static final DataParameter<Integer> PULLING_ENTITY = EntityDataManager.defineId(TrailerEntity.class, DataSerializers.INT);
 
+    @Nullable
     private Entity pullingEntity;
 
     public float wheelRotation;
@@ -111,25 +112,17 @@ public abstract class TrailerEntity extends VehicleEntity
 
     private void updatePullingMotion()
     {
-        Vector3d towBar = pullingEntity.position();
-        if(pullingEntity instanceof VehicleEntity)
+        Vector3d towBar = this.pullingEntity.position();
+        if(this.pullingEntity instanceof VehicleEntity)
         {
-            VehicleEntity vehicle = (VehicleEntity) pullingEntity;
+            VehicleEntity vehicle = (VehicleEntity) this.pullingEntity;
             Vector3d towBarVec = vehicle.getProperties().getTowBarPosition();
             towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyPosition().getZ());
-            if(vehicle instanceof LandVehicleEntity)
-            {
-                LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
-                towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot + landVehicle.additionalYaw)));
-            }
-            else
-            {
-                towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
-            }
+            towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
         }
 
         this.yRot = (float) Math.toDegrees(Math.atan2(towBar.z - this.getZ(), towBar.x - this.getX()) - Math.toRadians(90F));
-        double deltaRot = (double) (this.yRotO - this.yRot);
+        double deltaRot = this.yRotO - this.yRot;
         if (deltaRot < -180.0D)
         {
             this.yRotO += 360.0F;

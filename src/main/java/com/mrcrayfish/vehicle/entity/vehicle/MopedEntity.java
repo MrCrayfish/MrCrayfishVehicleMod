@@ -329,7 +329,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 
     protected Vector3d getChestPosition()
     {
-        return new Vector3d(0, 1.0, -0.75).yRot(-(this.yRot - this.additionalYaw) * 0.017453292F).add(this.position());
+        return new Vector3d(0, 1.0, -0.75).yRot(-(this.yRot) * 0.017453292F).add(this.position());
     }
 
     protected int getPlayerCountInChest()

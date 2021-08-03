@@ -25,8 +25,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 {
     private static final DataParameter<Boolean> HANDBRAKE = EntityDataManager.defineId(LandVehicleEntity.class, DataSerializers.BOOLEAN);
 
-    public float additionalYaw;
-    public float prevAdditionalYaw;
     public float traction;
 
     @OnlyIn(Dist.CLIENT)
@@ -60,7 +58,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicle()
     {
-        this.prevAdditionalYaw = this.additionalYaw;
         this.prevFrontWheelRotation = this.frontWheelRotation;
         this.prevRearWheelRotation = this.rearWheelRotation;
         //this.updateDrifting();
@@ -211,31 +208,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }*/
     }
 
-    /*private void updateDrifting()
-    {
-        TurnDirection turnDirection = this.getTurnDirection();
-        if(this.getControllingPassenger() != null && this.isDrifting())
-        {
-            if(turnDirection != TurnDirection.FORWARD)
-            {
-                AccelerationDirection acceleration = this.getAcceleration();
-                if(acceleration == AccelerationDirection.FORWARD)
-                {
-                    this.currentSpeed *= 0.975F;
-                }
-                this.drifting = Math.min(1.0F, this.drifting + 0.025F);
-            }
-        }
-        else
-        {
-            this.drifting *= 0.95F;
-        }
-        this.additionalYaw = 25F * this.drifting * (this.turnAngle / (float) this.getMaxSteeringAngle()) * Math.min(this.getActualMaxSpeed(), this.getActualSpeed() * 2F);
-
-        //Updates the delta yaw to consider drifting
-        this.deltaYaw = this.wheelAngle * (this.currentSpeed / 30F) / (this.isDrifting() ? 1.5F : 2F);
-    }*/
-
     public void updateWheels()
     {
         VehicleProperties properties = this.getProperties();
@@ -274,17 +246,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
     }
 
-    @Override
-    protected void removePassenger(Entity passenger)
-    {
-        super.removePassenger(passenger);
-        if(this.getControllingPassenger() == null)
-        {
-            this.yRot -= this.additionalYaw;
-            this.additionalYaw = 0;
-        }
-    }
-
     public void setHandbraking(boolean handbraking)
     {
         this.entityData.set(HANDBRAKE, handbraking);
@@ -315,7 +276,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     @Override
     public float getModifiedRotationYaw()
     {
-        return this.yRot - this.additionalYaw;
+        return this.yRot;
     }
 
     public boolean isRearWheelSteering()

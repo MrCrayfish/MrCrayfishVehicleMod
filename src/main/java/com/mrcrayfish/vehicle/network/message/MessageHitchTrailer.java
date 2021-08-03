@@ -70,15 +70,7 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
                     Vector3d vehicleVec = vehicle.position();
                     Vector3d towBarVec = properties.getTowBarPosition();
                     towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + properties.getBodyPosition().getZ());
-                    if(vehicle instanceof LandVehicleEntity)
-                    {
-                        LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
-                        vehicleVec = vehicleVec.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot + landVehicle.additionalYaw)));
-                    }
-                    else
-                    {
-                        vehicleVec = vehicleVec.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
-                    }
+                    vehicleVec = vehicleVec.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
 
                     AxisAlignedBB towBarBox = new AxisAlignedBB(vehicleVec.x, vehicleVec.y, vehicleVec.z, vehicleVec.x, vehicleVec.y, vehicleVec.z).inflate(0.25);
                     List<TrailerEntity> trailers = player.level.getEntitiesOfClass(TrailerEntity.class, vehicle.getBoundingBox().inflate(5), input -> input.getPullingEntity() == null);
