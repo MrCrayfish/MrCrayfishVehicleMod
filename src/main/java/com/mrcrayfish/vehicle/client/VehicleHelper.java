@@ -319,9 +319,6 @@ public class VehicleHelper
     @OnlyIn(Dist.CLIENT)
     public static float getThrottle(LivingEntity livingEntity)
     {
-        if(isHandbraking())
-            return 0F;
-
         if(ClientHandler.isControllableLoaded() && Config.CLIENT.useTriggers.get())
         {
             Controller controller = Controllable.getController();

@@ -6,7 +6,6 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHandbrake;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.datasync.DataParameter;
@@ -60,6 +59,12 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         this.prevFrontWheelRotation = this.frontWheelRotation;
         this.prevRearWheelRotation = this.rearWheelRotation;
+        boolean oldCharging = this.charging;
+        this.charging = this.velocity.length() < 1.0 && this.isHandbraking() && this.getThrottle() > 0;
+        if(oldCharging && !this.charging && this.chargingAmount >= 1.0F)
+        {
+            this.releaseCharge();
+        }
     }
 
     @Override
@@ -88,8 +93,34 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         float friction = 0.9F;
         float drag = 0.001F;
         float enginePower = 15F;
+        float brakePower = -1F;
 
+        // Gets the forward vector of the vehicle
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+
+        // Calculates the distance between the front and rear axel
+        PartPosition bodyPosition = properties.getBodyPosition();
+        double wheelBase = properties.getFrontAxelVec().distanceTo(properties.getRearAxelVec()) * 0.0625 * bodyPosition.getScale();
+
+        // Performs the charging motion
+        if(this.charging)
+        {
+            float speed = 0.1F;
+            Vector3d frontWheel = forward.scale(wheelBase / 2.0);
+            Vector3d nextPosition = frontWheel.subtract(frontWheel.yRot((float) Math.toRadians(this.steeringAngle)));
+            Vector3d nextMovement = Vector3d.ZERO.vectorTo(nextPosition).scale(speed);
+            this.setDeltaMovement(nextMovement);
+            this.deltaYaw = this.steeringAngle * speed;
+            this.yRot -= this.deltaYaw;
+            float forwardForce = MathHelper.clamp(this.getThrottle(), -1.0F, 1.0F);
+            forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
+            this.chargingAmount = MathHelper.clamp(this.chargingAmount + forwardForce * 0.025F, 0.0F, 1.0F);
+            return;
+        }
+        else
+        {
+            this.chargingAmount = 0F;
+        }
 
         // Maybe this will be for low grip tyres
         /*float side = 1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length();
@@ -98,13 +129,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         /* Traction so far will make the car more slippery when turning but it will slow it down */
 
         // Updates the acceleration. Applies drag and friction
-        float forwardForce = enginePower * MathHelper.clamp(this.getThrottle(), -1.0F, 1.0F);
+        float throttle = this.isHandbraking() ? 0F : this.getThrottle();
+        float forwardForce = enginePower * MathHelper.clamp(throttle, -1.0F, 1.0F);
         forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
+        if(this.isBoosting()) forwardForce += forwardForce * this.speedMultiplier;
         Vector3d acceleration = forward.scale(forwardForce).scale(0.05);
-        if(this.velocity.length() < 0.01) this.velocity = Vector3d.ZERO;
+        if(this.velocity.length() < 0.05) this.velocity = Vector3d.ZERO;
+        Vector3d handbrakeForce = this.velocity.scale(this.isHandbraking() ? brakePower : 0F).scale(0.05);
         Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
         Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
-        acceleration = acceleration.add(dragForce).add(frictionForce);
+        acceleration = acceleration.add(dragForce).add(frictionForce).add(handbrakeForce);
         this.velocity = this.velocity.add(acceleration);
 
         if(this.isHandbraking())
@@ -118,10 +152,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             float side = MathHelper.clamp(1.0F - (float) (this.velocity.normalize().cross(forward.normalize()).length() / 0.25), 0.0F, 1.0F);
             this.traction = this.traction + (targetTraction - this.traction) * 0.1F * side;
         }
-
-        // Calculates the new heading based on the wheel positions
-        PartPosition bodyPosition = properties.getBodyPosition();
-        double wheelBase = properties.getFrontAxelVec().distanceTo(properties.getRearAxelVec()) * 0.0625 * bodyPosition.getScale();
 
         //TODO test with steering at the rear
         //Gets the new position of the wheels

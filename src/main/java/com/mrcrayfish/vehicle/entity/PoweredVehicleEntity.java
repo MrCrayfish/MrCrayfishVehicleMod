@@ -104,6 +104,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public boolean disableFallDamage;
     public float fuelConsumption = 0.25F;
     protected boolean charging;
+    protected float chargingAmount;
     protected float prevAcceleration;
     public float enginePitch;
 
