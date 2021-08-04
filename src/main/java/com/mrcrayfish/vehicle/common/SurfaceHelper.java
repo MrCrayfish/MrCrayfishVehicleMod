@@ -12,6 +12,7 @@ import net.minecraft.util.math.MathHelper;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static net.minecraft.block.material.Material.*;
@@ -63,16 +64,16 @@ public class SurfaceHelper
         return MATERIAL_TO_SURFACE_TYPE.getOrDefault(material, SurfaceType.NONE);
     }
 
-    public static float getSurfaceModifier(PoweredVehicleEntity vehicle)
+    private static float getValue(PoweredVehicleEntity vehicle, BiFunction<IWheelType, SurfaceType, Float> function, float defaultValue)
     {
         VehicleProperties properties = vehicle.getProperties();
         List<Wheel> wheels = properties.getWheels();
         if(!vehicle.hasWheelStack() || wheels.isEmpty())
-            return 1.0F;
+            return defaultValue;
 
         Optional<IWheelType> optional = vehicle.getWheelType();
         if(!optional.isPresent())
-            return 1.0F;
+            return defaultValue;
 
         int wheelCount = 0;
         float surfaceModifier = 0F;
@@ -89,24 +90,32 @@ public class SurfaceHelper
             if(surfaceType == SurfaceType.NONE)
                 continue;
             IWheelType wheelType = optional.get();
-            surfaceModifier += (1.0F - surfaceType.wheelFunction.apply(wheelType));
+            surfaceModifier += function.apply(wheelType, surfaceType);
             wheelCount++;
         }
-        return 1.0F - (surfaceModifier / Math.max(1F, wheelCount));
+        return surfaceModifier / Math.max(1F, wheelCount);
+    }
+
+    public static float getFriction(PoweredVehicleEntity vehicle)
+    {
+        return getValue(vehicle, (wheelType, surfaceType) -> surfaceType.friction * surfaceType.wheelFunction.apply(wheelType), 0.0F);
     }
 
     public enum SurfaceType
     {
-        SOLID(IWheelType::getRoadMultiplier),
-        DIRT(IWheelType::getDirtMultiplier),
-        SNOW(IWheelType::getSnowMultiplier),
-        NONE(type -> 0F);
+        SOLID(IWheelType::getRoadFrictionFactor, 0.9F),
+        DIRT(IWheelType::getDirtFrictionFactor, 1.1F),
+        SNOW(IWheelType::getSnowFrictionFactor, 1.5F),
+        ICE(type -> 1F, 0.7F),
+        NONE(type -> 0F, 1.0F);
 
-        private Function<IWheelType, Float> wheelFunction;
+        private final Function<IWheelType, Float> wheelFunction;
+        private final float friction;
 
-        SurfaceType(Function<IWheelType, Float> wheelFunction)
+        SurfaceType(Function<IWheelType, Float> wheelFunction, float friction)
         {
             this.wheelFunction = wheelFunction;
+            this.friction = friction;
         }
     }
 }

@@ -11,17 +11,17 @@ import java.util.Optional;
  */
 public interface IWheelType
 {
-    default float getRoadMultiplier()
+    default float getRoadFrictionFactor()
     {
         return 1.0F;
     }
 
-    default float getDirtMultiplier()
+    default float getDirtFrictionFactor()
     {
         return 1.0F;
     }
 
-    default float getSnowMultiplier()
+    default float getSnowFrictionFactor()
     {
         return 1.0F;
     }

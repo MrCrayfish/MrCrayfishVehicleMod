@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageHandbrake;
@@ -109,7 +110,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
             return;
 
-        float friction = 0.9F;
+        float friction = SurfaceHelper.getFriction(this);
         float drag = 0.001F;
         float enginePower = 15F;
         float brakePower = -1F;

@@ -5,40 +5,40 @@ package com.mrcrayfish.vehicle.entity;
  */
 public enum WheelType implements IWheelType
 {
-    STANDARD(0.9F, 0.8F, 0.5F),
-    SPORTS(1.0F, 0.75F, 0.5F),
-    RACING(1.1F, 0.7F, 0.5F),
-    OFF_ROAD(0.75F, 1.0F, 0.85F),
-    SNOW(0.75F, 0.85F, 0.95F),
-    ALL_TERRAIN(0.85F, 0.85F, 0.85F),
-    PLASTIC(0.5F, 0.5F, 0.5F);
+    STANDARD(1.1F, 1.2F, 2.0F),
+    SPORTS(1.0F, 1.4F, 2.0F),
+    RACING(0.9F, 1.5F, 2.0F),
+    OFF_ROAD(1.2F, 0.9F, 1.2F),
+    SNOW(1.8F, 1.0F, 0.7F),
+    ALL_TERRAIN(1.1F, 1.1F, 1.1F),
+    PLASTIC(2.0F, 2.0F, 2.0F);
 
-    private final float roadMultiplier;
-    private final float dirtMultiplier;
-    private final float snowMultiplier;
+    private final float roadFrictionFactor;
+    private final float dirtFrictionFactor;
+    private final float snowFrictionFactor;
 
-    WheelType(float roadMultiplier, float dirtMultiplier, float snowMultiplier)
+    WheelType(float roadFrictionFactor, float dirtFrictionFactor, float snowFrictionFactor)
     {
-        this.roadMultiplier = roadMultiplier;
-        this.dirtMultiplier = dirtMultiplier;
-        this.snowMultiplier = snowMultiplier;
+        this.roadFrictionFactor = roadFrictionFactor;
+        this.dirtFrictionFactor = dirtFrictionFactor;
+        this.snowFrictionFactor = snowFrictionFactor;
     }
 
     @Override
-    public float getRoadMultiplier()
+    public float getRoadFrictionFactor()
     {
-        return this.roadMultiplier;
+        return this.roadFrictionFactor;
     }
 
     @Override
-    public float getDirtMultiplier()
+    public float getDirtFrictionFactor()
     {
-        return this.dirtMultiplier;
+        return this.dirtFrictionFactor;
     }
 
     @Override
-    public float getSnowMultiplier()
+    public float getSnowFrictionFactor()
     {
-        return this.snowMultiplier;
+        return this.snowFrictionFactor;
     }
 }
