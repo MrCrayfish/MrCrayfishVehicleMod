@@ -141,13 +141,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.chargingAmount = 0F;
         }
 
-        // Maybe this will be for low grip tyres
-        /*float side = 1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length();
-        friction *= MathHelper.clamp(side, 0.5F, 1.0F);*/
-
-        /* Traction so far will make the car more slippery when turning but it will slow it down */
-
-        // Updates the acceleration. Applies drag and friction
+        // Updates the acceleration, applies drag and friction, then adds to the velocity
         float throttle = this.isHandbraking() ? 0F : this.getThrottle();
         float forwardForce = enginePower * MathHelper.clamp(throttle, -1.0F, 1.0F);
         forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
@@ -201,29 +195,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         vehicleDeltaYaw = MathHelper.wrapDegrees(vehicleDeltaYaw);
         this.yRot -= vehicleDeltaYaw;
         this.deltaYaw = MathHelper.lerp(0.2F, this.deltaYaw, vehicleDeltaYaw);
-
-        //TODO need to reintegrate
-        //this.speedMultiplier
-
-        //TODO add back charging
-        /*AccelerationDirection acceleration = this.getAcceleration();
-        if(acceleration == AccelerationDirection.CHARGING && this.charging)
-        {
-            PartPosition bodyPosition = properties.getBodyPosition();
-            Vector3d frontAxel = properties.getFrontAxelVec().scale(0.0625F).scale(bodyPosition.getScale());
-            Vector3d nextFrontAxel = frontAxel.yRot((this.turnAngle / 20F) * 0.017453292F);
-            Vector3d deltaAxel = frontAxel.subtract(nextFrontAxel).yRot(-this.yRot * 0.017453292F);
-            double deltaYaw = -this.turnAngle / 20F;
-            this.yRot += deltaYaw;
-            this.deltaYaw = (float) -deltaYaw;
-            this.vehicleMotionX = (float) deltaAxel.x();
-            if(!this.launching)
-            {
-                this.setDeltaMovement(this.getDeltaMovement().add(0, -0.08, 0));
-            }
-            this.vehicleMotionZ = (float) deltaAxel.z();
-            return;
-        }*/
     }
 
     @Override
