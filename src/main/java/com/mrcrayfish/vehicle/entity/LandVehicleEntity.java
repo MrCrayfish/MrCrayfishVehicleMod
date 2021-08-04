@@ -34,6 +34,10 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public float rearWheelRotation;
     @OnlyIn(Dist.CLIENT)
     public float prevRearWheelRotation;
+    @OnlyIn(Dist.CLIENT)
+    public int wheelieCount;
+    @OnlyIn(Dist.CLIENT)
+    public int prevWheelieCount;
 
     public LandVehicleEntity(EntityType<?> entityType, World worldIn)
     {
@@ -71,6 +75,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public void onClientUpdate()
     {
         super.onClientUpdate();
+
+        this.prevWheelieCount = this.wheelieCount;
+
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
@@ -80,6 +87,18 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
                 this.setHandbraking(handbraking);
                 PacketHandler.instance.sendToServer(new MessageHandbrake(handbraking));
             }
+        }
+
+        if(this.isBoosting() && this.getControllingPassenger() != null)
+        {
+            if(this.wheelieCount < MAX_WHEELIE_TICKS)
+            {
+                this.wheelieCount++;
+            }
+        }
+        else if(this.wheelieCount > 0)
+        {
+            this.wheelieCount--;
         }
     }
 
@@ -345,5 +364,12 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         return this.velocity.normalize().cross(forward.normalize()).length() > 0.3;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelieProgress(float partialTicks)
+    {
+        float p = MathHelper.lerp(partialTicks, this.prevWheelieCount, this.wheelieCount) / (float) MAX_WHEELIE_TICKS;
+        return 1.0F - (1.0F - p) * (1.0F - p);
     }
 }

@@ -126,10 +126,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float renderWheelAngle;
     @OnlyIn(Dist.CLIENT)
     public float prevRenderWheelAngle;
-    @OnlyIn(Dist.CLIENT)
-    public int wheelieCount;
-    @OnlyIn(Dist.CLIENT)
-    public int prevWheelieCount;
 
     public Vector3d velocity = Vector3d.ZERO;
 
@@ -627,7 +623,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void onClientUpdate()
     {
         this.prevRenderWheelAngle = this.renderWheelAngle;
-        this.prevWheelieCount = this.wheelieCount;
 
         Entity entity = this.getControllingPassenger();
         if(entity instanceof LivingEntity && entity.equals(Minecraft.getInstance().player))
@@ -646,18 +641,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             float steeringAngle = VehicleHelper.getSteeringAngle(this, false);
             this.setSteeringAngle(steeringAngle);
             PacketHandler.instance.sendToServer(new MessageTurnAngle(steeringAngle));
-        }
-
-        if(this.isBoosting() && this.getControllingPassenger() != null)
-        {
-            if(this.wheelieCount < MAX_WHEELIE_TICKS)
-            {
-                this.wheelieCount++;
-            }
-        }
-        else if(this.wheelieCount > 0)
-        {
-            this.wheelieCount--;
         }
     }
 
@@ -1362,13 +1345,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
 
         this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * (float) Math.abs(this.velocity.length() / 25F);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getWheelieProgress(float partialTicks)
-    {
-        float p = MathHelper.lerp(partialTicks, this.prevWheelieCount, this.wheelieCount) / (float) MAX_WHEELIE_TICKS;
-        return 1.0F - (1.0F - p) * (1.0F - p);
     }
 
     public enum TurnDirection
