@@ -40,7 +40,7 @@ public class HeldVehicleHandler
 
     private void patchPlayerRender(PlayerRenderer player)
     {
-        List<LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>> layers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, player, "layers");
+        List<LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>> layers = ObfuscationReflectionHelper.getPrivateValue(LivingRenderer.class, player, "field_177097_h");
         if(layers != null)
         {
             layers.add(new LayerHeldVehicle(player));
