@@ -35,7 +35,7 @@ public class Wheel
     @OnlyIn(Dist.CLIENT)
     public float getWheelRotation(LandVehicleEntity vehicle, float partialTicks)
     {
-        if(position == Position.REAR)
+        if(this.position == Position.REAR)
         {
             return vehicle.prevRearWheelRotation + (vehicle.rearWheelRotation - vehicle.prevRearWheelRotation) * partialTicks;
         }

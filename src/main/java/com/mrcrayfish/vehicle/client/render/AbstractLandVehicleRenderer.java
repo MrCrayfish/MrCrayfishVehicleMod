@@ -224,7 +224,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
             float wheelAngle = MathHelper.lerp(partialTicks, this.prevWheelAngleProperty.get(vehicle), this.wheelAngleProperty.get(vehicle));
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(wheelAngle));
         }
-        if(vehicle != null && vehicle.isMoving())
+        if(vehicle != null)
         {
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-wheel.getWheelRotation(vehicle, partialTicks)));
         }
