@@ -130,7 +130,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())).scale(0.05));
         rearWheel = rearWheel.add(this.velocity.scale(0.05));
 
-        // Updates the delta movement based on the new wheel positions
+        //Updates the delta movement based on the new wheel positions
         Vector3d nextPosition = frontWheel.add(rearWheel).scale(0.5);
         Vector3d nextMovement = nextPosition.subtract(this.position());
         this.setDeltaMovement(nextMovement);
@@ -189,8 +189,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.steeringAngle = 0F;
         }
 
-        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        float targetAngle = this.isSliding() ? -this.steeringAngle : this.steeringAngle;
+        float targetAngle = !this.charging && this.isSliding() ? -this.steeringAngle : this.steeringAngle;
         this.wheelAngle = this.wheelAngle + (targetAngle - this.wheelAngle) * 0.3F;
 
         VehicleProperties properties = this.getProperties();
@@ -304,5 +303,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         {
             this.enginePitch = this.getMaxEnginePitch();
         }
+    }
+
+    public boolean isSliding()
+    {
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        return this.velocity.normalize().cross(forward.normalize()).length() > 0.3;
     }
 }
