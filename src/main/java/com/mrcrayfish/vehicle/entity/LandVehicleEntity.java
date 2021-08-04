@@ -253,8 +253,14 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.frontWheelRotation -= rotation * 20F;
         }
 
-        if(this.isHandbraking())
+        if(this.isHandbraking() && !this.charging)
             return;
+
+        if(this.charging)
+        {
+            float enginePower = 15F;
+            speed = (enginePower * this.chargingAmount);
+        }
 
         Wheel rearWheel = properties.getFirstRearWheel();
         if(rearWheel != null)
