@@ -54,6 +54,12 @@ public abstract class TrailerEntity extends VehicleEntity
     {
         this.prevWheelRotation = this.wheelRotation;
 
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        double direction = forward.dot(this.getDeltaMovement().normalize());
+        float speed = (float) (Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getY() - this.yo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20);
+        speed *= Math.signum(direction);
+        this.wheelRotation -= 90F * (speed / 10F);
+
         Vector3d motion = this.getDeltaMovement();
         this.setDeltaMovement(motion.x(), motion.y() - 0.08, motion.z());
 
@@ -105,9 +111,6 @@ public abstract class TrailerEntity extends VehicleEntity
         }
 
         this.checkInsideBlocks();
-
-        float speed = (float) (Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getY() - this.yo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20);
-        wheelRotation -= 90F * (speed / 10F);
     }
 
     private void updatePullingMotion()
