@@ -60,7 +60,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         this.prevFrontWheelRotation = this.frontWheelRotation;
         this.prevRearWheelRotation = this.rearWheelRotation;
-        //this.updateDrifting();
     }
 
     @Override
@@ -294,5 +293,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public boolean canWheelie()
     {
         return true;
+    }
+
+    @Override
+    protected void updateEnginePitch()
+    {
+        super.updateEnginePitch();
+
+        if(this.isSliding() && this.getThrottle() > 0 && !this.isHandbraking() || this.isBoosting())
+        {
+            this.enginePitch = this.getMaxEnginePitch();
+        }
     }
 }

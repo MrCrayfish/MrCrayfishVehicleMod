@@ -105,6 +105,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float fuelConsumption = 0.25F;
     protected boolean charging;
     protected float prevAcceleration;
+    public float enginePitch;
 
     protected double[] wheelPositions;
     protected boolean wheelsOnGround = true;
@@ -368,7 +369,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.releaseCharge();
         }*/
 
-
         /* Handle the current speed of the vehicle based on rider's forward movement */
         this.updateGroundState();
         //this.updateSpeed();
@@ -456,6 +456,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(currentFuel < 0F) currentFuel = 0F;
             this.setCurrentFuel(currentFuel);
         }*/
+
+        this.updateEnginePitch();
     }
 
     public void updateVehicle() {}
@@ -1345,10 +1347,15 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.wheelPositions;
     }
 
-    public boolean isSliding()
+    protected void updateEnginePitch()
     {
-        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        return this.velocity.normalize().cross(forward.normalize()).length() > 0.3;
+        if(this.charging)
+        {
+            this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * 0.75F * this.chargingAmount;
+            return;
+        }
+
+        this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * (float) Math.abs(this.velocity.length() / 25F);
     }
 
     public enum TurnDirection
