@@ -80,6 +80,8 @@ import java.util.UUID;
  */
 public abstract class PoweredVehicleEntity extends VehicleEntity implements IInventoryChangedListener, INamedContainerProvider
 {
+    protected static final int MAX_WHEELIE_TICKS = 10;
+
     protected static final DataParameter<Float> POWER = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> THROTTLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> STEERING_ANGLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
@@ -99,6 +101,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float speedMultiplier;
     public boolean boosting;
     public int boostTimer;
+    public float boostStrength;
     public boolean launching;
     public int launchingTimer;
     public boolean disableFallDamage;
@@ -414,12 +417,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.setDeltaMovement(this.getDeltaMovement().multiply(0.98, 0.98, 0.98));
         }
 
-        if(this.boostTimer > 0)
+        if(this.boostTimer > 0 && this.getThrottle() > 0)
         {
             this.boostTimer--;
         }
         else
         {
+            this.boostTimer = 0;
             this.boosting = false;
             this.speedMultiplier *= 0.85;
         }
@@ -646,7 +650,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         if(this.isBoosting() && this.getControllingPassenger() != null)
         {
-            if(this.wheelieCount < 4)
+            if(this.wheelieCount < MAX_WHEELIE_TICKS)
             {
                 this.wheelieCount++;
             }
@@ -1300,11 +1304,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return false;
     }
 
-    protected void releaseCharge()
+    protected void releaseCharge(float strength)
     {
         this.boosting = true;
-        this.boostTimer = 20;
-        this.speedMultiplier = 0.5F;
+        this.boostStrength = MathHelper.clamp(strength, 0.0F, 1.0F);
+        this.boostTimer = (int) (20 * this.boostStrength);
+        this.speedMultiplier = 0.5F * this.boostStrength;
     }
 
     @Override
@@ -1357,6 +1362,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
 
         this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * (float) Math.abs(this.velocity.length() / 25F);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelieProgress(float partialTicks)
+    {
+        float p = MathHelper.lerp(partialTicks, this.prevWheelieCount, this.wheelieCount) / (float) MAX_WHEELIE_TICKS;
+        return 1.0F - (1.0F - p) * (1.0F - p);
     }
 
     public enum TurnDirection

@@ -66,6 +66,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
         matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
 
+        // Handles boosting by performing a wheelie
         if(vehicle != null && vehicle.canWheelie())
         {
             if(properties.getRearAxelVec() == null)
@@ -75,9 +76,8 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
             matrixStack.translate(0.0, -0.5, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
-            float wheelieProgress = MathHelper.lerp(partialTicks, vehicle.prevWheelieCount, vehicle.wheelieCount) / 4F;
-            wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
+            float p = vehicle.getWheelieProgress(partialTicks);
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * vehicle.boostStrength * p));
             matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
             matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.5, 0.0);
