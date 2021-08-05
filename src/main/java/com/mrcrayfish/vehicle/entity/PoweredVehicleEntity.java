@@ -120,14 +120,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float wheelAngle;
     public float prevWheelAngle; //TODO can remove use render wheel angle instead
 
+    public Vector3d motion = Vector3d.ZERO;
+
     @OnlyIn(Dist.CLIENT)
     public float targetWheelAngle;
     @OnlyIn(Dist.CLIENT)
     public float renderWheelAngle;
     @OnlyIn(Dist.CLIENT)
     public float prevRenderWheelAngle;
-
-    public Vector3d velocity = Vector3d.ZERO;
 
     private UUID owner;
 
@@ -397,20 +397,21 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
         this.updateWheelPositions();
 
-        // Apply gravity
-        this.setDeltaMovement(this.getDeltaMovement().add(new Vector3d(0, -9.87, 0).scale(0.05)));
+        // Add gravity
+        this.setDeltaMovement(this.getDeltaMovement().add(new Vector3d(0, -0.08, 0)));
 
         // Move vehicle
+        this.move(MoverType.SELF, this.motion);
         this.move(MoverType.SELF, this.getDeltaMovement());
 
         /* Reduces the motion and speed multiplier */
         if(this.onGround)
         {
-            this.setDeltaMovement(this.getDeltaMovement().multiply(0.8, 0.98, 0.8));
+            this.setDeltaMovement(this.getDeltaMovement().multiply(0.75, 0.0, 0.75));
         }
         else
         {
-            this.setDeltaMovement(this.getDeltaMovement().multiply(0.98, 0.98, 0.98));
+            this.setDeltaMovement(this.getDeltaMovement().multiply(0.98, 1.0, 0.98));
         }
 
         if(this.boostTimer > 0 && this.getThrottle() > 0)
@@ -765,7 +766,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     //TODO test
     public boolean isMoving()
     {
-        return this.velocity.length() != 0;
+        return this.motion.length() != 0;
     }
 
     public void setAccelerationSpeed(float speed)
@@ -785,7 +786,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public double getSpeed()
     {
-        return Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20;
+        return Math.sqrt(Math.pow(this.motion.x, 2) + Math.pow(this.motion.z, 2)) * 20;
     }
 
     public void setSteeringAngle(float targetTurnAngle)
@@ -1324,6 +1325,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.getName();
     }
 
+    public float getSpeedMultiplier()
+    {
+        return speedMultiplier;
+    }
+
     @Nullable
     @Override
     public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
@@ -1344,7 +1350,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             return;
         }
 
-        this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * (float) Math.abs(this.velocity.length() / 25F);
+        this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * (float) Math.abs(this.getSpeed() / 25F);
     }
 
     public enum TurnDirection

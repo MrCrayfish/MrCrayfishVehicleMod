@@ -25,6 +25,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 {
     private static final DataParameter<Boolean> HANDBRAKE = EntityDataManager.defineId(LandVehicleEntity.class, DataSerializers.BOOLEAN);
 
+    public Vector3d velocity = Vector3d.ZERO;
     public float traction;
 
     @OnlyIn(Dist.CLIENT)
@@ -65,7 +66,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         this.prevFrontWheelRotation = this.frontWheelRotation;
         this.prevRearWheelRotation = this.rearWheelRotation;
         boolean oldCharging = this.charging;
-        this.charging = this.velocity.length() < 1.0 && this.isHandbraking() && this.getThrottle() > 0;
+        this.charging = this.velocity.length() < 5.0 && this.isHandbraking() && this.getThrottle() > 0;
         if(oldCharging && !this.charging && this.chargingAmount > 0F)
         {
             this.releaseCharge(this.chargingAmount);
@@ -106,6 +107,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
+        this.motion = Vector3d.ZERO;
+
         VehicleProperties properties = this.getProperties();
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
             return;
@@ -129,13 +132,12 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             Vector3d frontWheel = forward.scale(wheelBase / 2.0);
             Vector3d nextPosition = frontWheel.subtract(frontWheel.yRot((float) Math.toRadians(this.steeringAngle)));
             Vector3d nextMovement = Vector3d.ZERO.vectorTo(nextPosition).scale(speed);
-            this.setDeltaMovement(nextMovement);
+            this.motion = this.motion.add(nextMovement);
             this.deltaYaw = this.steeringAngle * speed;
             this.yRot -= this.deltaYaw;
             float forwardForce = MathHelper.clamp(this.getThrottle(), -1.0F, 1.0F);
             forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
             this.chargingAmount = MathHelper.clamp(this.chargingAmount + forwardForce * 0.025F, 0.0F, 1.0F);
-            return;
         }
         else
         {
@@ -143,7 +145,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
 
         // Updates the acceleration, applies drag and friction, then adds to the velocity
-        float throttle = this.isHandbraking() ? 0F : this.getThrottle();
+        float throttle = this.isHandbraking() || this.charging ? 0F : this.getThrottle();
         float forwardForce = enginePower * MathHelper.clamp(throttle, -1.0F, 1.0F);
         forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
         if(this.isBoosting()) forwardForce += forwardForce * this.speedMultiplier;
@@ -168,7 +170,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             float baseTraction = this.isHandbraking() ? 0.01F : 0.8F;  // TODO this will be determined by wheel type
             float targetTraction = acceleration.length() > 0 ? (float) (baseTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : baseTraction;
             float side = MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.25F, 0.0F, 1.0F);
-            if(this.getThrottle() <= 0) side = 0.5F;
+            if(this.getThrottle() <= 0) side = 0.35F;
             this.traction = this.traction + (targetTraction - this.traction) * 0.1F * side;
         }
 
@@ -182,7 +184,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         //Updates the delta movement based on the new wheel positions
         Vector3d nextPosition = frontWheel.add(rearWheel).scale(0.5);
         Vector3d nextMovement = nextPosition.subtract(this.position());
-        this.setDeltaMovement(nextMovement);
+        this.motion = this.motion.add(nextMovement);
 
         // Updates the velocity based on the heading
         Vector3d heading = frontWheel.subtract(rearWheel).normalize();
@@ -197,10 +199,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
 
         // Calculates the difference from the old yaw to the new yaw
-        float vehicleDeltaYaw = CommonUtils.yaw(forward) - CommonUtils.yaw(heading);
-        vehicleDeltaYaw = MathHelper.wrapDegrees(vehicleDeltaYaw);
-        this.yRot -= vehicleDeltaYaw;
-        this.deltaYaw = MathHelper.lerp(0.2F, this.deltaYaw, vehicleDeltaYaw);
+        if(!this.charging)
+        {
+            float vehicleDeltaYaw = CommonUtils.yaw(forward) - CommonUtils.yaw(heading);
+            vehicleDeltaYaw = MathHelper.wrapDegrees(vehicleDeltaYaw);
+            this.yRot -= vehicleDeltaYaw;
+            this.deltaYaw = MathHelper.lerp(0.2F, this.deltaYaw, vehicleDeltaYaw);
+        }
     }
 
     @Override

@@ -181,7 +181,7 @@ public class VehicleHelper
             if(!(entity instanceof LivingEntity))
                 return 0F;
 
-            float strength = 0.25F * (1.0F - (float) vehicle.velocity.length() / 30F);
+            float strength = 0.25F * (1.0F - (float) vehicle.getSpeed() / 30F);
 
             if(ClientHandler.isControllableLoaded())
             {

@@ -112,9 +112,9 @@ public class SurfaceHelper
         private final Function<IWheelType, Float> wheelFunction;
         private final float friction;
 
-        SurfaceType(Function<IWheelType, Float> wheelFunction, float friction)
+        SurfaceType(Function<IWheelType, Float> frictionFunction, float friction)
         {
-            this.wheelFunction = wheelFunction;
+            this.wheelFunction = frictionFunction;
             this.friction = friction;
         }
     }

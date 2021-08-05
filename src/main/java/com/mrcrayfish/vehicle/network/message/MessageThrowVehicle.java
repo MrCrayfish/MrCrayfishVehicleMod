@@ -66,8 +66,7 @@ public class MessageThrowVehicle implements IMessage<MessageThrowVehicle>
                     double posZ = player.getZ();
                     entity.absMoveTo(posX + heldOffset.x * 0.0625D, posY + heldOffset.y * 0.0625D, posZ + heldOffset.z * 0.0625D, rotation, 0F);
 
-                    Vector3d motion = entity.getDeltaMovement();
-                    entity.setDeltaMovement(motion.x() + lookVec.x, motion.y() + lookVec.y, motion.z() + lookVec.z);
+                    entity.setDeltaMovement(lookVec);
                     entity.fallDistance = 0.0F;
 
                     player.level.addFreshEntity(entity);
