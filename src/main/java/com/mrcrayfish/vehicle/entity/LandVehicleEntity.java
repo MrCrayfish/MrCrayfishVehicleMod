@@ -333,7 +333,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         if(this.isSliding() && this.getThrottle() > 0 && !this.isHandbraking() || this.isBoosting())
         {
-            this.enginePitch = this.getMaxEnginePitch();
+            this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * this.getThrottle();
         }
     }
 
