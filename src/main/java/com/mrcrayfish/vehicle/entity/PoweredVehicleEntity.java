@@ -785,7 +785,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public double getSpeed()
     {
-        return Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getY() - this.yo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20;
+        return Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20;
     }
 
     public void setSteeringAngle(float targetTurnAngle)
