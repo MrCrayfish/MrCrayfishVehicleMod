@@ -155,15 +155,20 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         acceleration = acceleration.add(dragForce).add(frictionForce).add(handbrakeForce);
         this.velocity = this.velocity.add(acceleration);
 
-        if(this.isHandbraking())
+        if(this.isSliding() && this.getThrottle() > 0)
         {
-            this.traction = 0.05F;
+            this.traction = 0.001F; // TODO this will be determined by wheel type
+        }
+        else if(this.isHandbraking())
+        {
+            this.traction = 0.001F;
         }
         else
         {
-            float baseTraction = this.isHandbraking() ? 0.05F : 0.8F;
+            float baseTraction = this.isHandbraking() ? 0.01F : 0.8F;  // TODO this will be determined by wheel type
             float targetTraction = acceleration.length() > 0 ? (float) (baseTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : baseTraction;
-            float side = MathHelper.clamp(1.0F - (float) (this.velocity.normalize().cross(forward.normalize()).length() / 0.25), 0.0F, 1.0F);
+            float side = MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.25F, 0.0F, 1.0F);
+            if(this.getThrottle() <= 0) side = 0.5F;
             this.traction = this.traction + (targetTraction - this.traction) * 0.1F * side;
         }
 
@@ -210,7 +215,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.steeringAngle = 0F;
         }
 
-        float targetAngle = !this.charging && this.isSliding() ? -this.steeringAngle : this.steeringAngle;
+        float targetAngle = !this.charging && this.isSliding() ? -MathHelper.clamp(this.steeringAngle * 2, -this.getMaxSteeringAngle(), this.getMaxSteeringAngle()) : this.steeringAngle;
         this.wheelAngle = this.wheelAngle + (targetAngle - this.wheelAngle) * 0.3F;
 
         VehicleProperties properties = this.getProperties();

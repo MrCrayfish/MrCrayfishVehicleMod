@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
+import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.block.BlockState;
@@ -180,17 +181,21 @@ public class VehicleHelper
             if(!(entity instanceof LivingEntity))
                 return 0F;
 
-            LivingEntity livingEntity = (LivingEntity) entity;
-            float turnValue = MathHelper.clamp(livingEntity.xxa, -1.0F, 1.0F);
+            float strength = 0.25F * (1.0F - (float) vehicle.velocity.length() / 30F);
+
             if(ClientHandler.isControllableLoaded())
             {
                 Controller controller = Controllable.getController();
                 if(Controllable.getInput().isControllerInUse() && controller != null)
                 {
-                    turnValue = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
+                    float leftStick = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
+                    return vehicle.steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - vehicle.steeringAngle) * strength;
                 }
             }
-            return vehicle.steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - vehicle.steeringAngle) * 0.1F;
+
+            LivingEntity livingEntity = (LivingEntity) entity;
+            float turnValue = MathHelper.clamp(livingEntity.xxa, -1.0F, 1.0F);
+            return vehicle.steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - vehicle.steeringAngle) * strength * 0.75F;
         }
         return vehicle.steeringAngle * 0.85F;
     }
