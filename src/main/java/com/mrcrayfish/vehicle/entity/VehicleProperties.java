@@ -67,6 +67,7 @@ public class VehicleProperties
     private Vector3d rearAxelVec;
     private List<Seat> seats = new ArrayList<>();
     private IEngineType engineType = EngineType.NONE;
+    private float enginePower = 0F;
     private boolean colored;
 
     public VehicleProperties setAxleOffset(float axleOffset)
@@ -336,6 +337,17 @@ public class VehicleProperties
         return this;
     }
 
+    public float getEnginePower()
+    {
+        return this.enginePower;
+    }
+
+    public VehicleProperties setEnginePower(float enginePower)
+    {
+        this.enginePower = enginePower;
+        return this;
+    }
+
     public static void loadProperties()
     {
         for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
@@ -465,6 +477,7 @@ public class VehicleProperties
 
             JsonObject general = new JsonObject();
             if(src.engineType != EngineType.NONE) general.addProperty("engineType", src.engineType.getId().toString());
+            if(src.enginePower != 0) general.addProperty("enginePower", src.enginePower);
             if(src.colored) general.addProperty("canBeColored", true);
             if(src.canChangeWheels) general.addProperty("canChangeWheels", true);
             if(general.size() > 0) object.add("general", general);
@@ -503,6 +516,7 @@ public class VehicleProperties
 
             JsonObject general = JSONUtils.getAsJsonObject(object, "general", new JsonObject());
             properties.setEngineType(this.getAsEngineType(general, "engineType", EngineType.NONE));
+            properties.setEnginePower(JSONUtils.getAsFloat(general, "enginePower", 0F));
             properties.setColored(JSONUtils.getAsBoolean(general, "canBeColored", false));
             properties.setCanChangeWheels(JSONUtils.getAsBoolean(general, "canChangeWheels", false));
 

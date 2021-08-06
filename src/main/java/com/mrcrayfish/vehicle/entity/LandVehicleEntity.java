@@ -115,11 +115,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
             return;
 
-        float friction = SurfaceHelper.getFriction(this);
-        float drag = 0.001F;
-        float enginePower = 15F;
-        float brakePower = -1F;
-
         // Gets the forward vector of the vehicle
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
 
@@ -145,6 +140,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         {
             this.chargingAmount = 0F;
         }
+
+        float friction = SurfaceHelper.getFriction(this);
+        float enginePower = properties.getEnginePower();
+        float brakePower = -1F;
+        float drag = 0.001F;
 
         // TODO a lot of this can be broken up into methods
         // Updates the acceleration, applies drag and friction, then adds to the velocity
