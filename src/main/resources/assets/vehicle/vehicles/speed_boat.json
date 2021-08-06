@@ -1,6 +1,7 @@
 {
     "general": {
         "engineType": "vehicle:large_motor",
+        "enginePower": 20.0,
         "canBeColored": true
     },
     "axles": {

@@ -1,6 +1,7 @@
 {
     "general": {
         "engineType": "vehicle:large_motor",
+        "enginePower": 14.0,
         "canBeColored": true,
         "canChangeWheels": true
     },

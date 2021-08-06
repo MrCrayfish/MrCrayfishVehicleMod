@@ -1,5 +1,6 @@
 {
     "general": {
+        "enginePower": 1.0,
         "canChangeWheels": true
     },
     "axles": {

@@ -1,6 +1,7 @@
 {
     "general": {
         "engineType": "vehicle:small_motor",
+        "enginePower": 10.0,
         "canChangeWheels": true
     },
     "axles": {

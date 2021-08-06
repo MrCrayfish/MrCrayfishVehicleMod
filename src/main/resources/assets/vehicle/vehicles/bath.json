@@ -1,4 +1,7 @@
 {
+    "general": {
+        "enginePower": 10.0
+    },
     "display": {
         "held": [ 4.0, 3.5, 0.0 ],
         "trailer": [ 0.0, 0.0, -0.438 ],

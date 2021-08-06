@@ -1,6 +1,7 @@
 {
     "general": {
         "engineType": "vehicle:small_motor",
+        "enginePower": 12.0,
         "canBeColored": true,
         "canChangeWheels": true
     },
