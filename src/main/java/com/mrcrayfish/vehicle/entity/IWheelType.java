@@ -26,6 +26,16 @@ public interface IWheelType
         return 1.0F;
     }
 
+    default float getBaseTraction()
+    {
+        return 1.0F;
+    }
+
+    default float getSlideTraction()
+    {
+        return 1.0F;
+    }
+
     default void applyPhysics(PoweredVehicleEntity vehicle) {}
 
     static Optional<IWheelType> fromStack(ItemStack stack)

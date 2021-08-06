@@ -35,7 +35,7 @@ public class SurfaceHelper
         builder.put(CLAY, SurfaceType.DIRT);
         builder.put(DIRT, SurfaceType.DIRT);
         builder.put(GRASS, SurfaceType.DIRT);
-        builder.put(ICE_SOLID, SurfaceType.SOLID);
+        builder.put(ICE_SOLID, SurfaceType.ICE);
         builder.put(SAND, SurfaceType.DIRT);
         builder.put(SPONGE, SurfaceType.DIRT);
         builder.put(SHULKER_SHELL, SurfaceType.SOLID);
@@ -46,7 +46,7 @@ public class SurfaceHelper
         builder.put(EXPLOSIVE, SurfaceType.SNOW);
         builder.put(LEAVES, SurfaceType.SNOW);
         builder.put(GLASS, SurfaceType.SOLID);
-        builder.put(ICE, SurfaceType.SOLID);
+        builder.put(ICE, SurfaceType.ICE);
         builder.put(CACTUS, SurfaceType.SNOW);
         builder.put(STONE, SurfaceType.SOLID);
         builder.put(METAL, SurfaceType.SOLID);
@@ -101,21 +101,28 @@ public class SurfaceHelper
         return getValue(vehicle, (wheelType, surfaceType) -> surfaceType.friction * surfaceType.wheelFunction.apply(wheelType), 0.0F);
     }
 
+    public static float modifyTraction(PoweredVehicleEntity vehicle, float original)
+    {
+        return getValue(vehicle, (wheelType, surfaceType) -> surfaceType.tractionFactor, 1.0F) * original;
+    }
+
     public enum SurfaceType
     {
-        SOLID(IWheelType::getRoadFrictionFactor, 0.9F),
-        DIRT(IWheelType::getDirtFrictionFactor, 1.1F),
-        SNOW(IWheelType::getSnowFrictionFactor, 1.5F),
-        ICE(type -> 1F, 0.7F),
-        NONE(type -> 0F, 1.0F);
+        SOLID(IWheelType::getRoadFrictionFactor, 0.9F, 1.0F),
+        DIRT(IWheelType::getDirtFrictionFactor, 1.1F, 0.9F),
+        SNOW(IWheelType::getSnowFrictionFactor, 1.5F, 0.9F),
+        ICE(type -> 1F, 1.5F, 0.01F),
+        NONE(type -> 0F, 1.0F, 1.0F);
 
         private final Function<IWheelType, Float> wheelFunction;
         private final float friction;
+        private final float tractionFactor;
 
-        SurfaceType(Function<IWheelType, Float> frictionFunction, float friction)
+        SurfaceType(Function<IWheelType, Float> frictionFunction, float friction, float tractionFactor)
         {
             this.wheelFunction = frictionFunction;
             this.friction = friction;
+            this.tractionFactor = tractionFactor;
         }
     }
 }

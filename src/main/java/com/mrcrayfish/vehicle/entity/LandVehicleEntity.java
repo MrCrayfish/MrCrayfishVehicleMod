@@ -18,6 +18,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.Optional;
+
 /**
  * Author: MrCrayfish
  */
@@ -144,11 +146,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.chargingAmount = 0F;
         }
 
+        // TODO a lot of this can be broken up into methods
         // Updates the acceleration, applies drag and friction, then adds to the velocity
         float throttle = this.isHandbraking() || this.charging ? 0F : this.getThrottle();
         float forwardForce = enginePower * MathHelper.clamp(throttle, -1.0F, 1.0F);
         forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
         if(this.isBoosting()) forwardForce += forwardForce * this.speedMultiplier;
+        if(this.getThrottle() < 0) forwardForce *= 0.4F;
         Vector3d acceleration = forward.scale(forwardForce).scale(0.05);
         if(this.velocity.length() < 0.05) this.velocity = Vector3d.ZERO;
         Vector3d handbrakeForce = this.velocity.scale(this.isHandbraking() ? brakePower : 0F).scale(0.05);
@@ -159,19 +163,18 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         if(this.isSliding() && this.getThrottle() > 0)
         {
-            this.traction = 0.001F; // TODO this will be determined by wheel type
+            this.traction = this.getWheelType().map(IWheelType::getSlideTraction).orElse(1.0F);
         }
         else if(this.isHandbraking())
         {
-            this.traction = 0.001F;
+            this.traction = 0.05F;
         }
         else
         {
-            float baseTraction = this.isHandbraking() ? 0.01F : 0.8F;  // TODO this will be determined by wheel type
-            float targetTraction = acceleration.length() > 0 ? (float) (baseTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : baseTraction;
-            float side = MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.25F, 0.0F, 1.0F);
-            if(this.getThrottle() <= 0) side = 0.35F;
-            this.traction = this.traction + (targetTraction - this.traction) * 0.1F * side;
+            float wheelTraction = this.getWheelType().map(IWheelType::getBaseTraction).orElse(1.0F);
+            float targetTraction = acceleration.length() > 0 ? (float) (wheelTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : wheelTraction;
+            float side = MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.3F, 0.0F, 1.0F);
+            this.traction = this.traction + (targetTraction - this.traction) * side * 0.2F;
         }
 
         //TODO test with steering at the rear
@@ -187,15 +190,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         this.motion = this.motion.add(nextMovement);
 
         // Updates the velocity based on the heading
+        float modifiedTraction = SurfaceHelper.modifyTraction(this, this.traction);
         Vector3d heading = frontWheel.subtract(rearWheel).normalize();
         if(heading.dot(this.velocity.normalize()) > 0)
         {
-            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), this.traction);
+            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), modifiedTraction);
         }
         else
         {
             Vector3d reverse = heading.scale(-1).scale(Math.min(this.velocity.length(), 5F));
-            this.velocity = CommonUtils.lerp(this.velocity, reverse, this.traction);
+            this.velocity = CommonUtils.lerp(this.velocity, reverse, modifiedTraction);
         }
 
         // Calculates the difference from the old yaw to the new yaw
@@ -345,7 +349,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public boolean isSliding()
     {
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        return this.velocity.normalize().cross(forward.normalize()).length() > 0.3;
+        return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
     }
 
     @OnlyIn(Dist.CLIENT)
