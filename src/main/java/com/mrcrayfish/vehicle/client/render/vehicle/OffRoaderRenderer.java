@@ -43,7 +43,7 @@ public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEnti
         if(vehicle != null)
         {
             // Rotates the steering wheel based on the wheel angle
-            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
@@ -104,7 +104,7 @@ public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEnti
 
         if(entity.getControllingPassenger() == player)
         {
-            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = entity.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 6F;
             model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);

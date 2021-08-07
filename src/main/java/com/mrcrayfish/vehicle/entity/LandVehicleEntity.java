@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.util.CommonUtils;
@@ -16,21 +15,21 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public abstract class LandVehicleEntity extends PoweredVehicleEntity
 {
-    public Vector3d velocity = Vector3d.ZERO;
-    public float traction;
+    protected Vector3d velocity = Vector3d.ZERO;
+    protected float traction;
 
     @OnlyIn(Dist.CLIENT)
-    public float frontWheelRotation;
+    protected float frontWheelRotation;
     @OnlyIn(Dist.CLIENT)
-    public float prevFrontWheelRotation;
+    protected float prevFrontWheelRotation;
     @OnlyIn(Dist.CLIENT)
-    public float rearWheelRotation;
+    protected float rearWheelRotation;
     @OnlyIn(Dist.CLIENT)
-    public float prevRearWheelRotation;
+    protected float prevRearWheelRotation;
     @OnlyIn(Dist.CLIENT)
-    public int wheelieCount;
+    protected int wheelieCount;
     @OnlyIn(Dist.CLIENT)
-    public int prevWheelieCount;
+    protected int prevWheelieCount;
 
     public LandVehicleEntity(EntityType<?> entityType, World worldIn)
     {
@@ -278,6 +277,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         return true;
     }
 
+    public float getTraction()
+    {
+        return this.traction;
+    }
+
+    public Vector3d getVelocity()
+    {
+        return this.velocity;
+    }
+
     @Override
     protected void updateEnginePitch()
     {
@@ -293,6 +302,18 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getFrontWheelRotation(float partialTicks)
+    {
+        return this.prevFrontWheelRotation + (this.frontWheelRotation - this.prevFrontWheelRotation) * partialTicks;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getRearWheelRotation(float partialTicks)
+    {
+        return this.prevRearWheelRotation + (this.rearWheelRotation - this.prevRearWheelRotation) * partialTicks;
     }
 
     @OnlyIn(Dist.CLIENT)

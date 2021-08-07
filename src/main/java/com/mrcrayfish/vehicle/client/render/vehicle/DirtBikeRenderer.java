@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 
 import javax.annotation.Nullable;
 
@@ -45,7 +44,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
 
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
@@ -68,7 +67,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
                 matrixStack.translate(wheel.getOffsetX() * 0.0625, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
                 if(vehicle != null)
                 {
-                    float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
+                    float frontWheelSpin = vehicle.getFrontWheelRotation(partialTicks);
                     if(vehicle.isMoving())
                     {
                         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
@@ -90,7 +89,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
         int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index == 0)
         {
-            float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = entity.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 8F;
             model.rightArm.xRot = (float) Math.toRadians(-55F - turnRotation);

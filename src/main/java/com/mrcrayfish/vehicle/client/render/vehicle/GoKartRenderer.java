@@ -41,7 +41,7 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
 
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(turnRotation));
@@ -60,7 +60,7 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
         model.leftLeg.xRot = (float) Math.toRadians(-85F);
         model.leftLeg.yRot = (float) Math.toRadians(-10F);
 
-        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngle = entity.getRenderWheelAngle(partialTicks);
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
 

@@ -69,7 +69,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-22.5F));
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
@@ -105,7 +105,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
                 matrixStack.translate(wheel.getOffsetX() * 0.0625, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
                 if(vehicle != null)
                 {
-                    float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
+                    float frontWheelSpin = vehicle.getFrontWheelRotation(partialTicks);
                     if(vehicle.isMoving())
                     {
                         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
@@ -141,7 +141,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     @Override
     public void applyPlayerModel(MopedEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngle = entity.getRenderWheelAngle(partialTicks);
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
         model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);

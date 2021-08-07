@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -31,8 +30,7 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
 {
-    protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(t -> t.renderWheelAngle, 0F);
-    protected final PropertyFunction<T, Float> prevWheelAngleProperty = new PropertyFunction<>(t -> t.prevRenderWheelAngle, 0F);
+    protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(LandVehicleEntity::getRenderWheelAngle, 0F);
 
     public AbstractLandVehicleRenderer(VehicleProperties defaultProperties)
     {
@@ -132,7 +130,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
                     {
                         Vector3d frontAxelVec = properties.getFrontAxelVec();
                         frontAxelVec = frontAxelVec.scale(0.0625);
-                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.renderWheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.getRenderWheelAngle(0F) * 0.017453292F);
                         frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
                         matrixStack.translate(frontAxelVec.x, 0, frontAxelVec.z);
                         this.renderSteeringLine(matrixStack, 0xFFDD00);
@@ -152,7 +150,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
                     {
                         Vector3d frontAxelVec = properties.getFrontAxelVec();
                         frontAxelVec = frontAxelVec.scale(0.0625);
-                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.renderWheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.getRenderWheelAngle(0F) * 0.017453292F);
                         frontAxelVec = frontAxelVec.add(nextFrontAxelVec);
                         Vector3d rearAxelVec = properties.getRearAxelVec();
                         rearAxelVec = rearAxelVec.scale(0.0625);
@@ -169,7 +167,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
 
                     matrixStack.pushPose();
                     {
-                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.renderWheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.getRenderWheelAngle(0F) * 0.017453292F);
                         nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
                         Vector3d nextRearAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F);
                         nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));
@@ -221,7 +219,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset(), wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
         if(wheel.getPosition() == Wheel.Position.FRONT)
         {
-            float wheelAngle = MathHelper.lerp(partialTicks, this.prevWheelAngleProperty.get(vehicle), this.wheelAngleProperty.get(vehicle));
+            float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(wheelAngle));
         }
         if(vehicle != null)

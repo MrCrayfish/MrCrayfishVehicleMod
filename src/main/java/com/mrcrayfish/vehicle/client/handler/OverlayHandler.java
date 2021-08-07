@@ -64,11 +64,11 @@ public class OverlayHandler
             if(vehicle instanceof LandVehicleEntity)
             {
                 LandVehicleEntity landVehicle = (LandVehicleEntity) vehicle;
-                String traction = format.format(landVehicle.traction);
+                String traction = format.format(landVehicle.getTraction());
                 this.addStat("Traction", traction);
 
                 Vector3d forward = Vector3d.directionFromRotation(landVehicle.getRotationVector());
-                float side = (float) landVehicle.velocity.normalize().cross(forward.normalize()).length();
+                float side = (float) landVehicle.getVelocity().normalize().cross(forward.normalize()).length();
                 String sideString = format.format(side);
                 this.addStat("Side", sideString);
             }

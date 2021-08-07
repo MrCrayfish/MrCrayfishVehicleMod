@@ -55,8 +55,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -83,13 +81,12 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected double lerpPitch;
 
     protected final SeatTracker seatTracker;
-    private Map<DataParameter<?>, VehicleDataValue<?>> paramToDataValue;
+    protected final Map<DataParameter<?>, VehicleDataValue<?>> paramToDataValue = new HashMap<>();
 
     public VehicleEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
         this.seatTracker = new SeatTracker(this);
-        this.init();
     }
 
     @Override
@@ -102,21 +99,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         this.entityData.define(TRAILER, -1);
     }
 
-    protected void init()
-    {
-        if(this.level.isClientSide())
-        {
-            this.onClientInit();
-        }
-    }
-
     public void registerDataValue(VehicleDataValue<?> dataValue)
     {
         this.paramToDataValue.put(dataValue.getKey(), dataValue);
     }
-
-    @OnlyIn(Dist.CLIENT)
-    public void onClientInit() {}
 
     /* Overridden to prevent odd step sound when driving vehicles. Ain't no subclasses getting
      * the ability to override this. */
@@ -153,6 +139,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             ItemStack heldItem = player.getItemInHand(hand);
             if(heldItem.getItem() instanceof SprayCanItem)
             {
+                //TODO should be using properties
                 if(this.canBeColored())
                 {
                     CompoundNBT compound = heldItem.getTag();
@@ -295,11 +282,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
 
-        /*this.prevPosX = this.getPosX();
-        this.prevPosY = this.getPosY();
-        this.prevPosZ = this.getPosZ();*/
-
-        if(!this.level.isClientSide)
+        if(!this.level.isClientSide())
         {
             if(this.searchDelay <= 0)
             {

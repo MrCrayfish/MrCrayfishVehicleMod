@@ -34,11 +34,7 @@ public class Wheel
     @OnlyIn(Dist.CLIENT)
     public float getWheelRotation(LandVehicleEntity vehicle, float partialTicks)
     {
-        if(this.position == Position.REAR)
-        {
-            return vehicle.prevRearWheelRotation + (vehicle.rearWheelRotation - vehicle.prevRearWheelRotation) * partialTicks;
-        }
-        return vehicle.prevFrontWheelRotation + (vehicle.frontWheelRotation - vehicle.prevFrontWheelRotation) * partialTicks;
+        return this.position == Position.REAR ? vehicle.getRearWheelRotation(partialTicks) : vehicle.getFrontWheelRotation(partialTicks);
     }
 
     public Vector3d getOffset()

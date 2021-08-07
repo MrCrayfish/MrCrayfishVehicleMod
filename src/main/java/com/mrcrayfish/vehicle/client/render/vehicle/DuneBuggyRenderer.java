@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
@@ -43,7 +42,7 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-22.5F));
         if(vehicle != null)
         {
-            float wheelAngle = MathHelper.lerp(partialTicks, vehicle.prevRenderWheelAngle, vehicle.renderWheelAngle);
+            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 15F;
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(turnRotation));
@@ -64,7 +63,7 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
                 matrixStack.translate(0.0, -0.355, 0.33);
                 if(vehicle != null)
                 {
-                    float frontWheelSpin = MathHelper.lerp(partialTicks, vehicle.prevFrontWheelRotation, vehicle.frontWheelRotation);
+                    float frontWheelSpin = vehicle.getFrontWheelRotation(partialTicks);
                     if(vehicle.isMoving())
                     {
                         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-frontWheelSpin));
@@ -84,7 +83,7 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
     @Override
     public void applyPlayerModel(DuneBuggyEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngle = entity.getRenderWheelAngle(partialTicks);
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 8F;
         model.rightArm.xRot = (float) Math.toRadians(-50F - turnRotation);

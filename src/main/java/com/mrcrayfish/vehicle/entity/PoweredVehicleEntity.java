@@ -116,25 +116,26 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected float chargingAmount;
     protected float enginePitch;
     protected double[] wheelPositions;
-
+    private boolean fueling;
     protected float deltaYaw;
     protected Vector3d motion = Vector3d.ZERO;
-
     private Inventory vehicleInventory;
 
-    private FuelPortType fuelPortType;
-    private boolean fueling;
-
     @OnlyIn(Dist.CLIENT)
-    public float renderWheelAngle;
+    protected float renderWheelAngle;
     @OnlyIn(Dist.CLIENT)
-    public float prevRenderWheelAngle;
+    protected float prevRenderWheelAngle;
 
     protected PoweredVehicleEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
         this.maxUpStep = 1.0F;
-        this.init();
+
+        List<Wheel> wheels = this.getProperties().getWheels();
+        if(wheels != null && wheels.size() > 0)
+        {
+            this.wheelPositions = new double[wheels.size() * 3];
+        }
     }
 
     public PoweredVehicleEntity(EntityType<?> entityType, World worldIn, double posX, double posY, double posZ)
@@ -162,18 +163,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(WHEEL_STACK, ItemStack.EMPTY);
     }
 
-    @Override
-    protected void init()
-    {
-        super.init();
-
-        List<Wheel> wheels = this.getProperties().getWheels();
-        if(wheels != null && wheels.size() > 0)
-        {
-            this.wheelPositions = new double[wheels.size() * 3];
-        }
-    }
-
     public abstract SoundEvent getEngineSound();
 
     //TODO ability to change with nbt
@@ -186,7 +175,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(!this.fueling)
         {
-            this.fuelPortType.playOpenSound();
+            this.getFuelPortType().playOpenSound();
             this.fueling = true;
         }
     }
@@ -195,7 +184,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(this.fueling)
         {
-            this.fuelPortType.playCloseSound();
+            this.getFuelPortType().playCloseSound();
             this.fueling = false;
         }
     }
@@ -214,18 +203,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public boolean isPickable()
     {
         return true;
-    }
-
-    @Override
-    public void onClientInit()
-    {
-        super.onClientInit();
-        this.setFuelPortType(FuelPortType.DEFAULT);
-    }
-
-    protected void setFuelPortType(FuelPortType fuelPortType)
-    {
-        this.fuelPortType = fuelPortType;
     }
 
     public void fuelVehicle(PlayerEntity player, Hand hand)
@@ -1224,6 +1201,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void setSpeedMultiplier(float speedMultiplier)
     {
         this.speedMultiplier = speedMultiplier;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getRenderWheelAngle(float partialTicks)
+    {
+        return this.prevRenderWheelAngle + (this.renderWheelAngle - this.prevRenderWheelAngle) * partialTicks;
     }
 
     public enum FuelPortType

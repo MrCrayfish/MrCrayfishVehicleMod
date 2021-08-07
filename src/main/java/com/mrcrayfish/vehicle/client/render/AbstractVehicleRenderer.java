@@ -22,6 +22,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -206,10 +207,15 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
 
     protected static class PropertyFunction<V extends VehicleEntity, T>
     {
-        protected Function<V, T> function;
+        protected BiFunction<V, Float, T> function;
         protected T defaultValue;
 
         public PropertyFunction(Function<V, T> function, T defaultValue)
+        {
+            this((v, p) -> function.apply(v), defaultValue);
+        }
+
+        public PropertyFunction(BiFunction<V, Float, T> function, T defaultValue)
         {
             this.function = function;
             this.defaultValue = defaultValue;
@@ -222,7 +228,12 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
 
         public T get(@Nullable V vehicle)
         {
-            return vehicle != null ? this.function.apply(vehicle) : this.defaultValue;
+            return this.get(vehicle, 0F);
+        }
+
+        public T get(@Nullable V vehicle, float partialTicks)
+        {
+            return vehicle != null ? this.function.apply(vehicle, partialTicks) : this.defaultValue;
         }
 
         protected void setDefaultValue(T value)

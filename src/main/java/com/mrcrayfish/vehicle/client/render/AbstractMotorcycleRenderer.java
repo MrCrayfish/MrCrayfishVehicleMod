@@ -9,7 +9,6 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
@@ -70,9 +69,8 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
             matrixStack.translate(0.0, -0.5, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
-            float wheelieProgress = MathHelper.lerp(partialTicks, vehicle.prevWheelieCount, vehicle.wheelieCount) / 4F;
-            wheelieProgress = (float) (1.0 - Math.pow(1.0 - wheelieProgress, 2));
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * wheelieProgress));
+            float p = vehicle.getWheelieProgress(partialTicks);
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * vehicle.getBoostStrength() * p));
             matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
             matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.5, 0.0);

@@ -42,7 +42,7 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
 
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 15F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
@@ -56,7 +56,7 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
     @Override
     public void applyPlayerModel(ATVEntity entity, PlayerEntity player, PlayerModel<AbstractClientPlayerEntity> model, float partialTicks)
     {
-        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
+        float wheelAngle = entity.getRenderWheelAngle(partialTicks);
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 12F;
         model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
