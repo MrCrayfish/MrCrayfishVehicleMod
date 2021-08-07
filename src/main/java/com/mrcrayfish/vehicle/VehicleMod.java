@@ -69,6 +69,7 @@ public class VehicleMod
         ItemLookup.init();
         ModDataKeys.register();
         ModLootFunctions.init();
+        CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workstation_ingredient"), WorkstationIngredient.Serializer.INSTANCE);
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
