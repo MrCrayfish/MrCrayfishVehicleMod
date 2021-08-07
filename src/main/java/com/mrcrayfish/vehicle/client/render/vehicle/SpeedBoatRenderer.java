@@ -42,7 +42,7 @@ public class SpeedBoatRenderer extends AbstractBoatRenderer<SpeedBoatEntity>
         matrixStack.translate(0, 0.02, 0);
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 15F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
@@ -59,7 +59,7 @@ public class SpeedBoatRenderer extends AbstractBoatRenderer<SpeedBoatEntity>
         model.leftLeg.xRot = (float) Math.toRadians(-85F);
         model.leftLeg.yRot = (float) Math.toRadians(-20F);
 
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
         model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);

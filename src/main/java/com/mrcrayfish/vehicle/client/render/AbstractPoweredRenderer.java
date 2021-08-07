@@ -3,12 +3,8 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.RayTraceFunction;
-import com.mrcrayfish.vehicle.common.ItemLookup;
-import com.mrcrayfish.vehicle.entity.EngineTier;
-import com.mrcrayfish.vehicle.entity.IWheelType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.WheelType;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -17,7 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 
 import javax.annotation.Nullable;
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish

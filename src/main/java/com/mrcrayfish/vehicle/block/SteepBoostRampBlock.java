@@ -4,17 +4,13 @@ import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.tileentity.BoostTileEntity;
 import com.mrcrayfish.vehicle.util.Bounds;
-import com.mrcrayfish.vehicle.util.RenderUtil;
 import com.mrcrayfish.vehicle.util.StateHelper;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -23,15 +19,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -86,9 +78,9 @@ public class SteepBoostRampBlock extends RotatedObjectBlock
                 poweredVehicle.setBoosting(true);
                 poweredVehicle.setLaunching(3);
                 //poweredVehicle.currentSpeed = poweredVehicle.getActualMaxSpeed();
-                poweredVehicle.speedMultiplier = speedMultiplier;
+                poweredVehicle.setSpeedMultiplier(speedMultiplier);
                 Vector3d motion = poweredVehicle.getDeltaMovement();
-                poweredVehicle.setDeltaMovement(new Vector3d(motion.x, poweredVehicle.currentSpeed / 20F + 0.1, motion.z));
+                //poweredVehicle.setDeltaMovement(new Vector3d(motion.x, poweredVehicle.currentSpeed / 20F + 0.1, motion.z));
             }
         }
     }

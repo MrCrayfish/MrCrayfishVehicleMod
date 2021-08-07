@@ -3,30 +3,19 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.network.PacketHandler;
-import com.mrcrayfish.vehicle.network.message.MessageHandbrake;
 import com.mrcrayfish.vehicle.util.CommonUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.Optional;
-
 /**
  * Author: MrCrayfish
  */
 public abstract class LandVehicleEntity extends PoweredVehicleEntity
 {
-    private static final DataParameter<Boolean> HANDBRAKE = EntityDataManager.defineId(LandVehicleEntity.class, DataSerializers.BOOLEAN);
-
     public Vector3d velocity = Vector3d.ZERO;
     public float traction;
 
@@ -49,13 +38,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public void defineSynchedData()
-    {
-        super.defineSynchedData();
-        this.entityData.define(HANDBRAKE, false);
-    }
-
-    @Override
     public void onUpdateVehicle()
     {
         super.onUpdateVehicle();
@@ -63,10 +45,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public void updateVehicle()
+    public void onVehicleTick()
     {
         this.prevFrontWheelRotation = this.frontWheelRotation;
         this.prevRearWheelRotation = this.rearWheelRotation;
+
         boolean oldCharging = this.charging;
         this.charging = this.velocity.length() < 5.0 && this.isHandbraking() && this.getThrottle() > 0;
         if(oldCharging && !this.charging && this.chargingAmount > 0F)
@@ -81,17 +64,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         super.onClientUpdate();
 
         this.prevWheelieCount = this.wheelieCount;
-
-        LivingEntity entity = (LivingEntity) this.getControllingPassenger();
-        if(entity != null && entity.equals(Minecraft.getInstance().player))
-        {
-            boolean handbraking = VehicleHelper.isHandbraking();
-            if(this.isHandbraking() != handbraking)
-            {
-                this.setHandbraking(handbraking);
-                PacketHandler.instance.sendToServer(new MessageHandbrake(handbraking));
-            }
-        }
 
         if(this.isBoosting() && this.getControllingPassenger() != null)
         {
@@ -151,7 +123,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         float throttle = this.isHandbraking() || this.charging ? 0F : this.getThrottle();
         float forwardForce = enginePower * MathHelper.clamp(throttle, -1.0F, 1.0F);
         forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
-        if(this.isBoosting()) forwardForce += forwardForce * this.speedMultiplier;
+        if(this.isBoosting()) forwardForce += forwardForce * this.getSpeedMultiplier();
         if(this.getThrottle() < 0) forwardForce *= 0.4F;
         Vector3d acceleration = forward.scale(forwardForce).scale(0.05);
         if(this.velocity.length() < 0.05) this.velocity = Vector3d.ZERO;
@@ -190,16 +162,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         this.motion = this.motion.add(nextMovement);
 
         // Updates the velocity based on the heading
-        float modifiedTraction = SurfaceHelper.modifyTraction(this, this.traction);
+        float surfaceTraction = SurfaceHelper.getSurfaceTraction(this, this.traction);
         Vector3d heading = frontWheel.subtract(rearWheel).normalize();
         if(heading.dot(this.velocity.normalize()) > 0)
         {
-            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), modifiedTraction);
+            this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), surfaceTraction);
         }
         else
         {
             Vector3d reverse = heading.scale(-1).scale(Math.min(this.velocity.length(), 5F));
-            this.velocity = CommonUtils.lerp(this.velocity, reverse, modifiedTraction);
+            this.velocity = CommonUtils.lerp(this.velocity, reverse, surfaceTraction);
         }
 
         // Calculates the difference from the old yaw to the new yaw
@@ -217,28 +189,18 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         if(this.level.isClientSide())
         {
-            this.steeringAngle = VehicleHelper.getSteeringAngle(this, this.isHandbraking());
+            this.steeringAngle = VehicleHelper.getSteeringAngle(this);
         }
         else
         {
             this.steeringAngle = 0F;
         }
 
-        float targetAngle = !this.charging && this.isSliding() ? -MathHelper.clamp(this.steeringAngle * 2, -this.getMaxSteeringAngle(), this.getMaxSteeringAngle()) : this.steeringAngle;
-        this.wheelAngle = this.wheelAngle + (targetAngle - this.wheelAngle) * 0.3F;
-
-        VehicleProperties properties = this.getProperties();
-        if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
+        if(this.level.isClientSide())
         {
-            this.deltaYaw = this.wheelAngle * (this.currentSpeed / 30F) / 2F;
+            float targetAngle = !this.charging && this.isSliding() ? -MathHelper.clamp(this.steeringAngle * 2, -this.getMaxSteeringAngle(), this.getMaxSteeringAngle()) : this.steeringAngle;
+            this.renderWheelAngle = this.renderWheelAngle + (targetAngle - this.renderWheelAngle) * 0.3F;
         }
-
-        //TODO fix wheel angle for drifting
-        /*if(this.level.isClientSide)
-        {
-            this.targetWheelAngle = this.isDrifting() ? -35F * (this.turnAngle / (float) this.getMaxSteeringAngle()) * this.getNormalSpeed() : this.wheelAngle - 35F * (this.turnAngle / (float) this.getMaxSteeringAngle()) * drifting;
-            this.renderWheelAngle = this.renderWheelAngle + (this.targetWheelAngle - this.renderWheelAngle) * (this.isDrifting() ? 0.35F : 0.5F);
-        }*/
     }
 
     public void updateWheels()
@@ -283,16 +245,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         {
             super.createParticles();
         }
-    }
-
-    public void setHandbraking(boolean handbraking)
-    {
-        this.entityData.set(HANDBRAKE, handbraking);
-    }
-
-    public boolean isHandbraking()
-    {
-        return this.entityData.get(HANDBRAKE);
     }
 
     @Override

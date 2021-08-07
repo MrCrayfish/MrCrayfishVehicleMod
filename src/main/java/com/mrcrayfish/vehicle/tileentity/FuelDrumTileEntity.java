@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.tileentity;
 
-import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 import net.minecraft.tileentity.TileEntityType;

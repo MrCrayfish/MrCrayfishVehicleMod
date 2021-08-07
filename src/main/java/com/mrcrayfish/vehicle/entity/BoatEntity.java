@@ -6,7 +6,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -84,7 +83,7 @@ public abstract class BoatEntity extends PoweredVehicleEntity
 //    }
 
     @Override
-    public void updateVehicle()
+    public void onVehicleTick()
     {
         this.previousState = this.state;
         this.state = this.getState();
@@ -176,21 +175,19 @@ public abstract class BoatEntity extends PoweredVehicleEntity
         {
             return State.IN_WATER;
         }
-        else if(this.onGround)
+        else if(this.isOnGround())
         {
             return State.ON_LAND;
         }
-        else
-        {
-            return State.IN_AIR;
-        }
+        return State.IN_AIR;
     }
 
-    @Override
+    //TODO figure out new way to reimplement
+    /*@Override
     protected void updateGroundState()
     {
         this.wheelsOnGround = this.getState() == State.IN_WATER || this.getState() == State.UNDER_WATER;
-    }
+    }*/
 
     protected enum State
     {

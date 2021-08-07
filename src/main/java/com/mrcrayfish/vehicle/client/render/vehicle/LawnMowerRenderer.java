@@ -39,7 +39,7 @@ public class LawnMowerRenderer extends AbstractLandVehicleRenderer<LawnMowerEnti
 
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));

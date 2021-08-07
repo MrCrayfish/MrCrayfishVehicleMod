@@ -31,7 +31,6 @@ import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
-import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;

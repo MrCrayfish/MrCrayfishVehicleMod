@@ -42,7 +42,7 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
 
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 15F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));

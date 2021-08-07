@@ -4,7 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.DuneBuggyEntity;
@@ -44,7 +43,7 @@ public class DuneBuggyRenderer extends AbstractLandVehicleRenderer<DuneBuggyEnti
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-22.5F));
         if(vehicle != null)
         {
-            float wheelAngle = MathHelper.lerp(partialTicks, vehicle.prevWheelAngle, vehicle.wheelAngle);
+            float wheelAngle = MathHelper.lerp(partialTicks, vehicle.prevRenderWheelAngle, vehicle.renderWheelAngle);
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 15F;
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(turnRotation));

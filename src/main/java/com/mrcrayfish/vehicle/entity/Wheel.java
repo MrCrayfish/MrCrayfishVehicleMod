@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.entity;
 
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.util;
 
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;

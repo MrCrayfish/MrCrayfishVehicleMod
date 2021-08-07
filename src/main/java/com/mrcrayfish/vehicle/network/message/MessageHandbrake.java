@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -40,9 +40,9 @@ public class MessageHandbrake implements IMessage<MessageHandbrake>
 			if(player != null)
 			{
 				Entity riding = player.getVehicle();
-				if(riding instanceof LandVehicleEntity)
+				if(riding instanceof PoweredVehicleEntity)
 				{
-					((LandVehicleEntity) riding).setHandbraking(message.handbrake);
+					((PoweredVehicleEntity) riding).setHandbraking(message.handbrake);
 				}
 			}
 		});

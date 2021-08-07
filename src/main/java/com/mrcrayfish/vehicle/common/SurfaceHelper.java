@@ -101,7 +101,7 @@ public class SurfaceHelper
         return getValue(vehicle, (wheelType, surfaceType) -> surfaceType.friction * surfaceType.wheelFunction.apply(wheelType), 0.0F);
     }
 
-    public static float modifyTraction(PoweredVehicleEntity vehicle, float original)
+    public static float getSurfaceTraction(PoweredVehicleEntity vehicle, float original)
     {
         return getValue(vehicle, (wheelType, surfaceType) -> surfaceType.tractionFactor, 1.0F) * original;
     }

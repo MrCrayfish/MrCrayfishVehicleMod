@@ -10,11 +10,8 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
-
-import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -38,7 +35,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        this.setAccelerationSpeed(0.5F);
         //this.setMaxSpeed(25F);
         this.setSteeringSpeed(5);
     }
@@ -92,7 +88,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
         if(this.isFlying())
         {
-            this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getDeltaMovement().y(), currentSpeed / 20F));
+            //TODO reimplement body rotations for plane
+            //this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getDeltaMovement().y(), currentSpeed / 20F));
             this.bodyRotationZ = (this.steeringAngle / (float) getMaxSteeringAngle()) * 20F;
         }
         else
@@ -205,7 +202,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     public void updateLift()
     {
-        FlapDirection flapDirection = getFlapDirection();
+        //TODO reimplement lift for planes
+        /*FlapDirection flapDirection = getFlapDirection();
         if(flapDirection == FlapDirection.UP)
         {
             this.lift += 0.04F * (Math.min(Math.max(currentSpeed - 5F, 0F), 15F) / 15F);
@@ -214,7 +212,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             this.lift -= 0.06F * (Math.min(currentSpeed, 15F) / 15F);
         }
-        this.setLift(this.lift);
+        this.setLift(this.lift);*/
     }
 
     @Override

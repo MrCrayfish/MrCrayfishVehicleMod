@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.block.FluidExtractorBlock;
 import com.mrcrayfish.vehicle.block.FluidMixerBlock;
 import com.mrcrayfish.vehicle.block.RotatedObjectBlock;
 import com.mrcrayfish.vehicle.crafting.FluidEntry;

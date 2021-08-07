@@ -24,7 +24,7 @@ public class BathEntity extends PlaneEntity
     }
 
     @Override
-    public void updateVehicle()
+    public void onVehicleTick()
     {
         if(this.isFlying() && this.getControllingPassenger() != null)
         {

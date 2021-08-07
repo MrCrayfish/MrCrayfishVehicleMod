@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractBoatRenderer;
-import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.AluminumBoatEntity;

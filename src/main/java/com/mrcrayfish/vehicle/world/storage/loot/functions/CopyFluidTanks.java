@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.world.storage.loot.functions;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mrcrayfish.vehicle.init.ModLootFunctions;
@@ -12,7 +11,6 @@ import net.minecraft.loot.LootFunction;
 import net.minecraft.loot.LootFunctionType;
 import net.minecraft.loot.LootParameters;
 import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.CopyNbt;
 import net.minecraft.loot.functions.ILootFunction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
@@ -21,8 +19,6 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.TileFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-
-import java.util.List;
 
 /**
  * Author: MrCrayfish

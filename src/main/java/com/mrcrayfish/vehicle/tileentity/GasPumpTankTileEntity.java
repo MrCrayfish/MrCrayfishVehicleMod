@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.tileentity;
 
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
 
 /**

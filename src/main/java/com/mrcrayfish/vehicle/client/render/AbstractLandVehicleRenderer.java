@@ -31,8 +31,8 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
 {
-    protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(t -> t.wheelAngle, 0F);
-    protected final PropertyFunction<T, Float> prevWheelAngleProperty = new PropertyFunction<>(t -> t.prevWheelAngle, 0F);
+    protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(t -> t.renderWheelAngle, 0F);
+    protected final PropertyFunction<T, Float> prevWheelAngleProperty = new PropertyFunction<>(t -> t.prevRenderWheelAngle, 0F);
 
     public AbstractLandVehicleRenderer(VehicleProperties defaultProperties)
     {
@@ -77,7 +77,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
             float p = vehicle.getWheelieProgress(partialTicks);
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * vehicle.boostStrength * p));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * vehicle.getBoostStrength() * p));
             matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
             matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.5, 0.0);
@@ -169,7 +169,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
 
                     matrixStack.pushPose();
                     {
-                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.wheelAngle * 0.017453292F);
+                        Vector3d nextFrontAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F).yRot(vehicle.renderWheelAngle * 0.017453292F);
                         nextFrontAxelVec = nextFrontAxelVec.add(properties.getFrontAxelVec().scale(0.0625));
                         Vector3d nextRearAxelVec = new Vector3d(0, 0, vehicle.getSpeed() / 20F);
                         nextRearAxelVec = nextRearAxelVec.add(properties.getRearAxelVec().scale(0.0625));

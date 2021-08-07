@@ -17,7 +17,6 @@ import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -88,7 +87,7 @@ public class PlayerModelHandler
         double offsetZ = (seatVec.z * playerScale) - properties.getRearAxelVec().z * 0.0625 * vehicleScale;
         matrixStack.translate(offsetX, offsetY, offsetZ);
         float p = landVehicle.getWheelieProgress(partialTicks);
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * landVehicle.boostStrength * p));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * landVehicle.getBoostStrength() * p));
         matrixStack.translate(-offsetX, -offsetY, -offsetZ);
     }
 

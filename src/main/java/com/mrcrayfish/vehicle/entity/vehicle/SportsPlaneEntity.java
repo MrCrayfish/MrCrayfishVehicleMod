@@ -23,7 +23,6 @@ public class SportsPlaneEntity extends PlaneEntity
     public SportsPlaneEntity(EntityType<? extends SportsPlaneEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setAccelerationSpeed(0.5F);
         //this.setMaxSpeed(25F);
         this.setMaxSteeringAngle(25);
         this.setSteeringSpeed(2);
@@ -38,14 +37,15 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public void updateVehicle()
+    public void onVehicleTick()
     {
         prevWheelRotation = wheelRotation;
         prevPropellerRotation = propellerRotation;
 
         if(this.onGround)
         {
-            wheelSpeed = currentSpeed / 30F;
+            //TODO reimplement wheel speed for planes
+            //wheelSpeed = currentSpeed / 30F;
         }
         else
         {

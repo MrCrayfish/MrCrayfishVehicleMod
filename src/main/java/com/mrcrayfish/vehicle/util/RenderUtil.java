@@ -4,8 +4,6 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
-import com.mrcrayfish.vehicle.common.ItemLookup;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Atlases;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -30,7 +28,6 @@ import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;

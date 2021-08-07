@@ -35,9 +35,9 @@ public class LawnMowerEntity extends LandVehicleEntity
     }
 
     @Override
-    public void updateVehicle()
+    public void onVehicleTick()
     {
-        super.updateVehicle();
+        super.onVehicleTick();
 
         if(!level.isClientSide && this.getControllingPassenger() != null)
         {

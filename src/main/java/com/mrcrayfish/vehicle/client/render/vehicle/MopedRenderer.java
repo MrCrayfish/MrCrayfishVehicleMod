@@ -6,9 +6,8 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.entity.Wheel;
-import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.item.IDyeable;
@@ -25,7 +24,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.Calendar;
@@ -71,7 +69,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-22.5F));
         if(vehicle != null)
         {
-            float wheelAngle = vehicle.prevWheelAngle + (vehicle.wheelAngle - vehicle.prevWheelAngle) * partialTicks;
+            float wheelAngle = vehicle.prevRenderWheelAngle + (vehicle.renderWheelAngle - vehicle.prevRenderWheelAngle) * partialTicks;
             float wheelAngleNormal = wheelAngle / 45F;
             float turnRotation = wheelAngleNormal * 25F;
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
@@ -143,7 +141,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     @Override
     public void applyPlayerModel(MopedEntity entity, PlayerEntity player, PlayerModel model, float partialTicks)
     {
-        float wheelAngle = entity.prevWheelAngle + (entity.wheelAngle - entity.prevWheelAngle) * partialTicks;
+        float wheelAngle = entity.prevRenderWheelAngle + (entity.renderWheelAngle - entity.prevRenderWheelAngle) * partialTicks;
         float wheelAngleNormal = wheelAngle / 45F;
         float turnRotation = wheelAngleNormal * 6F;
         model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);

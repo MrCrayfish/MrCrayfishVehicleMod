@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.item.WheelItem;
 import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**

@@ -9,11 +9,9 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.GameSettings;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
@@ -117,63 +115,8 @@ public class VehicleHelper
         event.setCanceled(true);*/
     }
 
-    public static PoweredVehicleEntity.AccelerationDirection getAccelerationDirection(LivingEntity entity)
-    {
-        if(ClientHandler.isControllableLoaded())
-        {
-            Controller controller = Controllable.getController();
-            if(controller != null)
-            {
-                if(Config.CLIENT.useTriggers.get())
-                {
-                    if(controller.getRTriggerValue() != 0.0F && controller.getLTriggerValue() == 0.0F)
-                    {
-                        return PoweredVehicleEntity.AccelerationDirection.FORWARD;
-                    }
-                    else if(controller.getLTriggerValue() != 0.0F && controller.getRTriggerValue() == 0.0F)
-                    {
-                        return PoweredVehicleEntity.AccelerationDirection.REVERSE;
-                    }
-                }
-
-                boolean forward = controller.getButtonsStates().getState(Buttons.A);
-                boolean reverse = controller.getButtonsStates().getState(Buttons.B);
-                if(forward && reverse)
-                {
-                    return PoweredVehicleEntity.AccelerationDirection.CHARGING;
-                }
-                else if(forward)
-                {
-                    return PoweredVehicleEntity.AccelerationDirection.FORWARD;
-                }
-                else if(reverse)
-                {
-                    return PoweredVehicleEntity.AccelerationDirection.REVERSE;
-                }
-            }
-        }
-
-        GameSettings settings = Minecraft.getInstance().options;
-        boolean forward = settings.keyUp.isDown();
-        boolean reverse = settings.keyDown.isDown();
-        if(forward && reverse)
-        {
-            return PoweredVehicleEntity.AccelerationDirection.CHARGING;
-        }
-        else if(forward)
-        {
-            return PoweredVehicleEntity.AccelerationDirection.FORWARD;
-        }
-        else if(reverse)
-        {
-            return PoweredVehicleEntity.AccelerationDirection.REVERSE;
-        }
-
-        return PoweredVehicleEntity.AccelerationDirection.fromEntity(entity);
-    }
-
     @OnlyIn(Dist.CLIENT)
-    public static float getSteeringAngle(PoweredVehicleEntity vehicle, boolean drifting)
+    public static float getSteeringAngle(PoweredVehicleEntity vehicle)
     {
         if(vehicle.getControllingPassenger() != null)
         {
