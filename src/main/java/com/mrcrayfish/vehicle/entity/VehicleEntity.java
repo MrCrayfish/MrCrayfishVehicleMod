@@ -13,6 +13,7 @@ import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
+import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -50,7 +51,12 @@ import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -76,12 +82,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected double lerpYaw;
     protected double lerpPitch;
 
-    protected SeatTracker seatTracker;
+    protected final SeatTracker seatTracker;
+    private Map<DataParameter<?>, VehicleDataValue<?>> paramToDataValue;
 
     public VehicleEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
         this.seatTracker = new SeatTracker(this);
+        this.init();
     }
 
     @Override
@@ -92,11 +100,19 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         this.entityData.define(HEALTH, 100F);
         this.entityData.define(COLOR, 16383998);
         this.entityData.define(TRAILER, -1);
+    }
 
-        if(this.level.isClientSide)
+    protected void init()
+    {
+        if(this.level.isClientSide())
         {
             this.onClientInit();
         }
+    }
+
+    public void registerDataValue(VehicleDataValue<?> dataValue)
+    {
+        this.paramToDataValue.put(dataValue.getKey(), dataValue);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -762,5 +778,16 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 }
             }
         }
+    }
+
+    @Override
+    public void onSyncedDataUpdated(DataParameter<?> key)
+    {
+        super.onSyncedDataUpdated(key);
+        // Yeah pretty cool java stuff
+        Optional.ofNullable(this.getControllingPassenger())
+                .filter(entity -> entity instanceof PlayerEntity && !((PlayerEntity) entity).isLocalPlayer())
+                .flatMap(entity -> Optional.ofNullable(this.paramToDataValue.get(key)))
+                .ifPresent(value -> value.updateLocal(this));
     }
 }

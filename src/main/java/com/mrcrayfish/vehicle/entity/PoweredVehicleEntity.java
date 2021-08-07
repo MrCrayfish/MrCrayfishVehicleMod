@@ -99,9 +99,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
 
     // Sensitive variables used for physics
-    private final VehicleDataValue<Float> throttle = new VehicleDataValue<>(THROTTLE, 0F);
-    private final VehicleDataValue<Boolean> handbrake = new VehicleDataValue<>(HANDBRAKE, false);
-    private final VehicleDataValue<Float> steeringAngle = new VehicleDataValue<>(STEERING_ANGLE, 0F);
+    private final VehicleDataValue<Float> throttle = new VehicleDataValue<>(this, THROTTLE);
+    private final VehicleDataValue<Boolean> handbrake = new VehicleDataValue<>(this, HANDBRAKE);
+    private final VehicleDataValue<Float> steeringAngle = new VehicleDataValue<>(this, STEERING_ANGLE);
 
     protected UUID owner;
     protected float speedMultiplier;
@@ -134,6 +134,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         super(entityType, worldIn);
         this.maxUpStep = 1.0F;
+        this.init();
     }
 
     public PoweredVehicleEntity(EntityType<?> entityType, World worldIn, double posX, double posY, double posZ)
@@ -146,9 +147,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.define(THROTTLE, this.throttle.getLocalValue());
-        this.entityData.define(HANDBRAKE, this.handbrake.getLocalValue());
-        this.entityData.define(STEERING_ANGLE, this.steeringAngle.getLocalValue());
+        this.entityData.define(THROTTLE, 0F);
+        this.entityData.define(HANDBRAKE, false);
+        this.entityData.define(STEERING_ANGLE, 0F);
         this.entityData.define(STEERING_SPEED, 6F);
         this.entityData.define(MAX_STEERING_ANGLE, 35F);
         this.entityData.define(HORN, false);
@@ -159,6 +160,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(KEY_STACK, ItemStack.EMPTY);
         this.entityData.define(ENGINE_STACK, ItemStack.EMPTY);
         this.entityData.define(WHEEL_STACK, ItemStack.EMPTY);
+    }
+
+    @Override
+    protected void init()
+    {
+        super.init();
 
         List<Wheel> wheels = this.getProperties().getWheels();
         if(wheels != null && wheels.size() > 0)

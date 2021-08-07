@@ -22,10 +22,11 @@ public class VehicleDataValue<T>
     private final DataParameter<T> key;
     private T localValue;
 
-    public VehicleDataValue(DataParameter<T> key, T initialValue)
+    public VehicleDataValue(VehicleEntity vehicle, DataParameter<T> key)
     {
         this.key = key;
-        this.localValue = initialValue;
+        this.localValue = vehicle.getEntityData().get(key);
+        vehicle.registerDataValue(this);
     }
 
     public void set(VehicleEntity vehicle, T value)
@@ -45,8 +46,18 @@ public class VehicleDataValue<T>
         return entity instanceof PlayerEntity && ((PlayerEntity) entity).isLocalPlayer();
     }
 
+    public DataParameter<T> getKey()
+    {
+        return this.key;
+    }
+
     public T getLocalValue()
     {
         return this.localValue;
+    }
+
+    public void updateLocal(VehicleEntity vehicle)
+    {
+        this.localValue = vehicle.getEntityData().get(this.key);
     }
 }
