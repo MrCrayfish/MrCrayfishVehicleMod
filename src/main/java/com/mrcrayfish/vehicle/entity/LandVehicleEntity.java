@@ -210,13 +210,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         double vehicleScale = properties.getBodyPosition().getScale();
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         double direction = forward.dot(this.velocity.normalize());
-        double speed = this.velocity.length() * direction;
+        double rotationSpeed = this.velocity.length() * direction;
 
         Wheel frontWheel = properties.getFirstFrontWheel();
         if(frontWheel != null && !this.charging)
         {
             double frontWheelCircumference = wheelCircumference * vehicleScale * frontWheel.getScaleY();
-            double rotation = (speed * 16) / frontWheelCircumference;
+            double rotation = (rotationSpeed * 16) / frontWheelCircumference;
             this.frontWheelRotation -= rotation * 20F;
         }
 
@@ -225,15 +225,14 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         if(this.charging)
         {
-            float enginePower = 15F;
-            speed = (enginePower * this.chargingAmount);
+            rotationSpeed = properties.getEnginePower() * this.chargingAmount;
         }
 
         Wheel rearWheel = properties.getFirstRearWheel();
         if(rearWheel != null)
         {
             double rearWheelCircumference = wheelCircumference * vehicleScale * rearWheel.getScaleY();
-            double rotation = (speed * 16) / rearWheelCircumference;
+            double rotation = (rotationSpeed * 16) / rearWheelCircumference;
             this.rearWheelRotation -= rotation * 20F;
         }
     }
