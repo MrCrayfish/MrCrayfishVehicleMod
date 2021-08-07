@@ -353,6 +353,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         else
         {
             this.setThrottle(0F);
+            this.steeringAngle *= 0.95F;
         }
 
         /* Handle the current speed of the vehicle based on rider's forward movement */
@@ -661,9 +662,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return Math.sqrt(Math.pow(this.motion.x, 2) + Math.pow(this.motion.z, 2)) * 20;
     }
 
-    public void setSteeringAngle(float targetTurnAngle)
+    public void setSteeringAngle(float steeringAngle)
     {
-        this.entityData.set(STEERING_ANGLE, targetTurnAngle);
+        this.entityData.set(STEERING_ANGLE, steeringAngle);
+        this.steeringAngle = steeringAngle;
     }
 
     public float getSteeringAngle()

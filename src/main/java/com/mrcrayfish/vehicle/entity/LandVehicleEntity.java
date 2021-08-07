@@ -153,7 +153,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         //Gets the new position of the wheels
         Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
         Vector3d rearWheel = this.position().add(forward.scale(-wheelBase / 2.0));
-        frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())).scale(0.05));
+        frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.steeringAngle)).scale(0.05));
         rearWheel = rearWheel.add(this.velocity.scale(0.05));
 
         //Updates the delta movement based on the new wheel positions
@@ -187,15 +187,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     @Override
     protected void updateTurning()
     {
-        if(this.level.isClientSide())
-        {
-            this.steeringAngle = VehicleHelper.getSteeringAngle(this);
-        }
-        else
-        {
-            this.steeringAngle = 0F;
-        }
-
         if(this.level.isClientSide())
         {
             float targetAngle = !this.charging && this.isSliding() ? -MathHelper.clamp(this.steeringAngle * 2, -this.getMaxSteeringAngle(), this.getMaxSteeringAngle()) : this.steeringAngle;
