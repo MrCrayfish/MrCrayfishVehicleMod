@@ -90,7 +90,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             //TODO reimplement body rotations for plane
             //this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getDeltaMovement().y(), currentSpeed / 20F));
-            this.bodyRotationZ = (this.steeringAngle / (float) getMaxSteeringAngle()) * 20F;
+            this.bodyRotationZ = (this.getSteeringAngle() / this.getMaxSteeringAngle()) * 20F;
         }
         else
         {

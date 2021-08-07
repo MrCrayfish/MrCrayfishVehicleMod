@@ -98,11 +98,12 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         if(this.charging)
         {
             float speed = 0.1F;
+            float steeringAngle = this.getSteeringAngle();
             Vector3d frontWheel = forward.scale(wheelBase / 2.0);
-            Vector3d nextPosition = frontWheel.subtract(frontWheel.yRot((float) Math.toRadians(this.steeringAngle)));
+            Vector3d nextPosition = frontWheel.subtract(frontWheel.yRot((float) Math.toRadians(steeringAngle)));
             Vector3d nextMovement = Vector3d.ZERO.vectorTo(nextPosition).scale(speed);
             this.motion = this.motion.add(nextMovement);
-            this.deltaYaw = this.steeringAngle * speed;
+            this.deltaYaw = steeringAngle * speed;
             this.yRot -= this.deltaYaw;
             float forwardForce = MathHelper.clamp(this.getThrottle(), -1.0F, 1.0F);
             forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
@@ -153,7 +154,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         //Gets the new position of the wheels
         Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
         Vector3d rearWheel = this.position().add(forward.scale(-wheelBase / 2.0));
-        frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.steeringAngle)).scale(0.05));
+        frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())).scale(0.05));
         rearWheel = rearWheel.add(this.velocity.scale(0.05));
 
         //Updates the delta movement based on the new wheel positions
@@ -189,7 +190,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         if(this.level.isClientSide())
         {
-            float targetAngle = !this.charging && this.isSliding() ? -MathHelper.clamp(this.steeringAngle * 2, -this.getMaxSteeringAngle(), this.getMaxSteeringAngle()) : this.steeringAngle;
+            float targetAngle = !this.charging && this.isSliding() ? -MathHelper.clamp(this.getSteeringAngle() * 2, -this.getMaxSteeringAngle(), this.getMaxSteeringAngle()) : this.getSteeringAngle();
             this.renderWheelAngle = this.renderWheelAngle + (targetAngle - this.renderWheelAngle) * 0.3F;
         }
     }

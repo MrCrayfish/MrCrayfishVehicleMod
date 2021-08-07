@@ -21,6 +21,6 @@ public abstract class MotorcycleEntity extends LandVehicleEntity
     {
         this.prevLeanAngle = this.leanAngle;
         super.tick();
-        this.leanAngle = this.steeringAngle / (float) getMaxSteeringAngle();
+        this.leanAngle = this.getSteeringAngle() / (float) getMaxSteeringAngle();
     }
 }

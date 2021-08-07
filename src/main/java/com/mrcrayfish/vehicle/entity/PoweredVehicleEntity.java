@@ -18,6 +18,7 @@ import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.item.JerryCanItem;
 import com.mrcrayfish.vehicle.item.WheelItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessageHandbrake;
 import com.mrcrayfish.vehicle.network.message.MessageHorn;
 import com.mrcrayfish.vehicle.network.message.MessageThrottle;
@@ -97,6 +98,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<ItemStack> ENGINE_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
 
+    // Sensitive variables used for physics
+    private final VehicleDataValue<Float> throttle = new VehicleDataValue<>(THROTTLE, 0F);
+    private final VehicleDataValue<Boolean> handbrake = new VehicleDataValue<>(HANDBRAKE, false);
+    private final VehicleDataValue<Float> steeringAngle = new VehicleDataValue<>(STEERING_ANGLE, 0F);
+
     protected UUID owner;
     protected float speedMultiplier;
     protected boolean boosting;
@@ -108,13 +114,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected float fuelConsumption = 0.25F;
     protected boolean charging;
     protected float chargingAmount;
-    protected float prevAcceleration;
     protected float enginePitch;
     protected double[] wheelPositions;
-
-    //TODO create a custom data parameter class to handle syncing this value
-    public float steeringAngle;
-    public float prevSteeringAngle;
 
     protected float deltaYaw;
     protected Vector3d motion = Vector3d.ZERO;
@@ -145,9 +146,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.define(THROTTLE, 0.0F);
-        this.entityData.define(HANDBRAKE, false);
-        this.entityData.define(STEERING_ANGLE, 0F);
+        this.entityData.define(THROTTLE, this.throttle.getLocalValue());
+        this.entityData.define(HANDBRAKE, this.handbrake.getLocalValue());
+        this.entityData.define(STEERING_ANGLE, this.steeringAngle.getLocalValue());
         this.entityData.define(STEERING_SPEED, 6F);
         this.entityData.define(MAX_STEERING_ANGLE, 35F);
         this.entityData.define(HORN, false);
@@ -335,7 +336,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     @Override
     public void onUpdateVehicle()
     {
-        this.prevSteeringAngle = this.steeringAngle;
         this.prevRenderWheelAngle = this.renderWheelAngle;
 
         if(this.level.isClientSide)
@@ -353,7 +353,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         else
         {
             this.setThrottle(0F);
-            this.steeringAngle *= 0.95F;
+            this.steeringAngle.set(this, this.steeringAngle.get(this) * 0.85F);
         }
 
         /* Handle the current speed of the vehicle based on rider's forward movement */
@@ -664,23 +664,22 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public void setSteeringAngle(float steeringAngle)
     {
-        this.entityData.set(STEERING_ANGLE, steeringAngle);
-        this.steeringAngle = steeringAngle;
+        this.steeringAngle.set(this, steeringAngle);
     }
 
     public float getSteeringAngle()
     {
-        return this.entityData.get(STEERING_ANGLE);
+        return this.steeringAngle.get(this);
     }
 
     public void setThrottle(float power)
     {
-        this.entityData.set(THROTTLE, MathHelper.clamp(power, -1.0F, 1.0F));
+        this.throttle.set(this, MathHelper.clamp(power, -1.0F, 1.0F));
     }
 
     public float getThrottle()
     {
-        return this.entityData.get(THROTTLE);
+        return this.throttle.get(this);
     }
 
     public void setSteeringSpeed(float speed)
@@ -912,12 +911,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public void setHandbraking(boolean handbraking)
     {
-        this.entityData.set(HANDBRAKE, handbraking);
+        this.handbrake.set(this, handbraking);
     }
 
     public boolean isHandbraking()
     {
-        return this.entityData.get(HANDBRAKE);
+        return this.handbrake.get(this);
     }
 
     @Override

@@ -118,6 +118,7 @@ public class VehicleHelper
     @OnlyIn(Dist.CLIENT)
     public static float getSteeringAngle(PoweredVehicleEntity vehicle)
     {
+        float steeringAngle = vehicle.getSteeringAngle();
         if(vehicle.getControllingPassenger() != null)
         {
             Entity entity = vehicle.getControllingPassenger();
@@ -132,15 +133,15 @@ public class VehicleHelper
                 if(Controllable.getInput().isControllerInUse() && controller != null)
                 {
                     float leftStick = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
-                    return vehicle.steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - vehicle.steeringAngle) * strength;
+                    return steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - steeringAngle) * strength;
                 }
             }
 
             LivingEntity livingEntity = (LivingEntity) entity;
             float turnValue = MathHelper.clamp(livingEntity.xxa, -1.0F, 1.0F);
-            return vehicle.steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - vehicle.steeringAngle) * strength * 0.75F;
+            return steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - steeringAngle) * strength * 0.75F;
         }
-        return vehicle.steeringAngle * 0.85F;
+        return steeringAngle * 0.85F;
     }
 
     public static boolean isHandbraking()
