@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.render.AbstractHelicopterRenderer;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -17,7 +18,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class GolfCartRenderer extends AbstractLandVehicleRenderer<GolfCartEntity>
+public class GolfCartRenderer extends AbstractHelicopterRenderer<GolfCartEntity>
 {
     public GolfCartRenderer(VehicleProperties defaultProperties)
     {

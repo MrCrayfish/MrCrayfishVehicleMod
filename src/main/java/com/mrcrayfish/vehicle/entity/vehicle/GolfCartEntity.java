@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
@@ -9,7 +10,7 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class GolfCartEntity extends LandVehicleEntity
+public class GolfCartEntity extends HelicopterEntity
 {
     public GolfCartEntity(EntityType<? extends GolfCartEntity> type, World worldIn)
     {

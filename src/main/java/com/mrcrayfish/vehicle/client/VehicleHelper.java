@@ -192,20 +192,20 @@ public class VehicleHelper
         return PlaneEntity.FlapDirection.fromInput(flapUp, flapDown);
     }
 
-    public static HelicopterEntity.AltitudeChange getAltitudeChange()
+    public static float getLift()
     {
-        boolean flapUp = Minecraft.getInstance().options.keyJump.isDown();
-        boolean flapDown = Minecraft.getInstance().options.keySprint.isDown();
+        float up = Minecraft.getInstance().options.keyJump.isDown() ? 1.0F : 0F;
+        float down = Minecraft.getInstance().options.keySprint.isDown() ? -1.0F : 0F;
         if(ClientHandler.isControllableLoaded())
         {
             Controller controller = Controllable.getController();
-            if(controller != null)
+            if(controller != null && Controllable.getInput().isControllerInUse())
             {
-                flapUp |= controller.getButtonsStates().getState(Buttons.RIGHT_BUMPER);
-                flapDown |= controller.getButtonsStates().getState(Buttons.LEFT_BUMPER);
+                up = controller.getButtonsStates().getState(Buttons.RIGHT_BUMPER) ? 1.0F : up;
+                down = controller.getButtonsStates().getState(Buttons.LEFT_BUMPER) ? -1.0F : down;
             }
         }
-        return HelicopterEntity.AltitudeChange.fromInput(flapUp, flapDown);
+        return up + down;
     }
 
     public static float getTravelDirection(HelicopterEntity vehicle)

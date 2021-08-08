@@ -182,6 +182,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.yRot -= vehicleDeltaYaw;
             this.deltaYaw = MathHelper.lerp(0.2F, this.deltaYaw, vehicleDeltaYaw);
         }
+
+        // Add gravity
+        this.setDeltaMovement(this.getDeltaMovement().add(new Vector3d(0, -0.08, 0)));
     }
 
     @Override

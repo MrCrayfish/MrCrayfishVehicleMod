@@ -32,12 +32,11 @@ public class PacketHandler
         register(MessageAttachTrailer.class, new MessageAttachTrailer());
         register(MessageFuelVehicle.class, new MessageFuelVehicle());
         register(MessageInteractKey.class, new MessageInteractKey());
-        register(MessageAltitude.class, new MessageAltitude());
+        register(MessageLift.class, new MessageLift());
         register(MessageCraftVehicle.class, new MessageCraftVehicle());
         register(MessageHitchTrailer.class, new MessageHitchTrailer());
         register(MessageSyncInventory.class, new MessageSyncInventory());
         register(MessageOpenStorage.class, new MessageOpenStorage());
-        register(MessageTravelProperties.class, new MessageTravelProperties());
         register(MessageThrottle.class, new MessageThrottle());
         register(MessageEntityFluid.class, new MessageEntityFluid());
         register(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());

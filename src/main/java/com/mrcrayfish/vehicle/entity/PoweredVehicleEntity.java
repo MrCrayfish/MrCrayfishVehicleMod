@@ -354,12 +354,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         this.updateWheelPositions();
 
-        // Add gravity
-        this.setDeltaMovement(this.getDeltaMovement().add(new Vector3d(0, -0.08, 0)));
-
         // Move vehicle
-        this.move(MoverType.SELF, this.motion);
-        this.move(MoverType.SELF, this.getDeltaMovement());
+        this.move(MoverType.SELF, this.getDeltaMovement().add(this.motion));
 
         /* Reduces the motion and speed multiplier */
         if(this.onGround)
