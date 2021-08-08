@@ -92,16 +92,6 @@ public class ControllerHandler
     }
 
     @SubscribeEvent
-    public void onControllerMove(ControllerEvent.Move event)
-    {
-        PlayerEntity player = Minecraft.getInstance().player;
-        if(player.getVehicle() instanceof VehicleEntity)
-        {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
     public void onAvailableActions(AvailableActionsEvent event)
     {
         Map<Integer, Action> availableActions = event.getActions();
