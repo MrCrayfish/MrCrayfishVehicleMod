@@ -71,10 +71,11 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
-        this.velocity = Vector3d.ZERO;
+        this.motion = Vector3d.ZERO;
 
+        boolean operating = this.canDrive() && this.getControllingPassenger() != null;
         Entity entity = this.getControllingPassenger();
-        if(entity != null && this.isFlying())
+        if(entity != null && this.isFlying() && operating)
         {
             float deltaYaw = entity.getYHeadRot() % 360.0F - this.yRot;
             while(deltaYaw < -180.0F)
@@ -90,47 +91,52 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         }
 
         VehicleProperties properties = this.getProperties();
-        float bladeLength = 6F;
         float enginePower = properties.getEnginePower();
+        float bladeLength = 6F;
         float drag = 0.001F;
 
-        float targetBladeSpeed = 0F;
-        if(this.canDrive() && this.getControllingPassenger() != null)
-        {
-            targetBladeSpeed = 10F;
-            targetBladeSpeed += properties.getEnginePower() * this.getLift() * bladeLength;
-        }
-
+        // Updates the blade speed
+        float targetBladeSpeed = operating ? 10F : 0F;
+        targetBladeSpeed += operating ? properties.getEnginePower() * this.getLift() * bladeLength : 0F;
         this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.05F;
 
+        Vector3d heading = Vector3d.ZERO;
         if(this.isFlying())
         {
+            // Calculates the movement based on the input from the controlling passenger
             Vector3d input = this.getInput();
-            if(input.length() > 0)
+            if(operating && input.length() > 0)
             {
                 Vector3d movementForce = input.normalize().scale(enginePower).scale(0.05);
-                this.velocity = this.velocity.add(movementForce);
+                heading = heading.add(movementForce);
             }
 
-            Vector3d downForce = new Vector3d(0, -1.5F * (this.motion.multiply(1, 0, 1).scale(20).length() / enginePower), 0).scale(0.05);
-            this.velocity = this.velocity.add(downForce);
+            // Makes the helicopter slowly fall due to it tilting during travel
+            Vector3d downForce = new Vector3d(0, -1.5F * (this.velocity.multiply(1, 0, 1).scale(20).length() / enginePower), 0).scale(0.05);
+            heading = heading.add(downForce);
 
-            Vector3d dragForce = this.motion.scale(this.motion.length()).scale(-drag);
-            this.velocity = this.velocity.add(dragForce);
+            // Adds a slight drag to the helicopter as it travels through the air
+            Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag);
+            heading = heading.add(dragForce);
         }
         else
         {
-            this.motion = this.motion.scale(0.85F);
+            // Slows the helicopter if it's only the ground
+            this.velocity = this.velocity.multiply(0.85, 0, 0.85);
         }
 
-        // Add lift force to fight gravity
-        Vector3d liftForce = new Vector3d(0, 0.02 * (this.bladeSpeed / 10F), 0);
-        this.velocity = this.velocity.add(liftForce);
+        // Adds gravity and the lift needed to counter it
+        heading = heading.add(0, -0.08F + 0.02F * (this.bladeSpeed / 10F), 0);
 
-        // Add gravity
-        this.velocity = this.velocity.add(0, -0.08, 0);
+        // Lerps the velocity to the new heading
+        this.velocity = CommonUtils.lerp(this.velocity, heading, 0.025F);
+        this.motion = this.motion.add(this.velocity);
 
-        this.motion = CommonUtils.lerp(this.motion, this.velocity, 0.025F);
+        // Makes the helicopter fall if it's not being operated by a pilot
+        if(!operating)
+        {
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
+        }
 
         if(this.level.isClientSide())
         {
