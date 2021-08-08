@@ -13,6 +13,7 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -107,7 +108,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             Vector3d input = this.getInput();
             if(operating && input.length() > 0)
             {
-                Vector3d movementForce = input.normalize().scale(enginePower).scale(0.05);
+                Vector3d movementForce = input.scale(enginePower).scale(0.05);
                 heading = heading.add(movementForce);
             }
 
@@ -150,7 +151,10 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         if(entity instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity) entity;
-            return new Vector3d(player.xxa, 0, player.zza).yRot((float) Math.toRadians(-this.yRot));
+            double strafe = MathHelper.clamp(player.xxa, -1.0F, 1.0F);
+            double forward = MathHelper.clamp(player.zza, -1.0F, 1.0F);
+            Vector3d input = new Vector3d(strafe, 0, forward).yRot((float) Math.toRadians(-this.yRot));
+            return input.length() > 1.0 ? input.normalize() : input;
         }
         return Vector3d.ZERO;
     }
