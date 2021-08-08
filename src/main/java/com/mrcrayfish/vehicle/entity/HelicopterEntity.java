@@ -101,7 +101,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             targetBladeSpeed += properties.getEnginePower() * this.getLift() * bladeLength;
         }
 
-        this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.1F;
+        this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.05F;
 
         if(this.isFlying())
         {
@@ -111,6 +111,9 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
                 Vector3d movementForce = input.normalize().scale(enginePower).scale(0.05);
                 this.velocity = this.velocity.add(movementForce);
             }
+
+            Vector3d downForce = new Vector3d(0, -1.5F * (this.motion.multiply(1, 0, 1).scale(20).length() / enginePower), 0).scale(0.05);
+            this.velocity = this.velocity.add(downForce);
 
             Vector3d dragForce = this.motion.scale(this.motion.length()).scale(-drag);
             this.velocity = this.velocity.add(dragForce);
