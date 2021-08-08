@@ -21,19 +21,19 @@ public class GolfCartEntity extends HelicopterEntity
     @Override
     public SoundEvent getEngineSound()
     {
-        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
+        return ModSounds.ENTITY_VEHICLE_HELICOPTER_ROTOR.get();
     }
 
     @Override
     public float getMinEnginePitch()
     {
-        return 0.6F;
+        return 0.5F;
     }
 
     @Override
     public float getMaxEnginePitch()
     {
-        return 1.4F;
+        return 1.0F;
     }
 
     @Override

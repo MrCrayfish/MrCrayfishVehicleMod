@@ -87,17 +87,18 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             {
                 deltaYaw -= 360.0F;
             }
+            this.deltaYaw = deltaYaw * 0.05F;
             this.yRotO = this.yRot;
             this.yRot = this.yRot + deltaYaw * 0.05F;
         }
 
         VehicleProperties properties = this.getProperties();
         float enginePower = properties.getEnginePower();
-        float bladeLength = 6F;
+        float bladeLength = 8F;
         float drag = 0.001F;
 
         // Updates the blade speed
-        float targetBladeSpeed = operating ? 10F : 0F;
+        float targetBladeSpeed = operating ? (this.isFlying() ? 10F : 6F) : 0F;
         targetBladeSpeed += operating ? properties.getEnginePower() * this.getLift() * bladeLength : 0F;
         this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.05F;
 
@@ -193,6 +194,14 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             this.bodyRotationX *= 0.5F;
             this.bodyRotationZ *= 0.5F;
         }
+    }
+
+    @Override
+    protected void updateEnginePitch()
+    {
+        float normal = MathHelper.clamp(Math.max(this.bladeSpeed, 6F) / 10F, 0.0F, 1.25F) * 0.6F;
+        normal += (this.motion.scale(20).length() / this.getProperties().getEnginePower()) * 0.4F;
+        this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * MathHelper.clamp(normal, 0.0F, 1.0F);
     }
 
     @Override

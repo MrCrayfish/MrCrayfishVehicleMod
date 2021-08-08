@@ -53,6 +53,9 @@
     "entity.vehicle.destroyed": {
         "sounds": [ {"name": "vehicle:entity/vehicle/destroyed"}]
     },
+    "entity.vehicle.helicopter_rotor": {
+        "sounds": [ {"name": "vehicle:entity/vehicle/helicopter_rotor"}]
+    },
     "entity.vehicle.horn": {
         "sounds": [ {"name": "vehicle:entity/vehicle/horn"}]
     },
