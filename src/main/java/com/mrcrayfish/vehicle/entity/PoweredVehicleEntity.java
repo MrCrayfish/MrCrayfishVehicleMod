@@ -1205,6 +1205,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.prevRenderWheelAngle + (this.renderWheelAngle - this.prevRenderWheelAngle) * partialTicks;
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelRotation(Wheel wheel, float partialTicks)
+    {
+        return 0F;
+    }
+
     public enum FuelPortType
     {
         DEFAULT(SpecialModels.FUEL_DOOR_CLOSED, SpecialModels.FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_OPEN.get(), 0.25F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_CLOSE.get(), 0.12F, 0.6F),

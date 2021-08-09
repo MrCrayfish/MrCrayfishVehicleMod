@@ -3,14 +3,19 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.RayTraceFunction;
+import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.Wheel;
+import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -25,6 +30,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
     protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresFuel, true);
     protected final PropertyFunction<T, ItemStack> engineStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineStack, ItemStack.EMPTY);
     protected final PropertyFunction<T, ItemStack> wheelStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelStack, ItemStack.EMPTY);
+    protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(PoweredVehicleEntity::getRenderWheelAngle, 0F);
 
     public AbstractPoweredRenderer(VehicleProperties defaultProperties)
     {
@@ -105,5 +111,47 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
                 this.renderKey(properties.getKeyPosition(), vehicle.getKeyStack(), RenderUtil.getModel(vehicle.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             }
         }
+    }
+
+    protected void renderWheels(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    {
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
+        {
+            VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+            matrixStack.pushPose();
+            matrixStack.translate(0.0, -8 * 0.0625, 0.0);
+            matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
+            IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
+            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelStack, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
+            matrixStack.popPose();
+        }
+    }
+
+    protected void renderWheel(@Nullable T vehicle, Wheel wheel, ItemStack stack, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    {
+        if(!wheel.shouldRender())
+            return;
+
+        matrixStack.pushPose();
+        matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset(), wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+        if(wheel.getPosition() == Wheel.Position.FRONT)
+        {
+            float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(wheelAngle));
+        }
+        if(vehicle != null)
+        {
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-vehicle.getWheelRotation(wheel, partialTicks)));
+        }
+        matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
+        matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
+        if(wheel.getSide() == Wheel.Side.RIGHT)
+        {
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        }
+        int wheelColor = IDyeable.getColorFromStack(stack);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
+        matrixStack.popPose();
     }
 }

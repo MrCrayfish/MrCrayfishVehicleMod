@@ -307,6 +307,17 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
     }
 
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelRotation(Wheel wheel, float partialTicks)
+    {
+        if(wheel.getPosition() == Wheel.Position.REAR)
+        {
+            return this.getRearWheelRotation(partialTicks);
+        }
+        return this.getFrontWheelRotation(partialTicks);
+    }
+
     @OnlyIn(Dist.CLIENT)
     public float getFrontWheelRotation(float partialTicks)
     {

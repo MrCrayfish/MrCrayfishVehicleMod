@@ -30,8 +30,6 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
 {
-    protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(LandVehicleEntity::getRenderWheelAngle, 0F);
-
     public AbstractLandVehicleRenderer(VehicleProperties defaultProperties)
     {
         super(defaultProperties);
@@ -83,17 +81,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
 
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
-        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
-        if(!wheelStack.isEmpty())
-        {
-            matrixStack.pushPose();
-            matrixStack.translate(0.0, -8 * 0.0625, 0.0);
-            matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
-            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelStack, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
-            matrixStack.popPose();
-        }
-
+        this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderFuelPort(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderKeyPort(vehicle, matrixStack, renderTypeBuffer, light);
@@ -208,32 +196,5 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         tessellator.end();
         RenderSystem.disableDepthTest();
         RenderSystem.enableTexture();
-    }
-
-    protected void renderWheel(@Nullable T vehicle, Wheel wheel, ItemStack stack, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
-    {
-        if(!wheel.shouldRender())
-            return;
-
-        matrixStack.pushPose();
-        matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset(), wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
-        if(wheel.getPosition() == Wheel.Position.FRONT)
-        {
-            float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(wheelAngle));
-        }
-        if(vehicle != null)
-        {
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-wheel.getWheelRotation(vehicle, partialTicks)));
-        }
-        matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
-        matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
-        if(wheel.getSide() == Wheel.Side.RIGHT)
-        {
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-        }
-        int wheelColor = IDyeable.getColorFromStack(stack);
-        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
-        matrixStack.popPose();
     }
 }
