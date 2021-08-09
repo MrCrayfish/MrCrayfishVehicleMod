@@ -31,11 +31,12 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     protected final VehicleDataValue<Float> lift = new VehicleDataValue<>(this, LIFT);
 
     protected Vector3d velocity = Vector3d.ZERO;
-
     protected float bladeSpeed;
-    protected float bladeRotation;
-    protected float prevBladeRotation;
 
+    @OnlyIn(Dist.CLIENT)
+    protected float bladeRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevBladeRotation;
     @OnlyIn(Dist.CLIENT)
     protected float bodyRotationX;
     @OnlyIn(Dist.CLIENT)
@@ -97,9 +98,13 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         float drag = 0.001F;
 
         // Updates the blade speed
-        float targetBladeSpeed = operating ? (this.isFlying() ? 10F : 6F) : 0F;
+        /*float targetBladeSpeed = operating ? (this.isFlying() ? 120F : 80F) : 0F;
         targetBladeSpeed += operating ? properties.getEnginePower() * this.getLift() * bladeLength : 0F;
-        this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.05F;
+        this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.05F;*/
+
+        this.updateBladeSpeed();
+
+        //System.out.println(this.bladeSpeed);
 
         Vector3d heading = Vector3d.ZERO;
         if(this.isFlying())
@@ -127,10 +132,12 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         }
 
         // Adds gravity and the lift needed to counter it
-        heading = heading.add(0, -0.08F + 0.02F * (this.bladeSpeed / 10F), 0);
+        float gravity = -1.6F;
+        float lift = 1.6F * (this.bladeSpeed / 200F);
+        heading = heading.add(0, gravity + lift, 0);
 
         // Lerps the velocity to the new heading
-        this.velocity = CommonUtils.lerp(this.velocity, heading, 0.025F);
+        this.velocity = CommonUtils.lerp(this.velocity, heading, 0.015F);
         this.motion = this.motion.add(this.velocity);
 
         // Makes the helicopter fall if it's not being operated by a pilot
@@ -145,7 +152,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         }
     }
 
-    private Vector3d getInput()
+    protected Vector3d getInput()
     {
         Entity entity = this.getControllingPassenger();
         if(entity instanceof PlayerEntity)
@@ -157,6 +164,49 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             return input.length() > 1.0 ? input.normalize() : input;
         }
         return Vector3d.ZERO;
+    }
+
+    protected void updateBladeSpeed()
+    {
+        if(this.canDrive() && this.getControllingPassenger() != null)
+        {
+            //TODO somehow include engine power
+            float enginePower = this.getProperties().getEnginePower();
+            float maxBladeSpeed = this.getMaxBladeSpeed();
+            if(this.bladeSpeed < maxBladeSpeed)
+            {
+                this.bladeSpeed += this.getLift() > 0 ? (enginePower / 4F) : 0.5F;
+                if(this.bladeSpeed > maxBladeSpeed)
+                {
+                    this.bladeSpeed = maxBladeSpeed;
+                }
+            }
+            else
+            {
+                this.bladeSpeed *= 0.95F;
+            }
+        }
+        else
+        {
+            this.bladeSpeed *= 0.9F;
+        }
+    }
+
+    protected float getMaxBladeSpeed()
+    {
+        if(this.getLift() > 0)
+        {
+            return 200F + this.getProperties().getEnginePower();
+        }
+        else if(this.isFlying())
+        {
+            if(this.getLift() < 0)
+            {
+                return 150F;
+            }
+            return 200F;
+        }
+        return 80F;
     }
 
     @Override
@@ -198,7 +248,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     @Override
     protected void updateEnginePitch()
     {
-        float normal = MathHelper.clamp(Math.max(this.bladeSpeed, 6F) / 10F, 0.0F, 1.25F) * 0.6F;
+        float normal = MathHelper.clamp(this.bladeSpeed / 200F, 0.0F, 1.25F) * 0.6F;
         normal += (this.motion.scale(20).length() / this.getProperties().getEnginePower()) * 0.4F;
         this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * MathHelper.clamp(normal, 0.0F, 1.0F);
     }
