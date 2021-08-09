@@ -3,12 +3,12 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
-import com.mrcrayfish.vehicle.network.message.MessageLift;
+import com.mrcrayfish.vehicle.network.message.MessageHelicopterInput;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -25,10 +25,12 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 public abstract class HelicopterEntity extends PoweredVehicleEntity
 {
     protected static final DataParameter<Float> LIFT = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Float> TRAVEL_DIRECTION = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Float> TRAVEL_SPEED = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> FORWARD_INPUT = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> SIDE_INPUT = EntityDataManager.defineId(HelicopterEntity.class, DataSerializers.FLOAT);
 
     protected final VehicleDataValue<Float> lift = new VehicleDataValue<>(this, LIFT);
+    protected final VehicleDataValue<Float> forwardInput = new VehicleDataValue<>(this, FORWARD_INPUT);
+    protected final VehicleDataValue<Float> sideInput = new VehicleDataValue<>(this, SIDE_INPUT);
 
     protected Vector3d velocity = Vector3d.ZERO;
     protected float bladeSpeed;
@@ -60,8 +62,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         super.defineSynchedData();
         this.entityData.define(LIFT, 0F);
-        this.entityData.define(TRAVEL_DIRECTION, 0F);
-        this.entityData.define(TRAVEL_SPEED, 0F);
+        this.entityData.define(FORWARD_INPUT, 0F);
+        this.entityData.define(SIDE_INPUT, 0F);
     }
 
     @Override
@@ -97,14 +99,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         float bladeLength = 8F;
         float drag = 0.001F;
 
-        // Updates the blade speed
-        /*float targetBladeSpeed = operating ? (this.isFlying() ? 120F : 80F) : 0F;
-        targetBladeSpeed += operating ? properties.getEnginePower() * this.getLift() * bladeLength : 0F;
-        this.bladeSpeed = this.bladeSpeed + (targetBladeSpeed - this.bladeSpeed) * 0.05F;*/
-
         this.updateBladeSpeed();
-
-        //System.out.println(this.bladeSpeed);
 
         Vector3d heading = Vector3d.ZERO;
         if(this.isFlying())
@@ -154,12 +149,10 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
 
     protected Vector3d getInput()
     {
-        Entity entity = this.getControllingPassenger();
-        if(entity instanceof PlayerEntity)
+        if(this.getControllingPassenger() != null)
         {
-            PlayerEntity player = (PlayerEntity) entity;
-            double strafe = MathHelper.clamp(player.xxa, -1.0F, 1.0F);
-            double forward = MathHelper.clamp(player.zza, -1.0F, 1.0F);
+            double strafe = MathHelper.clamp(this.getSideInput(), -1.0F, 1.0F);
+            double forward = MathHelper.clamp(this.getForwardInput(), -1.0F, 1.0F);
             Vector3d input = new Vector3d(strafe, 0, forward).yRot((float) Math.toRadians(-this.yRot));
             return input.length() > 1.0 ? input.normalize() : input;
         }
@@ -188,7 +181,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         }
         else
         {
-            this.bladeSpeed *= 0.9F;
+            this.bladeSpeed *= 0.95F;
         }
     }
 
@@ -222,9 +215,12 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         Entity entity = this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
+            ClientPlayerEntity player = (ClientPlayerEntity) entity;
             float lift = VehicleHelper.getLift();
             this.setLift(lift);
-            PacketHandler.instance.sendToServer(new MessageLift(lift));
+            this.setForwardInput(player.zza);
+            this.setSideInput(player.xxa);
+            PacketHandler.instance.sendToServer(new MessageHelicopterInput(lift, player.zza, player.xxa));
         }
     }
 
@@ -286,6 +282,26 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public void setLift(float lift)
     {
         this.lift.set(this, lift);
+    }
+
+    public float getForwardInput()
+    {
+        return this.forwardInput.get(this);
+    }
+
+    public void setForwardInput(float input)
+    {
+        this.forwardInput.set(this, input);
+    }
+
+    public float getSideInput()
+    {
+        return this.sideInput.get(this);
+    }
+
+    public void setSideInput(float input)
+    {
+        this.sideInput.set(this, input);
     }
 
     public boolean isFlying()

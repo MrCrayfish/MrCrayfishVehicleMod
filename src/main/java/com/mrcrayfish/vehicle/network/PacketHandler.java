@@ -32,7 +32,7 @@ public class PacketHandler
         register(MessageAttachTrailer.class, new MessageAttachTrailer());
         register(MessageFuelVehicle.class, new MessageFuelVehicle());
         register(MessageInteractKey.class, new MessageInteractKey());
-        register(MessageLift.class, new MessageLift());
+        register(MessageHelicopterInput.class, new MessageHelicopterInput());
         register(MessageCraftVehicle.class, new MessageCraftVehicle());
         register(MessageHitchTrailer.class, new MessageHitchTrailer());
         register(MessageSyncInventory.class, new MessageSyncInventory());
