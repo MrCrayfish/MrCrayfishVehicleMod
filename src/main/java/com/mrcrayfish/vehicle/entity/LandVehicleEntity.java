@@ -291,9 +291,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     }
 
     @Override
-    protected void updateEnginePitch()
+    protected void updateEngineSound()
     {
-        super.updateEnginePitch();
+        super.updateEngineSound();
 
         if(this.isSliding() && this.getThrottle() > 0 && !this.isHandbraking() || this.isBoosting())
         {

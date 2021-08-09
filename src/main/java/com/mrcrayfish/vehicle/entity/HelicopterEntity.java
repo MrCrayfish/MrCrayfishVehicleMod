@@ -242,11 +242,12 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     }
 
     @Override
-    protected void updateEnginePitch()
+    protected void updateEngineSound()
     {
         float normal = MathHelper.clamp(this.bladeSpeed / 200F, 0.0F, 1.25F) * 0.6F;
         normal += (this.motion.scale(20).length() / this.getProperties().getEnginePower()) * 0.4F;
         this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * MathHelper.clamp(normal, 0.0F, 1.0F);
+        this.engineVolume = this.getControllingPassenger() != null && this.isEnginePowered() ? 0.2F + 0.8F * (this.bladeSpeed / 80F) : 0.001F;
     }
 
     @Override

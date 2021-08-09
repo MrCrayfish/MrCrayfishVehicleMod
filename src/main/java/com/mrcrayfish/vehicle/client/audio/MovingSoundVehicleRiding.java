@@ -49,7 +49,7 @@ public class MovingSoundVehicleRiding extends TickableSound
             return;
         }
 
-        this.volume = vehicle.getControllingPassenger() != null && vehicle.isEnginePowered() ? 1.0F : 0.0F;
+        this.volume = MathHelper.lerp(0.2F, this.volume, vehicle.getEngineVolume());
         this.pitch = MathHelper.lerp(0.2F, this.pitch, vehicle.getEnginePitch());
     }
 }

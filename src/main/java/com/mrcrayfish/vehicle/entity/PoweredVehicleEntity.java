@@ -115,6 +115,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected boolean charging;
     protected float chargingAmount;
     protected float enginePitch;
+    protected float engineVolume;
     protected double[] wheelPositions;
     private boolean fueling;
     protected float deltaYaw;
@@ -412,7 +413,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.setCurrentFuel(currentFuel);
         }*/
 
-        this.updateEnginePitch();
+        this.updateEngineSound();
     }
 
     protected void onVehicleTick() {}
@@ -1173,7 +1174,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.wheelPositions;
     }
 
-    protected void updateEnginePitch()
+    protected void updateEngineSound()
     {
         if(this.charging)
         {
@@ -1182,11 +1183,17 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
 
         this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * (float) Math.abs(this.getSpeed() / 25F);
+        this.engineVolume = this.getControllingPassenger() != null && this.isEnginePowered() ? 1.0F : 0.001F;
     }
 
     public float getEnginePitch()
     {
         return this.enginePitch;
+    }
+
+    public float getEngineVolume()
+    {
+        return this.engineVolume;
     }
 
     public float getBoostStrength()
