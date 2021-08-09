@@ -257,12 +257,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         return super.getModifiedAccelerationSpeed();
     }
 
-    @Override
-    public float getModifiedRotationYaw()
-    {
-        return this.yRot;
-    }
-
     public boolean isRearWheelSteering()
     {
         VehicleProperties properties = this.getProperties();

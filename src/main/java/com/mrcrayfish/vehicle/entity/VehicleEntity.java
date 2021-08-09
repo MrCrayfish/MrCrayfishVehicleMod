@@ -498,8 +498,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             VehicleProperties properties = this.getProperties();
             Seat seat = properties.getSeats().get(seatIndex);
-            passenger.setYBodyRot(this.getModifiedRotationYaw() + seat.getYawOffset());
-            float f = MathHelper.wrapDegrees(passenger.yRot - this.getModifiedRotationYaw() + seat.getYawOffset());
+            passenger.setYBodyRot(this.yRot + seat.getYawOffset());
+            float f = MathHelper.wrapDegrees(passenger.yRot - this.yRot + seat.getYawOffset());
             float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
             passenger.yRotO += f1 - f;
             passenger.yRot += f1 - f;
@@ -704,11 +704,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return VehicleProperties.getProperties(this.getType());
     }
 
-    public float getModifiedRotationYaw()
-    {
-        return this.yRot;
-    }
-
     @Override
     public ItemStack getPickedResult(RayTraceResult target)
     {
@@ -755,7 +750,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).yRot(-this.getModifiedRotationYaw() * 0.017453292F - ((float) Math.PI / 2F));
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).yRot(-this.yRot * 0.017453292F - ((float) Math.PI / 2F));
                     passenger.setPos(this.getX() + seatVec.x, this.getY() + seatVec.y, this.getZ() + seatVec.z);
                     this.applyYawToEntity(passenger);
                 }

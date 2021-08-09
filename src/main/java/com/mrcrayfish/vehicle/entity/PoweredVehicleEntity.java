@@ -453,7 +453,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     BlockState state = this.level.getBlockState(pos);
                     if(state.getMaterial() != Material.AIR && state.getMaterial().isSolid())
                     {
-                        Vector3d dirVec = this.calculateViewVector(this.xRot, this.getModifiedRotationYaw() + 180F).add(0, 0.5, 0);
+                        Vector3d dirVec = this.calculateViewVector(this.xRot, this.yRot + 180F).add(0, 0.5, 0);
                         if(this.charging)
                         {
                             dirVec = dirVec.scale(this.chargingAmount * properties.getEnginePower() / 3F);
@@ -469,7 +469,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         if(this.shouldShowEngineSmoke()&& this.canDrive() && this.tickCount % 2 == 0)
         {
-            Vector3d smokePosition = this.getEngineSmokePosition().yRot(-this.getModifiedRotationYaw() * 0.017453292F);
+            Vector3d smokePosition = this.getEngineSmokePosition().yRot(-this.yRot * 0.017453292F);
             this.level.addParticle(ParticleTypes.SMOKE, this.getX() + smokePosition.x, this.getY() + smokePosition.y, this.getZ() + smokePosition.z, -this.getDeltaMovement().x, 0.0D, -this.getDeltaMovement().z);
             if(this.charging && this.isMoving())
             {
@@ -608,7 +608,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625).yRot(-(this.getModifiedRotationYaw() + 180) * 0.017453292F);
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625).yRot(-(this.yRot + 180) * 0.017453292F);
                     passenger.setPos(this.getX() - seatVec.x, this.getY() + seatVec.y + passenger.getMyRidingOffset(), this.getZ() - seatVec.z);
                     if(this.level.isClientSide() && VehicleHelper.canApplyVehicleYaw(passenger))
                     {
@@ -1087,7 +1087,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
                 double scale = bodyPosition.getScale();
 
-                /* Applies axel and wheel offets */
+                /* Applies axle and wheel offsets */
                 wheelY += (properties.getWheelOffset() * 0.0625F) * scale;
 
                 /* Wheels Translations */
@@ -1100,10 +1100,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 wheelY -= ((8 * 0.0625) / 2.0) * scale * wheel.getScaleY();
 
                 /* Update the wheel position */
-                Vector3d wheelVec = new Vector3d(wheelX, wheelY, wheelZ).yRot(-this.getModifiedRotationYaw() * 0.017453292F);
-                wheelPositions[i * 3] = wheelVec.x;
-                wheelPositions[i * 3 + 1] = wheelVec.y;
-                wheelPositions[i * 3 + 2] = wheelVec.z;
+                Vector3d wheelVec = new Vector3d(wheelX, wheelY, wheelZ).yRot(-this.yRot * 0.017453292F);
+                this.wheelPositions[i * 3] = wheelVec.x;
+                this.wheelPositions[i * 3 + 1] = wheelVec.y;
+                this.wheelPositions[i * 3 + 2] = wheelVec.z;
             }
         }
     }

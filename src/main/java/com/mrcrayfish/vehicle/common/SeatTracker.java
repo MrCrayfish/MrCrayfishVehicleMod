@@ -126,7 +126,7 @@ public class SeatTracker
                 /* Get the real world distance to the seat and check if it's the closest */
                 Seat seat = seats.get(i);
                 Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
-                seatVec = seatVec.yRot(-(vehicle.getModifiedRotationYaw()) * 0.017453292F);
+                seatVec = seatVec.yRot(-(vehicle.yRot) * 0.017453292F);
                 seatVec = seatVec.add(vehicle.position());
                 double distance = player.distanceToSqr(seatVec.x, seatVec.y - player.getBbHeight() / 2F, seatVec.z);
                 if(closestSeatIndex == -1 || distance < closestDistance)
