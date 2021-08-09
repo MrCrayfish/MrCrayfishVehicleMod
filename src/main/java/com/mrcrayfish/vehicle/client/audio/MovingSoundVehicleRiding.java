@@ -30,6 +30,7 @@ public class MovingSoundVehicleRiding extends TickableSound
         this.looping = true;
         this.delay = 0;
         this.volume = 0.001F;
+        this.pitch = vehicle.getEnginePitch();
     }
 
     @Override
