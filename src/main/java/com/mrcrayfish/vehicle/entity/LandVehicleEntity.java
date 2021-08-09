@@ -50,7 +50,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         this.prevRearWheelRotation = this.rearWheelRotation;
 
         boolean oldCharging = this.charging;
-        this.charging = this.velocity.length() < 5.0 && this.isHandbraking() && this.getThrottle() > 0;
+        this.charging = this.canCharge() && this.velocity.length() < 5.0 && this.isHandbraking() && this.getThrottle() > 0;
         if(oldCharging && !this.charging && this.chargingAmount > 0F)
         {
             this.releaseCharge(this.chargingAmount);
