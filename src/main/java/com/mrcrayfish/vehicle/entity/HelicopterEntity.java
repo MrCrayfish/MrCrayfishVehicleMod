@@ -87,7 +87,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             {
                 deltaYaw -= 360.0F;
             }
-            this.deltaYaw = deltaYaw * 0.05F;
             this.yRotO = this.yRot;
             this.yRot = this.yRot + deltaYaw * 0.05F;
         }
