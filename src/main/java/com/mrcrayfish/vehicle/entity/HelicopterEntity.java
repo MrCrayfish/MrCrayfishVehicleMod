@@ -223,7 +223,11 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             this.bodyRotationX = (float) (-this.motion.x * 30F);
             this.bodyRotationZ = (float) (this.motion.z * 30F);
         }
-
+        else
+        {
+            this.bodyRotationX *= 0.5;
+            this.bodyRotationZ *= 0.5;
+        }
         this.bodyRotationY = this.yRot;
     }
 
