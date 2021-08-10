@@ -47,12 +47,9 @@ public class CameraHelper
         this.prevRotX = this.rotX;
         this.prevRotY = this.rotY;
         this.prevRotZ = this.rotZ;
-        float newRotX = vehicle.getBodyRotationX();
-        float newRotY = vehicle.getBodyRotationY();
-        float newRotZ = vehicle.getBodyRotationZ();
-        this.rotX = MathHelper.rotLerp(0.05F, this.rotX, newRotX);
-        this.rotY = MathHelper.rotLerp(0.05F, this.rotY, newRotY);
-        this.rotZ = MathHelper.rotLerp(0.05F, this.rotZ, newRotZ);
+        this.rotX = MathHelper.rotLerp(0.05F, this.rotX, vehicle.getBodyRotationX());
+        this.rotY = MathHelper.rotLerp(0.05F, this.rotY, vehicle.getBodyRotationY());
+        this.rotZ = MathHelper.rotLerp(0.05F, this.rotZ, vehicle.getBodyRotationZ());
     }
 
     public float getRotX(float partialTicks)
@@ -67,7 +64,7 @@ public class CameraHelper
 
     public float getRotZ(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevRotX, this.rotX);
+        return MathHelper.rotLerp(partialTicks, this.prevRotZ, this.rotZ);
     }
 
     public float getPitch(float partialTicks)

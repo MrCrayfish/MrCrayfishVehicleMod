@@ -120,6 +120,9 @@ public class CameraHandler
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event)
     {
+        if(event.phase != TickEvent.Phase.END)
+            return;
+
         Minecraft minecraft = Minecraft.getInstance();
         if(minecraft.level == null || minecraft.player == null)
             return;
