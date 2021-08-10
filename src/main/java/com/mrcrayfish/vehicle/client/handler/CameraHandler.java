@@ -2,12 +2,14 @@ package com.mrcrayfish.vehicle.client.handler;
 
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.CameraHelper;
+import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -155,8 +157,11 @@ public class CameraHandler
         float partialTicks = (float) event.getRenderPartialTicks();
         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
         this.cameraHelper.setupVanillaCamera(event.getInfo(), vehicle, partialTicks);
-        event.setPitch(this.cameraHelper.getPitch(partialTicks));
-        event.setYaw(this.cameraHelper.getRotY(partialTicks));
-        event.setRoll(this.cameraHelper.getRoll(partialTicks));
+
+        CameraProperties camera = vehicle.getProperties().getCamera();
+        Vector3d rotation = camera.getRotation();
+        event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x));
+        event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y));
+        event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
     }
 }

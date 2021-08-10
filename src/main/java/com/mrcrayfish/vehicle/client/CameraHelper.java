@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
@@ -23,8 +24,8 @@ public class CameraHelper
     private static final Method SET_POSITION_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216775_b", double.class, double.class, double.class);
     private static final Method MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216782_a", double.class, double.class, double.class);
     private static final Method GET_MAX_MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216779_a", double.class);
-
-    // Allow customisation like smoothness through properties
+    
+    private VehicleProperties properties;
     private float rotX;
     private float rotY;
     private float rotZ;
@@ -34,6 +35,7 @@ public class CameraHelper
 
     public void load(VehicleEntity vehicle)
     {
+        this.properties = vehicle.getProperties();
         this.rotX = vehicle.getBodyRotationX();
         this.rotY = vehicle.getBodyRotationY();
         this.rotZ = vehicle.getBodyRotationZ();
@@ -44,12 +46,13 @@ public class CameraHelper
 
     public void tick(VehicleEntity vehicle)
     {
+        float strength = this.properties.getCamera().getStrength();
         this.prevRotX = this.rotX;
         this.prevRotY = this.rotY;
         this.prevRotZ = this.rotZ;
-        this.rotX = MathHelper.rotLerp(0.05F, this.rotX, vehicle.getBodyRotationX());
-        this.rotY = MathHelper.rotLerp(0.05F, this.rotY, vehicle.getBodyRotationY());
-        this.rotZ = MathHelper.rotLerp(0.05F, this.rotZ, vehicle.getBodyRotationZ());
+        this.rotX = MathHelper.rotLerp(strength, this.rotX, vehicle.getBodyRotationX());
+        this.rotY = MathHelper.rotLerp(strength, this.rotY, vehicle.getBodyRotationY());
+        this.rotZ = MathHelper.rotLerp(strength, this.rotZ, vehicle.getBodyRotationZ());
     }
 
     public float getRotX(float partialTicks)
@@ -82,9 +85,20 @@ public class CameraHelper
     {
         try
         {
-            SET_ROTATION_METHOD.invoke(info, this.getRotY(partialTicks), this.getPitch(partialTicks));
-            SET_POSITION_METHOD.invoke(info, MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()), MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()), MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()));
-            MOVE_METHOD.invoke(info, -(double) GET_MAX_MOVE_METHOD.invoke(info, 4.0), 0, 0);
+            CameraProperties camera = this.properties.getCamera();
+
+            Vector3d rotation = camera.getRotation();
+            float yaw = (float) (this.getRotY(partialTicks) + rotation.y);
+            float pitch = (float) (this.getPitch(partialTicks) + rotation.x);
+            SET_ROTATION_METHOD.invoke(info, yaw, pitch);
+
+            Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90)));
+            float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + position.z);
+            float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + position.y);
+            float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + position.x);
+            SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
+
+            MOVE_METHOD.invoke(info, -(double) GET_MAX_MOVE_METHOD.invoke(info, camera.getDistance()), 0, 0);
         }
         catch(InvocationTargetException | IllegalAccessException e)
         {
