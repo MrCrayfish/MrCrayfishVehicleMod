@@ -41,18 +41,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     @OnlyIn(Dist.CLIENT)
     protected float prevBladeRotation;
     @OnlyIn(Dist.CLIENT)
-    protected float bodyRotationX;
-    @OnlyIn(Dist.CLIENT)
-    protected float prevBodyRotationX;
-    @OnlyIn(Dist.CLIENT)
-    protected float bodyRotationY;
-    @OnlyIn(Dist.CLIENT)
-    protected float prevBodyRotationY;
-    @OnlyIn(Dist.CLIENT)
-    protected float bodyRotationZ;
-    @OnlyIn(Dist.CLIENT)
-    protected float prevBodyRotationZ;
-    @OnlyIn(Dist.CLIENT)
     protected float passengerYawOffset;
 
     protected HelicopterEntity(EntityType<?> entityType, World worldIn)
@@ -235,11 +223,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             this.bodyRotationX = (float) (-this.motion.x * 30F);
             this.bodyRotationZ = (float) (this.motion.z * 30F);
         }
-        else
-        {
-            this.bodyRotationX *= 0.5F;
-            this.bodyRotationZ *= 0.5F;
-        }
+
+        this.bodyRotationY = this.yRot;
     }
 
     @Override
@@ -351,23 +336,5 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public float getBladeRotation(float partialTicks)
     {
         return this.prevBladeRotation + (this.bladeRotation - this.prevBladeRotation) * partialTicks;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationX(float partialTicks)
-    {
-        return this.prevBodyRotationX + (this.bodyRotationX - this.prevBodyRotationX) * partialTicks;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationY(float partialTicks)
-    {
-        return this.prevBodyRotationY + (this.bodyRotationY - this.prevBodyRotationY) * partialTicks;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationZ(float partialTicks)
-    {
-        return this.prevBodyRotationZ + (this.bodyRotationZ - this.prevBodyRotationZ) * partialTicks;
     }
 }

@@ -1,16 +1,21 @@
 package com.mrcrayfish.vehicle.client.handler;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.client.CameraHelper;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+
+import javax.annotation.Nullable;
 
 /**
  * Manages changing the point of view of the camera when mounting and dismount vehicles
@@ -19,7 +24,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 public class CameraHandler
 {
+    @Nullable
     private PointOfView originalPointOfView = null;
+
+    private CameraHelper cameraHelper = new CameraHelper();
 
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
@@ -94,5 +102,58 @@ public class CameraHandler
         {
             event.setNewfov(1.0F);
         }
+    }
+
+    @SubscribeEvent(receiveCanceled = true)
+    public void onMountEntity(EntityMountEvent event)
+    {
+        if(!event.isMounting())
+            return;
+
+        if(!(event.getEntityBeingMounted() instanceof VehicleEntity))
+            return;
+
+        VehicleEntity vehicle = (VehicleEntity) event.getEntityBeingMounted();
+        this.cameraHelper.load(vehicle);
+    }
+
+    @SubscribeEvent
+    public void onPostClientTick(TickEvent.ClientTickEvent event)
+    {
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.level == null || minecraft.player == null)
+            return;
+
+        ClientPlayerEntity player = minecraft.player;
+        if(!(player.getVehicle() instanceof VehicleEntity))
+            return;
+
+        if(minecraft.options.getCameraType() != PointOfView.THIRD_PERSON_BACK)
+            return;
+
+        VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
+        this.cameraHelper.tick(vehicle);
+    }
+
+    @SubscribeEvent
+    public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
+    {
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.level == null || minecraft.player == null)
+            return;
+
+        ClientPlayerEntity player = minecraft.player;
+        if(!(player.getVehicle() instanceof VehicleEntity))
+            return;
+
+        if(minecraft.options.getCameraType() != PointOfView.THIRD_PERSON_BACK)
+            return;
+
+        float partialTicks = (float) event.getRenderPartialTicks();
+        VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
+        this.cameraHelper.setupVanillaCamera(event.getInfo(), vehicle, partialTicks);
+        event.setPitch(this.cameraHelper.getPitch(partialTicks));
+        event.setYaw(this.cameraHelper.getRotY(partialTicks));
+        event.setRoll(this.cameraHelper.getRoll(partialTicks));
     }
 }

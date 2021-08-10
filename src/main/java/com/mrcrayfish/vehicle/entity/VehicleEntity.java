@@ -83,6 +83,19 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected final SeatTracker seatTracker;
     protected final Map<DataParameter<?>, VehicleDataValue<?>> paramToDataValue = new HashMap<>();
 
+    @OnlyIn(Dist.CLIENT)
+    protected float bodyRotationX;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevBodyRotationX;
+    @OnlyIn(Dist.CLIENT)
+    protected float bodyRotationY;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevBodyRotationY;
+    @OnlyIn(Dist.CLIENT)
+    protected float bodyRotationZ;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevBodyRotationZ;
+
     public VehicleEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
@@ -767,5 +780,41 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 .filter(entity -> entity instanceof PlayerEntity && !((PlayerEntity) entity).isLocalPlayer())
                 .flatMap(entity -> Optional.ofNullable(this.paramToDataValue.get(key)))
                 .ifPresent(value -> value.updateLocal(this));
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyRotationX()
+    {
+        return this.bodyRotationX;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyRotationY()
+    {
+        return this.bodyRotationY;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyRotationZ()
+    {
+        return this.bodyRotationZ;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyRotationX(float partialTicks)
+    {
+        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationX, this.bodyRotationX);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyRotationY(float partialTicks)
+    {
+        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationY, this.bodyRotationY);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBodyRotationZ(float partialTicks)
+    {
+        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationZ, this.bodyRotationZ);
     }
 }
