@@ -610,7 +610,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     Seat seat = properties.getSeats().get(seatIndex);
                     Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625).yRot(-(this.yRot + 180) * 0.017453292F);
                     passenger.setPos(this.getX() - seatVec.x, this.getY() + seatVec.y + passenger.getMyRidingOffset(), this.getZ() - seatVec.z);
-                    if(this.level.isClientSide() && VehicleHelper.canApplyVehicleYaw(passenger))
+                    if(this.level.isClientSide() && VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
                     {
                         passenger.yRot -= this.deltaYaw;
                         passenger.setYHeadRot(passenger.yRot);
@@ -619,6 +619,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 }
             }
         }
+    }
+
+    protected boolean canApplyDeltaYaw(Entity passenger)
+    {
+        return true;
     }
 
     //TODO test

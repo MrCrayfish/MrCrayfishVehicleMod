@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -51,6 +52,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     protected float bodyRotationZ;
     @OnlyIn(Dist.CLIENT)
     protected float prevBodyRotationZ;
+    @OnlyIn(Dist.CLIENT)
+    protected float passengerYawOffset;
 
     protected HelicopterEntity(EntityType<?> entityType, World worldIn)
     {
@@ -90,8 +93,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             {
                 deltaYaw -= 360.0F;
             }
-            this.yRotO = this.yRot;
-            this.yRot = this.yRot + deltaYaw * 0.05F;
+            this.yRot += deltaYaw * 0.05F;
         }
 
         VehicleProperties properties = this.getProperties();
@@ -163,7 +165,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         if(this.canDrive() && this.getControllingPassenger() != null)
         {
-            //TODO somehow include engine power
             float enginePower = this.getProperties().getEnginePower();
             float maxBladeSpeed = this.getMaxBladeSpeed();
             if(this.bladeSpeed < maxBladeSpeed)
@@ -254,7 +255,37 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public void addPassenger(Entity passenger)
     {
         super.addPassenger(passenger);
-        //passenger.yRot = this.yRot;
+        passenger.yRot = this.yRot;
+
+        // Resets the passenger yaw
+        if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer())
+        {
+            this.passengerYawOffset = 0F;
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void onPassengerTurned(Entity passenger)
+    {
+        this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()), CommonUtils.yaw(this.getForward()));
+    }
+
+    @Override
+    public void updatePassengerPosition(Entity passenger)
+    {
+        if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer() && VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
+        {
+            passenger.yRot = this.yRot - this.passengerYawOffset;
+            passenger.setYHeadRot(passenger.yRot);
+        }
+        super.updatePassengerPosition(passenger);
+    }
+
+    @Override
+    protected boolean canApplyDeltaYaw(Entity passenger)
+    {
+        return passenger != this.getControllingPassenger();
     }
 
     @Override
