@@ -133,11 +133,8 @@ public class CameraHandler
         if(!(player.getVehicle() instanceof VehicleEntity))
             return;
 
-        if(minecraft.options.getCameraType() != PointOfView.THIRD_PERSON_BACK)
-            return;
-
         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-        this.cameraHelper.tick(vehicle);
+        this.cameraHelper.tick(vehicle, minecraft.options.getCameraType());
     }
 
     @SubscribeEvent
@@ -151,12 +148,13 @@ public class CameraHandler
         if(!(player.getVehicle() instanceof VehicleEntity))
             return;
 
-        if(minecraft.options.getCameraType() != PointOfView.THIRD_PERSON_BACK)
-            return;
-
+        PointOfView pointOfView = minecraft.options.getCameraType();
         float partialTicks = (float) event.getRenderPartialTicks();
         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-        this.cameraHelper.setupVanillaCamera(event.getInfo(), vehicle, partialTicks);
+        this.cameraHelper.setupVanillaCamera(event.getInfo(), pointOfView, vehicle, player, partialTicks);
+
+        if(minecraft.options.getCameraType() != PointOfView.THIRD_PERSON_BACK)
+            return;
 
         CameraProperties camera = vehicle.getProperties().getCamera();
         Vector3d rotation = camera.getRotation();
