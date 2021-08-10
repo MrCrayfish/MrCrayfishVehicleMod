@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.*;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -69,6 +70,7 @@ public class VehicleProperties
     private IEngineType engineType = EngineType.NONE;
     private float enginePower = 0F;
     private boolean colored;
+    private CameraProperties camera;
 
     public VehicleProperties setAxleOffset(float axleOffset)
     {
@@ -348,6 +350,16 @@ public class VehicleProperties
         return this;
     }
 
+    public void setCamera(CameraProperties camera)
+    {
+        this.camera = camera;
+    }
+
+    public CameraProperties getCamera()
+    {
+        return this.camera;
+    }
+
     public static void loadProperties()
     {
         for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
@@ -504,6 +516,7 @@ public class VehicleProperties
 
             this.writeWheels(src, object);
             this.writeSeats(src, object);
+            this.writeCamera(src, object);
 
             return object;
         }
@@ -539,6 +552,7 @@ public class VehicleProperties
 
             this.readWheels(properties, object);
             this.readSeats(properties, object);
+            this.readCamera(properties, object);
 
             return properties;
         }
@@ -647,6 +661,29 @@ public class VehicleProperties
                 }
                 object.add("seats", seats);
             }
+        }
+
+        private void readCamera(VehicleProperties properties, JsonObject object)
+        {
+            JsonObject cameraObject = JSONUtils.getAsJsonObject(object, "camera", new JsonObject());
+            CameraProperties.Type type = CameraProperties.Type.fromId(JSONUtils.getAsString(cameraObject, "type", "locked"));
+            float strength = JSONUtils.getAsFloat(cameraObject, "strength", 1.0F);
+            Vector3d position = this.getAsVector3d(cameraObject, "position", Vector3d.ZERO);
+            Vector3d rotation = this.getAsVector3d(cameraObject, "rotation", Vector3d.ZERO);
+            double distance = JSONUtils.getAsFloat(cameraObject, "distance", 4.0F);
+            properties.setCamera(new CameraProperties(type, strength, position, rotation, distance));
+        }
+
+        private void writeCamera(VehicleProperties properties, JsonObject object)
+        {
+            CameraProperties camera = properties.getCamera();
+            JsonObject cameraObject = new JsonObject();
+            if(camera.getType() != CameraProperties.Type.LOCKED) cameraObject.addProperty("type", camera.getType().getId());
+            if(camera.getStrength() != 1.0F) cameraObject.addProperty("strength", camera.getStrength());
+            this.addVector3dProperty(cameraObject, "position", camera.getPosition());
+            this.addVector3dProperty(cameraObject, "rotation", camera.getRotation());
+            if(camera.getDistance() != 4.0) cameraObject.addProperty("distance", camera.getDistance());
+            object.add("camera", cameraObject);
         }
 
         private <T extends Enum> T getAsEnum(JsonObject object, String memberName, Class<T> enumClass, T defaultValue)
