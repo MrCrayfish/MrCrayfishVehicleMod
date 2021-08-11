@@ -136,7 +136,7 @@ public class CameraHelper
 
             Vector3d rotation = camera.getRotation();
             float yaw = (float) (this.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
-            float pitch = (float) (this.getPitch(partialTicks) + rotation.x);
+            float pitch = (float) (this.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset();
             SET_ROTATION_METHOD.invoke(info, yaw, pitch);
 
             Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90)));

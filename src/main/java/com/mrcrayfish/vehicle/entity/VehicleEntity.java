@@ -99,6 +99,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected float prevBodyRotationZ;
     @OnlyIn(Dist.CLIENT)
     protected float passengerYawOffset;
+    @OnlyIn(Dist.CLIENT)
+    protected float passengerPitchOffset;
 
     public VehicleEntity(EntityType<?> entityType, World worldIn)
     {
@@ -731,12 +733,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         }
 
         // Makes the player face the same direction of the vehicle
+        passenger.xRot = this.xRot;
         passenger.yRot = this.yRot;
 
         // Resets the passenger yaw offset
         if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer())
         {
             this.passengerYawOffset = 0F;
+            this.passengerPitchOffset = 0F;
         }
     }
 
@@ -768,6 +772,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     passenger.setPos(this.getX() - seatVec.x, this.getY() + seatVec.y + passenger.getMyRidingOffset(), this.getZ() - seatVec.z);
                     if(this.level.isClientSide() && VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
                     {
+                        passenger.xRot = this.xRot + this.passengerPitchOffset;
                         passenger.yRot = this.yRot - this.passengerYawOffset;
                         passenger.setYHeadRot(passenger.yRot);
                     }
@@ -805,6 +810,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         if(VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
         {
             this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()), CommonUtils.yaw(this.getForward()));
+            this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(this.getForward()));
         }
     }
 
@@ -848,5 +854,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public float getPassengerYawOffset()
     {
         return this.passengerYawOffset;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getPassengerPitchOffset()
+    {
+        return this.passengerPitchOffset;
     }
 }

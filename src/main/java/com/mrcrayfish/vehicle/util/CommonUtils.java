@@ -58,6 +58,11 @@ public class CommonUtils
         return (float) (Math.toDegrees(Math.atan2(vec.z, vec.x)) - 90F);
     }
 
+    public static float pitch(Vector3d vec)
+    {
+        return (float) Math.toDegrees(Math.asin(vec.normalize().y));
+    }
+
     public static Vector3d lerp(Vector3d start, Vector3d end, float time)
     {
         double x = MathHelper.lerp(time, start.x, end.x);
