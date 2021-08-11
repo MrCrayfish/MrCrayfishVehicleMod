@@ -159,7 +159,7 @@ public class CameraHandler
         CameraProperties camera = vehicle.getProperties().getCamera();
         Vector3d rotation = camera.getRotation();
         event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x));
-        event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y));
+        event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
         event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
     }
 }

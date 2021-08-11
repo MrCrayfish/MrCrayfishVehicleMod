@@ -90,21 +90,20 @@ public class CameraHelper
 
     public void setupVanillaCamera(ActiveRenderInfo info, PointOfView pov, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
     {
-        CameraProperties camera = this.properties.getCamera();
         switch(pov)
         {
             case FIRST_PERSON:
-                this.setupFirstPersonCamera(info, camera, vehicle, player, partialTicks);
+                this.setupFirstPersonCamera(info, vehicle, player, partialTicks);
                 break;
             case THIRD_PERSON_BACK:
-                this.setupThirdPersonCamera(info, camera, vehicle, partialTicks);
+                this.setupThirdPersonCamera(info, vehicle, partialTicks);
                 break;
             case THIRD_PERSON_FRONT:
                 break;
         }
     }
 
-    private void setupFirstPersonCamera(ActiveRenderInfo info, CameraProperties camera, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
+    private void setupFirstPersonCamera(ActiveRenderInfo info, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
     {
         try
         {
@@ -129,13 +128,14 @@ public class CameraHelper
         }
     }
 
-    /* I call this a good ol' reflection hack */
-    private void setupThirdPersonCamera(ActiveRenderInfo info, CameraProperties camera, VehicleEntity vehicle, float partialTicks)
+    private void setupThirdPersonCamera(ActiveRenderInfo info, VehicleEntity vehicle, float partialTicks)
     {
         try
         {
+            CameraProperties camera = this.properties.getCamera();
+
             Vector3d rotation = camera.getRotation();
-            float yaw = (float) (this.getRotY(partialTicks) + rotation.y);
+            float yaw = (float) (this.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
             float pitch = (float) (this.getPitch(partialTicks) + rotation.x);
             SET_ROTATION_METHOD.invoke(info, yaw, pitch);
 

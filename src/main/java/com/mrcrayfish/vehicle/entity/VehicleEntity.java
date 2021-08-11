@@ -4,6 +4,7 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -14,6 +15,7 @@ import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -95,6 +97,8 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected float bodyRotationZ;
     @OnlyIn(Dist.CLIENT)
     protected float prevBodyRotationZ;
+    @OnlyIn(Dist.CLIENT)
+    protected float passengerYawOffset;
 
     public VehicleEntity(EntityType<?> entityType, World worldIn)
     {
@@ -115,6 +119,17 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public void registerDataValue(VehicleDataValue<?> dataValue)
     {
         this.paramToDataValue.put(dataValue.getKey(), dataValue);
+    }
+
+    @Override
+    public void onSyncedDataUpdated(DataParameter<?> key)
+    {
+        super.onSyncedDataUpdated(key);
+        // Yeah pretty cool java stuff
+        Optional.ofNullable(this.getControllingPassenger())
+                .filter(entity -> entity instanceof PlayerEntity && !((PlayerEntity) entity).isLocalPlayer())
+                .flatMap(entity -> Optional.ofNullable(this.paramToDataValue.get(key)))
+                .ifPresent(value -> value.updateLocal(this));
     }
 
     /* Overridden to prevent odd step sound when driving vehicles. Ain't no subclasses getting
@@ -492,42 +507,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
-    public void addPassenger(Entity passenger)
-    {
-        super.addPassenger(passenger);
-        if(this.isControlledByLocalInstance() && this.lerpSteps > 0)
-        {
-            this.lerpSteps = 0;
-            this.setPos(this.lerpX, this.lerpY, this.lerpZ);
-            this.yRot = (float) this.lerpYaw;
-            this.xRot = (float) this.lerpPitch;
-        }
-    }
-
-    protected void applyYawToEntity(Entity passenger)
-    {
-        int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
-        if(seatIndex != -1)
-        {
-            VehicleProperties properties = this.getProperties();
-            Seat seat = properties.getSeats().get(seatIndex);
-            passenger.setYBodyRot(this.yRot + seat.getYawOffset());
-            float f = MathHelper.wrapDegrees(passenger.yRot - this.yRot + seat.getYawOffset());
-            float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-            passenger.yRotO += f1 - f;
-            passenger.yRot += f1 - f;
-            passenger.setYHeadRot(passenger.yRot);
-        }
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onPassengerTurned(Entity entityToUpdate)
-    {
-        this.applyYawToEntity(entityToUpdate);
-    }
-
-    @Override
     public void push(double x, double y, double z) {}
 
     /**
@@ -740,6 +719,28 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @Override
+    public void addPassenger(Entity passenger)
+    {
+        super.addPassenger(passenger);
+        if(this.isControlledByLocalInstance() && this.lerpSteps > 0)
+        {
+            this.lerpSteps = 0;
+            this.setPos(this.lerpX, this.lerpY, this.lerpZ);
+            this.yRot = (float) this.lerpYaw;
+            this.xRot = (float) this.lerpPitch;
+        }
+
+        // Makes the player face the same direction of the vehicle
+        passenger.yRot = this.yRot;
+
+        // Resets the passenger yaw offset
+        if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer())
+        {
+            this.passengerYawOffset = 0F;
+        }
+    }
+
+    @Override
     protected boolean canAddPassenger(Entity passenger)
     {
         return this.getPassengers().size() < this.getProperties().getSeats().size();
@@ -763,23 +764,48 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).yRot(-this.yRot * 0.017453292F - ((float) Math.PI / 2F));
-                    passenger.setPos(this.getX() + seatVec.x, this.getY() + seatVec.y, this.getZ() + seatVec.z);
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625).yRot(-(this.yRot + 180) * 0.017453292F);
+                    passenger.setPos(this.getX() - seatVec.x, this.getY() + seatVec.y + passenger.getMyRidingOffset(), this.getZ() - seatVec.z);
+                    if(this.level.isClientSide() && VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
+                    {
+                        passenger.yRot = this.yRot - this.passengerYawOffset;
+                        passenger.setYHeadRot(passenger.yRot);
+                    }
                     this.applyYawToEntity(passenger);
                 }
             }
         }
     }
 
-    @Override
-    public void onSyncedDataUpdated(DataParameter<?> key)
+    protected boolean canApplyDeltaYaw(Entity passenger)
     {
-        super.onSyncedDataUpdated(key);
-        // Yeah pretty cool java stuff
-        Optional.ofNullable(this.getControllingPassenger())
-                .filter(entity -> entity instanceof PlayerEntity && !((PlayerEntity) entity).isLocalPlayer())
-                .flatMap(entity -> Optional.ofNullable(this.paramToDataValue.get(key)))
-                .ifPresent(value -> value.updateLocal(this));
+        return true;
+    }
+
+    protected void applyYawToEntity(Entity passenger)
+    {
+        int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
+        if(seatIndex != -1)
+        {
+            VehicleProperties properties = this.getProperties();
+            Seat seat = properties.getSeats().get(seatIndex);
+            passenger.setYBodyRot(this.yRot + seat.getYawOffset());
+            float f = MathHelper.wrapDegrees(passenger.yRot - this.yRot + seat.getYawOffset());
+            float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
+            passenger.yRotO += f1 - f;
+            passenger.yRot += f1 - f;
+            passenger.setYHeadRot(passenger.yRot);
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void onPassengerTurned(Entity passenger)
+    {
+        if(VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
+        {
+            this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()), CommonUtils.yaw(this.getForward()));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -816,5 +842,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public float getBodyRotationZ(float partialTicks)
     {
         return MathHelper.rotLerp(partialTicks, this.prevBodyRotationZ, this.bodyRotationZ);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getPassengerYawOffset()
+    {
+        return this.passengerYawOffset;
     }
 }
