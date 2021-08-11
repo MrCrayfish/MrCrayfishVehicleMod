@@ -811,7 +811,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     {
                         passenger.xRot = this.xRot + this.passengerPitchOffset;
                         passenger.yRot = this.yRot - this.passengerYawOffset;
-                        System.out.println(passenger.yRot);
                         passenger.setYHeadRot(passenger.yRot);
                     }
                     this.applyYawToEntity(passenger);
