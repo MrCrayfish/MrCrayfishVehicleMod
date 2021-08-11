@@ -87,9 +87,9 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     {
         this.previousState = this.state;
         this.state = this.getState();
-        if( this.state == State.IN_AIR)
+        if(this.state == State.IN_AIR)
         {
-            this.deltaYaw *= 2;
+            //this.deltaYaw *= 2;
         }
     }
 

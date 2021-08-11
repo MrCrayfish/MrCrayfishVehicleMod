@@ -118,7 +118,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected float engineVolume;
     protected double[] wheelPositions;
     private boolean fueling;
-    protected float deltaYaw;
     protected Vector3d motion = Vector3d.ZERO;
     private Inventory vehicleInventory;
 
