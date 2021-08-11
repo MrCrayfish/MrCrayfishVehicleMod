@@ -115,7 +115,7 @@ publishing {
     }
     repositories {
         maven {
-            url "file://C:/dev/maven/mcmodsrepo"
+            url "file:///X:/localmaven/mcmods"
         }
     }
 }
