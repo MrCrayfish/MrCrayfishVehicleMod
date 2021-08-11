@@ -129,6 +129,9 @@ public class CameraHandler
         if(minecraft.level == null || minecraft.player == null)
             return;
 
+        if(minecraft.isPaused())
+            return;
+
         ClientPlayerEntity player = minecraft.player;
         if(!(player.getVehicle() instanceof VehicleEntity))
             return;
