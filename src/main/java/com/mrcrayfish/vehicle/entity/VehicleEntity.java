@@ -857,7 +857,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     private void updatePassengerOffsets(Entity passenger)
     {
         int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
-        float seatYawOffset = this.getProperties().getSeats().get(seatIndex).getYawOffset();
+        float seatYawOffset = seatIndex != -1 ? this.getProperties().getSeats().get(seatIndex).getYawOffset() : 0F;
         this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(this.getForward()));
         this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()) + seatYawOffset, CommonUtils.yaw(this.getForward()));
         this.passengerYawOffset += seatYawOffset;
