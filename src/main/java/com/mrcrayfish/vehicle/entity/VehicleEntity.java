@@ -148,7 +148,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand)
     {
-        if(!level.isClientSide && !player.isCrouching())
+        if(!level.isClientSide() && !player.isCrouching())
         {
             int trailerId = SyncedPlayerData.instance().get(player, ModDataKeys.TRAILER);
             if(trailerId != -1)
@@ -241,6 +241,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     if(player.startRiding(this))
                     {
                         this.getSeatTracker().setSeatIndex(seatIndex, player.getUUID());
+                        this.onPlayerChangeSeat(player, -1, seatIndex);
                     }
                 }
                 return ActionResultType.SUCCESS;
@@ -725,6 +726,37 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return this.seatTracker;
     }
 
+    /**
+     * Called when the player mounts a seat, changes seat, and dismounts a seat. If the oldSeatIndex
+     * is -1 then the player is mounting the vehicle. If the newSeatIndex is -1 then the player is
+     * dismounting the vehicle.
+     * @param player the player changing seat
+     * @param oldSeatIndex the index of the seat the player was previously sitting on
+     * @param newSeatIndex the index of the seat the player is now sitting on
+     */
+    public void onPlayerChangeSeat(PlayerEntity player, int oldSeatIndex, int newSeatIndex)
+    {
+        if(newSeatIndex != -1 && this.level.isClientSide())
+        {
+            Seat seat = this.getProperties().getSeats().get(newSeatIndex);
+            player.yRot = this.yRot + seat.getYawOffset();
+            player.setYHeadRot(player.yRot);
+            this.updatePassengerOffsets(player);
+            this.updatePassengerPosition(player);
+        }
+    }
+
+    @Override
+    protected void removePassenger(Entity passenger)
+    {
+        super.removePassenger(passenger);
+        if(!this.level.isClientSide() && passenger instanceof PlayerEntity)
+        {
+            int oldSeatIndex = this.seatTracker.getSeatIndex(passenger.getUUID());
+            this.onPlayerChangeSeat((PlayerEntity) passenger, oldSeatIndex, -1);
+        }
+    }
+
     @Override
     public void addPassenger(Entity passenger)
     {
@@ -779,6 +811,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     {
                         passenger.xRot = this.xRot + this.passengerPitchOffset;
                         passenger.yRot = this.yRot - this.passengerYawOffset;
+                        System.out.println(passenger.yRot);
                         passenger.setYHeadRot(passenger.yRot);
                     }
                     this.applyYawToEntity(passenger);
@@ -792,6 +825,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return true;
     }
 
+    @OnlyIn(Dist.CLIENT)
     protected void applyYawToEntity(Entity passenger)
     {
         int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
@@ -814,8 +848,23 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         if(VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
         {
-            this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()), CommonUtils.yaw(this.getForward()));
-            this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(this.getForward()));
+            this.applyYawToEntity(passenger);
+            this.updatePassengerOffsets(passenger);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private void updatePassengerOffsets(Entity passenger)
+    {
+        int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
+        float seatYawOffset = this.getProperties().getSeats().get(seatIndex).getYawOffset();
+        this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(this.getForward()));
+        this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()) + seatYawOffset, CommonUtils.yaw(this.getForward()));
+        this.passengerYawOffset += seatYawOffset;
+        if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer() && !this.canApplyDeltaYaw(passenger))
+        {
+            this.passengerYawOffset = 0;
+            this.passengerPitchOffset = 0;
         }
     }
 

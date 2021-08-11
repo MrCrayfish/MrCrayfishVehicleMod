@@ -52,6 +52,7 @@ public class MessageCycleSeats implements IMessage<MessageCycleSeats>
                         if(tracker.isSeatAvailable(nextIndex))
                         {
                             tracker.setSeatIndex(nextIndex, player.getUUID());
+                            vehicle.onPlayerChangeSeat(player, seatIndex, nextIndex);
                             return;
                         }
                     }
