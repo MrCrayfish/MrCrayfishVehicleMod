@@ -161,8 +161,11 @@ public class CameraHandler
 
         CameraProperties camera = vehicle.getProperties().getCamera();
         Vector3d rotation = camera.getRotation();
-        event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
-        event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
-        event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
+        if(Config.CLIENT.immersiveCamera.get())
+        {
+            event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
+            event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
+            event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
+        }
     }
 }

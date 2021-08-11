@@ -293,7 +293,7 @@ public class VehicleHelper
     {
         if(passenger.equals(Minecraft.getInstance().player))
         {
-            return Config.CLIENT.rotateCameraWithVehicle.get();
+            return Config.CLIENT.immersiveCamera.get();
         }
         return false;
     }

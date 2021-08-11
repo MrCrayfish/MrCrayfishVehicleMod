@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client;
 
+import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
@@ -134,10 +135,13 @@ public class CameraHelper
         {
             CameraProperties camera = this.properties.getCamera();
 
-            Vector3d rotation = camera.getRotation();
-            float yaw = (float) (this.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
-            float pitch = (float) (this.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset();
-            SET_ROTATION_METHOD.invoke(info, yaw, pitch);
+            if(Config.CLIENT.immersiveCamera.get())
+            {
+                Vector3d rotation = camera.getRotation();
+                float yaw = (float) (this.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
+                float pitch = (float) (this.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset();
+                SET_ROTATION_METHOD.invoke(info, yaw, pitch);
+            }
 
             Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90)));
             float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + position.z);
