@@ -368,6 +368,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         super.tick();
         this.tickLerp();
         this.onUpdateVehicle();
+
+        if(this.level.isClientSide())
+        {
+            this.updateBodyRotations();
+        }
     }
 
     private void findTrailer()
@@ -812,6 +817,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()), CommonUtils.yaw(this.getForward()));
             this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(this.getForward()));
         }
+    }
+
+    protected void updateBodyRotations()
+    {
+        this.bodyRotationY = this.yRot;
     }
 
     @OnlyIn(Dist.CLIENT)

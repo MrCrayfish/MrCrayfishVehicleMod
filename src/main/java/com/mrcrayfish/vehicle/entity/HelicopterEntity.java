@@ -128,11 +128,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         {
             this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
         }
-
-        if(this.level.isClientSide())
-        {
-            this.onPostClientUpdate();
-        }
     }
 
     protected Vector3d getInput()
@@ -169,6 +164,11 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         else
         {
             this.bladeSpeed *= 0.95F;
+        }
+
+        if(this.level.isClientSide())
+        {
+            this.bladeRotation += this.bladeSpeed;
         }
     }
 
@@ -211,11 +211,9 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void onPostClientUpdate()
+    @Override
+    protected void updateBodyRotations()
     {
-        this.bladeRotation += this.bladeSpeed;
-
         if(this.isFlying())
         {
             this.bodyRotationX = (float) (-this.motion.x * 30F);
