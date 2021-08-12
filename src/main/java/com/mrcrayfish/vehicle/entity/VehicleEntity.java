@@ -740,7 +740,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         if(newSeatIndex != -1 && this.level.isClientSide())
         {
             Seat seat = this.getProperties().getSeats().get(newSeatIndex);
-            player.yRot = this.yRot + seat.getYawOffset();
+            player.yRot = this.yRot - seat.getYawOffset();
             player.setYHeadRot(player.yRot);
             this.updatePassengerOffsets(player);
             this.updatePassengerPosition(player);
