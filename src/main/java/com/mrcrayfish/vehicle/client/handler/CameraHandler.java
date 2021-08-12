@@ -9,6 +9,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -156,16 +157,22 @@ public class CameraHandler
         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
         this.cameraHelper.setupVanillaCamera(event.getInfo(), pointOfView, vehicle, player, partialTicks);
 
-        if(minecraft.options.getCameraType() != PointOfView.THIRD_PERSON_BACK)
-            return;
-
-        CameraProperties camera = vehicle.getProperties().getCamera();
-        Vector3d rotation = camera.getRotation();
+        /* Restores the internal angles as to the new ones */
         if(Config.CLIENT.immersiveCamera.get())
         {
-            event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
-            event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
-            event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
+            if(minecraft.options.getCameraType() == PointOfView.THIRD_PERSON_BACK)
+            {
+                CameraProperties camera = vehicle.getProperties().getCamera();
+                Vector3d rotation = camera.getRotation();
+                event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
+                event.setYaw((float) (this.cameraHelper.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
+                event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
+            }
+            else if(minecraft.options.getCameraType() == PointOfView.FIRST_PERSON)
+            {
+                event.setPitch(this.cameraHelper.getPitch(partialTicks) + vehicle.getPassengerPitchOffset());
+                event.setRoll(this.cameraHelper.getRoll(partialTicks)); //TODO add config option to disable roll
+            }
         }
     }
 }

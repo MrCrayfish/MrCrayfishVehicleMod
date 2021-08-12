@@ -123,11 +123,18 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         this.velocity = CommonUtils.lerp(this.velocity, heading, 0.015F);
         this.motion = this.motion.add(this.velocity);
 
+        this.xRot = this.getPitch();
+
         // Makes the helicopter fall if it's not being operated by a pilot
         if(!operating)
         {
             this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
         }
+    }
+
+    private float getPitch()
+    {
+        return -(float) new Vector3d(-this.motion.x, 0, this.motion.z).scale(30).yRot((float) Math.toRadians(-(this.yRot + 90))).x;
     }
 
     protected Vector3d getInput()

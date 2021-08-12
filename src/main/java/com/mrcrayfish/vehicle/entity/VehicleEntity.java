@@ -42,6 +42,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.vector.Vector2f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -845,9 +846,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @OnlyIn(Dist.CLIENT)
     public void onPassengerTurned(Entity passenger)
     {
+        this.applyYawToEntity(passenger);
         if(VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
         {
-            this.applyYawToEntity(passenger);
             this.updatePassengerOffsets(passenger);
         }
     }
@@ -857,8 +858,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
         float seatYawOffset = seatIndex != -1 ? this.getProperties().getSeats().get(seatIndex).getYawOffset() : 0F;
-        this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(this.getForward()));
-        this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()) + seatYawOffset, CommonUtils.yaw(this.getForward()));
+        Vector3d forward = Vector3d.directionFromRotation(new Vector2f(0, this.yRot));
+        this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(forward)) - this.xRot;
+        this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()) + seatYawOffset, CommonUtils.yaw(forward));
         this.passengerYawOffset += seatYawOffset;
         if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer() && !this.canApplyDeltaYaw(passenger))
         {
