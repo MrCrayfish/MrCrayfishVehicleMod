@@ -857,6 +857,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         Vector3d forward = Vector3d.directionFromRotation(new Vector2f(0, this.yRot));
         this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(forward)) - this.xRot;
         this.passengerYawOffset = MathHelper.degreesDifference(MathHelper.wrapDegrees(passenger.yRot) + seatYawOffset, CommonUtils.yaw(forward));
+        this.passengerYawOffset += seatYawOffset;
         if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer() && !this.canApplyDeltaYaw(passenger))
         {
             this.passengerYawOffset = 0;
