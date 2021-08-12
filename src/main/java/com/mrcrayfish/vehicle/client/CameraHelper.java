@@ -97,7 +97,7 @@ public class CameraHelper
                 this.setupFirstPersonCamera(info, vehicle, player, partialTicks);
                 break;
             case THIRD_PERSON_BACK:
-                this.setupThirdPersonCamera(info, vehicle, partialTicks);
+                this.setupThirdPersonCamera(info, vehicle, player, partialTicks);
                 break;
             case THIRD_PERSON_FRONT:
                 break;
@@ -129,7 +129,7 @@ public class CameraHelper
         }
     }
 
-    private void setupThirdPersonCamera(ActiveRenderInfo info, VehicleEntity vehicle, float partialTicks)
+    private void setupThirdPersonCamera(ActiveRenderInfo info, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
     {
         try
         {
@@ -143,11 +143,31 @@ public class CameraHelper
                 SET_ROTATION_METHOD.invoke(info, yaw, pitch);
             }
 
-            Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90)));
-            float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + position.z);
-            float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + position.y);
-            float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + position.x);
-            SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
+            if(Config.CLIENT.useVehicleAsFocusPoint.get())
+            {
+                Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90)));
+                float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + position.z);
+                float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + position.y);
+                float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + position.x);
+                SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
+            }
+            else
+            {
+                int index = vehicle.getSeatTracker().getSeatIndex(player.getUUID());
+                if(index != -1)
+                {
+                    Seat seat = this.properties.getSeats().get(index);
+                    Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+                    eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
+                    eyePos = eyePos.yRot(-(this.getRotY(partialTicks) + 90) * 0.017453292F);
+                    eyePos = eyePos.xRot(this.getRotX(partialTicks) * 0.017453292F);
+                    eyePos = eyePos.zRot(-this.getRotZ(partialTicks) * 0.017453292F);
+                    float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + eyePos.z);
+                    float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + eyePos.y);
+                    float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) - eyePos.x);
+                    SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
+                }
+            }
 
             MOVE_METHOD.invoke(info, -(double) GET_MAX_MOVE_METHOD.invoke(info, camera.getDistance()), 0, 0);
         }

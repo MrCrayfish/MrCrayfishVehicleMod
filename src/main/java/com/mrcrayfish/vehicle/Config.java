@@ -26,6 +26,7 @@ public class Config
 
         public final ForgeConfigSpec.BooleanValue immersiveCamera;
         public final ForgeConfigSpec.BooleanValue followVehicleOrientation;
+        public final ForgeConfigSpec.BooleanValue useVehicleAsFocusPoint;
 
         Client(ForgeConfigSpec.Builder builder)
         {
@@ -48,9 +49,12 @@ public class Config
                 this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation").translation(Reference.MOD_ID + ".config.client.display.workstation_animation").define("workstationAnimation", true);
                 this.hoseSegments = builder.comment("The amount of segments to use to render the hose on a gas pump. The lower the value, the better the performance but renders a less realistically looking hose").translation(Reference.MOD_ID + ".config.client.display.hose_segments").defineInRange("hoseSegments", 10, 1, 100);
 
+                //TODO add an option to always go back to first person when exiting a vehicvle
+                //TODO add an option to disable roll
                 builder.comment("Configuration for camera related options").push("camera");
-                this.immersiveCamera = builder.comment("If true, uses an improved camera system when riding vehicles. Disabling may break the experience for some vehicles").translation(Reference.MOD_ID + ".config.client.display.immersive_camera").define("immersiveCamera", true);
+                this.immersiveCamera = builder.comment("If true, uses an improved camera system when riding vehicles. Disabling this option will restore the default camera but it will break the experience of some vehicles. If you do disable this, clearly you don't care about the weeks MrCrayfish spent developing this awesome new camera system and want to hurt your eyes, you've been warned!").translation(Reference.MOD_ID + ".config.client.display.immersive_camera").define("immersiveCamera", true);
                 this.followVehicleOrientation = builder.comment("Makes the camera follow the vehicles traveling direction and rotations").translation(Reference.MOD_ID + ".config.client.display.follow_vehicle_orientation").define("followVehicleOrientation", true);
+                this.useVehicleAsFocusPoint = builder.comment("In third person, uses the vehicle as the focus point rather than the players head").translation(Reference.MOD_ID + ".config.client.display.use_vehicle_as_focus_point").define("useVehicleAsFocusPoint", true);
                 builder.pop();
 
                 builder.pop();
