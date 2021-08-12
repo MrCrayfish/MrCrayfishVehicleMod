@@ -740,7 +740,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         if(newSeatIndex != -1 && this.level.isClientSide())
         {
             Seat seat = this.getProperties().getSeats().get(newSeatIndex);
-            player.yRot = this.yRot - seat.getYawOffset();
+            player.yRot = this.yRot + seat.getYawOffset();
             player.setYHeadRot(player.yRot);
             this.updatePassengerOffsets(player);
             this.updatePassengerPosition(player);
@@ -831,7 +831,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
         float seatYawOffset = seatIndex != -1 ? this.getProperties().getSeats().get(seatIndex).getYawOffset() : 0F;
         passenger.setYBodyRot(this.yRot + seatYawOffset);
-        float wrappedYaw = MathHelper.wrapDegrees(passenger.yRot - this.yRot + seatYawOffset);
+        float wrappedYaw = MathHelper.wrapDegrees(passenger.yRot - this.yRot - seatYawOffset);
         float clampedYaw = MathHelper.clamp(wrappedYaw, -120.0F, 120.0F);
         passenger.yRotO += clampedYaw - wrappedYaw;
         passenger.yRot += clampedYaw - wrappedYaw;
