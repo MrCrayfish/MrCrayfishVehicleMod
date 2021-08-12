@@ -811,10 +811,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     if(this.level.isClientSide() && VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
                     {
                         passenger.xRot = this.xRot + this.passengerPitchOffset;
-                        passenger.yRot = this.yRot - this.passengerYawOffset;
+                        passenger.yRot -= MathHelper.degreesDifference(this.yRot - this.passengerYawOffset, passenger.yRot);
                         passenger.setYHeadRot(passenger.yRot);
                     }
-                    this.applyYawToEntity(passenger);
+                    this.clampYaw(passenger);
                 }
             }
         }
@@ -826,27 +826,23 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     @OnlyIn(Dist.CLIENT)
-    protected void applyYawToEntity(Entity passenger)
+    protected void clampYaw(Entity passenger)
     {
         int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
-        if(seatIndex != -1)
-        {
-            VehicleProperties properties = this.getProperties();
-            Seat seat = properties.getSeats().get(seatIndex);
-            passenger.setYBodyRot(this.yRot + seat.getYawOffset());
-            float f = MathHelper.wrapDegrees(passenger.yRot - this.yRot + seat.getYawOffset());
-            float f1 = MathHelper.clamp(f, -120.0F, 120.0F);
-            passenger.yRotO += f1 - f;
-            passenger.yRot += f1 - f;
-            passenger.setYHeadRot(passenger.yRot);
-        }
+        float seatYawOffset = seatIndex != -1 ? this.getProperties().getSeats().get(seatIndex).getYawOffset() : 0F;
+        passenger.setYBodyRot(this.yRot + seatYawOffset);
+        float wrappedYaw = MathHelper.wrapDegrees(passenger.yRot - this.yRot + seatYawOffset);
+        float clampedYaw = MathHelper.clamp(wrappedYaw, -120.0F, 120.0F);
+        passenger.yRotO += clampedYaw - wrappedYaw;
+        passenger.yRot += clampedYaw - wrappedYaw;
+        passenger.setYHeadRot(passenger.yRot);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void onPassengerTurned(Entity passenger)
     {
-        this.applyYawToEntity(passenger);
+        this.clampYaw(passenger);
         if(VehicleHelper.canApplyVehicleYaw(passenger) && this.canApplyDeltaYaw(passenger))
         {
             this.updatePassengerOffsets(passenger);
@@ -860,8 +856,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         float seatYawOffset = seatIndex != -1 ? this.getProperties().getSeats().get(seatIndex).getYawOffset() : 0F;
         Vector3d forward = Vector3d.directionFromRotation(new Vector2f(0, this.yRot));
         this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(forward)) - this.xRot;
-        this.passengerYawOffset = MathHelper.degreesDifference(CommonUtils.yaw(passenger.getForward()) + seatYawOffset, CommonUtils.yaw(forward));
-        this.passengerYawOffset += seatYawOffset;
+        this.passengerYawOffset = MathHelper.degreesDifference(MathHelper.wrapDegrees(passenger.yRot) + seatYawOffset, CommonUtils.yaw(forward));
         if(passenger instanceof PlayerEntity && ((PlayerEntity) passenger).isLocalPlayer() && !this.canApplyDeltaYaw(passenger))
         {
             this.passengerYawOffset = 0;
