@@ -289,7 +289,7 @@ public class VehicleHelper
         return MathHelper.clamp(livingEntity.zza, -1.0F, 1.0F);
     }
 
-    public static boolean canApplyVehicleYaw(Entity passenger)
+    public static boolean canFollowVehicleOrientation(Entity passenger)
     {
         if(passenger.equals(Minecraft.getInstance().player))
         {
