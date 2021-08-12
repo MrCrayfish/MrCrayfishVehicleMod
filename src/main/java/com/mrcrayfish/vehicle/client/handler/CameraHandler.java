@@ -9,7 +9,6 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
@@ -110,6 +109,9 @@ public class CameraHandler
     @SubscribeEvent(receiveCanceled = true)
     public void onMountEntity(EntityMountEvent event)
     {
+        if(!Config.CLIENT.immersiveCamera.get())
+            return;
+
         if(!event.isMounting())
             return;
 
@@ -123,6 +125,9 @@ public class CameraHandler
     @SubscribeEvent
     public void onPostClientTick(TickEvent.ClientTickEvent event)
     {
+        if(!Config.CLIENT.immersiveCamera.get())
+            return;
+
         if(event.phase != TickEvent.Phase.END)
             return;
 
@@ -144,6 +149,9 @@ public class CameraHandler
     @SubscribeEvent
     public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
     {
+        if(!Config.CLIENT.immersiveCamera.get())
+            return;
+
         Minecraft minecraft = Minecraft.getInstance();
         if(minecraft.level == null || minecraft.player == null)
             return;
@@ -158,7 +166,7 @@ public class CameraHandler
         this.cameraHelper.setupVanillaCamera(event.getInfo(), pointOfView, vehicle, player, partialTicks);
 
         /* Restores the internal angles as to the new ones */
-        if(Config.CLIENT.immersiveCamera.get())
+        if(Config.CLIENT.followVehicleOrientation.get())
         {
             if(minecraft.options.getCameraType() == PointOfView.THIRD_PERSON_BACK)
             {

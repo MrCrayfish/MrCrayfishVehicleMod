@@ -21,9 +21,11 @@ public class Config
         public final ForgeConfigSpec.BooleanValue autoPerspective;
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
         public final ForgeConfigSpec.BooleanValue useTriggers;
-        public final ForgeConfigSpec.BooleanValue immersiveCamera;
         public final ForgeConfigSpec.BooleanValue reloadVehiclePropertiesEachTick;
         public final ForgeConfigSpec.IntValue hoseSegments;
+
+        public final ForgeConfigSpec.BooleanValue immersiveCamera;
+        public final ForgeConfigSpec.BooleanValue followVehicleOrientation;
 
         Client(ForgeConfigSpec.Builder builder)
         {
@@ -47,7 +49,8 @@ public class Config
                 this.hoseSegments = builder.comment("The amount of segments to use to render the hose on a gas pump. The lower the value, the better the performance but renders a less realistically looking hose").translation(Reference.MOD_ID + ".config.client.display.hose_segments").defineInRange("hoseSegments", 10, 1, 100);
 
                 builder.comment("Configuration for camera related options").push("camera");
-                this.immersiveCamera = builder.comment("If true, the camera will follow the rotations of the ridden vehicle").translation(Reference.MOD_ID + ".config.client.display.immersive_camera").define("immersiveCamera", true);
+                this.immersiveCamera = builder.comment("If true, uses an improved camera system when riding vehicles. Disabling may break the experience for some vehicles").translation(Reference.MOD_ID + ".config.client.display.immersive_camera").define("immersiveCamera", true);
+                this.followVehicleOrientation = builder.comment("Makes the camera follow the vehicles traveling direction and rotations").translation(Reference.MOD_ID + ".config.client.display.follow_vehicle_orientation").define("followVehicleOrientation", true);
                 builder.pop();
 
                 builder.pop();

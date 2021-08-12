@@ -135,7 +135,7 @@ public class CameraHelper
         {
             CameraProperties camera = this.properties.getCamera();
 
-            if(Config.CLIENT.immersiveCamera.get())
+            if(Config.CLIENT.followVehicleOrientation.get())
             {
                 Vector3d rotation = camera.getRotation();
                 float yaw = (float) (this.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
