@@ -30,33 +30,33 @@ public class CameraHelper
     private static final Method GET_MAX_MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216779_a", double.class);
 
     private VehicleProperties properties;
-    private float rotX;
-    private float rotY;
-    private float rotZ;
-    private float prevRotX;
-    private float prevRotY;
-    private float prevRotZ;
+    private float pitch;
+    private float yaw;
+    private float roll;
+    private float prevPitch;
+    private float prevYaw;
+    private float prevRoll;
 
     public void load(VehicleEntity vehicle)
     {
         this.properties = vehicle.getProperties();
-        this.rotX = vehicle.getBodyRotationX();
-        this.rotY = vehicle.getBodyRotationY();
-        this.rotZ = vehicle.getBodyRotationZ();
-        this.prevRotX = this.rotX;
-        this.prevRotY = this.rotY;
-        this.prevRotZ = this.rotZ;
+        this.pitch = vehicle.getViewPitch(1F);
+        this.yaw = vehicle.getViewYaw(1F);
+        this.roll = vehicle.getViewRoll(1F);
+        this.prevPitch = this.pitch;
+        this.prevYaw = this.yaw;
+        this.prevRoll = this.roll;
     }
 
     public void tick(VehicleEntity vehicle, PointOfView pov)
     {
         float strength = this.getStrength(pov);
-        this.prevRotX = this.rotX;
-        this.prevRotY = this.rotY;
-        this.prevRotZ = this.rotZ;
-        this.rotX = MathHelper.rotLerp(strength, this.rotX, vehicle.getBodyRotationX());
-        this.rotY = MathHelper.rotLerp(strength, this.rotY, vehicle.getBodyRotationY());
-        this.rotZ = MathHelper.rotLerp(strength, this.rotZ, vehicle.getBodyRotationZ());
+        this.prevPitch = this.pitch;
+        this.prevYaw = this.yaw;
+        this.prevRoll = this.roll;
+        this.pitch = MathHelper.rotLerp(strength, this.pitch, vehicle.getViewPitch(1F));
+        this.yaw = MathHelper.rotLerp(strength, this.yaw, vehicle.getViewYaw(1F));
+        this.roll = MathHelper.rotLerp(strength, this.roll, vehicle.getViewRoll(1F));
     }
 
     private float getStrength(PointOfView pov)
@@ -64,29 +64,19 @@ public class CameraHelper
         return pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED ? this.properties.getCamera().getStrength() : 1.0F;
     }
 
-    public float getRotX(float partialTicks)
-    {
-        return MathHelper.rotLerp(partialTicks, this.prevRotX, this.rotX);
-    }
-
-    public float getRotY(float partialTicks)
-    {
-        return MathHelper.rotLerp(partialTicks, this.prevRotY, this.rotY);
-    }
-
-    public float getRotZ(float partialTicks)
-    {
-        return MathHelper.rotLerp(partialTicks, this.prevRotZ, this.rotZ);
-    }
-
     public float getPitch(float partialTicks)
     {
-        return -(float) new Vector3d(this.getRotX(partialTicks), 0, this.getRotZ(partialTicks)).yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90))).x;
+        return MathHelper.rotLerp(partialTicks, this.prevPitch, this.pitch);
+    }
+
+    public float getYaw(float partialTicks)
+    {
+        return MathHelper.rotLerp(partialTicks, this.prevYaw, this.yaw);
     }
 
     public float getRoll(float partialTicks)
     {
-        return (float) new Vector3d(this.getRotX(partialTicks), 0, this.getRotZ(partialTicks)).yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90))).z;
+        return MathHelper.rotLerp(partialTicks, this.prevRoll, this.roll);
     }
 
     public void setupVanillaCamera(ActiveRenderInfo info, PointOfView pov, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
@@ -114,9 +104,9 @@ public class CameraHelper
                 Seat seat = this.properties.getSeats().get(index);
                 Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
                 eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
-                eyePos = eyePos.yRot(-(this.getRotY(partialTicks) + 90) * 0.017453292F);
-                eyePos = eyePos.xRot(this.getRotX(partialTicks) * 0.017453292F);
-                eyePos = eyePos.zRot(-this.getRotZ(partialTicks) * 0.017453292F);
+                eyePos = eyePos.xRot(-this.getPitch(partialTicks) * 0.017453292F);
+                eyePos = eyePos.zRot(-this.getRoll(partialTicks) * 0.017453292F);
+                eyePos = eyePos.yRot(-(this.getYaw(partialTicks) + 90) * 0.017453292F);
                 float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + eyePos.z);
                 float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + eyePos.y);
                 float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) - eyePos.x);
@@ -138,14 +128,14 @@ public class CameraHelper
             if(Config.CLIENT.followVehicleOrientation.get())
             {
                 Vector3d rotation = camera.getRotation();
-                float yaw = (float) (this.getRotY(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
+                float yaw = (float) (this.getYaw(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
                 float pitch = (float) (this.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset();
                 SET_ROTATION_METHOD.invoke(info, yaw, pitch);
             }
 
             if(Config.CLIENT.useVehicleAsFocusPoint.get())
             {
-                Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getRotY(partialTicks) + 90)));
+                Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getYaw(partialTicks) + 90)));
                 float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + position.z);
                 float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + position.y);
                 float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + position.x);
@@ -159,9 +149,9 @@ public class CameraHelper
                     Seat seat = this.properties.getSeats().get(index);
                     Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
                     eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
-                    eyePos = eyePos.yRot(-(this.getRotY(partialTicks) + 90) * 0.017453292F);
-                    eyePos = eyePos.xRot(this.getRotX(partialTicks) * 0.017453292F);
-                    eyePos = eyePos.zRot(-this.getRotZ(partialTicks) * 0.017453292F);
+                    eyePos = eyePos.xRot(-this.getPitch(partialTicks) * 0.017453292F);
+                    eyePos = eyePos.zRot(-this.getRoll(partialTicks) * 0.017453292F);
+                    eyePos = eyePos.yRot(-(this.getYaw(partialTicks) + 90) * 0.017453292F);
                     float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + eyePos.z);
                     float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + eyePos.y);
                     float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) - eyePos.x);

@@ -7,11 +7,12 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -24,9 +25,15 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity & En
     }
 
     @Override
-    public void setupTransformsAndRender(T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    public void setupTransformsAndRender(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.pushPose();
+
+        if(vehicle != null)
+        {
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(vehicle.getBodyRotationPitch(partialTicks)));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(vehicle.getBodyRotationRoll(partialTicks)));
+        }
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         PartPosition bodyPosition = properties.getBodyPosition();
@@ -61,8 +68,7 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity & En
     @Override
     public void applyPreRotations(T entity, MatrixStack matrixStack, float partialTicks)
     {
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(entity.getBodyRotationX(partialTicks)));
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.getBodyRotationZ(partialTicks)));
+
     }
 
     @Override
@@ -78,13 +84,10 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity & En
             double offsetX = -seatVec.x * playerScale;
             double offsetY = (seatVec.y + player.getMyRidingOffset()) * playerScale + (24 * 0.0625);
             double offsetZ = seatVec.z * playerScale;
-            float entityYaw = entity.yRotO + (entity.yRot - entity.yRotO) * partialTicks;
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(-seat.getYawOffset()));
             matrixStack.translate(offsetX, offsetY, offsetZ);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-entity.getBodyRotationX(partialTicks)));
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.getBodyRotationZ(partialTicks)));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(entityYaw));
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.getBodyRotationPitch(partialTicks)));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-entity.getBodyRotationRoll(partialTicks)));
             matrixStack.translate(-offsetX, -offsetY, -offsetZ);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(seat.getYawOffset()));
         }

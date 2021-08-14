@@ -87,17 +87,17 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected final Map<DataParameter<?>, VehicleDataValue<?>> paramToDataValue = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
-    protected float bodyRotationX;
+    protected float bodyRotationPitch;
     @OnlyIn(Dist.CLIENT)
-    protected float prevBodyRotationX;
+    protected float prevBodyRotationPitch;
     @OnlyIn(Dist.CLIENT)
-    protected float bodyRotationY;
+    protected float bodyRotationYaw;
     @OnlyIn(Dist.CLIENT)
-    protected float prevBodyRotationY;
+    protected float prevBodyRotationYaw;
     @OnlyIn(Dist.CLIENT)
-    protected float bodyRotationZ;
+    protected float bodyRotationRoll;
     @OnlyIn(Dist.CLIENT)
-    protected float prevBodyRotationZ;
+    protected float prevBodyRotationRoll;
     @OnlyIn(Dist.CLIENT)
     protected float passengerYawOffset;
     @OnlyIn(Dist.CLIENT)
@@ -873,43 +873,43 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     protected void updateBodyRotations()
     {
-        this.bodyRotationY = this.yRot;
+        this.bodyRotationYaw = this.yRot;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationX()
+    public float getBodyRotationPitch(float partialTicks)
     {
-        return this.bodyRotationX;
+        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationPitch, this.bodyRotationPitch);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationY()
+    public float getBodyRotationYaw(float partialTicks)
     {
-        return this.bodyRotationY;
+        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationYaw, this.bodyRotationYaw);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationZ()
+    public float getBodyRotationRoll(float partialTicks)
     {
-        return this.bodyRotationZ;
+        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationRoll, this.bodyRotationRoll);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationX(float partialTicks)
+    public float getViewPitch(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationX, this.bodyRotationX);
+        return this.getBodyRotationPitch(partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationY(float partialTicks)
+    public float getViewYaw(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationY, this.bodyRotationY);
+        return this.getBodyRotationYaw(partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBodyRotationZ(float partialTicks)
+    public float getViewRoll(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationZ, this.bodyRotationZ);
+        return this.getBodyRotationRoll(partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)

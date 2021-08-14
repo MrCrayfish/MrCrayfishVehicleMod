@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -202,9 +201,9 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         super.onClientUpdate();
 
         this.prevBladeRotation = this.bladeRotation;
-        this.prevBodyRotationX = this.bodyRotationX;
-        this.prevBodyRotationY = this.bodyRotationY;
-        this.prevBodyRotationZ = this.bodyRotationZ;
+        this.prevBodyRotationPitch = this.bodyRotationPitch;
+        this.prevBodyRotationYaw = this.bodyRotationYaw;
+        this.prevBodyRotationRoll = this.bodyRotationRoll;
 
         Entity entity = this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
@@ -223,15 +222,17 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         if(this.isFlying())
         {
-            this.bodyRotationX = (float) (-this.motion.x * 30F);
-            this.bodyRotationZ = (float) (this.motion.z * 30F);
+            double leanAngle = 30;
+            Vector3d rotation = new Vector3d(-this.motion.x, 0, this.motion.z).scale(leanAngle).yRot((float) Math.toRadians(-(this.yRot + 90)));
+            this.bodyRotationPitch = -(float) rotation.x;
+            this.bodyRotationRoll = (float) rotation.z;
         }
         else
         {
-            this.bodyRotationX *= 0.5;
-            this.bodyRotationZ *= 0.5;
+            this.bodyRotationPitch *= 0.5;
+            this.bodyRotationRoll *= 0.5;
         }
-        this.bodyRotationY = this.yRot;
+        this.bodyRotationYaw = this.yRot;
     }
 
     @Override
