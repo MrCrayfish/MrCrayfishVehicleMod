@@ -8,7 +8,9 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
@@ -104,12 +106,14 @@ public class CameraHelper
                 Seat seat = this.properties.getSeats().get(index);
                 Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
                 eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
-                eyePos = eyePos.xRot(-this.getPitch(partialTicks) * 0.017453292F);
-                eyePos = eyePos.zRot(-this.getRoll(partialTicks) * 0.017453292F);
-                eyePos = eyePos.yRot(-(this.getYaw(partialTicks) + 90) * 0.017453292F);
-                float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + eyePos.z);
-                float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + eyePos.y);
-                float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) - eyePos.x);
+                Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
+                quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
+                quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
+                Vector3f rotatedEyePos = new Vector3f(eyePos);
+                rotatedEyePos.transform(quaternion);
+                float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedEyePos.x());
+                float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedEyePos.y());
+                float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + rotatedEyePos.z());
                 SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
             }
         }
@@ -135,10 +139,15 @@ public class CameraHelper
 
             if(Config.CLIENT.useVehicleAsFocusPoint.get())
             {
-                Vector3d position = camera.getPosition().yRot((float) Math.toRadians(-(this.getYaw(partialTicks) + 90)));
-                float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + position.z);
-                float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + position.y);
-                float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + position.x);
+                Vector3d position = camera.getPosition();
+                Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
+                quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
+                quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
+                Vector3f rotatedPosition = new Vector3f(position);
+                rotatedPosition.transform(quaternion);
+                float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedPosition.x());
+                float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedPosition.y());
+                float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + rotatedPosition.z());
                 SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
             }
             else
@@ -149,12 +158,14 @@ public class CameraHelper
                     Seat seat = this.properties.getSeats().get(index);
                     Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
                     eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
-                    eyePos = eyePos.xRot(-this.getPitch(partialTicks) * 0.017453292F);
-                    eyePos = eyePos.zRot(-this.getRoll(partialTicks) * 0.017453292F);
-                    eyePos = eyePos.yRot(-(this.getYaw(partialTicks) + 90) * 0.017453292F);
-                    float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + eyePos.z);
-                    float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + eyePos.y);
-                    float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) - eyePos.x);
+                    Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
+                    quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
+                    quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
+                    Vector3f rotatedEyePos = new Vector3f(eyePos);
+                    rotatedEyePos.transform(quaternion);
+                    float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedEyePos.x());
+                    float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedEyePos.y());
+                    float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + rotatedEyePos.z());
                     SET_POSITION_METHOD.invoke(info, cameraX, cameraY, cameraZ);
                 }
             }
