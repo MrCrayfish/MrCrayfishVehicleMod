@@ -50,8 +50,8 @@ public class BathModel extends AbstractPlaneRenderer<BathEntity>
             double offsetY = (seatVec.y + player.getMyRidingOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
             double offsetZ = seatVec.z * scale;
             matrixStack.translate(offsetX, offsetY, offsetZ);
-            float bodyPitch = entity.prevBodyRotationX + (entity.bodyRotationX - entity.prevBodyRotationX) * partialTicks;
-            float bodyRoll = entity.prevBodyRotationZ + (entity.bodyRotationZ - entity.prevBodyRotationZ) * partialTicks;
+            float bodyPitch = entity.getBodyRotationPitch(partialTicks);
+            float bodyRoll = entity.getBodyRotationRoll(partialTicks);
             matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
             matrixStack.translate(-offsetX, -offsetY, -offsetX);

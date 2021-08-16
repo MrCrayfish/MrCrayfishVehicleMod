@@ -4,22 +4,19 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 
 /**
  * Author: MrCrayfish
  */
 public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
 {
-    private final PropertyFunction<T, Float> bodyRotationXProperty = new PropertyFunction<>(t -> t.bodyRotationX, 0F);
-    private final PropertyFunction<T, Float> prevBodyRotationXProperty = new PropertyFunction<>(t -> t.prevBodyRotationX, 0F);
-    private final PropertyFunction<T, Float> bodyRotationZProperty = new PropertyFunction<>(t -> t.bodyRotationZ, 0F);
-    private final PropertyFunction<T, Float> prevBodyRotationZProperty = new PropertyFunction<>(t -> t.prevBodyRotationZ, 0F);
-
     public AbstractPlaneRenderer(VehicleProperties defaultProperties)
     {
         super(defaultProperties);
@@ -29,21 +26,23 @@ public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTra
     {
         matrixStack.pushPose();
 
+        float bodyPitch = this.bodyPitchProperty.get(vehicle, partialTicks);
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(bodyPitch));
+
+        float bodyRoll = this.bodyRollProperty.get(vehicle, partialTicks);
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(bodyRoll));
+
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         PartPosition bodyPosition = properties.getBodyPosition();
         matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
-        matrixStack.translate(0.0, 0.5, 0.0);
+        //matrixStack.translate(0.0, 0.5, 0.0);
 
-        float bodyPitch = this.prevBodyRotationXProperty.get(vehicle) + (this.bodyRotationXProperty.get(vehicle) - this.prevBodyRotationXProperty.get(vehicle)) * partialTicks;
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-bodyPitch));
 
-        float bodyRoll = this.prevBodyRotationZProperty.get(vehicle) + (this.bodyRotationZProperty.get(vehicle) - this.prevBodyRotationZProperty.get(vehicle)) * partialTicks;
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-bodyRoll));
 
-        matrixStack.translate(0.0, -0.5, 0.0);
+        //matrixStack.translate(0.0, -0.5, 0.0);
 
         //Translate the body
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());

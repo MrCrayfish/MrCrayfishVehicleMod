@@ -2,14 +2,23 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessageFlaps;
+import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
+import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
@@ -21,21 +30,21 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     //TODO Create own data parameter system if problems continue to occur
     private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.INT);
     private static final DataParameter<Float> LIFT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> FORWARD_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> SIDE_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
 
-    private float lift;
+    protected final VehicleDataValue<Float> lift = new VehicleDataValue<>(this, LIFT);
+    protected final VehicleDataValue<Float> forwardInput = new VehicleDataValue<>(this, FORWARD_INPUT);
+    protected final VehicleDataValue<Float> sideInput = new VehicleDataValue<>(this, SIDE_INPUT);
 
-    public float prevBodyRotationX;
-    public float prevBodyRotationY;
-    public float prevBodyRotationZ;
+    protected Vector3d velocity = Vector3d.ZERO;
 
-    public float bodyRotationX;
-    public float bodyRotationY;
-    public float bodyRotationZ;
+    protected float planeRoll;
+    protected float prevPlaneRoll;
 
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        //this.setMaxSpeed(25F);
         this.setSteeringSpeed(5);
     }
 
@@ -45,35 +54,40 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         super.defineSynchedData();
         this.entityData.define(FLAP_DIRECTION, FlapDirection.NONE.ordinal());
         this.entityData.define(LIFT, 0F);
+        this.entityData.define(FORWARD_INPUT, 0F);
+        this.entityData.define(SIDE_INPUT, 0F);
     }
 
     @Override
     public void updateVehicleMotion()
     {
+        this.prevPlaneRoll = this.planeRoll;
 
+        this.motion = Vector3d.ZERO;
+
+        if(this.getControllingPassenger() != null)
+        {
+            this.planeRoll -= this.getSideInput() * 5F;
+            this.planeRoll = MathHelper.wrapDegrees(this.planeRoll);
+
+            //TODO engine should cut out if below a threshold
+
+            Vector3f forward = new Vector3f(Vector3d.directionFromRotation(this.getLift(), 0));
+            forward.transform(Vector3f.ZP.rotationDegrees(this.planeRoll));
+
+            Vector3d deltaForward = new Vector3d(forward);
+            this.xRot += CommonUtils.pitch(deltaForward) * 2F;
+            this.yRot -= CommonUtils.yaw(deltaForward) * 2F;
+            this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(this.getThrottle()), 0.05F);
+        }
+
+        this.motion = this.motion.add(this.velocity);
     }
-
-    //    @Override
-//    public void updateVehicleMotion()
-//    {
-//        float f1 = MathHelper.sin(this.yRot * 0.017453292F) / 20F; //Divide by 20 ticks
-//        float f2 = MathHelper.cos(this.yRot * 0.017453292F) / 20F;
-//
-//        this.updateLift();
-//
-//        this.vehicleMotionX = (-this.currentSpeed * f1);
-//        this.vehicleMotionZ = (this.currentSpeed * f2);
-//        this.setDeltaMovement(this.getDeltaMovement().add(0, this.lift - 0.05, 0));
-//    }
 
     @Override
     public void onClientUpdate()
     {
         super.onClientUpdate();
-
-        this.prevBodyRotationX = this.bodyRotationX;
-        this.prevBodyRotationY = this.bodyRotationY;
-        this.prevBodyRotationZ = this.bodyRotationZ;
 
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
@@ -84,121 +98,30 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
                 this.setFlapDirection(flapDirection);
                 PacketHandler.instance.sendToServer(new MessageFlaps(flapDirection));
             }
-        }
 
-        if(this.isFlying())
-        {
-            //TODO reimplement body rotations for plane
-            //this.bodyRotationX = (float) Math.toDegrees(Math.atan2(this.getDeltaMovement().y(), currentSpeed / 20F));
-            this.bodyRotationZ = (this.getSteeringAngle() / this.getMaxSteeringAngle()) * 20F;
-        }
-        else
-        {
-            this.bodyRotationX *= 0.5F;
-            this.bodyRotationZ *= 0.5F;
+            ClientPlayerEntity player = (ClientPlayerEntity) entity;
+            this.setLift(VehicleHelper.getLift());
+            this.setForwardInput(player.zza);
+            this.setSideInput(player.xxa);
+            PacketHandler.instance.sendToServer(new MessagePlaneInput(this.lift.getLocalValue(), player.zza, player.xxa));
         }
     }
 
-    /*@Override
-    protected void updateSpeed()
+    @Override
+    protected void updateBodyRotations()
     {
-        lift = 0;
-        currentSpeed = this.getSpeed();
-
-        Optional<IEngineTier> optional = this.getEngineTier();
-        if(this.getControllingPassenger() != null && optional.isPresent())
-        {
-            AccelerationDirection acceleration = getAcceleration();
-            if(this.canDrive() && acceleration == AccelerationDirection.FORWARD)
-            {
-                if(this.getDeltaMovement().y() < 0)
-                {
-                    this.setDeltaMovement(this.getDeltaMovement().multiply(1.0, 0.95, 1.0));
-                }
-
-                IEngineTier engineTier = optional.get();
-                float accelerationSpeed = this.getModifiedAccelerationSpeed() * engineTier.getAccelerationMultiplier();
-                if(this.currentSpeed < this.getActualMaxSpeed())
-                {
-                    this.currentSpeed += accelerationSpeed;
-                }
-                this.lift = 0.051F * (Math.min(currentSpeed, 15F) / 15F);
-            }
-            else if(acceleration == AccelerationDirection.REVERSE)
-            {
-                if(this.isFlying())
-                {
-                    this.currentSpeed *= 0.95F;
-                }
-                else
-                {
-                    this.currentSpeed *= 0.9F;
-                }
-            }
-
-            if(acceleration != AccelerationDirection.FORWARD)
-            {
-                if(this.isFlying())
-                {
-                    this.currentSpeed *= 0.995F;
-                }
-                else
-                {
-                    this.currentSpeed *= 0.98F;
-                }
-                this.lift = 0.04F * (Math.min(currentSpeed, 15F) / 15F);
-            }
-        }
-        else
-        {
-            if(this.isFlying())
-            {
-                this.currentSpeed *= 0.98F;
-            }
-            else
-            {
-                this.currentSpeed *= 0.85F;
-            }
-        }
-    }*/
-
-    /*@Override
-    protected void updateTurning()
-    {
-        TurnDirection direction = this.getTurnDirection();
-        if(this.getControllingPassenger() != null && direction != TurnDirection.FORWARD)
-        {
-            this.steeringAngle += direction.dir * getSteeringSpeed();
-            if(Math.abs(this.steeringAngle) > getMaxSteeringAngle())
-            {
-                this.steeringAngle = getMaxSteeringAngle() * direction.dir;
-            }
-        }
-        else
-        {
-            this.steeringAngle *= 0.95;
-        }
-
         if(this.isFlying())
         {
-            this.wheelAngle = this.steeringAngle * Math.max(0.25F, 1.0F - Math.abs(Math.min(currentSpeed, 30F) / 30F));
+            this.bodyRotationPitch = this.xRot;
+            this.bodyRotationYaw = this.yRot;
+            this.bodyRotationRoll = this.planeRoll;
         }
         else
         {
-            this.wheelAngle = this.steeringAngle * Math.abs(Math.min(currentSpeed, 30F) / 30F);
+            this.bodyRotationPitch *= 0.75F;
+            this.bodyRotationRoll *= 0.75F;
         }
-
-        this.deltaYaw = this.wheelAngle;
-
-        if(this.isFlying())
-        {
-            this.deltaYaw *= 0.5;
-        }
-        else
-        {
-            this.deltaYaw *= 0.5 * (0.5 + 0.5 * (1.0F - Math.min(currentSpeed, 15F) / 15F));
-        }
-    }*/
+    }
 
     public void updateLift()
     {
@@ -257,6 +180,26 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.entityData.set(LIFT, lift);
     }
 
+    public float getForwardInput()
+    {
+        return this.forwardInput.get(this);
+    }
+
+    public void setForwardInput(float input)
+    {
+        this.forwardInput.set(this, input);
+    }
+
+    public float getSideInput()
+    {
+        return this.sideInput.get(this);
+    }
+
+    public void setSideInput(float input)
+    {
+        this.sideInput.set(this, input);
+    }
+
     public boolean isFlying()
     {
         return !this.onGround;
@@ -279,7 +222,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     public enum FlapDirection
     {
-        UP, DOWN, NONE;
+        UP,
+        DOWN,
+        NONE;
 
         public static FlapDirection fromInput(boolean up, boolean down)
         {

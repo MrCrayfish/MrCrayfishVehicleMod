@@ -373,6 +373,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
         if(this.level.isClientSide())
         {
+            this.prevBodyRotationPitch = this.bodyRotationPitch;
+            this.prevBodyRotationYaw = this.bodyRotationYaw;
+            this.prevBodyRotationRoll = this.bodyRotationRoll;
             this.updateBodyRotations();
         }
     }

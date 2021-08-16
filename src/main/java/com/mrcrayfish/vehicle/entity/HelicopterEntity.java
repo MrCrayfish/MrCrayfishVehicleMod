@@ -201,9 +201,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         super.onClientUpdate();
 
         this.prevBladeRotation = this.bladeRotation;
-        this.prevBodyRotationPitch = this.bodyRotationPitch;
-        this.prevBodyRotationYaw = this.bodyRotationYaw;
-        this.prevBodyRotationRoll = this.bodyRotationRoll;
 
         Entity entity = this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
