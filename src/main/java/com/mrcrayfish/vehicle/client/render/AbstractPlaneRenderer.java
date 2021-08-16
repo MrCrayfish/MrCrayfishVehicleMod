@@ -38,12 +38,6 @@ public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTra
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
-        //matrixStack.translate(0.0, 0.5, 0.0);
-
-
-
-        //matrixStack.translate(0.0, -0.5, 0.0);
-
         //Translate the body
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 

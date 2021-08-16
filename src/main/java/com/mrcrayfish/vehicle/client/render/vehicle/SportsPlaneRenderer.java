@@ -20,6 +20,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -129,17 +130,17 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
-            double scale = 32.0 / 30.0;
-            double offsetX = seatVec.x * scale;
-            double offsetY = (seatVec.y + player.getMyRidingOffset() - 0.5) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
-            double offsetZ = seatVec.z * scale;
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+            double playerScale = 32.0 / 30.0;
+            double offsetX = -seatVec.x * playerScale;
+            double offsetY = (seatVec.y + player.getMyRidingOffset()) * playerScale + (24 * 0.0625);
+            double offsetZ = seatVec.z * playerScale;
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(-seat.getYawOffset()));
             matrixStack.translate(offsetX, offsetY, offsetZ);
-            float bodyPitch = entity.getBodyRotationPitch(partialTicks);
-            float bodyRoll = entity.getBodyRotationRoll(partialTicks);
-            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(bodyRoll));
-            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-bodyPitch));
-            matrixStack.translate(-offsetX, -offsetY, -offsetX);
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.getBodyRotationPitch(partialTicks)));
+            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-entity.getBodyRotationRoll(partialTicks)));
+            matrixStack.translate(-offsetX, -offsetY, -offsetZ);
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(seat.getYawOffset()));
         }
     }
 
