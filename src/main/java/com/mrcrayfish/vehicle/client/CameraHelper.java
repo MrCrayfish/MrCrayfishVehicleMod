@@ -190,9 +190,18 @@ public class CameraHelper
             rotation.set(0.0F, 0.0F, 0.0F, 1.0F);
 
             // Applies the vehicle's body rotations to the camera
-            rotation.mul(Vector3f.YP.rotationDegrees(-this.getYaw(partialTicks)));
-            rotation.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
-            rotation.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
+            if(Config.CLIENT.shouldFollowYaw.get())
+            {
+                rotation.mul(Vector3f.YP.rotationDegrees(-this.getYaw(partialTicks)));
+            }
+            if(Config.CLIENT.shouldFollowPitch.get())
+            {
+                rotation.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
+            }
+            if(Config.CLIENT.shouldFollowRoll.get())
+            {
+                rotation.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
+            }
 
             // Applies the player's pitch and yaw offset
             Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
@@ -208,7 +217,11 @@ public class CameraHelper
             }
             else
             {
-                quaternion.mul(Vector3f.YP.rotationDegrees(-MathHelper.rotLerp(partialTicks, player.yRotO, player.yRot) + this.getYaw(partialTicks)));
+                quaternion.mul(Vector3f.YP.rotationDegrees(-MathHelper.rotLerp(partialTicks, player.yRotO, player.yRot)));
+                if(Config.CLIENT.shouldFollowYaw.get())
+                {
+                    quaternion.mul(Vector3f.YP.rotationDegrees(this.getYaw(partialTicks)));
+                }
             }
             quaternion.mul(Vector3f.XP.rotationDegrees(VehicleHelper.isThirdPersonFront() ? -vehicle.getPassengerPitchOffset() : vehicle.getPassengerPitchOffset()));
 
