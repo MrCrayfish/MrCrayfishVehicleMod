@@ -826,7 +826,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         }
     }
 
-    protected boolean canApplyYawOffset(Entity passenger)
+    public boolean canApplyYawOffset(Entity passenger)
     {
         return true;
     }

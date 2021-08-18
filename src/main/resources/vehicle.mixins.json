@@ -1,0 +1,13 @@
+{
+    "required": true,
+    "package": "com.mrcrayfish.vehicle.mixin",
+    "compatibilityLevel": "JAVA_8",
+    "minVersion": "0.8",
+    "refmap": "controllable.refmap.json",
+    "client": [
+        "client.GameRendererMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

@@ -242,7 +242,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     }
 
     @Override
-    protected boolean canApplyYawOffset(Entity passenger)
+    public boolean canApplyYawOffset(Entity passenger)
     {
         return passenger != this.getControllingPassenger();
     }

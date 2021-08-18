@@ -1,15 +1,21 @@
 package com.mrcrayfish.vehicle.client.handler;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.CameraHelper;
 import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
 import net.minecraftforge.client.event.InputEvent;
@@ -26,10 +32,22 @@ import javax.annotation.Nullable;
  */
 public class CameraHandler
 {
+    private static CameraHandler instance;
+
     @Nullable
     private PointOfView originalPointOfView = null;
+    private final CameraHelper cameraHelper = new CameraHelper();
 
-    private CameraHelper cameraHelper = new CameraHelper();
+    private CameraHandler() {}
+
+    public static CameraHandler instance()
+    {
+        if(instance == null)
+        {
+            instance = new CameraHandler();
+        }
+        return instance;
+    }
 
     @SubscribeEvent
     public void onEntityMount(EntityMountEvent event)
@@ -172,15 +190,38 @@ public class CameraHandler
             {
                 CameraProperties camera = vehicle.getProperties().getCamera();
                 Vector3d rotation = camera.getRotation();
-                event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
-                event.setYaw((float) (this.cameraHelper.getYaw(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
-                event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
+                //event.setPitch(this.cameraHelper.getPitch(partialTicks));
+                //event.setYaw(this.cameraHelper.getYaw(partialTicks));
+                //event.setRoll(this.cameraHelper.getRoll(partialTicks));
+
+                //event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
+                //event.setYaw((float) (this.cameraHelper.getYaw(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
+                //event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
             }
             else if(minecraft.options.getCameraType() == PointOfView.FIRST_PERSON)
             {
-                event.setPitch(this.cameraHelper.getPitch(partialTicks) + vehicle.getPassengerPitchOffset());
-                event.setRoll(this.cameraHelper.getRoll(partialTicks)); //TODO add config option to disable roll
+                //event.setPitch(this.cameraHelper.getPitch(partialTicks) + vehicle.getPassengerPitchOffset());
+                //event.setRoll(this.cameraHelper.getRoll(partialTicks)); //TODO add config option to disable roll
             }
         }
+    }
+
+    public void setupVehicleCamera(ActiveRenderInfo info, MatrixStack matrixStack, float partialTick)
+    {
+        Entity entity = info.getEntity();
+        if(!(entity instanceof PlayerEntity) || !(entity.getVehicle() instanceof VehicleEntity))
+            return;
+
+        // Resets the current projection matrix
+        MatrixStack.Entry entry = matrixStack.last();
+        entry.pose().setIdentity();
+        entry.normal().setIdentity();
+
+        // Applies quaternion to rotate camera rather than euler angles
+        Quaternion rotation = info.rotation();
+        Quaternion quaternion = new Quaternion(rotation);
+        quaternion.mul(Vector3f.YP.rotationDegrees(180F));
+        quaternion.conj();
+        matrixStack.mulPose(quaternion);
     }
 }

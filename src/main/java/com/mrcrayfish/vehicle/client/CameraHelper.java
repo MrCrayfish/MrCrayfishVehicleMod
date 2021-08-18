@@ -15,6 +15,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -30,6 +31,7 @@ public class CameraHelper
     private static final Method SET_POSITION_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216775_b", double.class, double.class, double.class);
     private static final Method MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216782_a", double.class, double.class, double.class);
     private static final Method GET_MAX_MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216779_a", double.class);
+    private static final Field LEFT_FIELD = ObfuscationReflectionHelper.findField(ActiveRenderInfo.class, "field_216796_h");
 
     private VehicleProperties properties;
     private float pitch;
@@ -103,6 +105,11 @@ public class CameraHelper
             int index = vehicle.getSeatTracker().getSeatIndex(player.getUUID());
             if(index != -1)
             {
+                if(Config.CLIENT.followVehicleOrientation.get())
+                {
+                    this.setVehicleRotation(info, vehicle, player, partialTicks);
+                }
+
                 Seat seat = this.properties.getSeats().get(index);
                 Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
                 eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
@@ -127,19 +134,14 @@ public class CameraHelper
     {
         try
         {
-            CameraProperties camera = this.properties.getCamera();
-
             if(Config.CLIENT.followVehicleOrientation.get())
             {
-                Vector3d rotation = camera.getRotation();
-                float yaw = (float) (this.getYaw(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset();
-                float pitch = (float) (this.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset();
-                SET_ROTATION_METHOD.invoke(info, yaw, pitch);
+                this.setVehicleRotation(info, vehicle, player, partialTicks);
             }
 
             if(Config.CLIENT.useVehicleAsFocusPoint.get())
             {
-                Vector3d position = camera.getPosition();
+                Vector3d position = this.properties.getCamera().getPosition();
                 Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
                 quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
                 quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
@@ -170,9 +172,59 @@ public class CameraHelper
                 }
             }
 
-            MOVE_METHOD.invoke(info, -(double) GET_MAX_MOVE_METHOD.invoke(info, camera.getDistance()), 0, 0);
+            double distance = this.properties.getCamera().getDistance();
+            MOVE_METHOD.invoke(info, -(double) GET_MAX_MOVE_METHOD.invoke(info, distance), 0, 0);
         }
         catch(InvocationTargetException | IllegalAccessException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void setVehicleRotation(ActiveRenderInfo info, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
+    {
+        try
+        {
+            Quaternion rotation = info.rotation();
+            rotation.set(0.0F, 0.0F, 0.0F, 1.0F);
+
+            // Applies the vehicle body rotations to
+            rotation.mul(Vector3f.YP.rotationDegrees(-this.getYaw(partialTicks)));
+            rotation.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
+            rotation.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
+
+            Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+            if(vehicle.canApplyYawOffset(player))
+            {
+                quaternion.mul(Vector3f.YP.rotationDegrees(vehicle.getPassengerYawOffset()));
+            }
+            quaternion.mul(Vector3f.XP.rotationDegrees(vehicle.getPassengerPitchOffset()));
+
+            if(Config.CLIENT.useVehicleAsFocusPoint.get())
+            {
+                // Apply the camera rotations for the specific vehicle
+                CameraProperties camera = vehicle.getProperties().getCamera();
+                Vector3d cameraRotation = camera.getRotation();
+                quaternion.mul(Vector3f.YP.rotationDegrees((float) cameraRotation.y));
+                quaternion.mul(Vector3f.XP.rotationDegrees((float) cameraRotation.x));
+                quaternion.mul(Vector3f.ZP.rotationDegrees((float) cameraRotation.z));
+            }
+
+            rotation.mul(quaternion);
+
+            Vector3f forward = info.getLookVector();
+            forward.set(0.0F, 0.0F, 1.0F);
+            forward.transform(rotation);
+
+            Vector3f up = info.getUpVector();
+            up.set(0.0F, 1.0F, 0.0F);
+            up.transform(rotation);
+
+            Vector3f left = (Vector3f) LEFT_FIELD.get(info);
+            left.set(1.0F, 0.0F, 0.0F);
+            left.transform(rotation);
+        }
+        catch(IllegalAccessException e)
         {
             e.printStackTrace();
         }
