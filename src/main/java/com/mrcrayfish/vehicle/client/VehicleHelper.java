@@ -317,6 +317,11 @@ public class VehicleHelper
         return Minecraft.getInstance().options.getCameraType() == PointOfView.THIRD_PERSON_BACK;
     }
 
+    public static boolean isThirdPersonFront()
+    {
+        return Minecraft.getInstance().options.getCameraType() == PointOfView.THIRD_PERSON_FRONT;
+    }
+
     private enum SoundType
     {
         ENGINE,
