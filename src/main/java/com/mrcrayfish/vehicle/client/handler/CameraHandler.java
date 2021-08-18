@@ -61,18 +61,25 @@ public class CameraHandler
         if(!event.getEntityMounting().equals(Minecraft.getInstance().player))
             return;
 
+        Entity entity = event.getEntityBeingMounted();
+        if(!(entity instanceof VehicleEntity))
+            return;
+
         if(event.isMounting())
         {
-            Entity entity = event.getEntityBeingMounted();
-            if(!(entity instanceof VehicleEntity))
-                return;
-
             this.originalPointOfView = Minecraft.getInstance().options.getCameraType();
             Minecraft.getInstance().options.setCameraType(PointOfView.THIRD_PERSON_BACK);
         }
-        else if(this.originalPointOfView != null)
+        else
         {
-            Minecraft.getInstance().options.setCameraType(this.originalPointOfView);
+            if(Config.CLIENT.forceFirstPersonOnExit.get())
+            {
+                Minecraft.getInstance().options.setCameraType(PointOfView.FIRST_PERSON);
+            }
+            else if(this.originalPointOfView != null)
+            {
+                Minecraft.getInstance().options.setCameraType(this.originalPointOfView);
+            }
             this.originalPointOfView = null;
         }
     }

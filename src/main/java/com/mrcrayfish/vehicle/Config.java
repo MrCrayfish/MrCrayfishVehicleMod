@@ -19,6 +19,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue enabledLeftClick;
         public final ForgeConfigSpec.BooleanValue enabledSpeedometer;
         public final ForgeConfigSpec.BooleanValue autoPerspective;
+        public final ForgeConfigSpec.BooleanValue forceFirstPersonOnExit;
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
         public final ForgeConfigSpec.BooleanValue useTriggers;
         public final ForgeConfigSpec.BooleanValue reloadVehiclePropertiesEachTick;
@@ -49,6 +50,7 @@ public class Config
                 builder.comment("Configuration for display related options").push("display");
                 this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle").translation(Reference.MOD_ID + ".config.client.display.speedometer").define("enabledSpeedometer", true);
                 this.autoPerspective = builder.comment("If true, automatically switches to third person when mounting vehicles").translation(Reference.MOD_ID + ".config.client.display.auto_perspective").define("autoPerspective", true);
+                this.forceFirstPersonOnExit = builder.comment("If enabled, camera perspective will always be forced back to first person when exiting a vehicle.").translation(Reference.MOD_ID + ".config.client.display.force_first_person_on_exit").define("forceFirstPersonOnExit", false);
                 this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation").translation(Reference.MOD_ID + ".config.client.display.workstation_animation").define("workstationAnimation", true);
                 this.hoseSegments = builder.comment("The amount of segments to use to render the hose on a gas pump. The lower the value, the better the performance but renders a less realistically looking hose").translation(Reference.MOD_ID + ".config.client.display.hose_segments").defineInRange("hoseSegments", 10, 1, 100);
 
