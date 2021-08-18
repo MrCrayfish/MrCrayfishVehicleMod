@@ -17,6 +17,7 @@ import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.settings.PointOfView;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -309,6 +310,11 @@ public class VehicleHelper
             particle.setPower((float) motion.length());
             mc.particleEngine.add(particle);
         }
+    }
+
+    public static boolean isThirdPersonBack()
+    {
+        return Minecraft.getInstance().options.getCameraType() == PointOfView.THIRD_PERSON_BACK;
     }
 
     private enum SoundType

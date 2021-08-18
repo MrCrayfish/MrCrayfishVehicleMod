@@ -188,21 +188,26 @@ public class CameraHelper
             Quaternion rotation = info.rotation();
             rotation.set(0.0F, 0.0F, 0.0F, 1.0F);
 
-            // Applies the vehicle body rotations to
+            // Applies the vehicle's body rotations to the camera
             rotation.mul(Vector3f.YP.rotationDegrees(-this.getYaw(partialTicks)));
             rotation.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
             rotation.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
 
+            // Applies the player's pitch and yaw offset
             Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
             if(vehicle.canApplyYawOffset(player))
             {
                 quaternion.mul(Vector3f.YP.rotationDegrees(vehicle.getPassengerYawOffset()));
             }
+            else
+            {
+                quaternion.mul(Vector3f.YP.rotationDegrees(-MathHelper.rotLerp(partialTicks, player.yRotO, player.yRot) + this.getYaw(partialTicks)));
+            }
             quaternion.mul(Vector3f.XP.rotationDegrees(vehicle.getPassengerPitchOffset()));
 
-            if(Config.CLIENT.useVehicleAsFocusPoint.get())
+            // If the player is in third person, applies additional vehicle specific camera rotations
+            if(Config.CLIENT.useVehicleAsFocusPoint.get() && VehicleHelper.isThirdPersonBack())
             {
-                // Apply the camera rotations for the specific vehicle
                 CameraProperties camera = vehicle.getProperties().getCamera();
                 Vector3d cameraRotation = camera.getRotation();
                 quaternion.mul(Vector3f.YP.rotationDegrees((float) cameraRotation.y));
@@ -210,6 +215,7 @@ public class CameraHelper
                 quaternion.mul(Vector3f.ZP.rotationDegrees((float) cameraRotation.z));
             }
 
+            // Finally applies local rotations to the camera
             rotation.mul(quaternion);
 
             Vector3f forward = info.getLookVector();

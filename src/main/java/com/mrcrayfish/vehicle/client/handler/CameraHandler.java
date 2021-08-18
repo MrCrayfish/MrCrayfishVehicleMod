@@ -182,40 +182,24 @@ public class CameraHandler
         float partialTicks = (float) event.getRenderPartialTicks();
         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
         this.cameraHelper.setupVanillaCamera(event.getInfo(), pointOfView, vehicle, player, partialTicks);
-
-        /* Restores the internal angles as to the new ones */
-        if(Config.CLIENT.followVehicleOrientation.get())
-        {
-            if(minecraft.options.getCameraType() == PointOfView.THIRD_PERSON_BACK)
-            {
-                CameraProperties camera = vehicle.getProperties().getCamera();
-                Vector3d rotation = camera.getRotation();
-                //event.setPitch(this.cameraHelper.getPitch(partialTicks));
-                //event.setYaw(this.cameraHelper.getYaw(partialTicks));
-                //event.setRoll(this.cameraHelper.getRoll(partialTicks));
-
-                //event.setPitch((float) (this.cameraHelper.getPitch(partialTicks) + rotation.x) + vehicle.getPassengerPitchOffset());
-                //event.setYaw((float) (this.cameraHelper.getYaw(partialTicks) + rotation.y) - vehicle.getPassengerYawOffset());
-                //event.setRoll((float) (this.cameraHelper.getRoll(partialTicks) + rotation.z));
-            }
-            else if(minecraft.options.getCameraType() == PointOfView.FIRST_PERSON)
-            {
-                //event.setPitch(this.cameraHelper.getPitch(partialTicks) + vehicle.getPassengerPitchOffset());
-                //event.setRoll(this.cameraHelper.getRoll(partialTicks)); //TODO add config option to disable roll
-            }
-        }
     }
 
-    public void setupVehicleCamera(ActiveRenderInfo info, MatrixStack matrixStack, float partialTick)
+    /*
+     * Called via transformer. Do not delete!
+     */
+    @SuppressWarnings("unused")
+    public static void setupVehicleCamera(ActiveRenderInfo info, MatrixStack matrixStack)
     {
+        if(!Config.CLIENT.immersiveCamera.get())
+            return;
+
         Entity entity = info.getEntity();
         if(!(entity instanceof PlayerEntity) || !(entity.getVehicle() instanceof VehicleEntity))
             return;
 
-        // Resets the current projection matrix
-        MatrixStack.Entry entry = matrixStack.last();
-        entry.pose().setIdentity();
-        entry.normal().setIdentity();
+        // Undo the rotations created by vanilla
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(-(info.getYRot() + 180F)));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-info.getXRot()));
 
         // Applies quaternion to rotate camera rather than euler angles
         Quaternion rotation = info.rotation();
