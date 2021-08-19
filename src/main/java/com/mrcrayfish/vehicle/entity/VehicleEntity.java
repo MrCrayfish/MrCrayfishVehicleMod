@@ -813,8 +813,13 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                     passenger.setPos(this.getX() - seatVec.x, this.getY() + seatVec.y + passenger.getMyRidingOffset(), this.getZ() - seatVec.z);
                     if(this.level.isClientSide() && VehicleHelper.canFollowVehicleOrientation(passenger))
                     {
-                        passenger.xRot = this.xRot + this.passengerPitchOffset;
-                        if(this.canApplyYawOffset(passenger))
+                        //TODO launch the game to test this
+                        if(Config.CLIENT.immersiveCamera.get() && Config.CLIENT.shouldFollowPitch.get())
+                        {
+                            passenger.xRotO = passenger.xRot;
+                            passenger.xRot = this.xRot + this.passengerPitchOffset;
+                        }
+                        if(this.canApplyYawOffset(passenger) && Config.CLIENT.shouldFollowYaw.get())
                         {
                             passenger.yRot -= MathHelper.degreesDifference(this.yRot - this.passengerYawOffset, passenger.yRot);
                             passenger.setYHeadRot(passenger.yRot);
@@ -860,8 +865,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
         float seatYawOffset = seatIndex != -1 ? this.getProperties().getSeats().get(seatIndex).getYawOffset() : 0F;
-        Vector3d forward = Vector3d.directionFromRotation(new Vector2f(0, this.yRot));
-        this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passenger.getForward()), CommonUtils.pitch(forward)) - this.xRot;
+        Vector3d vehicleForward = Vector3d.directionFromRotation(new Vector2f(0, this.yRot));
+        Vector3d passengerForward = Vector3d.directionFromRotation(new Vector2f(passenger.xRot, passenger.getYHeadRot()));
+        this.passengerPitchOffset = MathHelper.degreesDifference(CommonUtils.pitch(passengerForward), CommonUtils.pitch(vehicleForward)) - this.xRot;
 
         if(!this.canApplyYawOffset(passenger))
         {
@@ -869,7 +875,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         }
         else
         {
-            this.passengerYawOffset = MathHelper.degreesDifference(MathHelper.wrapDegrees(passenger.yRot) + seatYawOffset, CommonUtils.yaw(forward));
+            this.passengerYawOffset = MathHelper.degreesDifference(MathHelper.wrapDegrees(passenger.yRot) + seatYawOffset, CommonUtils.yaw(vehicleForward));
             this.passengerYawOffset += seatYawOffset;
         }
     }

@@ -211,19 +211,27 @@ public class CameraHelper
                 quaternion.mul(Vector3f.YP.rotationDegrees(180F));
             }
 
-            if(vehicle.canApplyYawOffset(player))
+            if(vehicle.canApplyYawOffset(player) && Config.CLIENT.shouldFollowYaw.get())
             {
                 quaternion.mul(Vector3f.YP.rotationDegrees(vehicle.getPassengerYawOffset()));
             }
             else
             {
-                quaternion.mul(Vector3f.YP.rotationDegrees(-MathHelper.rotLerp(partialTicks, player.yRotO, player.yRot)));
+                quaternion.mul(Vector3f.YP.rotationDegrees(-player.getViewYRot(partialTicks)));
                 if(Config.CLIENT.shouldFollowYaw.get())
                 {
                     quaternion.mul(Vector3f.YP.rotationDegrees(this.getYaw(partialTicks)));
                 }
             }
-            quaternion.mul(Vector3f.XP.rotationDegrees(VehicleHelper.isThirdPersonFront() ? -vehicle.getPassengerPitchOffset() : vehicle.getPassengerPitchOffset()));
+
+            if(Config.CLIENT.shouldFollowPitch.get())
+            {
+                quaternion.mul(Vector3f.XP.rotationDegrees(VehicleHelper.isThirdPersonFront() ? -vehicle.getPassengerPitchOffset() : vehicle.getPassengerPitchOffset()));
+            }
+            else
+            {
+                quaternion.mul(Vector3f.XP.rotationDegrees(MathHelper.lerp(partialTicks, player.xRotO, player.xRot)));
+            }
 
             // If the player is in third person, applies additional vehicle specific camera rotations
             if(Config.CLIENT.useVehicleAsFocusPoint.get() && VehicleHelper.isThirdPersonBack())
