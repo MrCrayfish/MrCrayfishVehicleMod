@@ -36,7 +36,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected final VehicleDataValue<Float> planeRoll = new VehicleDataValue<>(this, PLANE_ROLL);
 
     protected Vector3d velocity = Vector3d.ZERO;
-    protected float prevPlaneRoll;
 
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
@@ -57,13 +56,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     @Override
     public void updateVehicleMotion()
     {
-        this.prevPlaneRoll = this.planeRoll.get(this);
-
         this.motion = Vector3d.ZERO;
 
         if(this.getControllingPassenger() != null)
         {
-            float newPlaneRoll = this.prevPlaneRoll - this.getSideInput() * 5F;
+            float newPlaneRoll = this.planeRoll.get(this) - this.getSideInput() * 5F;
             newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
             this.planeRoll.set(this, newPlaneRoll);
 
