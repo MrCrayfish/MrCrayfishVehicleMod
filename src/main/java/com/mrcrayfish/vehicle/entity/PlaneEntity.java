@@ -10,6 +10,7 @@ import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -27,14 +28,14 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected static final DataParameter<Float> LIFT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FORWARD_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> SIDE_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> PLANE_ROLL = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
 
     protected final VehicleDataValue<Float> lift = new VehicleDataValue<>(this, LIFT);
     protected final VehicleDataValue<Float> forwardInput = new VehicleDataValue<>(this, FORWARD_INPUT);
     protected final VehicleDataValue<Float> sideInput = new VehicleDataValue<>(this, SIDE_INPUT);
+    protected final VehicleDataValue<Float> planeRoll = new VehicleDataValue<>(this, PLANE_ROLL);
 
     protected Vector3d velocity = Vector3d.ZERO;
-
-    protected float planeRoll;
     protected float prevPlaneRoll;
 
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
@@ -50,29 +51,31 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.entityData.define(LIFT, 0F);
         this.entityData.define(FORWARD_INPUT, 0F);
         this.entityData.define(SIDE_INPUT, 0F);
+        this.entityData.define(PLANE_ROLL, 0F);
     }
 
     @Override
     public void updateVehicleMotion()
     {
-        this.prevPlaneRoll = this.planeRoll;
+        this.prevPlaneRoll = this.planeRoll.get(this);
 
         this.motion = Vector3d.ZERO;
 
         if(this.getControllingPassenger() != null)
         {
-            this.planeRoll -= this.getSideInput() * 5F;
-            this.planeRoll = MathHelper.wrapDegrees(this.planeRoll);
+            float newPlaneRoll = this.prevPlaneRoll - this.getSideInput() * 5F;
+            newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
+            this.planeRoll.set(this, newPlaneRoll);
 
             //TODO engine should cut out if below a threshold
 
-            Vector3f forward = new Vector3f(Vector3d.directionFromRotation(this.getLift(), 0));
-            forward.transform(Vector3f.ZP.rotationDegrees(this.planeRoll));
+            Vector3f forward = new Vector3f(Vector3d.directionFromRotation(this.getLift() * 0.5F, 0));
+            forward.transform(Vector3f.ZP.rotationDegrees(newPlaneRoll));
 
             Vector3d deltaForward = new Vector3d(forward);
             this.xRot += CommonUtils.pitch(deltaForward) * 2F;
             this.yRot -= CommonUtils.yaw(deltaForward) * 2F;
-            this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(this.getThrottle()), 0.05F);
+            this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(this.getThrottle()), 0.5F);
         }
 
         this.motion = this.motion.add(this.velocity);
@@ -101,7 +104,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             this.bodyRotationPitch = this.xRot;
             this.bodyRotationYaw = this.yRot;
-            this.bodyRotationRoll = this.planeRoll;
+            this.bodyRotationRoll = this.planeRoll.get(this);
         }
         else
         {
@@ -130,6 +133,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         super.addAdditionalSaveData(compound);
         compound.putFloat("Lift", this.getLift());
+        compound.putFloat("PlaneRoll", this.planeRoll.getLocalValue());
+        CompoundNBT velocity = new CompoundNBT();
+        velocity.putDouble("X", this.velocity.x);
+        velocity.putDouble("Y", this.velocity.y);
+        velocity.putDouble("Z", this.velocity.z);
+        compound.put("Velocity", velocity);
     }
 
     @Override
@@ -140,16 +149,35 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             this.setLift(compound.getFloat("Lift"));
         }
+        this.planeRoll.set(this, compound.getFloat("PlaneRoll"));
+        CompoundNBT velocity = compound.getCompound("Velocity");
+        this.velocity = new Vector3d(velocity.getDouble("X"), velocity.getDouble("Y"), velocity.getDouble("Z"));
+    }
+
+    @Override
+    public void writeSpawnData(PacketBuffer buffer)
+    {
+        super.writeSpawnData(buffer);
+        buffer.writeDouble(this.velocity.x);
+        buffer.writeDouble(this.velocity.y);
+        buffer.writeDouble(this.velocity.z);
+    }
+
+    @Override
+    public void readSpawnData(PacketBuffer buffer)
+    {
+        super.readSpawnData(buffer);
+        this.velocity = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
     }
 
     public float getLift()
     {
-        return this.entityData.get(LIFT);
+        return this.lift.get(this);
     }
 
     public void setLift(float lift)
     {
-        this.entityData.set(LIFT, lift);
+        this.lift.set(this, lift);
     }
 
     public float getForwardInput()
