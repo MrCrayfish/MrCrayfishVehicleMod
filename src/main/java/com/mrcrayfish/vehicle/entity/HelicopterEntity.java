@@ -9,6 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -310,5 +313,44 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public float getBladeRotation(float partialTicks)
     {
         return this.prevBladeRotation + (this.bladeRotation - this.prevBladeRotation) * partialTicks;
+    }
+
+    @Override
+    public void writeSpawnData(PacketBuffer buffer)
+    {
+        super.writeSpawnData(buffer);
+        buffer.writeFloat(this.bladeSpeed);
+        buffer.writeDouble(this.velocity.x);
+        buffer.writeDouble(this.velocity.y);
+        buffer.writeDouble(this.velocity.z);
+    }
+
+    @Override
+    public void readSpawnData(PacketBuffer buffer)
+    {
+        super.readSpawnData(buffer);
+        this.bladeSpeed = buffer.readFloat();
+        this.velocity = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound)
+    {
+        super.addAdditionalSaveData(compound);
+        compound.putFloat("BladeSpeed", this.bladeSpeed);
+        CompoundNBT velocity = new CompoundNBT();
+        velocity.putDouble("X", this.velocity.x);
+        velocity.putDouble("Y", this.velocity.y);
+        velocity.putDouble("Z", this.velocity.z);
+        compound.put("Velocity", velocity);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound)
+    {
+        super.readAdditionalSaveData(compound);
+        this.bladeSpeed = compound.getFloat("BladeSpeed");
+        CompoundNBT velocity = compound.getCompound("Velocity");
+        this.velocity = new Vector3d(velocity.getDouble("X"), velocity.getDouble("Y"), velocity.getDouble("Z"));
     }
 }

@@ -4,6 +4,8 @@ import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.entity.EntityType;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -327,5 +329,44 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         float p = MathHelper.lerp(partialTicks, this.prevWheelieCount, this.wheelieCount) / (float) MAX_WHEELIE_TICKS;
         return 1.0F - (1.0F - p) * (1.0F - p);
+    }
+
+    @Override
+    public void writeSpawnData(PacketBuffer buffer)
+    {
+        super.writeSpawnData(buffer);
+        buffer.writeFloat(this.traction);
+        buffer.writeDouble(this.velocity.x);
+        buffer.writeDouble(this.velocity.y);
+        buffer.writeDouble(this.velocity.z);
+    }
+
+    @Override
+    public void readSpawnData(PacketBuffer buffer)
+    {
+        super.readSpawnData(buffer);
+        this.traction = buffer.readFloat();
+        this.velocity = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound)
+    {
+        super.addAdditionalSaveData(compound);
+        compound.putFloat("Traction", this.traction);
+        CompoundNBT velocity = new CompoundNBT();
+        velocity.putDouble("X", this.velocity.x);
+        velocity.putDouble("Y", this.velocity.y);
+        velocity.putDouble("Z", this.velocity.z);
+        compound.put("Velocity", velocity);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound)
+    {
+        super.readAdditionalSaveData(compound);
+        this.traction = compound.getFloat("Traction");
+        CompoundNBT velocity = compound.getCompound("Velocity");
+        this.velocity = new Vector3d(velocity.getDouble("X"), velocity.getDouble("Y"), velocity.getDouble("Z"));
     }
 }
