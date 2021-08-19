@@ -177,22 +177,6 @@ public class VehicleHelper
         return KeyBinds.KEY_HORN.isDown();
     }
 
-    public static PlaneEntity.FlapDirection getFlapDirection()
-    {
-        boolean flapUp = Minecraft.getInstance().options.keyJump.isDown();
-        boolean flapDown = Minecraft.getInstance().options.keySprint.isDown();
-        if(ClientHandler.isControllableLoaded())
-        {
-            Controller controller = Controllable.getController();
-            if(controller != null)
-            {
-                flapUp |= controller.getButtonsStates().getState(Buttons.RIGHT_BUMPER);
-                flapDown |= controller.getButtonsStates().getState(Buttons.LEFT_BUMPER);
-            }
-        }
-        return PlaneEntity.FlapDirection.fromInput(flapUp, flapDown);
-    }
-
     public static float getLift()
     {
         float up = Minecraft.getInstance().options.keyJump.isDown() ? 1.0F : 0F;

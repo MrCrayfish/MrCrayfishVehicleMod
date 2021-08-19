@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
-import com.mrcrayfish.vehicle.network.message.MessageFlaps;
 import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
@@ -15,8 +14,6 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix3f;
-import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
@@ -27,9 +24,7 @@ import net.minecraftforge.common.util.Constants;
  */
 public abstract class PlaneEntity extends PoweredVehicleEntity
 {
-    //TODO Create own data parameter system if problems continue to occur
-    private static final DataParameter<Integer> FLAP_DIRECTION = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> LIFT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Float> LIFT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FORWARD_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> SIDE_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
 
@@ -52,7 +47,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public void defineSynchedData()
     {
         super.defineSynchedData();
-        this.entityData.define(FLAP_DIRECTION, FlapDirection.NONE.ordinal());
         this.entityData.define(LIFT, 0F);
         this.entityData.define(FORWARD_INPUT, 0F);
         this.entityData.define(SIDE_INPUT, 0F);
@@ -92,13 +86,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
-            FlapDirection flapDirection = VehicleHelper.getFlapDirection();
-            if(this.getFlapDirection() != flapDirection)
-            {
-                this.setFlapDirection(flapDirection);
-                PacketHandler.instance.sendToServer(new MessageFlaps(flapDirection));
-            }
-
             ClientPlayerEntity player = (ClientPlayerEntity) entity;
             this.setLift(VehicleHelper.getLift());
             this.setForwardInput(player.zza);
@@ -142,7 +129,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected void addAdditionalSaveData(CompoundNBT compound)
     {
         super.addAdditionalSaveData(compound);
-        compound.putInt("FlapDirection", this.getFlapDirection().ordinal());
         compound.putFloat("Lift", this.getLift());
     }
 
@@ -150,24 +136,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected void readAdditionalSaveData(CompoundNBT compound)
     {
         super.readAdditionalSaveData(compound);
-        if(compound.contains("FlapDirection", Constants.NBT.TAG_INT))
-        {
-            this.setFlapDirection(FlapDirection.values()[compound.getInt("FlapDirection")]);
-        }
         if(compound.contains("Lift", Constants.NBT.TAG_FLOAT))
         {
             this.setLift(compound.getFloat("Lift"));
         }
-    }
-
-    public void setFlapDirection(FlapDirection flapDirection)
-    {
-        this.entityData.set(FLAP_DIRECTION, flapDirection.ordinal());
-    }
-
-    public FlapDirection getFlapDirection()
-    {
-        return FlapDirection.values()[this.entityData.get(FLAP_DIRECTION)];
     }
 
     public float getLift()
@@ -218,17 +190,5 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public boolean canChangeWheels()
     {
         return false;
-    }
-
-    public enum FlapDirection
-    {
-        UP,
-        DOWN,
-        NONE;
-
-        public static FlapDirection fromInput(boolean up, boolean down)
-        {
-            return up && !down ? UP : down && !up ? DOWN : NONE;
-        }
     }
 }

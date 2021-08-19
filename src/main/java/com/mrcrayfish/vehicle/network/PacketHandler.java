@@ -27,7 +27,6 @@ public class PacketHandler
         register(MessageHorn.class, new MessageHorn());
         register(MessageThrowVehicle.class, new MessageThrowVehicle());
         register(MessagePickupVehicle.class, new MessagePickupVehicle());
-        register(MessageFlaps.class, new MessageFlaps());
         register(MessageAttachChest.class, new MessageAttachChest());
         register(MessageAttachTrailer.class, new MessageAttachTrailer());
         register(MessageFuelVehicle.class, new MessageFuelVehicle());
