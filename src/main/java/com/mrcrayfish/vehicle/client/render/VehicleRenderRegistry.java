@@ -16,7 +16,7 @@ public final class VehicleRenderRegistry
     private static final Map<EntityType<?>, AbstractVehicleRenderer<?>> RENDERER_MAP = new HashMap<>();
     private static final Map<EntityType<?>, Function<VehicleProperties, ?>> RENDERER_FUNCTION_MAP = new HashMap<>();
 
-    public static void registerVehicleRendererFunction(EntityType<?> type, Function<VehicleProperties, ?> rendererFunction, AbstractVehicleRenderer<?> defaultRenderer)
+    public static synchronized void registerVehicleRendererFunction(EntityType<?> type, Function<VehicleProperties, ?> rendererFunction, AbstractVehicleRenderer<?> defaultRenderer)
     {
         RENDERER_FUNCTION_MAP.put(type, rendererFunction);
         RENDERER_MAP.put(type, defaultRenderer);
