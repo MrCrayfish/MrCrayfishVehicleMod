@@ -60,7 +60,14 @@ public class CommonUtils
 
     public static float pitch(Vector3d vec)
     {
-        return (float) Math.toDegrees(Math.asin(vec.normalize().y));
+        if(vec.normalize().y != 0)
+        {
+            // Fixes the absolute of the value being slighter greater than 1.0
+            double y = MathHelper.clamp(vec.normalize().y, -1.0, 1.0);
+            // If abs of y is grater than 1.0, returns NaN when calling Math#asin and crashes world
+            return (float) Math.toDegrees(Math.asin(y));
+        }
+        return 0F;
     }
 
     public static Vector3d lerp(Vector3d start, Vector3d end, float time)

@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
@@ -18,6 +19,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 
 /**
@@ -36,6 +39,13 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected final VehicleDataValue<Float> planeRoll = new VehicleDataValue<>(this, PLANE_ROLL);
 
     protected Vector3d velocity = Vector3d.ZERO;
+    protected float propellerSpeed;
+    protected float liftAmount;
+
+    @OnlyIn(Dist.CLIENT)
+    protected float propellerRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevPropellerRotation;
 
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
@@ -58,30 +68,122 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         this.motion = Vector3d.ZERO;
 
-        if(this.getControllingPassenger() != null)
+        this.updateRotorSpeed();
+
+        // Updates the planes roll based on input from the player
+        if(this.getControllingPassenger() != null && this.isFlying())
         {
             float newPlaneRoll = this.planeRoll.get(this) - this.getSideInput() * 5F;
             newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
             this.planeRoll.set(this, newPlaneRoll);
-
-            //TODO engine should cut out if below a threshold
-
-            Vector3f forward = new Vector3f(Vector3d.directionFromRotation(this.getLift() * 0.5F, 0));
-            forward.transform(Vector3f.ZP.rotationDegrees(newPlaneRoll));
-
-            Vector3d deltaForward = new Vector3d(forward);
-            this.xRot += CommonUtils.pitch(deltaForward) * 2F;
-            this.yRot -= CommonUtils.yaw(deltaForward) * 2F;
-            this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(this.getThrottle()), 0.5F);
+        }
+        else
+        {
+            this.planeRoll.set(this, this.planeRoll.get(this) * 0.9F);
         }
 
+        VehicleProperties properties = this.getProperties();
+        float enginePower = properties.getEnginePower();
+        float friction = this.isFlying() ? 0F : SurfaceHelper.getFriction(this);
+        float drag = 0.001F;
+        float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
+        float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToFly(), 1.0F);
+        this.liftAmount += (this.getLift() - this.liftAmount) * 0.15F;
+
+        // Adds delta pitch and yaw to the plane based on the flaps and roll of the plane
+        float floorLiftForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
+        Vector3f direction = new Vector3f(Vector3d.directionFromRotation(this.liftAmount * floorLiftForce, 0));
+        direction.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
+        Vector3d deltaForward = new Vector3d(direction);
+        this.xRot += CommonUtils.pitch(deltaForward) * 2F;
+        this.yRot -= CommonUtils.yaw(deltaForward) * 2F;
+
+        // Updates the accelerations of the plane with drag and friction applied
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        Vector3d acceleration = forward.scale(forwardForce).scale(enginePower).scale(0.05);
+        if(friction > 0F)
+        {
+            Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
+            acceleration = acceleration.add(frictionForce);
+        }
+        Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
+        acceleration = acceleration.add(dragForce);
+
+        // Add gravity but is countered based on the lift force
+        this.velocity = this.velocity.add(0, -0.05 * (1.0F - liftForce), 0);
+
+        // Update the velocity based on the heading and acceleration
+        this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(acceleration.length()), 0.5F);
+
+        // Updates the pitch and yaw based on the velocity
+        if(this.isFlying() && this.velocity.multiply(1, 0, 1).length() > 0.01)
+        {
+            this.xRot = -CommonUtils.pitch(this.velocity);
+            this.yRot = CommonUtils.yaw(this.velocity);
+        }
+        else
+        {
+            this.xRot = 0F;
+        }
+
+        // Finally adds velocity to the motion
         this.motion = this.motion.add(this.velocity);
+    }
+
+    protected void updateRotorSpeed()
+    {
+        if(this.canDrive() && this.getControllingPassenger() != null)
+        {
+            float enginePower = this.getProperties().getEnginePower();
+            float maxRotorSpeed = this.getMaxRotorSpeed();
+            if(this.propellerSpeed <= maxRotorSpeed)
+            {
+                this.propellerSpeed += this.getThrottle() > 0 ? Math.sqrt(enginePower) / 5F : 0.4F;
+                if(this.propellerSpeed > maxRotorSpeed)
+                {
+                    this.propellerSpeed = maxRotorSpeed;
+                }
+            }
+            else
+            {
+                this.propellerSpeed *= 0.99F;
+            }
+        }
+        else
+        {
+            this.propellerSpeed *= 0.95F;
+        }
+
+        if(this.level.isClientSide())
+        {
+            this.propellerRotation += this.propellerSpeed;
+        }
+    }
+
+    protected float getMaxRotorSpeed()
+    {
+        if(this.getThrottle() > 0)
+        {
+            //TODO implement pitch
+            return 200F + this.getProperties().getEnginePower();
+        }
+        else if(this.isFlying())
+        {
+            if(this.getLift() < 0)
+            {
+                return 150F;
+            }
+            return 180F;
+        }
+        return 80F;
     }
 
     @Override
     public void onClientUpdate()
     {
         super.onClientUpdate();
+
+        this.prevPropellerRotation = this.propellerRotation;
 
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
@@ -99,8 +201,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         if(this.isFlying())
         {
+            //this.bodyRotationPitch = CommonUtils.pitch(this.velocity);
+            //this.bodyRotationYaw = CommonUtils.yaw(this.velocity);
             this.bodyRotationPitch = this.xRot;
-            this.bodyRotationYaw = this.yRot;
             this.bodyRotationRoll = this.planeRoll.get(this);
         }
         else
@@ -108,21 +211,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             this.bodyRotationPitch *= 0.75F;
             this.bodyRotationRoll *= 0.75F;
         }
-    }
-
-    public void updateLift()
-    {
-        //TODO reimplement lift for planes
-        /*FlapDirection flapDirection = getFlapDirection();
-        if(flapDirection == FlapDirection.UP)
-        {
-            this.lift += 0.04F * (Math.min(Math.max(currentSpeed - 5F, 0F), 15F) / 15F);
-        }
-        else if(flapDirection == FlapDirection.DOWN)
-        {
-            this.lift -= 0.06F * (Math.min(currentSpeed, 15F) / 15F);
-        }
-        this.setLift(this.lift);*/
+        this.bodyRotationYaw = this.yRot;
     }
 
     @Override
@@ -202,6 +291,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         return !this.onGround;
     }
 
+    protected float getMinimumSpeedToFly()
+    {
+        return 16F;
+    }
+
     /*
      * Overridden to prevent players from taking fall damage when landing a plane
      */
@@ -215,5 +309,20 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public boolean canChangeWheels()
     {
         return false;
+    }
+
+    @Override
+    protected void updateEngineSound()
+    {
+        float normal = MathHelper.clamp(this.propellerSpeed / 200F, 0.0F, 1.25F) * 0.6F;
+        //normal += (this.motion.scale(20).length() / this.getProperties().getEnginePower()) * 0.4F;
+        this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * MathHelper.clamp(normal, 0.0F, 1.0F);
+        this.engineVolume = this.getControllingPassenger() != null && this.isEnginePowered() ? 0.2F + 0.8F * (this.propellerSpeed / 80F) : 0.001F;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getBladeRotation(float partialTicks)
+    {
+        return this.prevPropellerRotation + (this.propellerRotation - this.prevPropellerRotation) * partialTicks;
     }
 }

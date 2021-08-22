@@ -75,7 +75,7 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
             matrixStack.translate(0, -1.5 * 0.0625, 22.2 * 0.0625);
             if(vehicle != null)
             {
-                float propellerRotation = MathHelper.lerp(partialTicks, vehicle.prevPropellerRotation, vehicle.propellerRotation);
+                float propellerRotation = vehicle.getBladeRotation(partialTicks); //TODO convert to property
                 matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(propellerRotation));
             }
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_PROPELLER.getModel(), matrixStack, renderTypeBuffer, light);
