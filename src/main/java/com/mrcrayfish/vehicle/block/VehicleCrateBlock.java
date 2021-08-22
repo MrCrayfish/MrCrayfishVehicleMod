@@ -247,7 +247,7 @@ public class VehicleCrateBlock extends RotatedObjectBlock
         return stack;
     }
 
-    public static void registerVehicle(ResourceLocation id)
+    public static synchronized void registerVehicle(ResourceLocation id)
     {
         if(!REGISTERED_CRATES.contains(id))
         {

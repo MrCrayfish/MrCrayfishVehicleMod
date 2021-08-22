@@ -25,7 +25,7 @@ public class VehicleRegistry
     private static final Map<ResourceLocation, IEngineType> ID_TO_ENGINE_TYPE = new HashMap<>();
     private static final Map<Pair<IEngineType, IEngineTier>, EngineItem> PAIR_TO_ENGINE_ITEM = new HashMap<>();
 
-    public static void registerVehicleType(EntityType<? extends VehicleEntity> entityType)
+    public static synchronized void registerVehicleType(EntityType<? extends VehicleEntity> entityType)
     {
         REGISTERED_VEHICLES.add(entityType);
     }
@@ -35,7 +35,7 @@ public class VehicleRegistry
         return REGISTERED_VEHICLES;
     }
 
-    public static void registerEngine(IEngineType type, IEngineTier tier, EngineItem item)
+    public static synchronized void registerEngine(IEngineType type, IEngineTier tier, EngineItem item)
     {
         Pair<IEngineType, IEngineTier> pair = Pair.of(type, tier);
         if(PAIR_TO_ENGINE_ITEM.containsKey(pair))
