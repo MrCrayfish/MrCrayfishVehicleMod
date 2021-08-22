@@ -40,7 +40,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     protected Vector3d velocity = Vector3d.ZERO;
     protected float propellerSpeed;
-    protected float liftAmount;
+    protected float flapAngle;
 
     @OnlyIn(Dist.CLIENT)
     protected float propellerRotation;
@@ -88,15 +88,15 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         float drag = 0.001F;
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
         float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToFly(), 1.0F);
-        this.liftAmount += (this.getLift() - this.liftAmount) * 0.15F;
+        float flapForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
+        this.flapAngle += ((this.getMaxFlapAngle() * this.getLift()) - this.flapAngle) * 0.15F;
 
         // Adds delta pitch and yaw to the plane based on the flaps and roll of the plane
-        float floorLiftForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
-        Vector3f direction = new Vector3f(Vector3d.directionFromRotation(this.liftAmount * floorLiftForce, 0));
+        Vector3f direction = new Vector3f(Vector3d.directionFromRotation(this.flapAngle * flapForce * 0.05F, 0));
         direction.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
         Vector3d deltaForward = new Vector3d(direction);
-        this.xRot += CommonUtils.pitch(deltaForward) * 2F;
-        this.yRot -= CommonUtils.yaw(deltaForward) * 2F;
+        this.xRot += CommonUtils.pitch(deltaForward);
+        this.yRot -= CommonUtils.yaw(deltaForward);
 
         // Updates the accelerations of the plane with drag and friction applied
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
@@ -201,8 +201,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         if(this.isFlying())
         {
-            //this.bodyRotationPitch = CommonUtils.pitch(this.velocity);
-            //this.bodyRotationYaw = CommonUtils.yaw(this.velocity);
             this.bodyRotationPitch = this.xRot;
             this.bodyRotationRoll = this.planeRoll.get(this);
         }
@@ -294,6 +292,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected float getMinimumSpeedToFly()
     {
         return 16F;
+    }
+
+    public float getMaxFlapAngle()
+    {
+        return 45F;
     }
 
     /*
