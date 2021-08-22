@@ -96,6 +96,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         direction.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
         Vector3d deltaForward = new Vector3d(direction);
         this.xRot += CommonUtils.pitch(deltaForward);
+        this.xRot = MathHelper.clamp(this.xRot, -89F, 89F);
         this.yRot -= CommonUtils.yaw(deltaForward);
 
         // Updates the accelerations of the plane with drag and friction applied
@@ -116,9 +117,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(acceleration.length()), 0.5F);
 
         // Updates the pitch and yaw based on the velocity
-        if(this.isFlying() && this.velocity.multiply(1, 0, 1).length() > 0.01)
+        if(this.isFlying() && this.velocity.multiply(1, 0, 1).length() > 0.001)
         {
             this.xRot = -CommonUtils.pitch(this.velocity);
+            this.xRot = MathHelper.clamp(this.xRot, -89F, 89F);
             this.yRot = CommonUtils.yaw(this.velocity);
         }
         else
@@ -136,6 +138,16 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             float enginePower = this.getProperties().getEnginePower();
             float maxRotorSpeed = this.getMaxRotorSpeed();
+            float angleOfAttack = (MathHelper.clamp(this.xRot, -90F, 90F) + 90F) / 180F;
+
+            // Makes the plane slow down the closer it points up
+            if(this.xRot < 0)
+            {
+                float upFactor = 1.0F - (float) Math.pow(1.0F - angleOfAttack / 0.5F, 7);
+                this.propellerSpeed *= MathHelper.clamp(upFactor, 0.98F, 1.0F);
+                enginePower *= angleOfAttack;
+            }
+
             if(this.propellerSpeed <= maxRotorSpeed)
             {
                 this.propellerSpeed += this.getThrottle() > 0 ? Math.sqrt(enginePower) / 5F : 0.4F;
@@ -172,7 +184,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             if(this.getLift() < 0)
             {
-                return 150F;
+                return 80F;
             }
             return 180F;
         }
