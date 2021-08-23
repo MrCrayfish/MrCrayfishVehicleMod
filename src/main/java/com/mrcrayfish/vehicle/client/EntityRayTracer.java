@@ -169,7 +169,7 @@ public class EntityRayTracer
      * @param transforms the ray trace transforms for the vehicle
      * @param <T> an entity type that is a vehicle entity and implements IEntityRayTraceable
      */
-    public <T extends VehicleEntity & IEntityRayTraceable> void registerTransforms(EntityType<T> type, IRayTraceTransforms transforms)
+    public synchronized <T extends VehicleEntity & IEntityRayTraceable> void registerTransforms(EntityType<T> type, IRayTraceTransforms transforms)
     {
         this.entityRayTraceTransforms.putIfAbsent(type, transforms);
     }
