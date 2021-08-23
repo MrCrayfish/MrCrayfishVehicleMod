@@ -40,7 +40,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     protected Vector3d velocity = Vector3d.ZERO;
     protected float propellerSpeed;
-    protected float flapAngle;
+    protected float elevatorAngle;
 
     @OnlyIn(Dist.CLIENT)
     protected float propellerRotation;
@@ -88,33 +88,28 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         float drag = 0.001F;
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
         float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToFly(), 1.0F);
-        float flapForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
-        this.flapAngle += ((this.getMaxFlapAngle() * this.getLift()) - this.flapAngle) * 0.15F;
+        float elevatorForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
+        this.elevatorAngle += ((this.getMaxElevatorAngle() * this.getLift()) - this.elevatorAngle) * 0.15F;
 
         // Adds delta pitch and yaw to the plane based on the flaps and roll of the plane
-        Vector3f direction = new Vector3f(Vector3d.directionFromRotation(this.flapAngle * flapForce * 0.05F, 0));
-        direction.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
-        Vector3d deltaForward = new Vector3d(direction);
-        this.xRot += CommonUtils.pitch(deltaForward);
-        this.xRot = MathHelper.clamp(this.xRot, -89F, 89F);
-        this.yRot -= CommonUtils.yaw(deltaForward);
+        Vector3f evevatorDirection = new Vector3f(Vector3d.directionFromRotation(this.elevatorAngle * elevatorForce * 0.05F, 0));
+        evevatorDirection.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
+        this.xRot += CommonUtils.pitch(evevatorDirection);
+        this.yRot -= CommonUtils.yaw(evevatorDirection);
 
         // Updates the accelerations of the plane with drag and friction applied
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         Vector3d acceleration = forward.scale(forwardForce).scale(enginePower).scale(0.05);
-        if(friction > 0F)
-        {
-            Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
-            acceleration = acceleration.add(frictionForce);
-        }
         Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
         acceleration = acceleration.add(dragForce);
+        Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
+        acceleration = acceleration.add(frictionForce);
 
         // Add gravity but is countered based on the lift force
         this.velocity = this.velocity.add(0, -0.05 * (1.0F - liftForce), 0);
 
         // Update the velocity based on the heading and acceleration
-        this.velocity = CommonUtils.lerp(this.velocity, this.getForward().scale(acceleration.length()), 0.5F);
+        this.velocity = CommonUtils.lerp(this.velocity, acceleration, 0.5F);
 
         // Updates the pitch and yaw based on the velocity
         if(this.isFlying() && this.velocity.multiply(1, 0, 1).length() > 0.001)
@@ -307,7 +302,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         return 16F;
     }
 
-    public float getMaxFlapAngle()
+    public float getMaxElevatorAngle()
     {
         return 45F;
     }

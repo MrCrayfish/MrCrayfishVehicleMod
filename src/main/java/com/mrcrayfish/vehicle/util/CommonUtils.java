@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.common.util.Constants;
 
@@ -68,6 +69,16 @@ public class CommonUtils
             return (float) Math.toDegrees(Math.asin(y));
         }
         return 0F;
+    }
+
+    public static float yaw(Vector3f vec)
+    {
+        return yaw(new Vector3d(vec));
+    }
+
+    public static float pitch(Vector3f vec)
+    {
+        return pitch(new Vector3d(vec));
     }
 
     public static Vector3d lerp(Vector3d start, Vector3d end, float time)
