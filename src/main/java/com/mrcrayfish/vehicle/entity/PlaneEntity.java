@@ -92,10 +92,21 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.elevatorAngle += ((this.getMaxElevatorAngle() * this.getLift()) - this.elevatorAngle) * 0.15F;
 
         // Adds delta pitch and yaw to the plane based on the flaps and roll of the plane
-        Vector3f evevatorDirection = new Vector3f(Vector3d.directionFromRotation(this.elevatorAngle * elevatorForce * 0.05F, 0));
-        evevatorDirection.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
-        this.xRot += CommonUtils.pitch(evevatorDirection);
-        this.yRot -= CommonUtils.yaw(evevatorDirection);
+        Vector3f elevatorDirection = new Vector3f(Vector3d.directionFromRotation(this.elevatorAngle * elevatorForce * 0.05F, 0));
+        elevatorDirection.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
+        this.xRot += CommonUtils.pitch(elevatorDirection);
+        this.yRot -= CommonUtils.yaw(elevatorDirection);
+
+        // Makes the plane turn slightly when roll is turned to the side
+        float planeRoll = this.planeRoll.get(this) % 360;
+        float absPlaneRoll = Math.abs(planeRoll);
+        if(absPlaneRoll >= 0 && absPlaneRoll <= 90)
+        {
+            float forwardFactor = 1.0F - MathHelper.degreesDifferenceAbs(this.xRot, 0F) / 90F;
+            float turnStrength = 1.0F - (MathHelper.degreesDifferenceAbs(absPlaneRoll, 45F) / 45F);
+            turnStrength *= Math.signum(planeRoll);
+            this.yRot += turnStrength * forwardFactor * this.getMaxTurnAngle();
+        }
 
         // Updates the accelerations of the plane with drag and friction applied
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
@@ -305,6 +316,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public float getMaxElevatorAngle()
     {
         return 45F;
+    }
+
+    public float getMaxTurnAngle()
+    {
+        return 2F;
     }
 
     /*
