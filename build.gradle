@@ -74,7 +74,8 @@ repositories {
 }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.65'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.0'
+
     compile fg.deobf('curse.maven:obfuscate-289380:3336021')
     compile fg.deobf('curse.maven:controllable-317269:3335987')
     compile fg.deobf('curse.maven:configured-457570:3340535')
