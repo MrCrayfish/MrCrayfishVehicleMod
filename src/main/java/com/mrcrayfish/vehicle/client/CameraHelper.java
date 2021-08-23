@@ -54,18 +54,29 @@ public class CameraHelper
 
     public void tick(VehicleEntity vehicle, PointOfView pov)
     {
-        float strength = this.getStrength(pov);
+        float followStrength = this.getFollowStrength(pov);
         this.prevPitch = this.pitch;
         this.prevYaw = this.yaw;
         this.prevRoll = this.roll;
-        this.pitch = MathHelper.rotLerp(strength, this.pitch, vehicle.getViewPitch(1F));
-        this.yaw = MathHelper.rotLerp(strength, this.yaw, vehicle.getViewYaw(1F));
-        this.roll = MathHelper.rotLerp(strength, this.roll, vehicle.getViewRoll(1F));
+        this.pitch = MathHelper.rotLerp(followStrength, this.pitch, vehicle.getViewPitch(1F));
+        this.yaw = MathHelper.rotLerp(followStrength, this.yaw, vehicle.getViewYaw(1F));
+        this.roll = MathHelper.rotLerp(followStrength, this.roll, vehicle.getViewRoll(1F));
     }
 
-    private float getStrength(PointOfView pov)
+    private float getFollowStrength(PointOfView pov)
     {
-        return pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED && Config.CLIENT.useVehicleAsFocusPoint.get() ? this.properties.getCamera().getStrength() : 1.0F;
+        if(pov == PointOfView.THIRD_PERSON_BACK)
+        {
+            if(Config.CLIENT.customFollowStrength.get())
+            {
+                return Config.CLIENT.followStrength.get().floatValue();
+            }
+            if(this.properties.getCamera().getType() != CameraProperties.Type.LOCKED && Config.CLIENT.useVehicleAsFocusPoint.get())
+            {
+                return this.properties.getCamera().getStrength();
+            }
+        }
+        return 1.0F;
     }
 
     public float getPitch(float partialTicks)
