@@ -320,9 +320,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     @Override
     public void onUpdateVehicle()
     {
-        this.prevRenderWheelAngle = this.renderWheelAngle;
-
-        if(this.level.isClientSide)
+        if(this.level.isClientSide())
         {
             this.onClientUpdate();
         }
@@ -480,6 +478,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     @OnlyIn(Dist.CLIENT)
     public void onClientUpdate()
     {
+        this.prevRenderWheelAngle = this.renderWheelAngle;
+
         Entity entity = this.getControllingPassenger();
         if(entity instanceof LivingEntity && entity.equals(Minecraft.getInstance().player))
         {
