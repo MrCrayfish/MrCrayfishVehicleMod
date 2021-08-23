@@ -193,9 +193,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         }
         else if(this.isFlying())
         {
-            if(this.getLift() < 0)
+            if(this.getThrottle() < 0)
             {
-                return 80F;
+                return 160F;
             }
             return 180F;
         }
