@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[36,)"
 license="GNU General Public License 3.0"
 issueTrackerURL="https://github.com/MrCrayfish/MrCrayfishVehicleMod/issues"
 
@@ -17,13 +17,13 @@ description="A mod that adds vehicles into Minecraft!"
 [[dependencies.vehicle]]
     modId="forge"
     mandatory=true
-    versionRange="[34.1.0,)"
+    versionRange="[36.2.0,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.vehicle]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.3,1.17)"
+    versionRange="[1.16.5,1.17)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.vehicle]]
