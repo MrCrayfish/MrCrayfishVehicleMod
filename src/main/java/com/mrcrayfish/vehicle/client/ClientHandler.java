@@ -34,6 +34,7 @@ import com.mrcrayfish.vehicle.init.ModTileEntities;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;
+import com.mrcrayfish.vehicle.util.VehicleUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
@@ -128,56 +129,41 @@ public class ClientHandler
     private static void setupVehicleRenders()
     {
         /* Register Vehicles */
-        registerVehicleRenderer(ModEntities.ATV.get(), ATVRenderer::new);
-        registerVehicleRenderer(ModEntities.DUNE_BUGGY.get(), DuneBuggyRenderer::new);
-        registerVehicleRenderer(ModEntities.GO_KART.get(), GoKartRenderer::new);
-        registerVehicleRenderer(ModEntities.SHOPPING_CART.get(), ShoppingCartRenderer::new);
-        registerVehicleRenderer(ModEntities.MINI_BIKE.get(), MiniBikeRenderer::new);
-        registerVehicleRenderer(ModEntities.BUMPER_CAR.get(), BumperCarModel::new);
-        registerVehicleRenderer(ModEntities.JET_SKI.get(), JetSkiRenderer::new);
-        registerVehicleRenderer(ModEntities.SPEED_BOAT.get(), SpeedBoatRenderer::new);
-        registerVehicleRenderer(ModEntities.ALUMINUM_BOAT.get(), AluminumBoatRenderer::new);
-        registerVehicleRenderer(ModEntities.SMART_CAR.get(), SmartCarRenderer::new);
-        registerVehicleRenderer(ModEntities.LAWN_MOWER.get(), LawnMowerRenderer::new);
-        registerVehicleRenderer(ModEntities.MOPED.get(), MopedRenderer::new);
-        registerVehicleRenderer(ModEntities.SPORTS_PLANE.get(), SportsPlaneRenderer::new);
-        registerVehicleRenderer(ModEntities.GOLF_CART.get(), GolfCartRenderer::new);
-        registerVehicleRenderer(ModEntities.OFF_ROADER.get(), OffRoaderRenderer::new);
-        registerVehicleRenderer(ModEntities.TRACTOR.get(), TractorRenderer::new);
-        registerVehicleRenderer(ModEntities.MINI_BUS.get(), MiniBusRenderer::new);
-        registerVehicleRenderer(ModEntities.DIRT_BIKE.get(), DirtBikeRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.ATV.get(), ATVRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.DUNE_BUGGY.get(), DuneBuggyRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.GO_KART.get(), GoKartRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.SHOPPING_CART.get(), ShoppingCartRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.MINI_BIKE.get(), MiniBikeRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.BUMPER_CAR.get(), BumperCarModel::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.JET_SKI.get(), JetSkiRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.SPEED_BOAT.get(), SpeedBoatRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.ALUMINUM_BOAT.get(), AluminumBoatRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.SMART_CAR.get(), SmartCarRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.LAWN_MOWER.get(), LawnMowerRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.MOPED.get(), MopedRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.SPORTS_PLANE.get(), SportsPlaneRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.GOLF_CART.get(), GolfCartRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.OFF_ROADER.get(), OffRoaderRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.TRACTOR.get(), TractorRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.MINI_BUS.get(), MiniBusRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.DIRT_BIKE.get(), DirtBikeRenderer::new);
 
         /* Register Trailers */
-        registerVehicleRenderer(ModEntities.VEHICLE_TRAILER.get(), VehicleTrailerRenderer::new);
-        registerVehicleRenderer(ModEntities.STORAGE_TRAILER.get(), StorageTrailerRenderer::new);
-        registerVehicleRenderer(ModEntities.FLUID_TRAILER.get(), FluidTrailerRenderer::new);
-        registerVehicleRenderer(ModEntities.SEEDER.get(), SeederTrailerRenderer::new);
-        registerVehicleRenderer(ModEntities.FERTILIZER.get(), FertilizerTrailerRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.VEHICLE_TRAILER.get(), VehicleTrailerRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.STORAGE_TRAILER.get(), StorageTrailerRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.FLUID_TRAILER.get(), FluidTrailerRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.SEEDER.get(), SeederTrailerRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.FERTILIZER.get(), FertilizerTrailerRenderer::new);
 
         /* Register Mod Exclusive Vehicles */
         if(ModList.get().isLoaded("cfm"))
         {
-            registerVehicleRenderer(ModEntities.SOFA.get(), SofaCarRenderer::new);
-            registerVehicleRenderer(ModEntities.BATH.get(), BathModel::new);
-            registerVehicleRenderer(ModEntities.SOFACOPTER.get(), SofaHelicopterRenderer::new);
+            VehicleUtil.registerVehicleRenderer(ModEntities.SOFA.get(), SofaCarRenderer::new);
+            VehicleUtil.registerVehicleRenderer(ModEntities.BATH.get(), BathModel::new);
+            VehicleUtil.registerVehicleRenderer(ModEntities.SOFACOPTER.get(), SofaHelicopterRenderer::new);
         }
 
         RenderingRegistry.registerEntityRenderingHandler(ModEntities.JACK.get(), com.mrcrayfish.vehicle.client.render.JackRenderer::new);
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
-    {
-        VehicleProperties properties = VehicleProperties.getProperties(type);
-        AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
-        RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
-        VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);
-
-        EntityRayTracer.IRayTraceTransforms transforms = renderer.getRayTraceTransforms();
-        if(transforms != null)
-        {
-            EntityRayTracer.instance().registerTransforms(type, transforms);
-        }
     }
 
     private static void setupTileEntityRenderers()

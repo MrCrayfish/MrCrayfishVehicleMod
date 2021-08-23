@@ -1,20 +1,29 @@
 package com.mrcrayfish.vehicle.util;
 
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
+import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
+import com.mrcrayfish.vehicle.client.render.EntityVehicleRenderer;
+import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -49,5 +58,19 @@ public class VehicleUtil
     private static <T extends Entity> EntityType<T> buildVehicleType(ResourceLocation id, BiFunction<EntityType<T>, World, T> function, float width, float height)
     {
         return EntityType.Builder.of(function::apply, EntityClassification.MISC).sized(width, height).setTrackingRange(256).setUpdateInterval(1).fireImmune().setShouldReceiveVelocityUpdates(true).build(id.toString());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static <T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
+    {
+        VehicleProperties properties = VehicleProperties.getProperties(type);
+        AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
+        RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
+        VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);
+        EntityRayTracer.IRayTraceTransforms transforms = renderer.getRayTraceTransforms();
+        if(transforms != null)
+        {
+            EntityRayTracer.instance().registerTransforms(type, transforms);
+        }
     }
 }
