@@ -150,13 +150,13 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             float enginePower = this.getProperties().getEnginePower();
             float maxRotorSpeed = this.getMaxRotorSpeed();
             float angleOfAttack = (MathHelper.clamp(this.xRot, -90F, 90F) + 90F) / 180F;
+            enginePower *= angleOfAttack;
 
             // Makes the plane slow down the closer it points up
             if(this.xRot < 0)
             {
                 float upFactor = 1.0F - (float) Math.pow(1.0F - angleOfAttack / 0.5F, 7);
                 this.propellerSpeed *= MathHelper.clamp(upFactor, 0.98F, 1.0F);
-                enginePower *= angleOfAttack;
             }
 
             if(this.propellerSpeed <= maxRotorSpeed)
