@@ -33,6 +33,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue shouldFollowRoll;
         public final ForgeConfigSpec.BooleanValue customFollowStrength;
         public final ForgeConfigSpec.DoubleValue followStrength;
+        public final ForgeConfigSpec.DoubleValue cameraDistanceMultiplier;
 
         Client(ForgeConfigSpec.Builder builder)
         {
@@ -65,6 +66,7 @@ public class Config
                 this.shouldFollowRoll = builder.comment("Makes the camera follow vehicle rotations on the z-axis (roll). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_roll").define("shouldFollowRoll", true);
                 this.customFollowStrength = builder.comment("If enabled, allows you to override the strength of the follow camera instead of it being based on the vehicle. Use followStrength to customise the strength.").define("customFollowStrength", false);
                 this.followStrength = builder.comment("Allows you to change the follow strength of the camera. This only has an effect if customFollowStrength is enabled!").defineInRange("followStrength", 0.15, 0.0, 1.0);
+                this.cameraDistanceMultiplier = builder.comment("The value to multiply the distance of the camera when in third person").defineInRange("cameraDistanceMultiplier", 1.0, 0.0, 2.0);
                 builder.pop();
 
                 builder.pop();

@@ -185,6 +185,7 @@ public class CameraHelper
             }
 
             double distance = front ? 4.0 : this.properties.getCamera().getDistance();
+            distance *= Config.CLIENT.cameraDistanceMultiplier.get();
             MOVE_METHOD.invoke(info, -(double) GET_MAX_MOVE_METHOD.invoke(info, distance), 0, 0);
         }
         catch(InvocationTargetException | IllegalAccessException e)
