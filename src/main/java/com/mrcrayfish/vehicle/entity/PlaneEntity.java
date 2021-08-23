@@ -92,10 +92,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
         float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToFly(), 1.0F);
         float elevatorForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
-        this.elevatorAngle += ((this.getMaxElevatorAngle() * this.getLift()) - this.elevatorAngle) * 0.15F;
+        this.elevatorAngle += ((this.getMaxElevatorAngle() * this.getLift()) - this.elevatorAngle) * this.getElevatorStrength();
 
         // Adds delta pitch and yaw to the plane based on the flaps and roll of the plane
-        Vector3f elevatorDirection = new Vector3f(Vector3d.directionFromRotation(this.elevatorAngle * elevatorForce * 0.05F, 0));
+        Vector3f elevatorDirection = new Vector3f(Vector3d.directionFromRotation(this.elevatorAngle * elevatorForce * this.getElevatorSensitivity(), 0));
         elevatorDirection.transform(Vector3f.ZP.rotationDegrees(this.planeRoll.get(this)));
         this.xRot += CommonUtils.pitch(elevatorDirection);
         this.yRot -= CommonUtils.yaw(elevatorDirection);
@@ -361,6 +361,16 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         return 45F;
     }
 
+    public float getElevatorStrength()
+    {
+        return 0.15F;
+    }
+
+    public float getElevatorSensitivity()
+    {
+        return 0.1F;
+    }
+
     public float getMaxTurnAngle()
     {
         return 2F;
@@ -386,7 +396,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         float normal = MathHelper.clamp(this.propellerSpeed / 200F, 0.0F, 1.25F) * 0.6F;
         normal += (this.motion.scale(20).length() / this.getProperties().getEnginePower()) * 0.4F;
-        //this.enginePitch = MathHelper.clamp(this.propellerSpeed / 200F, 0.0F, 1.5F);
         this.enginePitch = this.getMinEnginePitch() + (this.getMaxEnginePitch() - this.getMinEnginePitch()) * MathHelper.clamp(normal, 0.0F, 1.25F);
         this.engineVolume = this.getControllingPassenger() != null && this.isEnginePowered() ? 0.2F + 0.8F * (this.propellerSpeed / 80F) : 0.001F;
     }
