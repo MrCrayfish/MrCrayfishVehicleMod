@@ -65,7 +65,7 @@ public class CameraHelper
 
     private float getStrength(PointOfView pov)
     {
-        return pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED ? this.properties.getCamera().getStrength() : 1.0F;
+        return pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED && Config.CLIENT.useVehicleAsFocusPoint.get() ? this.properties.getCamera().getStrength() : 1.0F;
     }
 
     public float getPitch(float partialTicks)
