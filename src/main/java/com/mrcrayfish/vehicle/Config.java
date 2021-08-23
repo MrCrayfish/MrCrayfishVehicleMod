@@ -72,10 +72,6 @@ public class Config
                 builder.pop();
 
                 builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
-
-                builder.pop();
-
-                builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
                 this.useTriggers = builder.comment("If true, will use the triggers on controller to control the acceleration of the vehicle.").translation(Reference.MOD_ID + ".config.client.controller.use_triggers").define("useTriggers", false);
                 builder.pop();
             }
