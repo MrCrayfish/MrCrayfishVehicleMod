@@ -10,7 +10,7 @@ import java.util.Optional;
  */
 public interface IEngineTier
 {
-    default float getAccelerationMultiplier()
+    default float getPowerMultiplier()
     {
         return 1.0F;
     }

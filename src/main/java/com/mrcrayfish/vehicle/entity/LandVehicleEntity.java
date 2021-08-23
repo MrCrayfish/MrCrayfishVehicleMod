@@ -106,7 +106,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             this.motion = this.motion.add(nextMovement);
             this.yRot -= steeringAngle * speed;
             float forwardForce = MathHelper.clamp(this.getThrottle(), -1.0F, 1.0F);
-            forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
+            forwardForce *= this.getEngineTier().map(IEngineTier::getPowerMultiplier).orElse(1.0F);
             this.chargingAmount = MathHelper.clamp(this.chargingAmount + forwardForce * 0.025F, 0.0F, 1.0F);
         }
         else
@@ -123,7 +123,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         // Updates the acceleration, applies drag and friction, then adds to the velocity
         float throttle = this.isHandbraking() || this.charging ? 0F : this.getThrottle();
         float forwardForce = enginePower * MathHelper.clamp(throttle, -1.0F, 1.0F);
-        forwardForce *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
+        forwardForce *= this.getEngineTier().map(IEngineTier::getPowerMultiplier).orElse(1.0F);
         if(this.isBoosting()) forwardForce += forwardForce * this.getSpeedMultiplier();
         if(this.getThrottle() < 0) forwardForce *= 0.4F;
         Vector3d acceleration = forward.scale(forwardForce).scale(0.05);

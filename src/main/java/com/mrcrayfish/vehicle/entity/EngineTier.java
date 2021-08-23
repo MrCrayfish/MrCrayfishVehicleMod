@@ -20,7 +20,7 @@ public enum EngineTier implements IEngineTier
     }
 
     @Override
-    public float getAccelerationMultiplier()
+    public float getPowerMultiplier()
     {
         return this.accelerationMultiplier;
     }
