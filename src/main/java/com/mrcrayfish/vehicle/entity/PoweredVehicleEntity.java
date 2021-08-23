@@ -7,7 +7,6 @@ import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.common.ItemLookup;
-import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
@@ -114,8 +113,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected float fuelConsumption = 0.25F;
     protected boolean charging;
     protected float chargingAmount;
-    protected float enginePitch;
-    protected float engineVolume;
     protected double[] wheelPositions;
     private boolean fueling;
     protected Vector3d motion = Vector3d.ZERO;
@@ -125,6 +122,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected float renderWheelAngle;
     @OnlyIn(Dist.CLIENT)
     protected float prevRenderWheelAngle;
+    @OnlyIn(Dist.CLIENT)
+    protected float enginePitch;
+    @OnlyIn(Dist.CLIENT)
+    protected float engineVolume;
 
     protected PoweredVehicleEntity(EntityType<?> entityType, World worldIn)
     {
@@ -410,7 +411,10 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.setCurrentFuel(currentFuel);
         }*/
 
-        this.updateEngineSound();
+        if(this.level.isClientSide())
+        {
+            this.onPostClientUpdate();
+        }
     }
 
     protected void onVehicleTick() {}
@@ -505,6 +509,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.setSteeringAngle(steeringAngle);
             PacketHandler.instance.sendToServer(new MessageTurnAngle(steeringAngle));
         }
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void onPostClientUpdate()
+    {
+        this.updateWheelRotations();
+        this.updateEngineSound();
     }
 
     @Override
@@ -1082,6 +1093,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    protected void updateWheelRotations() {}
+
     //TODO reimplement
     protected boolean canAccelerateInAir()
     {
@@ -1148,6 +1162,17 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.wheelPositions;
     }
 
+    public float getBoostStrength()
+    {
+        return this.boostStrength;
+    }
+
+    public void setSpeedMultiplier(float speedMultiplier)
+    {
+        this.speedMultiplier = speedMultiplier;
+    }
+
+    @OnlyIn(Dist.CLIENT)
     protected void updateEngineSound()
     {
         if(this.charging)
@@ -1160,24 +1185,16 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.engineVolume = this.getControllingPassenger() != null && this.isEnginePowered() ? 1.0F : 0.001F;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public float getEnginePitch()
     {
         return this.enginePitch;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public float getEngineVolume()
     {
         return this.engineVolume;
-    }
-
-    public float getBoostStrength()
-    {
-        return this.boostStrength;
-    }
-
-    public void setSpeedMultiplier(float speedMultiplier)
-    {
-        this.speedMultiplier = speedMultiplier;
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -21,7 +21,8 @@ import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.util.Constants;
+
+import java.util.Optional;
 
 /**
  * Author: MrCrayfish
@@ -47,6 +48,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected float propellerRotation;
     @OnlyIn(Dist.CLIENT)
     protected float prevPropellerRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float wheelRotationSpeed;
+    @OnlyIn(Dist.CLIENT)
+    protected float wheelRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevWheelRotation;
 
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
@@ -392,6 +399,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     protected void updateEngineSound()
     {
         float normal = MathHelper.clamp(this.propellerSpeed / 200F, 0.0F, 1.25F) * 0.6F;
@@ -404,5 +412,39 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public float getBladeRotation(float partialTicks)
     {
         return this.prevPropellerRotation + (this.propellerRotation - this.prevPropellerRotation) * partialTicks;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    protected void updateWheelRotations()
+    {
+        VehicleProperties properties = this.getProperties();
+        double wheelCircumference = 24.0;
+        double vehicleScale = properties.getBodyPosition().getScale();
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        double direction = forward.dot(this.motion.normalize());
+
+        if(this.isOnGround())
+        {
+            this.wheelRotationSpeed = (float) (this.motion.length() * direction * 20);
+        }
+        else
+        {
+            this.wheelRotationSpeed *= 0.9;
+        }
+
+        Optional<Wheel> wheel = properties.getWheels().stream().findAny();
+        if(wheel.isPresent())
+        {
+            double frontWheelCircumference = wheelCircumference * vehicleScale * wheel.get().getScaleY();
+            double rotation = (this.wheelRotationSpeed * 16) / frontWheelCircumference;
+            this.wheelRotation -= rotation * 20F;
+        }
+    }
+
+    @Override
+    public float getWheelRotation(Wheel wheel, float partialTicks)
+    {
+        return MathHelper.lerp(partialTicks, this.prevWheelRotation, this.wheelRotation);
     }
 }

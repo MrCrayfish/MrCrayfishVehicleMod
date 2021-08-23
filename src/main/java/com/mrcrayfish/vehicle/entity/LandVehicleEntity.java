@@ -21,9 +21,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     protected float traction;
 
     @OnlyIn(Dist.CLIENT)
+    protected float frontWheelRotationSpeed;
+    @OnlyIn(Dist.CLIENT)
     protected float frontWheelRotation;
     @OnlyIn(Dist.CLIENT)
     protected float prevFrontWheelRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float rearWheelRotationSpeed;
     @OnlyIn(Dist.CLIENT)
     protected float rearWheelRotation;
     @OnlyIn(Dist.CLIENT)
@@ -39,18 +43,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public void onUpdateVehicle()
-    {
-        super.onUpdateVehicle();
-        this.updateWheels();
-    }
-
-    @Override
     public void onVehicleTick()
     {
-        this.prevFrontWheelRotation = this.frontWheelRotation;
-        this.prevRearWheelRotation = this.rearWheelRotation;
-
         boolean oldCharging = this.charging;
         this.charging = this.canCharge() && this.velocity.length() < 5.0 && this.isHandbraking() && this.getThrottle() > 0;
         if(oldCharging && !this.charging && this.chargingAmount > 0F)
@@ -64,6 +58,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         super.onClientUpdate();
 
+        this.prevFrontWheelRotation = this.frontWheelRotation;
         this.prevWheelieCount = this.wheelieCount;
 
         if(this.isBoosting() && this.getControllingPassenger() != null)
@@ -197,40 +192,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
     }
 
-    public void updateWheels()
-    {
-        VehicleProperties properties = this.getProperties();
-        double wheelCircumference = 24.0;
-        double vehicleScale = properties.getBodyPosition().getScale();
-        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        double direction = forward.dot(this.velocity.normalize());
-        double rotationSpeed = this.velocity.length() * direction;
-
-        Wheel frontWheel = properties.getFirstFrontWheel();
-        if(frontWheel != null && !this.charging)
-        {
-            double frontWheelCircumference = wheelCircumference * vehicleScale * frontWheel.getScaleY();
-            double rotation = (rotationSpeed * 16) / frontWheelCircumference;
-            this.frontWheelRotation -= rotation * 20F;
-        }
-
-        if(this.isHandbraking() && !this.charging)
-            return;
-
-        if(this.charging)
-        {
-            rotationSpeed = properties.getEnginePower() * this.chargingAmount;
-        }
-
-        Wheel rearWheel = properties.getFirstRearWheel();
-        if(rearWheel != null)
-        {
-            double rearWheelCircumference = wheelCircumference * vehicleScale * rearWheel.getScaleY();
-            double rotation = (rotationSpeed * 16) / rearWheelCircumference;
-            this.rearWheelRotation -= rotation * 20F;
-        }
-    }
-
     @Override
     public void createParticles()
     {
@@ -284,7 +245,14 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         return this.velocity;
     }
 
+    public boolean isSliding()
+    {
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
+    }
+
     @Override
+    @OnlyIn(Dist.CLIENT)
     protected void updateEngineSound()
     {
         super.updateEngineSound();
@@ -295,21 +263,57 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
     }
 
-    public boolean isSliding()
-    {
-        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
-    }
-
     @Override
     @OnlyIn(Dist.CLIENT)
-    public float getWheelRotation(Wheel wheel, float partialTicks)
+    protected void updateWheelRotations()
     {
-        if(wheel.getPosition() == Wheel.Position.REAR)
+        VehicleProperties properties = this.getProperties();
+        double wheelCircumference = 24.0;
+        double vehicleScale = properties.getBodyPosition().getScale();
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        double direction = forward.dot(this.motion.normalize());
+
+        if(this.isOnGround() || this.getThrottle() != 0)
         {
-            return this.getRearWheelRotation(partialTicks);
+            this.rearWheelRotationSpeed = (float) (this.motion.length() * direction * 20);
         }
-        return this.getFrontWheelRotation(partialTicks);
+        else
+        {
+            this.rearWheelRotationSpeed *= 0.9;
+        }
+
+        if(this.isOnGround())
+        {
+            this.frontWheelRotationSpeed = (float) (this.motion.length() * direction * 20);
+        }
+        else
+        {
+            this.frontWheelRotationSpeed *= 0.9;
+        }
+
+        Wheel frontWheel = properties.getFirstFrontWheel();
+        if(frontWheel != null && !this.charging)
+        {
+            double frontWheelCircumference = wheelCircumference * vehicleScale * frontWheel.getScaleY();
+            double rotation = (this.frontWheelRotationSpeed * 16) / frontWheelCircumference;
+            this.frontWheelRotation -= rotation * 20F;
+        }
+
+        if(this.isHandbraking() && !this.charging)
+            return;
+
+        if(this.charging)
+        {
+            this.rearWheelRotationSpeed = properties.getEnginePower() * this.chargingAmount;
+        }
+
+        Wheel rearWheel = properties.getFirstRearWheel();
+        if(rearWheel != null)
+        {
+            double rearWheelCircumference = wheelCircumference * vehicleScale * rearWheel.getScaleY();
+            double rotation = (this.rearWheelRotationSpeed * 16) / rearWheelCircumference;
+            this.rearWheelRotation -= rotation * 20F;
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -322,6 +326,17 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     public float getRearWheelRotation(float partialTicks)
     {
         return this.prevRearWheelRotation + (this.rearWheelRotation - this.prevRearWheelRotation) * partialTicks;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelRotation(Wheel wheel, float partialTicks)
+    {
+        if(wheel.getPosition() == Wheel.Position.REAR)
+        {
+            return this.getRearWheelRotation(partialTicks);
+        }
+        return this.getFrontWheelRotation(partialTicks);
     }
 
     @OnlyIn(Dist.CLIENT)
