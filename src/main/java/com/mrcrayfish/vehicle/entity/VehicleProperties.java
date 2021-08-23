@@ -70,7 +70,7 @@ public class VehicleProperties
     private IEngineType engineType = EngineType.NONE;
     private float enginePower = 0F;
     private boolean colored;
-    private CameraProperties camera;
+    private CameraProperties camera = CameraProperties.DEFAULT_CAMERA;
 
     public VehicleProperties setAxleOffset(float axleOffset)
     {
@@ -474,7 +474,7 @@ public class VehicleProperties
                 ID_TO_PROPERTIES.put(entityType.getRegistryName(), loadProperties(entityType.getRegistryName()));
             }
         }
-        else if(event.getKey() == GLFW.GLFW_KEY_LEFT_BRACKET)
+        else if(event.getKey() == GLFW.GLFW_KEY_LEFT_BRACKET && (event.getModifiers() >> GLFW.GLFW_MOD_CONTROL) == 0)
         {
             generateFiles();
         }
@@ -665,18 +665,27 @@ public class VehicleProperties
 
         private void readCamera(VehicleProperties properties, JsonObject object)
         {
-            JsonObject cameraObject = JSONUtils.getAsJsonObject(object, "camera", new JsonObject());
-            CameraProperties.Type type = CameraProperties.Type.fromId(JSONUtils.getAsString(cameraObject, "type", "locked"));
-            float strength = JSONUtils.getAsFloat(cameraObject, "strength", 1.0F);
-            Vector3d position = this.getAsVector3d(cameraObject, "position", Vector3d.ZERO);
-            Vector3d rotation = this.getAsVector3d(cameraObject, "rotation", Vector3d.ZERO);
-            double distance = JSONUtils.getAsFloat(cameraObject, "distance", 4.0F);
-            properties.setCamera(new CameraProperties(type, strength, position, rotation, distance));
+            if(object.has("camera"))
+            {
+                JsonObject cameraObject = JSONUtils.getAsJsonObject(object, "camera", new JsonObject());
+                CameraProperties.Type type = CameraProperties.Type.fromId(JSONUtils.getAsString(cameraObject, "type", "locked"));
+                float strength = JSONUtils.getAsFloat(cameraObject, "strength", 1.0F);
+                Vector3d position = this.getAsVector3d(cameraObject, "position", Vector3d.ZERO);
+                Vector3d rotation = this.getAsVector3d(cameraObject, "rotation", Vector3d.ZERO);
+                double distance = JSONUtils.getAsFloat(cameraObject, "distance", 4.0F);
+                properties.setCamera(new CameraProperties(type, strength, position, rotation, distance));
+            }
+            else
+            {
+                properties.setCamera(CameraProperties.DEFAULT_CAMERA);
+            }
         }
 
         private void writeCamera(VehicleProperties properties, JsonObject object)
         {
             CameraProperties camera = properties.getCamera();
+            if(camera == CameraProperties.DEFAULT_CAMERA)
+                return;
             JsonObject cameraObject = new JsonObject();
             if(camera.getType() != CameraProperties.Type.LOCKED) cameraObject.addProperty("type", camera.getType().getId());
             if(camera.getStrength() != 1.0F) cameraObject.addProperty("strength", camera.getStrength());
@@ -686,7 +695,7 @@ public class VehicleProperties
             object.add("camera", cameraObject);
         }
 
-        private <T extends Enum> T getAsEnum(JsonObject object, String memberName, Class<T> enumClass, T defaultValue)
+        private <T extends Enum<?>> T getAsEnum(JsonObject object, String memberName, Class<T> enumClass, T defaultValue)
         {
             if(object.has(memberName))
             {

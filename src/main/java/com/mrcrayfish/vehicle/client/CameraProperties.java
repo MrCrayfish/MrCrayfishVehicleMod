@@ -9,6 +9,8 @@ import java.util.stream.Stream;
  */
 public class CameraProperties
 {
+    public static final CameraProperties DEFAULT_CAMERA = new CameraProperties(Type.SMOOTH, 0.15F, new Vector3d(0, 1, 0), new Vector3d(10, 0, 0), 5.0);
+
     private final Type type;
     private final float strength;
     private final Vector3d position;
