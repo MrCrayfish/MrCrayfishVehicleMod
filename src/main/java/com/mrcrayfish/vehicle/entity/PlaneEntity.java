@@ -73,8 +73,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         // Updates the planes roll based on input from the player
         if(this.getControllingPassenger() != null && this.isFlying())
         {
-            float newPlaneRoll = this.planeRoll.get(this) - this.getSideInput() * 5F;
-            newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
+            float oldPlaneRoll = this.planeRoll.get(this);
+            float newPlaneRoll = oldPlaneRoll - this.getSideInput() * 5F;
+            //newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
             this.planeRoll.set(this, newPlaneRoll);
         }
         else
@@ -107,6 +108,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             turnStrength *= Math.signum(planeRoll);
             this.yRot += turnStrength * forwardFactor * this.getMaxTurnAngle();
         }
+
+        // Makes the plane fall the closer it is to being sideways
+        float fallAmount = 1.0F - MathHelper.degreesDifferenceAbs(absPlaneRoll, 90F) / 90F;
+        this.xRot += Math.abs(fallAmount);
 
         // Updates the accelerations of the plane with drag and friction applied
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
