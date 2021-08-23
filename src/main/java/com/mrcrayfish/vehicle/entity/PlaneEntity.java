@@ -69,7 +69,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         this.motion = Vector3d.ZERO;
 
-        this.updateRotorSpeed();
+        this.updatePropellerSpeed();
 
         // Updates the planes roll based on input from the player
         this.flapAngle += (this.getSideInput() * this.getMaxFlapAngle() - this.flapAngle) * this.getFlapStrength();
@@ -146,7 +146,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.motion = this.motion.add(this.velocity);
     }
 
-    protected void updateRotorSpeed()
+    protected void updatePropellerSpeed()
     {
         if(this.canDrive() && this.getControllingPassenger() != null)
         {
@@ -160,6 +160,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             {
                 float upFactor = 1.0F - (float) Math.pow(1.0F - angleOfAttack / 0.5F, 7);
                 this.propellerSpeed *= MathHelper.clamp(upFactor, 0.98F, 1.0F);
+            }
+            else
+            {
+                float downFactor = (float) Math.pow(angleOfAttack, 3);
+                maxRotorSpeed += maxRotorSpeed * 0.4F * downFactor;
             }
 
             if(this.propellerSpeed <= maxRotorSpeed)
