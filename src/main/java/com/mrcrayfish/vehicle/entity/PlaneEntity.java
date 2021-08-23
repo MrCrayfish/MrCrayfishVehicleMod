@@ -172,7 +172,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             }
             else
             {
-                float brakeForce = this.getThrottle() < 0 ? 0.99F : 0.998F;
+                float brakeForce = this.getThrottle() < 0 ? 0.99F : 0.999F;
                 this.propellerSpeed *= brakeForce;
             }
         }
