@@ -245,6 +245,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         super.addAdditionalSaveData(compound);
         compound.putFloat("Lift", this.getLift());
         compound.putFloat("PlaneRoll", this.planeRoll.getLocalValue());
+        compound.putFloat("PropellerSpeed", this.propellerSpeed);
+        compound.putFloat("FlapAngle", this.flapAngle);
+        compound.putFloat("ElevatorAngle", this.elevatorAngle);
         CompoundNBT velocity = new CompoundNBT();
         velocity.putDouble("X", this.velocity.x);
         velocity.putDouble("Y", this.velocity.y);
@@ -256,11 +259,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected void readAdditionalSaveData(CompoundNBT compound)
     {
         super.readAdditionalSaveData(compound);
-        if(compound.contains("Lift", Constants.NBT.TAG_FLOAT))
-        {
-            this.setLift(compound.getFloat("Lift"));
-        }
+        this.setLift(compound.getFloat("Lift"));
         this.planeRoll.set(this, compound.getFloat("PlaneRoll"));
+        this.propellerSpeed = compound.getFloat("PropellerSpeed");
+        this.flapAngle = compound.getFloat("FlapAngle");
+        this.elevatorAngle = compound.getFloat("ElevatorAngle");
         CompoundNBT velocity = compound.getCompound("Velocity");
         this.velocity = new Vector3d(velocity.getDouble("X"), velocity.getDouble("Y"), velocity.getDouble("Z"));
     }
@@ -272,6 +275,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         buffer.writeDouble(this.velocity.x);
         buffer.writeDouble(this.velocity.y);
         buffer.writeDouble(this.velocity.z);
+        buffer.writeFloat(this.planeRoll.get(this));
+        buffer.writeFloat(this.propellerSpeed);
+        buffer.writeFloat(this.flapAngle);
+        buffer.writeFloat(this.elevatorAngle);
     }
 
     @Override
@@ -279,6 +286,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         super.readSpawnData(buffer);
         this.velocity = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+        this.planeRoll.set(this, buffer.readFloat());
+        this.propellerSpeed = buffer.readFloat();
+        this.flapAngle = buffer.readFloat();
+        this.elevatorAngle = buffer.readFloat();
     }
 
     public float getLift()
