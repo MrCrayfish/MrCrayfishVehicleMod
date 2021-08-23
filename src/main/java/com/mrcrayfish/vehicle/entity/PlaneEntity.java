@@ -86,7 +86,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         }
 
         VehicleProperties properties = this.getProperties();
-        float enginePower = properties.getEnginePower();
+        float enginePower = properties.getEnginePower() * this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
         float friction = this.isFlying() ? 0F : SurfaceHelper.getFriction(this);
         float drag = 0.001F;
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
@@ -151,6 +151,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         if(this.canDrive() && this.getControllingPassenger() != null)
         {
             float enginePower = this.getProperties().getEnginePower();
+            enginePower *= this.getEngineTier().map(IEngineTier::getAccelerationMultiplier).orElse(1.0F);
             float maxRotorSpeed = this.getMaxRotorSpeed();
             float angleOfAttack = (MathHelper.clamp(this.xRot, -90F, 90F) + 90F) / 180F;
             enginePower *= angleOfAttack;
