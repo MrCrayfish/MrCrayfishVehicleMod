@@ -40,6 +40,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     protected Vector3d velocity = Vector3d.ZERO;
     protected float propellerSpeed;
+    protected float flapAngle;
     protected float elevatorAngle;
 
     @OnlyIn(Dist.CLIENT)
@@ -71,11 +72,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.updateRotorSpeed();
 
         // Updates the planes roll based on input from the player
+        this.flapAngle += (this.getSideInput() * this.getMaxFlapAngle() - this.flapAngle) * this.getFlapStrength();
         if(this.getControllingPassenger() != null && this.isFlying())
         {
             float oldPlaneRoll = this.planeRoll.get(this);
-            float newPlaneRoll = oldPlaneRoll - this.getSideInput() * 5F;
-            //newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
+            float newPlaneRoll = oldPlaneRoll - this.flapAngle * this.getFlapSensitivity();
+            newPlaneRoll = MathHelper.wrapDegrees(newPlaneRoll);
             this.planeRoll.set(this, newPlaneRoll);
         }
         else
@@ -106,7 +108,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             float forwardFactor = 1.0F - MathHelper.degreesDifferenceAbs(this.xRot, 0F) / 90F;
             float turnStrength = 1.0F - (MathHelper.degreesDifferenceAbs(absPlaneRoll, 45F) / 45F);
             turnStrength *= Math.signum(planeRoll);
-            this.yRot += turnStrength * forwardFactor * this.getMaxTurnAngle();
+            float turnAmount = turnStrength * forwardFactor * this.getMaxTurnAngle();
+            this.yRot += turnAmount;
         }
 
         // Makes the plane fall the closer it is to being sideways
@@ -316,6 +319,24 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected float getMinimumSpeedToFly()
     {
         return 16F;
+    }
+
+    public float getMaxFlapAngle()
+    {
+        return 35F;
+    }
+
+    /**
+     * This determines how quickly it approaches the max flap angle.
+     */
+    public float getFlapStrength()
+    {
+        return 0.25F;
+    }
+
+    public float getFlapSensitivity()
+    {
+        return 0.1F;
     }
 
     public float getMaxElevatorAngle()
