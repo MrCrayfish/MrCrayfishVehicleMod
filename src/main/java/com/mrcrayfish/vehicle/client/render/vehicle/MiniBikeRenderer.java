@@ -7,7 +7,6 @@ import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -24,7 +23,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -133,7 +131,7 @@ public class MiniBikeRenderer extends AbstractMotorcycleRenderer<MiniBikeEntity>
         {
             EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BIKE_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BIKE_HANDLES, parts, transforms);
-            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.getProperties(ModEntities.MINI_BIKE.get()).getEnginePosition(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
+            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.MINI_BIKE.get()).getEnginePosition(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
         };
     }
 }

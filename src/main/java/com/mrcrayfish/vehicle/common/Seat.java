@@ -11,18 +11,18 @@ public class Seat
     private boolean driver;
     private float yawOffset;
 
-    public Seat(Vector3d position)
+    protected Seat(Vector3d position)
     {
         this(position, false);
     }
 
-    public Seat(Vector3d position, float yawOffset)
+    protected Seat(Vector3d position, float yawOffset)
     {
         this(position, false);
         this.yawOffset = yawOffset;
     }
 
-    public Seat(Vector3d position, boolean driver)
+    protected Seat(Vector3d position, boolean driver)
     {
         this.position = position;
         this.driver = driver;
@@ -48,5 +48,25 @@ public class Seat
     public float getYawOffset()
     {
         return yawOffset;
+    }
+
+    public static Seat of(double x, double y, double z)
+    {
+        return new Seat(new Vector3d(x, y, z));
+    }
+
+    public static Seat of(double x, double y, double z, boolean driver)
+    {
+        return new Seat(new Vector3d(x, y, z), driver);
+    }
+
+    public static Seat of(double x, double y, double z, float yawOffset)
+    {
+        return new Seat(new Vector3d(x, y, z), yawOffset);
+    }
+
+    public static Seat of(double x, double y, double z, boolean driver, float yawOffset)
+    {
+        return new Seat(new Vector3d(x, y, z), driver, yawOffset);
     }
 }

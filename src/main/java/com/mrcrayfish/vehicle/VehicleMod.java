@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.datagen.LootTableGen;
 import com.mrcrayfish.vehicle.datagen.RecipeGen;
+import com.mrcrayfish.vehicle.datagen.VehiclePropertiesGen;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -82,5 +83,6 @@ public class VehicleMod
         DataGenerator generator = event.getGenerator();
         generator.addProvider(new LootTableGen(generator));
         generator.addProvider(new RecipeGen(generator));
+        generator.addProvider(new VehiclePropertiesGen(generator));
     }
 }

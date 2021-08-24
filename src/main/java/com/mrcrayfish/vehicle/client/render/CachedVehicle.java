@@ -15,7 +15,7 @@ public class CachedVehicle
     public CachedVehicle(EntityType<?> type)
     {
         this.type = type;
-        this.properties = VehicleProperties.getProperties(type);
+        this.properties = VehicleProperties.get(type);
         this.renderer = VehicleRenderRegistry.getRendererFunction(type);
     }
 

@@ -31,7 +31,6 @@ import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
-import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;
@@ -169,7 +168,7 @@ public class ClientHandler
     @SuppressWarnings("unchecked")
     private static <T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
     {
-        VehicleProperties properties = VehicleProperties.getProperties(type);
+        VehicleProperties properties = VehicleProperties.get(type);
         AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
         RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
         VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);

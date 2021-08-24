@@ -17,7 +17,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
@@ -210,7 +209,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         }
         else if(compound.getBoolean("Creative"))
         {
-            VehicleProperties properties = VehicleProperties.getProperties(this.entityId);
+            VehicleProperties properties = VehicleProperties.get(this.entityId);
             EngineItem engineItem = VehicleRegistry.getEngineItem(properties.getEngineType(), EngineTier.IRON);
             this.engineStack = engineItem != null ? new ItemStack(engineItem) : ItemStack.EMPTY;
         }

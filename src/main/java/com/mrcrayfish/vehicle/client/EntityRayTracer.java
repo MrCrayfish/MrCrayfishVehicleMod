@@ -183,7 +183,7 @@ public class EntityRayTracer
      */
     private static void createBodyTransforms(List<MatrixTransformation> transforms, EntityType<? extends VehicleEntity> entityType)
     {
-        VehicleProperties properties = VehicleProperties.getProperties(entityType);
+        VehicleProperties properties = VehicleProperties.get(entityType);
         PartPosition bodyPosition = properties.getBodyPosition();
         transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) bodyPosition.getRotX()));
         transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) bodyPosition.getRotY()));
@@ -277,7 +277,7 @@ public class EntityRayTracer
      */
     public static void createFuelPartTransforms(EntityType<? extends VehicleEntity> entityType, ISpecialModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
-        PartPosition fuelPortPosition = VehicleProperties.getProperties(entityType).getFuelPortPosition();
+        PartPosition fuelPortPosition = VehicleProperties.get(entityType).getFuelPortPosition();
         createPartTransforms(model, fuelPortPosition, parts, transformsGlobal, RayTraceFunction.FUNCTION_FUELING);
     }
 
@@ -307,7 +307,7 @@ public class EntityRayTracer
 
     public static void createKeyPortTransforms(EntityType<? extends VehicleEntity> entityType, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
-        PartPosition keyPortPosition = VehicleProperties.getProperties(entityType).getKeyPortPosition();
+        PartPosition keyPortPosition = VehicleProperties.get(entityType).getKeyPortPosition();
         createPartTransforms(SpecialModels.KEY_HOLE, keyPortPosition, parts, transformsGlobal);
     }
 
