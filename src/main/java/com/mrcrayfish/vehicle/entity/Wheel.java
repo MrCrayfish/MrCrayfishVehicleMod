@@ -14,15 +14,14 @@ public class Wheel
     private float width;
     private Side side;
     private Position position;
-
     private boolean autoScale;
     private boolean particles;
     private boolean render;
 
-    public Wheel(Side side, Position position, float width, float scaleX, float scaleY, float scaleZ, float offsetX, float offsetY, float offsetZ, boolean autoScale, boolean particles, boolean render)
+    protected Wheel(Vector3d offset, Vector3d scale, float width, Side side, Position position, boolean autoScale, boolean particles, boolean render)
     {
-        this.offset = new Vector3d(offsetX, offsetY, offsetZ);
-        this.scale = new Vector3d(scaleX, scaleY, scaleZ);
+        this.offset = offset;
+        this.scale = scale;
         this.width = width;
         this.side = side;
         this.position = position;
@@ -137,6 +136,11 @@ public class Wheel
         return render;
     }
 
+    public Wheel copy()
+    {
+        return new Wheel(this.offset, this.scale, this.width, this.side, this.position, this.autoScale, this.particles, this.render);
+    }
+
     public enum Side
     {
         LEFT(-1), RIGHT(1), NONE(0);
@@ -157,5 +161,81 @@ public class Wheel
     public enum Position
     {
         FRONT, REAR, NONE
+    }
+
+    public static Builder builder()
+    {
+        return new Builder();
+    }
+
+    public static class Builder
+    {
+        private Vector3d offset = Vector3d.ZERO;
+        private Vector3d scale = Vector3d.ZERO;
+        private float width = 4.0F;
+        private Side side = Side.NONE;
+        private Position position = Position.NONE;
+        private boolean autoScale = false;
+        private boolean particles = false;
+        private boolean render = true;
+
+        public Builder setOffset(double x, double y, double z)
+        {
+            this.offset = new Vector3d(x, y, z);
+            return this;
+        }
+
+        public Builder setScale(double scale)
+        {
+            this.scale = new Vector3d(scale, scale, scale);
+            return this;
+        }
+
+        public Builder setScale(double scaleX, double scaleY, double scaleZ)
+        {
+            this.scale = new Vector3d(scaleX, scaleY, scaleZ);
+            return this;
+        }
+
+        public Builder setWidth(float width)
+        {
+            this.width = width;
+            return this;
+        }
+
+        public Builder setSide(Side side)
+        {
+            this.side = side;
+            return this;
+        }
+
+        public Builder setPosition(Position position)
+        {
+            this.position = position;
+            return this;
+        }
+
+        public Builder setAutoScale(boolean autoScale)
+        {
+            this.autoScale = autoScale;
+            return this;
+        }
+
+        public Builder setParticles(boolean particles)
+        {
+            this.particles = particles;
+            return this;
+        }
+
+        public Builder setRender(boolean render)
+        {
+            this.render = render;
+            return this;
+        }
+
+        public Wheel build()
+        {
+            return new Wheel(this.offset, this.scale, this.width, this.side, this.position, this.autoScale, this.particles, this.render);
+        }
     }
 }

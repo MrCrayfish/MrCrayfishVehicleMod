@@ -1,8 +1,10 @@
 {
     "general": {
+        "enginePower": 15.0,
         "canBeColored": true
     },
     "display": {
+        "held": [ 0.0, 3.0, 0.0 ],
         "gui": {
             "translate": [ 0.0, 0.0, -0.15 ],
             "scale": 1.35
@@ -12,7 +14,6 @@
         "body": {
             "translate": [ 0.0, 0.325, 0.0 ],
             "scale": 1.1
-        },
-        "towBar": [ 0.0, 0.0, -12.0 ]
+        }
     }
 }

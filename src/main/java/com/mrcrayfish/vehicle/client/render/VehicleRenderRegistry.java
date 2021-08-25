@@ -26,7 +26,7 @@ public final class VehicleRenderRegistry
     @SuppressWarnings("unchecked")
     public static AbstractVehicleRenderer<?> getRendererFunction(EntityType<?> type)
     {
-        VehicleProperties properties = VehicleProperties.getProperties(type);
+        VehicleProperties properties = VehicleProperties.get(type);
         Function<VehicleProperties, AbstractVehicleRenderer<?>> rendererFunction = (Function<VehicleProperties, AbstractVehicleRenderer<?>>) RENDERER_FUNCTION_MAP.get(type);
         return rendererFunction != null ? rendererFunction.apply(properties) : null;
     }

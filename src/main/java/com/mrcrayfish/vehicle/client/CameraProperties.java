@@ -70,7 +70,59 @@ public class CameraProperties
 
         public static Type fromId(String id)
         {
-            return Stream.of(values()).filter(type -> type.id.equals(id)).findFirst().orElse(LOCKED);
+            return Stream.of(values())
+                    .filter(type -> type.id.equals(id))
+                    .findFirst()
+                    .orElse(LOCKED);
+        }
+    }
+
+    public static Builder builder()
+    {
+        return new Builder();
+    }
+
+    public static class Builder
+    {
+        private Type type;
+        private float strength;
+        private Vector3d position;
+        private Vector3d rotation;
+        private double distance;
+
+        public Builder setType(Type type)
+        {
+            this.type = type;
+            return this;
+        }
+
+        public Builder setStrength(float strength)
+        {
+            this.strength = strength;
+            return this;
+        }
+
+        public Builder setPosition(Vector3d position)
+        {
+            this.position = position;
+            return this;
+        }
+
+        public Builder setRotation(Vector3d rotation)
+        {
+            this.rotation = rotation;
+            return this;
+        }
+
+        public Builder setDistance(double distance)
+        {
+            this.distance = distance;
+            return this;
+        }
+
+        public CameraProperties build()
+        {
+            return new CameraProperties(this.type, this.strength, this.position, this.rotation, this.distance);
         }
     }
 }

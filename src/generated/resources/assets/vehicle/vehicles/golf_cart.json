@@ -75,12 +75,5 @@
             "position": [ -5.5, 5.0, -15.0 ],
             "yawOffset": 180.0
         }
-    ],
-    "camera": {
-        "type": "smooth",
-        "strength": 0.15,
-        "position": [ 0.0, 2.0, 0.0 ],
-        "rotation": [ 10.0, 0.0, 0.0 ],
-        "distance": 6.0
-    }
+    ]
 }

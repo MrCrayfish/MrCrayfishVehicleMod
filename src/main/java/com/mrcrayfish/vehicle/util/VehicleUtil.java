@@ -63,7 +63,7 @@ public class VehicleUtil
     @OnlyIn(Dist.CLIENT)
     public static <T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
     {
-        VehicleProperties properties = VehicleProperties.getProperties(type);
+        VehicleProperties properties = VehicleProperties.get(type);
         AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
         RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
         VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);

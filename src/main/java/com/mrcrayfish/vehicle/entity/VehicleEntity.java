@@ -705,7 +705,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     public final VehicleProperties getProperties()
     {
-        return VehicleProperties.getProperties(this.getType());
+        return VehicleProperties.get(this.getType());
     }
 
     @Override

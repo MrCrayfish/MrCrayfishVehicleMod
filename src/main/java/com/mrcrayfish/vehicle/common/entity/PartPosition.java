@@ -18,15 +18,15 @@ public class PartPosition
         this.scale = scale;
     }
 
-    public PartPosition(double x, double y, double z, double scale)
+    public PartPosition(double offsetX, double offsetY, double offsetZ, double scale)
     {
-        this.translate = new Vector3d(x, y, z);
+        this.translate = new Vector3d(offsetX, offsetY, offsetZ);
         this.scale = scale;
     }
 
-    public PartPosition(double x, double y, double z, double rotX, double rotY, double rotZ, double scale)
+    public PartPosition(double offsetX, double offsetY, double offsetZ, double rotX, double rotY, double rotZ, double scale)
     {
-        this.translate = new Vector3d(x, y, z);
+        this.translate = new Vector3d(offsetX, offsetY, offsetZ);
         this.rotation = new Vector3d(rotX, rotY, rotZ);
         this.scale = scale;
     }
@@ -81,5 +81,20 @@ public class PartPosition
         this.translate = new Vector3d(x, y, z);
         this.rotation = new Vector3d(rotX, rotY, rotZ);
         this.scale = scale;
+    }
+
+    public static PartPosition create(double scale)
+    {
+        return new PartPosition(scale);
+    }
+
+    public static PartPosition create(double x, double y, double z, double scale)
+    {
+        return new PartPosition(x, y, z, scale);
+    }
+
+    public static PartPosition create(double x, double y, double z, double rx, double ry, double rz, double scale)
+    {
+        return new PartPosition(x, y, z, rx, ry, rz, scale);
     }
 }

@@ -209,7 +209,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         }
         else if(compound.getBoolean("Creative"))
         {
-            VehicleProperties properties = VehicleProperties.getProperties(this.entityId);
+            VehicleProperties properties = VehicleProperties.get(this.entityId);
             EngineItem engineItem = VehicleRegistry.getEngineItem(properties.getEngineType(), EngineTier.IRON);
             this.engineStack = engineItem != null ? new ItemStack(engineItem) : ItemStack.EMPTY;
         }
