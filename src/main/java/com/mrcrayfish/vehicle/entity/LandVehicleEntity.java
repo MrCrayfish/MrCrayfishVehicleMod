@@ -110,8 +110,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
 
         float friction = SurfaceHelper.getFriction(this);
-        float enginePower = properties.getEnginePower();
-        float brakePower = -1F;
+        float enginePower = this.isOnGround() ? properties.getEnginePower() : 0F;
+        float brakePower = this.isOnGround() ? -1F : 0F;
         float drag = 0.001F;
 
         // TODO a lot of this can be broken up into methods
