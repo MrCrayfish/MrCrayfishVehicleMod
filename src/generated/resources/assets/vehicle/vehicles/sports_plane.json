@@ -1,1 +1,59 @@
-{"general":{"engineType":"vehicle:large_motor","enginePower":24.0,"canBeColored":true},"axles":{"lengthToFront":14.0,"lengthToRear":-14.0},"display":{"gui":{"scale":0.85}},"position":{"body":{"translate":[0.0,0.0,-0.5],"scale":1.8},"fuelPort":{"translate":[-4.35,4.0,-6.0],"rotation":[0.0,-112.5,0.0],"scale":0.25},"keyPort":{"translate":[0.0,3.75,12.5],"rotation":[-67.5,0.0,0.0],"scale":0.5}},"wheels":[{"position":"front","offset":[0.0,-4.5,20.25],"scale":[0.45,0.45,0.45]},{"offset":[6.5,-4.5,1.5],"scale":[0.45,0.45,0.45]},{"offset":[-6.5,-4.5,1.5],"scale":[0.45,0.45,0.45]}],"seats":[{"driver":true}],"camera":{"type":"smooth","strength":0.25,"position":[0.0,2.0,0.0],"rotation":[10.0,0.0,0.0],"distance":6.0}}
+{
+    "general": {
+        "engineType": "vehicle:large_motor",
+        "enginePower": 24.0,
+        "canBeColored": true
+    },
+    "axles": {
+        "lengthToFront": 16.0,
+        "lengthToRear": -2.5
+    },
+    "display": {
+        "gui": {
+            "scale": 0.85
+        }
+    },
+    "position": {
+        "body": {
+            "translate": [ 0.0, 0.0, -0.5 ],
+            "scale": 1.8
+        },
+        "fuelPort": {
+            "translate": [ -4.35, 4.0, -6.0 ],
+            "rotation": [ 0.0, -112.5, 0.0 ],
+            "scale": 0.25
+        },
+        "keyPort": {
+            "translate": [ 0.0, 3.75, 12.5 ],
+            "rotation": [ -67.5, 0.0, 0.0 ],
+            "scale": 0.5
+        }
+    },
+    "wheels": [
+        {
+            "position": "front",
+            "offset": [ 0.0, -4.5, 20.25 ],
+            "scale": [ 0.45, 0.45, 0.45 ]
+        },
+        {
+            "offset": [ 6.5, -4.5, 1.5 ],
+            "scale": [ 0.45, 0.45, 0.45 ]
+        },
+        {
+            "offset": [ -6.5, -4.5, 1.5 ],
+            "scale": [ 0.45, 0.45, 0.45 ]
+        }
+    ],
+    "seats": [
+        {
+            "driver": true
+        }
+    ],
+    "camera": {
+        "type": "smooth",
+        "strength": 0.25,
+        "position": [ 0.0, 2.0, 0.0 ],
+        "rotation": [ 10.0, 0.0, 0.0 ],
+        "distance": 6.0
+    }
+}
