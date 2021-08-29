@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
+import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
@@ -136,6 +137,42 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         // Add gravity but is countered based on the lift force
         this.velocity = this.velocity.add(0, -0.08 * (1.0F - liftForce), 0);
 
+        if(this.isOnGround())
+        {
+            if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
+                return;
+
+            //Gets the new position of the wheels
+            PartPosition bodyPosition = properties.getBodyPosition();
+            double wheelBase = properties.getFrontAxelVec().distanceTo(properties.getRearAxelVec()) * 0.0625 * bodyPosition.getScale();
+            Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
+            Vector3d rearWheel = this.position().add(forward.scale(-wheelBase / 2.0));
+            frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())));
+            rearWheel = rearWheel.add(this.velocity);
+
+            //Updates the delta movement based on the new wheel positions
+            Vector3d nextPosition = frontWheel.add(rearWheel).scale(0.5);
+            Vector3d nextMovement = nextPosition.subtract(this.position());
+            this.motion = this.motion.add(nextMovement);
+
+            // Updates the velocity based on the heading
+            Vector3d heading = frontWheel.subtract(rearWheel).normalize();
+            if(heading.dot(this.velocity.normalize()) > 0)
+            {
+                this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.multiply(1, 0, 1).length()), 0.5F);
+            }
+
+            // Calculates the difference from the old yaw to the new yaw
+            float vehicleDeltaYaw = CommonUtils.yaw(forward) - CommonUtils.yaw(heading);
+            vehicleDeltaYaw = MathHelper.wrapDegrees(vehicleDeltaYaw);
+            this.yRot -= vehicleDeltaYaw;
+        }
+        else
+        {
+            // Finally adds velocity to the motion
+            this.motion = this.motion.add(this.velocity);
+        }
+
         // Updates the pitch and yaw based on the velocity
         if(this.isFlying())
         {
@@ -150,9 +187,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             this.xRot = 0F;
         }
-
-        // Finally adds velocity to the motion
-        this.motion = this.motion.add(this.velocity);
     }
 
     protected void updatePropellerSpeed()
@@ -187,7 +221,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             }
             else
             {
-                float brakeForce = this.getThrottle() < 0 ? 0.1F : 0.25F;
+                float brakeForce = this.getThrottle() < 0 ? 0.1F : 0.05F;
                 this.propellerSpeed = MathHelper.lerp(brakeForce, this.propellerSpeed, maxRotorSpeed);
             }
         }
