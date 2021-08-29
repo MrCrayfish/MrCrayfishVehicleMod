@@ -519,8 +519,12 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setDisplayPosition(PartPosition.create(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.85))
                 .addSeat(Seat.of(0.0, 6.0, 0.0, true))
                 .setEngineType(EngineType.LARGE_MOTOR)
-                .setEnginePower(25F)
-                .setColored(true));
+                .setEnginePower(24F)
+                .setColored(true)
+                .setCamera(CameraProperties.builder()
+                        .setStrength(0.25F)
+                        .setPosition(0, 2, 0)
+                        .setDistance(6.0)));
 
         this.add(ModEntities.TRACTOR.get(), VehicleProperties.builder()
                 .setAxleOffset(-3.0F)

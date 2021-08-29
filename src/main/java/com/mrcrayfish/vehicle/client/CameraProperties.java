@@ -84,11 +84,11 @@ public class CameraProperties
 
     public static class Builder
     {
-        private Type type;
-        private float strength;
-        private Vector3d position;
-        private Vector3d rotation;
-        private double distance;
+        private Type type = Type.SMOOTH;
+        private float strength = 0.15F;
+        private Vector3d position = new Vector3d(0, 1, 0);
+        private Vector3d rotation = new Vector3d(10, 0, 0);
+        private double distance = 5.0;
 
         public Builder setType(Type type)
         {
@@ -108,9 +108,21 @@ public class CameraProperties
             return this;
         }
 
+        public Builder setPosition(double x, double y, double z)
+        {
+            this.position = new Vector3d(x, y, z);
+            return this;
+        }
+
         public Builder setRotation(Vector3d rotation)
         {
             this.rotation = rotation;
+            return this;
+        }
+
+        public Builder setRotation(double x, double y, double z)
+        {
+            this.rotation = new Vector3d(x, y, z);
             return this;
         }
 
