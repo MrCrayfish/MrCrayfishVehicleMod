@@ -218,7 +218,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             }
             return 180F;
         }
-        return 80F;
+        return 70F;
     }
 
     @Override
