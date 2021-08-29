@@ -364,7 +364,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     public float getFlapSensitivity()
     {
-        return 0.1F;
+        return 0.05F;
     }
 
     public float getMaxElevatorAngle()
@@ -379,12 +379,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     public float getElevatorSensitivity()
     {
-        return 0.1F;
+        return 0.025F;
     }
 
     public float getMaxTurnAngle()
     {
-        return 2F;
+        return 0.5F;
     }
 
     /*
