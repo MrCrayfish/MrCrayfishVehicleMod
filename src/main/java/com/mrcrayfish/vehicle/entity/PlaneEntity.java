@@ -95,9 +95,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         VehicleProperties properties = this.getProperties();
         float enginePower = properties.getEnginePower() * this.getEngineTier().map(IEngineTier::getPowerMultiplier).orElse(1.0F);
         float friction = this.isFlying() ? 0F : SurfaceHelper.getFriction(this);
-        float drag = 0.001F;
+        float drag = 0.75F;
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
         float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToFly(), 1.0F);
+        if(this.getControllingPassenger() == null) liftForce /= 2;
         float elevatorForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
         this.elevatorAngle += ((this.getMaxElevatorAngle() * this.getLift()) - this.elevatorAngle) * this.getElevatorStrength();
 
@@ -126,23 +127,24 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         // Updates the accelerations of the plane with drag and friction applied
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         Vector3d acceleration = forward.scale(forwardForce).scale(enginePower).scale(0.05);
-        Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag).scale(0.05);
+        Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag);
         acceleration = acceleration.add(dragForce);
-        Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
+        Vector3d frictionForce = this.velocity.scale(-friction);
         acceleration = acceleration.add(frictionForce);
+        this.velocity = this.velocity.add(acceleration);
 
         // Add gravity but is countered based on the lift force
-        this.velocity = this.velocity.add(0, -0.05 * (1.0F - liftForce), 0);
-
-        // Update the velocity based on the heading and acceleration
-        this.velocity = CommonUtils.lerp(this.velocity, acceleration, 0.5F);
+        this.velocity = this.velocity.add(0, -0.08 * (1.0F - liftForce), 0);
 
         // Updates the pitch and yaw based on the velocity
-        if(this.isFlying() && this.velocity.multiply(1, 0, 1).length() > 0.001)
+        if(this.isFlying())
         {
             this.xRot = -CommonUtils.pitch(this.velocity);
             this.xRot = MathHelper.clamp(this.xRot, -89F, 89F);
-            this.yRot = CommonUtils.yaw(this.velocity);
+            if(this.velocity.multiply(1, 0, 1).length() > 0.001)
+            {
+                this.yRot = CommonUtils.yaw(this.velocity);
+            }
         }
         else
         {
@@ -166,8 +168,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             // Makes the plane slow down the closer it points up
             if(this.xRot < 0)
             {
-                float upFactor = 1.0F - (float) Math.pow(1.0F - angleOfAttack / 0.5F, 7);
-                this.propellerSpeed *= MathHelper.clamp(upFactor, 0.98F, 1.0F);
+                float upFactor = 1.0F - (float) Math.pow(1.0F - angleOfAttack / 0.5F, 5);
+                maxRotorSpeed = MathHelper.clamp(maxRotorSpeed * upFactor, Math.min(maxRotorSpeed, 90F), Math.max(maxRotorSpeed, 90F));
             }
             else
             {
@@ -185,13 +187,14 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             }
             else
             {
-                float brakeForce = this.getThrottle() < 0 ? 0.99F : 0.999F;
-                this.propellerSpeed *= brakeForce;
+                float brakeForce = this.getThrottle() < 0 ? 0.1F : 0.25F;
+                this.propellerSpeed = MathHelper.lerp(brakeForce, this.propellerSpeed, maxRotorSpeed);
             }
         }
         else
         {
-            this.propellerSpeed *= 0.95F;
+            float maxRotorSpeed = this.isFlying() ? 90F : 0F;
+            this.propellerSpeed = MathHelper.lerp(0.05F, this.propellerSpeed, maxRotorSpeed);
         }
 
         if(this.level.isClientSide())
@@ -211,7 +214,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             if(this.getThrottle() < 0)
             {
-                return 160F;
+                return 140F;
             }
             return 180F;
         }

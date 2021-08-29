@@ -1,7 +1,7 @@
 {
     "general": {
         "engineType": "vehicle:large_motor",
-        "enginePower": 25.0,
+        "enginePower": 24.0,
         "canBeColored": true
     },
     "display": {
@@ -30,5 +30,12 @@
             "position": [ 0.0, 6.0, 0.0 ],
             "driver": true
         }
-    ]
+    ],
+    "camera": {
+        "type": "smooth",
+        "strength": 0.25,
+        "position": [ 0.0, 2.0, 0.0 ],
+        "rotation": [ 10.0, 0.0, 0.0 ],
+        "distance": 6.0
+    }
 }
