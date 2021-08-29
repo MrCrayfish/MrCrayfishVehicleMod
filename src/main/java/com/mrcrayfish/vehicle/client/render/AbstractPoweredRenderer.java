@@ -144,7 +144,10 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         {
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(-vehicle.getWheelRotation(wheel, partialTicks)));
         }
-        matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
+        if(wheel.getSide() != Wheel.Side.NONE)
+        {
+            matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
+        }
         matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
         if(wheel.getSide() == Wheel.Side.RIGHT)
         {

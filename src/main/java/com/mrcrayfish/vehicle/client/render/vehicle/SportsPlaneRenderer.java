@@ -10,15 +10,9 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
-import com.mrcrayfish.vehicle.init.ModItems;
-import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -64,9 +58,9 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
         {
             matrixStack.translate(0, -0.5, 0);
             matrixStack.scale(0.85F, 0.85F, 0.85F);
-            this.renderWheel(vehicle, matrixStack, renderTypeBuffer, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks, light);
-            this.renderWheel(vehicle, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks, light);
-            this.renderWheel(vehicle, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks, light);
+            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks, light);
+            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks, light);
+            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks, light);
         }
         matrixStack.popPose();
 
@@ -83,29 +77,12 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
         matrixStack.popPose();
     }
 
-    private void renderWheel(@Nullable SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks, int light)
+    private void renderPlaneLeg(@Nullable SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks, int light)
     {
         matrixStack.pushPose();
         {
             matrixStack.translate(offsetX, offsetY, offsetZ);
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer, light);
-
-            matrixStack.pushPose();
-            {
-                matrixStack.translate(0, -2.25F / 16F, 0);
-                matrixStack.pushPose();
-                {
-                    if(vehicle != null && vehicle.isMoving())
-                    {
-                        float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
-                        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
-                    }
-                    matrixStack.scale(0.5F, 0.5F, 0.5F);
-                    RenderUtil.renderColoredModel(RenderUtil.getModel(new ItemStack(ModItems.STANDARD_WHEEL.get())), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
-                }
-                matrixStack.popPose();
-            }
-            matrixStack.popPose();
 
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(legRotation));
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);

@@ -143,7 +143,7 @@ public class Wheel
 
     public enum Side
     {
-        LEFT(-1), RIGHT(1), NONE(0);
+        LEFT(-1), RIGHT(1), NONE(1);
 
         int offset;
 

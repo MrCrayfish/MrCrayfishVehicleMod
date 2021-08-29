@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.datagen;
 
+import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
@@ -513,13 +514,23 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setColored(true));
 
         this.add(ModEntities.SPORTS_PLANE.get(), VehicleProperties.builder()
-                .setBodyPosition(PartPosition.create(0.0, 11.0 * 0.0625, -8.0 * 0.0625, 0.0, 0.0, 0.0, 1.8))
+                .setBodyPosition(PartPosition.create(0.0, 0.0, -8.0 * 0.0625, 0.0, 0.0, 0.0, 1.8))
                 .setFuelPortPosition(PartPosition.create(-4.35, 4.0, -6.0, 0.0, -112.5, 0.0, 0.25))
                 .setKeyPortPosition(PartPosition.create(0.0, 3.75, 12.5, -67.5, 0.0, 0.0, 0.5))
                 .setDisplayPosition(PartPosition.create(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.85))
-                .addSeat(Seat.of(0.0, 6.0, 0.0, true))
+                .addSeat(Seat.of(0.0, 0.0, 0.0, true))
                 .setEngineType(EngineType.LARGE_MOTOR)
                 .setEnginePower(24F)
+                .addWheel(Wheel.builder()
+                        .setOffset(0.0, -4.5, 20.25)
+                        .setScale(0.45))
+                .addWheel(Wheel.builder()
+                        .setOffset(6.5, -4.5, 1.5)
+                        .setScale(0.45))
+                .addWheel(Wheel.builder()
+                        .setSide(Wheel.Side.RIGHT)
+                        .setOffset(-6.5, -4.5, 1.5)
+                        .setScale(0.45))
                 .setColored(true)
                 .setCamera(CameraProperties.builder()
                         .setStrength(0.25F)

@@ -129,7 +129,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         Vector3d acceleration = forward.scale(forwardForce).scale(enginePower).scale(0.05);
         Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag);
         acceleration = acceleration.add(dragForce);
-        Vector3d frictionForce = this.velocity.scale(-friction);
+        Vector3d frictionForce = this.velocity.scale(-friction).scale(0.05);
         acceleration = acceleration.add(frictionForce);
         this.velocity = this.velocity.add(acceleration);
 
