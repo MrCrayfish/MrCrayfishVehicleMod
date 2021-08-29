@@ -23,13 +23,11 @@
     "wheels": [
         {
             "side": "left",
-            "position": "none",
             "offset": [ 5.75, 0.0, -10.5 ],
             "scale": [ 0.47, 0.47, 0.47 ]
         },
         {
             "side": "right",
-            "position": "none",
             "offset": [ 5.75, 0.0, -10.5 ],
             "scale": [ 0.47, 0.47, 0.47 ]
         },

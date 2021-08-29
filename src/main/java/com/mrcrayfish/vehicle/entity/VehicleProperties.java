@@ -415,8 +415,8 @@ public class VehicleProperties
                 for(Wheel wheel : properties.getWheels())
                 {
                     JsonObject wheelObject = new JsonObject();
-                    wheelObject.addProperty("side", wheel.getSide().name().toLowerCase(Locale.ENGLISH));
-                    wheelObject.addProperty("position", wheel.getPosition().name().toLowerCase(Locale.ENGLISH));
+                    if(wheel.getSide() != Wheel.Side.NONE) wheelObject.addProperty("side", wheel.getSide().name().toLowerCase(Locale.ENGLISH));
+                    if(wheel.getPosition() != Wheel.Position.NONE) wheelObject.addProperty("position", wheel.getPosition().name().toLowerCase(Locale.ENGLISH));
                     this.addVector3dProperty(wheelObject, "offset", wheel.getOffset());
                     this.addVector3dProperty(wheelObject, "scale", wheel.getScale());
                     if(wheel.isAutoScale()) wheelObject.addProperty("autoScale", wheel.isAutoScale());

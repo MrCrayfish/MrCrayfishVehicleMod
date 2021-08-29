@@ -28,7 +28,6 @@
     },
     "wheels": [
         {
-            "side": "none",
             "position": "front",
             "offset": [ 2.4, 0.0, 5.3 ],
             "scale": [ 0.625, 0.625, 0.625 ],

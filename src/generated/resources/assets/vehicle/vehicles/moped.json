@@ -30,7 +30,6 @@
     },
     "wheels": [
         {
-            "side": "none",
             "position": "front",
             "offset": [ 0.0, 0.0, 14.088 ],
             "scale": [ 0.6, 0.8, 0.8 ],
@@ -38,7 +37,6 @@
             "render": false
         },
         {
-            "side": "none",
             "position": "rear",
             "offset": [ 0.0, 0.0, -6.7 ],
             "particles": true
