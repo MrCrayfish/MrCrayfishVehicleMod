@@ -417,6 +417,16 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @Override
+    protected void updateTurning()
+    {
+        if(this.level.isClientSide())
+        {
+            float targetAngle = this.isOnGround() ? this.getSteeringAngle() : 0F;
+            this.renderWheelAngle = this.renderWheelAngle + (targetAngle - this.renderWheelAngle) * 0.3F;
+        }
+    }
+
+    @Override
     @OnlyIn(Dist.CLIENT)
     protected void updateWheelRotations()
     {

@@ -27,6 +27,7 @@
     },
     "wheels": [
         {
+            "position": "front",
             "offset": [ 0.0, -4.5, 20.25 ],
             "scale": [ 0.45, 0.45, 0.45 ]
         },
@@ -41,7 +42,6 @@
     ],
     "seats": [
         {
-            "position": [ 0.0, 0.0, 0.0 ],
             "driver": true
         }
     ],

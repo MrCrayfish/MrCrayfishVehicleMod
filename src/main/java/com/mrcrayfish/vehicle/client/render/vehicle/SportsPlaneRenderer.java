@@ -58,9 +58,9 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
         {
             matrixStack.translate(0, -0.5, 0);
             matrixStack.scale(0.85F, 0.85F, 0.85F);
-            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks, light);
-            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks, light);
-            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks, light);
+            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, 0F, -3 * 0.0625F, 24 * 0.0625F, 0F, partialTicks, light, true);
+            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, 7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, 100F, partialTicks, light, false);
+            this.renderPlaneLeg(vehicle, matrixStack, renderTypeBuffer, -7.5F * 0.0625F, -3 * 0.0625F, 2 * 0.0625F, -100F, partialTicks, light, false);
         }
         matrixStack.popPose();
 
@@ -77,12 +77,20 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
         matrixStack.popPose();
     }
 
-    private void renderPlaneLeg(@Nullable SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks, int light)
+    private void renderPlaneLeg(@Nullable SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float offsetX, float offsetY, float offsetZ, float legRotation, float partialTicks, int light, boolean rotate)
     {
         matrixStack.pushPose();
         {
             matrixStack.translate(offsetX, offsetY, offsetZ);
+
+            matrixStack.pushPose();
+            if(rotate)
+            {
+                float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
+                matrixStack.mulPose(Vector3f.YP.rotationDegrees(wheelAngle));
+            }
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_WHEEL_COVER.getModel(), matrixStack, renderTypeBuffer, light);
+            matrixStack.popPose();
 
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(legRotation));
             this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_LEG.getModel(), matrixStack, renderTypeBuffer, light);
