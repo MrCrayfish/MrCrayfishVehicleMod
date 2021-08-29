@@ -59,6 +59,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         super.onClientUpdate();
 
         this.prevFrontWheelRotation = this.frontWheelRotation;
+        this.prevRearWheelRotation = this.rearWheelRotation;
         this.prevWheelieCount = this.wheelieCount;
 
         if(this.isBoosting() && this.getControllingPassenger() != null)
