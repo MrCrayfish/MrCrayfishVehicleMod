@@ -226,6 +226,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         super.onClientUpdate();
 
+        this.prevWheelRotation = this.wheelRotation;
         this.prevPropellerRotation = this.propellerRotation;
 
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
@@ -423,11 +424,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         double wheelCircumference = 24.0;
         double vehicleScale = properties.getBodyPosition().getScale();
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        double direction = forward.dot(this.motion.normalize());
+        Vector3d horizontalMotion = this.motion.multiply(1, 0, 1);
+        double direction = forward.dot(horizontalMotion.normalize());
 
         if(this.isOnGround())
         {
-            this.wheelRotationSpeed = (float) (this.motion.length() * direction * 20);
+            this.wheelRotationSpeed = (float) (horizontalMotion.length() * direction * 20);
         }
         else
         {
