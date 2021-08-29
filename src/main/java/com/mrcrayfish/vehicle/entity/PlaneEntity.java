@@ -137,12 +137,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         // Add gravity but is countered based on the lift force
         this.velocity = this.velocity.add(0, -0.08 * (1.0F - liftForce), 0);
 
-        if(this.isOnGround())
+        // Different physics when on the ground
+        if(this.isOnGround() && properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
         {
-            if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
-                return;
-
-            //Gets the new position of the wheels
+            // Gets the new position of the wheels
             PartPosition bodyPosition = properties.getBodyPosition();
             double wheelBase = properties.getFrontAxelVec().distanceTo(properties.getRearAxelVec()) * 0.0625 * bodyPosition.getScale();
             Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
@@ -150,12 +148,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())));
             rearWheel = rearWheel.add(this.velocity);
 
-            //Updates the delta movement based on the new wheel positions
+            // Updates the delta movement based on the new wheel positions
             Vector3d nextPosition = frontWheel.add(rearWheel).scale(0.5);
             Vector3d nextMovement = nextPosition.subtract(this.position());
             this.motion = this.motion.add(nextMovement);
 
-            // Updates the velocity based on the heading
+            // Updates the velocity based on the new heading
             Vector3d heading = frontWheel.subtract(rearWheel).normalize();
             if(heading.dot(this.velocity.normalize()) > 0)
             {
