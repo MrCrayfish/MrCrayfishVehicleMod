@@ -9,7 +9,7 @@ import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.model.PlayerModel;

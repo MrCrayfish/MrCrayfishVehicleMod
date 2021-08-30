@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.entity;
+package com.mrcrayfish.vehicle.entity.properties;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -9,6 +9,10 @@ import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.IEngineType;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.Wheel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.JSONUtils;

@@ -6,7 +6,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractBoatRenderer;
 import com.mrcrayfish.vehicle.common.Seat;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.AluminumBoatEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

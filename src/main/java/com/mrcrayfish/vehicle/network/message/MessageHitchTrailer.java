@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.SoundCategory;

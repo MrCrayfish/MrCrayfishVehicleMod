@@ -9,9 +9,6 @@ import com.mrcrayfish.vehicle.client.handler.OverlayHandler;
 import com.mrcrayfish.vehicle.client.handler.PlayerModelHandler;
 import com.mrcrayfish.vehicle.client.handler.SprayCanHandler;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
-import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
-import com.mrcrayfish.vehicle.client.render.EntityVehicleRenderer;
-import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidPumpRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
@@ -24,14 +21,12 @@ import com.mrcrayfish.vehicle.client.screen.FluidExtractorScreen;
 import com.mrcrayfish.vehicle.client.screen.FluidMixerScreen;
 import com.mrcrayfish.vehicle.client.screen.StorageScreen;
 import com.mrcrayfish.vehicle.client.screen.WorkstationScreen;
-import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModFluids;
 import com.mrcrayfish.vehicle.init.ModTileEntities;
-import com.mrcrayfish.vehicle.item.KeyItem;
 import com.mrcrayfish.vehicle.item.PartItem;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.util.FluidUtils;
@@ -41,7 +36,6 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.entity.EntityType;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.Unit;
@@ -51,8 +45,6 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.registries.ForgeRegistries;
-
-import java.util.function.Function;
 
 /**
  * Author: MrCrayfish

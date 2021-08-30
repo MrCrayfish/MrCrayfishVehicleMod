@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.render;
 
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.entity.EntityType;
 
 import javax.annotation.Nullable;

@@ -17,7 +17,7 @@ import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.item.WheelItem;

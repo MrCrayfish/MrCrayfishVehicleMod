@@ -7,7 +7,7 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractPlaneRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.Minecraft;

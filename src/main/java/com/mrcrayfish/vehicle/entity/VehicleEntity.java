@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;

@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

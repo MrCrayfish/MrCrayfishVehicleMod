@@ -9,9 +9,9 @@ import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
 import com.mrcrayfish.vehicle.datagen.LootTableGen;
 import com.mrcrayfish.vehicle.datagen.RecipeGen;
 import com.mrcrayfish.vehicle.datagen.VehiclePropertiesGen;
-import com.mrcrayfish.vehicle.entity.ExtendedProperties;
-import com.mrcrayfish.vehicle.entity.PlaneEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.ExtendedProperties;
+import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.*;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import net.minecraft.data.DataGenerator;
@@ -19,7 +19,6 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CompoundIngredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -66,7 +65,7 @@ public class VehicleMod
         eventBus.addListener(this::onGatherData);
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
         MinecraftForge.EVENT_BUS.register(FluidNetworkHandler.instance());
-        ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "plane"), PlaneEntity.Properties.class, PlaneEntity.Properties::new);
+        ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "plane"), PlaneProperties.class, PlaneProperties::new);
     }
 
     private void onCommonSetup(FMLCommonSetupEvent event)

@@ -4,8 +4,8 @@ import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
-import com.mrcrayfish.vehicle.entity.PlaneEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.data.DataGenerator;
@@ -539,7 +539,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setStrength(0.25F)
                         .setPosition(0, 2, 0)
                         .setDistance(7.0))
-                .addExtended(PlaneEntity.Properties.builder()
+                .addExtended(PlaneProperties.builder()
                         .setFlapSensitivity(0.1F)
                         .setElevatorSensitivity(0.075F)
                         .setMaxTurnAngle(2F)

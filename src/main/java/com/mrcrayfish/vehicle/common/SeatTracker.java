@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.HashBiMap;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageSyncPlayerSeat;
 import net.minecraft.entity.player.PlayerEntity;

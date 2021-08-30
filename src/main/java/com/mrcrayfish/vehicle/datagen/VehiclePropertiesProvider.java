@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.datagen;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;

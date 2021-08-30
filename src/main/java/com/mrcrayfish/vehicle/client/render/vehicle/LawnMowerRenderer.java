@@ -5,7 +5,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.LawnMowerEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;

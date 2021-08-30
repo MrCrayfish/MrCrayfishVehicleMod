@@ -91,7 +91,8 @@ public class Wheel
         return position;
     }
 
-    void updateScale(double scale)
+    //TODO move this outside
+    public void updateScale(double scale)
     {
         double xScale = this.scale.x != 0.0 ? this.scale.x : scale;
         double yScale = this.scale.y != 0.0 ? this.scale.y : scale;

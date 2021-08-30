@@ -6,7 +6,7 @@ import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.GoKartEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;

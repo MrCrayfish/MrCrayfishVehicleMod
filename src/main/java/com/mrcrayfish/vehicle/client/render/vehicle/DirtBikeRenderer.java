@@ -6,7 +6,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.entity.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.vehicle.DirtBikeEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
