@@ -98,7 +98,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         float friction = this.isFlying() ? 0F : SurfaceHelper.getFriction(this);
         float drag = 0.75F;
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
-        float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToFly(), 1.0F);
+        float liftForce = Math.min((float) (this.velocity.length() * 20) / this.getMinimumSpeedToTakeOff(), 1.0F);
         if(this.getControllingPassenger() == null) liftForce /= 2;
         float elevatorForce = this.isFlying() ? liftForce : (float) Math.floor(liftForce);
         this.elevatorAngle += ((this.getMaxElevatorAngle() * this.getLift()) - this.elevatorAngle) * this.getElevatorStrength();
@@ -375,44 +375,66 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         return !this.onGround;
     }
 
-    protected float getMinimumSpeedToFly()
+    /**
+     * The minimum speed the plane requires to take off on a flat ground. It's still possible for
+     * planes to glide at lower speeds.
+     */
+    protected float getMinimumSpeedToTakeOff()
     {
         return 16F;
     }
 
+    /**
+     * The maximum absolute angle the flaps on the plane can pitch up or down.
+     */
     public float getMaxFlapAngle()
     {
         return 35F;
     }
 
     /**
-     * This determines how quickly it approaches the max flap angle.
+     * This determines how quickly the flaps approach it's maximum flap angle.
      */
     public float getFlapStrength()
     {
         return 0.25F;
     }
 
+    /**
+     * This controls how much of the max flap angle is applied each tick to the planes motion
+     */
     public float getFlapSensitivity()
     {
         return 0.05F;
     }
 
+    /**
+     * The maximum absolute angle the elevator on the plane can pitch up or down.
+     */
     public float getMaxElevatorAngle()
     {
         return 45F;
     }
 
+    /**
+     * This determines how quickly the elevator approaches it's maximum elevator angle.
+     */
     public float getElevatorStrength()
     {
         return 0.15F;
     }
 
+    /**
+     * This controls how much of the max elevator angle is applied each tick to the planes motion
+     */
     public float getElevatorSensitivity()
     {
         return 0.025F;
     }
 
+    /**
+     * Determines the maximum delta angle the plane should turn when it's rolled at the optimum angle
+     */
     public float getMaxTurnAngle()
     {
         return 0.5F;
