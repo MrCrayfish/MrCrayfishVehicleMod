@@ -39,22 +39,4 @@ public class SportsPlaneEntity extends PlaneEntity
     {
         return false;
     }
-
-    @Override
-    public float getFlapSensitivity()
-    {
-        return 0.1F;
-    }
-
-    @Override
-    public float getElevatorSensitivity()
-    {
-        return 0.075F;
-    }
-
-    @Override
-    public float getMaxTurnAngle()
-    {
-        return 2F;
-    }
 }
