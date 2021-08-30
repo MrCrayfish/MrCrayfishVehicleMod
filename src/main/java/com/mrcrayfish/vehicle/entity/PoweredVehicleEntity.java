@@ -618,11 +618,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.entityData.get(THROTTLE);
     }
 
-    protected float getModifiedAccelerationSpeed()
-    {
-        return this.entityData.get(THROTTLE);
-    }
-
     public double getSpeed()
     {
         return Math.sqrt(Math.pow(this.motion.x, 2) + Math.pow(this.motion.z, 2)) * 20;

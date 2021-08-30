@@ -202,23 +202,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
     }
 
-    @Override
-    protected float getModifiedAccelerationSpeed()
-    {
-        if(trailer != null)
-        {
-            if(trailer.getPassengers().size() > 0)
-            {
-                return super.getModifiedAccelerationSpeed() * 0.5F;
-            }
-            else
-            {
-                return super.getModifiedAccelerationSpeed() * 0.8F;
-            }
-        }
-        return super.getModifiedAccelerationSpeed();
-    }
-
     public boolean isRearWheelSteering()
     {
         VehicleProperties properties = this.getProperties();

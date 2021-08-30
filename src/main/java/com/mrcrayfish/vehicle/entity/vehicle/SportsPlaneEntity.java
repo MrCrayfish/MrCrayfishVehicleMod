@@ -41,12 +41,6 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    protected float getModifiedAccelerationSpeed()
-    {
-        return super.getModifiedAccelerationSpeed() * (propellerSpeed / 120F);
-    }
-
-    @Override
     public boolean canMountTrailer()
     {
         return false;
