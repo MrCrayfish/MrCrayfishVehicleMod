@@ -540,7 +540,9 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setPosition(0, 2, 0)
                         .setDistance(7.0))
                 .addExtended(PlaneEntity.Properties.builder()
-                        .setMaxFlapAngle(45F)
+                        .setFlapSensitivity(0.1F)
+                        .setElevatorSensitivity(0.075F)
+                        .setMaxTurnAngle(2F)
                         .build()));
 
         this.add(ModEntities.TRACTOR.get(), VehicleProperties.builder()

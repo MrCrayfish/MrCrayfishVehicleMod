@@ -58,7 +58,9 @@
     },
     "extended": {
         "vehicle:plane": {
-            "maxFlapAngle": 5.0
+            "flapSensitivity": 0.1,
+            "elevatorSensitivity": 0.075,
+            "maxTurnAngle": 2.0
         }
     }
 }

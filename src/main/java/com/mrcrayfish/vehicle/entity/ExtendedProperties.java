@@ -6,6 +6,7 @@ import net.minecraft.util.ResourceLocation;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -14,12 +15,12 @@ import java.util.function.Supplier;
 public abstract class ExtendedProperties
 {
     private static final Map<Class<? extends ExtendedProperties>, ResourceLocation> CLASS_TO_ID = new ConcurrentHashMap<>();
-    private static final Map<ResourceLocation, Supplier<? extends ExtendedProperties>> SUPPLIER_MAP = new ConcurrentHashMap<>();
+    private static final Map<ResourceLocation, Function<JsonObject, ? extends ExtendedProperties>> FACTORY = new ConcurrentHashMap<>();
 
-    public static <T extends ExtendedProperties> void register(ResourceLocation id, Class<T> clazz, Supplier<T> supplier)
+    public static <T extends ExtendedProperties> void register(ResourceLocation id, Class<T> clazz, Function<JsonObject, T> supplier)
     {
         CLASS_TO_ID.putIfAbsent(clazz, id);
-        SUPPLIER_MAP.putIfAbsent(id, supplier);
+        FACTORY.putIfAbsent(id, supplier);
     }
 
     public static Optional<ResourceLocation> getId(Class<? extends ExtendedProperties> clazz)
@@ -27,12 +28,12 @@ public abstract class ExtendedProperties
         return Optional.ofNullable(CLASS_TO_ID.get(clazz));
     }
 
-    public static Optional<? extends ExtendedProperties> fromId(ResourceLocation id)
+    public static Optional<? extends ExtendedProperties> create(ResourceLocation id, JsonObject object)
     {
-        Supplier<? extends ExtendedProperties> supplier = SUPPLIER_MAP.get(id);
-        if(supplier != null)
+        Function<JsonObject, ? extends ExtendedProperties> factory = FACTORY.get(id);
+        if(factory != null)
         {
-            return Optional.of(supplier.get());
+            return Optional.of(factory.apply(object));
         }
         return Optional.empty();
     }
@@ -43,6 +44,4 @@ public abstract class ExtendedProperties
     }
 
     public abstract void serialize(JsonObject object);
-
-    public abstract void deserialize(JsonObject object);
 }

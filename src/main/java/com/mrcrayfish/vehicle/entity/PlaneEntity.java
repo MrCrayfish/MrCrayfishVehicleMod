@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
 import com.mrcrayfish.vehicle.util.CommonUtils;
+import com.mrcrayfish.vehicle.util.JsonUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
@@ -34,6 +35,15 @@ import java.util.Optional;
  */
 public abstract class PlaneEntity extends PoweredVehicleEntity
 {
+    protected static final float DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF = 16F;
+    protected static final float DEFAULT_MAX_FLAP_ANGLE = 35F;
+    protected static final float DEFAULT_FLAP_STRENGTH = 0.25F;
+    protected static final float DEFAULT_FLAP_SENSITIVITY = 0.05F;
+    protected static final float DEFAULT_MAX_ELEVATOR_ANGLE = 45F;
+    protected static final float DEFAULT_ELEVATOR_STRENGTH = 0.15F;
+    protected static final float DEFAULT_ELEVATOR_SENSITIVITY = 0.025F;
+    protected static final float DEFAULT_MAX_TURN_ANGLE = 0.5F;
+
     protected static final DataParameter<Float> LIFT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> FORWARD_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> SIDE_INPUT = EntityDataManager.defineId(PlaneEntity.class, DataSerializers.FLOAT);
@@ -385,7 +395,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     protected float getMinimumSpeedToTakeOff()
     {
-        return 16F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getMinimumSpeedToTakeOff).orElse(DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF);
     }
 
     /**
@@ -393,7 +403,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getMaxFlapAngle()
     {
-        return this.getProperties().getExtended(Properties.class).map(Properties::getMaxFlapAngle).orElse(35F);
+        return this.getProperties().getExtended(Properties.class).map(Properties::getMaxFlapAngle).orElse(DEFAULT_MAX_FLAP_ANGLE);
     }
 
     /**
@@ -401,7 +411,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getFlapStrength()
     {
-        return 0.25F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getFlapStrength).orElse(DEFAULT_FLAP_STRENGTH);
     }
 
     /**
@@ -409,7 +419,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getFlapSensitivity()
     {
-        return 0.05F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getFlapSensitivity).orElse(DEFAULT_FLAP_SENSITIVITY);
     }
 
     /**
@@ -417,7 +427,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getMaxElevatorAngle()
     {
-        return 45F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getMaxElevatorAngle).orElse(DEFAULT_MAX_ELEVATOR_ANGLE);
     }
 
     /**
@@ -425,7 +435,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getElevatorStrength()
     {
-        return 0.15F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getElevatorStrength).orElse(DEFAULT_ELEVATOR_STRENGTH);
     }
 
     /**
@@ -433,7 +443,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getElevatorSensitivity()
     {
-        return 0.025F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getElevatorSensitivity).orElse(DEFAULT_ELEVATOR_SENSITIVITY);
     }
 
     /**
@@ -441,7 +451,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getMaxTurnAngle()
     {
-        return 0.5F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getMaxTurnAngle).orElse(DEFAULT_MAX_TURN_ANGLE);
     }
 
     /*
@@ -520,25 +530,90 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
     public static final class Properties extends ExtendedProperties
     {
-        private static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "plane");
+        private final float minimumSpeedToTakeOff;
+        private final float maxFlapAngle;
+        private final float flapStrength;
+        private final float flapSensitivity;
+        private final float maxElevatorAngle;
+        private final float elevatorStrength;
+        private final float elevatorSensitivity;
+        private final float maxTurnAngle;
 
-        private float maxFlapAngle;
+        public Properties(JsonObject object)
+        {
+            this.minimumSpeedToTakeOff = JSONUtils.getAsFloat(object, "minimumSpeedToTakeOff", DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF); //TODO specify the defaults somewhere
+            this.maxFlapAngle = JSONUtils.getAsFloat(object, "maxFlapAngle", DEFAULT_MAX_FLAP_ANGLE);
+            this.flapStrength = JSONUtils.getAsFloat(object, "flapStrength", DEFAULT_FLAP_STRENGTH);
+            this.flapSensitivity = JSONUtils.getAsFloat(object, "flapSensitivity", DEFAULT_FLAP_SENSITIVITY);
+            this.maxElevatorAngle = JSONUtils.getAsFloat(object, "maxElevatorAngle", DEFAULT_MAX_ELEVATOR_ANGLE);
+            this.elevatorStrength = JSONUtils.getAsFloat(object, "elevatorStrength", DEFAULT_ELEVATOR_STRENGTH);
+            this.elevatorSensitivity = JSONUtils.getAsFloat(object, "elevatorSensitivity", DEFAULT_ELEVATOR_SENSITIVITY);
+            this.maxTurnAngle = JSONUtils.getAsFloat(object, "maxTurnAngle", DEFAULT_MAX_TURN_ANGLE);
+        }
+
+        public Properties(float minimumSpeedToTakeOff, float maxFlapAngle, float flapStrength, float flapSensitivity, float maxElevatorAngle, float elevatorStrength, float elevatorSensitivity, float maxTurnAngle)
+        {
+            this.minimumSpeedToTakeOff = minimumSpeedToTakeOff;
+            this.maxFlapAngle = maxFlapAngle;
+            this.flapStrength = flapStrength;
+            this.flapSensitivity = flapSensitivity;
+            this.maxElevatorAngle = maxElevatorAngle;
+            this.elevatorStrength = elevatorStrength;
+            this.elevatorSensitivity = elevatorSensitivity;
+            this.maxTurnAngle = maxTurnAngle;
+        }
+
+        @Override
+        public void serialize(JsonObject object)
+        {
+            JsonUtil.write(object, "minimumSpeedToTakeOff", this.minimumSpeedToTakeOff, DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF);
+            JsonUtil.write(object, "maxFlapAngle", this.maxFlapAngle, DEFAULT_MAX_FLAP_ANGLE);
+            JsonUtil.write(object, "flapStrength", this.flapStrength, DEFAULT_FLAP_STRENGTH);
+            JsonUtil.write(object, "flapSensitivity", this.flapSensitivity, DEFAULT_FLAP_SENSITIVITY);
+            JsonUtil.write(object, "maxElevatorAngle", this.maxElevatorAngle, DEFAULT_MAX_ELEVATOR_ANGLE);
+            JsonUtil.write(object, "elevatorStrength", this.elevatorStrength, DEFAULT_ELEVATOR_STRENGTH);
+            JsonUtil.write(object, "elevatorSensitivity", this.elevatorSensitivity, DEFAULT_ELEVATOR_SENSITIVITY);
+            JsonUtil.write(object, "maxTurnAngle", this.maxTurnAngle, DEFAULT_MAX_TURN_ANGLE);
+        }
+
+        public float getMinimumSpeedToTakeOff()
+        {
+            return this.minimumSpeedToTakeOff;
+        }
 
         public float getMaxFlapAngle()
         {
             return this.maxFlapAngle;
         }
 
-        @Override
-        public void serialize(JsonObject object)
+        public float getFlapStrength()
         {
-            object.addProperty("maxFlapAngle", this.maxFlapAngle);
+            return this.flapStrength;
         }
 
-        @Override
-        public void deserialize(JsonObject object)
+        public float getFlapSensitivity()
         {
-            this.maxFlapAngle = JSONUtils.getAsFloat(object, "maxFlapAngle", 35F);
+            return this.flapSensitivity;
+        }
+
+        public float getMaxElevatorAngle()
+        {
+            return this.maxElevatorAngle;
+        }
+
+        public float getElevatorStrength()
+        {
+            return this.elevatorStrength;
+        }
+
+        public float getElevatorSensitivity()
+        {
+            return this.elevatorSensitivity;
+        }
+
+        public float getMaxTurnAngle()
+        {
+            return this.maxTurnAngle;
         }
 
         public static Builder builder()
@@ -548,7 +623,20 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
         public static class Builder
         {
-            private float maxFlapAngle = 35F;
+            private float minimumSpeedToTakeOff = DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF;
+            private float maxFlapAngle = DEFAULT_MAX_FLAP_ANGLE;
+            private float flapStrength = DEFAULT_FLAP_STRENGTH;
+            private float flapSensitivity = DEFAULT_FLAP_SENSITIVITY;
+            private float maxElevatorAngle = DEFAULT_MAX_ELEVATOR_ANGLE;
+            private float elevatorStrength = DEFAULT_ELEVATOR_STRENGTH;
+            private float elevatorSensitivity = DEFAULT_ELEVATOR_SENSITIVITY;
+            private float maxTurnAngle = DEFAULT_MAX_TURN_ANGLE;
+
+            public Builder setMinimumSpeedToTakeOff(float minimumSpeedToTakeOff)
+            {
+                this.minimumSpeedToTakeOff = minimumSpeedToTakeOff;
+                return this;
+            }
 
             public Builder setMaxFlapAngle(float maxFlapAngle)
             {
@@ -556,11 +644,45 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
                 return this;
             }
 
+            public Builder setFlapStrength(float flapStrength)
+            {
+                this.flapStrength = flapStrength;
+                return this;
+            }
+
+            public Builder setFlapSensitivity(float flapSensitivity)
+            {
+                this.flapSensitivity = flapSensitivity;
+                return this;
+            }
+
+            public Builder setMaxElevatorAngle(float maxElevatorAngle)
+            {
+                this.maxElevatorAngle = maxElevatorAngle;
+                return this;
+            }
+
+            public Builder setElevatorStrength(float elevatorStrength)
+            {
+                this.elevatorStrength = elevatorStrength;
+                return this;
+            }
+
+            public Builder setElevatorSensitivity(float elevatorSensitivity)
+            {
+                this.elevatorSensitivity = elevatorSensitivity;
+                return this;
+            }
+
+            public Builder setMaxTurnAngle(float maxTurnAngle)
+            {
+                this.maxTurnAngle = maxTurnAngle;
+                return this;
+            }
+
             public Properties build()
             {
-                Properties properties = new Properties();
-                properties.maxFlapAngle = this.maxFlapAngle;
-                return properties;
+                return new Properties(this.minimumSpeedToTakeOff, this.maxFlapAngle, this.flapStrength, this.flapSensitivity, this.maxElevatorAngle, this.elevatorStrength, this.elevatorSensitivity, this.maxTurnAngle);
             }
         }
     }

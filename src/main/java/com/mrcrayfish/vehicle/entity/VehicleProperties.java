@@ -38,7 +38,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -219,11 +218,8 @@ public class VehicleProperties
         if(optional.isPresent())
         {
             ResourceLocation id = optional.get();
-            if(this.extended.containsKey(id))
-            {
-                T t = (T) this.extended.get(id);
-                return Optional.of(t);
-            }
+            T t = (T) this.extended.get(id);
+            return Optional.ofNullable(t);
         }
         return Optional.empty();
     }
@@ -523,10 +519,7 @@ public class VehicleProperties
             extended.entrySet().stream().filter(entry -> entry.getValue().isJsonObject()).forEach(entry -> {
                 ResourceLocation id = ResourceLocation.tryParse(entry.getKey());
                 JsonObject content = entry.getValue().getAsJsonObject();
-                ExtendedProperties.fromId(id).ifPresent(extendedProperties -> {
-                    extendedProperties.deserialize(content);
-                    builder.addExtended(extendedProperties);
-                });
+                ExtendedProperties.create(id, content).ifPresent(builder::addExtended);
             });
         }
 
