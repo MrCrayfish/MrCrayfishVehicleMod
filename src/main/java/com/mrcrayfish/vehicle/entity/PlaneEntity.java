@@ -393,7 +393,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      * The minimum speed the plane requires to take off on a flat ground. It's still possible for
      * planes to glide at lower speeds.
      */
-    protected float getMinimumSpeedToTakeOff()
+    protected final float getMinimumSpeedToTakeOff()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getMinimumSpeedToTakeOff).orElse(DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF);
     }
@@ -401,7 +401,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * The maximum absolute angle the flaps on the plane can pitch up or down.
      */
-    public float getMaxFlapAngle()
+    public final float getMaxFlapAngle()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getMaxFlapAngle).orElse(DEFAULT_MAX_FLAP_ANGLE);
     }
@@ -409,7 +409,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * This determines how quickly the flaps approach it's maximum flap angle.
      */
-    public float getFlapStrength()
+    public final float getFlapStrength()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getFlapStrength).orElse(DEFAULT_FLAP_STRENGTH);
     }
@@ -417,7 +417,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * This controls how much of the max flap angle is applied each tick to the planes motion
      */
-    public float getFlapSensitivity()
+    public final float getFlapSensitivity()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getFlapSensitivity).orElse(DEFAULT_FLAP_SENSITIVITY);
     }
@@ -425,7 +425,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * The maximum absolute angle the elevator on the plane can pitch up or down.
      */
-    public float getMaxElevatorAngle()
+    public final float getMaxElevatorAngle()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getMaxElevatorAngle).orElse(DEFAULT_MAX_ELEVATOR_ANGLE);
     }
@@ -433,7 +433,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * This determines how quickly the elevator approaches it's maximum elevator angle.
      */
-    public float getElevatorStrength()
+    public final float getElevatorStrength()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getElevatorStrength).orElse(DEFAULT_ELEVATOR_STRENGTH);
     }
@@ -441,7 +441,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * This controls how much of the max elevator angle is applied each tick to the planes motion
      */
-    public float getElevatorSensitivity()
+    public final float getElevatorSensitivity()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getElevatorSensitivity).orElse(DEFAULT_ELEVATOR_SENSITIVITY);
     }
@@ -449,7 +449,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     /**
      * Determines the maximum delta angle the plane should turn when it's rolled at the optimum angle
      */
-    public float getMaxTurnAngle()
+    public final float getMaxTurnAngle()
     {
         return this.getProperties().getExtended(Properties.class).map(Properties::getMaxTurnAngle).orElse(DEFAULT_MAX_TURN_ANGLE);
     }
