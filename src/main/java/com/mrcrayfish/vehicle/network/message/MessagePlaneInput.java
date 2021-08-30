@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;

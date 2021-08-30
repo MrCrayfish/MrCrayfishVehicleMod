@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.properties.LandProperties;
-import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.entity.EntityType;

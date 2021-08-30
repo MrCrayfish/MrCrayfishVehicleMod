@@ -9,7 +9,6 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
-import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;

@@ -1,10 +1,8 @@
 package com.mrcrayfish.vehicle.client.handler;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.CameraHelper;
-import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -12,9 +10,7 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 import net.minecraftforge.client.event.FOVUpdateEvent;
