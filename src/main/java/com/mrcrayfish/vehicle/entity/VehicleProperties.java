@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.*;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.VehicleMod;
@@ -33,9 +34,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -68,8 +71,9 @@ public class VehicleProperties
     private final float enginePower;
     private final boolean colored;
     private final CameraProperties camera;
+    private final ImmutableMap<ResourceLocation, ExtendedProperties> extended;
 
-    private VehicleProperties(float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarPosition, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, PartPosition bodyPosition, PartPosition enginePosition, PartPosition fuelPortPosition, PartPosition keyPortPosition, PartPosition keyPosition, PartPosition displayPosition, Vector3d frontAxelVec, Vector3d rearAxelVec, List<Seat> seats, IEngineType engineType, float enginePower, boolean colored, CameraProperties camera)
+    private VehicleProperties(float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarPosition, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, PartPosition bodyPosition, PartPosition enginePosition, PartPosition fuelPortPosition, PartPosition keyPortPosition, PartPosition keyPosition, PartPosition displayPosition, Vector3d frontAxelVec, Vector3d rearAxelVec, List<Seat> seats, IEngineType engineType, float enginePower, boolean colored, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
     {
         this.axleOffset = axleOffset;
         this.wheelOffset = wheelOffset;
@@ -91,6 +95,7 @@ public class VehicleProperties
         this.enginePower = enginePower;
         this.colored = colored;
         this.camera = camera;
+        this.extended = ImmutableMap.copyOf(extended);
     }
 
     public float getAxleOffset()
@@ -207,6 +212,27 @@ public class VehicleProperties
         return this.camera;
     }
 
+    @SuppressWarnings("unchecked")
+    public <T extends ExtendedProperties> Optional<T> getExtended(Class<T> properties)
+    {
+        Optional<ResourceLocation> optional = ExtendedProperties.getId(properties);
+        if(optional.isPresent())
+        {
+            ResourceLocation id = optional.get();
+            if(this.extended.containsKey(id))
+            {
+                T t = (T) this.extended.get(id);
+                return Optional.of(t);
+            }
+        }
+        return Optional.empty();
+    }
+
+    public ImmutableMap<ResourceLocation, ExtendedProperties> getExtendedMap()
+    {
+        return this.extended;
+    }
+
     public static void loadProperties()
     {
         for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
@@ -274,40 +300,41 @@ public class VehicleProperties
     public static class Serializer implements JsonDeserializer<VehicleProperties>, JsonSerializer<VehicleProperties>
     {
         @Override
-        public JsonElement serialize(VehicleProperties src, Type typeOfSrc, JsonSerializationContext context)
+        public JsonElement serialize(VehicleProperties properties, Type typeOfSrc, JsonSerializationContext context)
         {
             JsonObject object = new JsonObject();
 
             JsonObject general = new JsonObject();
-            if(src.engineType != EngineType.NONE) general.addProperty("engineType", src.engineType.getId().toString());
-            if(src.enginePower != 0) general.addProperty("enginePower", src.enginePower);
-            if(src.colored) general.addProperty("canBeColored", true);
-            if(src.canChangeWheels) general.addProperty("canChangeWheels", true);
+            if(properties.engineType != EngineType.NONE) general.addProperty("engineType", properties.engineType.getId().toString());
+            if(properties.enginePower != 0) general.addProperty("enginePower", properties.enginePower);
+            if(properties.colored) general.addProperty("canBeColored", true);
+            if(properties.canChangeWheels) general.addProperty("canChangeWheels", true);
             if(general.size() > 0) object.add("general", general);
 
             JsonObject axles = new JsonObject();
-            if(src.axleOffset != 0) axles.addProperty("offsetToGround", src.axleOffset);
-            if(src.frontAxelVec != null) axles.addProperty("lengthToFront", src.frontAxelVec.z);
-            if(src.rearAxelVec != null) axles.addProperty("lengthToRear", src.rearAxelVec.z);
+            if(properties.axleOffset != 0) axles.addProperty("offsetToGround", properties.axleOffset);
+            if(properties.frontAxelVec != null) axles.addProperty("lengthToFront", properties.frontAxelVec.z);
+            if(properties.rearAxelVec != null) axles.addProperty("lengthToRear", properties.rearAxelVec.z);
             if(axles.size() > 0) object.add("axles", axles);
 
             JsonObject display = new JsonObject();
-            this.addVector3dProperty(display, "held", src.heldOffset);
-            this.addVector3dProperty(display, "trailer", src.trailerOffset);
-            this.addPartPositionProperty(display, "gui", src.displayPosition);
+            this.addVector3dProperty(display, "held", properties.heldOffset);
+            this.addVector3dProperty(display, "trailer", properties.trailerOffset);
+            this.addPartPositionProperty(display, "gui", properties.displayPosition);
             if(display.size() > 0) object.add("display", display);
 
             JsonObject position = new JsonObject();
-            this.addPartPositionProperty(position, "body", src.bodyPosition);
-            this.addPartPositionProperty(position, "engine", src.enginePosition);
-            this.addPartPositionProperty(position, "fuelPort", src.fuelPortPosition);
-            this.addPartPositionProperty(position, "keyPort", src.keyPortPosition);
-            this.addVector3dProperty(position, "towBar", src.towBarPosition);
+            this.addPartPositionProperty(position, "body", properties.bodyPosition);
+            this.addPartPositionProperty(position, "engine", properties.enginePosition);
+            this.addPartPositionProperty(position, "fuelPort", properties.fuelPortPosition);
+            this.addPartPositionProperty(position, "keyPort", properties.keyPortPosition);
+            this.addVector3dProperty(position, "towBar", properties.towBarPosition);
             if(position.size() > 0) object.add("position", position);
 
-            this.writeWheels(src, object);
-            this.writeSeats(src, object);
-            this.writeCamera(src, object);
+            this.writeWheels(properties, object);
+            this.writeSeats(properties, object);
+            this.writeCamera(properties, object);
+            this.writeExtended(properties, object);
 
             return object;
         }
@@ -344,6 +371,7 @@ public class VehicleProperties
             this.readWheels(builder, object);
             this.readSeats(builder, object);
             this.readCamera(builder, object);
+            this.readExtended(builder, object);
 
             return builder.build(true);
         }
@@ -489,6 +517,33 @@ public class VehicleProperties
             object.add("camera", cameraObject);
         }
 
+        private void readExtended(VehicleProperties.Builder builder, JsonObject object)
+        {
+            JsonObject extended = JSONUtils.getAsJsonObject(object, "extended", new JsonObject());
+            extended.entrySet().stream().filter(entry -> entry.getValue().isJsonObject()).forEach(entry -> {
+                ResourceLocation id = ResourceLocation.tryParse(entry.getKey());
+                JsonObject content = entry.getValue().getAsJsonObject();
+                ExtendedProperties.fromId(id).ifPresent(extendedProperties -> {
+                    extendedProperties.deserialize(content);
+                    builder.addExtended(extendedProperties);
+                });
+            });
+        }
+
+        private void writeExtended(VehicleProperties properties, JsonObject object)
+        {
+            JsonObject extended = new JsonObject();
+            properties.getExtendedMap().forEach((id, extendedProperties) -> {
+                JsonObject content = new JsonObject();
+                extendedProperties.serialize(content);
+                extended.add(extendedProperties.getId().toString(), content);
+            });
+            if(extended.size() > 0)
+            {
+                object.add("extended", extended);
+            }
+        }
+
         private <T extends Enum<?>> T getAsEnum(JsonObject object, String memberName, Class<T> enumClass, T defaultValue)
         {
             if(object.has(memberName))
@@ -573,6 +628,7 @@ public class VehicleProperties
         private float enginePower = 15F;
         private boolean colored;
         private CameraProperties camera = CameraProperties.DEFAULT_CAMERA;
+        private Map<ResourceLocation, ExtendedProperties> extended = new HashMap<>();
 
         public Builder setAxleOffset(float axleOffset)
         {
@@ -712,12 +768,18 @@ public class VehicleProperties
             return this;
         }
 
+        public Builder addExtended(ExtendedProperties properties)
+        {
+            this.extended.putIfAbsent(properties.getId(), properties);
+            return this;
+        }
+
         public VehicleProperties build(boolean scaleWheels)
         {
             this.validate();
             this.calculateWheelOffset();
             List<Wheel> wheels = scaleWheels ? this.generateScaledWheels() : this.wheels;
-            return new VehicleProperties(this.axleOffset, this.wheelOffset, this.heldOffset, this.towBarPosition, this.trailerOffset, this.canChangeWheels, wheels, this.bodyPosition, this.enginePosition, this.fuelPortPosition, this.keyPortPosition, this.keyPosition, this.displayPosition, this.frontAxelVec, this.rearAxelVec, this.seats, this.engineType, this.enginePower, this.colored, this.camera);
+            return new VehicleProperties(this.axleOffset, this.wheelOffset, this.heldOffset, this.towBarPosition, this.trailerOffset, this.canChangeWheels, wheels, this.bodyPosition, this.enginePosition, this.fuelPortPosition, this.keyPortPosition, this.keyPosition, this.displayPosition, this.frontAxelVec, this.rearAxelVec, this.seats, this.engineType, this.enginePower, this.colored, this.camera, this.extended);
         }
 
         private void validate()

@@ -1,5 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
+import com.google.gson.JsonObject;
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
@@ -16,6 +18,8 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -389,7 +393,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public float getMaxFlapAngle()
     {
-        return 35F;
+        return this.getProperties().getExtended(Properties.class).map(Properties::getMaxFlapAngle).orElse(35F);
     }
 
     /**
@@ -512,5 +516,52 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public float getWheelRotation(Wheel wheel, float partialTicks)
     {
         return MathHelper.lerp(partialTicks, this.prevWheelRotation, this.wheelRotation);
+    }
+
+    public static final class Properties extends ExtendedProperties
+    {
+        private static final ResourceLocation ID = new ResourceLocation(Reference.MOD_ID, "plane");
+
+        private float maxFlapAngle;
+
+        public float getMaxFlapAngle()
+        {
+            return this.maxFlapAngle;
+        }
+
+        @Override
+        public void serialize(JsonObject object)
+        {
+            object.addProperty("maxFlapAngle", this.maxFlapAngle);
+        }
+
+        @Override
+        public void deserialize(JsonObject object)
+        {
+            this.maxFlapAngle = JSONUtils.getAsFloat(object, "maxFlapAngle", 35F);
+        }
+
+        public static Builder builder()
+        {
+            return new Builder();
+        }
+
+        public static class Builder
+        {
+            private float maxFlapAngle = 35F;
+
+            public Builder setMaxFlapAngle(float maxFlapAngle)
+            {
+                this.maxFlapAngle = maxFlapAngle;
+                return this;
+            }
+
+            public Properties build()
+            {
+                Properties properties = new Properties();
+                properties.maxFlapAngle = this.maxFlapAngle;
+                return properties;
+            }
+        }
     }
 }

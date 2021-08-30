@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
 import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -537,7 +538,10 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setCamera(CameraProperties.builder()
                         .setStrength(0.25F)
                         .setPosition(0, 2, 0)
-                        .setDistance(7.0)));
+                        .setDistance(7.0))
+                .addExtended(PlaneEntity.Properties.builder()
+                        .setMaxFlapAngle(45F)
+                        .build()));
 
         this.add(ModEntities.TRACTOR.get(), VehicleProperties.builder()
                 .setAxleOffset(-3.0F)

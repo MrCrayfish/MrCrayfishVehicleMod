@@ -1056,6 +1056,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         if(properties.getWheels() != null)
         {
             List<Wheel> wheels = properties.getWheels();
+
+            // Fixes game crashing if adding wheels when reloading vehicle properties json
+           /* if(this.wheelPositions.length != wheels.size() * 3)
+            {
+                this.wheelPositions = new double[wheels.size() * 3];
+            }*/
+
             for(int i = 0; i < wheels.size(); i++)
             {
                 Wheel wheel = wheels.get(i);
