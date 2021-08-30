@@ -51,12 +51,6 @@ public class GoKartEntity extends LandVehicleEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public boolean shouldRenderEngine()
     {
         return true;

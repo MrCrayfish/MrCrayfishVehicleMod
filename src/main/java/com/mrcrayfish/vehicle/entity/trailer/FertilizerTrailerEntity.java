@@ -63,11 +63,6 @@ public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
         this.initInventory();
     }
 
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
     @Override
     protected boolean canAddPassenger(Entity passenger)
     {

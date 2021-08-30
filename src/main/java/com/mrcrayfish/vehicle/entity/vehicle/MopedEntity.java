@@ -108,12 +108,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     protected void readAdditionalSaveData(CompoundNBT compound)
     {
         super.readAdditionalSaveData(compound);

@@ -64,12 +64,6 @@ public class JetSkiEntity extends BoatEntity
         return 2.2F;
     }
 
-    @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
     //TODO remove and add key support
     @Override
     public boolean isLockable()

@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.SoundEvent;
@@ -34,12 +33,6 @@ public class GolfCartEntity extends HelicopterEntity
     public float getMaxEnginePitch()
     {
         return 1.0F;
-    }
-
-    @Override
-    public boolean canBeColored()
-    {
-        return true;
     }
 
     @Override

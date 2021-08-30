@@ -72,12 +72,6 @@ public class AluminumBoatEntity extends BoatEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public boolean canMountTrailer()
     {
         return false;

@@ -36,12 +36,6 @@ public class BathEntity extends PlaneEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isLockable()
     {
         return false;

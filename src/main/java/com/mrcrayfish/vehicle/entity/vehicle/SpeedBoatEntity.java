@@ -59,12 +59,6 @@ public class SpeedBoatEntity extends BoatEntity
         return 2.0F;
     }
 
-    @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
     //TODO remove and add key support
     @Override
     public boolean isLockable()

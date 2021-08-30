@@ -61,12 +61,6 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     protected boolean canAddPassenger(Entity passenger)
     {
         return false;

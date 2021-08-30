@@ -58,9 +58,4 @@ public class ShoppingCartEntity extends LandVehicleEntity
         return false;
     }
 
-    @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
 }

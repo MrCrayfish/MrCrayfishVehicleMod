@@ -31,12 +31,6 @@ public class ATVEntity extends LandVehicleEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public boolean canTowTrailer()
     {
         return true;

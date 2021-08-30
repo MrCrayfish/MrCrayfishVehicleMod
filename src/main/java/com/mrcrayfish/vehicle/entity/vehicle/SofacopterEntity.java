@@ -17,9 +17,4 @@ public class SofacopterEntity extends HelicopterEntity
         this.entityData.set(COLOR, 11546150);
     }
 
-    @Override
-    public boolean canBeColored()
-    {
-        return false;
-    }
 }

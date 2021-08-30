@@ -44,12 +44,6 @@ public class VehicleEntityTrailer extends TrailerEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     protected boolean canRide(Entity entityIn)
     {
         return true;

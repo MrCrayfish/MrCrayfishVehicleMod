@@ -73,9 +73,4 @@ public class TractorEntity extends LandVehicleEntity
         return false;
     }
 
-    @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
 }

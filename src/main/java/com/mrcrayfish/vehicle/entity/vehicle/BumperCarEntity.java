@@ -51,12 +51,6 @@ public class BumperCarEntity extends LandVehicleEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public boolean isLockable()
     {
         return false;

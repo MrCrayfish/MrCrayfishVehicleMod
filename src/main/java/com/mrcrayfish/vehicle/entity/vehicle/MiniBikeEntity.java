@@ -51,12 +51,6 @@ public class MiniBikeEntity extends MotorcycleEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public boolean shouldRenderEngine()
     {
         return true;

@@ -60,12 +60,6 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public ActionResultType interact(PlayerEntity player, Hand hand)
     {
         if(!level.isClientSide && !player.isCrouching())

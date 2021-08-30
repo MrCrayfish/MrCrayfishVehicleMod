@@ -35,12 +35,6 @@ public class SportsPlaneEntity extends PlaneEntity
     }
 
     @Override
-    public boolean canBeColored()
-    {
-        return true;
-    }
-
-    @Override
     public boolean canMountTrailer()
     {
         return false;

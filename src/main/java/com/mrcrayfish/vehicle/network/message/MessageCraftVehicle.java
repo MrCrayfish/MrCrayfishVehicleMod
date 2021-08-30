@@ -125,7 +125,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
 
             /* Gets the color based on the dye */
             int color = VehicleEntity.DYE_TO_COLOR[0];
-            if(vehicle.canBeColored())
+            if(vehicle.getProperties().isColored())
             {
                 ItemStack workstationDyeStack = workstationTileEntity.getInventory().get(0);
                 if(workstationDyeStack.getItem() instanceof DyeItem)
