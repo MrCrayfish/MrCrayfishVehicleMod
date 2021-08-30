@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.entity.properties.LandProperties;
+import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.entity.EntityType;
@@ -209,15 +211,19 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         return properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null && properties.getFrontAxelVec().z < properties.getRearAxelVec().z;
     }
 
-    @Override
-    protected boolean canCharge()
+    protected final boolean canCharge()
     {
-        return true;
+        return this.getLandProperties().canCharge();
     }
 
-    public boolean canWheelie()
+    public final boolean canWheelie()
     {
-        return true;
+        return this.getLandProperties().canWheelie();
+    }
+
+    protected final LandProperties getLandProperties()
+    {
+        return this.getProperties().getExtended(LandProperties.class);
     }
 
     public float getTraction()

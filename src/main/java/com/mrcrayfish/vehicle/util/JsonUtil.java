@@ -14,4 +14,12 @@ public class JsonUtil
             object.addProperty(key, number);
         }
     }
+
+    public static void write(JsonObject object, String key, Boolean state, Boolean defaultValue)
+    {
+        if(!state.equals(defaultValue))
+        {
+            object.addProperty(key, state);
+        }
+    }
 }

@@ -1105,12 +1105,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return false;
     }
 
-    //TODO reimplement
-    protected boolean canCharge()
-    {
-        return false;
-    }
-
     protected void releaseCharge(float strength)
     {
         this.boosting = true;

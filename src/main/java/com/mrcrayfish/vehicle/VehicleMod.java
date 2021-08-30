@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.datagen.LootTableGen;
 import com.mrcrayfish.vehicle.datagen.RecipeGen;
 import com.mrcrayfish.vehicle.datagen.VehiclePropertiesGen;
 import com.mrcrayfish.vehicle.entity.properties.ExtendedProperties;
+import com.mrcrayfish.vehicle.entity.properties.LandProperties;
 import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.*;
@@ -65,6 +66,7 @@ public class VehicleMod
         eventBus.addListener(this::onGatherData);
         MinecraftForge.EVENT_BUS.register(new CommonEvents());
         MinecraftForge.EVENT_BUS.register(FluidNetworkHandler.instance());
+        ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "land"), LandProperties.class, LandProperties::new);
         ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "plane"), PlaneProperties.class, PlaneProperties::new);
     }
 

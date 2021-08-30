@@ -791,8 +791,7 @@ public class VehicleProperties
         private List<Wheel> generateScaledWheels()
         {
             return this.wheels.stream().map(wheel -> {
-                if(!wheel.isAutoScale())
-                    return wheel;
+                if(!wheel.isAutoScale()) return wheel;
                 double scale = ((this.wheelOffset + wheel.getOffsetY()) * 2) / WHEEL_RADIUS;
                 double xScale = wheel.getScale().x != 0.0 ? wheel.getScale().x : scale;
                 double yScale = wheel.getScale().y != 0.0 ? wheel.getScale().y : scale;
