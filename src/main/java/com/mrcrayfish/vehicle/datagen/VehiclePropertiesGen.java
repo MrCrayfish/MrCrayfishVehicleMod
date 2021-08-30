@@ -518,8 +518,8 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setFuelPortPosition(PartPosition.create(-4.35, 4.0, -6.0, 0.0, -112.5, 0.0, 0.25))
                 .setKeyPortPosition(PartPosition.create(0.0, 3.75, 12.5, -67.5, 0.0, 0.0, 0.5))
                 .setDisplayPosition(PartPosition.create(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.85))
-                .setFrontAxleOffset(14.0)
-                .setRearAxleOffset(-14.0)
+                .setFrontAxleOffset(16.0)
+                .setRearAxleOffset(-2.5)
                 .addSeat(Seat.of(0.0, 0.0, 0.0, true))
                 .setEngineType(EngineType.LARGE_MOTOR)
                 .setEnginePower(24F)
@@ -537,7 +537,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setCamera(CameraProperties.builder()
                         .setStrength(0.25F)
                         .setPosition(0, 2, 0)
-                        .setDistance(6.0)));
+                        .setDistance(7.0)));
 
         this.add(ModEntities.TRACTOR.get(), VehicleProperties.builder()
                 .setAxleOffset(-3.0F)
