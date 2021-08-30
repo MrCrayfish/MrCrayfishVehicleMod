@@ -53,6 +53,7 @@ public class VehicleProperties
     private static final DecimalFormat FORMAT = new DecimalFormat("#.###");
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(VehicleProperties.class, new Serializer()).create();
     private static final Map<ResourceLocation, VehicleProperties> ID_TO_PROPERTIES = new HashMap<>();
+    private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
 
     private final float axleOffset;
     private final float wheelOffset;
@@ -216,16 +217,16 @@ public class VehicleProperties
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ExtendedProperties> Optional<T> getExtended(Class<T> properties)
+    public <T extends ExtendedProperties> T getExtended(Class<T> properties)
     {
-        Optional<ResourceLocation> optional = ExtendedProperties.getId(properties);
-        if(optional.isPresent())
+        ResourceLocation id = ExtendedProperties.getId(properties);
+        T t = (T) this.extended.get(id);
+        if(t != null)
         {
-            ResourceLocation id = optional.get();
-            T t = (T) this.extended.get(id);
-            return Optional.ofNullable(t);
+            return t;
         }
-        return Optional.empty();
+        GLOBAL_EXTENDED_PROPERTIES.computeIfAbsent(id, id2 -> ExtendedProperties.create(id2, new JsonObject()));
+        return (T) GLOBAL_EXTENDED_PROPERTIES.get(id);
     }
 
     public ImmutableMap<ResourceLocation, ExtendedProperties> getExtendedMap()
@@ -523,7 +524,7 @@ public class VehicleProperties
             extended.entrySet().stream().filter(entry -> entry.getValue().isJsonObject()).forEach(entry -> {
                 ResourceLocation id = ResourceLocation.tryParse(entry.getKey());
                 JsonObject content = entry.getValue().getAsJsonObject();
-                ExtendedProperties.create(id, content).ifPresent(builder::addExtended);
+                builder.addExtended(ExtendedProperties.create(id, content));
             });
         }
 

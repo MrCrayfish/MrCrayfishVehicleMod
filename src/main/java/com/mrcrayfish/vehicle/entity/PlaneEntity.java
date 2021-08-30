@@ -383,7 +383,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     protected final float getMinimumSpeedToTakeOff()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getMinimumSpeedToTakeOff).orElse(PlaneProperties.DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF);
+        return this.getPlaneProperties().getMinimumSpeedToTakeOff();
     }
 
     /**
@@ -391,7 +391,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getMaxFlapAngle()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getMaxFlapAngle).orElse(PlaneProperties.DEFAULT_MAX_FLAP_ANGLE);
+        return this.getPlaneProperties().getMaxFlapAngle();
     }
 
     /**
@@ -399,7 +399,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getFlapStrength()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getFlapStrength).orElse(PlaneProperties.DEFAULT_FLAP_STRENGTH);
+        return this.getPlaneProperties().getFlapStrength();
     }
 
     /**
@@ -407,7 +407,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getFlapSensitivity()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getFlapSensitivity).orElse(PlaneProperties.DEFAULT_FLAP_SENSITIVITY);
+        return this.getPlaneProperties().getFlapSensitivity();
     }
 
     /**
@@ -415,7 +415,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getMaxElevatorAngle()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getMaxElevatorAngle).orElse(PlaneProperties.DEFAULT_MAX_ELEVATOR_ANGLE);
+        return this.getPlaneProperties().getMaxElevatorAngle();
     }
 
     /**
@@ -423,7 +423,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getElevatorStrength()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getElevatorStrength).orElse(PlaneProperties.DEFAULT_ELEVATOR_STRENGTH);
+        return this.getPlaneProperties().getElevatorStrength();
     }
 
     /**
@@ -431,7 +431,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getElevatorSensitivity()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getElevatorSensitivity).orElse(PlaneProperties.DEFAULT_ELEVATOR_SENSITIVITY);
+        return this.getPlaneProperties().getElevatorSensitivity();
     }
 
     /**
@@ -439,7 +439,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
      */
     public final float getMaxTurnAngle()
     {
-        return this.getProperties().getExtended(PlaneProperties.class).map(PlaneProperties::getMaxTurnAngle).orElse(PlaneProperties.DEFAULT_MAX_TURN_ANGLE);
+        return this.getPlaneProperties().getMaxTurnAngle();
+    }
+
+    protected final PlaneProperties getPlaneProperties()
+    {
+        return this.getProperties().getExtended(PlaneProperties.class);
     }
 
     /*
@@ -515,5 +520,4 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         return MathHelper.lerp(partialTicks, this.prevWheelRotation, this.wheelRotation);
     }
-
 }

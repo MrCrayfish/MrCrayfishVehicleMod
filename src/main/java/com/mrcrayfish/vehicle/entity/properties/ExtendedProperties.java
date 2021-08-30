@@ -22,19 +22,24 @@ public abstract class ExtendedProperties
         FACTORY.putIfAbsent(id, supplier);
     }
 
-    public static Optional<ResourceLocation> getId(Class<? extends ExtendedProperties> clazz)
+    public static ResourceLocation getId(Class<? extends ExtendedProperties> clazz)
     {
-        return Optional.ofNullable(CLASS_TO_ID.get(clazz));
+        ResourceLocation id = CLASS_TO_ID.get(clazz);
+        if(id == null)
+        {
+            throw new IllegalStateException("No extended properties registered for class: " + clazz.getSimpleName());
+        }
+        return id;
     }
 
-    public static Optional<? extends ExtendedProperties> create(ResourceLocation id, JsonObject object)
+    public static ExtendedProperties create(ResourceLocation id, JsonObject object)
     {
         Function<JsonObject, ? extends ExtendedProperties> factory = FACTORY.get(id);
-        if(factory != null)
+        if(factory == null)
         {
-            return Optional.of(factory.apply(object));
+            throw new IllegalStateException("No extended properties registered for id: " + id);
         }
-        return Optional.empty();
+        return factory.apply(object);
     }
 
     public ResourceLocation getId()
