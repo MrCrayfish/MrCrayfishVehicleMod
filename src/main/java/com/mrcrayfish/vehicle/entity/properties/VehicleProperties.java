@@ -790,12 +790,16 @@ public class VehicleProperties
 
         private List<Wheel> generateScaledWheels()
         {
-            List<Wheel> copy = this.wheels.stream().map(Wheel::copy).collect(Collectors.toList());
-            copy.stream().filter(Wheel::isAutoScale).forEach(wheel -> {
+            return this.wheels.stream().map(wheel -> {
+                if(!wheel.isAutoScale())
+                    return wheel;
                 double scale = ((this.wheelOffset + wheel.getOffsetY()) * 2) / WHEEL_RADIUS;
-                wheel.updateScale(scale);
-            });
-            return copy;
+                double xScale = wheel.getScale().x != 0.0 ? wheel.getScale().x : scale;
+                double yScale = wheel.getScale().y != 0.0 ? wheel.getScale().y : scale;
+                double zScale = wheel.getScale().z != 0.0 ? wheel.getScale().z : scale;
+                Vector3d newScale = new Vector3d(xScale, yScale, zScale);
+                return wheel.rescale(newScale);
+            }).collect(Collectors.toList());
         }
 
         private void calculateWheelOffset()

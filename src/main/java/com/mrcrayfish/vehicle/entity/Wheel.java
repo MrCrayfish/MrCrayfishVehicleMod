@@ -9,14 +9,14 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public class Wheel
 {
-    private Vector3d offset;
-    private Vector3d scale;
-    private float width;
-    private Side side;
-    private Position position;
-    private boolean autoScale;
-    private boolean particles;
-    private boolean render;
+    private final Vector3d offset;
+    private final Vector3d scale;
+    private final float width;
+    private final Side side;
+    private final Position position;
+    private final boolean autoScale;
+    private final boolean particles;
+    private final boolean render;
 
     protected Wheel(Vector3d offset, Vector3d scale, float width, Side side, Position position, boolean autoScale, boolean particles, boolean render)
     {
@@ -28,12 +28,6 @@ public class Wheel
         this.autoScale = autoScale;
         this.particles = particles;
         this.render = render;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getWheelRotation(LandVehicleEntity vehicle, float partialTicks)
-    {
-        return this.position == Position.REAR ? vehicle.getRearWheelRotation(partialTicks) : vehicle.getFrontWheelRotation(partialTicks);
     }
 
     public Vector3d getOffset()
@@ -91,15 +85,6 @@ public class Wheel
         return position;
     }
 
-    //TODO move this outside
-    public void updateScale(double scale)
-    {
-        double xScale = this.scale.x != 0.0 ? this.scale.x : scale;
-        double yScale = this.scale.y != 0.0 ? this.scale.y : scale;
-        double zScale = this.scale.z != 0.0 ? this.scale.z : scale;
-        this.scale = new Vector3d(xScale, yScale, zScale);
-    }
-
     /**
      * Indicates that the wheel scale is to be generated. This is only used when loading vehicle
      * properties and has no other significant use.
@@ -137,9 +122,9 @@ public class Wheel
         return render;
     }
 
-    public Wheel copy()
+    public Wheel rescale(Vector3d newScale)
     {
-        return new Wheel(this.offset, this.scale, this.width, this.side, this.position, this.autoScale, this.particles, this.render);
+        return new Wheel(this.offset, newScale, this.width, this.side, this.position, this.autoScale, this.particles, this.render);
     }
 
     public enum Side
