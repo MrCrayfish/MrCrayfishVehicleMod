@@ -125,6 +125,7 @@ public class VehicleHelper
             if(!(entity instanceof LivingEntity))
                 return 0F;
 
+            //TODO make the 0.25F configurable
             float strength = 0.25F * (1.0F - (float) vehicle.getSpeed() / 30F);
 
             if(ClientHandler.isControllableLoaded())

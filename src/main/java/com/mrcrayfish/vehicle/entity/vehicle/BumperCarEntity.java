@@ -15,8 +15,6 @@ public class BumperCarEntity extends LandVehicleEntity
     public BumperCarEntity(EntityType<? extends BumperCarEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(10);
-        this.setSteeringSpeed(20);
         this.maxUpStep = 0.625F;
         //TODO figure out fuel system
     }

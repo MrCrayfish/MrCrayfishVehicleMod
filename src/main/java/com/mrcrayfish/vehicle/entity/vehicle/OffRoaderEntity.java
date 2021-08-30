@@ -14,7 +14,6 @@ public class OffRoaderEntity extends LandVehicleEntity
     public OffRoaderEntity(EntityType<? extends OffRoaderEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(18F);
         this.setFuelCapacity(25000F);
     }
 

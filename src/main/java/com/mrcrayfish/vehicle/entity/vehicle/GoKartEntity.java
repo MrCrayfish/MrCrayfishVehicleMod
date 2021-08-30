@@ -15,7 +15,6 @@ public class GoKartEntity extends LandVehicleEntity
     public GoKartEntity(EntityType<? extends GoKartEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(20F);
         this.maxUpStep = 0.625F;
         this.setFuelConsumption(0.5F);
     }

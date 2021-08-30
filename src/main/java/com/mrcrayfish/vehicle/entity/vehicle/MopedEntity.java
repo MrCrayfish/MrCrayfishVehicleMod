@@ -74,8 +74,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     public MopedEntity(EntityType<? extends MopedEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(12F);
-        this.setSteeringSpeed(5);
         this.setMaxSteeringAngle(45);
         this.setFuelCapacity(12000F);
         this.setFuelConsumption(0.225F);

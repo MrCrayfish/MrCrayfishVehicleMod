@@ -14,8 +14,6 @@ public class MiniBusEntity extends LandVehicleEntity
     public MiniBusEntity(EntityType<? extends MiniBusEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(15F);
-        this.setSteeringSpeed(4);
         this.setFuelCapacity(30000F);
         this.setFuelConsumption(0.375F);
     }

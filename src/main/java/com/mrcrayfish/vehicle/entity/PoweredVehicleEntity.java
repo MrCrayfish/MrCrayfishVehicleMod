@@ -87,7 +87,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<Float> THROTTLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> HANDBRAKE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> STEERING_ANGLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Float> STEERING_SPEED = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Float> MAX_STEERING_ANGLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> HORN = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
@@ -153,7 +152,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(THROTTLE, 0F);
         this.entityData.define(HANDBRAKE, false);
         this.entityData.define(STEERING_ANGLE, 0F);
-        this.entityData.define(STEERING_SPEED, 6F);
         this.entityData.define(MAX_STEERING_ANGLE, 35F);
         this.entityData.define(HORN, false);
         this.entityData.define(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get());
@@ -535,10 +533,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             this.setWheelStack(ItemStack.of(compound.getCompound("WheelStack")));
         }
-        if(compound.contains("TurnSensitivity", Constants.NBT.TAG_INT))
-        {
-            this.setSteeringSpeed(compound.getInt("TurnSensitivity"));
-        }
         if(compound.contains("MaxTurnAngle", Constants.NBT.TAG_INT))
         {
             this.setMaxSteeringAngle(compound.getInt("MaxTurnAngle"));
@@ -578,7 +572,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         CommonUtils.writeItemStackToTag(compound, "EngineStack", this.getEngineStack());
         CommonUtils.writeItemStackToTag(compound, "WheelStack", this.getWheelStack());
         compound.putFloat("AccelerationSpeed", this.getAccelerationSpeed());
-        compound.putFloat("SteeringSpeed", this.getSteeringSpeed());
         compound.putFloat("MaxSteeringAngle", this.getMaxSteeringAngle());
         compound.putFloat("StepHeight", this.maxUpStep);
         compound.putBoolean("RequiresFuel", this.requiresFuel());
@@ -642,16 +635,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float getThrottle()
     {
         return this.throttle.get(this);
-    }
-
-    public void setSteeringSpeed(float speed)
-    {
-        this.entityData.set(STEERING_SPEED, speed);
-    }
-
-    public float getSteeringSpeed()
-    {
-        return this.entityData.get(STEERING_SPEED);
     }
 
     public void setMaxSteeringAngle(float maxAngle)

@@ -14,7 +14,6 @@ public class DuneBuggyEntity extends LandVehicleEntity
     public DuneBuggyEntity(EntityType<? extends DuneBuggyEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(10);
         this.maxUpStep = 0.5F;
         this.setFuelCapacity(5000F);
     }

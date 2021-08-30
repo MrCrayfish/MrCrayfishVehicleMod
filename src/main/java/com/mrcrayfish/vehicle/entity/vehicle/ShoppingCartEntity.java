@@ -18,7 +18,6 @@ public class ShoppingCartEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.setMaxSteeringAngle(90);
-        this.setSteeringSpeed(15);
         this.setFuelCapacity(0F);
         this.setFuelConsumption(0F);
     }

@@ -30,7 +30,6 @@ public class LawnMowerEntity extends LandVehicleEntity
     public LawnMowerEntity(EntityType<? extends LawnMowerEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(8);
         this.setFuelCapacity(5000F);
     }
 

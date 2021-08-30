@@ -15,8 +15,6 @@ public class JetSkiEntity extends BoatEntity
     public JetSkiEntity(EntityType<? extends JetSkiEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(15F);
-        this.setSteeringSpeed(10);
         this.setFuelConsumption(0.5F);
     }
 

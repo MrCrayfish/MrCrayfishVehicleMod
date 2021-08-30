@@ -15,7 +15,6 @@ public class AluminumBoatEntity extends BoatEntity
     public AluminumBoatEntity(EntityType<? extends AluminumBoatEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setSteeringSpeed(5);
         this.setMaxSteeringAngle(20);
         this.setFuelCapacity(25000F);
         this.setFuelConsumption(0.5F);

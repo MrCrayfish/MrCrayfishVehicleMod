@@ -15,8 +15,6 @@ public class DirtBikeEntity extends MotorcycleEntity
     public DirtBikeEntity(EntityType<? extends DirtBikeEntity> type, World worldIn)
     {
         super(type, worldIn);
-        //this.setMaxSpeed(18F);
-        this.setMaxSteeringAngle(35);
         this.setFuelCapacity(20000F);
         this.setFuelConsumption(0.35F);
     }
