@@ -239,7 +239,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         if(this.getThrottle() > 0)
         {
-            //TODO implement pitch
             return 200F + this.getProperties().getEnginePower();
         }
         else if(this.isFlying())

@@ -12,10 +12,6 @@ import net.minecraft.world.World;
  */
 public class SportsPlaneEntity extends PlaneEntity
 {
-    public float wheelSpeed;
-    public float wheelRotation;
-    public float prevWheelRotation;
-
     public SportsPlaneEntity(EntityType<? extends SportsPlaneEntity> type, World worldIn)
     {
         super(type, worldIn);
