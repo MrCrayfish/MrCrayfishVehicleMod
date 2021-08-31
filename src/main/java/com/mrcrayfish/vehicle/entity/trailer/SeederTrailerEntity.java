@@ -222,12 +222,6 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public double getHitchOffset()
-    {
-        return -16.0 * 1.1;
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
     public Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> getStaticInteractionBoxMap()
     {

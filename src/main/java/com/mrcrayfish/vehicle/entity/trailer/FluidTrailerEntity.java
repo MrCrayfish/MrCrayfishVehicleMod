@@ -100,12 +100,6 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     }
 
     @Override
-    public double getHitchOffset()
-    {
-        return -25.0;
-    }
-
-    @Override
     protected void readAdditionalSaveData(CompoundNBT compound)
     {
         super.readAdditionalSaveData(compound);

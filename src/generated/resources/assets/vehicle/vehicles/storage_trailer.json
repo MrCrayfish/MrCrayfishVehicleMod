@@ -14,5 +14,10 @@
             "scale": 1.1
         },
         "towBar": [ 0.0, 0.0, -12.0 ]
+    },
+    "extended": {
+        "vehicle:trailer": {
+            "hitchOffset": -16.0
+        }
     }
 }

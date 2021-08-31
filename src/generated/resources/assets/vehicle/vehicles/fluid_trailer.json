@@ -14,5 +14,10 @@
             "translate": [ 0.0, 0.325, 0.0 ],
             "scale": 1.1
         }
+    },
+    "extended": {
+        "vehicle:trailer": {
+            "hitchOffset": -25.0
+        }
     }
 }

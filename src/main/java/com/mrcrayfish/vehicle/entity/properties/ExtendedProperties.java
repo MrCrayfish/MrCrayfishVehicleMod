@@ -41,7 +41,7 @@ public abstract class ExtendedProperties
         return factory.apply(object);
     }
 
-    public ResourceLocation getId()
+    public final ResourceLocation getId()
     {
         return CLASS_TO_ID.get(this.getClass());
     }

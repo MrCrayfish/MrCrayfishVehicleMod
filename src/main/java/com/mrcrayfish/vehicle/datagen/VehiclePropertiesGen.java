@@ -1,6 +1,5 @@
 package com.mrcrayfish.vehicle.datagen;
 
-import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.Transform;
@@ -8,6 +7,7 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
+import com.mrcrayfish.vehicle.entity.properties.TrailerProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -715,30 +715,45 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
         this.add(ModEntities.FERTILIZER.get(), VehicleProperties.builder()
                 .setBodyTransform(Transform.create(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setDisplayTransform(Transform.create(0.0, 0.0, -0.15, 0.0, 0.0, 0.0, 1.35))
-                .setColored(true));
+                .setColored(true)
+                .addExtended(TrailerProperties.builder()
+                        .setHitchOffset(-17)
+                        .build()));
 
         this.add(ModEntities.FLUID_TRAILER.get(), VehicleProperties.builder()
                 .setBodyTransform(Transform.create(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setDisplayTransform(Transform.create(0.0, 0.0, -0.15, 0.0, 0.0, 0.0, 1.35))
                 .setHeldOffset(0.0, 3.0, 0.0)
-                .setColored(true));
+                .setColored(true)
+                .addExtended(TrailerProperties.builder()
+                        .setHitchOffset(-25)
+                        .build()));
 
         this.add(ModEntities.SEEDER.get(), VehicleProperties.builder()
                 .setBodyTransform(Transform.create(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setDisplayTransform(Transform.create(0.0, 0.0, -0.15, 0.0, 0.0, 0.0, 1.35))
-                .setColored(true));
+                .setColored(true)
+                .addExtended(TrailerProperties.builder()
+                        .setHitchOffset(-16)
+                        .build()));
 
         this.add(ModEntities.STORAGE_TRAILER.get(), VehicleProperties.builder()
                 .setBodyTransform(Transform.create(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setDisplayTransform(Transform.create(0.0, 0.0, -0.15, 0.0, 0.0, 0.0, 1.35))
                 .setTowBarPosition(0.0, 0.0, -12.0)
-                .setColored(true));
+                .setColored(true)
+                .addExtended(TrailerProperties.builder()
+                        .setHitchOffset(-16)
+                        .build()));
 
         this.add(ModEntities.VEHICLE_TRAILER.get(), VehicleProperties.builder()
                 .setBodyTransform(Transform.create(0.0, 0.325, 0.0, 0.0, 0.0, 0.0, 1.1))
                 .setDisplayTransform(Transform.create(0.0, 0.0, -0.15, 0.0, 0.0, 0.0, 1.35))
                 .setHeldOffset(0.0, 3.0, 0.0)
-                .setColored(true));
+                .setColored(true)
+                .addExtended(TrailerProperties.builder()
+                        .setHitchOffset(-25)
+                        .build()));
 
         this.add(new ResourceLocation("vehicle", "bath"), VehicleProperties.builder()
                 .setDisplayTransform(Transform.create(0.0, 0.0, -0.25, 0.0, 0.0, 0.0, 1.5))

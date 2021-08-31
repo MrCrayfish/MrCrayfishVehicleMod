@@ -55,12 +55,6 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public double getHitchOffset()
-    {
-        return -16.0 * 1.1;
-    }
-
-    @Override
     protected boolean canAddPassenger(Entity passenger)
     {
         return false;

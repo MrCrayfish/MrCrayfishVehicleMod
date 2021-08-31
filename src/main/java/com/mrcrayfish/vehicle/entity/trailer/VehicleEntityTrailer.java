@@ -93,10 +93,4 @@ public class VehicleEntityTrailer extends TrailerEntity
         }
         return super.processHit(result, rightClick);
     }
-
-    @Override
-    public double getHitchOffset()
-    {
-        return -25.0;
-    }
 }

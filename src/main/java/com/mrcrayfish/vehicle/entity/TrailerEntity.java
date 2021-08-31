@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.entity.properties.TrailerProperties;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
@@ -176,8 +177,8 @@ public abstract class TrailerEntity extends VehicleEntity
         this.lerpX = x;
         this.lerpY = y;
         this.lerpZ = z;
-        this.lerpYaw = (double) yaw;
-        this.lerpPitch = (double) pitch;
+        this.lerpYaw = yaw;
+        this.lerpPitch = pitch;
         this.lerpSteps = 1;
     }
 
@@ -187,7 +188,15 @@ public abstract class TrailerEntity extends VehicleEntity
         return false;
     }
 
-    public abstract double getHitchOffset();
+    public final double getHitchOffset()
+    {
+        return this.getTrailerProperties().getHitchOffset();
+    }
+
+    protected TrailerProperties getTrailerProperties()
+    {
+        return this.getProperties().getExtended(TrailerProperties.class);
+    }
 
     @Override
     protected boolean canRide(Entity entityIn)
