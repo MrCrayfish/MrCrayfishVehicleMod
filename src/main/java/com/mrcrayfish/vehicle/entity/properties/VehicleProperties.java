@@ -257,14 +257,14 @@ public class VehicleProperties
             if(axles.size() > 0) object.add("axles", axles);
 
             JsonObject display = new JsonObject();
-            this.addVector3dProperty(display, "held", properties.heldOffset);
-            this.addVector3dProperty(display, "trailer", properties.trailerOffset);
-            this.addPartPositionProperty(display, "gui", properties.displayTransform);
+            ExtraJSONUtils.write(display, "held", properties.heldOffset, Vector3d.ZERO);
+            ExtraJSONUtils.write(display, "trailer", properties.trailerOffset, Vector3d.ZERO);
+            ExtraJSONUtils.write(display, "gui", properties.displayTransform, Transform.DEFAULT);
             if(display.size() > 0) object.add("display", display);
 
             JsonObject position = new JsonObject();
-            this.addPartPositionProperty(position, "body", properties.bodyTransform);
-            this.addVector3dProperty(position, "towBar", properties.towBarPosition);
+            ExtraJSONUtils.write(position, "body", properties.bodyTransform, Transform.DEFAULT);
+            ExtraJSONUtils.write(position, "towBar", properties.towBarPosition, Vector3d.ZERO);
             if(position.size() > 0) object.add("position", position);
 
             this.writeWheels(properties, object);
@@ -289,13 +289,13 @@ public class VehicleProperties
             builder.setAxleOffset(JSONUtils.getAsFloat(axles, "offsetToGround", 0F));
 
             JsonObject display = JSONUtils.getAsJsonObject(object, "display", new JsonObject());
-            builder.setHeldOffset(this.getAsVector3d(display, "held", Vector3d.ZERO));
-            builder.setTrailerOffset(this.getAsVector3d(display, "trailer", Vector3d.ZERO));
-            this.callIfNonNull(builder::setDisplayTransform, ExtraJSONUtils.getAsTransform(display, "gui", Transform.DEFAULT));
+            builder.setHeldOffset(ExtraJSONUtils.getAsVector3d(display, "held", Vector3d.ZERO));
+            builder.setTrailerOffset(ExtraJSONUtils.getAsVector3d(display, "trailer", Vector3d.ZERO));
+            builder.setDisplayTransform(ExtraJSONUtils.getAsTransform(display, "gui", Transform.DEFAULT));
 
             JsonObject positions = JSONUtils.getAsJsonObject(object, "position", new JsonObject());
-            this.callIfNonNull(builder::setBodyTransform, ExtraJSONUtils.getAsTransform(positions, "body", Transform.DEFAULT));
-            builder.setTowBarPosition(this.getAsVector3d(positions, "towBar", Vector3d.ZERO));
+            builder.setBodyTransform(ExtraJSONUtils.getAsTransform(positions, "body", Transform.DEFAULT));
+            builder.setTowBarPosition(ExtraJSONUtils.getAsVector3d(positions, "towBar", Vector3d.ZERO));
 
             this.readWheels(builder, object);
             this.readSeats(builder, object);
@@ -303,38 +303,6 @@ public class VehicleProperties
             this.readExtended(builder, object);
 
             return builder.build(true);
-        }
-
-        private IEngineType getAsEngineType(JsonObject object, String memberName, IEngineType defaultValue)
-        {
-            String rawId = JSONUtils.getAsString(object, memberName, "");
-            if(!rawId.isEmpty())
-            {
-                ResourceLocation id = new ResourceLocation(rawId);
-                IEngineType type = VehicleRegistry.getEngineTypeFromId(id);
-                return type != null ? type : defaultValue;
-            }
-            return defaultValue;
-        }
-
-        private Vector3d getAsVector3d(JsonObject object, String memberName, Vector3d defaultValue)
-        {
-            if(object.has(memberName))
-            {
-                JsonArray jsonArray = JSONUtils.getAsJsonArray(object, memberName);
-                if(jsonArray.size() != 3)
-                {
-                    throw new JsonParseException("Expected 3 " + memberName + " values, found: " + jsonArray.size());
-                }
-                else
-                {
-                    double x = JSONUtils.convertToFloat(jsonArray.get(0), memberName + "[0]");
-                    double y = JSONUtils.convertToFloat(jsonArray.get(1), memberName + "[1]");
-                    double z = JSONUtils.convertToFloat(jsonArray.get(2), memberName + "[2]");
-                    return new Vector3d(x, y, z);
-                }
-            }
-            return defaultValue;
         }
 
         private void readWheels(VehicleProperties.Builder builder, JsonObject object)
@@ -345,10 +313,10 @@ public class VehicleProperties
                 for(JsonElement element : jsonArray)
                 {
                     JsonObject wheelObject = element.getAsJsonObject();
-                    Vector3d offset = this.getAsVector3d(wheelObject, "offset", Vector3d.ZERO);
-                    Vector3d scale = this.getAsVector3d(wheelObject, "scale", Vector3d.ZERO);
-                    Wheel.Side side = this.getAsEnum(wheelObject, "side", Wheel.Side.class, Wheel.Side.NONE);
-                    Wheel.Position position = this.getAsEnum(wheelObject, "position", Wheel.Position.class, Wheel.Position.NONE);
+                    Vector3d offset = ExtraJSONUtils.getAsVector3d(wheelObject, "offset", Vector3d.ZERO);
+                    Vector3d scale = ExtraJSONUtils.getAsVector3d(wheelObject, "scale", Vector3d.ZERO);
+                    Wheel.Side side = ExtraJSONUtils.getAsEnum(wheelObject, "side", Wheel.Side.class, Wheel.Side.NONE);
+                    Wheel.Position position = ExtraJSONUtils.getAsEnum(wheelObject, "position", Wheel.Position.class, Wheel.Position.NONE);
                     boolean autoScale = JSONUtils.getAsBoolean(wheelObject, "autoScale", false);
                     boolean particles = JSONUtils.getAsBoolean(wheelObject, "particles", false);
                     boolean render = JSONUtils.getAsBoolean(wheelObject, "render", true);
@@ -374,8 +342,8 @@ public class VehicleProperties
                     JsonObject wheelObject = new JsonObject();
                     if(wheel.getSide() != Wheel.Side.NONE) wheelObject.addProperty("side", wheel.getSide().name().toLowerCase(Locale.ENGLISH));
                     if(wheel.getPosition() != Wheel.Position.NONE) wheelObject.addProperty("position", wheel.getPosition().name().toLowerCase(Locale.ENGLISH));
-                    this.addVector3dProperty(wheelObject, "offset", wheel.getOffset());
-                    this.addVector3dProperty(wheelObject, "scale", wheel.getScale());
+                    ExtraJSONUtils.write(wheelObject, "offset", wheel.getOffset(), Vector3d.ZERO);
+                    ExtraJSONUtils.write(wheelObject, "scale", wheel.getScale(), Vector3d.ZERO);
                     if(wheel.isAutoScale()) wheelObject.addProperty("autoScale", wheel.isAutoScale());
                     if(wheel.shouldSpawnParticles()) wheelObject.addProperty("particles", wheel.shouldSpawnParticles());
                     if(!wheel.shouldRender()) wheelObject.addProperty("render", wheel.shouldRender());
@@ -393,7 +361,7 @@ public class VehicleProperties
                 for(JsonElement element : jsonArray)
                 {
                     JsonObject seatObject = element.getAsJsonObject();
-                    Vector3d position = this.getAsVector3d(seatObject, "position", Vector3d.ZERO);
+                    Vector3d position = ExtraJSONUtils.getAsVector3d(seatObject, "position", Vector3d.ZERO);
                     boolean driver = JSONUtils.getAsBoolean(seatObject, "driver", false);
                     float yawOffset = JSONUtils.getAsFloat(seatObject, "yawOffset", 0F);
                     builder.addSeat(new Seat(position, driver, yawOffset));
@@ -409,7 +377,7 @@ public class VehicleProperties
                 for(Seat seat : properties.getSeats())
                 {
                     JsonObject seatObject = new JsonObject();
-                    this.addVector3dProperty(seatObject, "position", seat.getPosition());
+                    ExtraJSONUtils.write(seatObject, "position", seat.getPosition(), Vector3d.ZERO);
                     if(seat.isDriverSeat()) seatObject.addProperty("driver", seat.isDriverSeat());
                     if(seat.getYawOffset() != 0) seatObject.addProperty("yawOffset", seat.getYawOffset());
                     seats.add(seatObject);
@@ -425,8 +393,8 @@ public class VehicleProperties
                 JsonObject cameraObject = JSONUtils.getAsJsonObject(object, "camera", new JsonObject());
                 CameraProperties.Type type = CameraProperties.Type.fromId(JSONUtils.getAsString(cameraObject, "type", "locked"));
                 float strength = JSONUtils.getAsFloat(cameraObject, "strength", 1.0F);
-                Vector3d position = this.getAsVector3d(cameraObject, "position", Vector3d.ZERO);
-                Vector3d rotation = this.getAsVector3d(cameraObject, "rotation", Vector3d.ZERO);
+                Vector3d position = ExtraJSONUtils.getAsVector3d(cameraObject, "position", Vector3d.ZERO);
+                Vector3d rotation = ExtraJSONUtils.getAsVector3d(cameraObject, "rotation", Vector3d.ZERO);
                 double distance = JSONUtils.getAsFloat(cameraObject, "distance", 4.0F);
                 builder.setCamera(new CameraProperties(type, strength, position, rotation, distance));
             }
@@ -440,8 +408,8 @@ public class VehicleProperties
             JsonObject cameraObject = new JsonObject();
             if(camera.getType() != CameraProperties.Type.LOCKED) cameraObject.addProperty("type", camera.getType().getId());
             if(camera.getStrength() != 1.0F) cameraObject.addProperty("strength", camera.getStrength());
-            this.addVector3dProperty(cameraObject, "position", camera.getPosition());
-            this.addVector3dProperty(cameraObject, "rotation", camera.getRotation());
+            ExtraJSONUtils.write(cameraObject, "position", camera.getPosition(), Vector3d.ZERO);
+            ExtraJSONUtils.write(cameraObject, "rotation", camera.getRotation(), Vector3d.ZERO);
             if(camera.getDistance() != 4.0) cameraObject.addProperty("distance", camera.getDistance());
             object.add("camera", cameraObject);
         }
@@ -467,48 +435,6 @@ public class VehicleProperties
             if(extended.size() > 0)
             {
                 object.add("extended", extended);
-            }
-        }
-
-        private <T extends Enum<?>> T getAsEnum(JsonObject object, String memberName, Class<T> enumClass, T defaultValue)
-        {
-            if(object.has(memberName))
-            {
-                String enumString = JSONUtils.getAsString(object, memberName);
-                return Stream.of(enumClass.getEnumConstants()).filter(side -> side.name().equalsIgnoreCase(enumString)).findFirst().orElse(defaultValue);
-            }
-            return defaultValue;
-        }
-
-        private <T> void callIfNonNull(Consumer<T> consumer, @Nullable T value)
-        {
-            if(value != null)
-            {
-                consumer.accept(value);
-            }
-        }
-
-        private void addVector3dProperty(JsonObject parent, String memberName, Vector3d vec)
-        {
-            if(vec != null && !vec.equals(Vector3d.ZERO))
-            {
-                JsonArray array = new JsonArray();
-                array.add(Double.parseDouble(FORMAT.format(vec.x)));
-                array.add(Double.parseDouble(FORMAT.format(vec.y)));
-                array.add(Double.parseDouble(FORMAT.format(vec.z)));
-                parent.add(memberName, array);
-            }
-        }
-
-        private void addPartPositionProperty(JsonObject parent, String memberName, Transform position)
-        {
-            if(position != null && position != Transform.DEFAULT)
-            {
-                JsonObject partPositionObject = new JsonObject();
-                this.addVector3dProperty(partPositionObject, "translate", position.getTranslate());
-                this.addVector3dProperty(partPositionObject, "rotation", position.getRotation());
-                if(position.getScale() != 1) partPositionObject.addProperty("scale", Double.parseDouble(FORMAT.format(position.getScale())));
-                if(partPositionObject.size() > 0) parent.add(memberName, partPositionObject);
             }
         }
     }

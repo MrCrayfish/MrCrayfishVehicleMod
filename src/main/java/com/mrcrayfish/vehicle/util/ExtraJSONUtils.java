@@ -13,6 +13,7 @@ import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
+import java.util.stream.Stream;
 
 /**
  * Author: MrCrayfish
@@ -127,6 +128,16 @@ public class ExtraJSONUtils
         if(object.has(key) && object.get(key).isJsonPrimitive())
         {
             return new ResourceLocation(JSONUtils.getAsString(object, key));
+        }
+        return defaultValue;
+    }
+
+    public static <T extends Enum<?>> T getAsEnum(JsonObject object, String key, Class<T> enumClass, T defaultValue)
+    {
+        if(object.has(key) && object.get(key).isJsonPrimitive())
+        {
+            String enumString = JSONUtils.getAsString(object, key);
+            return Stream.of(enumClass.getEnumConstants()).filter(side -> side.name().equalsIgnoreCase(enumString)).findFirst().orElse(defaultValue);
         }
         return defaultValue;
     }
