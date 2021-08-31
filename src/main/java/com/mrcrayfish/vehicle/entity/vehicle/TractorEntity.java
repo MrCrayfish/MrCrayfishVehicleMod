@@ -17,11 +17,6 @@ public class TractorEntity extends LandVehicleEntity
         super(type, worldIn);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_TRACTOR_ENGINE.get();
-    }
 
     @Override
     public FuelPortType getFuelPortType()

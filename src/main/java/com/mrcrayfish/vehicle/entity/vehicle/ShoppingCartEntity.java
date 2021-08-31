@@ -42,9 +42,4 @@ public class ShoppingCartEntity extends LandVehicleEntity
         }
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return null;
-    }
 }

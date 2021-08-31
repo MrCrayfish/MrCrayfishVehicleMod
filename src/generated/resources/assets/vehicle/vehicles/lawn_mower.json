@@ -70,7 +70,8 @@
             },
             "canLockWithKey": false,
             "frontAxleOffset": 13.5,
-            "rearAxleOffset": -10.7
+            "rearAxleOffset": -10.7,
+            "engineSound": "vehicle:entity.atv.engine"
         }
     }
 }

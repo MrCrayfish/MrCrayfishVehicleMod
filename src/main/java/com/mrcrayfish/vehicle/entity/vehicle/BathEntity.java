@@ -17,12 +17,6 @@ public class BathEntity extends PlaneEntity
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return null;
-    }
-
-    @Override
     public void onVehicleTick()
     {
         if(this.isFlying() && this.getControllingPassenger() != null)

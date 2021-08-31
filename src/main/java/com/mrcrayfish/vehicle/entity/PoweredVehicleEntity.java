@@ -72,6 +72,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -157,12 +158,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(WHEEL_STACK, ItemStack.EMPTY);
     }
 
-    public abstract SoundEvent getEngineSound();
-
-    //TODO ability to change with nbt
-    public SoundEvent getHornSound()
+    public final SoundEvent getEngineSound()
     {
-        return ModSounds.ENTITY_VEHICLE_HORN.get();
+        return ForgeRegistries.SOUND_EVENTS.getValue(this.getPoweredProperties().getEngineSound());
+    }
+
+    public final SoundEvent getHornSound()
+    {
+        return ForgeRegistries.SOUND_EVENTS.getValue(this.getPoweredProperties().getHornSound());
     }
 
     public void playFuelPortOpenSound()

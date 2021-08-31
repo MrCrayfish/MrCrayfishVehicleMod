@@ -16,11 +16,6 @@ public class OffRoaderEntity extends LandVehicleEntity
         super(type, worldIn);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
 
     @Override
     public boolean canMountTrailer()

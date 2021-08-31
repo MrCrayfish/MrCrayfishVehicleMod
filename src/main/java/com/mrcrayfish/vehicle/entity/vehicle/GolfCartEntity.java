@@ -18,12 +18,6 @@ public class GolfCartEntity extends HelicopterEntity
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_VEHICLE_HELICOPTER_ROTOR.get();
-    }
-
-    @Override
     public boolean canMountTrailer()
     {
         return false;

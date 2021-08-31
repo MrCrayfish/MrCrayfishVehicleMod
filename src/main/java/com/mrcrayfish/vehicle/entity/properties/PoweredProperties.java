@@ -1,12 +1,16 @@
 package com.mrcrayfish.vehicle.entity.properties;
 
 import com.google.gson.JsonObject;
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.util.JSONUtils;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+
+import javax.annotation.Nullable;
 
 /**
  * Author: MrCrayfish
@@ -33,6 +37,8 @@ public final class PoweredProperties extends ExtendedProperties
     public static final boolean DEFAULT_CAN_LOCK_WITH_KEY = true;
     public static final Vector3d DEFAULT_FRONT_AXLE_POSITION = Vector3d.ZERO;
     public static final Vector3d DEFAULT_REAR_AXLE_POSITION = Vector3d.ZERO;
+    public static final ResourceLocation DEFAULT_ENGINE_SOUND = null;
+    public static final ResourceLocation DEFAULT_HORN_SOUND = new ResourceLocation(Reference.MOD_ID, "entity.vehicle.horn");
 
     private final boolean canDriveUpBlocks;
     private final float maxSteeringAngle;
@@ -54,6 +60,8 @@ public final class PoweredProperties extends ExtendedProperties
     private final boolean canLockWithKey;
     private final Vector3d frontAxleOffset;
     private final Vector3d rearAxleOffset;
+    private final ResourceLocation engineSound;
+    private final ResourceLocation hornSound;
 
     public PoweredProperties(JsonObject object)
     {
@@ -77,9 +85,11 @@ public final class PoweredProperties extends ExtendedProperties
         this.canLockWithKey = JSONUtils.getAsBoolean(object, "canLockWithKey", DEFAULT_CAN_LOCK_WITH_KEY);
         this.frontAxleOffset = new Vector3d(0, 0, JSONUtils.getAsFloat(object, "frontAxleOffset", 0F));
         this.rearAxleOffset = new Vector3d(0, 0, JSONUtils.getAsFloat(object, "rearAxleOffset", 0F));
+        this.engineSound = ExtraJSONUtils.getAsResourceLocation(object, "engineSound", DEFAULT_ENGINE_SOUND);
+        this.hornSound = ExtraJSONUtils.getAsResourceLocation(object, "hornSound", DEFAULT_HORN_SOUND);
     }
 
-    public PoweredProperties(boolean canDriveUpBlocks, float maxSteeringAngle, boolean requiresEnergy, float energyCapacity, float energyConsumptionPerTick, IEngineType engineType, float enginePower, float minEnginePitch, float maxEnginePitch, boolean renderEngine, Transform engineTransform, Transform exhaustTransform, boolean showExhaustFumes, Vector3d exhaustFumesPosition, Transform fuelFillerTransform, Transform ignitionTransform, boolean hasHorn, boolean canLockWithKey, Vector3d frontAxleOffset, Vector3d rearAxleOffset)
+    public PoweredProperties(boolean canDriveUpBlocks, float maxSteeringAngle, boolean requiresEnergy, float energyCapacity, float energyConsumptionPerTick, IEngineType engineType, float enginePower, float minEnginePitch, float maxEnginePitch, boolean renderEngine, Transform engineTransform, Transform exhaustTransform, boolean showExhaustFumes, Vector3d exhaustFumesPosition, Transform fuelFillerTransform, Transform ignitionTransform, boolean hasHorn, boolean canLockWithKey, Vector3d frontAxleOffset, Vector3d rearAxleOffset, ResourceLocation engineSound, ResourceLocation hornSound)
     {
         this.canDriveUpBlocks = canDriveUpBlocks;
         this.maxSteeringAngle = maxSteeringAngle;
@@ -101,6 +111,8 @@ public final class PoweredProperties extends ExtendedProperties
         this.canLockWithKey = canLockWithKey;
         this.frontAxleOffset = frontAxleOffset;
         this.rearAxleOffset = rearAxleOffset;
+        this.engineSound = engineSound;
+        this.hornSound = hornSound;
     }
 
     public boolean canDriveUpBlocks()
@@ -203,6 +215,17 @@ public final class PoweredProperties extends ExtendedProperties
         return this.rearAxleOffset;
     }
 
+    @Nullable
+    public ResourceLocation getEngineSound()
+    {
+        return this.engineSound;
+    }
+
+    public ResourceLocation getHornSound()
+    {
+        return this.hornSound;
+    }
+
     @Override
     public void serialize(JsonObject object)
     {
@@ -226,6 +249,8 @@ public final class PoweredProperties extends ExtendedProperties
         ExtraJSONUtils.write(object, "canLockWithKey", this.canLockWithKey, DEFAULT_CAN_LOCK_WITH_KEY);
         ExtraJSONUtils.write(object, "frontAxleOffset", this.frontAxleOffset.z, DEFAULT_FRONT_AXLE_POSITION.z);
         ExtraJSONUtils.write(object, "rearAxleOffset", this.rearAxleOffset.z, DEFAULT_REAR_AXLE_POSITION.z);
+        ExtraJSONUtils.write(object, "engineSound", this.engineSound, DEFAULT_ENGINE_SOUND);
+        ExtraJSONUtils.write(object, "hornSound", this.hornSound, DEFAULT_HORN_SOUND);
     }
 
     public static Builder builder()
@@ -255,6 +280,8 @@ public final class PoweredProperties extends ExtendedProperties
         private boolean canLockWithKey = DEFAULT_CAN_LOCK_WITH_KEY;
         private Vector3d frontAxleOffset = DEFAULT_FRONT_AXLE_POSITION;
         private Vector3d rearAxleOffset = DEFAULT_REAR_AXLE_POSITION;
+        private ResourceLocation engineSound = DEFAULT_ENGINE_SOUND;
+        private ResourceLocation hornSound = DEFAULT_HORN_SOUND;
 
         public Builder setCanDriveUpBlocks(boolean canDriveUpBlocks)
         {
@@ -376,9 +403,21 @@ public final class PoweredProperties extends ExtendedProperties
             return this;
         }
 
+        public Builder setEngineSound(ResourceLocation engineSound)
+        {
+            this.engineSound = engineSound;
+            return this;
+        }
+
+        public Builder setHornSound(ResourceLocation hornSound)
+        {
+            this.hornSound = hornSound;
+            return this;
+        }
+
         public PoweredProperties build()
         {
-            return new PoweredProperties(this.canDriveUpBlocks, this.maxSteeringAngle, this.requiresEnergy, this.energyCapacity, this.energyConsumptionPerTick, this.engineType, this.enginePower, this.minEnginePitch, this.maxEnginePitch, this.renderEngine, this.engineTransform, this.exhaustTransform, this.showExhaustFumes, this.exhaustFumesPosition, this.fuelFillerTransform, this.ignitionTransform, this.hasHorn, this.canLockWithKey, this.frontAxleOffset, this.rearAxleOffset);
+            return new PoweredProperties(this.canDriveUpBlocks, this.maxSteeringAngle, this.requiresEnergy, this.energyCapacity, this.energyConsumptionPerTick, this.engineType, this.enginePower, this.minEnginePitch, this.maxEnginePitch, this.renderEngine, this.engineTransform, this.exhaustTransform, this.showExhaustFumes, this.exhaustFumesPosition, this.fuelFillerTransform, this.ignitionTransform, this.hasHorn, this.canLockWithKey, this.frontAxleOffset, this.rearAxleOffset, this.engineSound, this.hornSound);
         }
     }
 }

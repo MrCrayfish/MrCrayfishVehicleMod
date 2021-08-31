@@ -11,6 +11,7 @@ import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 
+import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 
 /**
@@ -68,6 +69,14 @@ public class ExtraJSONUtils
         }
     }
 
+    public static void write(JsonObject object, String key, @Nullable ResourceLocation resourceLocation, @Nullable ResourceLocation defaultValue)
+    {
+        if(resourceLocation != null && !resourceLocation.equals(defaultValue))
+        {
+            object.addProperty(key, resourceLocation.toString());
+        }
+    }
+
     public static Vector3d getAsVector3d(JsonObject object, String memberName, Vector3d defaultValue)
     {
         if(object.has(memberName))
@@ -109,6 +118,15 @@ public class ExtraJSONUtils
             ResourceLocation id = new ResourceLocation(rawId);
             IEngineType type = VehicleRegistry.getEngineTypeFromId(id);
             return type != null ? type : defaultValue;
+        }
+        return defaultValue;
+    }
+
+    public static ResourceLocation getAsResourceLocation(JsonObject object, String key, ResourceLocation defaultValue)
+    {
+        if(object.has(key) && object.get(key).isJsonPrimitive())
+        {
+            return new ResourceLocation(JSONUtils.getAsString(object, key));
         }
         return defaultValue;
     }

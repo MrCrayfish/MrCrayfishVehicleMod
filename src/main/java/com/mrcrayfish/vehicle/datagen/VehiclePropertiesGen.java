@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.datagen;
 
+import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.Transform;
@@ -9,6 +10,7 @@ import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 
@@ -43,6 +45,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyCapacity(25000F)
                         .setEnergyConsumptionPerTick(0.5F)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_SPEED_BOAT_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.ATV.get(), VehicleProperties.builder()
@@ -88,6 +91,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(10.5)
                         .setRearAxleOffset(-10.5)
                         .setEnergyCapacity(20000F)
+                        .setEngineSound(ModSounds.ENTITY_ATV_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.BUMPER_CAR.get(), VehicleProperties.builder()
@@ -127,6 +131,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(8.5)
                         .setRearAxleOffset(-8.5)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_BUMPER_CAR_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.DIRT_BIKE.get(), VehicleProperties.builder()
@@ -162,6 +167,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setShowExhaustFumes(true)
                         .setExhaustFumesPosition(-1, 16, -16) //TODO I think this will be wrong
                         .setRenderEngine(true)
+                        .setEngineSound(ModSounds.ENTITY_DIRT_BIKE_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.DUNE_BUGGY.get(), VehicleProperties.builder()
@@ -197,6 +203,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRearAxleOffset(-5.7)
                         .setEnergyCapacity(5000F)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_BUMPER_CAR_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.GO_KART.get(), VehicleProperties.builder()
@@ -242,6 +249,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setShowExhaustFumes(true)
                         .setExhaustFumesPosition(0, 8, -16) // TODO might be wrong
                         .setRenderEngine(true)
+                        .setEngineSound(ModSounds.ENTITY_GO_KART_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.GOLF_CART.get(), VehicleProperties.builder()
@@ -285,6 +293,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setIgnitionTransform(Transform.create(-8.5, 2.75, 8.5, -67.5, 0.0, 0.0, 0.5))
                         .setFrontAxleOffset(16.0)
                         .setRearAxleOffset(-12.5)
+                        .setEngineSound(ModSounds.ENTITY_VEHICLE_HELICOPTER_ROTOR.getId())
                         .build()));
 
         this.add(ModEntities.JET_SKI.get(), VehicleProperties.builder()
@@ -304,6 +313,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFuelFillerTransform(Transform.create(0.0, 9.25, 8.5, -90, 0.0, 0.0, 0.35))
                         .setEnergyConsumptionPerTick(0.5F)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_SPEED_BOAT_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.LAWN_MOWER.get(), VehicleProperties.builder()
@@ -347,6 +357,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRearAxleOffset(-10.7)
                         .setEnergyCapacity(5000F)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_ATV_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.MINI_BIKE.get(), VehicleProperties.builder()
@@ -382,6 +393,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setShowExhaustFumes(true)
                         .setExhaustFumesPosition(0, 8, 0)
                         .setRenderEngine(true)
+                        .setEngineSound(ModSounds.ENTITY_GO_KART_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.MINI_BUS.get(), VehicleProperties.builder()
@@ -431,6 +443,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRearAxleOffset(-14.5)
                         .setEnergyCapacity(30000F)
                         .setEnergyConsumptionPerTick(0.375F)
+                        .setEngineSound(ModSounds.ENTITY_MINI_BUS_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.MOPED.get(), VehicleProperties.builder()
@@ -463,6 +476,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyCapacity(12000F)
                         .setEnergyConsumptionPerTick(0.225F)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_MOPED_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.OFF_ROADER.get(), VehicleProperties.builder()
@@ -510,6 +524,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(14.5)
                         .setRearAxleOffset(-14.5)
                         .setEnergyCapacity(25000F)
+                        .setEngineSound(ModSounds.ENTITY_SPEED_BOAT_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.SHOPPING_CART.get(), VehicleProperties.builder()
@@ -588,6 +603,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(12)
                         .setRearAxleOffset(-12)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_BUMPER_CAR_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.SPEED_BOAT.get(), VehicleProperties.builder()
@@ -607,6 +623,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyCapacity(25000F)
                         .setEnergyConsumptionPerTick(0.75F)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_SPEED_BOAT_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.SPORTS_PLANE.get(), VehicleProperties.builder()
@@ -637,6 +654,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRearAxleOffset(-2.5)
                         .setEnergyCapacity(75000F)
                         .setEnergyConsumptionPerTick(1.0F)
+                        .setEngineSound(ModSounds.ENTITY_SPORTS_PLANE_ENGINE.getId())
                         .build())
                 .addExtended(PlaneProperties.builder()
                         .setFlapSensitivity(0.1F)
@@ -691,6 +709,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setShowExhaustFumes(true)
                         .setExhaustFumesPosition(-2, 32, 16) //TODO test this
                         .setRenderEngine(true)
+                        .setEngineSound(ModSounds.ENTITY_TRACTOR_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.FERTILIZER.get(), VehicleProperties.builder()
@@ -769,6 +788,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(7.0)
                         .setRearAxleOffset(-7.0)
                         .setCanLockWithKey(false)
+                        .setEngineSound(ModSounds.ENTITY_ATV_ENGINE.getId())
                         .build()));
 
         this.add(new ResourceLocation("vehicle", "sofacopter"), VehicleProperties.builder()

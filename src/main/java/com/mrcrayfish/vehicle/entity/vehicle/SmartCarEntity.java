@@ -17,11 +17,6 @@ public class SmartCarEntity extends LandVehicleEntity
         this.maxUpStep = 1F;
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
-    }
 
     @Override
     public boolean canTowTrailer()

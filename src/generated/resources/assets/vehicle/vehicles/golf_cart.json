@@ -78,7 +78,8 @@
                 "scale": 0.5
             },
             "frontAxleOffset": 16.0,
-            "rearAxleOffset": -12.5
+            "rearAxleOffset": -12.5,
+            "engineSound": "vehicle:entity.vehicle.helicopter_rotor"
         }
     }
 }

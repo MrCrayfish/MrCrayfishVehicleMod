@@ -77,7 +77,8 @@
                 "scale": 0.5
             },
             "frontAxleOffset": 14.0,
-            "rearAxleOffset": -14.5
+            "rearAxleOffset": -14.5,
+            "engineSound": "vehicle:entity.tractor.engine"
         }
     }
 }

@@ -114,12 +114,6 @@ public class LawnMowerEntity extends LandVehicleEntity
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_ATV_ENGINE.get();
-    }
-
-    @Override
     public boolean canTowTrailer()
     {
         return true;

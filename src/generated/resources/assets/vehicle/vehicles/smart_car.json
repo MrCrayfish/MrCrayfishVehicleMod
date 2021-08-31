@@ -65,7 +65,8 @@
             },
             "canLockWithKey": false,
             "frontAxleOffset": 12.0,
-            "rearAxleOffset": -12.0
+            "rearAxleOffset": -12.0,
+            "engineSound": "vehicle:entity.bumper_car.engine"
         }
     }
 }

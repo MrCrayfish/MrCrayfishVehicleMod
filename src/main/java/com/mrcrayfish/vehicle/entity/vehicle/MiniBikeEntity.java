@@ -17,11 +17,6 @@ public class MiniBikeEntity extends MotorcycleEntity
         super(type, worldIn);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_GO_KART_ENGINE.get();
-    }
 
     @Override
     public boolean shouldRenderFuelPort()

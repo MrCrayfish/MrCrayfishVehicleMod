@@ -36,9 +36,4 @@ public class BumperCarEntity extends LandVehicleEntity
         this.currentSpeed *= 0.25F;*/
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
-    }
 }

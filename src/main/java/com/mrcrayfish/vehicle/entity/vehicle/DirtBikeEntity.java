@@ -18,12 +18,6 @@ public class DirtBikeEntity extends MotorcycleEntity
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_DIRT_BIKE_ENGINE.get();
-    }
-
-    @Override
     public FuelPortType getFuelPortType()
     {
         return FuelPortType.SMALL;

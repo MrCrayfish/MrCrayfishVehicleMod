@@ -18,11 +18,6 @@ public class GoKartEntity extends LandVehicleEntity
         this.maxUpStep = 0.625F;
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_GO_KART_ENGINE.get();
-    }
 
     @Override
     public boolean shouldRenderFuelPort()

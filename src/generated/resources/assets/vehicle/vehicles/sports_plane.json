@@ -57,7 +57,8 @@
                 "scale": 0.5
             },
             "frontAxleOffset": 16.0,
-            "rearAxleOffset": -2.5
+            "rearAxleOffset": -2.5,
+            "engineSound": "vehicle:entity.sports_plane.engine"
         },
         "vehicle:plane": {
             "flapSensitivity": 0.1,

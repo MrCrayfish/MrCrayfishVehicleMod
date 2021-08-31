@@ -36,7 +36,8 @@
                 "rotation": [ -90.0, 0.0, 0.0 ],
                 "scale": 0.65
             },
-            "canLockWithKey": false
+            "canLockWithKey": false,
+            "engineSound": "vehicle:entity.speed_boat.engine"
         }
     }
 }

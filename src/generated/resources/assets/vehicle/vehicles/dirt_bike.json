@@ -56,7 +56,8 @@
             },
             "canLockWithKey": false,
             "frontAxleOffset": 14.08,
-            "rearAxleOffset": -11.61
+            "rearAxleOffset": -11.61,
+            "engineSound": "vehicle:entity.dirt_bike.engine"
         }
     }
 }

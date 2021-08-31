@@ -16,11 +16,6 @@ public class MiniBusEntity extends LandVehicleEntity
         super(type, worldIn);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_MINI_BUS_ENGINE.get();
-    }
 
     @Override
     public boolean canTowTrailer()

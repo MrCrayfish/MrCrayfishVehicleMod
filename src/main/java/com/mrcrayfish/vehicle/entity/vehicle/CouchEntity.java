@@ -17,9 +17,4 @@ public class CouchEntity extends LandVehicleEntity
         this.entityData.set(COLOR, 11546150);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_ATV_ENGINE.get();
-    }
 }

@@ -58,12 +58,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return null;
-    }
-
-    @Override
     public void updateVehicleMotion()
     {
         this.motion = Vector3d.ZERO;

@@ -38,12 +38,6 @@ public class AluminumBoatEntity extends BoatEntity
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
-
-    @Override
     public void updateVehicleMotion()
     {
 

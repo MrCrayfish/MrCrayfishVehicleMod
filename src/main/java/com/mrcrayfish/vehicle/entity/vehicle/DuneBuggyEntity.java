@@ -24,9 +24,4 @@ public class DuneBuggyEntity extends LandVehicleEntity
         this.entityData.set(COLOR, 0xF2B116);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
-    }
 }

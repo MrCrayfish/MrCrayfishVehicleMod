@@ -37,11 +37,6 @@ public class SpeedBoatEntity extends BoatEntity
         }
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
 
     @Override
     public FuelPortType getFuelPortType()

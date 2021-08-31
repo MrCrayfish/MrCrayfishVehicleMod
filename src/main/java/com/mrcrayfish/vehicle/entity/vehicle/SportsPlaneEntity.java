@@ -23,11 +23,6 @@ public class SportsPlaneEntity extends PlaneEntity
         return this.getBoundingBox().inflate(1.5);
     }
 
-    @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_SPORTS_PLANE_ENGINE.get();
-    }
 
     @Override
     public boolean canMountTrailer()

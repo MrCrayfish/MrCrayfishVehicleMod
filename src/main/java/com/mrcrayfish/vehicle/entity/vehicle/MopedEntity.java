@@ -85,12 +85,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     }
 
     @Override
-    public SoundEvent getEngineSound()
-    {
-        return ModSounds.ENTITY_MOPED_ENGINE.get();
-    }
-
-    @Override
     protected void readAdditionalSaveData(CompoundNBT compound)
     {
         super.readAdditionalSaveData(compound);

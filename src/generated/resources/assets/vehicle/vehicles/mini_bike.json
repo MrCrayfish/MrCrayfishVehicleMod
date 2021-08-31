@@ -56,7 +56,8 @@
             "exhaustFumesPosition": [ 0.0, 8.0, 0.0 ],
             "canLockWithKey": false,
             "frontAxleOffset": 13.0,
-            "rearAxleOffset": -6.7
+            "rearAxleOffset": -6.7,
+            "engineSound": "vehicle:entity.go_kart.engine"
         }
     }
 }
