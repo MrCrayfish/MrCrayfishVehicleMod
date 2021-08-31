@@ -67,7 +67,7 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
                 {
                     VehicleProperties properties = vehicle.getProperties();
                     Vector3d vehicleVec = vehicle.position();
-                    Vector3d towBarVec = properties.getTowBarPosition();
+                    Vector3d towBarVec = properties.getTowBarOffset();
                     towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + properties.getBodyTransform().getZ());
                     vehicleVec = vehicleVec.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
 

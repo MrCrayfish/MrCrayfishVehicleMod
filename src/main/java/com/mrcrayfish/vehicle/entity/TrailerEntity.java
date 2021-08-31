@@ -109,7 +109,7 @@ public abstract class TrailerEntity extends VehicleEntity
         if(this.pullingEntity instanceof VehicleEntity)
         {
             VehicleEntity vehicle = (VehicleEntity) this.pullingEntity;
-            Vector3d towBarVec = vehicle.getProperties().getTowBarPosition();
+            Vector3d towBarVec = vehicle.getProperties().getTowBarOffset();
             towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyTransform().getZ());
             towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
         }

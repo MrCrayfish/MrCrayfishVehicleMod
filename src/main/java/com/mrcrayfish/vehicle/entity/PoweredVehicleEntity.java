@@ -567,7 +567,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         for(Entity passenger : this.getPassengers())
         {
             int seatIndex = this.getSeatTracker().getSeatIndex(passenger.getUUID());
-            if(seatIndex != -1 && properties.getSeats().get(seatIndex).isDriverSeat())
+            if(seatIndex != -1 && properties.getSeats().get(seatIndex).isDriver())
             {
                 return passenger;
             }

@@ -1,13 +1,9 @@
 {
-    "display": {
-        "gui": {
-            "scale": 1.25
-        }
+    "displayTransform": {
+        "scale": 1.25
     },
-    "position": {
-        "body": {
-            "translate": [ 0.0, 0.0, 0.062 ]
-        }
+    "bodyTransform": {
+        "translate": [ 0.0, 0.0, 0.062 ]
     },
     "seats": [
         {

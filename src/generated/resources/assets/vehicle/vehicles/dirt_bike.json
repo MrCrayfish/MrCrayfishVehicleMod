@@ -1,24 +1,20 @@
 {
-    "general": {
-        "canBeColored": true,
-        "canChangeWheels": true
-    },
-    "display": {
-        "held": [ 0.0, 3.5, 0.0 ],
-        "trailer": [ 0.0, -0.062, -0.312 ],
-        "gui": {
-            "scale": 1.4
-        }
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "heldOffset": [ 0.0, 3.5, 0.0 ],
+    "trailerOffset": [ 0.0, -0.062, -0.312 ],
+    "displayTransform": {
+        "scale": 1.4
     },
     "wheels": [
         {
-            "position": "front",
+            "axle": "front",
             "offset": [ 0.0, 0.0, 14.08 ],
             "scale": [ 0.938, 1.4, 1.4 ],
             "render": false
         },
         {
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 0.0, 0.0, -11.61 ],
             "scale": [ 0.938, 1.4, 1.4 ],
             "particles": true

@@ -1,49 +1,41 @@
 {
-    "general": {
-        "canBeColored": true,
-        "canChangeWheels": true
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "offsetToGround": -1.5,
+    "heldOffset": [ 4.0, 3.5, 0.0 ],
+    "trailerOffset": [ 0.0, 0.0, -0.55 ],
+    "towBarOffset": [ 0.0, 0.0, -20.8 ],
+    "displayTransform": {
+        "scale": 1.5
     },
-    "axles": {
-        "offsetToGround": -1.5
-    },
-    "display": {
-        "held": [ 4.0, 3.5, 0.0 ],
-        "trailer": [ 0.0, 0.0, -0.55 ],
-        "gui": {
-            "scale": 1.5
-        }
-    },
-    "position": {
-        "body": {
-            "scale": 1.25
-        },
-        "towBar": [ 0.0, 0.0, -20.8 ]
+    "bodyTransform": {
+        "scale": 1.25
     },
     "wheels": [
         {
             "side": "left",
-            "position": "front",
+            "axle": "front",
             "offset": [ 4.0, 0.0, 10.5 ],
             "scale": [ 1.156, 1.156, 1.156 ],
             "particles": true
         },
         {
             "side": "right",
-            "position": "front",
+            "axle": "front",
             "offset": [ 4.0, 0.0, 10.5 ],
             "scale": [ 1.156, 1.156, 1.156 ],
             "particles": true
         },
         {
             "side": "left",
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 4.0, 0.0, -10.5 ],
             "scale": [ 1.156, 1.156, 1.156 ],
             "particles": true
         },
         {
             "side": "right",
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 4.0, 0.0, -10.5 ],
             "scale": [ 1.156, 1.156, 1.156 ],
             "particles": true

@@ -1,47 +1,39 @@
 {
-    "general": {
-        "canBeColored": true,
-        "canChangeWheels": true
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "offsetToGround": -1.0,
+    "heldOffset": [ 0.0, 3.5, 0.0 ],
+    "displayTransform": {
+        "translate": [ 0.0, 0.0, 0.1 ]
     },
-    "axles": {
-        "offsetToGround": -1.0
-    },
-    "display": {
-        "held": [ 0.0, 3.5, 0.0 ],
-        "gui": {
-            "translate": [ 0.0, 0.0, 0.1 ]
-        }
-    },
-    "position": {
-        "body": {
-            "scale": 1.4
-        }
+    "bodyTransform": {
+        "scale": 1.4
     },
     "wheels": [
         {
             "side": "left",
-            "position": "front",
+            "axle": "front",
             "offset": [ 10.0, 0.0, 14.5 ],
             "scale": [ 1.4, 1.4, 1.4 ],
             "particles": true
         },
         {
             "side": "right",
-            "position": "front",
+            "axle": "front",
             "offset": [ 10.0, 0.0, 14.5 ],
             "scale": [ 1.4, 1.4, 1.4 ],
             "particles": true
         },
         {
             "side": "left",
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 10.0, 0.0, -14.5 ],
             "scale": [ 1.4, 1.4, 1.4 ],
             "particles": true
         },
         {
             "side": "right",
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 10.0, 0.0, -14.5 ],
             "scale": [ 1.4, 1.4, 1.4 ],
             "particles": true

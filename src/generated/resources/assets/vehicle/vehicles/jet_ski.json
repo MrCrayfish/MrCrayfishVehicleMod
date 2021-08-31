@@ -1,23 +1,15 @@
 {
-    "general": {
-        "canBeColored": true
+    "canBePainted": true,
+    "offsetToGround": 2.75,
+    "heldOffset": [ 6.0, 0.0, 0.0 ],
+    "trailerOffset": [ 0.0, -0.094, -0.65 ],
+    "displayTransform": {
+        "translate": [ 0.0, 0.0, -0.45 ],
+        "scale": 1.5
     },
-    "axles": {
-        "offsetToGround": 2.75
-    },
-    "display": {
-        "held": [ 6.0, 0.0, 0.0 ],
-        "trailer": [ 0.0, -0.094, -0.65 ],
-        "gui": {
-            "translate": [ 0.0, 0.0, -0.45 ],
-            "scale": 1.5
-        }
-    },
-    "position": {
-        "body": {
-            "translate": [ 0.0, 0.0, 0.25 ],
-            "scale": 1.25
-        }
+    "bodyTransform": {
+        "translate": [ 0.0, 0.0, 0.25 ],
+        "scale": 1.25
     },
     "seats": [
         {

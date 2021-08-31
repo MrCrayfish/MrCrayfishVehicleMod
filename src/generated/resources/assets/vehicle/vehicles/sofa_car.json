@@ -1,46 +1,38 @@
 {
-    "general": {
-        "canChangeWheels": true
+    "canChangeWheels": true,
+    "offsetToGround": -1.5,
+    "heldOffset": [ 2.0, 2.0, 0.0 ],
+    "trailerOffset": [ 0.0, 0.0, -0.25 ],
+    "displayTransform": {
+        "translate": [ 0.0, 0.0, -0.25 ],
+        "scale": 1.5
     },
-    "axles": {
-        "offsetToGround": -1.5
-    },
-    "display": {
-        "held": [ 2.0, 2.0, 0.0 ],
-        "trailer": [ 0.0, 0.0, -0.25 ],
-        "gui": {
-            "translate": [ 0.0, 0.0, -0.25 ],
-            "scale": 1.5
-        }
-    },
-    "position": {
-        "body": {
-            "translate": [ 0.0, -0.062, 0.0 ]
-        }
+    "bodyTransform": {
+        "translate": [ 0.0, -0.062, 0.0 ]
     },
     "wheels": [
         {
             "side": "left",
-            "position": "front",
+            "axle": "front",
             "offset": [ 8.0, 0.062, 7.0 ],
             "scale": [ 1.1, 1.1, 1.1 ]
         },
         {
             "side": "right",
-            "position": "front",
+            "axle": "front",
             "offset": [ 8.0, 0.062, 7.0 ],
             "scale": [ 1.1, 1.1, 1.1 ]
         },
         {
             "side": "left",
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 8.0, 0.062, -7.0 ],
             "scale": [ 1.1, 1.1, 1.1 ],
             "particles": true
         },
         {
             "side": "right",
-            "position": "rear",
+            "axle": "rear",
             "offset": [ 8.0, 0.062, -7.0 ],
             "scale": [ 1.1, 1.1, 1.1 ],
             "particles": true

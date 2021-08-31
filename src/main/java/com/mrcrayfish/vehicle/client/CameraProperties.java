@@ -1,7 +1,11 @@
 package com.mrcrayfish.vehicle.client;
 
+import com.google.gson.JsonObject;
+import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.math.vector.Vector3d;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -10,6 +14,11 @@ import java.util.stream.Stream;
 public class CameraProperties
 {
     public static final CameraProperties DEFAULT_CAMERA = new CameraProperties(Type.SMOOTH, 0.15F, new Vector3d(0, 1, 0), new Vector3d(10, 0, 0), 5.0);
+    public static final Type DEFAULT_TYPE = Type.SMOOTH;
+    public static final float DEFAULT_STRENGTH = 0.15F;
+    public static final Vector3d DEFAULT_POSITION = new Vector3d(0, 1, 0);
+    public static final Vector3d DEFAULT_ROTATION = new Vector3d(10, 0, 0);
+    public static final float DEFAULT_DISTANCE = 5.0F;
 
     private final Type type;
     private final float strength;
@@ -51,6 +60,27 @@ public class CameraProperties
         return this.distance;
     }
 
+    public JsonObject toJsonObject()
+    {
+        JsonObject object = new JsonObject();
+        ExtraJSONUtils.write(object, "type", this.type, DEFAULT_TYPE);
+        ExtraJSONUtils.write(object, "strength", this.strength, DEFAULT_STRENGTH);
+        ExtraJSONUtils.write(object, "position", this.position, DEFAULT_POSITION);
+        ExtraJSONUtils.write(object, "rotation", this.rotation, DEFAULT_ROTATION);
+        ExtraJSONUtils.write(object, "distance", this.distance, DEFAULT_DISTANCE);
+        return object;
+    }
+
+    public static CameraProperties fromJsonObject(JsonObject object)
+    {
+        CameraProperties.Type type = ExtraJSONUtils.getAsEnum(object, "type", Type.class, DEFAULT_TYPE);
+        float strength = JSONUtils.getAsFloat(object, "strength", DEFAULT_STRENGTH);
+        Vector3d position = ExtraJSONUtils.getAsVector3d(object, "position", DEFAULT_POSITION);
+        Vector3d rotation = ExtraJSONUtils.getAsVector3d(object, "rotation", DEFAULT_ROTATION);
+        double distance = JSONUtils.getAsFloat(object, "distance", DEFAULT_DISTANCE);
+        return new CameraProperties(type, strength, position, rotation, distance);
+    }
+
     public enum Type
     {
         LOCKED("locked"),
@@ -84,11 +114,11 @@ public class CameraProperties
 
     public static class Builder
     {
-        private Type type = Type.SMOOTH;
-        private float strength = 0.15F;
-        private Vector3d position = new Vector3d(0, 1, 0);
-        private Vector3d rotation = new Vector3d(10, 0, 0);
-        private double distance = 5.0;
+        private Type type = DEFAULT_TYPE;
+        private float strength = DEFAULT_STRENGTH;
+        private Vector3d position = DEFAULT_POSITION;
+        private Vector3d rotation = DEFAULT_ROTATION;
+        private double distance = DEFAULT_DISTANCE;
 
         public Builder setType(Type type)
         {

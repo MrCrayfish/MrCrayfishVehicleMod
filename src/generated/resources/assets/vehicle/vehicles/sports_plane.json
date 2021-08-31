@@ -1,21 +1,15 @@
 {
-    "general": {
-        "canBeColored": true
+    "canBePainted": true,
+    "displayTransform": {
+        "scale": 0.85
     },
-    "display": {
-        "gui": {
-            "scale": 0.85
-        }
-    },
-    "position": {
-        "body": {
-            "translate": [ 0.0, 0.0, -0.5 ],
-            "scale": 1.8
-        }
+    "bodyTransform": {
+        "translate": [ 0.0, 0.0, -0.5 ],
+        "scale": 1.8
     },
     "wheels": [
         {
-            "position": "front",
+            "axle": "front",
             "offset": [ 0.0, -4.5, 20.25 ],
             "scale": [ 0.45, 0.45, 0.45 ]
         },
@@ -34,10 +28,8 @@
         }
     ],
     "camera": {
-        "type": "smooth",
         "strength": 0.25,
         "position": [ 0.0, 2.0, 0.0 ],
-        "rotation": [ 10.0, 0.0, 0.0 ],
         "distance": 7.0
     },
     "extended": {

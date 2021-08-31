@@ -62,7 +62,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
         {
             matrixStack.pushPose();
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            Vector3d towBarOffset = properties.getTowBarPosition();
+            Vector3d towBarOffset = properties.getTowBarOffset();
             matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
             RenderUtil.renderColoredModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();

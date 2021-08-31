@@ -1,12 +1,8 @@
 {
-    "general": {
-        "canBeColored": true
-    },
-    "position": {
-        "body": {
-            "translate": [ 0.0, 0.0, 0.2 ],
-            "scale": 1.1
-        }
+    "canBePainted": true,
+    "bodyTransform": {
+        "translate": [ 0.0, 0.0, 0.2 ],
+        "scale": 1.1
     },
     "seats": [
         {

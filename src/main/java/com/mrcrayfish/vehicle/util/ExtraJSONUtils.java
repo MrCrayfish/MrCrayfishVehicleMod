@@ -13,6 +13,7 @@ import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
+import java.util.Locale;
 import java.util.stream.Stream;
 
 /**
@@ -75,6 +76,14 @@ public class ExtraJSONUtils
         if(resourceLocation != null && !resourceLocation.equals(defaultValue))
         {
             object.addProperty(key, resourceLocation.toString());
+        }
+    }
+
+    public static <T extends Enum<?>> void write(JsonObject object, String key, T value, T defaultValue)
+    {
+        if(!value.equals(defaultValue))
+        {
+            object.addProperty(key, value.name().toLowerCase(Locale.ENGLISH));
         }
     }
 

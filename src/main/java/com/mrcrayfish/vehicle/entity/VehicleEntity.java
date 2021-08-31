@@ -178,7 +178,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             if(heldItem.getItem() instanceof SprayCanItem)
             {
                 //TODO should be using properties
-                if(this.getProperties().isColored())
+                if(this.getProperties().isCanBePainted())
                 {
                     CompoundNBT compound = heldItem.getTag();
                     if(compound != null)
@@ -587,7 +587,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     public void setColor(int color)
     {
-        if(this.getProperties().isColored())
+        if(this.getProperties().isCanBePainted())
         {
             this.entityData.set(COLOR, color);
         }
