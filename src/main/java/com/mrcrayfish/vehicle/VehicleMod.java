@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.datagen.LootTableGen;
 import com.mrcrayfish.vehicle.datagen.RecipeGen;
 import com.mrcrayfish.vehicle.datagen.VehiclePropertiesGen;
 import com.mrcrayfish.vehicle.entity.properties.ExtendedProperties;
+import com.mrcrayfish.vehicle.entity.properties.HelicopterProperties;
 import com.mrcrayfish.vehicle.entity.properties.LandProperties;
 import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -71,6 +72,7 @@ public class VehicleMod
         ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "powered"), PoweredProperties.class, PoweredProperties::new);
         ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "land"), LandProperties.class, LandProperties::new);
         ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "plane"), PlaneProperties.class, PlaneProperties::new);
+        ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "helicopter"), HelicopterProperties.class, HelicopterProperties::new);
         ExtendedProperties.register(new ResourceLocation(Reference.MOD_ID, "trailer"), TrailerProperties.class, TrailerProperties::new);
     }
 

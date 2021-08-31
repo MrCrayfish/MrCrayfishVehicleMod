@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.entity.properties.HelicopterProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
@@ -78,17 +79,13 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             this.yRot += deltaYaw * 0.05F;
         }
 
-        VehicleProperties properties = this.getProperties();
-        float enginePower = this.getEnginePower();
-        float bladeLength = 8F;
-        float drag = 0.001F;
-
         this.updateBladeSpeed();
 
         Vector3d heading = Vector3d.ZERO;
         if(this.isFlying())
         {
             // Calculates the movement based on the input from the controlling passenger
+            float enginePower = this.getEnginePower();
             Vector3d input = this.getInput();
             if(operating && input.length() > 0)
             {
@@ -101,7 +98,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             heading = heading.add(downForce);
 
             // Adds a slight drag to the helicopter as it travels through the air
-            Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-drag);
+            Vector3d dragForce = this.velocity.scale(this.velocity.length()).scale(-this.getDrag());
             heading = heading.add(dragForce);
         }
         else
@@ -116,7 +113,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         heading = heading.add(0, gravity + lift, 0);
 
         // Lerps the velocity to the new heading
-        this.velocity = CommonUtils.lerp(this.velocity, heading, 0.015F);
+        this.velocity = CommonUtils.lerp(this.velocity, heading, this.getResponsiveness());
         this.motion = this.motion.add(this.velocity);
 
         this.xRot = this.getPitch();
@@ -301,6 +298,21 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public boolean canChangeWheels()
     {
         return false;
+    }
+
+    public final float getResponsiveness()
+    {
+        return this.getHelicopterProperties().getResponsiveness();
+    }
+
+    public final float getDrag()
+    {
+        return this.getHelicopterProperties().getDrag();
+    }
+
+    protected HelicopterProperties getHelicopterProperties()
+    {
+        return this.getProperties().getExtended(HelicopterProperties.class);
     }
 
     @OnlyIn(Dist.CLIENT)
