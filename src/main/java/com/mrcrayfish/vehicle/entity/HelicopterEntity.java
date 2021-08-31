@@ -295,12 +295,6 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         return !this.onGround;
     }
 
-    @Override
-    public boolean canChangeWheels()
-    {
-        return false;
-    }
-
     public final float getMovementStrength()
     {
         return this.getHelicopterProperties().getMovementStrength();

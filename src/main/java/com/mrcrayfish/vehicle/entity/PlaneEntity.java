@@ -459,12 +459,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public boolean canChangeWheels()
-    {
-        return false;
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
     protected void updateEngineSound()
     {

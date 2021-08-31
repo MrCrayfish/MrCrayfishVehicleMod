@@ -156,7 +156,7 @@ public class VehicleProperties
 
     public boolean canChangeWheels()
     {
-        return this.canChangeWheels;
+        return this.canChangeWheels && this.wheels.size() > 0;
     }
 
     public boolean isCanBePainted()

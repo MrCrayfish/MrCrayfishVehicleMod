@@ -25,12 +25,6 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public boolean canChangeWheels()
-    {
-        return false;
-    }
-
-    @Override
     public void updateVehicleMotion()
     {
 

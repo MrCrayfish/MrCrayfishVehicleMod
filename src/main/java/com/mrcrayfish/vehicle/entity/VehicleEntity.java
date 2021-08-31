@@ -683,7 +683,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return trailer;
     }
 
-    public boolean canChangeWheels()
+    public final boolean canChangeWheels()
     {
         return this.getProperties().canChangeWheels();
     }
