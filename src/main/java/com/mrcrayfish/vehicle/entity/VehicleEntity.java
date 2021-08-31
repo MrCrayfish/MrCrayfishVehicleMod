@@ -69,7 +69,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     protected static final DataParameter<Integer> COLOR = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> MAX_HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
     private static final DataParameter<Float> HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> TRAILER = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
 
@@ -114,7 +113,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected void defineSynchedData()
     {
         this.entityData.define(TIME_SINCE_HIT, 0);
-        this.entityData.define(MAX_HEALTH, 100F);
         this.entityData.define(HEALTH, 100F);
         this.entityData.define(COLOR, 16383998);
         this.entityData.define(TRAILER, -1);
@@ -269,19 +267,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 int color = ((c[0] & 0xFF) << 16) | ((c[1] & 0xFF) << 8) | ((c[2] & 0xFF));
                 this.setColor(color);
             }
-        }
-        else if(compound.contains("Color", Constants.NBT.TAG_INT))
-        {
-            int index = compound.getInt("Color");
-            if(index >= 0 && index < DYE_TO_COLOR.length)
-            {
-                this.setColor(DYE_TO_COLOR[index]);
-            }
-            compound.remove("Color");
-        }
-        if(compound.contains("MaxHealth", Constants.NBT.TAG_FLOAT))
-        {
-            this.setMaxHealth(compound.getFloat("MaxHealth"));
         }
         if(compound.contains("Health", Constants.NBT.TAG_FLOAT))
         {
@@ -546,19 +531,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     }
 
     /**
-     * Sets the max health of the vehicle.
-     */
-    public void setMaxHealth(float maxHealth)
-    {
-        this.entityData.set(MAX_HEALTH, maxHealth);
-    }
-
-    /**
      * Gets the max health of the vehicle.
      */
-    public float getMaxHealth()
+    public final float getMaxHealth()
     {
-        return this.entityData.get(MAX_HEALTH);
+        return this.getProperties().getMaxHealth();
     }
 
     /**

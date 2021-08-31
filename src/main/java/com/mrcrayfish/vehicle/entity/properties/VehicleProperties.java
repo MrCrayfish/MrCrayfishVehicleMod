@@ -48,6 +48,7 @@ public class VehicleProperties
     private static final Map<ResourceLocation, VehicleProperties> ID_TO_PROPERTIES = new HashMap<>();
     private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
 
+    public static final float DEFAULT_MAX_HEALTH = 100F;
     public static final float DEFAULT_AXLE_OFFSET = 0F;
     public static final Vector3d DEFAULT_HELD_OFFSET = Vector3d.ZERO;
     public static final Vector3d DEFAULT_TOW_BAR_OFFSET = Vector3d.ZERO;
@@ -58,6 +59,7 @@ public class VehicleProperties
     public static final boolean DEFAULT_CAN_BE_PAINTED = false;
 
     //TODO ideas: canBeDamaged, canPickUp, canBePlacedInTrailer
+    private final float maxHealth;
     private final float axleOffset;
     private final float wheelOffset;
     private final Vector3d heldOffset;
@@ -72,8 +74,9 @@ public class VehicleProperties
     private final CameraProperties camera;
     private final ImmutableMap<ResourceLocation, ExtendedProperties> extended;
 
-    private VehicleProperties(float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarOffset, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean canBePainted, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
+    private VehicleProperties(float maxHealth, float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarOffset, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean canBePainted, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
     {
+        this.maxHealth = maxHealth;
         this.axleOffset = axleOffset;
         this.wheelOffset = wheelOffset;
         this.heldOffset = heldOffset;
@@ -87,6 +90,11 @@ public class VehicleProperties
         this.canBePainted = canBePainted;
         this.camera = camera;
         this.extended = ImmutableMap.copyOf(extended);
+    }
+
+    public float getMaxHealth()
+    {
+        return this.maxHealth;
     }
 
     public float getAxleOffset()
@@ -389,6 +397,7 @@ public class VehicleProperties
 
     public static class Builder
     {
+        private float maxHealth = DEFAULT_MAX_HEALTH;
         private float axleOffset = DEFAULT_AXLE_OFFSET;
         private Vector3d heldOffset = DEFAULT_HELD_OFFSET;
         private Vector3d towBarOffset = DEFAULT_TOW_BAR_OFFSET;
@@ -401,6 +410,12 @@ public class VehicleProperties
         private boolean colored = DEFAULT_CAN_BE_PAINTED;
         private CameraProperties camera = CameraProperties.DEFAULT_CAMERA;
         private Map<ResourceLocation, ExtendedProperties> extended = new HashMap<>();
+
+        public Builder setMaxHealth(float maxHealth)
+        {
+            this.maxHealth = maxHealth;
+            return this;
+        }
 
         public Builder setAxleOffset(float axleOffset)
         {
@@ -509,7 +524,7 @@ public class VehicleProperties
             this.validate();
             float wheelOffset = this.calculateWheelOffset();
             List<Wheel> wheels = scaleWheels ? this.generateScaledWheels(wheelOffset) : this.wheels;
-            return new VehicleProperties(this.axleOffset, wheelOffset, this.heldOffset, this.towBarOffset, this.trailerOffset, this.canChangeWheels, wheels, this.bodyTransform, this.displayTransform, this.seats, this.colored, this.camera, this.extended);
+            return new VehicleProperties(this.maxHealth, this.axleOffset, wheelOffset, this.heldOffset, this.towBarOffset, this.trailerOffset, this.canChangeWheels, wheels, this.bodyTransform, this.displayTransform, this.seats, this.colored, this.camera, this.extended);
         }
 
         private void validate()
