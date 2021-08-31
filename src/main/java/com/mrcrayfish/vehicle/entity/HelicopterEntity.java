@@ -2,7 +2,6 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.entity.properties.HelicopterProperties;
-import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessageHelicopterInput;
@@ -16,7 +15,6 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
@@ -76,7 +74,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             {
                 deltaYaw -= 360.0F;
             }
-            this.yRot += deltaYaw * 0.05F;
+            this.yRot += deltaYaw * this.getRotateStrength();
         }
 
         this.updateBladeSpeed();
@@ -113,7 +111,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         heading = heading.add(0, gravity + lift, 0);
 
         // Lerps the velocity to the new heading
-        this.velocity = CommonUtils.lerp(this.velocity, heading, this.getResponsiveness());
+        this.velocity = CommonUtils.lerp(this.velocity, heading, this.getMovementStrength());
         this.motion = this.motion.add(this.velocity);
 
         this.xRot = this.getPitch();
@@ -127,7 +125,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
 
     private float getPitch()
     {
-        return -(float) new Vector3d(-this.motion.x, 0, this.motion.z).scale(30).yRot((float) Math.toRadians(-(this.yRot + 90))).x;
+        return -(float) new Vector3d(-this.motion.x, 0, this.motion.z).scale(this.getMaxLeanAngle()).yRot((float) Math.toRadians(-(this.yRot + 90))).x;
     }
 
     protected Vector3d getInput()
@@ -213,7 +211,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     {
         if(this.isFlying())
         {
-            double leanAngle = 30;
+            double leanAngle = this.getMaxLeanAngle();
             Vector3d rotation = new Vector3d(-this.motion.x, 0, this.motion.z).scale(leanAngle).yRot((float) Math.toRadians(-(this.yRot + 90)));
             this.bodyRotationPitch = -(float) rotation.x;
             this.bodyRotationRoll = (float) rotation.z;
@@ -300,9 +298,19 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         return false;
     }
 
-    public final float getResponsiveness()
+    public final float getMovementStrength()
     {
-        return this.getHelicopterProperties().getResponsiveness();
+        return this.getHelicopterProperties().getMovementStrength();
+    }
+
+    public final float getRotateStrength()
+    {
+        return this.getHelicopterProperties().getRotateStrength();
+    }
+
+    public final float getMaxLeanAngle()
+    {
+        return this.getHelicopterProperties().getMaxLeanAngle();
     }
 
     public final float getDrag()
