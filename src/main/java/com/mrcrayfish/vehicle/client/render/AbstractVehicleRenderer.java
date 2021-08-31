@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -53,7 +53,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
         matrixStack.pushPose();
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-        PartPosition bodyPosition = properties.getBodyPosition();
+        Transform bodyPosition = properties.getBodyTransform();
         matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
@@ -123,7 +123,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
      * @param position the render definitions to construct to the part
      * @param model the part to render onto the vehicle
      */
-    protected void renderPart(PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
+    protected void renderPart(Transform position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
         if(position == null) return;
         matrixStack.pushPose();
@@ -138,7 +138,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
         matrixStack.popPose();
     }
 
-    protected void renderKey(PartPosition position, ItemStack stack, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
+    protected void renderKey(Transform position, ItemStack stack, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int color, int lightTexture, int overlayTexture)
     {
         if(position == null) return;
         matrixStack.pushPose();
@@ -160,7 +160,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
      *
      * @param position the render definitions to construct to the part
      */
-    protected void renderEngine(@Nullable PoweredVehicleEntity entity, @Nullable PartPosition position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
+    protected void renderEngine(@Nullable PoweredVehicleEntity entity, @Nullable Transform position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
     {
         matrixStack.pushPose();
         if(entity != null && entity.isEnginePowered() && entity.getControllingPassenger() != null)

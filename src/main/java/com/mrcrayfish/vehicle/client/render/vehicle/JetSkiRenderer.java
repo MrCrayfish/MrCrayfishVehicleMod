@@ -87,7 +87,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625);
             double scale = 32.0 / 30.0;
             double offsetX = -seatVec.x * scale;
             double offsetY = (seatVec.y + player.getMyRidingOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall

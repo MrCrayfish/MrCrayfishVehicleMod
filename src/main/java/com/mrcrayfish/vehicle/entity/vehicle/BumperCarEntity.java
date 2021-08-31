@@ -41,16 +41,4 @@ public class BumperCarEntity extends LandVehicleEntity
     {
         return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
     }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public boolean isLockable()
-    {
-        return false;
-    }
 }

@@ -1,12 +1,6 @@
 {
     "general": {
-        "engineType": "vehicle:large_motor",
-        "enginePower": 24.0,
         "canBeColored": true
-    },
-    "axles": {
-        "lengthToFront": 16.0,
-        "lengthToRear": -2.5
     },
     "display": {
         "gui": {
@@ -17,16 +11,6 @@
         "body": {
             "translate": [ 0.0, 0.0, -0.5 ],
             "scale": 1.8
-        },
-        "fuelPort": {
-            "translate": [ -4.35, 4.0, -6.0 ],
-            "rotation": [ 0.0, -112.5, 0.0 ],
-            "scale": 0.25
-        },
-        "keyPort": {
-            "translate": [ 0.0, 3.75, 12.5 ],
-            "rotation": [ -67.5, 0.0, 0.0 ],
-            "scale": 0.5
         }
     },
     "wheels": [
@@ -57,6 +41,24 @@
         "distance": 7.0
     },
     "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 75000.0,
+            "energyConsumptionPerTick": 1.0,
+            "engineType": "vehicle:large_motor",
+            "enginePower": 24.0,
+            "fuelFillerTransform": {
+                "translate": [ -4.35, 4.0, -6.0 ],
+                "rotation": [ 0.0, -112.5, 0.0 ],
+                "scale": 0.25
+            },
+            "ignitionTransform": {
+                "translate": [ 0.0, 3.75, 12.5 ],
+                "rotation": [ -67.5, 0.0, 0.0 ],
+                "scale": 0.5
+            },
+            "frontAxleOffset": 16.0,
+            "rearAxleOffset": -2.5
+        },
         "vehicle:plane": {
             "flapSensitivity": 0.1,
             "elevatorSensitivity": 0.075,

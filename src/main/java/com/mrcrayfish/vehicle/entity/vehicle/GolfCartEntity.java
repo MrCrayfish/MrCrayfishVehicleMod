@@ -24,18 +24,6 @@ public class GolfCartEntity extends HelicopterEntity
     }
 
     @Override
-    public float getMinEnginePitch()
-    {
-        return 0.5F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.0F;
-    }
-
-    @Override
     public boolean canMountTrailer()
     {
         return false;

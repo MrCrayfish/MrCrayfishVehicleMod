@@ -7,7 +7,8 @@ import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.common.ItemLookup;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
@@ -87,11 +88,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<Float> THROTTLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> HANDBRAKE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> STEERING_ANGLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Float> MAX_STEERING_ANGLE = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> HORN = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
-    protected static final DataParameter<Boolean> REQUIRES_FUEL = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<Float> CURRENT_FUEL = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
-    protected static final DataParameter<Float> FUEL_CAPACITY = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<ItemStack> ENGINE_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
@@ -110,7 +108,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected boolean launching;
     protected int launchingTimer;
     protected boolean disableFallDamage;
-    protected float fuelConsumption = 0.25F;
     protected boolean charging;
     protected float chargingAmount;
     protected double[] wheelPositions;
@@ -152,11 +149,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(THROTTLE, 0F);
         this.entityData.define(HANDBRAKE, false);
         this.entityData.define(STEERING_ANGLE, 0F);
-        this.entityData.define(MAX_STEERING_ANGLE, 35F);
         this.entityData.define(HORN, false);
-        this.entityData.define(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get());
         this.entityData.define(CURRENT_FUEL, 0F);
-        this.entityData.define(FUEL_CAPACITY, 15000F);
         this.entityData.define(NEEDS_KEY, false);
         this.entityData.define(KEY_STACK, ItemStack.EMPTY);
         this.entityData.define(ENGINE_STACK, ItemStack.EMPTY);
@@ -189,14 +183,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
     }
 
-    public float getMinEnginePitch()
+    public final float getMinEnginePitch()
     {
-        return 0.5F;
+        return this.getPoweredProperties().getMinEnginePitch();
     }
 
-    public float getMaxEnginePitch()
+    public final float getMaxEnginePitch()
     {
-        return 1.2F;
+        return this.getPoweredProperties().getMaxEnginePitch();
     }
 
     @Override
@@ -228,7 +222,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(stack.isEmpty())
                 return;
 
-            stack.setAmount(this.addFuel(stack.getAmount()));
+            stack.setAmount(this.addEnergy(stack.getAmount()));
             if(stack.getAmount() <= 0)
                 return;
 
@@ -251,9 +245,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             return;
 
         int transferAmount = Math.min(handler.getFluidInTank(0).getAmount(), jerryCan.getFillRate());
-        transferAmount = (int) Math.min(Math.floor(this.getFuelCapacity() - this.getCurrentFuel()), transferAmount);
+        transferAmount = (int) Math.min(Math.floor(this.getEnergyCapacity() - this.getCurrentEnergy()), transferAmount);
         handler.drain(transferAmount, IFluidHandler.FluidAction.EXECUTE);
-        this.addFuel(transferAmount);
+        this.addEnergy(transferAmount);
     }
 
     @Override
@@ -400,15 +394,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             }
         }
 
-        /*if(this.requiresFuel() && controllingPassenger instanceof PlayerEntity && !((PlayerEntity) controllingPassenger).isCreative() && this.isEnginePowered())
+        //TODO improve fuel consumption logic
+        if(this.requiresEnergy() && controllingPassenger instanceof PlayerEntity && !((PlayerEntity) controllingPassenger).isCreative() && this.isEnginePowered())
         {
-            float currentSpeed = Math.abs(Math.min(this.getSpeed(), this.getMaxSpeed()));
-            float normalSpeed = Math.max(0.05F, currentSpeed / this.getMaxSpeed());
-            float currentFuel = this.getCurrentFuel();
-            currentFuel -= this.fuelConsumption * normalSpeed * Config.SERVER.fuelConsumptionFactor.get();
+            float currentFuel = this.getCurrentEnergy();
+            currentFuel -= this.getEnergyConsumptionPerTick() * Config.SERVER.energyConsumptionFactor.get();
             if(currentFuel < 0F) currentFuel = 0F;
-            this.setCurrentFuel(currentFuel);
-        }*/
+            this.setCurrentEnergy(currentFuel);
+        }
 
         if(this.level.isClientSide())
         {
@@ -456,7 +449,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         Vector3d dirVec = this.calculateViewVector(this.xRot, this.yRot + 180F).add(0, 0.5, 0);
                         if(this.charging)
                         {
-                            dirVec = dirVec.scale(this.chargingAmount * properties.getEnginePower() / 3F);
+                            dirVec = dirVec.scale(this.chargingAmount * this.getEnginePower() / 3F);
                         }
                         if(this.level.isClientSide())
                         {
@@ -467,13 +460,14 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             }
         }
 
-        if(this.shouldShowEngineSmoke()&& this.canDrive() && this.tickCount % 2 == 0)
+        if(this.shouldShowExhaustFumes() && this.canDrive() && this.tickCount % 2 == 0)
         {
-            Vector3d smokePosition = this.getEngineSmokePosition().yRot(-this.yRot * 0.017453292F);
-            this.level.addParticle(ParticleTypes.SMOKE, this.getX() + smokePosition.x, this.getY() + smokePosition.y, this.getZ() + smokePosition.z, -this.getDeltaMovement().x, 0.0D, -this.getDeltaMovement().z);
+            //TODO maybe add more control of this
+            Vector3d fumePosition = this.getExhaustFumesPosition().scale(0.0625).yRot(-this.yRot * 0.017453292F);
+            this.level.addParticle(ParticleTypes.SMOKE, this.getX() + fumePosition.x, this.getY() + fumePosition.y, this.getZ() + fumePosition.z, -this.getDeltaMovement().x, 0.0D, -this.getDeltaMovement().z);
             if(this.charging && this.isMoving())
             {
-                this.level.addParticle(ParticleTypes.CRIT, this.getX() + smokePosition.x, this.getY() + smokePosition.y, this.getZ() + smokePosition.z, -this.getDeltaMovement().x, 0.0D, -this.getDeltaMovement().z);
+                this.level.addParticle(ParticleTypes.CRIT, this.getX() + fumePosition.x, this.getY() + fumePosition.y, this.getZ() + fumePosition.z, -this.getDeltaMovement().x, 0.0D, -this.getDeltaMovement().z);
             }
         }
     }
@@ -500,9 +494,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 PacketHandler.instance.sendToServer(new MessageHandbrake(handbraking));
             }
 
-            boolean horn = VehicleHelper.isHonking();
-            this.setHorn(horn);
-            PacketHandler.instance.sendToServer(new MessageHorn(horn));
+            if(this.hasHorn())
+            {
+                boolean horn = VehicleHelper.isHonking();
+                this.setHorn(horn);
+                PacketHandler.instance.sendToServer(new MessageHorn(horn));
+            }
 
             float steeringAngle = VehicleHelper.getSteeringAngle(this);
             this.setSteeringAngle(steeringAngle);
@@ -533,25 +530,13 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             this.setWheelStack(ItemStack.of(compound.getCompound("WheelStack")));
         }
-        if(compound.contains("MaxTurnAngle", Constants.NBT.TAG_INT))
-        {
-            this.setMaxSteeringAngle(compound.getInt("MaxTurnAngle"));
-        }
         if(compound.contains("StepHeight", Constants.NBT.TAG_FLOAT))
         {
             this.maxUpStep = compound.getFloat("StepHeight");
         }
-        if(compound.contains("RequiresFuel", Constants.NBT.TAG_BYTE))
-        {
-            this.setRequiresFuel(compound.getBoolean("RequiresFuel"));
-        }
         if(compound.contains("CurrentFuel", Constants.NBT.TAG_FLOAT))
         {
-            this.setCurrentFuel(compound.getFloat("CurrentFuel"));
-        }
-        if(compound.contains("FuelCapacity", Constants.NBT.TAG_INT))
-        {
-            this.setFuelCapacity(compound.getInt("FuelCapacity"));
+            this.setCurrentEnergy(compound.getFloat("CurrentFuel"));
         }
         if(compound.contains("KeyNeeded", Constants.NBT.TAG_BYTE))
         {
@@ -574,9 +559,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         compound.putFloat("AccelerationSpeed", this.getAccelerationSpeed());
         compound.putFloat("MaxSteeringAngle", this.getMaxSteeringAngle());
         compound.putFloat("StepHeight", this.maxUpStep);
-        compound.putBoolean("RequiresFuel", this.requiresFuel());
-        compound.putFloat("CurrentFuel", this.getCurrentFuel());
-        compound.putFloat("FuelCapacity", this.getFuelCapacity());
+        compound.putBoolean("RequiresFuel", this.requiresEnergy());
+        compound.putFloat("CurrentFuel", this.getCurrentEnergy());
+        compound.putFloat("FuelCapacity", this.getEnergyCapacity());
         compound.putBoolean("KeyNeeded", this.isKeyNeeded());
         CommonUtils.writeItemStackToTag(compound, "KeyStack", this.getKeyStack());
     }
@@ -637,14 +622,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.throttle.get(this);
     }
 
-    public void setMaxSteeringAngle(float maxAngle)
+    public final float getMaxSteeringAngle()
     {
-        this.entityData.set(MAX_STEERING_ANGLE, maxAngle);
-    }
-
-    public float getMaxSteeringAngle()
-    {
-        return this.entityData.get(MAX_STEERING_ANGLE);
+        return this.getPoweredProperties().getMaxSteeringAngle();
     }
 
     public boolean hasEngine()
@@ -668,9 +648,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     }
 
     @OnlyIn(Dist.CLIENT)
-    public boolean shouldRenderEngine()
+    public final boolean shouldRenderEngine()
     {
-        return false;
+        return this.getPoweredProperties().isRenderEngine();
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -679,19 +659,22 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return true;
     }
 
-    public Vector3d getEngineSmokePosition()
+    public final Vector3d getExhaustFumesPosition()
     {
-        return new Vector3d(0, 0, 0);
+        return this.getPoweredProperties().getExhaustFumesPosition();
     }
 
-    public boolean shouldShowEngineSmoke()
+    public final boolean shouldShowExhaustFumes()
     {
-        return false;
+        return this.getPoweredProperties().showExhaustFumes();
     }
 
     public void setHorn(boolean activated)
     {
-        this.entityData.set(HORN, activated);
+        if(this.hasHorn())
+        {
+            this.entityData.set(HORN, activated);
+        }
     }
 
     public boolean getHorn()
@@ -722,60 +705,45 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return launching;
     }
 
-    public boolean requiresFuel()
+    public final boolean requiresEnergy()
     {
-        return Config.SERVER.fuelEnabled.get() && this.entityData.get(REQUIRES_FUEL);
-    }
-
-    public void setRequiresFuel(boolean requiresFuel)
-    {
-        this.entityData.set(REQUIRES_FUEL, Config.SERVER.fuelEnabled.get() && requiresFuel);
+        return this.getPoweredProperties().requiresEnergy() && Config.SERVER.fuelEnabled.get();
     }
 
     public boolean isFueled()
     {
-        return !this.requiresFuel() || this.isControllingPassengerCreative() || this.getCurrentFuel() > 0F;
+        return !this.requiresEnergy() || this.isControllingPassengerCreative() || this.getCurrentEnergy() > 0F;
     }
 
-    public void setCurrentFuel(float fuel)
+    public void setCurrentEnergy(float fuel)
     {
         this.entityData.set(CURRENT_FUEL, fuel);
     }
 
-    public float getCurrentFuel()
+    public float getCurrentEnergy()
     {
         return this.entityData.get(CURRENT_FUEL);
     }
 
-    public void setFuelCapacity(float capacity)
+    public final float getEnergyCapacity()
     {
-        this.entityData.set(FUEL_CAPACITY, capacity);
+        return this.getPoweredProperties().getEnergyCapacity();
     }
 
-    public float getFuelCapacity()
+    public final float getEnergyConsumptionPerTick()
     {
-        return this.entityData.get(FUEL_CAPACITY);
+        return this.getPoweredProperties().getEnergyConsumptionPerTick();
     }
 
-    public void setFuelConsumption(float consumption)
+    public int addEnergy(int amount)
     {
-        this.fuelConsumption = consumption;
-    }
-
-    public float getFuelConsumption()
-    {
-        return fuelConsumption;
-    }
-
-    public int addFuel(int fuel)
-    {
-        if(!this.requiresFuel())
-            return fuel;
-        float currentFuel = this.getCurrentFuel();
-        currentFuel += fuel;
-        int remaining = Math.max(0, Math.round(currentFuel - this.getFuelCapacity()));
-        currentFuel = Math.min(currentFuel, this.getFuelCapacity());
-        this.setCurrentFuel(currentFuel);
+        if(!this.requiresEnergy())
+            return amount;
+        float currentEnergy = this.getCurrentEnergy();
+        currentEnergy += amount;
+        int remaining = Math.max(0, Math.round(currentEnergy - this.getEnergyCapacity()));
+        currentEnergy = Math.min(currentEnergy, this.getEnergyCapacity());
+        this.setCurrentEnergy(currentEnergy);
         return remaining;
     }
 
@@ -803,20 +771,20 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(!this.getKeyStack().isEmpty())
         {
-            Vector3d keyHole = this.getPartPositionAbsoluteVec(this.getProperties().getKeyPortPosition(), 1F);
+            Vector3d keyHole = this.getWorldPosition(this.getIgnitionTransform(), 1.0F);
             this.level.addFreshEntity(new ItemEntity(this.level, keyHole.x, keyHole.y, keyHole.z, this.getKeyStack()));
             this.setKeyStack(ItemStack.EMPTY);
         }
     }
 
-    public boolean isLockable()
+    public final boolean isLockable()
     {
-        return true;
+        return this.getPoweredProperties().canLockWithKey();
     }
 
     public boolean isEnginePowered()
     {
-        return ((this.getProperties().getEngineType() == EngineType.NONE || this.hasEngine()) && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9) && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
+        return ((this.getEngineType() == EngineType.NONE || this.hasEngine()) && (this.isControllingPassengerCreative() || this.isFueled()) && this.getDestroyedStage() < 9) && (!this.isKeyNeeded() || !this.getKeyStack().isEmpty());
     }
 
     public boolean canDrive()
@@ -936,7 +904,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.vehicleInventory = new Inventory(2);
 
         ItemStack engine = this.getEngineStack();
-        if(this.getProperties().getEngineType() != EngineType.NONE & !engine.isEmpty())
+        if(this.getEngineType() != EngineType.NONE & !engine.isEmpty())
         {
             this.vehicleInventory.setItem(0, engine.copy());
         }
@@ -958,7 +926,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(engine.getItem() instanceof EngineItem)
             {
                 EngineItem item = (EngineItem) engine.getItem();
-                if(item.getEngineType() == this.getProperties().getEngineType())
+                if(item.getEngineType() == this.getEngineType())
                 {
                     this.setEngineStack(engine.copy());
                 }
@@ -967,7 +935,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     this.setEngineStack(ItemStack.EMPTY);
                 }
             }
-            else if(this.getProperties().getEngineType() != EngineType.NONE)
+            else if(this.getEngineType() != EngineType.NONE)
             {
                 this.setEngineStack(ItemStack.EMPTY);
             }
@@ -1007,7 +975,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             // Spawns the engine if the vehicle has one
             ItemStack engine = ItemLookup.getEngine(this);
-            if(this.getProperties().getEngineType() != EngineType.NONE && !engine.isEmpty())
+            if(this.getEngineType() != EngineType.NONE && !engine.isEmpty())
             {
                 InventoryUtil.spawnItemStack(this.level, this.getX(), this.getY(), this.getZ(), engine);
             }
@@ -1029,11 +997,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
     }
 
-    public boolean canChangeWheels()
-    {
-        return true;
-    }
-
     private void updateWheelPositions()
     {
         VehicleProperties properties = this.getProperties();
@@ -1051,7 +1014,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             {
                 Wheel wheel = wheels.get(i);
 
-                PartPosition bodyPosition = properties.getBodyPosition();
+                Transform bodyPosition = properties.getBodyTransform();
                 double wheelX = bodyPosition.getX();
                 double wheelY = bodyPosition.getY();
                 double wheelZ = bodyPosition.getZ();
@@ -1081,12 +1044,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     @OnlyIn(Dist.CLIENT)
     protected void updateWheelRotations() {}
-
-    //TODO reimplement
-    protected boolean canAccelerateInAir()
-    {
-        return false;
-    }
 
     protected void releaseCharge(float strength)
     {
@@ -1150,6 +1107,41 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void setSpeedMultiplier(float speedMultiplier)
     {
         this.speedMultiplier = speedMultiplier;
+    }
+
+    public final IEngineType getEngineType()
+    {
+        return this.getPoweredProperties().getEngineType();
+    }
+
+    public final float getEnginePower()
+    {
+        return this.getPoweredProperties().getEnginePower();
+    }
+
+    public final Transform getIgnitionTransform()
+    {
+        return this.getPoweredProperties().getIgnitionTransform();
+    }
+
+    public final Vector3d getFrontAxleOffset()
+    {
+        return this.getPoweredProperties().getFrontAxleOffset();
+    }
+
+    public final Vector3d getRearAxleOffset()
+    {
+        return this.getPoweredProperties().getRearAxleOffset();
+    }
+
+    public final boolean hasHorn()
+    {
+        return this.getPoweredProperties().hasHorn();
+    }
+
+    protected final PoweredProperties getPoweredProperties()
+    {
+        return this.getProperties().getExtended(PoweredProperties.class);
     }
 
     @OnlyIn(Dist.CLIENT)

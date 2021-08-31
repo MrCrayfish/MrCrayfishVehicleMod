@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.entity.properties;
 
 import com.google.gson.JsonObject;
-import com.mrcrayfish.vehicle.util.JsonUtil;
+import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.util.JSONUtils;
 
 /**
@@ -54,14 +54,14 @@ public final class PlaneProperties extends ExtendedProperties
     @Override
     public void serialize(JsonObject object)
     {
-        JsonUtil.write(object, "minimumSpeedToTakeOff", this.minimumSpeedToTakeOff, DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF);
-        JsonUtil.write(object, "maxFlapAngle", this.maxFlapAngle, DEFAULT_MAX_FLAP_ANGLE);
-        JsonUtil.write(object, "flapStrength", this.flapStrength, DEFAULT_FLAP_STRENGTH);
-        JsonUtil.write(object, "flapSensitivity", this.flapSensitivity, DEFAULT_FLAP_SENSITIVITY);
-        JsonUtil.write(object, "maxElevatorAngle", this.maxElevatorAngle, DEFAULT_MAX_ELEVATOR_ANGLE);
-        JsonUtil.write(object, "elevatorStrength", this.elevatorStrength, DEFAULT_ELEVATOR_STRENGTH);
-        JsonUtil.write(object, "elevatorSensitivity", this.elevatorSensitivity, DEFAULT_ELEVATOR_SENSITIVITY);
-        JsonUtil.write(object, "maxTurnAngle", this.maxTurnAngle, DEFAULT_MAX_TURN_ANGLE);
+        ExtraJSONUtils.write(object, "minimumSpeedToTakeOff", this.minimumSpeedToTakeOff, DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF);
+        ExtraJSONUtils.write(object, "maxFlapAngle", this.maxFlapAngle, DEFAULT_MAX_FLAP_ANGLE);
+        ExtraJSONUtils.write(object, "flapStrength", this.flapStrength, DEFAULT_FLAP_STRENGTH);
+        ExtraJSONUtils.write(object, "flapSensitivity", this.flapSensitivity, DEFAULT_FLAP_SENSITIVITY);
+        ExtraJSONUtils.write(object, "maxElevatorAngle", this.maxElevatorAngle, DEFAULT_MAX_ELEVATOR_ANGLE);
+        ExtraJSONUtils.write(object, "elevatorStrength", this.elevatorStrength, DEFAULT_ELEVATOR_STRENGTH);
+        ExtraJSONUtils.write(object, "elevatorSensitivity", this.elevatorSensitivity, DEFAULT_ELEVATOR_SENSITIVITY);
+        ExtraJSONUtils.write(object, "maxTurnAngle", this.maxTurnAngle, DEFAULT_MAX_TURN_ANGLE);
     }
 
     public float getMinimumSpeedToTakeOff()
@@ -109,7 +109,7 @@ public final class PlaneProperties extends ExtendedProperties
         return new Builder();
     }
 
-    public static class Builder
+    public final static class Builder
     {
         private float minimumSpeedToTakeOff = DEFAULT_MINIMUM_SPEED_TO_TAKE_OFF;
         private float maxFlapAngle = DEFAULT_MAX_FLAP_ANGLE;

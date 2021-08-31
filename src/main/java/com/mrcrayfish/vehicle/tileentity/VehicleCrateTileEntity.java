@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.entity.EngineTier;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -210,7 +211,7 @@ public class VehicleCrateTileEntity extends TileEntitySynced implements ITickabl
         else if(compound.getBoolean("Creative"))
         {
             VehicleProperties properties = VehicleProperties.get(this.entityId);
-            EngineItem engineItem = VehicleRegistry.getEngineItem(properties.getEngineType(), EngineTier.IRON);
+            EngineItem engineItem = VehicleRegistry.getEngineItem(properties.getExtended(PoweredProperties.class).getEngineType(), EngineTier.IRON);
             this.engineStack = engineItem != null ? new ItemStack(engineItem) : ItemStack.EMPTY;
         }
         if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))

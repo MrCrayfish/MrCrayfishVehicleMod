@@ -33,7 +33,7 @@ public class EditVehicleContainer extends Container
             @Override
             public boolean mayPlace(ItemStack stack)
             {
-                return vehicle.getProperties().getEngineType() != EngineType.NONE && stack.getItem() instanceof EngineItem && ((EngineItem) stack.getItem()).getEngineType() == vehicle.getProperties().getEngineType();
+                return vehicle.getEngineType() != EngineType.NONE && stack.getItem() instanceof EngineItem && ((EngineItem) stack.getItem()).getEngineType() == vehicle.getEngineType();
             }
 
             @Override

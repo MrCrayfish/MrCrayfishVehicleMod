@@ -112,7 +112,7 @@ public class CameraHelper
                 }
 
                 Seat seat = this.properties.getSeats().get(index);
-                Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+                Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625);
                 eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
                 Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
                 quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
@@ -159,7 +159,7 @@ public class CameraHelper
                 if(index != -1)
                 {
                     Seat seat = this.properties.getSeats().get(index);
-                    Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+                    Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625);
                     eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
                     Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
                     quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));

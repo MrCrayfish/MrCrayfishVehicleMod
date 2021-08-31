@@ -4,8 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EntityJack;
+import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.client.Minecraft;
@@ -76,16 +77,20 @@ public class EntityVehicleRenderer<T extends VehicleEntity & EntityRayTracer.IEn
         if(!Config.CLIENT.renderDebugging.get())
             return;
 
-        VehicleProperties properties = entity.getProperties();
-        this.drawAxle(properties.getFrontAxelVec(), properties, stack);
-        this.drawAxle(properties.getRearAxelVec(), properties, stack);
+        if(entity instanceof PoweredVehicleEntity)
+        {
+            PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
+            VehicleProperties properties = entity.getProperties();
+            this.drawAxle(poweredVehicle.getFrontAxleOffset(), properties, stack);
+            this.drawAxle(poweredVehicle.getRearAxleOffset(), properties, stack);
+        }
     }
 
     private void drawAxle(@Nullable Vector3d position, VehicleProperties properties, MatrixStack stack)
     {
         if(position != null)
         {
-            PartPosition body = properties.getBodyPosition();
+            Transform body = properties.getBodyTransform();
             double offset = properties.getWheels().stream().findFirst().map(wheel -> wheel.getOffset().y).orElse(0.0);
             Vector3d wheelOffset = new Vector3d(0, properties.getWheelOffset(), 0).add(0, offset, 0);
             Vector3d axle = position.add(wheelOffset).scale(0.0625).scale(body.getScale());

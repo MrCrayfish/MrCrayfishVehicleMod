@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.properties.LandProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.util.CommonUtils;
@@ -83,15 +83,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         this.motion = Vector3d.ZERO;
 
         VehicleProperties properties = this.getProperties();
-        if(properties.getFrontAxelVec() == null || properties.getRearAxelVec() == null)
-            return;
 
         // Gets the forward vector of the vehicle
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
 
         // Calculates the distance between the front and rear axel
-        PartPosition bodyPosition = properties.getBodyPosition();
-        double wheelBase = properties.getFrontAxelVec().distanceTo(properties.getRearAxelVec()) * 0.0625 * bodyPosition.getScale();
+        Transform bodyPosition = properties.getBodyTransform();
+        double wheelBase = this.getFrontAxleOffset().distanceTo(this.getRearAxleOffset()) * 0.0625 * bodyPosition.getScale();
 
         // Performs the charging motion
         if(this.charging)
@@ -113,7 +111,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
 
         float friction = SurfaceHelper.getFriction(this);
-        float enginePower = this.isOnGround() ? properties.getEnginePower() : 0F;
+        float enginePower = this.isOnGround() ? this.getEnginePower() : 0F;
         float brakePower = this.isOnGround() ? -1F : 0F;
         float drag = 0.001F;
 
@@ -206,8 +204,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
     public boolean isRearWheelSteering()
     {
-        VehicleProperties properties = this.getProperties();
-        return properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null && properties.getFrontAxelVec().z < properties.getRearAxelVec().z;
+        return this.getFrontAxleOffset().z < this.getRearAxleOffset().z;
     }
 
     protected final boolean canCharge()
@@ -259,7 +256,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     {
         VehicleProperties properties = this.getProperties();
         double wheelCircumference = 24.0;
-        double vehicleScale = properties.getBodyPosition().getScale();
+        double vehicleScale = properties.getBodyTransform().getScale();
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         double direction = forward.dot(this.motion.normalize());
 
@@ -294,7 +291,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         if(this.charging)
         {
-            this.rearWheelRotationSpeed = properties.getEnginePower() * this.chargingAmount;
+            this.rearWheelRotationSpeed = this.getEnginePower() * this.chargingAmount;
         }
 
         Wheel rearWheel = properties.getFirstRearWheel();

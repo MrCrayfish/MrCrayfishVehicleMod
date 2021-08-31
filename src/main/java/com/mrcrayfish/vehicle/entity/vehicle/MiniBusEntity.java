@@ -14,26 +14,12 @@ public class MiniBusEntity extends LandVehicleEntity
     public MiniBusEntity(EntityType<? extends MiniBusEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setFuelCapacity(30000F);
-        this.setFuelConsumption(0.375F);
     }
 
     @Override
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_MINI_BUS_ENGINE.get();
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 0.75F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.25F;
     }
 
     @Override

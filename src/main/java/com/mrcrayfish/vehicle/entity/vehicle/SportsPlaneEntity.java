@@ -15,9 +15,6 @@ public class SportsPlaneEntity extends PlaneEntity
     public SportsPlaneEntity(EntityType<? extends SportsPlaneEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSteeringAngle(25);
-        this.setFuelCapacity(75000F);
-        this.setFuelConsumption(1.0F);
     }
 
     @Override

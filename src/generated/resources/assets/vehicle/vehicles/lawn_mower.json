@@ -1,14 +1,10 @@
 {
     "general": {
-        "engineType": "vehicle:small_motor",
-        "enginePower": 8.0,
         "canBeColored": true,
         "canChangeWheels": true
     },
     "axles": {
-        "offsetToGround": -2.0,
-        "lengthToFront": 13.5,
-        "lengthToRear": -10.7
+        "offsetToGround": -2.0
     },
     "display": {
         "held": [ 12.0, -1.5, 0.0 ],
@@ -20,16 +16,6 @@
     "position": {
         "body": {
             "scale": 1.25
-        },
-        "fuelPort": {
-            "translate": [ -4.5, 9.5, 4.0 ],
-            "rotation": [ 0.0, -90.0, 0.0 ],
-            "scale": 0.2
-        },
-        "keyPort": {
-            "translate": [ -5.0, 4.5, 6.5 ],
-            "rotation": [ -45.0, 0.0, 0.0 ],
-            "scale": 0.5
         },
         "towBar": [ 0.0, 0.0, -20.0 ]
     },
@@ -66,5 +52,25 @@
             "position": [ 0.0, 7.0, -9.0 ],
             "driver": true
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 5000.0,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 8.0,
+            "fuelFillerTransform": {
+                "translate": [ -4.5, 9.5, 4.0 ],
+                "rotation": [ 0.0, -90.0, 0.0 ],
+                "scale": 0.2
+            },
+            "ignitionTransform": {
+                "translate": [ -5.0, 4.5, 6.5 ],
+                "rotation": [ -45.0, 0.0, 0.0 ],
+                "scale": 0.5
+            },
+            "canLockWithKey": false,
+            "frontAxleOffset": 13.5,
+            "rearAxleOffset": -10.7
+        }
+    }
 }

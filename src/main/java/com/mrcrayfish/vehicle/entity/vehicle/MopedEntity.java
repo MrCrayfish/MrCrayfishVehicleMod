@@ -74,9 +74,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     public MopedEntity(EntityType<? extends MopedEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSteeringAngle(45);
-        this.setFuelCapacity(12000F);
-        this.setFuelConsumption(0.225F);
     }
 
     @Override
@@ -91,18 +88,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_MOPED_ENGINE.get();
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 0.5F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.2F;
     }
 
     @Override
@@ -263,13 +248,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
             level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.ITEM_BREAK, SoundCategory.BLOCKS, 1.0F, 1.0F);
             level.addFreshEntity(new ItemEntity(level, target.x, target.y, target.z, new ItemStack(Blocks.CHEST)));
         }
-    }
-
-    //TODO remove and add key support
-    @Override
-    public boolean isLockable()
-    {
-        return false;
     }
 
     @Override

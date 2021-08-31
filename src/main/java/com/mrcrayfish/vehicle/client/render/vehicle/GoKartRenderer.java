@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.GoKartEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -82,7 +83,7 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
                     EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
                     EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
                     EntityRayTracer.MatrixTransformation.createScale(0.9F));
-            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.GO_KART.get()).getEnginePosition(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
+            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.GO_KART.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
         };
     }
 }

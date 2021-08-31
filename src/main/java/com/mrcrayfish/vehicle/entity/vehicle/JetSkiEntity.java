@@ -15,7 +15,6 @@ public class JetSkiEntity extends BoatEntity
     public JetSkiEntity(EntityType<? extends JetSkiEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setFuelConsumption(0.5F);
     }
 
     @Override
@@ -48,24 +47,5 @@ public class JetSkiEntity extends BoatEntity
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 1.2F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 2.2F;
-    }
-
-    //TODO remove and add key support
-    @Override
-    public boolean isLockable()
-    {
-        return false;
     }
 }

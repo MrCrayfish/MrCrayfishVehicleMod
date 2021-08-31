@@ -67,7 +67,7 @@ public class VehicleHelper
                     Minecraft.getInstance().getSoundManager().play(new MovingSoundVehicle(vehicle));
                 }
             }
-            if(vehicle.getHornSound() != null && !player.equals(Minecraft.getInstance().player))
+            if(vehicle.hasHorn() && vehicle.getHornSound() != null && !player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.HORN);
                 if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))

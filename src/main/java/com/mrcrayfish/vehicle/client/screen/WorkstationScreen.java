@@ -9,7 +9,7 @@ import com.mrcrayfish.vehicle.client.render.AbstractPoweredRenderer;
 import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.CachedVehicle;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
@@ -17,6 +17,7 @@ import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.item.EngineItem;
@@ -149,14 +150,14 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         {
             AbstractPoweredRenderer<?> poweredRenderer = (AbstractPoweredRenderer<?>) cachedVehicle.getRenderer();
             VehicleProperties properties = cachedVehicle.getProperties();
-            if(properties.getEngineType() != EngineType.NONE)
+            if(properties.getExtended(PoweredProperties.class).getEngineType() != EngineType.NONE)
             {
                 ItemStack engine = this.workstation.getItem(1);
                 if(!engine.isEmpty() && engine.getItem() instanceof EngineItem)
                 {
                     EngineItem engineItem = (EngineItem) engine.getItem();
                     IEngineType engineType = engineItem.getEngineType();
-                    if(properties.getEngineType() == engineType)
+                    if(properties.getExtended(PoweredProperties.class).getEngineType() == engineType)
                     {
                         poweredRenderer.setEngineStack(engine);
                     }
@@ -302,9 +303,9 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
             this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.paint_color"), new TranslationTextComponent("vehicle.tooltip.not_applicable").withStyle(TextFormatting.GRAY)), startX, startY, 172, 29, mouseX, mouseY, 0);
         }
 
-        if(properties.getEngineType() != EngineType.NONE)
+        if(properties.getExtended(PoweredProperties.class).getEngineType() != EngineType.NONE)
         {
-            TranslationTextComponent engineName = properties.getEngineType().getEngineName();
+            TranslationTextComponent engineName = properties.getExtended(PoweredProperties.class).getEngineType().getEngineName();
             this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.required").withStyle(TextFormatting.RED), engineName), startX, startY, 192, 29, mouseX, mouseY, 1);
         }
         else
@@ -342,7 +343,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         /* Slots */
         VehicleProperties properties = cachedVehicle.getProperties();
         this.drawSlot(matrixStack, startX, startY, 172, 29, 164, 184, 0, false, properties.isColored());
-        boolean needsEngine = properties.getEngineType() != EngineType.NONE;
+        boolean needsEngine = properties.getExtended(PoweredProperties.class).getEngineType() != EngineType.NONE;
         this.drawSlot(matrixStack, startX, startY, 192, 29, 164, 200, 1, !this.validEngine, needsEngine);
         boolean needsWheels = properties.canChangeWheels();
         this.drawSlot(matrixStack, startX, startY, 212, 29, 164, 216, 2, needsWheels && this.workstation.getItem(2).isEmpty(), needsWheels);
@@ -412,7 +413,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         CachedVehicle transitionVehicle = this.transitioning ? prevCachedVehicle : cachedVehicle;
 
-        PartPosition position = transitionVehicle.getProperties().getDisplayPosition();
+        Transform position = transitionVehicle.getProperties().getDisplayTransform();
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees((float) position.getRotX()));
         matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees((float) position.getRotY()));

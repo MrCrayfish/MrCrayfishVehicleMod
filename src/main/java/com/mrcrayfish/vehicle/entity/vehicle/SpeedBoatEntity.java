@@ -15,8 +15,6 @@ public class SpeedBoatEntity extends BoatEntity
     public SpeedBoatEntity(EntityType<? extends SpeedBoatEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setFuelCapacity(25000F);
-        this.setFuelConsumption(0.75F);
     }
 
     @Override
@@ -43,25 +41,6 @@ public class SpeedBoatEntity extends BoatEntity
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 1.0F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 2.0F;
-    }
-
-    //TODO remove and add key support
-    @Override
-    public boolean isLockable()
-    {
-        return false;
     }
 
     @Override

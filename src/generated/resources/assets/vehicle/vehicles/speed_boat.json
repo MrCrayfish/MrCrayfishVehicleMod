@@ -1,7 +1,5 @@
 {
     "general": {
-        "engineType": "vehicle:large_motor",
-        "enginePower": 20.0,
         "canBeColored": true
     },
     "axles": {
@@ -18,16 +16,27 @@
     "position": {
         "body": {
             "translate": [ 0.0, -0.031, 0.688 ]
-        },
-        "fuelPort": {
-            "translate": [ 0.0, 5.25, -20.5 ],
-            "rotation": [ -90.0, 0.0, 0.0 ],
-            "scale": 0.65
         }
     },
     "seats": [
         {
             "driver": true
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 25000.0,
+            "energyConsumptionPerTick": 0.75,
+            "engineType": "vehicle:large_motor",
+            "enginePower": 20.0,
+            "minEnginePitch": 1.0,
+            "maxEnginePitch": 2.0,
+            "fuelFillerTransform": {
+                "translate": [ 0.0, 5.25, -20.5 ],
+                "rotation": [ -90.0, 0.0, 0.0 ],
+                "scale": 0.65
+            },
+            "canLockWithKey": false
+        }
+    }
 }

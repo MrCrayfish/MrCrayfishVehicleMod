@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.RayTraceFunction;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -26,7 +27,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
     protected final PropertyFunction<T, Boolean> renderEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderEngine, true);
     protected final PropertyFunction<T, Boolean> hasEngineProperty = new PropertyFunction<>(PoweredVehicleEntity::hasEngine, true);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
-    protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresFuel, true);
+    protected final PropertyFunction<T, Boolean> requiresFuelProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresEnergy, true);
     protected final PropertyFunction<T, ItemStack> engineStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineStack, ItemStack.EMPTY);
     protected final PropertyFunction<T, ItemStack> wheelStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getWheelStack, ItemStack.EMPTY);
     protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(PoweredVehicleEntity::getRenderWheelAngle, 0F);
@@ -70,21 +71,21 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
             {
                 VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
                 IBakedModel engineModel = RenderUtil.getModel(this.engineStackProperty.get(vehicle));
-                this.renderEngine(vehicle, properties.getEnginePosition(), engineModel, matrixStack, renderTypeBuffer, light);
+                this.renderEngine(vehicle, properties.getExtended(PoweredProperties.class).getEngineTransform(), engineModel, matrixStack, renderTypeBuffer, light);
             }
         }
     }
 
     protected void renderFuelPort(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        if(vehicle != null && vehicle.shouldRenderFuelPort() && vehicle.requiresFuel())
+        if(vehicle != null && vehicle.shouldRenderFuelPort() && vehicle.requiresEnergy())
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
             PoweredVehicleEntity.FuelPortType fuelPortType = vehicle.getFuelPortType();
             EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == vehicle && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
                 if(this.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -93,7 +94,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
             }
             else
             {
-                this.renderPart(properties.getFuelPortPosition(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
                 vehicle.playFuelPortCloseSound();
             }
         }
@@ -104,10 +105,10 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         if(vehicle != null && vehicle.isKeyNeeded())
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            this.renderPart(properties.getKeyPortPosition(), this.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+            this.renderPart(properties.getExtended(PoweredProperties.class).getIgnitionTransform(), this.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
             if(!vehicle.getKeyStack().isEmpty())
             {
-                this.renderKey(properties.getKeyPosition(), vehicle.getKeyStack(), RenderUtil.getModel(vehicle.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+                this.renderKey(properties.getExtended(PoweredProperties.class).getIgnitionTransform(), vehicle.getKeyStack(), RenderUtil.getModel(vehicle.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             }
         }
     }

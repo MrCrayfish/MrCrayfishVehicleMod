@@ -86,7 +86,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
         if(this.pullingEntity != null && !this.level.isClientSide)
         {
-            double threshold = Config.SERVER.trailerDetachThreshold.get() + Math.abs(this.getHitchOffset() / 16.0) * this.getProperties().getBodyPosition().getScale();
+            double threshold = Config.SERVER.trailerDetachThreshold.get() + Math.abs(this.getHitchOffset() / 16.0) * this.getProperties().getBodyTransform().getScale();
             if(this.pullingEntity.distanceTo(this) > threshold)
             {
                 this.level.playSound(null, this.pullingEntity.blockPosition(), SoundEvents.ITEM_BREAK, SoundCategory.PLAYERS, 1.0F, 1.0F);
@@ -120,7 +120,7 @@ public abstract class TrailerEntity extends VehicleEntity
         {
             VehicleEntity vehicle = (VehicleEntity) this.pullingEntity;
             Vector3d towBarVec = vehicle.getProperties().getTowBarPosition();
-            towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyPosition().getZ());
+            towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyTransform().getZ());
             towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
         }
 

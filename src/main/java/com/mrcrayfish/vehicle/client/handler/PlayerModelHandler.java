@@ -75,16 +75,13 @@ public class PlayerModelHandler
             return;
 
         VehicleProperties properties = landVehicle.getProperties();
-        if(properties.getRearAxelVec() == null)
-            return;
-
         Seat seat = properties.getSeats().get(seatIndex);
-        Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).scale(0.0625);
-        double vehicleScale = properties.getBodyPosition().getScale();
+        Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyTransform().getScale()).scale(0.0625);
+        double vehicleScale = properties.getBodyTransform().getScale();
         double playerScale = 32.0 / 30.0;
         double offsetX = -(seatVec.x * playerScale);
         double offsetY = (seatVec.y + player.getMyRidingOffset()) * playerScale + 24 * 0.0625 - properties.getWheelOffset() * 0.0625 * vehicleScale;
-        double offsetZ = (seatVec.z * playerScale) - properties.getRearAxelVec().z * 0.0625 * vehicleScale;
+        double offsetZ = (seatVec.z * playerScale) - landVehicle.getRearAxleOffset().z * 0.0625 * vehicleScale;
         matrixStack.translate(offsetX, offsetY, offsetZ);
         float p = landVehicle.getWheelieProgress(partialTicks);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * landVehicle.getBoostStrength() * p));

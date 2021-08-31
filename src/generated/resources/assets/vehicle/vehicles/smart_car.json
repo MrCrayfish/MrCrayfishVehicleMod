@@ -1,14 +1,10 @@
 {
     "general": {
-        "engineType": "vehicle:electric_motor",
-        "enginePower": 14.0,
         "canBeColored": true,
         "canChangeWheels": true
     },
     "axles": {
-        "offsetToGround": -1.7,
-        "lengthToFront": 12.0,
-        "lengthToRear": -12.0
+        "offsetToGround": -1.7
     },
     "display": {
         "held": [ 3.0, 1.0, 0.0 ],
@@ -19,11 +15,6 @@
     "position": {
         "body": {
             "scale": 1.25
-        },
-        "fuelPort": {
-            "translate": [ -9.0, 8.7, -12.3 ],
-            "rotation": [ 0.0, -90.0, 0.0 ],
-            "scale": 0.25
         },
         "towBar": [ 0.0, 0.0, -24.5 ]
     },
@@ -60,5 +51,21 @@
             "position": [ 0.0, 0.5, -2.0 ],
             "driver": true
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "maxSteeringAngle": 1.6,
+            "engineType": "vehicle:electric_motor",
+            "enginePower": 14.0,
+            "minEnginePitch": 0.8,
+            "fuelFillerTransform": {
+                "translate": [ -9.0, 8.7, -12.3 ],
+                "rotation": [ 0.0, -90.0, 0.0 ],
+                "scale": 0.25
+            },
+            "canLockWithKey": false,
+            "frontAxleOffset": 12.0,
+            "rearAxleOffset": -12.0
+        }
+    }
 }

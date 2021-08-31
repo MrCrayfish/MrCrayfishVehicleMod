@@ -1,14 +1,10 @@
 {
     "general": {
-        "engineType": "vehicle:small_motor",
-        "enginePower": 12.0,
         "canBeColored": true,
         "canChangeWheels": true
     },
     "axles": {
-        "offsetToGround": -1.0,
-        "lengthToFront": 14.5,
-        "lengthToRear": -6.7
+        "offsetToGround": -1.0
     },
     "display": {
         "held": [ 4.5, 2.0, 0.0 ],
@@ -21,11 +17,6 @@
     "position": {
         "body": {
             "scale": 1.2
-        },
-        "fuelPort": {
-            "translate": [ -2.5, 4.2, -1.5 ],
-            "rotation": [ 0.0, -90.0, 0.0 ],
-            "scale": 0.2
         }
     },
     "wheels": [
@@ -47,5 +38,23 @@
             "position": [ 0.0, 4.0, -1.0 ],
             "driver": true
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "maxSteeringAngle": 45.0,
+            "energyCapacity": 12000.0,
+            "energyConsumptionPerTick": 0.225,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 12.0,
+            "maxEnginePitch": 1.2,
+            "ignitionTransform": {
+                "translate": [ -2.5, 4.2, -1.5 ],
+                "rotation": [ 0.0, -90.0, 0.0 ],
+                "scale": 0.2
+            },
+            "canLockWithKey": false,
+            "frontAxleOffset": 14.5,
+            "rearAxleOffset": -6.7
+        }
+    }
 }

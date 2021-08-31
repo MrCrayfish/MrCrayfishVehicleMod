@@ -42,7 +42,7 @@ public interface RayTraceFunction
             return null;
 
         PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) entity;
-        if(!poweredVehicle.requiresFuel() || poweredVehicle.getCurrentFuel() >= poweredVehicle.getFuelCapacity())
+        if(!poweredVehicle.requiresEnergy() || poweredVehicle.getCurrentEnergy() >= poweredVehicle.getEnergyCapacity())
             return null;
 
         gasPump: if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent() && ControllerHandler.isRightClicking())

@@ -24,18 +24,6 @@ public class SmartCarEntity extends LandVehicleEntity
     }
 
     @Override
-    public float getMinEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.6F;
-    }
-
-    @Override
     public boolean canTowTrailer()
     {
         return true;
@@ -43,13 +31,6 @@ public class SmartCarEntity extends LandVehicleEntity
 
     @Override
     public boolean canMountTrailer()
-    {
-        return false;
-    }
-
-    //TODO remove and add key support
-    @Override
-    public boolean isLockable()
     {
         return false;
     }

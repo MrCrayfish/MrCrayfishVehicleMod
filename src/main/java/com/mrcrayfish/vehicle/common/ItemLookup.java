@@ -70,7 +70,7 @@ public class ItemLookup
     {
         if(entity.hasEngine())
         {
-            return new ItemStack(ENGINE_LOOKUP.getOrDefault(Pair.of(entity.getProperties().getEngineType(), entity.getEngineTier()), Items.AIR));
+            return new ItemStack(ENGINE_LOOKUP.getOrDefault(Pair.of(entity.getEngineType(), entity.getEngineTier()), Items.AIR));
         }
         return ItemStack.EMPTY;
     }

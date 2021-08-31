@@ -10,8 +10,9 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
@@ -184,7 +185,7 @@ public class EntityRayTracer
     private static void createBodyTransforms(List<MatrixTransformation> transforms, EntityType<? extends VehicleEntity> entityType)
     {
         VehicleProperties properties = VehicleProperties.get(entityType);
-        PartPosition bodyPosition = properties.getBodyPosition();
+        Transform bodyPosition = properties.getBodyTransform();
         transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) bodyPosition.getRotX()));
         transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) bodyPosition.getRotY()));
         transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) bodyPosition.getRotZ()));
@@ -195,45 +196,45 @@ public class EntityRayTracer
         transforms.add(MatrixTransformation.createTranslation(0.0F, properties.getWheelOffset() * 0.0625F, 0.0F));
     }
 
-    public static void createPartTransforms(ISpecialModel model, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
+    public static void createPartTransforms(ISpecialModel model, Transform transform, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
         List<MatrixTransformation> transforms = Lists.newArrayList();
         transforms.addAll(transformsGlobal);
-        transforms.add(MatrixTransformation.createTranslation((float) partPosition.getX() * 0.0625F, (float) partPosition.getY() * 0.0625F, (float) partPosition.getZ() * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation((float) transform.getX() * 0.0625F, (float) transform.getY() * 0.0625F, (float) transform.getZ() * 0.0625F));
         transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
-        transforms.add(MatrixTransformation.createScale((float) partPosition.getScale()));
+        transforms.add(MatrixTransformation.createScale((float) transform.getScale()));
         transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) partPosition.getRotX()));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) partPosition.getRotY()));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) partPosition.getRotZ()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) transform.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) transform.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) transform.getRotZ()));
         createTransformListForPart(model, parts, transforms);
     }
 
-    public static void createPartTransforms(ISpecialModel model, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, RayTraceFunction function)
+    public static void createPartTransforms(ISpecialModel model, Transform transform, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, RayTraceFunction function)
     {
         List<MatrixTransformation> transforms = Lists.newArrayList();
         transforms.addAll(transformsGlobal);
-        transforms.add(MatrixTransformation.createTranslation((float) partPosition.getX() * 0.0625F, (float) partPosition.getY() * 0.0625F, (float) partPosition.getZ() * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation((float) transform.getX() * 0.0625F, (float) transform.getY() * 0.0625F, (float) transform.getZ() * 0.0625F));
         transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
-        transforms.add(MatrixTransformation.createScale((float) partPosition.getScale()));
+        transforms.add(MatrixTransformation.createScale((float) transform.getScale()));
         transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) partPosition.getRotX()));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) partPosition.getRotY()));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) partPosition.getRotZ()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) transform.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) transform.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) transform.getRotZ()));
         createTransformListForPart(model, parts, transforms, function);
     }
 
-    public static void createPartTransforms(Item part, PartPosition partPosition, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, RayTraceFunction function)
+    public static void createPartTransforms(Item part, Transform transform, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal, RayTraceFunction function)
     {
         List<MatrixTransformation> transforms = Lists.newArrayList();
         transforms.addAll(transformsGlobal);
-        transforms.add(MatrixTransformation.createTranslation((float) partPosition.getX() * 0.0625F, (float) partPosition.getY() * 0.0625F, (float) partPosition.getZ() * 0.0625F));
+        transforms.add(MatrixTransformation.createTranslation((float) transform.getX() * 0.0625F, (float) transform.getY() * 0.0625F, (float) transform.getZ() * 0.0625F));
         transforms.add(MatrixTransformation.createTranslation(0.0F, -0.5F, 0.0F));
-        transforms.add(MatrixTransformation.createScale((float) partPosition.getScale()));
+        transforms.add(MatrixTransformation.createScale((float) transform.getScale()));
         transforms.add(MatrixTransformation.createTranslation(0.0F, 0.5F, 0.0F));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) partPosition.getRotX()));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) partPosition.getRotY()));
-        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) partPosition.getRotZ()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_X, (float) transform.getRotX()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Y, (float) transform.getRotY()));
+        transforms.add(MatrixTransformation.createRotation(Axis.POSITIVE_Z, (float) transform.getRotZ()));
         createTransformListForPart(new ItemStack(part), parts, transforms, function);
     }
 
@@ -277,7 +278,7 @@ public class EntityRayTracer
      */
     public static void createFuelPartTransforms(EntityType<? extends VehicleEntity> entityType, ISpecialModel model, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
-        PartPosition fuelPortPosition = VehicleProperties.get(entityType).getFuelPortPosition();
+        Transform fuelPortPosition = VehicleProperties.get(entityType).getExtended(PoweredProperties.class).getFuelFillerTransform();
         createPartTransforms(model, fuelPortPosition, parts, transformsGlobal, RayTraceFunction.FUNCTION_FUELING);
     }
 
@@ -307,7 +308,7 @@ public class EntityRayTracer
 
     public static void createKeyPortTransforms(EntityType<? extends VehicleEntity> entityType, HashMap<RayTracePart, List<MatrixTransformation>> parts, List<MatrixTransformation> transformsGlobal)
     {
-        PartPosition keyPortPosition = VehicleProperties.get(entityType).getKeyPortPosition();
+        Transform keyPortPosition = VehicleProperties.get(entityType).getExtended(PoweredProperties.class).getIgnitionTransform();
         createPartTransforms(SpecialModels.KEY_HOLE, keyPortPosition, parts, transformsGlobal);
     }
 

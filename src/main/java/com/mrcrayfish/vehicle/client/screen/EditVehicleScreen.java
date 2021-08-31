@@ -6,8 +6,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.client.render.CachedVehicle;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import com.mrcrayfish.vehicle.util.RenderUtil;
@@ -66,7 +67,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         int top = (this.height - this.imageHeight) / 2;
         this.blit(matrixStack, left, top, 0, 0, this.imageWidth, this.imageHeight);
 
-        if(this.cachedVehicle.getProperties().getEngineType() != EngineType.NONE)
+        if(this.cachedVehicle.getProperties().getExtended(PoweredProperties.class).getEngineType() != EngineType.NONE)
         {
             if(this.vehicleInventory.getItem(0).isEmpty())
             {
@@ -126,7 +127,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             matrixStack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
             matrixStack.scale(22F, 22F, 22F);
 
-            PartPosition position = this.cachedVehicle.getProperties().getDisplayPosition();
+            Transform position = this.cachedVehicle.getProperties().getDisplayTransform();
             matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees((float) position.getRotX()));
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees((float) position.getRotY()));
@@ -229,7 +230,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         {
             if(CommonUtils.isMouseWithin(mouseX, mouseY, startX + 7, startY + 16, 18, 18))
             {
-                if(this.cachedVehicle.getProperties().getEngineType() != EngineType.NONE)
+                if(this.cachedVehicle.getProperties().getExtended(PoweredProperties.class).getEngineType() != EngineType.NONE)
                 {
                     this.renderTooltip(matrixStack, Lists.transform(Collections.singletonList(new StringTextComponent("Engine")), ITextComponent::getVisualOrderText), mouseX, mouseY); //TODO localise
                 }

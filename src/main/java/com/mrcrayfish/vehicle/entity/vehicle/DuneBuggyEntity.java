@@ -15,7 +15,6 @@ public class DuneBuggyEntity extends LandVehicleEntity
     {
         super(type, worldIn);
         this.maxUpStep = 0.5F;
-        this.setFuelCapacity(5000F);
     }
 
     @Override
@@ -29,11 +28,5 @@ public class DuneBuggyEntity extends LandVehicleEntity
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_BUMPER_CAR_ENGINE.get();
-    }
-
-    @Override
-    public boolean isLockable()
-    {
-        return false;
     }
 }

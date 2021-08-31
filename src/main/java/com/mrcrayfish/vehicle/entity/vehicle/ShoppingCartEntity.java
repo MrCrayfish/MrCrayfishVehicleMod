@@ -17,9 +17,6 @@ public class ShoppingCartEntity extends LandVehicleEntity
     public ShoppingCartEntity(EntityType<? extends ShoppingCartEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSteeringAngle(90);
-        this.setFuelCapacity(0F);
-        this.setFuelConsumption(0F);
     }
 
     @Override
@@ -50,11 +47,4 @@ public class ShoppingCartEntity extends LandVehicleEntity
     {
         return null;
     }
-
-    @Override
-    public boolean isLockable()
-    {
-        return false;
-    }
-
 }

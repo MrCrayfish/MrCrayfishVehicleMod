@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.SurfaceHelper;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -61,7 +61,6 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        this.setSteeringSpeed(5);
     }
 
     @Override
@@ -96,7 +95,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         }
 
         VehicleProperties properties = this.getProperties();
-        float enginePower = properties.getEnginePower() * this.getEngineTier().map(IEngineTier::getPowerMultiplier).orElse(1.0F);
+        float enginePower = this.getEnginePower() * this.getEngineTier().map(IEngineTier::getPowerMultiplier).orElse(1.0F);
         float friction = this.isFlying() ? 0F : SurfaceHelper.getFriction(this);
         float drag = 0.75F;
         float forwardForce = Math.max((this.propellerSpeed / 200F) - 0.4F, 0F);
@@ -140,11 +139,11 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.velocity = this.velocity.add(0, -0.08 * (1.0F - liftForce), 0);
 
         // Different physics when on the ground
-        if(this.isOnGround() && properties.getFrontAxelVec() != null && properties.getRearAxelVec() != null)
+        if(this.isOnGround() && this.getFrontAxleOffset() != null && this.getRearAxleOffset() != null)
         {
             // Gets the new position of the wheels
-            PartPosition bodyPosition = properties.getBodyPosition();
-            double wheelBase = properties.getFrontAxelVec().distanceTo(properties.getRearAxelVec()) * 0.0625 * bodyPosition.getScale();
+            Transform bodyPosition = properties.getBodyTransform();
+            double wheelBase = this.getFrontAxleOffset().distanceTo(this.getRearAxleOffset()) * 0.0625 * bodyPosition.getScale();
             Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
             Vector3d rearWheel = this.position().add(forward.scale(-wheelBase / 2.0));
             frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())));
@@ -193,7 +192,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         if(this.canDrive() && this.getControllingPassenger() != null)
         {
-            float enginePower = this.getProperties().getEnginePower();
+            float enginePower = this.getEnginePower();
             enginePower *= this.getEngineTier().map(IEngineTier::getPowerMultiplier).orElse(1.0F);
             float maxRotorSpeed = this.getMaxRotorSpeed();
             float angleOfAttack = (MathHelper.clamp(this.xRot, -90F, 90F) + 90F) / 180F;
@@ -241,7 +240,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         if(this.getThrottle() > 0)
         {
-            return 200F + this.getProperties().getEnginePower();
+            return 200F + this.getEnginePower();
         }
         else if(this.isFlying())
         {
@@ -492,7 +491,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     {
         VehicleProperties properties = this.getProperties();
         double wheelCircumference = 24.0;
-        double vehicleScale = properties.getBodyPosition().getScale();
+        double vehicleScale = properties.getBodyTransform().getScale();
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
         Vector3d horizontalMotion = this.motion.multiply(1, 0, 1);
         double direction = forward.dot(horizontalMotion.normalize());

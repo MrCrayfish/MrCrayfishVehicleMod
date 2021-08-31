@@ -1,14 +1,10 @@
 {
     "general": {
-        "engineType": "vehicle:large_motor",
-        "enginePower": 16.0,
         "canBeColored": true,
         "canChangeWheels": true
     },
     "axles": {
-        "offsetToGround": -1.0,
-        "lengthToFront": 14.5,
-        "lengthToRear": -14.5
+        "offsetToGround": -1.0
     },
     "display": {
         "held": [ 0.0, 3.5, 0.0 ],
@@ -19,16 +15,6 @@
     "position": {
         "body": {
             "scale": 1.4
-        },
-        "fuelPort": {
-            "translate": [ -12.0, 8.5, -6.5 ],
-            "rotation": [ 0.0, -90.0, 0.0 ],
-            "scale": 0.25
-        },
-        "keyPort": {
-            "translate": [ 0.0, 7.0, 6.2 ],
-            "rotation": [ -67.5, 0.0, 0.0 ],
-            "scale": 0.5
         }
     },
     "wheels": [
@@ -75,5 +61,26 @@
         {
             "position": [ -5.0, 3.5, -18.9 ]
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 25000.0,
+            "engineType": "vehicle:large_motor",
+            "enginePower": 16.0,
+            "minEnginePitch": 0.8,
+            "maxEnginePitch": 1.6,
+            "fuelFillerTransform": {
+                "translate": [ -12.0, 8.5, -6.5 ],
+                "rotation": [ 0.0, -90.0, 0.0 ],
+                "scale": 0.25
+            },
+            "ignitionTransform": {
+                "translate": [ 0.0, 7.0, 6.2 ],
+                "rotation": [ -67.5, 0.0, 0.0 ],
+                "scale": 0.5
+            },
+            "frontAxleOffset": 14.5,
+            "rearAxleOffset": -14.5
+        }
+    }
 }

@@ -8,11 +8,11 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
-import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
+import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.JSONUtils;
@@ -54,6 +54,7 @@ public class VehicleProperties
     private static final Map<ResourceLocation, VehicleProperties> ID_TO_PROPERTIES = new HashMap<>();
     private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
 
+    //TODO ideas: canBeDamaged, canPickUp, canBePlacedInTrailer
     private final float axleOffset;
     private final float wheelOffset;
     private final Vector3d heldOffset;
@@ -61,22 +62,14 @@ public class VehicleProperties
     private final Vector3d trailerOffset;
     private final boolean canChangeWheels;
     private final List<Wheel> wheels;
-    private final PartPosition bodyPosition;
-    private final PartPosition enginePosition;
-    private final PartPosition fuelPortPosition;
-    private final PartPosition keyPortPosition;
-    private final PartPosition keyPosition;
-    private final PartPosition displayPosition;
-    private final Vector3d frontAxelVec;
-    private final Vector3d rearAxelVec;
+    private final Transform bodyTransform;
+    private final Transform displayTransform;
     private final List<Seat> seats;
-    private final IEngineType engineType;
-    private final float enginePower;
     private final boolean colored;
     private final CameraProperties camera;
     private final ImmutableMap<ResourceLocation, ExtendedProperties> extended;
 
-    private VehicleProperties(float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarPosition, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, PartPosition bodyPosition, PartPosition enginePosition, PartPosition fuelPortPosition, PartPosition keyPortPosition, PartPosition keyPosition, PartPosition displayPosition, Vector3d frontAxelVec, Vector3d rearAxelVec, List<Seat> seats, IEngineType engineType, float enginePower, boolean colored, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
+    private VehicleProperties(float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarPosition, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean colored, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
     {
         this.axleOffset = axleOffset;
         this.wheelOffset = wheelOffset;
@@ -85,17 +78,9 @@ public class VehicleProperties
         this.trailerOffset = trailerOffset;
         this.canChangeWheels = canChangeWheels;
         this.wheels = wheels;
-        this.bodyPosition = bodyPosition;
-        this.enginePosition = enginePosition;
-        this.fuelPortPosition = fuelPortPosition;
-        this.keyPortPosition = keyPortPosition;
-        this.keyPosition = keyPosition;
-        this.displayPosition = displayPosition;
-        this.frontAxelVec = frontAxelVec;
-        this.rearAxelVec = rearAxelVec;
+        this.bodyTransform = bodyTransform;
+        this.displayTransform = displayTransform;
         this.seats = seats;
-        this.engineType = engineType;
-        this.enginePower = enginePower;
         this.colored = colored;
         this.camera = camera;
         this.extended = ImmutableMap.copyOf(extended);
@@ -143,56 +128,19 @@ public class VehicleProperties
         return this.wheels.stream().filter(wheel -> wheel.getPosition() == Wheel.Position.REAR).findFirst().orElse(null);
     }
 
-    public PartPosition getBodyPosition()
+    public Transform getBodyTransform()
     {
-        return this.bodyPosition;
+        return this.bodyTransform;
     }
 
-    public PartPosition getEnginePosition()
+    public Transform getDisplayTransform()
     {
-        return this.enginePosition;
-    }
-
-    public PartPosition getFuelPortPosition()
-    {
-        return this.fuelPortPosition;
-    }
-
-    public PartPosition getKeyPortPosition()
-    {
-        return this.keyPortPosition;
-    }
-
-    public PartPosition getKeyPosition()
-    {
-        return this.keyPosition;
-    }
-
-    public PartPosition getDisplayPosition()
-    {
-        return this.displayPosition;
-    }
-
-    @Nullable
-    public Vector3d getFrontAxelVec()
-    {
-        return this.frontAxelVec;
-    }
-
-    @Nullable
-    public Vector3d getRearAxelVec()
-    {
-        return this.rearAxelVec;
+        return this.displayTransform;
     }
 
     public List<Seat> getSeats()
     {
         return ImmutableList.copyOf(this.seats);
-    }
-
-    public IEngineType getEngineType()
-    {
-        return this.engineType;
     }
 
     public boolean canChangeWheels()
@@ -203,11 +151,6 @@ public class VehicleProperties
     public boolean isColored()
     {
         return this.colored;
-    }
-
-    public float getEnginePower()
-    {
-        return this.enginePower;
     }
 
     public CameraProperties getCamera()
@@ -305,29 +248,22 @@ public class VehicleProperties
             JsonObject object = new JsonObject();
 
             JsonObject general = new JsonObject();
-            if(properties.engineType != EngineType.NONE) general.addProperty("engineType", properties.engineType.getId().toString());
-            if(properties.enginePower != 0) general.addProperty("enginePower", properties.enginePower);
             if(properties.colored) general.addProperty("canBeColored", true);
             if(properties.canChangeWheels) general.addProperty("canChangeWheels", true);
             if(general.size() > 0) object.add("general", general);
 
             JsonObject axles = new JsonObject();
             if(properties.axleOffset != 0) axles.addProperty("offsetToGround", properties.axleOffset);
-            if(properties.frontAxelVec != null) axles.addProperty("lengthToFront", properties.frontAxelVec.z);
-            if(properties.rearAxelVec != null) axles.addProperty("lengthToRear", properties.rearAxelVec.z);
             if(axles.size() > 0) object.add("axles", axles);
 
             JsonObject display = new JsonObject();
             this.addVector3dProperty(display, "held", properties.heldOffset);
             this.addVector3dProperty(display, "trailer", properties.trailerOffset);
-            this.addPartPositionProperty(display, "gui", properties.displayPosition);
+            this.addPartPositionProperty(display, "gui", properties.displayTransform);
             if(display.size() > 0) object.add("display", display);
 
             JsonObject position = new JsonObject();
-            this.addPartPositionProperty(position, "body", properties.bodyPosition);
-            this.addPartPositionProperty(position, "engine", properties.enginePosition);
-            this.addPartPositionProperty(position, "fuelPort", properties.fuelPortPosition);
-            this.addPartPositionProperty(position, "keyPort", properties.keyPortPosition);
+            this.addPartPositionProperty(position, "body", properties.bodyTransform);
             this.addVector3dProperty(position, "towBar", properties.towBarPosition);
             if(position.size() > 0) object.add("position", position);
 
@@ -346,26 +282,19 @@ public class VehicleProperties
             VehicleProperties.Builder builder = VehicleProperties.builder();
 
             JsonObject general = JSONUtils.getAsJsonObject(object, "general", new JsonObject());
-            builder.setEngineType(this.getAsEngineType(general, "engineType", EngineType.NONE));
-            builder.setEnginePower(JSONUtils.getAsFloat(general, "enginePower", 0F));
             builder.setColored(JSONUtils.getAsBoolean(general, "canBeColored", false));
             builder.setCanChangeWheels(JSONUtils.getAsBoolean(general, "canChangeWheels", false));
 
             JsonObject axles = JSONUtils.getAsJsonObject(object, "axles", new JsonObject());
             builder.setAxleOffset(JSONUtils.getAsFloat(axles, "offsetToGround", 0F));
-            if(axles.has("lengthToFront")) builder.setFrontAxleOffset(JSONUtils.getAsFloat(axles, "lengthToFront", 0F));
-            if(axles.has("lengthToRear")) builder.setRearAxleOffset(JSONUtils.getAsFloat(axles, "lengthToRear", 0F));
 
             JsonObject display = JSONUtils.getAsJsonObject(object, "display", new JsonObject());
             builder.setHeldOffset(this.getAsVector3d(display, "held", Vector3d.ZERO));
             builder.setTrailerOffset(this.getAsVector3d(display, "trailer", Vector3d.ZERO));
-            this.callIfNonNull(builder::setDisplayPosition, this.getAsPartPosition(display, "gui"));
+            this.callIfNonNull(builder::setDisplayTransform, ExtraJSONUtils.getAsTransform(display, "gui", Transform.DEFAULT));
 
             JsonObject positions = JSONUtils.getAsJsonObject(object, "position", new JsonObject());
-            this.callIfNonNull(builder::setBodyPosition, this.getAsPartPosition(positions, "body"));
-            this.callIfNonNull(builder::setEnginePosition, this.getAsPartPosition(positions, "engine"));
-            this.callIfNonNull(builder::setFuelPortPosition, this.getAsPartPosition(positions, "fuelPort"));
-            this.callIfNonNull(builder::setKeyPortPosition, this.getAsPartPosition(positions, "keyPort"));
+            this.callIfNonNull(builder::setBodyTransform, ExtraJSONUtils.getAsTransform(positions, "body", Transform.DEFAULT));
             builder.setTowBarPosition(this.getAsVector3d(positions, "towBar", Vector3d.ZERO));
 
             this.readWheels(builder, object);
@@ -551,20 +480,6 @@ public class VehicleProperties
             return defaultValue;
         }
 
-        @Nullable
-        private PartPosition getAsPartPosition(JsonObject object, String memberName)
-        {
-            if(object.has(memberName))
-            {
-                JsonObject partPositionObject = object.getAsJsonObject(memberName);
-                Vector3d translate = this.getAsVector3d(partPositionObject, "translate", Vector3d.ZERO);
-                Vector3d rotation = this.getAsVector3d(partPositionObject, "rotation", Vector3d.ZERO);
-                double scale = JSONUtils.getAsFloat(partPositionObject, "scale", 1);
-                return new PartPosition(translate.x, translate.y, translate.z, rotation.x, rotation.y, rotation.z, scale);
-            }
-            return null;
-        }
-
         private <T> void callIfNonNull(Consumer<T> consumer, @Nullable T value)
         {
             if(value != null)
@@ -585,9 +500,9 @@ public class VehicleProperties
             }
         }
 
-        private void addPartPositionProperty(JsonObject parent, String memberName, PartPosition position)
+        private void addPartPositionProperty(JsonObject parent, String memberName, Transform position)
         {
-            if(position != null && position != PartPosition.DEFAULT)
+            if(position != null && position != Transform.DEFAULT)
             {
                 JsonObject partPositionObject = new JsonObject();
                 this.addVector3dProperty(partPositionObject, "translate", position.getTranslate());
@@ -612,17 +527,9 @@ public class VehicleProperties
         private Vector3d trailerOffset = Vector3d.ZERO;
         private boolean canChangeWheels = false;
         private List<Wheel> wheels = new ArrayList<>();
-        private PartPosition bodyPosition = PartPosition.DEFAULT;
-        private PartPosition enginePosition;
-        private PartPosition fuelPortPosition;
-        private PartPosition keyPortPosition;
-        private PartPosition keyPosition;
-        private PartPosition displayPosition = PartPosition.DEFAULT;
-        private Vector3d frontAxelVec;
-        private Vector3d rearAxelVec;
+        private Transform bodyTransform = Transform.DEFAULT;
+        private Transform displayTransform = Transform.DEFAULT;
         private List<Seat> seats = new ArrayList<>();
-        private IEngineType engineType = EngineType.NONE;
-        private float enginePower = 15F;
         private boolean colored;
         private CameraProperties camera = CameraProperties.DEFAULT_CAMERA;
         private Map<ResourceLocation, ExtendedProperties> extended = new HashMap<>();
@@ -681,69 +588,21 @@ public class VehicleProperties
             return this;
         }
 
-        public Builder setBodyPosition(PartPosition bodyPosition)
+        public Builder setBodyTransform(Transform bodyTransform)
         {
-            this.bodyPosition = bodyPosition;
+            this.bodyTransform = bodyTransform;
             return this;
         }
 
-        public Builder setEnginePosition(PartPosition enginePosition)
+        public Builder setDisplayTransform(Transform displayTransform)
         {
-            this.enginePosition = enginePosition;
-            return this;
-        }
-
-        public Builder setFuelPortPosition(PartPosition fuelPortPosition)
-        {
-            this.fuelPortPosition = fuelPortPosition;
-            return this;
-        }
-
-        public Builder setKeyPortPosition(PartPosition keyPortPosition)
-        {
-            this.keyPortPosition = keyPortPosition;
-            return this;
-        }
-
-        public Builder setKeyPosition(PartPosition keyPosition)
-        {
-            this.keyPosition = keyPosition;
-            return this;
-        }
-
-        public Builder setDisplayPosition(PartPosition displayPosition)
-        {
-            this.displayPosition = displayPosition;
-            return this;
-        }
-
-        public Builder setFrontAxleOffset(double offset)
-        {
-            this.frontAxelVec = new Vector3d(0, 0, offset);
-            return this;
-        }
-
-        public Builder setRearAxleOffset(double offset)
-        {
-            this.rearAxelVec = new Vector3d(0, 0, offset);
+            this.displayTransform = displayTransform;
             return this;
         }
 
         public Builder addSeat(Seat seat)
         {
             this.seats.add(seat);
-            return this;
-        }
-
-        public Builder setEngineType(IEngineType engineType)
-        {
-            this.engineType = engineType;
-            return this;
-        }
-
-        public Builder setEnginePower(float enginePower)
-        {
-            this.enginePower = enginePower;
             return this;
         }
 
@@ -776,7 +635,7 @@ public class VehicleProperties
             this.validate();
             this.calculateWheelOffset();
             List<Wheel> wheels = scaleWheels ? this.generateScaledWheels() : this.wheels;
-            return new VehicleProperties(this.axleOffset, this.wheelOffset, this.heldOffset, this.towBarPosition, this.trailerOffset, this.canChangeWheels, wheels, this.bodyPosition, this.enginePosition, this.fuelPortPosition, this.keyPortPosition, this.keyPosition, this.displayPosition, this.frontAxelVec, this.rearAxelVec, this.seats, this.engineType, this.enginePower, this.colored, this.camera, this.extended);
+            return new VehicleProperties(this.axleOffset, this.wheelOffset, this.heldOffset, this.towBarPosition, this.trailerOffset, this.canChangeWheels, wheels, this.bodyTransform, this.displayTransform, this.seats, this.colored, this.camera, this.extended);
         }
 
         private void validate()

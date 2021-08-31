@@ -24,39 +24,9 @@ public class TractorEntity extends LandVehicleEntity
     }
 
     @Override
-    public float getMinEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.6F;
-    }
-
-    @Override
     public FuelPortType getFuelPortType()
     {
         return FuelPortType.DEFAULT;
-    }
-
-    @Override
-    public boolean shouldRenderEngine()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean shouldShowEngineSmoke()
-    {
-        return true;
-    }
-
-    @Override
-    public Vector3d getEngineSmokePosition()
-    {
-        return new Vector3d(-0.125, 1.9375, 1.125);
     }
 
     @Override
@@ -70,5 +40,4 @@ public class TractorEntity extends LandVehicleEntity
     {
         return false;
     }
-
 }

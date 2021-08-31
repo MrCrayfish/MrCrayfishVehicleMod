@@ -53,9 +53,9 @@ public class OverlayHandler
         DecimalFormat format = new DecimalFormat("0.00");
         this.addStat("BPS", format.format(vehicle.getSpeed()));
 
-        if(vehicle.requiresFuel())
+        if(vehicle.requiresEnergy())
         {
-            String fuel = format.format(vehicle.getCurrentFuel()) + "/" + format.format(vehicle.getFuelCapacity());
+            String fuel = format.format(vehicle.getCurrentEnergy()) + "/" + format.format(vehicle.getEnergyCapacity());
             this.addStat("Fuel", fuel);
         }
 

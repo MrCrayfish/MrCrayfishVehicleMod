@@ -30,7 +30,6 @@ public class LawnMowerEntity extends LandVehicleEntity
     public LawnMowerEntity(EntityType<? extends LawnMowerEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setFuelCapacity(5000F);
     }
 
     @Override
@@ -124,12 +123,5 @@ public class LawnMowerEntity extends LandVehicleEntity
     public boolean canTowTrailer()
     {
         return true;
-    }
-
-    //TODO remove and add key support
-    @Override
-    public boolean isLockable()
-    {
-        return false;
     }
 }

@@ -22,10 +22,4 @@ public class CouchEntity extends LandVehicleEntity
     {
         return ModSounds.ENTITY_ATV_ENGINE.get();
     }
-
-    @Override
-    public boolean isLockable()
-    {
-        return false;
-    }
 }

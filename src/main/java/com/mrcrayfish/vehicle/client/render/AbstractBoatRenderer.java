@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.BoatEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -25,7 +25,7 @@ public abstract class AbstractBoatRenderer<T extends BoatEntity & EntityRayTrace
         matrixStack.pushPose();
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-        PartPosition bodyPosition = properties.getBodyPosition();
+        Transform bodyPosition = properties.getBodyTransform();
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees((float) bodyPosition.getRotX()));
         matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ()));

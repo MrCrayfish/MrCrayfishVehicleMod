@@ -98,7 +98,7 @@ public class MessageCraftVehicle implements IMessage<MessageCraftVehicle>
             if(vehicle instanceof PoweredVehicleEntity)
             {
                 PoweredVehicleEntity entityPoweredVehicle = (PoweredVehicleEntity) entity;
-                engineType = entityPoweredVehicle.getProperties().getEngineType();
+                engineType = entityPoweredVehicle.getEngineType();
 
                 WorkstationTileEntity workstationTileEntity = workstation.getTileEntity();
                 ItemStack workstationEngine = workstationTileEntity.getItem(1);

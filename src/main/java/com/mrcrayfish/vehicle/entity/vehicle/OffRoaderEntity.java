@@ -14,25 +14,12 @@ public class OffRoaderEntity extends LandVehicleEntity
     public OffRoaderEntity(EntityType<? extends OffRoaderEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setFuelCapacity(25000F);
     }
 
     @Override
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.6F;
     }
 
     @Override

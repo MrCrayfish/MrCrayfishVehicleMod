@@ -15,15 +15,6 @@ public class AluminumBoatEntity extends BoatEntity
     public AluminumBoatEntity(EntityType<? extends AluminumBoatEntity> type, World worldIn)
     {
         super(type, worldIn);
-        this.setMaxSteeringAngle(20);
-        this.setFuelCapacity(25000F);
-        this.setFuelConsumption(0.5F);
-    }
-
-    @Override
-    public boolean isLockable()
-    {
-        return false;
     }
 
     @Override
@@ -50,18 +41,6 @@ public class AluminumBoatEntity extends BoatEntity
     public SoundEvent getEngineSound()
     {
         return ModSounds.ENTITY_SPEED_BOAT_ENGINE.get();
-    }
-
-    @Override
-    public float getMinEnginePitch()
-    {
-        return 0.8F;
-    }
-
-    @Override
-    public float getMaxEnginePitch()
-    {
-        return 1.5F;
     }
 
     @Override

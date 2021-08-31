@@ -1,13 +1,13 @@
 package com.mrcrayfish.vehicle.entity.properties;
 
 import com.google.gson.JsonObject;
-import com.mrcrayfish.vehicle.util.JsonUtil;
+import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.util.JSONUtils;
 
 /**
  * Author: MrCrayfish
  */
-public class LandProperties extends ExtendedProperties
+public final class LandProperties extends ExtendedProperties
 {
     public static final boolean DEFAULT_CAN_CHARGE = true;
     public static final boolean DEFAULT_CAN_WHEELIE = true;
@@ -40,11 +40,11 @@ public class LandProperties extends ExtendedProperties
     @Override
     public void serialize(JsonObject object)
     {
-        JsonUtil.write(object, "canCharge", this.canCharge, DEFAULT_CAN_CHARGE);
-        JsonUtil.write(object, "canWheelie", this.canWheelie, DEFAULT_CAN_WHEELIE);
+        ExtraJSONUtils.write(object, "canCharge", this.canCharge, DEFAULT_CAN_CHARGE);
+        ExtraJSONUtils.write(object, "canWheelie", this.canWheelie, DEFAULT_CAN_WHEELIE);
     }
 
-    public static class Builder
+    public final static class Builder
     {
         public boolean canCharge = DEFAULT_CAN_CHARGE;
         public boolean canWheelie = DEFAULT_CAN_WHEELIE;

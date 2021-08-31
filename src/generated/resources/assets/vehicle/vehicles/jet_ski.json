@@ -1,7 +1,5 @@
 {
     "general": {
-        "engineType": "vehicle:small_motor",
-        "enginePower": 18.0,
         "canBeColored": true
     },
     "axles": {
@@ -19,11 +17,6 @@
         "body": {
             "translate": [ 0.0, 0.0, 0.25 ],
             "scale": 1.25
-        },
-        "fuelPort": {
-            "translate": [ 0.0, 9.25, 8.5 ],
-            "rotation": [ -90.0, 0.0, 0.0 ],
-            "scale": 0.35
         }
     },
     "seats": [
@@ -34,5 +27,20 @@
         {
             "position": [ 0.0, 5.0, -7.0 ]
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "energyConsumptionPerTick": 0.5,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 18.0,
+            "minEnginePitch": 1.2,
+            "maxEnginePitch": 2.2,
+            "fuelFillerTransform": {
+                "translate": [ 0.0, 9.25, 8.5 ],
+                "rotation": [ -90.0, 0.0, 0.0 ],
+                "scale": 0.35
+            },
+            "canLockWithKey": false
+        }
+    }
 }

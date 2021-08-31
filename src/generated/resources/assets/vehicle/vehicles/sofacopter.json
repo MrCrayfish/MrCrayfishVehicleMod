@@ -1,8 +1,4 @@
 {
-    "general": {
-        "engineType": "vehicle:small_motor",
-        "enginePower": 15.0
-    },
     "display": {
         "gui": {
             "scale": 1.25
@@ -11,19 +7,26 @@
     "position": {
         "body": {
             "translate": [ 0.0, 0.0, 0.062 ]
-        },
-        "fuelPort": {
-            "translate": [ 0.0, 1.5, 8.0 ],
-            "scale": 0.45
-        },
-        "keyPort": {
-            "translate": [ -9.25, 8.0, 5.0 ],
-            "scale": 0.8
         }
     },
     "seats": [
         {
             "driver": true
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 40000.0,
+            "energyConsumptionPerTick": 0.5,
+            "engineType": "vehicle:small_motor",
+            "fuelFillerTransform": {
+                "translate": [ 0.0, 1.5, 8.0 ],
+                "scale": 0.45
+            },
+            "ignitionTransform": {
+                "translate": [ -9.25, 8.0, 5.0 ],
+                "scale": 0.8
+            }
+        }
+    }
 }

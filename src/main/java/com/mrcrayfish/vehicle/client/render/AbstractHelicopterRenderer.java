@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.Seat;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -36,7 +36,7 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity & En
         }
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-        PartPosition bodyPosition = properties.getBodyPosition();
+        Transform bodyPosition = properties.getBodyTransform();
         matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
@@ -79,7 +79,7 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity & En
         {
             VehicleProperties properties = entity.getProperties();
             Seat seat = properties.getSeats().get(index);
-            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625);
+            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625);
             double playerScale = 32.0 / 30.0;
             double offsetX = -seatVec.x * playerScale;
             double offsetY = (seatVec.y + player.getMyRidingOffset()) * playerScale + (24 * 0.0625);

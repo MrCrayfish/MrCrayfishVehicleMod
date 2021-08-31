@@ -2,13 +2,16 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
+import com.mrcrayfish.vehicle.entity.properties.LandProperties;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
@@ -29,7 +32,7 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         matrixStack.pushPose();
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-        PartPosition bodyPosition = properties.getBodyPosition();
+        Transform bodyPosition = properties.getBodyTransform();
         matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
@@ -60,18 +63,15 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
 
         /* Rotates the wheel based relative to the rear axel to create a wheelie */
-        if(vehicle != null && vehicle.canWheelie())
+        if(properties.getExtended(LandProperties.class).canWheelie())
         {
-            if(properties.getRearAxelVec() == null)
-            {
-                return;
-            }
+            Vector3d rearAxleOffset = properties.getExtended(PoweredProperties.class).getRearAxleOffset();
             matrixStack.translate(0.0, -0.5, 0.0);
             matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625, 0.0);
-            matrixStack.translate(0.0, 0.0, properties.getRearAxelVec().z * 0.0625);
-            float p = vehicle.getWheelieProgress(partialTicks);
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * vehicle.getBoostStrength() * p));
-            matrixStack.translate(0.0, 0.0, -properties.getRearAxelVec().z * 0.0625);
+            matrixStack.translate(0.0, 0.0, rearAxleOffset.z * 0.0625);
+            float p = this.wheelieProgressProperty.get(vehicle, partialTicks);
+            matrixStack.mulPose(Vector3f.XP.rotationDegrees(-30F * this.boostStrengthProperty.get(vehicle) * p));
+            matrixStack.translate(0.0, 0.0, -rearAxleOffset.z * 0.0625);
             matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
             matrixStack.translate(0.0, 0.5, 0.0);
         }
@@ -94,7 +94,6 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderFuelPort(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderKeyPort(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderSteeringDebug(matrixStack, properties, vehicle);
 
         matrixStack.popPose();
     }

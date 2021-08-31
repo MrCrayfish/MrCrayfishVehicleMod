@@ -1,12 +1,9 @@
 {
     "general": {
-        "enginePower": 1.0,
         "canChangeWheels": true
     },
     "axles": {
-        "offsetToGround": -1.0,
-        "lengthToFront": 9.5,
-        "lengthToRear": -10.5
+        "offsetToGround": -1.0
     },
     "display": {
         "held": [ 4.0, 9.25, 0.0 ],
@@ -49,5 +46,16 @@
             "position": [ 0.0, 7.0, -4.0 ],
             "driver": true
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "maxSteeringAngle": 90.0,
+            "energyCapacity": 0.0,
+            "energyConsumptionPerTick": 0.0,
+            "enginePower": 1.0,
+            "canLockWithKey": false,
+            "frontAxleOffset": 9.5,
+            "rearAxleOffset": -10.5
+        }
+    }
 }

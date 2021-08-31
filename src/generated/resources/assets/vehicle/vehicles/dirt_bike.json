@@ -1,31 +1,13 @@
 {
     "general": {
-        "engineType": "vehicle:small_motor",
-        "enginePower": 16.0,
         "canBeColored": true,
         "canChangeWheels": true
-    },
-    "axles": {
-        "lengthToFront": 14.08,
-        "lengthToRear": -11.61
     },
     "display": {
         "held": [ 0.0, 3.5, 0.0 ],
         "trailer": [ 0.0, -0.062, -0.312 ],
         "gui": {
             "scale": 1.4
-        }
-    },
-    "position": {
-        "engine": {
-            "translate": [ 0.0, 1.0, 0.0 ],
-            "rotation": [ 0.0, 180.0, 0.0 ],
-            "scale": 0.6
-        },
-        "fuelPort": {
-            "translate": [ 0.0, 12.1, 3.0 ],
-            "rotation": [ 67.5, 180.0, 0.0 ],
-            "scale": 0.35
         }
     },
     "wheels": [
@@ -50,5 +32,31 @@
         {
             "position": [ 0.0, 9.0, -9.0 ]
         }
-    ]
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 20000.0,
+            "energyConsumptionPerTick": 0.35,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 16.0,
+            "minEnginePitch": 0.85,
+            "maxEnginePitch": 1.5,
+            "renderEngine": true,
+            "engineTransform": {
+                "translate": [ 0.0, 1.0, 0.0 ],
+                "rotation": [ 0.0, 180.0, 0.0 ],
+                "scale": 0.6
+            },
+            "showExhaustFumes": true,
+            "exhaustFumesPosition": [ -1.0, 16.0, -16.0 ],
+            "fuelFillerTransform": {
+                "translate": [ 0.0, 12.1, 3.0 ],
+                "rotation": [ 67.5, 180.0, 0.0 ],
+                "scale": 0.35
+            },
+            "canLockWithKey": false,
+            "frontAxleOffset": 14.08,
+            "rearAxleOffset": -11.61
+        }
+    }
 }

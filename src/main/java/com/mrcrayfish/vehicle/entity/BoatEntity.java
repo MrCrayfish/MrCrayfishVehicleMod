@@ -22,7 +22,6 @@ public abstract class BoatEntity extends PoweredVehicleEntity
     public BoatEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
-        this.setMaxSteeringAngle(65);
     }
 
     @Override

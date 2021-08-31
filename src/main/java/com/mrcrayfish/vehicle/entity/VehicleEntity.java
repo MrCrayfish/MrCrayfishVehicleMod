@@ -7,7 +7,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
-import com.mrcrayfish.vehicle.common.entity.PartPosition;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -614,10 +614,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      * @param position the position definition of the part
      * @return a Vector3d containing the exact location
      */
-    public Vector3d getPartPositionAbsoluteVec(PartPosition position, float partialTicks)
+    public Vector3d getWorldPosition(Transform position, float partialTicks)
     {
         VehicleProperties properties = this.getProperties();
-        PartPosition bodyPosition = properties.getBodyPosition();
+        Transform bodyPosition = properties.getBodyTransform();
         Vector3d partVec = Vector3d.ZERO;
         partVec = partVec.add(0, 0.5, 0);
         partVec = partVec.scale(position.getScale());
@@ -697,6 +697,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public TrailerEntity getTrailer()
     {
         return trailer;
+    }
+
+    public boolean canChangeWheels()
+    {
+        return this.getProperties().canChangeWheels();
     }
 
     public final VehicleProperties getProperties()
@@ -805,7 +810,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
                 if(seatIndex >= 0 && seatIndex < properties.getSeats().size())
                 {
                     Seat seat = properties.getSeats().get(seatIndex);
-                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyPosition().getScale()).multiply(-1, 1, 1).scale(0.0625).yRot(-(this.yRot + 180) * 0.017453292F);
+                    Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625).yRot(-(this.yRot + 180) * 0.017453292F);
                     passenger.setPos(this.getX() - seatVec.x, this.getY() + seatVec.y + passenger.getMyRidingOffset(), this.getZ() - seatVec.z);
                     if(this.level.isClientSide() && VehicleHelper.canFollowVehicleOrientation(passenger))
                     {

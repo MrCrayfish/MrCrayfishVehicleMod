@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.Wheel;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.MiniBikeEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -128,7 +129,7 @@ public class MiniBikeRenderer extends AbstractMotorcycleRenderer<MiniBikeEntity>
         {
             EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BIKE_BODY, parts, transforms);
             EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BIKE_HANDLES, parts, transforms);
-            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.MINI_BIKE.get()).getEnginePosition(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
+            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.MINI_BIKE.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
         };
     }
 }
