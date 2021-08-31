@@ -196,12 +196,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         return this.getPoweredProperties().getMaxEnginePitch();
     }
 
-    @Override
-    public boolean isPickable()
-    {
-        return true;
-    }
-
     public void fuelVehicle(PlayerEntity player, Hand hand)
     {
         if(SyncedPlayerData.instance().get(player, ModDataKeys.GAS_PUMP).isPresent())

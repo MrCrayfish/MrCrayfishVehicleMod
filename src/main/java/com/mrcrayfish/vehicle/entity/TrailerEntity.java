@@ -48,12 +48,6 @@ public abstract class TrailerEntity extends VehicleEntity
     }
 
     @Override
-    public boolean isPickable()
-    {
-        return true;
-    }
-
-    @Override
     public void onUpdateVehicle()
     {
         Vector3d motion = this.getDeltaMovement();

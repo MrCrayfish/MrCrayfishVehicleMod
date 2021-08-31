@@ -141,10 +141,16 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     protected final void playStepSound(BlockPos pos, BlockState blockIn) {}
 
-    @Override //TODO hmmmmmmmm
+    @Override
     public AxisAlignedBB getBoundingBoxForCulling()
     {
         return this.getBoundingBox().inflate(1);
+    }
+
+    @Override
+    public boolean isPickable()
+    {
+        return true;
     }
 
     @Override
