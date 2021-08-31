@@ -408,7 +408,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         if(this.level.isClientSide())
         {
-            this.onPostClientUpdate();
+            this.updateEngineSound();
         }
     }
 
@@ -508,13 +508,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.setSteeringAngle(steeringAngle);
             PacketHandler.instance.sendToServer(new MessageTurnAngle(steeringAngle));
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void onPostClientUpdate()
-    {
-        this.updateWheelRotations();
-        this.updateEngineSound();
     }
 
     @Override
@@ -1045,9 +1038,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    protected void updateWheelRotations() {}
-
     protected void releaseCharge(float strength)
     {
         this.boosting = true;
@@ -1176,12 +1166,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public float getRenderWheelAngle(float partialTicks)
     {
         return this.prevRenderWheelAngle + (this.renderWheelAngle - this.prevRenderWheelAngle) * partialTicks;
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getWheelRotation(Wheel wheel, float partialTicks)
-    {
-        return 0F;
     }
 
     public enum FuelPortType

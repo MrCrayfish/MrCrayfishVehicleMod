@@ -378,6 +378,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.prevBodyRotationYaw = this.bodyRotationYaw;
             this.prevBodyRotationRoll = this.bodyRotationRoll;
             this.updateBodyRotations();
+            this.updateWheelRotations();
         }
     }
 
@@ -932,5 +933,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public float getPassengerPitchOffset()
     {
         return this.passengerPitchOffset;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    protected void updateWheelRotations() {}
+
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelRotation(Wheel wheel, float partialTicks)
+    {
+        return 0F;
     }
 }

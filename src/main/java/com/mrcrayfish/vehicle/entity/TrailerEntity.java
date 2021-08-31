@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.entity.properties.TrailerProperties;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.MoverType;
@@ -28,7 +29,9 @@ public abstract class TrailerEntity extends VehicleEntity
     @Nullable
     private Entity pullingEntity;
 
+    @OnlyIn(Dist.CLIENT)
     public float wheelRotation;
+    @OnlyIn(Dist.CLIENT)
     public float prevWheelRotation;
 
     public TrailerEntity(EntityType<?> entityType, World worldIn)
@@ -53,18 +56,10 @@ public abstract class TrailerEntity extends VehicleEntity
     @Override
     public void onUpdateVehicle()
     {
-        this.prevWheelRotation = this.wheelRotation;
-
-        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        double direction = forward.dot(this.getDeltaMovement().normalize());
-        float speed = (float) (Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getY() - this.yo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20);
-        speed *= Math.signum(direction);
-        this.wheelRotation -= 90F * (speed / 10F);
-
         Vector3d motion = this.getDeltaMovement();
         this.setDeltaMovement(motion.x(), motion.y() - 0.08, motion.z());
 
-        if(this.level.isClientSide)
+        if(this.level.isClientSide())
         {
             int entityId = this.entityData.get(PULLING_ENTITY);
             if(entityId != -1)
@@ -85,7 +80,7 @@ public abstract class TrailerEntity extends VehicleEntity
             }
         }
 
-        if(this.pullingEntity != null && !this.level.isClientSide)
+        if(this.pullingEntity != null && !this.level.isClientSide())
         {
             double threshold = Config.SERVER.trailerDetachThreshold.get() + Math.abs(this.getHitchOffset() / 16.0) * this.getProperties().getBodyTransform().getScale();
             if(this.pullingEntity.distanceTo(this) > threshold)
@@ -105,7 +100,7 @@ public abstract class TrailerEntity extends VehicleEntity
             }
             this.updatePullingMotion();
         }
-        else if(!level.isClientSide)
+        else if(!this.level.isClientSide())
         {
             motion = this.getDeltaMovement();
             this.move(MoverType.SELF, new Vector3d(motion.x() * 0.75, motion.y(), motion.z() * 0.75));
@@ -202,5 +197,28 @@ public abstract class TrailerEntity extends VehicleEntity
     protected boolean canRide(Entity entityIn)
     {
         return false;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    protected void updateWheelRotations()
+    {
+        this.prevWheelRotation = this.wheelRotation;
+
+        VehicleProperties properties = this.getProperties();
+        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+        double direction = forward.dot(this.getDeltaMovement().normalize());
+        float speed = (float) (Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20);
+        double vehicleScale = properties.getBodyTransform().getScale();
+        double wheelCircumference = 24.0 * vehicleScale * 1.25F;
+        double rotationSpeed = (speed * direction * 16F) / wheelCircumference;
+        this.wheelRotation -= rotationSpeed * 20F;
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public float getWheelRotation(Wheel wheel, float partialTicks)
+    {
+        return this.prevWheelRotation + (this.wheelRotation - this.prevWheelRotation) * partialTicks;
     }
 }

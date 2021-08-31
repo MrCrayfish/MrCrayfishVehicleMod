@@ -34,7 +34,7 @@ public abstract class AbstractTrailerRenderer<T extends TrailerEntity> extends A
         }
         if(vehicle != null)
         {
-            float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
+            float wheelRotation = vehicle.getWheelRotation(null, partialTicks);
             matrixStack.mulPose(Vector3f.XP.rotationDegrees(right ? wheelRotation : -wheelRotation));
         }
         matrixStack.scale(wheelScale, wheelScale, wheelScale);
