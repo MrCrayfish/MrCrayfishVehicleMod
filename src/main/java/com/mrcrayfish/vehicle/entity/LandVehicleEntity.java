@@ -112,7 +112,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         float friction = SurfaceHelper.getFriction(this);
         float enginePower = this.isOnGround() ? this.getEnginePower() : 0F;
-        float brakePower = this.isOnGround() ? -1F : 0F;
+        float brakePower = this.isOnGround() ? this.getBrakePower() : 0F;
         float drag = 0.001F;
 
         // TODO a lot of this can be broken up into methods
@@ -167,7 +167,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         }
         else
         {
-            Vector3d reverse = heading.scale(-1).scale(Math.min(this.velocity.length(), 5F));
+            Vector3d reverse = heading.scale(-1).scale(Math.min(this.velocity.length(), this.getMaxReverseSpeed()));
             this.velocity = CommonUtils.lerp(this.velocity, reverse, surfaceTraction);
         }
 
@@ -210,6 +210,16 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     protected final boolean canCharge()
     {
         return this.getLandProperties().canCharge();
+    }
+
+    public final float getBrakePower()
+    {
+        return this.getLandProperties().getBrakePower();
+    }
+
+    public final float getMaxReverseSpeed()
+    {
+        return this.getLandProperties().getMaxReverseSpeed();
     }
 
     public final boolean canWheelie()
