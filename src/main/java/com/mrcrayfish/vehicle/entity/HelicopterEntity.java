@@ -110,6 +110,9 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         float lift = 1.6F * (this.bladeSpeed / 200F);
         heading = heading.add(0, gravity + lift, 0);
 
+        // Clamps the speed based on the global speed limit
+        heading = CommonUtils.clampSpeed(heading.scale(20)).scale(0.05);
+
         // Lerps the velocity to the new heading
         this.velocity = CommonUtils.lerp(this.velocity, heading, this.getMovementStrength());
         this.motion = this.motion.add(this.velocity);

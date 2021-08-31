@@ -138,6 +138,9 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         // Add gravity but is countered based on the lift force
         this.velocity = this.velocity.add(0, -0.08 * (1.0F - liftForce), 0);
 
+        // Clamps the speed based on the global speed limit
+        this.velocity = CommonUtils.clampSpeed(this.velocity.scale(20)).scale(0.05);
+
         // Different physics when on the ground
         if(this.isOnGround() && this.getFrontAxleOffset() != null && this.getRearAxleOffset() != null)
         {

@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.util;
 
+import com.mrcrayfish.vehicle.Config;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -87,5 +88,10 @@ public class CommonUtils
         double y = MathHelper.lerp(time, start.y, end.y);
         double z = MathHelper.lerp(time, start.z, end.z);
         return new Vector3d(x, y, z);
+    }
+
+    public static Vector3d clampSpeed(Vector3d motion)
+    {
+        return motion.normalize().scale(MathHelper.clamp(motion.length(), 0F, Config.SERVER.globalSpeedLimit.get()));
     }
 }

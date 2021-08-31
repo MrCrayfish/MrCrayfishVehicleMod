@@ -130,6 +130,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         acceleration = acceleration.add(dragForce).add(frictionForce).add(handbrakeForce);
         this.velocity = this.velocity.add(acceleration);
 
+        // Clamps the speed based on the global speed limit
+        this.velocity = CommonUtils.clampSpeed(this.velocity);
+
         if(this.isSliding() && this.getThrottle() > 0)
         {
             this.traction = this.getWheelType().map(IWheelType::getSlideTraction).orElse(1.0F);

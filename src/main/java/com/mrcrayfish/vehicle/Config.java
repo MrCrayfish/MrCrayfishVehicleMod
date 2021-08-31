@@ -104,6 +104,7 @@ public class Config
         public final ForgeConfigSpec.IntValue industrialJerryCanCapacity;
         public final ForgeConfigSpec.IntValue jerryCanFillRate;
         public final ForgeConfigSpec.IntValue sprayCanCapacity;
+        public final ForgeConfigSpec.DoubleValue globalSpeedLimit;
 
         Server(ForgeConfigSpec.Builder builder)
         {
@@ -116,6 +117,7 @@ public class Config
                 this.energyConsumptionFactor = builder.comment("Change the amount of fuel vehicles consumes by multiplying the consumption rate by this factor").translation(Reference.MOD_ID + ".config.server.fuel_consumption_modifier").defineInRange("fuelConsumptionModifier", 1.0, 0.0, Double.MAX_VALUE);
                 this.disabledVehicles = builder.comment("A list of vehicles that are prevented from being crafted in the workstation").defineList("disabledVehicles", Collections.emptyList(), o -> true);
                 this.validFuels = builder.comment("A list of fluids that can be used as fuel for vehicles").defineList("validFuels", Arrays.asList("vehicle:fuelium", "immersiveengineering:biodiesel", "immersivepetroleum:diesel"), o -> true);
+                this.globalSpeedLimit = builder.comment("The maximum speed (in blocks per second) vehicles are allowed to travel. This will prevent vehicles travelling faster than the specified amount").defineInRange("globalSpeedLimit", 100F, 0F, 100F);
                 builder.pop();
 
                 builder.comment("Configuration options for trailers").push("trailer");
