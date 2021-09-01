@@ -112,10 +112,4 @@ public class LawnMowerEntity extends LandVehicleEntity
             worldIn.addFreshEntity(itemEntity);
         }
     }
-
-    @Override
-    public boolean canTowTrailer()
-    {
-        return true;
-    }
 }

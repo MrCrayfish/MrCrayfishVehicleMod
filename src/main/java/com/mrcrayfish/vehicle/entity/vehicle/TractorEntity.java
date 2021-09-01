@@ -17,22 +17,9 @@ public class TractorEntity extends LandVehicleEntity
         super(type, worldIn);
     }
 
-
     @Override
     public FuelPortType getFuelPortType()
     {
         return FuelPortType.DEFAULT;
-    }
-
-    @Override
-    public boolean canTowTrailer()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
     }
 }

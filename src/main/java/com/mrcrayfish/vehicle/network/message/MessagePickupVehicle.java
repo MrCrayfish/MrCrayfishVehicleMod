@@ -45,14 +45,15 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
     @Override
     public void handle(MessagePickupVehicle message, Supplier<NetworkEvent.Context> supplier)
     {
-        supplier.get().enqueueWork(() -> {
+        supplier.get().enqueueWork(() ->
+        {
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null && player.isCrouching())
             {
                 Entity targetEntity = player.level.getEntity(message.entityId);
                 if(targetEntity != null)
                 {
-                    CommonEvents.pickUpVehicle(player.level, player, Hand.MAIN_HAND, targetEntity);
+                    CommonEvents.handleVehicleInteraction(player.level, player, Hand.MAIN_HAND, targetEntity);
                 }
             }
         });

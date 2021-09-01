@@ -16,17 +16,4 @@ public class SmartCarEntity extends LandVehicleEntity
         super(type, worldIn);
         this.maxUpStep = 1F;
     }
-
-
-    @Override
-    public boolean canTowTrailer()
-    {
-        return true;
-    }
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
-    }
 }

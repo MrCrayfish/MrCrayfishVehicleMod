@@ -152,12 +152,6 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    public boolean canTowTrailer()
-    {
-        return true;
-    }
-
-    @Override
     public void startOpen(PlayerEntity player)
     {
         this.playSound(SoundEvents.CHEST_OPEN, 0.5F, 0.9F);

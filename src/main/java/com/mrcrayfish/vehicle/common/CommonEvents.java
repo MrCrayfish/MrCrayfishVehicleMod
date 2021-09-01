@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -43,7 +44,6 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -119,75 +119,102 @@ public class CommonEvents
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.EntityInteractSpecific event)
     {
-        if(pickUpVehicle(event.getWorld(), event.getPlayer(), event.getHand(), event.getTarget()))
+        if(handleVehicleInteraction(event.getWorld(), event.getPlayer(), event.getHand(), event.getTarget()))
         {
             event.setCanceled(true);
         }
     }
 
-    public static boolean pickUpVehicle(World world, PlayerEntity player, Hand hand, Entity targetEntity)
+    public static boolean handleVehicleInteraction(World world, PlayerEntity player, Hand hand, Entity entity)
     {
-        if(hand == Hand.MAIN_HAND && !world.isClientSide && player.isCrouching() && !player.isSpectator() && Config.SERVER.pickUpVehicles.get())
+        if(Config.SERVER.pickUpVehicles.get())
+            return false;
+
+        if(hand != Hand.MAIN_HAND)
+            return false;
+
+        if(world.isClientSide())
+            return false;
+
+        if(!player.isCrouching() || player.isSpectator())
+            return false;
+
+        if(!(entity instanceof VehicleEntity))
+            return false;
+
+        if(entity.isVehicle() || !entity.isAlive())
+            return false;
+
+        if(!HeldVehicleDataHandler.isHoldingVehicle(player))
         {
-            if(!HeldVehicleDataHandler.isHoldingVehicle(player))
-            {
-                if(targetEntity instanceof VehicleEntity && !targetEntity.isVehicle() && targetEntity.isAlive())
-                {
-                    CompoundNBT tagCompound = new CompoundNBT();
-                    String id = getEntityString(targetEntity);
-                    if(id != null)
-                    {
-                        ((VehicleEntity) targetEntity).setTrailer(null);
-
-                        tagCompound.putString("id", id);
-                        targetEntity.saveWithoutId(tagCompound);
-
-                        //Updates the held vehicle capability
-                        HeldVehicleDataHandler.setHeldVehicle(player, tagCompound);
-
-                        //Removes the entity from the world
-                        targetEntity.remove();
-
-                        //Plays pick up sound
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.ENTITY_VEHICLE_PICK_UP.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
-
-                        return true;
-                    }
-                }
-            }
-            else if(targetEntity instanceof TrailerEntity && !targetEntity.isVehicle() && targetEntity.isAlive())
-            {
-                CompoundNBT tagCompound = HeldVehicleDataHandler.getHeldVehicle(player);
-                Optional<EntityType<?>> optional = EntityType.byString(tagCompound.getString("id"));
-                if(optional.isPresent())
-                {
-                    EntityType<?> entityType = optional.get();
-                    Entity vehicle = entityType.create(world);
-                    if(vehicle instanceof VehicleEntity && ((VehicleEntity) vehicle).canMountTrailer())
-                    {
-                        vehicle.load(tagCompound);
-                        vehicle.absMoveTo(targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), targetEntity.yRot, targetEntity.xRot);
-
-                        //Updates the player capability
-                        HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
-
-                        //Plays place sound
-                        world.addFreshEntity(vehicle);
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                        vehicle.startRiding(targetEntity);
-
-                        return true;
-                    }
-                }
-            }
+            return pickUpVehicle((VehicleEntity) entity, player);
         }
-        return false;
+        return mountVehicleOnToTrailer((VehicleEntity) entity, player);
+    }
+
+    private static boolean pickUpVehicle(VehicleEntity vehicle, PlayerEntity player)
+    {
+        if(!vehicle.canPlayerCarry())
+            return false;
+
+        // Removes the trailer before saving vehicle
+        vehicle.setTrailer(null);
+
+        // Saves the vehicle to a compound tag
+        CompoundNBT heldTag = new CompoundNBT();
+        heldTag.putString("id", getEntityId(vehicle).toString());
+        vehicle.saveWithoutId(heldTag);
+
+        // Updates the held vehicle capability
+        HeldVehicleDataHandler.setHeldVehicle(player, heldTag);
+
+        // Removes the entity from the world
+        vehicle.remove();
+
+        // Plays pick up sound
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), ModSounds.ENTITY_VEHICLE_PICK_UP.get(), SoundCategory.PLAYERS, 1.0F, 1.0F);
+
+        return true;
+    }
+
+    private static boolean mountVehicleOnToTrailer(VehicleEntity vehicle, PlayerEntity player)
+    {
+        if(!(vehicle instanceof VehicleTrailerEntity))
+            return false;
+
+        CompoundNBT heldTag = HeldVehicleDataHandler.getHeldVehicle(player);
+        Optional<EntityType<?>> optional = EntityType.byString(heldTag.getString("id"));
+        if(!optional.isPresent())
+            return false;
+
+        EntityType<?> entityType = optional.get();
+        Entity entity = entityType.create(player.level);
+        if(!(entity instanceof VehicleEntity))
+            return false;
+
+        if(((VehicleEntity) entity).canFitInTrailer())
+            return false;
+
+        // Loads the tag and moves the vehicle
+        entity.load(heldTag);
+        entity.absMoveTo(vehicle.getX(), vehicle.getY() + vehicle.getPassengersRidingOffset(), vehicle.getZ(), vehicle.yRot, vehicle.xRot);
+
+        //Updates the player capability
+        HeldVehicleDataHandler.setHeldVehicle(player, new CompoundNBT());
+
+        //Plays place sound
+        player.level.addFreshEntity(entity);
+        player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_ATTACK_STRONG, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        entity.startRiding(vehicle);
+
+        return true;
     }
 
     @SubscribeEvent
     public void onPlayerInteract(PlayerInteractEvent.RightClickBlock event)
     {
-        if(event.getHand() == Hand.OFF_HAND) return;
+        if(event.getHand() == Hand.OFF_HAND)
+            return;
 
         PlayerEntity player = event.getPlayer();
         World world = event.getWorld();
@@ -294,38 +321,36 @@ public class CommonEvents
             return;
 
         World world = event.getWorld();
-        if(world.isClientSide)
-        {
-            if(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.RightClickItem)
-            {
-                PlayerEntity player = event.getPlayer();
-                float reach = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-                reach = player.isCreative() ? reach : reach - 0.5F;
-                RayTraceResult result = player.pick(reach, 0.0F, false);
-                if(result.getType() == RayTraceResult.Type.BLOCK)
-                    return;
+        if(!world.isClientSide())
+            return;
 
-                if(HeldVehicleDataHandler.isHoldingVehicle(player))
-                {
-                    if(player.isCrouching())
-                    {
-                        PacketHandler.instance.sendToServer(new MessageThrowVehicle());
-                    }
-                    if(event.isCancelable())
-                    {
-                        event.setCanceled(true);
-                        event.setCancellationResult(ActionResultType.SUCCESS);
-                    }
-                }
+        if(!(event instanceof PlayerInteractEvent.RightClickEmpty || event instanceof PlayerInteractEvent.RightClickItem))
+            return;
+
+        PlayerEntity player = event.getPlayer();
+        float reach = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
+        reach = player.isCreative() ? reach : reach - 0.5F;
+        RayTraceResult result = player.pick(reach, 0.0F, false);
+        if(result.getType() == RayTraceResult.Type.BLOCK)
+            return;
+
+        if(HeldVehicleDataHandler.isHoldingVehicle(player))
+        {
+            if(player.isCrouching())
+            {
+                PacketHandler.instance.sendToServer(new MessageThrowVehicle());
+            }
+            if(event.isCancelable())
+            {
+                event.setCanceled(true);
+                event.setCancellationResult(ActionResultType.SUCCESS);
             }
         }
     }
 
-    @Nullable
-    private static String getEntityString(Entity entity)
+    private static ResourceLocation getEntityId(Entity entity)
     {
-        ResourceLocation resourceLocation = entity.getType().getRegistryName();
-        return resourceLocation == null ? null : resourceLocation.toString();
+        return entity.getType().getRegistryName();
     }
 
     @SubscribeEvent

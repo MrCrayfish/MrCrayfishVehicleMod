@@ -56,7 +56,7 @@ public class ControllerHandler
                     if(Minecraft.getInstance().screen == null && player.getVehicle() instanceof VehicleEntity)
                     {
                         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-                        if(vehicle.canTowTrailer())
+                        if(vehicle.canTowTrailers())
                         {
                             PacketHandler.instance.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
                         }

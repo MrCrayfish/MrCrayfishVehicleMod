@@ -6,7 +6,7 @@ import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.FluidTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.SeederTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
-import com.mrcrayfish.vehicle.entity.trailer.VehicleEntityTrailer;
+import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.util.VehicleUtil;
 import net.minecraft.entity.Entity;
@@ -46,7 +46,7 @@ public class ModEntities
     public static final RegistryObject<EntityType<DirtBikeEntity>> DIRT_BIKE = VehicleUtil.createEntityType(REGISTER, "dirt_bike", DirtBikeEntity::new, 1.0F, 1.5F);
 
     /* Trailers */
-    public static final RegistryObject<EntityType<VehicleEntityTrailer>> VEHICLE_TRAILER = VehicleUtil.createEntityType(REGISTER, "vehicle_trailer", VehicleEntityTrailer::new, 1.5F, 0.75F);
+    public static final RegistryObject<EntityType<VehicleTrailerEntity>> VEHICLE_TRAILER = VehicleUtil.createEntityType(REGISTER, "vehicle_trailer", VehicleTrailerEntity::new, 1.5F, 0.75F);
     public static final RegistryObject<EntityType<StorageTrailerEntity>> STORAGE_TRAILER = VehicleUtil.createEntityType(REGISTER, "storage_trailer", StorageTrailerEntity::new, 1.0F, 1.0F);
     public static final RegistryObject<EntityType<FluidTrailerEntity>> FLUID_TRAILER = VehicleUtil.createEntityType(REGISTER, "fluid_trailer", FluidTrailerEntity::new, 1.5F, 1.5F);
     public static final RegistryObject<EntityType<SeederTrailerEntity>> SEEDER = VehicleUtil.createEntityType(REGISTER, "seeder", SeederTrailerEntity::new, 1.5F, 1.0F);

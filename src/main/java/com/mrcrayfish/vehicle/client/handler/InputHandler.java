@@ -38,7 +38,7 @@ public class InputHandler
             if(minecraft.player.getVehicle() instanceof VehicleEntity)
             {
                 VehicleEntity vehicle = (VehicleEntity) minecraft.player.getVehicle();
-                if(vehicle.canTowTrailer())
+                if(vehicle.canTowTrailers())
                 {
                     PacketHandler.instance.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
                 }

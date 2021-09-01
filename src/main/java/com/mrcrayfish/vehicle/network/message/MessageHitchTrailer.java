@@ -52,7 +52,7 @@ public class MessageHitchTrailer implements IMessage<MessageHitchTrailer>
                     return;
 
                 VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-                if(!vehicle.canTowTrailer())
+                if(!vehicle.canTowTrailers())
                     return;
 
                 if(!message.hitch)

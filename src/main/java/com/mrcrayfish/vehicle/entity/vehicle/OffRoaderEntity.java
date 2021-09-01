@@ -15,11 +15,4 @@ public class OffRoaderEntity extends LandVehicleEntity
     {
         super(type, worldIn);
     }
-
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
-    }
 }

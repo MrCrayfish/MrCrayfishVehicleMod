@@ -21,10 +21,4 @@ public class ATVEntity extends LandVehicleEntity
     {
         return FuelPortType.SMALL;
     }
-
-    @Override
-    public boolean canTowTrailer()
-    {
-        return true;
-    }
 }

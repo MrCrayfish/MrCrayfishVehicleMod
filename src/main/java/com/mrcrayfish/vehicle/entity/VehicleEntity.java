@@ -154,14 +154,14 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand)
     {
-        if(!level.isClientSide() && !player.isCrouching())
+        if(!this.level.isClientSide() && !player.isCrouching())
         {
             int trailerId = SyncedPlayerData.instance().get(player, ModDataKeys.TRAILER);
             if(trailerId != -1)
             {
-                if(this.getVehicle() == null && this.canTowTrailer() && this.getTrailer() == null)
+                if(this.getVehicle() == null && this.canTowTrailers() && this.getTrailer() == null)
                 {
-                    Entity entity = level.getEntity(trailerId);
+                    Entity entity = this.level.getEntity(trailerId);
                     if(entity instanceof TrailerEntity && entity != this)
                     {
                         TrailerEntity trailer = (TrailerEntity) entity;
@@ -175,8 +175,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             ItemStack heldItem = player.getItemInHand(hand);
             if(heldItem.getItem() instanceof SprayCanItem)
             {
-                //TODO should be using properties
-                if(this.getProperties().isCanBePainted())
+                if(this.getProperties().canBePainted())
                 {
                     CompoundNBT compound = heldItem.getTag();
                     if(compound != null)
@@ -397,7 +396,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             return false;
         }
-        else if(!this.level.isClientSide && this.isAlive())
+        else if(!this.level.isClientSide() && this.isAlive())
         {
             Entity trueSource = source.getEntity();
             if(source instanceof IndirectEntityDamageSource && trueSource != null && this.hasPassenger(trueSource))
@@ -430,7 +429,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public boolean causeFallDamage(float distance, float damageMultiplier)
     {
-        if(Config.SERVER.vehicleDamage.get() && distance >= 4F && this.getDeltaMovement().y() < -1.0F)
+        if(Config.SERVER.vehicleDamage.get() && !this.immuneToFallDamage() && distance >= 4F && this.getDeltaMovement().y() < -1.0F)
         {
             float damage = distance / 2F;
             this.hurt(DamageSource.FALL, damage);
@@ -543,7 +542,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
      */
     public void setHealth(float health)
     {
-        this.entityData.set(HEALTH, Math.min(this.getMaxHealth(), health));
+        this.entityData.set(HEALTH, MathHelper.clamp(health, 0F, this.getMaxHealth()));
     }
 
     /**
@@ -564,7 +563,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
 
     public void setColor(int color)
     {
-        if(this.getProperties().isCanBePainted())
+        if(this.getProperties().canBePainted())
         {
             this.entityData.set(COLOR, color);
         }
@@ -585,11 +584,6 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         int color = this.entityData.get(COLOR);
         return new int[]{ (color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF };
-    }
-
-    public boolean canMountTrailer()
-    {
-        return true;
     }
 
     /**
@@ -645,9 +639,9 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         this.seatTracker.read(buffer);
     }
 
-    public boolean canTowTrailer()
+    public final boolean canTowTrailers()
     {
-        return false;
+        return this.getProperties().canTowTrailers();
     }
 
     public void setTrailer(TrailerEntity trailer)
@@ -686,6 +680,21 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public final boolean canChangeWheels()
     {
         return this.getProperties().canChangeWheels();
+    }
+
+    public final boolean immuneToFallDamage()
+    {
+        return this.getProperties().immuneToFallDamage();
+    }
+
+    public final boolean canPlayerCarry()
+    {
+        return this.getProperties().canPlayerCarry();
+    }
+
+    public final boolean canFitInTrailer()
+    {
+        return this.getProperties().canFitInTrailer();
     }
 
     public final VehicleProperties getProperties()

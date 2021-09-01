@@ -32,7 +32,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
 {
     protected final PropertyFunction<T, VehicleProperties> vehiclePropertiesProperty;
     protected final PropertyFunction<T, Boolean> hasDriverProperty = new PropertyFunction<>(t -> t.getControllingPassenger() != null, false);
-    protected final PropertyFunction<T, Boolean> towTrailerProperty = new PropertyFunction<>(VehicleEntity::canTowTrailer, false);
+    protected final PropertyFunction<T, Boolean> towTrailerProperty = new PropertyFunction<>(VehicleEntity::canTowTrailers, false);
     protected final PropertyFunction<T, Integer> colorProperty = new PropertyFunction<>(VehicleEntity::getColor, -1);
     protected final PropertyFunction<T, Float> bodyYawProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationYaw, 0F);
     protected final PropertyFunction<T, Float> bodyPitchProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationPitch, 0F);

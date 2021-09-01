@@ -16,10 +16,4 @@ public class GolfCartEntity extends HelicopterEntity
         super(type, worldIn);
         //TODO figure out electric vehicles
     }
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
-    }
 }

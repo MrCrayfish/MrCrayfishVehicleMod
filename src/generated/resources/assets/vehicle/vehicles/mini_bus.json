@@ -3,6 +3,7 @@
     "canChangeWheels": true,
     "offsetToGround": 1.0,
     "heldOffset": [ 0.0, 3.5, 0.0 ],
+    "canTowTrailers": true,
     "towBarOffset": [ 0.0, 0.0, -33.0 ],
     "bodyTransform": {
         "scale": 1.3

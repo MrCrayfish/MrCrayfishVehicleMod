@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Author: MrCrayfish
  */
-public class VehicleEntityTrailer extends TrailerEntity
+public class VehicleTrailerEntity extends TrailerEntity
 {
     private static final EntityRayTracer.RayTracePart CONNECTION_BOX = new EntityRayTracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 8.5 * 0.0625F, 24 * 0.0625, 1.1));
     private static final Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
@@ -32,7 +32,7 @@ public class VehicleEntityTrailer extends TrailerEntity
         return map;
     });
 
-    public VehicleEntityTrailer(EntityType<? extends VehicleEntityTrailer> type, World worldIn)
+    public VehicleTrailerEntity(EntityType<? extends VehicleTrailerEntity> type, World worldIn)
     {
         super(type, worldIn);
     }

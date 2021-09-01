@@ -59,7 +59,7 @@ public abstract class TrailerEntity extends VehicleEntity
             if(entityId != -1)
             {
                 Entity entity = this.level.getEntity(this.entityData.get(PULLING_ENTITY));
-                if(entity instanceof PlayerEntity || (entity instanceof VehicleEntity && ((VehicleEntity) entity).canTowTrailer()))
+                if(entity instanceof PlayerEntity || (entity instanceof VehicleEntity && ((VehicleEntity) entity).canTowTrailers()))
                 {
                     this.pullingEntity = entity;
                 }
@@ -139,7 +139,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
     public boolean setPullingEntity(Entity pullingEntity)
     {
-        if(pullingEntity instanceof PlayerEntity || (pullingEntity instanceof VehicleEntity && pullingEntity.getVehicle() == null && ((VehicleEntity) pullingEntity).canTowTrailer()))
+        if(pullingEntity instanceof PlayerEntity || (pullingEntity instanceof VehicleEntity && pullingEntity.getVehicle() == null && ((VehicleEntity) pullingEntity).canTowTrailers()))
         {
             this.pullingEntity = pullingEntity;
             this.entityData.set(PULLING_ENTITY, pullingEntity.getId());
@@ -169,12 +169,6 @@ public abstract class TrailerEntity extends VehicleEntity
         this.lerpYaw = yaw;
         this.lerpPitch = pitch;
         this.lerpSteps = 1;
-    }
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
     }
 
     public final double getHitchOffset()

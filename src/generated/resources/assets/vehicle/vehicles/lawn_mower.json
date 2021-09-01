@@ -4,6 +4,7 @@
     "offsetToGround": -2.0,
     "heldOffset": [ 12.0, -1.5, 0.0 ],
     "trailerOffset": [ 0.0, -0.01, -1.0 ],
+    "canTowTrailers": true,
     "towBarOffset": [ 0.0, 0.0, -20.0 ],
     "displayTransform": {
         "scale": 1.5

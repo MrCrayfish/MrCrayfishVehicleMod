@@ -15,11 +15,4 @@ public class MiniBusEntity extends LandVehicleEntity
     {
         super(type, worldIn);
     }
-
-
-    @Override
-    public boolean canTowTrailer()
-    {
-        return true;
-    }
 }

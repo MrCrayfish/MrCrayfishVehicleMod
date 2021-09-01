@@ -42,10 +42,4 @@ public class AluminumBoatEntity extends BoatEntity
     {
 
     }
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
-    }
 }

@@ -1,5 +1,6 @@
 {
     "canBePainted": true,
+    "canTowTrailers": true,
     "towBarOffset": [ 0.0, 0.0, -12.0 ],
     "displayTransform": {
         "translate": [ 0.0, 0.0, -0.15 ],

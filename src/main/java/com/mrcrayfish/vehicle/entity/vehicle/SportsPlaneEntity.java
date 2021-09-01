@@ -22,11 +22,4 @@ public class SportsPlaneEntity extends PlaneEntity
     {
         return this.getBoundingBox().inflate(1.5);
     }
-
-
-    @Override
-    public boolean canMountTrailer()
-    {
-        return false;
-    }
 }

@@ -51,21 +51,28 @@ public class VehicleProperties
     public static final float DEFAULT_MAX_HEALTH = 100F;
     public static final float DEFAULT_AXLE_OFFSET = 0F;
     public static final Vector3d DEFAULT_HELD_OFFSET = Vector3d.ZERO;
+    public static final boolean DEFAULT_CAN_TOW_TRAILERS = false;
     public static final Vector3d DEFAULT_TOW_BAR_OFFSET = Vector3d.ZERO;
     public static final Vector3d DEFAULT_TRAILER_OFFSET = Vector3d.ZERO;
     public static final boolean DEFAULT_CAN_CHANGE_WHEELS = false;
+    public static final boolean DEFAULT_IMMUNE_TO_FALL_DAMAGE = false;
+    public static final boolean DEFAULT_CAN_PLAYER_CARRY = true;
+    public static final boolean DEFAULT_CAN_FIT_IN_TRAILER = false;
     public static final Transform DEFAULT_BODY_TRANSFORM = Transform.DEFAULT;
     public static final Transform DEFAULT_DISPLAY_TRANSFORM = Transform.DEFAULT;
     public static final boolean DEFAULT_CAN_BE_PAINTED = false;
 
-    //TODO ideas: canBeDamaged, canPickUp, canBePlacedInTrailer
     private final float maxHealth;
     private final float axleOffset;
     private final float wheelOffset;
     private final Vector3d heldOffset;
+    private final boolean canTowTrailers;
     private final Vector3d towBarOffset;
     private final Vector3d trailerOffset;
     private final boolean canChangeWheels;
+    private final boolean immuneToFallDamage;
+    private final boolean canPlayerCarry;
+    private final boolean canFitInTrailer;
     private final List<Wheel> wheels;
     private final Transform bodyTransform;
     private final Transform displayTransform;
@@ -74,15 +81,19 @@ public class VehicleProperties
     private final CameraProperties camera;
     private final ImmutableMap<ResourceLocation, ExtendedProperties> extended;
 
-    private VehicleProperties(float maxHealth, float axleOffset, float wheelOffset, Vector3d heldOffset, Vector3d towBarOffset, Vector3d trailerOffset, boolean canChangeWheels, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean canBePainted, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
+    private VehicleProperties(float maxHealth, float axleOffset, float wheelOffset, Vector3d heldOffset, boolean canTowTrailers, Vector3d towBarOffset, Vector3d trailerOffset, boolean canChangeWheels, boolean immuneToFallDamage, boolean canPlayerCarry, boolean canFitInTrailer, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean canBePainted, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
     {
         this.maxHealth = maxHealth;
         this.axleOffset = axleOffset;
         this.wheelOffset = wheelOffset;
         this.heldOffset = heldOffset;
+        this.canTowTrailers = canTowTrailers;
         this.towBarOffset = towBarOffset;
         this.trailerOffset = trailerOffset;
         this.canChangeWheels = canChangeWheels;
+        this.immuneToFallDamage = immuneToFallDamage;
+        this.canPlayerCarry = canPlayerCarry;
+        this.canFitInTrailer = canFitInTrailer;
         this.wheels = wheels;
         this.bodyTransform = bodyTransform;
         this.displayTransform = displayTransform;
@@ -110,6 +121,11 @@ public class VehicleProperties
     public Vector3d getHeldOffset()
     {
         return this.heldOffset;
+    }
+
+    public boolean canTowTrailers()
+    {
+        return this.canTowTrailers;
     }
 
     public Vector3d getTowBarOffset()
@@ -159,7 +175,22 @@ public class VehicleProperties
         return this.canChangeWheels && this.wheels.size() > 0;
     }
 
-    public boolean isCanBePainted()
+    public boolean immuneToFallDamage()
+    {
+        return this.immuneToFallDamage;
+    }
+
+    public boolean canPlayerCarry()
+    {
+        return this.canPlayerCarry;
+    }
+
+    public boolean canFitInTrailer()
+    {
+        return this.canFitInTrailer;
+    }
+
+    public boolean canBePainted()
     {
         return this.canBePainted;
     }
@@ -180,11 +211,6 @@ public class VehicleProperties
         }
         GLOBAL_EXTENDED_PROPERTIES.computeIfAbsent(id, id2 -> ExtendedProperties.create(id2, new JsonObject()));
         return (T) GLOBAL_EXTENDED_PROPERTIES.get(id);
-    }
-
-    public ImmutableMap<ResourceLocation, ExtendedProperties> getExtendedMap()
-    {
-        return this.extended;
     }
 
     public static void loadProperties()
@@ -259,9 +285,13 @@ public class VehicleProperties
             JsonObject object = new JsonObject();
             ExtraJSONUtils.write(object, "canBePainted", properties.canBePainted, DEFAULT_CAN_BE_PAINTED);
             ExtraJSONUtils.write(object, "canChangeWheels", properties.canChangeWheels, DEFAULT_CAN_CHANGE_WHEELS);
+            ExtraJSONUtils.write(object, "immuneToFallDamage", properties.immuneToFallDamage, DEFAULT_IMMUNE_TO_FALL_DAMAGE);
+            ExtraJSONUtils.write(object, "canPlayerCarry", properties.canPlayerCarry, DEFAULT_CAN_PLAYER_CARRY);
+            ExtraJSONUtils.write(object, "canFitInTrailer", properties.canFitInTrailer, DEFAULT_CAN_FIT_IN_TRAILER);
             ExtraJSONUtils.write(object, "offsetToGround", properties.axleOffset, DEFAULT_AXLE_OFFSET);
             ExtraJSONUtils.write(object, "heldOffset", properties.heldOffset, DEFAULT_HELD_OFFSET);
             ExtraJSONUtils.write(object, "trailerOffset", properties.trailerOffset, DEFAULT_TRAILER_OFFSET);
+            ExtraJSONUtils.write(object, "canTowTrailers", properties.canTowTrailers, DEFAULT_CAN_TOW_TRAILERS);
             ExtraJSONUtils.write(object, "towBarOffset", properties.towBarOffset, DEFAULT_TOW_BAR_OFFSET);
             ExtraJSONUtils.write(object, "displayTransform", properties.displayTransform, DEFAULT_DISPLAY_TRANSFORM);
             ExtraJSONUtils.write(object, "bodyTransform", properties.bodyTransform, DEFAULT_BODY_TRANSFORM);
@@ -277,11 +307,15 @@ public class VehicleProperties
         {
             JsonObject object = JSONUtils.convertToJsonObject(element, "vehicle property");
             VehicleProperties.Builder builder = VehicleProperties.builder();
-            builder.setColored(JSONUtils.getAsBoolean(object, "canBePainted", DEFAULT_CAN_BE_PAINTED));
+            builder.setCanBePainted(JSONUtils.getAsBoolean(object, "canBePainted", DEFAULT_CAN_BE_PAINTED));
             builder.setCanChangeWheels(JSONUtils.getAsBoolean(object, "canChangeWheels", DEFAULT_CAN_CHANGE_WHEELS));
+            builder.setImmuneToFallDamage(JSONUtils.getAsBoolean(object, "immuneToFallDamage", DEFAULT_IMMUNE_TO_FALL_DAMAGE));
+            builder.setCanPlayerCarry(JSONUtils.getAsBoolean(object, "canPlayerCarry", DEFAULT_CAN_PLAYER_CARRY));
+            builder.setCanFitInTrailer(JSONUtils.getAsBoolean(object, "canFitInTrailer", DEFAULT_CAN_FIT_IN_TRAILER));
             builder.setAxleOffset(JSONUtils.getAsFloat(object, "offsetToGround", DEFAULT_AXLE_OFFSET));
             builder.setHeldOffset(ExtraJSONUtils.getAsVector3d(object, "heldOffset", DEFAULT_HELD_OFFSET));
             builder.setTrailerOffset(ExtraJSONUtils.getAsVector3d(object, "trailerOffset", DEFAULT_TRAILER_OFFSET));
+            builder.setCanTowTrailers(JSONUtils.getAsBoolean(object, "canTowTrailers", DEFAULT_CAN_TOW_TRAILERS));
             builder.setTowBarOffset(ExtraJSONUtils.getAsVector3d(object, "towBarOffset", DEFAULT_TOW_BAR_OFFSET));
             builder.setDisplayTransform(ExtraJSONUtils.getAsTransform(object, "displayTransform", DEFAULT_DISPLAY_TRANSFORM));
             builder.setBodyTransform(ExtraJSONUtils.getAsTransform(object, "bodyTransform", DEFAULT_BODY_TRANSFORM));
@@ -378,7 +412,7 @@ public class VehicleProperties
         private void writeExtended(VehicleProperties properties, JsonObject object)
         {
             JsonObject extended = new JsonObject();
-            properties.getExtendedMap().forEach((id, extendedProperties) -> {
+            properties.extended.forEach((id, extendedProperties) -> {
                 JsonObject content = new JsonObject();
                 extendedProperties.serialize(content);
                 extended.add(extendedProperties.getId().toString(), content);
@@ -400,14 +434,18 @@ public class VehicleProperties
         private float maxHealth = DEFAULT_MAX_HEALTH;
         private float axleOffset = DEFAULT_AXLE_OFFSET;
         private Vector3d heldOffset = DEFAULT_HELD_OFFSET;
+        private boolean canTowTrailers = DEFAULT_CAN_TOW_TRAILERS;
         private Vector3d towBarOffset = DEFAULT_TOW_BAR_OFFSET;
         private Vector3d trailerOffset = DEFAULT_TRAILER_OFFSET;
         private boolean canChangeWheels = DEFAULT_CAN_CHANGE_WHEELS;
+        private boolean immuneToFallDamage = DEFAULT_IMMUNE_TO_FALL_DAMAGE;
+        private boolean canPlayerCarry = DEFAULT_CAN_PLAYER_CARRY;
+        private boolean canFitInTrailer = DEFAULT_CAN_FIT_IN_TRAILER;
         private List<Wheel> wheels = new ArrayList<>();
         private Transform bodyTransform = DEFAULT_BODY_TRANSFORM;
         private Transform displayTransform = DEFAULT_DISPLAY_TRANSFORM;
         private List<Seat> seats = new ArrayList<>();
-        private boolean colored = DEFAULT_CAN_BE_PAINTED;
+        private boolean canBePainted = DEFAULT_CAN_BE_PAINTED;
         private CameraProperties camera = CameraProperties.DEFAULT_CAMERA;
         private Map<ResourceLocation, ExtendedProperties> extended = new HashMap<>();
 
@@ -441,6 +479,12 @@ public class VehicleProperties
             return this;
         }
 
+        public Builder setCanTowTrailers(boolean canTowTrailers)
+        {
+            this.canTowTrailers = canTowTrailers;
+            return this;
+        }
+
         public Builder setTowBarOffset(Vector3d vec)
         {
             this.towBarOffset = vec;
@@ -462,6 +506,24 @@ public class VehicleProperties
         public Builder setCanChangeWheels(boolean canChangeWheels)
         {
             this.canChangeWheels = canChangeWheels;
+            return this;
+        }
+
+        public Builder setImmuneToFallDamage(boolean immuneToFallDamage)
+        {
+            this.immuneToFallDamage = immuneToFallDamage;
+            return this;
+        }
+
+        public Builder setCanPlayerCarry(boolean canPlayerCarry)
+        {
+            this.canPlayerCarry = canPlayerCarry;
+            return this;
+        }
+
+        public Builder setCanFitInTrailer(boolean canFitInTrailer)
+        {
+            this.canFitInTrailer = canFitInTrailer;
             return this;
         }
 
@@ -495,9 +557,9 @@ public class VehicleProperties
             return this;
         }
 
-        public Builder setColored(boolean colored)
+        public Builder setCanBePainted(boolean canBePainted)
         {
-            this.colored = colored;
+            this.canBePainted = canBePainted;
             return this;
         }
 
@@ -524,7 +586,7 @@ public class VehicleProperties
             this.validate();
             float wheelOffset = this.calculateWheelOffset();
             List<Wheel> wheels = scaleWheels ? this.generateScaledWheels(wheelOffset) : this.wheels;
-            return new VehicleProperties(this.maxHealth, this.axleOffset, wheelOffset, this.heldOffset, this.towBarOffset, this.trailerOffset, this.canChangeWheels, wheels, this.bodyTransform, this.displayTransform, this.seats, this.colored, this.camera, this.extended);
+            return new VehicleProperties(this.maxHealth, this.axleOffset, wheelOffset, this.heldOffset, this.canTowTrailers, this.towBarOffset, this.trailerOffset, this.canChangeWheels, this.immuneToFallDamage, this.canPlayerCarry, this.canFitInTrailer, wheels, this.bodyTransform, this.displayTransform, this.seats, this.canBePainted, this.camera, this.extended);
         }
 
         private void validate()

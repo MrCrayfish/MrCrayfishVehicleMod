@@ -214,7 +214,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
     private void updateVehicleColor()
     {
-        if(cachedVehicle.getProperties().isCanBePainted())
+        if(cachedVehicle.getProperties().canBePainted())
         {
             AbstractVehicleRenderer<?> renderer = cachedVehicle.getRenderer();
             ItemStack dyeStack = this.workstation.getItem(0);
@@ -294,7 +294,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
         }
 
         VehicleProperties properties = cachedVehicle.getProperties();
-        if(properties.isCanBePainted())
+        if(properties.canBePainted())
         {
             this.drawSlotTooltip(matrixStack, Lists.newArrayList(new TranslationTextComponent("vehicle.tooltip.optional").withStyle(TextFormatting.AQUA), new TranslationTextComponent("vehicle.tooltip.paint_color").withStyle(TextFormatting.GRAY)), startX, startY, 172, 29, mouseX, mouseY, 0);
         }
@@ -342,7 +342,7 @@ public class WorkstationScreen extends ContainerScreen<WorkstationContainer>
 
         /* Slots */
         VehicleProperties properties = cachedVehicle.getProperties();
-        this.drawSlot(matrixStack, startX, startY, 172, 29, 164, 184, 0, false, properties.isCanBePainted());
+        this.drawSlot(matrixStack, startX, startY, 172, 29, 164, 184, 0, false, properties.canBePainted());
         boolean needsEngine = properties.getExtended(PoweredProperties.class).getEngineType() != EngineType.NONE;
         this.drawSlot(matrixStack, startX, startY, 192, 29, 164, 200, 1, !this.validEngine, needsEngine);
         boolean needsWheels = properties.canChangeWheels();
