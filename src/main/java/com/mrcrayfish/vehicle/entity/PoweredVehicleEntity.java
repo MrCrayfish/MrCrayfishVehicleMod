@@ -111,7 +111,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected boolean disableFallDamage;
     protected boolean charging;
     protected float chargingAmount;
-    protected double[] wheelPositions;
+    private double[] wheelPositions;
     private boolean fueling;
     protected Vector3d motion = Vector3d.ZERO;
     private Inventory vehicleInventory;
@@ -129,12 +129,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         super(entityType, worldIn);
         this.maxUpStep = 1.0F;
-
-        List<Wheel> wheels = this.getProperties().getWheels();
-        if(wheels != null && wheels.size() > 0)
-        {
-            this.wheelPositions = new double[wheels.size() * 3];
-        }
     }
 
     public PoweredVehicleEntity(EntityType<?> entityType, World worldIn, double posX, double posY, double posZ)
@@ -426,6 +420,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             VehicleProperties properties = this.getProperties();
             if(properties.getWheels() != null)
             {
+                double[] wheelPositions = this.getWheelPositions();
                 List<Wheel> wheels = properties.getWheels();
                 for(int i = 0; i < wheels.size(); i++)
                 {
@@ -433,9 +428,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     if(!wheel.shouldSpawnParticles())
                         continue;
                     /* Gets the block under the wheel and spawns a particle */
-                    double wheelX = this.wheelPositions[i * 3];
-                    double wheelY = this.wheelPositions[i * 3 + 1];
-                    double wheelZ = this.wheelPositions[i * 3 + 2];
+                    double wheelX = wheelPositions[i * 3];
+                    double wheelY = wheelPositions[i * 3 + 1];
+                    double wheelZ = wheelPositions[i * 3 + 2];
                     int x = MathHelper.floor(this.getX() + wheelX);
                     int y = MathHelper.floor(this.getY() + wheelY - 0.2D);
                     int z = MathHelper.floor(this.getZ() + wheelZ);
@@ -1000,6 +995,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                 this.wheelPositions = new double[wheels.size() * 3];
             }*/
 
+            double[] wheelPositions = this.getWheelPositions();
             for(int i = 0; i < wheels.size(); i++)
             {
                 Wheel wheel = wheels.get(i);
@@ -1025,9 +1021,9 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
                 /* Update the wheel position */
                 Vector3d wheelVec = new Vector3d(wheelX, wheelY, wheelZ).yRot(-this.yRot * 0.017453292F);
-                this.wheelPositions[i * 3] = wheelVec.x;
-                this.wheelPositions[i * 3 + 1] = wheelVec.y;
-                this.wheelPositions[i * 3 + 2] = wheelVec.z;
+                wheelPositions[i * 3] = wheelVec.x;
+                wheelPositions[i * 3 + 1] = wheelVec.y;
+                wheelPositions[i * 3 + 2] = wheelVec.z;
             }
         }
     }
@@ -1083,6 +1079,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     public double[] getWheelPositions()
     {
+        /* Updates the wheel positions as reloading vehicle properties
+         * could cause a crash if wheels are added or removed. */
+        if(this.wheelPositions == null || this.wheelPositions.length != this.getProperties().getWheels().size())
+        {
+            this.wheelPositions = new double[this.getProperties().getWheels().size() * 3];
+        }
         return this.wheelPositions;
     }
 

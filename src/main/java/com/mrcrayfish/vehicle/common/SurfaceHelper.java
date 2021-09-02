@@ -77,11 +77,12 @@ public class SurfaceHelper
 
         int wheelCount = 0;
         float surfaceModifier = 0F;
+        double[] wheelPositions = vehicle.getWheelPositions();
         for(int i = 0; i < wheels.size(); i++)
         {
-            double wheelX = vehicle.getWheelPositions()[i * 3];
-            double wheelY = vehicle.getWheelPositions()[i * 3 + 1];
-            double wheelZ = vehicle.getWheelPositions()[i * 3 + 2];
+            double wheelX = wheelPositions[i * 3];
+            double wheelY = wheelPositions[i * 3 + 1];
+            double wheelZ = wheelPositions[i * 3 + 2];
             int x = MathHelper.floor(vehicle.getX() + wheelX);
             int y = MathHelper.floor(vehicle.getY() + wheelY - 0.2D);
             int z = MathHelper.floor(vehicle.getZ() + wheelZ);
