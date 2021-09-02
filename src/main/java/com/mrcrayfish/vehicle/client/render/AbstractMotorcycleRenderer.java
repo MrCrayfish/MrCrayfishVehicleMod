@@ -79,18 +79,7 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         //Render body
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
-        //Render vehicle wheels
-        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
-        if(!wheelStack.isEmpty())
-        {
-            matrixStack.pushPose();
-            matrixStack.translate(0.0, -8 * 0.0625, 0.0);
-            matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
-            IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
-            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelStack, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
-            matrixStack.popPose();
-        }
-
+        this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderFuelFiller(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderIgnition(vehicle, matrixStack, renderTypeBuffer, light);
