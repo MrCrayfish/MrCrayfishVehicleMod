@@ -56,6 +56,9 @@
             "position": [ 4.5, 2.0, -15.0 ]
         }
     ],
+    "camera": {
+        "distance": 6.0
+    },
     "extended": {
         "vehicle:powered": {
             "energyCapacity": 30000.0,

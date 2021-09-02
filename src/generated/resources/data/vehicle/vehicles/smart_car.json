@@ -45,6 +45,9 @@
             "driver": true
         }
     ],
+    "camera": {
+        "distance": 5.0
+    },
     "extended": {
         "vehicle:powered": {
             "maxSteeringAngle": 1.6,

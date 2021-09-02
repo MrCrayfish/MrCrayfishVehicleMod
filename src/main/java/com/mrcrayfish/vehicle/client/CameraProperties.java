@@ -13,12 +13,12 @@ import java.util.stream.Stream;
  */
 public class CameraProperties
 {
-    public static final CameraProperties DEFAULT_CAMERA = new CameraProperties(Type.SMOOTH, 0.15F, new Vector3d(0, 1, 0), new Vector3d(10, 0, 0), 5.0);
+    public static final CameraProperties DEFAULT_CAMERA = new CameraProperties(Type.SMOOTH, 0.25F, new Vector3d(0, 1.5, 0), new Vector3d(10, 0, 0), 4.0);
     public static final Type DEFAULT_TYPE = Type.SMOOTH;
-    public static final float DEFAULT_STRENGTH = 0.15F;
-    public static final Vector3d DEFAULT_POSITION = new Vector3d(0, 1, 0);
+    public static final float DEFAULT_STRENGTH = 0.25F;
+    public static final Vector3d DEFAULT_POSITION = new Vector3d(0, 1.5, 0);
     public static final Vector3d DEFAULT_ROTATION = new Vector3d(10, 0, 0);
-    public static final float DEFAULT_DISTANCE = 5.0F;
+    public static final float DEFAULT_DISTANCE = 4.0F;
 
     private final Type type;
     private final float strength;

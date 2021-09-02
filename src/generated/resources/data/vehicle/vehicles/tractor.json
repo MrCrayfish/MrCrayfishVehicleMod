@@ -46,6 +46,9 @@
             "driver": true
         }
     ],
+    "camera": {
+        "distance": 5.0
+    },
     "extended": {
         "vehicle:powered": {
             "engineType": "vehicle:large_motor",

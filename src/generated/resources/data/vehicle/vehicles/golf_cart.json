@@ -54,6 +54,10 @@
             "yawOffset": 180.0
         }
     ],
+    "camera": {
+        "position": [ 0.0, 2.0, 0.0 ],
+        "distance": 5.0
+    },
     "extended": {
         "vehicle:powered": {
             "engineType": "vehicle:electric_motor",
