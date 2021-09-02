@@ -22,10 +22,11 @@ import java.util.stream.Stream;
 public class ExtraJSONUtils
 {
     public static final DecimalFormat FORMAT = new DecimalFormat("#.###");
+    private static final boolean VERBOSE_MODE = true;
 
     public static void write(JsonObject object, String key, Number number, Number defaultValue)
     {
-        if(!number.equals(defaultValue))
+        if(!number.equals(defaultValue) || VERBOSE_MODE)
         {
             object.addProperty(key, number);
         }
@@ -33,7 +34,7 @@ public class ExtraJSONUtils
 
     public static void write(JsonObject object, String key, Boolean state, Boolean defaultValue)
     {
-        if(!state.equals(defaultValue))
+        if(!state.equals(defaultValue) || VERBOSE_MODE)
         {
             object.addProperty(key, state);
         }
@@ -41,7 +42,7 @@ public class ExtraJSONUtils
 
     public static void write(JsonObject object, String key, Transform transform, Transform defaultValue)
     {
-        if(!transform.equals(defaultValue))
+        if(!transform.equals(defaultValue) || VERBOSE_MODE)
         {
             JsonObject transformObject = new JsonObject();
             write(transformObject, "translate", transform.getTranslate(), Vector3d.ZERO);
@@ -53,7 +54,7 @@ public class ExtraJSONUtils
 
     public static void write(JsonObject object, String key, Vector3d vec, Vector3d defaultValue)
     {
-        if(!vec.equals(defaultValue))
+        if(!vec.equals(defaultValue) || VERBOSE_MODE)
         {
             JsonArray array = new JsonArray();
             array.add(Double.parseDouble(FORMAT.format(vec.x)));
@@ -65,7 +66,7 @@ public class ExtraJSONUtils
 
     public static void write(JsonObject object, String key, IEngineType type, IEngineType defaultValue)
     {
-        if(!type.equals(defaultValue))
+        if(!type.equals(defaultValue) || VERBOSE_MODE)
         {
             object.addProperty(key, type.getId().toString());
         }
@@ -73,7 +74,7 @@ public class ExtraJSONUtils
 
     public static void write(JsonObject object, String key, @Nullable ResourceLocation resourceLocation, @Nullable ResourceLocation defaultValue)
     {
-        if(resourceLocation != null && !resourceLocation.equals(defaultValue))
+        if(resourceLocation != null && (!resourceLocation.equals(defaultValue) || VERBOSE_MODE))
         {
             object.addProperty(key, resourceLocation.toString());
         }
@@ -81,7 +82,7 @@ public class ExtraJSONUtils
 
     public static <T extends Enum<?>> void write(JsonObject object, String key, T value, T defaultValue)
     {
-        if(!value.equals(defaultValue))
+        if(!value.equals(defaultValue) || VERBOSE_MODE)
         {
             object.addProperty(key, value.name().toLowerCase(Locale.ENGLISH));
         }
