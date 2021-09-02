@@ -48,7 +48,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         }
     }
 
-    protected void renderFuelPort(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    protected void renderFuelFiller(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(vehicle != null && vehicle.shouldRenderFuelPort() && vehicle.requiresEnergy())
         {
@@ -72,7 +72,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         }
     }
 
-    protected void renderKeyPort(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    protected void renderIgnition(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         if(vehicle != null && vehicle.isKeyNeeded())
         {

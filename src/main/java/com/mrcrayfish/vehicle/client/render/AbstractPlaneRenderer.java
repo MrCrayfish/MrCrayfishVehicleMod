@@ -58,8 +58,8 @@ public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTra
 
         this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderFuelPort(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderKeyPort(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderFuelFiller(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderIgnition(vehicle, matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }

@@ -92,8 +92,8 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & En
         }
 
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderFuelPort(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderKeyPort(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderFuelFiller(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderIgnition(vehicle, matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }

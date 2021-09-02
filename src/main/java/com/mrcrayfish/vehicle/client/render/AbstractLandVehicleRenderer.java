@@ -74,8 +74,8 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
 
         this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderFuelPort(vehicle, matrixStack, renderTypeBuffer, light);
-        this.renderKeyPort(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderFuelFiller(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderIgnition(vehicle, matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }
