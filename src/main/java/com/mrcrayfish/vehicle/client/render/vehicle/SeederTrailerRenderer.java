@@ -14,6 +14,8 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.vector.Vector3f;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
@@ -99,8 +101,8 @@ public class SeederTrailerRenderer extends AbstractTrailerRenderer<SeederTrailer
         matrixStack.translate(offsetX, -0.65, 0.0);
         if(vehicle != null)
         {
-            float wheelRotation = vehicle.prevWheelRotation + (vehicle.wheelRotation - vehicle.prevWheelRotation) * partialTicks;
-            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
+            //TODO add spike rotations
+            //matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-wheelRotation));
         }
         matrixStack.scale(0.75F, 0.75F, 0.75F);
         RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);

@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.Wheel;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.DirtBikeEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -42,13 +43,10 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
         matrixStack.translate(0.0, 0.0, 10.5 * 0.0625);
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-22.5F));
 
-        if(vehicle != null)
-        {
-            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 25F;
-            matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
-        }
+        float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
+        float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(steeringWheelRotation));
 
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
@@ -89,11 +87,11 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
         int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
         if(index == 0)
         {
-            float wheelAngle = entity.getRenderWheelAngle(partialTicks);
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 8F;
-            model.rightArm.xRot = (float) Math.toRadians(-55F - turnRotation);
-            model.leftArm.xRot = (float) Math.toRadians(-55F + turnRotation);
+            float wheelAngle = this.wheelAngleProperty.get(entity, partialTicks);
+            float maxSteeringAngle = this.vehiclePropertiesProperty.get(entity).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+            float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
+            model.rightArm.xRot = (float) Math.toRadians(-55F - steeringWheelRotation);
+            model.leftArm.xRot = (float) Math.toRadians(-55F + steeringWheelRotation);
         }
         else if(index == 1)
         {

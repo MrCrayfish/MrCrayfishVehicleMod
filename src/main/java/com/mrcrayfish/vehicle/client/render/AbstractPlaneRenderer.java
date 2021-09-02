@@ -15,6 +15,9 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
 {
+    //TODO add properties for flap and elevator angle
+    protected final PropertyFunction<T, Float> propellerRotationProperty = new PropertyFunction<>(PlaneEntity::getPropellerRotation, 0F);
+
     public AbstractPlaneRenderer(VehicleProperties defaultProperties)
     {
         super(defaultProperties);

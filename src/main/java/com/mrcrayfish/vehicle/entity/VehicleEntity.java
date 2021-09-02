@@ -68,9 +68,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public static final int[] DYE_TO_COLOR = new int[] {16383998, 16351261, 13061821, 3847130, 16701501, 8439583, 15961002, 4673362, 10329495, 1481884, 8991416, 3949738, 8606770, 6192150, 11546150, 1908001};
 
     protected static final DataParameter<Integer> COLOR = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
-    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> TRAILER = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
+    protected static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
+    protected static final DataParameter<Float> HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
+    protected static final DataParameter<Integer> TRAILER = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
+    protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
 
     protected UUID trailerId;
     protected TrailerEntity trailer = null;
@@ -116,6 +117,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         this.entityData.define(HEALTH, 100F);
         this.entityData.define(COLOR, 16383998);
         this.entityData.define(TRAILER, -1);
+        this.entityData.define(WHEEL_STACK, ItemStack.EMPTY);
     }
 
     public void registerDataValue(VehicleDataValue<?> dataValue)
@@ -551,6 +553,26 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public float getHealth()
     {
         return this.entityData.get(HEALTH);
+    }
+
+    public boolean hasWheelStack()
+    {
+        return !this.getWheelStack().isEmpty();
+    }
+
+    public void setWheelStack(ItemStack wheels)
+    {
+        this.entityData.set(WHEEL_STACK, wheels);
+    }
+
+    public ItemStack getWheelStack()
+    {
+        return this.entityData.get(WHEEL_STACK);
+    }
+
+    public Optional<IWheelType> getWheelType()
+    {
+        return IWheelType.fromStack(this.entityData.get(WHEEL_STACK));
     }
 
     //TODO look into this and why its here. May have to send vanilla event to client

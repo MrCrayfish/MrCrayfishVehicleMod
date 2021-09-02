@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SmartCarEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -39,15 +41,10 @@ public class SmartCarRenderer extends AbstractLandVehicleRenderer<SmartCarEntity
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-67.5F));
             matrixStack.translate(0, -0.02, 0);
             matrixStack.scale(0.9F, 0.9F, 0.9F);
-
-            if(vehicle != null)
-            {
-                float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
-                float wheelAngleNormal = wheelAngle / 45F;
-                float turnRotation = wheelAngleNormal * 25F;
-                matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
-            }
-
+            float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
+            float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+            float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
             RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         }
         matrixStack.popPose();
@@ -61,12 +58,11 @@ public class SmartCarRenderer extends AbstractLandVehicleRenderer<SmartCarEntity
         model.leftLeg.xRot = (float) Math.toRadians(-85F);
         model.leftLeg.yRot = (float) Math.toRadians(-10F);
 
-        float wheelAngle = entity.getRenderWheelAngle(partialTicks);
-        float wheelAngleNormal = wheelAngle / 45F;
-        float turnRotation = wheelAngleNormal * 6F;
-
-        model.rightArm.xRot = (float) Math.toRadians(-80F - turnRotation);
-        model.leftArm.xRot = (float) Math.toRadians(-80F + turnRotation);
+        float wheelAngle = this.wheelAngleProperty.get(entity, partialTicks);
+        float maxSteeringAngle = this.vehiclePropertiesProperty.get(entity).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F / 2F;
+        model.rightArm.xRot = (float) Math.toRadians(-80F - steeringWheelRotation);
+        model.leftArm.xRot = (float) Math.toRadians(-80F + steeringWheelRotation);
     }
 
     @Nullable

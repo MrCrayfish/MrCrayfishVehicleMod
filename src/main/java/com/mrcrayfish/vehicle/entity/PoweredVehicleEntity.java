@@ -94,7 +94,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     protected static final DataParameter<Boolean> NEEDS_KEY = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.BOOLEAN);
     protected static final DataParameter<ItemStack> KEY_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
     protected static final DataParameter<ItemStack> ENGINE_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
-    protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
 
     // Sensitive variables used for physics
     private final VehicleDataValue<Float> throttle = new VehicleDataValue<>(this, THROTTLE);
@@ -149,7 +148,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         this.entityData.define(NEEDS_KEY, false);
         this.entityData.define(KEY_STACK, ItemStack.EMPTY);
         this.entityData.define(ENGINE_STACK, ItemStack.EMPTY);
-        this.entityData.define(WHEEL_STACK, ItemStack.EMPTY);
     }
 
     public final SoundEvent getEngineSound()
@@ -785,26 +783,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     public void setOwner(UUID owner)
     {
         this.owner = owner;
-    }
-
-    public boolean hasWheelStack()
-    {
-        return !this.getWheelStack().isEmpty();
-    }
-
-    public void setWheelStack(ItemStack wheels)
-    {
-        this.entityData.set(WHEEL_STACK, wheels);
-    }
-
-    public ItemStack getWheelStack()
-    {
-        return this.entityData.get(WHEEL_STACK);
-    }
-
-    public Optional<IWheelType> getWheelType()
-    {
-        return IWheelType.fromStack(this.entityData.get(WHEEL_STACK));
     }
 
     public void setHandbraking(boolean handbraking)

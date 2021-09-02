@@ -8,7 +8,9 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -20,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.function.BiFunction;
@@ -32,11 +35,12 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
 {
     protected final PropertyFunction<T, VehicleProperties> vehiclePropertiesProperty;
     protected final PropertyFunction<T, Boolean> hasDriverProperty = new PropertyFunction<>(t -> t.getControllingPassenger() != null, false);
-    protected final PropertyFunction<T, Boolean> towTrailerProperty = new PropertyFunction<>(VehicleEntity::canTowTrailers, false);
     protected final PropertyFunction<T, Integer> colorProperty = new PropertyFunction<>(VehicleEntity::getColor, -1);
     protected final PropertyFunction<T, Float> bodyYawProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationYaw, 0F);
     protected final PropertyFunction<T, Float> bodyPitchProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationPitch, 0F);
     protected final PropertyFunction<T, Float> bodyRollProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationRoll, 0F);
+    protected final PropertyFunction<T, ItemStack> wheelStackProperty = new PropertyFunction<>(VehicleEntity::getWheelStack, ItemStack.EMPTY);
+    protected final PropertyFunction<Pair<T, Wheel>, Float> wheelRotationProperty = new PropertyFunction<>((p, f) -> p.getLeft().getWheelRotation(p.getRight(), f), 0F);
 
     public AbstractVehicleRenderer(VehicleProperties defaultProperties)
     {
@@ -58,7 +62,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
 
-        if(this.towTrailerProperty.get(vehicle))
+        if(properties.canTowTrailers())
         {
             matrixStack.pushPose();
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
@@ -173,6 +177,43 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
         matrixStack.popPose();
     }
 
+    protected void renderWheels(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
+    {
+        ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
+        if(!wheelStack.isEmpty())
+        {
+            VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+            matrixStack.pushPose();
+            matrixStack.translate(0.0, -8 * 0.0625, 0.0);
+            matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
+            IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
+            properties.getWheels().forEach(wheel -> this.renderWheel(vehicle, wheel, wheelStack, wheelModel, partialTicks, matrixStack, renderTypeBuffer, light));
+            matrixStack.popPose();
+        }
+    }
+
+    protected void renderWheel(@Nullable T vehicle, Wheel wheel, ItemStack stack, IBakedModel model, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    {
+        if(!wheel.shouldRender())
+            return;
+
+        matrixStack.pushPose();
+        matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset(), wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.wheelRotationProperty.get(Pair.of(vehicle, wheel), partialTicks)));
+        if(wheel.getSide() != Wheel.Side.NONE)
+        {
+            matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
+        }
+        matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
+        if(wheel.getSide() == Wheel.Side.RIGHT)
+        {
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+        }
+        int wheelColor = IDyeable.getColorFromStack(stack);
+        RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
+        matrixStack.popPose();
+    }
+
     protected ISpecialModel getKeyHoleModel()
     {
         return SpecialModels.KEY_HOLE;
@@ -198,17 +239,37 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
         this.hasDriverProperty.setDefaultValue(hasDriver);
     }
 
-    public void setCanTowTrailer(boolean canTowTrailer)
-    {
-        this.towTrailerProperty.setDefaultValue(canTowTrailer);
-    }
-
     public void setColor(int color)
     {
         this.colorProperty.setDefaultValue(color);
     }
 
-    protected static class PropertyFunction<V extends VehicleEntity, T>
+    public void setBodyYaw(float yaw)
+    {
+        this.bodyYawProperty.setDefaultValue(yaw);
+    }
+
+    public void setBodyPitch(float pitch)
+    {
+        this.bodyPitchProperty.setDefaultValue(pitch);
+    }
+
+    public void setBodyRoll(float roll)
+    {
+        this.bodyRollProperty.setDefaultValue(roll);
+    }
+
+    public void setWheelStack(ItemStack wheel)
+    {
+        this.wheelStackProperty.setDefaultValue(wheel);
+    }
+
+    public void setWheelRotation(float rotation)
+    {
+        this.wheelRotationProperty.setDefaultValue(rotation);
+    }
+
+    protected static class PropertyFunction<V, T>
     {
         protected BiFunction<V, Float, T> function;
         protected T defaultValue;

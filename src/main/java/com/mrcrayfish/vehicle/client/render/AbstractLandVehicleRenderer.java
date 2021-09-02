@@ -41,7 +41,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
         matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
 
-        if(this.towTrailerProperty.get(vehicle))
+        if(properties.canTowTrailers())
         {
             matrixStack.pushPose();
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));

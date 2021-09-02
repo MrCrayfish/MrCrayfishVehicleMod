@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
+import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -40,13 +41,10 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-45F));
         matrixStack.translate(0.0, -0.025, 0);
 
-        if(vehicle != null)
-        {
-            float wheelAngle = vehicle.getRenderWheelAngle(partialTicks);
-            float wheelAngleNormal = wheelAngle / 45F;
-            float turnRotation = wheelAngleNormal * 15F;
-            matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(turnRotation));
-        }
+        float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
+        float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 15F;
+        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(steeringWheelRotation));
 
         RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
 
@@ -56,12 +54,12 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
     @Override
     public void applyPlayerModel(ATVEntity entity, PlayerEntity player, PlayerModel<AbstractClientPlayerEntity> model, float partialTicks)
     {
-        float wheelAngle = entity.getRenderWheelAngle(partialTicks);
-        float wheelAngleNormal = wheelAngle / 45F;
-        float turnRotation = wheelAngleNormal * 12F;
-        model.rightArm.xRot = (float) Math.toRadians(-65F - turnRotation);
+        float wheelAngle = this.wheelAngleProperty.get(entity, partialTicks);
+        float maxSteeringAngle = this.vehiclePropertiesProperty.get(entity).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 15F / 2F;
+        model.rightArm.xRot = (float) Math.toRadians(-65F - steeringWheelRotation);
         model.rightArm.yRot = (float) Math.toRadians(15F);
-        model.leftArm.xRot = (float) Math.toRadians(-65F + turnRotation);
+        model.leftArm.xRot = (float) Math.toRadians(-65F + steeringWheelRotation);
         model.leftArm.yRot = (float) Math.toRadians(-15F);
 
         if(entity.getControllingPassenger() != player)

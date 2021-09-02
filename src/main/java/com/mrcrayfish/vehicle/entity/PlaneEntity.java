@@ -467,7 +467,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @OnlyIn(Dist.CLIENT)
-    public float getBladeRotation(float partialTicks)
+    public float getPropellerRotation(float partialTicks)
     {
         return this.prevPropellerRotation + (this.propellerRotation - this.prevPropellerRotation) * partialTicks;
     }
