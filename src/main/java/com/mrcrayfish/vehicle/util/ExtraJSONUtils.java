@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 public class ExtraJSONUtils
 {
     public static final DecimalFormat FORMAT = new DecimalFormat("#.###");
-    private static final boolean VERBOSE_MODE = true;
+    private static final boolean VERBOSE_MODE = false;
 
     public static void write(JsonObject object, String key, Number number, Number defaultValue)
     {
