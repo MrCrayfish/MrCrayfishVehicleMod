@@ -57,6 +57,10 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     protected float wheelRotation;
     @OnlyIn(Dist.CLIENT)
     protected float prevWheelRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevFlapAngle;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevElevatorAngle;
 
     protected PlaneEntity(EntityType<?> entityType, World worldIn)
     {
@@ -263,6 +267,8 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
 
         this.prevWheelRotation = this.wheelRotation;
         this.prevPropellerRotation = this.propellerRotation;
+        this.prevFlapAngle = this.flapAngle;
+        this.prevElevatorAngle = this.elevatorAngle;
 
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
@@ -470,6 +476,18 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     public float getPropellerRotation(float partialTicks)
     {
         return this.prevPropellerRotation + (this.propellerRotation - this.prevPropellerRotation) * partialTicks;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getFlapAngle(float partialTicks)
+    {
+        return this.prevFlapAngle + (this.flapAngle - this.prevFlapAngle) * partialTicks;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getElevatorAngle(float partialTicks)
+    {
+        return this.prevElevatorAngle + (this.elevatorAngle - this.prevElevatorAngle) * partialTicks;
     }
 
     @Override
