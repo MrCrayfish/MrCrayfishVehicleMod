@@ -93,7 +93,7 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     {
         if(result.getPartHit() == CONNECTION_BOX && rightClick)
         {
-            PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
+            PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
             return true;
         }
         return super.processHit(result, rightClick);
@@ -136,7 +136,7 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     {
         if(!this.level.isClientSide)
         {
-            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new MessageEntityFluid(this.getId(), this.tank.getFluid()));
+            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new MessageEntityFluid(this.getId(), this.tank.getFluid()));
         }
     }
 

@@ -205,7 +205,7 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             this.setLift(lift);
             this.setForwardInput(player.zza);
             this.setSideInput(player.xxa);
-            PacketHandler.instance.sendToServer(new MessageHelicopterInput(lift, player.zza, player.xxa));
+            PacketHandler.getPlayChannel().sendToServer(new MessageHelicopterInput(lift, player.zza, player.xxa));
         }
     }
 

@@ -64,7 +64,7 @@ public interface RayTraceFunction
 
             if(rayTracer.getContinuousInteractionTickCounter() % 2 == 0)
             {
-                PacketHandler.instance.sendToServer(new MessageFuelVehicle(result.getEntity().getId(), Hand.MAIN_HAND));
+                PacketHandler.getPlayChannel().sendToServer(new MessageFuelVehicle(result.getEntity().getId(), Hand.MAIN_HAND));
             }
             return Hand.MAIN_HAND;
         }
@@ -86,7 +86,7 @@ public interface RayTraceFunction
 
             if(rayTracer.getContinuousInteractionTickCounter() % 2 == 0)
             {
-                PacketHandler.instance.sendToServer(new MessageFuelVehicle(entity.getId(), hand));
+                PacketHandler.getPlayChannel().sendToServer(new MessageFuelVehicle(entity.getId(), hand));
             }
             return hand;
         }

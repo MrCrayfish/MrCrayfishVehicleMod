@@ -58,7 +58,7 @@ public class ControllerHandler
                         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
                         if(vehicle.canTowTrailers())
                         {
-                            PacketHandler.instance.sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
+                            PacketHandler.getPlayChannel().sendToServer(new MessageHitchTrailer(vehicle.getTrailer() == null));
                         }
                         event.setCanceled(true);
                     }

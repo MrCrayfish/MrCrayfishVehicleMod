@@ -58,7 +58,7 @@ public abstract class VehiclePropertiesProvider implements IDataProvider
         {
             String modId = id.getNamespace();
             String vehicleId = id.getPath();
-            Path path = this.generator.getOutputFolder().resolve("assets/" + modId + "/vehicles/" + vehicleId + ".json");
+            Path path = this.generator.getOutputFolder().resolve("data/" + modId + "/vehicles/" + vehicleId + ".json");
             try
             {
                 String rawJson = GSON.toJson(properties);

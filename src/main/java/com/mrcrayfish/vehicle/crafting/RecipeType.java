@@ -25,4 +25,7 @@ public class RecipeType
             }
         });
     }
+
+    // Does nothing, just forces static fields to initialize
+    public static void init() {}
 }

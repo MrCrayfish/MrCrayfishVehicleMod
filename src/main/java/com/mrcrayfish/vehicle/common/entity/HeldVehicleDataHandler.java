@@ -68,7 +68,7 @@ public class HeldVehicleDataHandler
         }
         if(!player.level.isClientSide)
         {
-            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new MessageSyncHeldVehicle(player.getId(), vehicleTag));
+            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), new MessageSyncHeldVehicle(player.getId(), vehicleTag));
         }
     }
 
@@ -107,7 +107,7 @@ public class HeldVehicleDataHandler
         {
             PlayerEntity player = (PlayerEntity) event.getTarget();
             CompoundNBT vehicleTag = getHeldVehicle(player);
-            PacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.getPlayer()), new MessageSyncHeldVehicle(player.getId(), vehicleTag));
+            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.getPlayer()), new MessageSyncHeldVehicle(player.getId(), vehicleTag));
         }
     }
 
@@ -119,7 +119,7 @@ public class HeldVehicleDataHandler
         {
             PlayerEntity player = (PlayerEntity) entity;
             CompoundNBT vehicleTag = getHeldVehicle(player);
-            PacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageSyncHeldVehicle(player.getId(), vehicleTag));
+            PacketHandler.getPlayChannel().send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new MessageSyncHeldVehicle(player.getId(), vehicleTag));
         }
     }
 

@@ -83,12 +83,12 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
         {
             if(result.getPartHit() == CONNECTION_BOX)
             {
-                PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
                 return true;
             }
             else if(result.getPartHit() == CHEST_BOX)
             {
-                PacketHandler.instance.sendToServer(new MessageOpenStorage(this.getId()));
+                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(this.getId()));
                 Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
                 return true;
             }

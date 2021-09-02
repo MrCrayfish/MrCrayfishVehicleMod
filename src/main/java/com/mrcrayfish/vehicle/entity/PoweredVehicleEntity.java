@@ -481,26 +481,26 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             if(throttle != this.getThrottle())
             {
                 this.setThrottle(throttle);
-                PacketHandler.instance.sendToServer(new MessageThrottle(throttle));
+                PacketHandler.getPlayChannel().sendToServer(new MessageThrottle(throttle));
             }
 
             boolean handbraking = VehicleHelper.isHandbraking();
             if(this.isHandbraking() != handbraking)
             {
                 this.setHandbraking(handbraking);
-                PacketHandler.instance.sendToServer(new MessageHandbrake(handbraking));
+                PacketHandler.getPlayChannel().sendToServer(new MessageHandbrake(handbraking));
             }
 
             if(this.hasHorn())
             {
                 boolean horn = VehicleHelper.isHonking();
                 this.setHorn(horn);
-                PacketHandler.instance.sendToServer(new MessageHorn(horn));
+                PacketHandler.getPlayChannel().sendToServer(new MessageHorn(horn));
             }
 
             float steeringAngle = VehicleHelper.getSteeringAngle(this);
             this.setSteeringAngle(steeringAngle);
-            PacketHandler.instance.sendToServer(new MessageTurnAngle(steeringAngle));
+            PacketHandler.getPlayChannel().sendToServer(new MessageTurnAngle(steeringAngle));
         }
     }
 

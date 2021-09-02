@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
 import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
+import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
 import com.mrcrayfish.vehicle.datagen.LootTableGen;
 import com.mrcrayfish.vehicle.datagen.RecipeGen;
@@ -78,8 +79,9 @@ public class VehicleMod
 
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
+        RecipeType.init();
         VehicleProperties.loadProperties();
-        PacketHandler.register();
+        PacketHandler.registerPlayMessage();
         HeldVehicleDataHandler.register();
         ItemLookup.init();
         ModDataKeys.register();

@@ -271,7 +271,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
             this.setLift(VehicleHelper.getLift());
             this.setForwardInput(player.zza);
             this.setSideInput(player.xxa);
-            PacketHandler.instance.sendToServer(new MessagePlaneInput(this.lift.getLocalValue(), player.zza, player.xxa));
+            PacketHandler.getPlayChannel().sendToServer(new MessagePlaneInput(this.lift.getLocalValue(), player.zza, player.xxa));
         }
     }
 

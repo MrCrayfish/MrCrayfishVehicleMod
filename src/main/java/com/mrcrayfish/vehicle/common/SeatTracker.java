@@ -56,7 +56,7 @@ public class SeatTracker
         VehicleEntity vehicle = this.vehicleRef.get();
         if(vehicle != null && !vehicle.level.isClientSide)
         {
-            PacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncPlayerSeat(vehicle.getId(), index, uuid));
+            PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncPlayerSeat(vehicle.getId(), index, uuid));
         }
     }
 

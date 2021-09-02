@@ -88,7 +88,7 @@ public class VehicleTrailerEntity extends TrailerEntity
     {
         if(result.getPartHit() == CONNECTION_BOX && rightClick)
         {
-            PacketHandler.instance.sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
+            PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
             return true;
         }
         return super.processHit(result, rightClick);

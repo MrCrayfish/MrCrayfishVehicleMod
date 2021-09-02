@@ -11,19 +11,21 @@ import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
+import com.mrcrayfish.vehicle.network.HandshakeMessages;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.entity.EntityType;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.profiler.IProfiler;
+import net.minecraft.resources.IResource;
+import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.loading.FMLLoader;
-import org.lwjgl.glfw.GLFW;
+import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -40,13 +42,13 @@ import java.util.stream.Collectors;
 /**
  * Author: MrCrayfish
  */
-@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class VehicleProperties
 {
     private static final double WHEEL_RADIUS = 8.0;
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(VehicleProperties.class, new Serializer()).create();
-    private static final Map<ResourceLocation, VehicleProperties> ID_TO_PROPERTIES = new HashMap<>();
+    private static final Map<ResourceLocation, VehicleProperties> DEFAULT_VEHICLE_PROPERTIES = new HashMap<>();
     private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
+    private static final Map<ResourceLocation, VehicleProperties> NETWORK_VEHICLE_PROPERTIES = new HashMap<>();
 
     public static final float DEFAULT_MAX_HEALTH = 100F;
     public static final float DEFAULT_AXLE_OFFSET = 0F;
@@ -217,16 +219,16 @@ public class VehicleProperties
     {
         for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
         {
-            ID_TO_PROPERTIES.computeIfAbsent(entityType.getRegistryName(), VehicleProperties::loadProperties);
+            DEFAULT_VEHICLE_PROPERTIES.computeIfAbsent(entityType.getRegistryName(), VehicleProperties::loadProperties);
         }
     }
 
     private static VehicleProperties loadProperties(ResourceLocation id)
     {
-        String resource = String.format("/assets/%s/vehicles/%s.json", id.getNamespace(), id.getPath());
+        String resource = String.format("/data/%s/vehicles/%s.json", id.getNamespace(), id.getPath());
         try(InputStream is = VehicleProperties.class.getResourceAsStream(resource))
         {
-            return GSON.fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), VehicleProperties.class);
+            return loadProperties(is);
         }
         catch(JsonParseException | IOException e)
         {
@@ -239,6 +241,11 @@ public class VehicleProperties
         return null;
     }
 
+    private static VehicleProperties loadProperties(InputStream is)
+    {
+        return GSON.fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), VehicleProperties.class);
+    }
+
     public static VehicleProperties get(EntityType<?> entityType)
     {
         return get(entityType.getRegistryName());
@@ -246,35 +253,44 @@ public class VehicleProperties
 
     public static VehicleProperties get(ResourceLocation id)
     {
-        VehicleProperties properties = ID_TO_PROPERTIES.get(id);
+        VehicleProperties properties = null;
+        if(Manager.get() != null)
+        {
+            properties = NETWORK_VEHICLE_PROPERTIES.get(id);
+        }
         if(properties == null)
         {
-            throw new IllegalArgumentException("No vehicle properties registered for " + id);
+            properties = DEFAULT_VEHICLE_PROPERTIES.get(id);
+            if(properties == null)
+            {
+                throw new IllegalArgumentException("No vehicle properties registered for " + id);
+            }
         }
         return properties;
     }
 
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public static void onKeyInput(InputEvent.KeyInputEvent event)
+    public static boolean updateNetworkVehicleProperties(HandshakeMessages.S2CVehicleProperties message)
     {
-        if(FMLLoader.isProduction())
-            return;
+        Map<ResourceLocation, VehicleProperties> propertiesMap = message.getPropertiesMap();
 
-        Minecraft minecraft = Minecraft.getInstance();
-        if(minecraft.overlay != null)
-            return;
+        // We should receive the same amount of properties
+        if(DEFAULT_VEHICLE_PROPERTIES.size() != propertiesMap.size())
+            return false;
 
-        if(event.getAction() != GLFW.GLFW_PRESS)
-            return;
-
-        if(event.getKey() == GLFW.GLFW_KEY_RIGHT_BRACKET)
+        // Validate that all the keys exist in the default properties and we don't have anything missing
+        for(ResourceLocation key : propertiesMap.keySet())
         {
-            for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
+            if(!DEFAULT_VEHICLE_PROPERTIES.containsKey(key))
             {
-                ID_TO_PROPERTIES.put(entityType.getRegistryName(), loadProperties(entityType.getRegistryName()));
+                VehicleMod.LOGGER.error("Received properties for vehicle that doesn't exist: {}", key);
+                return false;
             }
         }
+
+        // Finally update the network properties
+        NETWORK_VEHICLE_PROPERTIES.clear();
+        NETWORK_VEHICLE_PROPERTIES.putAll(message.getPropertiesMap());
+        return true;
     }
 
     public static class Serializer implements JsonDeserializer<VehicleProperties>, JsonSerializer<VehicleProperties>
@@ -621,6 +637,105 @@ public class VehicleProperties
             double lowestPosition = radius / 2;
             lowestPosition -= wheel.getOffsetY();
             return (float) lowestPosition;
+        }
+    }
+
+    @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
+    public static class Manager extends ReloadListener<Map<ResourceLocation, VehicleProperties>>
+    {
+        private static final String DIRECTORY = "vehicles";
+        private static final String FILE_SUFFIX = ".json";
+
+        @Nullable
+        private static Manager instance;
+        private ImmutableMap<ResourceLocation, VehicleProperties> vehicleProperties = ImmutableMap.of();
+
+        @Override
+        protected Map<ResourceLocation, VehicleProperties> prepare(IResourceManager manager, IProfiler profiler)
+        {
+            Map<ResourceLocation, VehicleProperties> propertiesMap = new HashMap<>();
+            manager.listResources(DIRECTORY, location -> location.endsWith(FILE_SUFFIX))
+                .stream()
+                .filter(location -> DEFAULT_VEHICLE_PROPERTIES.containsKey(format(location)))
+                .forEach(location -> {
+                    try
+                    {
+                        IResource resource = manager.getResource(location);
+                        VehicleProperties properties = loadProperties(resource.getInputStream());
+                        propertiesMap.put(format(location), properties);
+                    }
+                    catch(IOException e)
+                    {
+                        VehicleMod.LOGGER.error("Couldn't parse vehicle properties {}", location);
+                    }
+                });
+            return propertiesMap;
+        }
+
+        @Override
+        protected void apply(Map<ResourceLocation, VehicleProperties> propertiesMap, IResourceManager manager, IProfiler profiler)
+        {
+            this.vehicleProperties = ImmutableMap.copyOf(propertiesMap);
+        }
+
+        private static ResourceLocation format(ResourceLocation location)
+        {
+            return new ResourceLocation(location.getNamespace(), location.getPath().substring(DIRECTORY.length() + 1, location.getPath().length() - FILE_SUFFIX.length()));
+        }
+
+        @SubscribeEvent
+        public static void addReloadListenerEvent(AddReloadListenerEvent event)
+        {
+            event.addListener(Manager.instance = new Manager()); // I still think this looks ugly
+        }
+
+        @SubscribeEvent
+        public static void onServerStopped(FMLServerStoppedEvent event)
+        {
+            Manager.instance = null;
+        }
+
+        /**
+         * Gets the vehicle properties manager. This will be null if the client isn't running an
+         * integrated server or the client is connected to a dedicated server.
+         */
+        @Nullable
+        public static Manager get()
+        {
+            return instance;
+        }
+
+        public ImmutableMap<ResourceLocation, VehicleProperties> getVehicleProperties()
+        {
+            return this.vehicleProperties;
+        }
+
+        public void writeVehicleProperties(PacketBuffer buffer)
+        {
+            buffer.writeVarInt(this.vehicleProperties.size());
+            this.vehicleProperties.forEach((id, properties) ->
+            {
+                buffer.writeResourceLocation(id);
+                buffer.writeUtf(GSON.toJson(properties));
+            });
+        }
+
+        public static ImmutableMap<ResourceLocation, VehicleProperties> readVehicleProperties(PacketBuffer buffer)
+        {
+            int size = buffer.readVarInt();
+            if(size > 0)
+            {
+                ImmutableMap.Builder<ResourceLocation, VehicleProperties> builder = ImmutableMap.builder();
+                for(int i = 0; i < size; i++)
+                {
+                    ResourceLocation id = buffer.readResourceLocation();
+                    String json = buffer.readUtf();
+                    VehicleProperties properties = GSON.fromJson(json, VehicleProperties.class);
+                    builder.put(id, properties);
+                }
+                return builder.build();
+            }
+            return ImmutableMap.of();
         }
     }
 }

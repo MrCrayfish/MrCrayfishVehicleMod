@@ -338,7 +338,7 @@ public class CommonEvents
         {
             if(player.isCrouching())
             {
-                PacketHandler.instance.sendToServer(new MessageThrowVehicle());
+                PacketHandler.getPlayChannel().sendToServer(new MessageThrowVehicle());
             }
             if(event.isCancelable())
             {

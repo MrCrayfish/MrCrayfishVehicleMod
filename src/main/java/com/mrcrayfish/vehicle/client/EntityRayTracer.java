@@ -1501,7 +1501,7 @@ public class EntityRayTracer
         {
             if(result.getPartHit().getModel() == SpecialModels.KEY_HOLE)
             {
-                PacketHandler.instance.sendToServer(new MessageInteractKey((Entity) this));
+                PacketHandler.getPlayChannel().sendToServer(new MessageInteractKey((Entity) this));
                 return true;
             }
 
@@ -1522,7 +1522,7 @@ public class EntityRayTracer
                     {
                         if(player.isCrouching() && !player.isSpectator())
                         {
-                            PacketHandler.instance.sendToServer(new MessagePickupVehicle((Entity) this));
+                            PacketHandler.getPlayChannel().sendToServer(new MessagePickupVehicle((Entity) this));
                             return true;
                         }
                         if(!isContinuous)

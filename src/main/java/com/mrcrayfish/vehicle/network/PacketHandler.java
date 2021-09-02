@@ -3,49 +3,74 @@ package com.mrcrayfish.vehicle.network;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.network.message.*;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.FMLHandshakeHandler;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 
 public class PacketHandler
 {
-    public static final String PROTOCOL_VERSION = "1";
-
-    public static SimpleChannel instance;
+    private static final String PROTOCOL_VERSION = "1";
+    private static final SimpleChannel HANDSHAKE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "handshake"), () -> PROTOCOL_VERSION, s -> true, s -> true);
+    private static final SimpleChannel PLAY_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(Reference.MOD_ID, "play"), () -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
     private static int nextId = 0;
 
-    public static void register()
+    public static void registerPlayMessage()
     {
-        instance = NetworkRegistry.ChannelBuilder
-                .named(new ResourceLocation(Reference.MOD_ID, "play"))
-                .networkProtocolVersion(() -> PROTOCOL_VERSION)
-                .clientAcceptedVersions(PROTOCOL_VERSION::equals)
-                .serverAcceptedVersions(PROTOCOL_VERSION::equals)
-                .simpleChannel();
+        HANDSHAKE_CHANNEL.messageBuilder(HandshakeMessages.C2SAcknowledge.class, 99)
+                .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
+                .decoder(HandshakeMessages.C2SAcknowledge::decode)
+                .encoder(HandshakeMessages.C2SAcknowledge::encode)
+                .consumer(FMLHandshakeHandler.indexFirst((handler, msg, s) -> HandshakeHandler.handleAcknowledge(msg, s)))
+                .add();
 
-        register(MessageTurnAngle.class, new MessageTurnAngle());
-        register(MessageHandbrake.class, new MessageHandbrake());
-        register(MessageHorn.class, new MessageHorn());
-        register(MessageThrowVehicle.class, new MessageThrowVehicle());
-        register(MessagePickupVehicle.class, new MessagePickupVehicle());
-        register(MessageAttachChest.class, new MessageAttachChest());
-        register(MessageAttachTrailer.class, new MessageAttachTrailer());
-        register(MessageFuelVehicle.class, new MessageFuelVehicle());
-        register(MessageInteractKey.class, new MessageInteractKey());
-        register(MessageHelicopterInput.class, new MessageHelicopterInput());
-        register(MessageCraftVehicle.class, new MessageCraftVehicle());
-        register(MessageHitchTrailer.class, new MessageHitchTrailer());
-        register(MessageSyncInventory.class, new MessageSyncInventory());
-        register(MessageOpenStorage.class, new MessageOpenStorage());
-        register(MessageThrottle.class, new MessageThrottle());
-        register(MessageEntityFluid.class, new MessageEntityFluid());
-        register(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());
-        register(MessageCycleSeats.class, new MessageCycleSeats());
-        register(MessageSyncHeldVehicle.class, new MessageSyncHeldVehicle());
-        register(MessagePlaneInput.class, new MessagePlaneInput());
+        HANDSHAKE_CHANNEL.messageBuilder(HandshakeMessages.S2CVehicleProperties.class, 1)
+                .loginIndex(HandshakeMessages.LoginIndexedMessage::getLoginIndex, HandshakeMessages.LoginIndexedMessage::setLoginIndex)
+                .decoder(HandshakeMessages.S2CVehicleProperties::decode)
+                .encoder(HandshakeMessages.S2CVehicleProperties::encode)
+                .consumer(FMLHandshakeHandler.biConsumerFor((handler, msg, supplier) -> HandshakeHandler.handleVehicleProperties(msg, supplier)))
+                .markAsLoginPacket()
+                .add();
+
+        registerPlayMessage(MessageTurnAngle.class, new MessageTurnAngle());
+        registerPlayMessage(MessageHandbrake.class, new MessageHandbrake());
+        registerPlayMessage(MessageHorn.class, new MessageHorn());
+        registerPlayMessage(MessageThrowVehicle.class, new MessageThrowVehicle());
+        registerPlayMessage(MessagePickupVehicle.class, new MessagePickupVehicle());
+        registerPlayMessage(MessageAttachChest.class, new MessageAttachChest());
+        registerPlayMessage(MessageAttachTrailer.class, new MessageAttachTrailer());
+        registerPlayMessage(MessageFuelVehicle.class, new MessageFuelVehicle());
+        registerPlayMessage(MessageInteractKey.class, new MessageInteractKey());
+        registerPlayMessage(MessageHelicopterInput.class, new MessageHelicopterInput());
+        registerPlayMessage(MessageCraftVehicle.class, new MessageCraftVehicle());
+        registerPlayMessage(MessageHitchTrailer.class, new MessageHitchTrailer());
+        registerPlayMessage(MessageSyncInventory.class, new MessageSyncInventory());
+        registerPlayMessage(MessageOpenStorage.class, new MessageOpenStorage());
+        registerPlayMessage(MessageThrottle.class, new MessageThrottle());
+        registerPlayMessage(MessageEntityFluid.class, new MessageEntityFluid());
+        registerPlayMessage(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());
+        registerPlayMessage(MessageCycleSeats.class, new MessageCycleSeats());
+        registerPlayMessage(MessageSyncHeldVehicle.class, new MessageSyncHeldVehicle());
+        registerPlayMessage(MessagePlaneInput.class, new MessagePlaneInput());
     }
 
-    private static <T> void register(Class<T> clazz, IMessage<T> message)
+    private static <T> void registerPlayMessage(Class<T> clazz, IMessage<T> message)
     {
-        instance.registerMessage(nextId++, clazz, message::encode, message::decode, message::handle);
+        PLAY_CHANNEL.registerMessage(nextId++, clazz, message::encode, message::decode, message::handle);
+    }
+
+    /**
+     * Gets the handshake network channel for MrCrayfish's Vehicle Mod
+     */
+    public static SimpleChannel getHandshakeChannel()
+    {
+        return HANDSHAKE_CHANNEL;
+    }
+
+    /**
+     * Gets the play network channel for MrCrayfish's Vehicle Mod
+     */
+    public static SimpleChannel getPlayChannel()
+    {
+        return PLAY_CHANNEL;
     }
 }
