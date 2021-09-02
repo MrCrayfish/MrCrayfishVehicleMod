@@ -127,7 +127,7 @@ public class CommonEvents
 
     public static boolean handleVehicleInteraction(World world, PlayerEntity player, Hand hand, Entity entity)
     {
-        if(Config.SERVER.pickUpVehicles.get())
+        if(!Config.SERVER.pickUpVehicles.get())
             return false;
 
         if(hand != Hand.MAIN_HAND)
