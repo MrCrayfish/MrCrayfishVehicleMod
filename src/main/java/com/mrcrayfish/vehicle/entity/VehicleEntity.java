@@ -71,7 +71,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
     protected static final DataParameter<Float> HEALTH = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.FLOAT);
     protected static final DataParameter<Integer> TRAILER = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.INT);
-    protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(PoweredVehicleEntity.class, DataSerializers.ITEM_STACK);
+    protected static final DataParameter<ItemStack> WHEEL_STACK = EntityDataManager.defineId(VehicleEntity.class, DataSerializers.ITEM_STACK);
 
     protected UUID trailerId;
     protected TrailerEntity trailer = null;
