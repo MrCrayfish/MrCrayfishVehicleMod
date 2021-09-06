@@ -83,6 +83,7 @@ public class MiniBusRenderer extends AbstractLandVehicleRenderer<MiniBusEntity>
                     MatrixTransform.rotate(Axis.POSITIVE_X, -67.5F),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.75F));
+            TransformHelper.createTowBarTransforms(ModEntities.MINI_BUS.get(), SpecialModels.BIG_TOW_BAR, parts);
             TransformHelper.createFuelFillerTransforms(ModEntities.MINI_BUS.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.MINI_BUS.get(), parts, transforms);
         };

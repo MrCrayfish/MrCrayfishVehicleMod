@@ -79,9 +79,7 @@ public class SmartCarRenderer extends AbstractLandVehicleRenderer<SmartCarEntity
                     MatrixTransform.rotate(Axis.POSITIVE_X, -67.5F),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.9F));
-            TransformHelper.createTransformListForPart(SpecialModels.TOW_BAR, parts, transforms,
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, 180F),
-                    MatrixTransform.translate(0.0F, 0.5F, 1.35F));
+            TransformHelper.createTowBarTransforms(ModEntities.SMART_CAR.get(), SpecialModels.TOW_BAR, parts);
             TransformHelper.createFuelFillerTransforms(ModEntities.SMART_CAR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }

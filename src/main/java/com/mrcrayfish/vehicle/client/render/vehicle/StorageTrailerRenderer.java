@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -80,6 +81,7 @@ public class StorageTrailerRenderer extends AbstractTrailerRenderer<StorageTrail
         return (tracer, transforms, parts) ->
         {
             TransformHelper.createTransformListForPart(SpecialModels.STORAGE_TRAILER, parts, transforms);
+            TransformHelper.createTowBarTransforms(ModEntities.STORAGE_TRAILER.get(), SpecialModels.TOW_BAR, parts);
         };
     }
 }
