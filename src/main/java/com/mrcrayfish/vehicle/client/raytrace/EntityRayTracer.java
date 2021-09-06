@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.client.raytrace.data.ItemStackRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.SpecialModelRayTraceData;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
@@ -535,7 +536,7 @@ public class EntityRayTracer
             rayTraceTransforms.load(this, transforms, parts);
             this.generateEntityTriangles(type, parts);
             this.generateScalingAndOffset(type);
-            this.generateInteractableBoxes(type);
+            this.generateInteractableBoxes(type, transforms);
         }
     }
 
@@ -563,13 +564,17 @@ public class EntityRayTracer
         this.entityCrateScalesAndOffsets.put(type, new ImmutablePair<>(1 / (range * 1.25F), -(min + range * 0.5F)));
     }
 
-    private <T extends VehicleEntity> void generateInteractableBoxes(EntityType<T> type)
+    private <T extends VehicleEntity> void generateInteractableBoxes(EntityType<T> type, List<MatrixTransform> transforms)
     {
         Optional.ofNullable(this.entityInteractableBoxes.get(type)).ifPresent(list -> {
             list.forEach(box -> {
+                Matrix4f matrix = new Matrix4f();
+                matrix.setIdentity();
+                transforms.forEach(t -> t.transform(matrix));
+                MatrixTransform.translate(0.0F, -0.5F, 0.0F).transform(matrix);
                 this.entityInteractableBoxesTriangles.computeIfAbsent(type, t -> {
                     return new HashMap<>();
-                }).put(box.getData(), boxToTriangles(box.getBoxSupplier().get()));
+                }).put(box.getData(), box.getData().createTriangleList(matrix));
             });
         });
     }
@@ -698,6 +703,7 @@ public class EntityRayTracer
         matrixStack.pushPose();
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-yaw));
         IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.LINES);
+        VehicleProperties properties = entity.getProperties();
         this.renderRayTraceTriangles(entity, matrixStack, builder);
         matrixStack.popPose();
     }
@@ -714,15 +720,15 @@ public class EntityRayTracer
     {
         EntityType<T> type = (EntityType<T>) entity.getType();
         this.initializeTransforms(type);
-        drawTriangleList(this.entityRayTraceTriangles.get(type), matrixStack, builder, 1.0F, 0.0F, 0.0F);
-        drawTriangleList(this.entityInteractableBoxesTriangles.get(type), matrixStack, builder, 0.0F, 1.0F, 0.0F);
+        drawTriangleList(entity, this.entityRayTraceTriangles.get(type), matrixStack, builder, 1.0F, 0.0F, 0.0F);
+        drawTriangleList(entity, this.entityInteractableBoxesTriangles.get(type), matrixStack, builder, 0.0F, 1.0F, 0.0F);
     }
 
-    private static void drawTriangleList(@Nullable Map<RayTraceData, TriangleList> map, MatrixStack matrixStack, IVertexBuilder builder, float red, float green, float blue)
+    private static <T extends VehicleEntity> void drawTriangleList(T entity, @Nullable Map<RayTraceData, TriangleList> map, MatrixStack matrixStack, IVertexBuilder builder, float red, float green, float blue)
     {
         Optional.ofNullable(map).ifPresent(map2 -> {
             map2.forEach((data, list) -> {
-                list.getTriangles().forEach(triangle -> triangle.draw(matrixStack, builder, red, green, blue, 0.4F));
+                list.getTriangles(data, entity).forEach(triangle -> triangle.draw(matrixStack, builder, red, green, blue, 0.4F));
             });
         });
     }

@@ -196,14 +196,9 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         {
             TransformHelper.createTransformListForPart(SpecialModels.MOPED_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.MOPED_HANDLES, parts, transforms,
-                    MatrixTransform.translate(0.0F, -0.0625F, 0.0F),
-                    MatrixTransform.translate(0.0F, 0.835F, 0.525F),
-                    MatrixTransform.scale(0.8F));
+                    MatrixTransform.translate(0.0F, 4.2739F * 0.0625F, 8.4071F * 0.0625F));
             TransformHelper.createTransformListForPart(SpecialModels.MOPED_MUD_GUARD, parts, transforms,
-                    MatrixTransform.translate(0.0F, -0.0625F, 0.0F),
-                    MatrixTransform.translate(0.0F, -0.12F, 0.785F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -22.5F),
-                    MatrixTransform.scale(0.9F));
+                    MatrixTransform.translate(0.0F, -3.8956F * 0.0625F, 11.8181F * 0.0625F));
             TransformHelper.createFuelFillerTransforms(ModEntities.MOPED.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }

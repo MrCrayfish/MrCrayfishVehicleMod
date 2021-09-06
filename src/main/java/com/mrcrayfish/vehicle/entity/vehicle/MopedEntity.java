@@ -30,6 +30,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -259,8 +260,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     public static void registerInteractionBoxes()
     {
         EntityRayTracer.instance().registerInteractionBox(ModEntities.MOPED.get(), () -> {
-            double scale = VehicleProperties.get(ModEntities.MOPED.get()).getBodyTransform().getScale();
-            return createBoxScaled(-3.5, 10.5, -7.0, 3.5, 17.5, -14, scale);
+            return createScaledBoundingBox(-3.5, 8.0, -7.0, 3.5, 15.0, -14.0, 0.0625);
         }, (entity, rightClick) -> {
             if(rightClick) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(entity.getId()));
@@ -269,8 +269,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         }, MopedEntity::hasChest);
 
         EntityRayTracer.instance().registerInteractionBox(ModEntities.MOPED.get(), () -> {
-            double scale = VehicleProperties.get(ModEntities.MOPED.get()).getBodyTransform().getScale();
-            return createBoxScaled(-4.0, 9.5, -6.5, 4.0, 10.5, -14.5, scale);
+            return createScaledBoundingBox(-4.0, 7.0, -6.5, 4.0, 8.0, -14.5, 0.0625);
         }, (entity, rightClick) -> {
             if(rightClick) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageAttachChest(entity.getId()));
