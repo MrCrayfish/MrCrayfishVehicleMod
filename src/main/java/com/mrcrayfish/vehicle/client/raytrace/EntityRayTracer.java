@@ -37,9 +37,11 @@ import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -370,6 +372,13 @@ public class EntityRayTracer
         {
             this.continuousInteractionTickCounter++;
         }
+    }
+
+    @SubscribeEvent
+    public void onClientConnect(ClientPlayerNetworkEvent.LoggedInEvent event)
+    {
+        // Clear cache when player logs in as the server may have datapacks
+        this.clearDataForReregistration();
     }
 
     @SubscribeEvent
