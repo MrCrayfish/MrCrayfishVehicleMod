@@ -1,1 +1,63 @@
-{"canBePainted":true,"canChangeWheels":true,"heldOffset":[0.0,3.5,0.0],"trailerOffset":[0.0,-0.062,-0.312],"displayTransform":{"scale":1.4},"wheels":[{"axle":"front","offset":[0.0,0.0,14.08],"scale":[0.938,1.4,1.4],"render":false},{"axle":"rear","offset":[0.0,0.0,-11.61],"scale":[0.938,1.4,1.4],"particles":true}],"seats":[{"position":[0.0,8.0,-2.0],"driver":true},{"position":[0.0,9.0,-9.0]}],"camera":{"position":[0.0,1.75,0.0],"distance":4.0},"extended":{"vehicle:powered":{"energyCapacity":20000.0,"energyConsumptionPerTick":0.35,"engineType":"vehicle:small_motor","enginePower":16.0,"minEnginePitch":0.85,"maxEnginePitch":1.5,"renderEngine":true,"engineTransform":{"translate":[0.0,1.0,0.0],"rotation":[0.0,180.0,0.0],"scale":0.6},"showExhaustFumes":true,"exhaustFumesPosition":[-1.0,16.0,-16.0],"fuelFillerTransform":{"translate":[0.0,12.1,3.0],"rotation":[67.5,180.0,0.0],"scale":0.35},"canLockWithKey":false,"frontAxleOffset":14.08,"rearAxleOffset":-11.61,"engineSound":"vehicle:entity.dirt_bike.engine"}}}
+{
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "heldOffset": [ 0.0, 3.5, 0.0 ],
+    "trailerOffset": [ 0.0, -0.062, -0.312 ],
+    "displayTransform": {
+        "scale": 1.4
+    },
+    "wheels": [
+        {
+            "axle": "front",
+            "offset": [ 0.0, 0.0, 14.08 ],
+            "scale": [ 0.938, 1.4, 1.4 ],
+            "render": false
+        },
+        {
+            "axle": "rear",
+            "offset": [ 0.0, 0.0, -11.61 ],
+            "scale": [ 0.938, 1.4, 1.4 ],
+            "particles": true
+        }
+    ],
+    "seats": [
+        {
+            "position": [ 0.0, 8.0, -2.0 ],
+            "driver": true
+        },
+        {
+            "position": [ 0.0, 9.0, -9.0 ]
+        }
+    ],
+    "camera": {
+        "position": [ 0.0, 1.75, 0.0 ],
+        "distance": 4.0
+    },
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 20000.0,
+            "energyConsumptionPerTick": 0.35,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 16.0,
+            "minEnginePitch": 0.85,
+            "maxEnginePitch": 1.5,
+            "renderEngine": true,
+            "engineTransform": {
+                "translate": [ 0.0, 1.0, 0.0 ],
+                "rotation": [ 0.0, 180.0, 0.0 ],
+                "scale": 0.6
+            },
+            "showExhaustFumes": true,
+            "exhaustFumesPosition": [ -1.0, 16.0, -16.0 ],
+            "fuelFillerTransform": {
+                "translate": [ 0.0, 12.1, 3.0 ],
+                "rotation": [ 67.5, 180.0, 0.0 ],
+                "scale": 0.35
+            },
+            "canLockWithKey": false,
+            "frontAxleOffset": 14.08,
+            "rearAxleOffset": -11.61,
+            "engineSound": "vehicle:entity.dirt_bike.engine"
+        }
+    }
+}

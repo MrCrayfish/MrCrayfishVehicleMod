@@ -1,1 +1,70 @@
-{"canBePainted":true,"canChangeWheels":true,"offsetToGround":-2.5,"heldOffset":[3.0,0.5,0.0],"trailerOffset":[0.0,-0.031,-0.375],"displayTransform":{"translate":[0.0,0.0,-0.15],"scale":1.5},"wheels":[{"side":"left","axle":"front","offset":[9.0,0.0,13.5],"scale":[0.8,0.8,0.8]},{"side":"right","axle":"front","offset":[9.0,0.0,13.5],"scale":[0.8,0.8,0.8]},{"side":"left","axle":"rear","offset":[9.0,0.0,-8.5],"scale":[0.8,0.8,0.8],"particles":true},{"side":"right","axle":"rear","offset":[9.0,0.0,-8.5],"scale":[0.8,0.8,0.8],"particles":true}],"seats":[{"position":[0.0,-2.0,-1.0],"driver":true}],"camera":{"position":[0.0,1.0,0.0],"distance":4.0},"extended":{"vehicle:powered":{"energyConsumptionPerTick":0.5,"engineType":"vehicle:small_motor","enginePower":18.0,"minEnginePitch":0.8,"maxEnginePitch":1.6,"renderEngine":true,"engineTransform":{"translate":[0.0,2.0,-9.0],"rotation":[0.0,180.0,0.0],"scale":0.8},"showExhaustFumes":true,"exhaustFumesPosition":[0.0,8.0,-16.0],"canLockWithKey":false,"frontAxleOffset":13.5,"rearAxleOffset":-8.5,"engineSound":"vehicle:entity.go_kart.engine"}}}
+{
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "offsetToGround": -2.5,
+    "heldOffset": [ 3.0, 0.5, 0.0 ],
+    "trailerOffset": [ 0.0, -0.031, -0.375 ],
+    "displayTransform": {
+        "translate": [ 0.0, 0.0, -0.15 ],
+        "scale": 1.5
+    },
+    "wheels": [
+        {
+            "side": "left",
+            "axle": "front",
+            "offset": [ 9.0, 0.0, 13.5 ],
+            "scale": [ 0.8, 0.8, 0.8 ]
+        },
+        {
+            "side": "right",
+            "axle": "front",
+            "offset": [ 9.0, 0.0, 13.5 ],
+            "scale": [ 0.8, 0.8, 0.8 ]
+        },
+        {
+            "side": "left",
+            "axle": "rear",
+            "offset": [ 9.0, 0.0, -8.5 ],
+            "scale": [ 0.8, 0.8, 0.8 ],
+            "particles": true
+        },
+        {
+            "side": "right",
+            "axle": "rear",
+            "offset": [ 9.0, 0.0, -8.5 ],
+            "scale": [ 0.8, 0.8, 0.8 ],
+            "particles": true
+        }
+    ],
+    "seats": [
+        {
+            "position": [ 0.0, -2.0, -1.0 ],
+            "driver": true
+        }
+    ],
+    "camera": {
+        "position": [ 0.0, 1.0, 0.0 ],
+        "distance": 4.0
+    },
+    "extended": {
+        "vehicle:powered": {
+            "energyConsumptionPerTick": 0.5,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 18.0,
+            "minEnginePitch": 0.8,
+            "maxEnginePitch": 1.6,
+            "renderEngine": true,
+            "engineTransform": {
+                "translate": [ 0.0, 2.0, -9.0 ],
+                "rotation": [ 0.0, 180.0, 0.0 ],
+                "scale": 0.8
+            },
+            "showExhaustFumes": true,
+            "exhaustFumesPosition": [ 0.0, 8.0, -16.0 ],
+            "canLockWithKey": false,
+            "frontAxleOffset": 13.5,
+            "rearAxleOffset": -8.5,
+            "engineSound": "vehicle:entity.go_kart.engine"
+        }
+    }
+}
