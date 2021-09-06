@@ -96,9 +96,6 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
                     MatrixTransform.translate(0.0F, 0.3375F, 0.25F),
                     MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
                     MatrixTransform.translate(0.0F, -0.025F, 0.0F));
-            /*EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts, transforms,
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, 180F),
-                    MatrixTransform.translate(0.0F, 0.5F, 1.05F));*/
             TransformHelper.createTowBarTransforms(ModEntities.ATV.get(), SpecialModels.TOW_BAR, parts);
             TransformHelper.createFuelFillerTransforms(ModEntities.ATV.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.ATV.get(), parts, transforms);

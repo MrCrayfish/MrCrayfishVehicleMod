@@ -55,7 +55,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setDisplayTransform(Transform.create(1.5))
                 .setHeldOffset(4.0, 3.5, 0.0)
                 .setCanTowTrailers(true)
-                .setTowBarPosition(0.0, 0.0, -20.8)
+                .setTowBarPosition(0.0, 0.0, -16.0)
                 .setTrailerOffset(0.0, 0.0, -0.55)
                 .addWheel(Wheel.builder()
                         .setSide(Wheel.Side.LEFT)

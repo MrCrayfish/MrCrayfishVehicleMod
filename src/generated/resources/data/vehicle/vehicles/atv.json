@@ -5,7 +5,7 @@
     "heldOffset": [ 4.0, 3.5, 0.0 ],
     "trailerOffset": [ 0.0, 0.0, -0.55 ],
     "canTowTrailers": true,
-    "towBarOffset": [ 0.0, 0.0, -20.8 ],
+    "towBarOffset": [ 0.0, 0.0, -16.0 ],
     "displayTransform": {
         "scale": 1.5
     },
