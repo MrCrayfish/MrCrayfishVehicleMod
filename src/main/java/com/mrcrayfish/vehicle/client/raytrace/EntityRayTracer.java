@@ -6,6 +6,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
+import com.mrcrayfish.vehicle.client.event.VehicleRayTraceEvent;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.raytrace.data.ItemStackRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
@@ -36,6 +37,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -815,8 +817,12 @@ public class EntityRayTracer
      */
     private boolean processHit(VehicleRayTraceResult result)
     {
+        Minecraft mc = Minecraft.getInstance();
         Entity entity = result.getEntity();
         boolean rightClick = result.isRightClick();
+
+        if(MinecraftForge.EVENT_BUS.post(new VehicleRayTraceEvent(mc.player, result)))
+            return false;
 
         if(entity instanceof VehicleEntity && this.entityInteractableBoxes.containsKey(entity.getType()))
         {
@@ -835,7 +841,6 @@ public class EntityRayTracer
             return true;
         }
 
-        Minecraft mc = Minecraft.getInstance();
         boolean isContinuous = result.getData().getRayTraceFunction() != null;
         if(isContinuous || !(mc.hitResult != null && mc.hitResult.getType() == RayTraceResult.Type.ENTITY && ((EntityRayTraceResult) mc.hitResult).getEntity() == entity))
         {
@@ -846,22 +851,19 @@ public class EntityRayTracer
                 mc.gameMode.attack(player, entity);
                 return true;
             }
-            if(data instanceof SpecialModelRayTraceData || data instanceof ItemStackRayTraceData)
+            if(notRiding)
             {
-                if(notRiding)
+                if(player.isCrouching() && !player.isSpectator())
                 {
-                    if(player.isCrouching() && !player.isSpectator())
-                    {
-                        PacketHandler.getPlayChannel().sendToServer(new MessagePickupVehicle(entity));
-                        return true;
-                    }
-                    if(!isContinuous)
-                    {
-                        interactWithEntity(entity, result);
-                    }
+                    PacketHandler.getPlayChannel().sendToServer(new MessagePickupVehicle(entity));
+                    return true;
                 }
-                return notRiding;
+                if(!isContinuous)
+                {
+                    interactWithEntity(entity, result);
+                }
             }
+            return notRiding;
         }
         return false;
     }
