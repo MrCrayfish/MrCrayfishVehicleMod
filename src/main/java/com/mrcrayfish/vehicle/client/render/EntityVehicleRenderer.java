@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EntityJack;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class EntityVehicleRenderer<T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> extends EntityRenderer<T>
+public class EntityVehicleRenderer<T extends VehicleEntity> extends EntityRenderer<T>
 {
     private final AbstractVehicleRenderer<T> wrapper;
 

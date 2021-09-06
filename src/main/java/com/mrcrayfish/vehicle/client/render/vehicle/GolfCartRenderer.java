@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractHelicopterRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -74,18 +76,18 @@ public class GolfCartRenderer extends AbstractHelicopterRenderer<GolfCartEntity>
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.GOLF_CART_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(-0.345F, 0.425F, 0.1F),
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
-                    EntityRayTracer.MatrixTransformation.createScale(0.95F));
-            EntityRayTracer.createFuelPartTransforms(ModEntities.GOLF_CART.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
-            EntityRayTracer.createKeyPortTransforms(ModEntities.GOLF_CART.get(), parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.GOLF_CART_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+                    MatrixTransform.translate(-0.345F, 0.425F, 0.1F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.translate(0.0F, -0.02F, 0.0F),
+                    MatrixTransform.scale(0.95F));
+            TransformHelper.createFuelFillerTransforms(ModEntities.GOLF_CART.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createIgnitionTransforms(ModEntities.GOLF_CART.get(), parts, transforms);
         };
     }
 }

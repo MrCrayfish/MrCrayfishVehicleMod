@@ -3,7 +3,7 @@ package com.mrcrayfish.vehicle.entity;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
@@ -63,7 +63,7 @@ import java.util.UUID;
 /**
  * Author: MrCrayfish
  */
-public abstract class VehicleEntity extends Entity implements IEntityAdditionalSpawnData, EntityRayTracer.IEntityRayTraceable
+public abstract class VehicleEntity extends Entity implements IEntityAdditionalSpawnData
 {
     public static final int[] DYE_TO_COLOR = new int[] {16383998, 16351261, 13061821, 3847130, 16701501, 8439583, 15961002, 4673362, 10329495, 1481884, 8991416, 3949738, 8606770, 6192150, 11546150, 1908001};
 

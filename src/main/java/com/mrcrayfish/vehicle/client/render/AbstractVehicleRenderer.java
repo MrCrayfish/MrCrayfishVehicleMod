@@ -2,9 +2,9 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -31,7 +31,7 @@ import java.util.function.Function;
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable>
+public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
 {
     protected final PropertyFunction<T, VehicleProperties> vehiclePropertiesProperty;
     protected final PropertyFunction<T, Boolean> hasDriverProperty = new PropertyFunction<>(t -> t.getControllingPassenger() != null, false);
@@ -48,7 +48,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity & EntityRa
     }
 
     @Nullable
-    public abstract EntityRayTracer.IRayTraceTransforms getRayTraceTransforms();
+    public abstract RayTraceTransforms getRayTraceTransforms();
 
     protected abstract void render(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light);
 

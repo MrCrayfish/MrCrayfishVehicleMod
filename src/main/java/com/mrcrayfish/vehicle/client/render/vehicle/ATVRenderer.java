@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -85,20 +87,21 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.ATV_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.3375F, 0.25F),
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.025F, 0.0F));
-            EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 1.05F));
-            EntityRayTracer.createFuelPartTransforms(ModEntities.ATV.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
-            EntityRayTracer.createKeyPortTransforms(ModEntities.ATV.get(), parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.ATV_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
+                    MatrixTransform.translate(0.0F, 0.3375F, 0.25F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.translate(0.0F, -0.025F, 0.0F));
+            /*EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts, transforms,
+                    MatrixTransform.rotate(Axis.POSITIVE_Y, 180F),
+                    MatrixTransform.translate(0.0F, 0.5F, 1.05F));*/
+            TransformHelper.createTowBarTransforms(ModEntities.ATV.get(), SpecialModels.TOW_BAR, parts);
+            TransformHelper.createFuelFillerTransforms(ModEntities.ATV.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createIgnitionTransforms(ModEntities.ATV.get(), parts, transforms);
         };
     }
 

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.LandProperties;
@@ -19,7 +19,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
+public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity> extends AbstractPoweredRenderer<T>
 {
     protected final PropertyFunction<T, Float> wheelieProgressProperty = new PropertyFunction<>(LandVehicleEntity::getWheelieProgress, 0F);
     protected final PropertyFunction<T, Float> boostStrengthProperty = new PropertyFunction<>(LandVehicleEntity::getBoostStrength, 0F);
@@ -44,9 +44,9 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity & 
         if(properties.canTowTrailers())
         {
             matrixStack.pushPose();
+            Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyPosition.getScale());
+            matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, towBarOffset.z * 0.0625);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            Vector3d towBarOffset = properties.getTowBarOffset();
-            matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, -towBarOffset.z * 0.0625);
             RenderUtil.renderColoredModel(this.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }

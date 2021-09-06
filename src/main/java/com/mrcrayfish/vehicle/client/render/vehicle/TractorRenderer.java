@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -64,18 +66,18 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.TRACTOR, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.66F, -0.475F),
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
-                    EntityRayTracer.MatrixTransformation.createScale(0.9F));
-            EntityRayTracer.createFuelPartTransforms(ModEntities.TRACTOR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
-            EntityRayTracer.createKeyPortTransforms(ModEntities.TRACTOR.get(), parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.TRACTOR, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+                    MatrixTransform.translate(0.0F, 0.66F, -0.475F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X, -67.5F),
+                    MatrixTransform.translate(0.0F, -0.02F, 0.0F),
+                    MatrixTransform.scale(0.9F));
+            TransformHelper.createFuelFillerTransforms(ModEntities.TRACTOR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createIgnitionTransforms(ModEntities.TRACTOR.get(), parts, transforms);
         };
     }
 }

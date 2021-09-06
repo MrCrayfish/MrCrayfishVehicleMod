@@ -1,8 +1,9 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
@@ -30,11 +31,11 @@ public class VehicleTrailerRenderer extends AbstractTrailerRenderer<VehicleTrail
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.VEHICLE_TRAILER, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.VEHICLE_TRAILER, parts, transforms);
         };
     }
 }

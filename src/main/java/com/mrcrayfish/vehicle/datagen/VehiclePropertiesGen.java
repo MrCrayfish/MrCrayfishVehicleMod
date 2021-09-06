@@ -786,7 +786,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .setCanBePainted(true)
                 .setCanFitInTrailer(false)
                 .addExtended(TrailerProperties.builder()
-                        .setHitchOffset(-25)
+                        .setHitchOffset(-23)
                         .build()));
 
         this.add(new ResourceLocation("vehicle", "bath"), VehicleProperties.builder()

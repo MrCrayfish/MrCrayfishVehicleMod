@@ -1,14 +1,11 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
-import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTracePart;
-import com.mrcrayfish.vehicle.client.EntityRayTracer.RayTraceResultRotated;
-import com.mrcrayfish.vehicle.client.EntityRayTracer.TriangleRayTraceList;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
-import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachChest;
@@ -23,8 +20,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -32,7 +29,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
@@ -40,12 +36,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.DistExecutor;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Author: MrCrayfish
@@ -54,15 +46,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
 {
     private static final DataParameter<Boolean> CHEST = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> CHEST_OPEN = EntityDataManager.defineId(MopedEntity.class, DataSerializers.BOOLEAN);
-    private static final RayTracePart CHEST_BOX = new RayTracePart(createBoxScaled(-3.5, 10.5, -7, 3.5, 17.5, -14, 1.2));
-    private static final RayTracePart TRAY_BOX = new RayTracePart(createBoxScaled(-4, 9.5, -6.5, 4, 10.5, -14.5, 1.2));
-    private static final Map<RayTracePart, TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () ->
-    {
-        Map<RayTracePart, TriangleRayTraceList> map = new HashMap<>();
-        map.put(CHEST_BOX, EntityRayTracer.boxToTriangles(CHEST_BOX.getBox(), null));
-        map.put(TRAY_BOX, EntityRayTracer.boxToTriangles(TRAY_BOX.getBox(), null));
-        return map;
-    });
 
     private StorageInventory inventory;
 
@@ -120,52 +103,6 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
         this.entityData.set(CHEST, chest);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean processHit(RayTraceResultRotated result, boolean rightClick)
-    {
-        if (rightClick)
-        {
-            RayTracePart partHit = result.getPartHit();
-            if(partHit == CHEST_BOX && this.hasChest())
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(this.getId()));
-                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
-                return true;
-            }
-            else if(partHit == TRAY_BOX && !this.hasChest())
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageAttachChest(this.getId()));
-                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
-                return true;
-            }
-        }
-        return super.processHit(result, rightClick);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public Map<RayTracePart, TriangleRayTraceList> getStaticInteractionBoxMap()
-    {
-        return interactionBoxMapStatic;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<RayTracePart> getApplicableInteractionBoxes()
-    {
-        List<RayTracePart> boxes = Lists.newArrayList();
-        if(hasChest())
-        {
-            boxes.add(CHEST_BOX);
-        }
-        else
-        {
-            boxes.add(TRAY_BOX);
-        }
-        return boxes;
-    }
-
     private void initInventory()
     {
         StorageInventory original = this.inventory;
@@ -208,7 +145,7 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
     @Override
     public void attachChest(ItemStack stack)
     {
-        if(!stack.isEmpty() && stack.getItem() == Item.byBlock(Blocks.CHEST))
+        if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
         {
             this.setChest(true);
             this.initInventory();
@@ -316,6 +253,30 @@ public class MopedEntity extends MotorcycleEntity implements IAttachableChest
             }
         }
         return count;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void registerInteractionBoxes()
+    {
+        EntityRayTracer.instance().registerInteractionBox(ModEntities.MOPED.get(), () -> {
+            double scale = VehicleProperties.get(ModEntities.MOPED.get()).getBodyTransform().getScale();
+            return createBoxScaled(-3.5, 10.5, -7.0, 3.5, 17.5, -14, scale);
+        }, (entity, rightClick) -> {
+            if(rightClick) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(entity.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
+            }
+        }, MopedEntity::hasChest);
+
+        EntityRayTracer.instance().registerInteractionBox(ModEntities.MOPED.get(), () -> {
+            double scale = VehicleProperties.get(ModEntities.MOPED.get()).getBodyTransform().getScale();
+            return createBoxScaled(-4.0, 9.5, -6.5, 4.0, 10.5, -14.5, scale);
+        }, (entity, rightClick) -> {
+            if(rightClick) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachChest(entity.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
+            }
+        }, entity -> !entity.hasChest());
     }
 
     @OnlyIn(Dist.CLIENT)

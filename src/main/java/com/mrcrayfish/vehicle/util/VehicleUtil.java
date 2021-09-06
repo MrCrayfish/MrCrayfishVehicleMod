@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.util;
 
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.EntityVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
@@ -61,16 +61,12 @@ public class VehicleUtil
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <T extends VehicleEntity & EntityRayTracer.IEntityRayTraceable> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
+    public static <T extends VehicleEntity> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
     {
         VehicleProperties properties = VehicleProperties.get(type);
         AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
         RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
         VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);
-        EntityRayTracer.IRayTraceTransforms transforms = renderer.getRayTraceTransforms();
-        if(transforms != null)
-        {
-            EntityRayTracer.instance().registerTransforms(type, transforms);
-        }
+        EntityRayTracer.instance().registerTransforms(type, renderer::getRayTraceTransforms);
     }
 }

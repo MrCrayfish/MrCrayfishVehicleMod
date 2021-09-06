@@ -4,9 +4,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.client.RayTraceFunction;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -47,7 +48,7 @@ public class FuelingHandler
             this.fuelTickCounter++;
         }
 
-        EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+        VehicleRayTraceResult result = EntityRayTracer.instance().getContinuousInteraction();
         if(result != null && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
         {
             if(this.fuelTickCounter % 20 == 0)
@@ -97,7 +98,7 @@ public class FuelingHandler
         Minecraft minecraft = Minecraft.getInstance();
         PlayerEntity player = minecraft.player;
         MatrixStack matrixStack = event.getMatrixStack();
-        EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+        VehicleRayTraceResult result = EntityRayTracer.instance().getContinuousInteraction();
         if(result != null && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING) && event.getHand() == EntityRayTracer.instance().getContinuousInteractionHand())
         {
             double offset = Math.sin((this.fuelTickCounter + minecraft.getFrameTime()) / 3.0) * 0.1;

@@ -2,8 +2,9 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -130,13 +131,13 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.DIRT_BIKE_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.DIRT_BIKE_HANDLES, parts, transforms);
-            EntityRayTracer.createFuelPartTransforms(ModEntities.DIRT_BIKE.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.DIRT_BIKE_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.DIRT_BIKE_HANDLES, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.DIRT_BIKE.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

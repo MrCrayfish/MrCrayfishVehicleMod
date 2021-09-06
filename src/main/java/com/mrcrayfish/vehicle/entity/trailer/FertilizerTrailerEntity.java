@@ -1,11 +1,12 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
-import com.google.common.collect.ImmutableList;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.item.SprayCanItem;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
@@ -33,26 +34,14 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.fml.network.PacketDistributor;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
 {
-    private static final EntityRayTracer.RayTracePart CONNECTION_BOX = new EntityRayTracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 6.2 * 0.0625, 6 * 0.0625, 7 * 0.0625, 8.4 * 0.0625F, 18 * 0.0625, 1.1));
-    private static final Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
-        Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> map = new HashMap<>();
-        map.put(CONNECTION_BOX, EntityRayTracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
-        return map;
-    });
-
     private int inventoryTimer;
     private StorageInventory inventory;
     private BlockPos[] lastPos = new BlockPos[3];
@@ -239,35 +228,6 @@ public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
-    public Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> getStaticInteractionBoxMap()
-    {
-        return interactionBoxMapStatic;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
-    {
-        return ImmutableList.of(CONNECTION_BOX);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
-    {
-        if(rightClick)
-        {
-            if(result.getPartHit() == CONNECTION_BOX)
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
-                return true;
-            }
-        }
-        return super.processHit(result, rightClick);
-    }
-
-    @Override
     public boolean isStorageItem(ItemStack stack)
     {
         return !stack.isEmpty() && stack.getItem() instanceof BoneMealItem;
@@ -277,5 +237,19 @@ public class FertilizerTrailerEntity extends TrailerEntity implements IStorage
     public ITextComponent getStorageName()
     {
         return this.getDisplayName();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void registerInteractionBoxes()
+    {
+        EntityRayTracer.instance().registerInteractionBox(ModEntities.FERTILIZER.get(), () -> {
+            double scale = VehicleProperties.get(ModEntities.FERTILIZER.get()).getBodyTransform().getScale();
+            return createBoxScaled(-7.0, 6.2, 6.0, 7.0, 8.4, 18.0, scale);
+        }, (entity, rightClick) -> {
+            if(rightClick) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(entity.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
+            }
+        }, entity -> true);
     }
 }

@@ -1,10 +1,11 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
-import com.google.common.collect.ImmutableList;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageOpenStorage;
@@ -25,27 +26,12 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.fml.DistExecutor;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class StorageTrailerEntity extends TrailerEntity implements IStorage
 {
-    private static final EntityRayTracer.RayTracePart CONNECTION_BOX = new EntityRayTracer.RayTracePart(createScaledBoundingBox(-6 * 0.0625, 4.2 * 0.0625, 9 * 0.0625, 6 * 0.0625, 8.3 * 0.0625F, 17 * 0.0625, 1.1));
-    private static final EntityRayTracer.RayTracePart CHEST_BOX = new EntityRayTracer.RayTracePart(new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375));
-    private static final Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
-        Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> map = new HashMap<>();
-        map.put(CONNECTION_BOX, EntityRayTracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
-        map.put(CHEST_BOX, EntityRayTracer.boxToTriangles(CHEST_BOX.getBox(), null));
-        return map;
-    });
-
     private StorageInventory inventory;
 
     public StorageTrailerEntity(EntityType<? extends StorageTrailerEntity> type, World worldIn)
@@ -58,42 +44,6 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     protected boolean canAddPassenger(Entity passenger)
     {
         return false;
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> getStaticInteractionBoxMap()
-    {
-        return interactionBoxMapStatic;
-    }
-
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
-    {
-        return ImmutableList.of(CONNECTION_BOX, CHEST_BOX);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
-    {
-        if(rightClick)
-        {
-            if(result.getPartHit() == CONNECTION_BOX)
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
-                return true;
-            }
-            else if(result.getPartHit() == CHEST_BOX)
-            {
-                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(this.getId()));
-                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
-                return true;
-            }
-        }
-        return super.processHit(result, rightClick);
     }
 
     @Override
@@ -161,5 +111,28 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     public ITextComponent getStorageName()
     {
         return this.getDisplayName();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void registerInteractionBoxes()
+    {
+        EntityRayTracer.instance().registerInteractionBox(ModEntities.STORAGE_TRAILER.get(), () -> {
+            double scale = VehicleProperties.get(ModEntities.STORAGE_TRAILER.get()).getBodyTransform().getScale();
+            return createBoxScaled(-6.0, 4.2, 9.0, 6.0, 8.3, 17.0, scale);
+        }, (entity, rightClick) -> {
+            if(rightClick) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(entity.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
+            }
+        }, entity -> true);
+
+        EntityRayTracer.instance().registerInteractionBox(ModEntities.STORAGE_TRAILER.get(), () -> {
+            return new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375);
+        }, (entity, rightClick) -> {
+            if(rightClick) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(entity.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
+            }
+        }, entity -> true);
     }
 }

@@ -1,8 +1,9 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.client.RayTraceFunction;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
+import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -23,7 +24,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractVehicleRenderer<T>
+public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> extends AbstractVehicleRenderer<T>
 {
     protected final PropertyFunction<T, ItemStack> engineStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineStack, ItemStack.EMPTY);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
@@ -54,7 +55,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity & E
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
             PoweredVehicleEntity.FuelPortType fuelPortType = vehicle.getFuelPortType();
-            EntityRayTracer.RayTraceResultRotated result = EntityRayTracer.instance().getContinuousInteraction();
+            VehicleRayTraceResult result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == vehicle && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
                 this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);

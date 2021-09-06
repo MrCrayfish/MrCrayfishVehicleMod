@@ -11,7 +11,7 @@
     },
     "extended": {
         "vehicle:trailer": {
-            "hitchOffset": -25.0
+            "hitchOffset": -23.0
         }
     }
 }

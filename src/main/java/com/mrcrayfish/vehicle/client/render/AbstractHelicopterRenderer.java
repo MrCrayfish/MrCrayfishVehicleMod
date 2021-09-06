@@ -2,7 +2,7 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
+public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity> extends AbstractPoweredRenderer<T>
 {
     public AbstractHelicopterRenderer(VehicleProperties defaultProperties)
     {

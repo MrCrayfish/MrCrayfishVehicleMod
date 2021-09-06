@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.client.handler.OverlayHandler;
 import com.mrcrayfish.vehicle.client.handler.PlayerModelHandler;
 import com.mrcrayfish.vehicle.client.handler.SprayCanHandler;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidPumpRenderer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FuelDrumRenderer;
@@ -22,6 +23,12 @@ import com.mrcrayfish.vehicle.client.screen.FluidMixerScreen;
 import com.mrcrayfish.vehicle.client.screen.StorageScreen;
 import com.mrcrayfish.vehicle.client.screen.WorkstationScreen;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.FluidTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.SeederTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
+import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
+import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -82,6 +89,7 @@ public class ClientHandler
         setupTileEntityRenderers();
         setupScreenFactories();
         setupItemColors();
+        setupInteractableVehicles();
 
         IResourceManager manager = Minecraft.getInstance().getResourceManager();
         if(manager instanceof IReloadableResourceManager)
@@ -200,23 +208,13 @@ public class ClientHandler
         });
     }
 
-    public static class PropertiesSupplier
+    private static void setupInteractableVehicles()
     {
-        private VehicleProperties properties;
-
-        private PropertiesSupplier(VehicleProperties properties)
-        {
-            this.properties = properties;
-        }
-
-        public VehicleProperties get()
-        {
-            return this.properties;
-        }
-
-        private static PropertiesSupplier of(VehicleProperties properties)
-        {
-            return new PropertiesSupplier(properties);
-        }
+        MopedEntity.registerInteractionBoxes();
+        FertilizerTrailerEntity.registerInteractionBoxes();
+        FluidTrailerEntity.registerInteractionBoxes();
+        SeederTrailerEntity.registerInteractionBoxes();
+        StorageTrailerEntity.registerInteractionBoxes();
+        VehicleTrailerEntity.registerInteractionBoxes();
     }
 }

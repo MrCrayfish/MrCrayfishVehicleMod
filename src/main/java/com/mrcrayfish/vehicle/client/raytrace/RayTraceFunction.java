@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client;
+package com.mrcrayfish.vehicle.client.raytrace;
 
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 public interface RayTraceFunction
 {
-    Hand apply(EntityRayTracer rayTracer, EntityRayTracer.RayTraceResultRotated result, PlayerEntity player);
+    Hand apply(EntityRayTracer rayTracer, VehicleRayTraceResult result, PlayerEntity player);
 
     /**
      * Checks if fuel can be transferred from a jerry can to a powered vehicle, and sends a packet to do so every other tick, if it can

@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -67,19 +69,19 @@ public class LawnMowerRenderer extends AbstractLandVehicleRenderer<LawnMowerEnti
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.LAWN_MOWER_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.4F, -0.15F),
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
-                    EntityRayTracer.MatrixTransformation.createScale(0.9F));
-            EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 0.6F));
-            EntityRayTracer.createFuelPartTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.LAWN_MOWER_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+                    MatrixTransform.translate(0.0F, 0.4F, -0.15F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.scale(0.9F));
+            TransformHelper.createTransformListForPart(SpecialModels.TOW_BAR, parts, transforms,
+                    MatrixTransform.rotate(Axis.POSITIVE_Y, 180F),
+                    MatrixTransform.translate(0.0F, 0.5F, 0.6F));
+            TransformHelper.createFuelFillerTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

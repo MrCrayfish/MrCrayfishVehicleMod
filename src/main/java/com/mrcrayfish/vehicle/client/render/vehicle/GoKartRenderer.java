@@ -1,9 +1,11 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.client.RayTraceFunction;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -69,17 +71,17 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.09F, 0.49F),
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -45F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
-                    EntityRayTracer.MatrixTransformation.createScale(0.9F));
-            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.GO_KART.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
+            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+                    MatrixTransform.translate(0.0F, 0.09F, 0.49F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.translate(0.0F, -0.02F, 0.0F),
+                    MatrixTransform.scale(0.9F));
+            TransformHelper.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.GO_KART.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
         };
     }
 }

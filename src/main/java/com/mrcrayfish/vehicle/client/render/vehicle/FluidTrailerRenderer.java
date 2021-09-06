@@ -2,10 +2,10 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
-import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.trailer.FluidTrailerEntity;
 import net.minecraft.client.Minecraft;
@@ -87,11 +87,11 @@ public class FluidTrailerRenderer extends AbstractTrailerRenderer<FluidTrailerEn
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.FLUID_TRAILER, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.FLUID_TRAILER, parts, transforms);
         };
     }
 }

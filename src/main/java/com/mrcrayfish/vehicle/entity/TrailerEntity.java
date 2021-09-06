@@ -110,7 +110,9 @@ public abstract class TrailerEntity extends VehicleEntity
         {
             VehicleEntity vehicle = (VehicleEntity) this.pullingEntity;
             Vector3d towBarVec = vehicle.getProperties().getTowBarOffset();
-            towBarVec = new Vector3d(towBarVec.x * 0.0625, towBarVec.y * 0.0625, towBarVec.z * 0.0625 + vehicle.getProperties().getBodyTransform().getZ());
+            towBarVec = new Vector3d(towBarVec.x, towBarVec.y, towBarVec.z).scale(0.0625);
+            towBarVec = towBarVec.scale(vehicle.getProperties().getBodyTransform().getScale());
+            towBarVec = towBarVec.add(0, 0, vehicle.getProperties().getBodyTransform().getZ());
             towBar = towBar.add(towBarVec.yRot((float) Math.toRadians(-vehicle.yRot)));
         }
 
@@ -125,7 +127,8 @@ public abstract class TrailerEntity extends VehicleEntity
             this.yRotO -= 360.0F;
         }
 
-        Vector3d vec = new Vector3d(0, 0, this.getHitchOffset() * 0.0625).yRot((float) Math.toRadians(-this.yRot)).add(towBar);
+        double bodyScale = this.getProperties().getBodyTransform().getScale();
+        Vector3d vec = new Vector3d(0, 0, this.getHitchOffset() * bodyScale * 0.0625).yRot((float) Math.toRadians(-this.yRot)).add(towBar);
         Vector3d motion = this.getDeltaMovement();
         this.setDeltaMovement(vec.x - this.getX(), motion.y(), vec.z - this.getZ());
         this.move(MoverType.SELF, this.getDeltaMovement());

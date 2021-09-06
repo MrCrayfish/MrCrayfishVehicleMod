@@ -2,9 +2,10 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
-import com.mrcrayfish.vehicle.client.RayTraceFunction;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -121,13 +122,13 @@ public class MiniBikeRenderer extends AbstractMotorcycleRenderer<MiniBikeEntity>
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BIKE_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.MINI_BIKE_HANDLES, parts, transforms);
-            EntityRayTracer.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.MINI_BIKE.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
+            TransformHelper.createTransformListForPart(SpecialModels.MINI_BIKE_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.MINI_BIKE_HANDLES, parts, transforms);
+            TransformHelper.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.MINI_BIKE.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
         };
     }
 }

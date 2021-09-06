@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractPlaneRenderer<T extends PlaneEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractPoweredRenderer<T>
+public abstract class AbstractPlaneRenderer<T extends PlaneEntity> extends AbstractPoweredRenderer<T>
 {
     protected final PropertyFunction<T, Float> propellerRotationProperty = new PropertyFunction<>(PlaneEntity::getPropellerRotation, 0F);
     protected final PropertyFunction<T, Float> flapAngleProperty = new PropertyFunction<>(PlaneEntity::getFlapAngle, 0F);

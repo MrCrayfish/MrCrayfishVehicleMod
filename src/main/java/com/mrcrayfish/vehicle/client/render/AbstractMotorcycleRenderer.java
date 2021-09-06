@@ -1,16 +1,13 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.entity.properties.LandProperties;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
-import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -19,7 +16,7 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity & EntityRayTracer.IEntityRayTraceable> extends AbstractLandVehicleRenderer<T>
+public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity> extends AbstractLandVehicleRenderer<T>
 {
     public AbstractMotorcycleRenderer(VehicleProperties defaultProperties)
     {

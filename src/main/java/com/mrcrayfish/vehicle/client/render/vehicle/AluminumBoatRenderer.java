@@ -2,8 +2,9 @@ package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractBoatRenderer;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -80,12 +81,12 @@ public class AluminumBoatRenderer extends AbstractBoatRenderer<AluminumBoatEntit
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.ALUMINUM_BOAT_BODY, parts, transforms);
-            EntityRayTracer.createFuelPartTransforms(ModEntities.ALUMINUM_BOAT.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.ALUMINUM_BOAT_BODY, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.ALUMINUM_BOAT.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

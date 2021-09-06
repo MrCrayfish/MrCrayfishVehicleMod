@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractHelicopterRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -68,16 +70,16 @@ public class SofaHelicopterRenderer extends AbstractHelicopterRenderer<Sofacopte
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.RED_SOFA, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 90F));
-            EntityRayTracer.createTransformListForPart(SpecialModels.SOFA_HELICOPTER_ARM, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 8 * 0.0625F, 0.0F));
-            EntityRayTracer.createFuelPartTransforms(ModEntities.SOFACOPTER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
-            EntityRayTracer.createKeyPortTransforms(ModEntities.SOFACOPTER.get(), parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.RED_SOFA, parts, transforms,
+                    MatrixTransform.rotate(Axis.POSITIVE_Y, 90F));
+            TransformHelper.createTransformListForPart(SpecialModels.SOFA_HELICOPTER_ARM, parts, transforms,
+                    MatrixTransform.translate(0.0F, 8 * 0.0625F, 0.0F));
+            TransformHelper.createFuelFillerTransforms(ModEntities.SOFACOPTER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createIgnitionTransforms(ModEntities.SOFACOPTER.get(), parts, transforms);
         };
     }
 }

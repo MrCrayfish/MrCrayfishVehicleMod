@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
+import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageAttachTrailer;
 import com.mrcrayfish.vehicle.network.message.MessageEntityFluid;
@@ -22,29 +24,16 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class FluidTrailerEntity extends TrailerEntity implements IEntityAdditionalSpawnData
 {
-    private static final EntityRayTracer.RayTracePart CONNECTION_BOX = new EntityRayTracer.RayTracePart(createScaledBoundingBox(-7 * 0.0625, 4.3 * 0.0625, 14 * 0.0625, 7 * 0.0625, 8.5 * 0.0625F, 24 * 0.0625, 1.1));
-    private static final Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> interactionBoxMapStatic = DistExecutor.callWhenOn(Dist.CLIENT, () -> () -> {
-        Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> map = new HashMap<>();
-        map.put(CONNECTION_BOX, EntityRayTracer.boxToTriangles(CONNECTION_BOX.getBox(), null));
-        return map;
-    });
-
     protected FluidTank tank = new FluidTank(FluidAttributes.BUCKET_VOLUME * 100)
     {
         @Override
@@ -70,33 +59,6 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
             }
         }
         return super.interact(player, hand);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public Map<EntityRayTracer.RayTracePart, EntityRayTracer.TriangleRayTraceList> getStaticInteractionBoxMap()
-    {
-        return interactionBoxMapStatic;
-    }
-
-    @Nullable
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<EntityRayTracer.RayTracePart> getApplicableInteractionBoxes()
-    {
-        return Collections.singletonList(CONNECTION_BOX);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean processHit(EntityRayTracer.RayTraceResultRotated result, boolean rightClick)
-    {
-        if(result.getPartHit() == CONNECTION_BOX && rightClick)
-        {
-            PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(this.getId(), Minecraft.getInstance().player.getId()));
-            return true;
-        }
-        return super.processHit(result, rightClick);
     }
 
     @Override
@@ -152,5 +114,19 @@ public class FluidTrailerEntity extends TrailerEntity implements IEntityAddition
     {
         super.readSpawnData(buffer);
         this.tank.readFromNBT(buffer.readNbt());
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void registerInteractionBoxes()
+    {
+        EntityRayTracer.instance().registerInteractionBox(ModEntities.FLUID_TRAILER.get(), () -> {
+            double scale = VehicleProperties.get(ModEntities.FLUID_TRAILER.get()).getBodyTransform().getScale();
+            return createBoxScaled(-7.0, 4.3, 14.0, 7.0, 8.5, 24.0, scale);
+        }, (entity, rightClick) -> {
+            if(rightClick) {
+                PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(entity.getId()));
+                Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
+            }
+        }, entity -> true);
     }
 }

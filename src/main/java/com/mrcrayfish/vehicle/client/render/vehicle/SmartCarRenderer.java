@@ -1,8 +1,10 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
+import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -67,20 +69,20 @@ public class SmartCarRenderer extends AbstractLandVehicleRenderer<SmartCarEntity
 
     @Nullable
     @Override
-    public EntityRayTracer.IRayTraceTransforms getRayTraceTransforms()
+    public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) ->
         {
-            EntityRayTracer.createTransformListForPart(SpecialModels.SMART_CAR_BODY, parts, transforms);
-            EntityRayTracer.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.2F, 0.3F),
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_X, -67.5F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, -0.02F, 0.0F),
-                    EntityRayTracer.MatrixTransformation.createScale(0.9F));
-            EntityRayTracer.createTransformListForPart(SpecialModels.TOW_BAR, parts,
-                    EntityRayTracer.MatrixTransformation.createRotation(Axis.POSITIVE_Y, 180F),
-                    EntityRayTracer.MatrixTransformation.createTranslation(0.0F, 0.5F, 1.35F));
-            EntityRayTracer.createFuelPartTransforms(ModEntities.SMART_CAR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.SMART_CAR_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+                    MatrixTransform.translate(0.0F, 0.2F, 0.3F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X, -67.5F),
+                    MatrixTransform.translate(0.0F, -0.02F, 0.0F),
+                    MatrixTransform.scale(0.9F));
+            TransformHelper.createTransformListForPart(SpecialModels.TOW_BAR, parts, transforms,
+                    MatrixTransform.rotate(Axis.POSITIVE_Y, 180F),
+                    MatrixTransform.translate(0.0F, 0.5F, 1.35F));
+            TransformHelper.createFuelFillerTransforms(ModEntities.SMART_CAR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }
