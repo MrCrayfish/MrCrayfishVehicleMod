@@ -117,8 +117,7 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     public static void registerInteractionBoxes()
     {
         EntityRayTracer.instance().registerInteractionBox(ModEntities.STORAGE_TRAILER.get(), () -> {
-            double scale = VehicleProperties.get(ModEntities.STORAGE_TRAILER.get()).getBodyTransform().getScale();
-            return createBoxScaled(-6.0, 4.2, 9.0, 6.0, 8.3, 17.0, scale);
+            return createScaledBoundingBox(-6.0, -0.5, 9.0, 6.0, 3.5, 17.0, 0.0625);
         }, (entity, rightClick) -> {
             if(rightClick) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(entity.getId()));
@@ -127,7 +126,9 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
         }, entity -> true);
 
         EntityRayTracer.instance().registerInteractionBox(ModEntities.STORAGE_TRAILER.get(), () -> {
-            return new AxisAlignedBB(-0.4375, 0.475, -0.4375, 0.4375, 1.34, 0.4375);
+            double chestScale = 0.9;
+            double bodyScale = 1.0 / chestScale;
+            return createScaledBoundingBox(-0.4375, 0.125 * bodyScale, -0.4375, 0.4375, 0.9125 * bodyScale, 0.4375, chestScale);
         }, (entity, rightClick) -> {
             if(rightClick) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(entity.getId()));
