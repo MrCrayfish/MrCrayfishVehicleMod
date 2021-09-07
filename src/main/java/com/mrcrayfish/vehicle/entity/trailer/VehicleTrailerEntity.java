@@ -60,8 +60,7 @@ public class VehicleTrailerEntity extends TrailerEntity
     public static void registerInteractionBoxes()
     {
         EntityRayTracer.instance().registerInteractionBox(ModEntities.VEHICLE_TRAILER.get(), () -> {
-            double scale = VehicleProperties.get(ModEntities.VEHICLE_TRAILER.get()).getBodyTransform().getScale();
-            return createBoxScaled(-7.0, 4.3, 14.0, 7.0, 8.5, 24.0, scale);
+            return createScaledBoundingBox(-7.0, -0.5, 14.0, 7.0, 3.5, 24.0, 0.0625);
         }, (entity, rightClick) -> {
             if(rightClick) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(entity.getId()));

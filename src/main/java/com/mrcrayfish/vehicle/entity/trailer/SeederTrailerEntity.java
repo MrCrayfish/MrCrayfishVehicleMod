@@ -225,8 +225,7 @@ public class SeederTrailerEntity extends TrailerEntity implements IStorage
     public static void registerInteractionBoxes()
     {
         EntityRayTracer.instance().registerInteractionBox(ModEntities.SEEDER.get(), () -> {
-            double scale = VehicleProperties.get(ModEntities.SEEDER.get()).getBodyTransform().getScale();
-            return createBoxScaled(-7.0, 6.2, 6.0, 7.0, 8.4, 17.0, scale);
+            return createScaledBoundingBox(-7.0, 1.5, 6.0, 7.0, 3.5, 17.0, 0.0625);
         }, (entity, rightClick) -> {
             if(rightClick) {
                 PacketHandler.getPlayChannel().sendToServer(new MessageAttachTrailer(entity.getId()));
