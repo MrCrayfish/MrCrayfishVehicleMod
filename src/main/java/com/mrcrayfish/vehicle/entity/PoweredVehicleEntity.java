@@ -509,10 +509,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         {
             this.setEngineStack(ItemStack.of(compound.getCompound("EngineStack")));
         }
-        if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
-        {
-            this.setWheelStack(ItemStack.of(compound.getCompound("WheelStack")));
-        }
         if(compound.contains("StepHeight", Constants.NBT.TAG_FLOAT))
         {
             this.maxUpStep = compound.getFloat("StepHeight");
@@ -538,7 +534,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         }
         compound.putBoolean("HasEngine", this.hasEngine());
         CommonUtils.writeItemStackToTag(compound, "EngineStack", this.getEngineStack());
-        CommonUtils.writeItemStackToTag(compound, "WheelStack", this.getWheelStack());
         compound.putFloat("AccelerationSpeed", this.getAccelerationSpeed());
         compound.putFloat("MaxSteeringAngle", this.getMaxSteeringAngle());
         compound.putFloat("StepHeight", this.maxUpStep);

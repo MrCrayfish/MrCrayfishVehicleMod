@@ -281,6 +281,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             this.seatTracker.read(compound.getCompound("SeatTracker"));
         }
+        if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
+        {
+            this.setWheelStack(ItemStack.of(compound.getCompound("WheelStack")));
+        }
     }
 
     @Override
@@ -297,6 +301,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         }
 
         compound.put("SeatTracker", this.seatTracker.write());
+        CommonUtils.writeItemStackToTag(compound, "WheelStack", this.getWheelStack());
     }
 
     @Override
@@ -730,7 +735,12 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         ResourceLocation entityId = this.getType().getRegistryName();
         if(entityId != null)
         {
-            return VehicleCrateBlock.create(entityId, this.getColor(), null, ItemStack.EMPTY);
+            ItemStack wheel = ItemStack.EMPTY;
+            if(this.hasWheelStack())
+            {
+                wheel = this.getWheelStack();
+            }
+            return VehicleCrateBlock.create(entityId, this.getColor(), null, wheel);
         }
         return ItemStack.EMPTY;
     }
