@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.math.vector.Vector3d;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 
 /**

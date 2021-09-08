@@ -1,8 +1,7 @@
 package com.mrcrayfish.vehicle.client.raytrace.data;
 
-import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.Triangle;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
 import net.minecraft.util.math.AxisAlignedBB;

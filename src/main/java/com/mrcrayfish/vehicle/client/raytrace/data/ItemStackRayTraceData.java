@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.raytrace.data;
 
-import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.item.ItemStack;
