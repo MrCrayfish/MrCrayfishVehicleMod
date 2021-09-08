@@ -1,5 +1,6 @@
 {
     "canBePainted": true,
+    "offsetToGround": -0.5,
     "canTowTrailers": true,
     "towBarOffset": [ 0.0, 0.0, -12.0 ],
     "displayTransform": {
@@ -7,9 +8,20 @@
         "scale": 1.35
     },
     "bodyTransform": {
-        "translate": [ 0.0, 0.325, 0.0 ],
         "scale": 1.1
     },
+    "wheels": [
+        {
+            "side": "left",
+            "offset": [ 9.5, 0.0, 0.0 ],
+            "scale": [ 1.0, 1.25, 1.25 ]
+        },
+        {
+            "side": "right",
+            "offset": [ 9.5, 0.0, 0.0 ],
+            "scale": [ 1.0, 1.25, 1.25 ]
+        }
+    ],
     "extended": {
         "vehicle:trailer": {
             "hitchOffset": -16.0

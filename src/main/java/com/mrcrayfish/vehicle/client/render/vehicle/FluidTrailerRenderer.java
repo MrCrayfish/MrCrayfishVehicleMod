@@ -37,8 +37,6 @@ public class FluidTrailerRenderer extends AbstractTrailerRenderer<FluidTrailerEn
     public void render(@Nullable FluidTrailerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(vehicle, SpecialModels.FLUID_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderWheel(vehicle, matrixStack, renderTypeBuffer, false, -11.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 1.25F, partialTicks, light);
-        this.renderWheel(vehicle, matrixStack, renderTypeBuffer, true, 11.5F * 0.0625F, -0.5F, -2.5F * 0.0625F, 1.25F, partialTicks, light);
 
         FluidTank tank = this.fluidTankProperty.get();
         float height = 9.9F * (tank.getFluidAmount() / (float) tank.getCapacity()) * 0.0625F;

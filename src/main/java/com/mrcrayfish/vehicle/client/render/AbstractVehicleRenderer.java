@@ -80,6 +80,8 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
 
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
+        this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
+
         matrixStack.popPose();
     }
 
