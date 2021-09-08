@@ -198,8 +198,9 @@ public abstract class TrailerEntity extends VehicleEntity
 
         VehicleProperties properties = this.getProperties();
         Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        double direction = forward.dot(this.getDeltaMovement().normalize());
-        float speed = (float) (Math.sqrt(Math.pow(this.getX() - this.xo, 2) + Math.pow(this.getZ() - this.zo, 2)) * 20);
+        Vector3d motion = new Vector3d(this.getX() - this.xo, 0, this.getZ() - this.zo);
+        double direction = forward.dot(motion.normalize());
+        float speed = (float) motion.length() * 20;
         double vehicleScale = properties.getBodyTransform().getScale();
         double wheelCircumference = 24.0 * vehicleScale * 1.25F;
         double rotationSpeed = (speed * direction * 16F) / wheelCircumference;
