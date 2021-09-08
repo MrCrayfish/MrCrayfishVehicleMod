@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -530,7 +531,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
     }
 
     @Override
-    public float getWheelRotation(Wheel wheel, float partialTicks)
+    public float getWheelRotation(@Nullable Wheel wheel, float partialTicks)
     {
         return MathHelper.lerp(partialTicks, this.prevWheelRotation, this.wheelRotation);
     }

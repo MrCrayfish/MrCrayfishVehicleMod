@@ -14,6 +14,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
+
 /**
  * Author: MrCrayfish
  */
@@ -330,9 +332,9 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public float getWheelRotation(Wheel wheel, float partialTicks)
+    public float getWheelRotation(@Nullable Wheel wheel, float partialTicks)
     {
-        if(wheel.getPosition() == Wheel.Position.REAR)
+        if(wheel != null && wheel.getPosition() == Wheel.Position.REAR)
         {
             return this.getRearWheelRotation(partialTicks);
         }

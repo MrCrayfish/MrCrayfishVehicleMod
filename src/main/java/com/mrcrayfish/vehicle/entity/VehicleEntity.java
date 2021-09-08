@@ -962,7 +962,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected void updateWheelRotations() {}
 
     @OnlyIn(Dist.CLIENT)
-    public float getWheelRotation(Wheel wheel, float partialTicks)
+    public float getWheelRotation(@Nullable Wheel wheel, float partialTicks)
     {
         return 0F;
     }

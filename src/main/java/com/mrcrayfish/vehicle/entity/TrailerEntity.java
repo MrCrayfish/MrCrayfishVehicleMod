@@ -208,7 +208,7 @@ public abstract class TrailerEntity extends VehicleEntity
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public float getWheelRotation(Wheel wheel, float partialTicks)
+    public float getWheelRotation(@Nullable Wheel wheel, float partialTicks)
     {
         return this.prevWheelRotation + (this.wheelRotation - this.prevWheelRotation) * partialTicks;
     }
