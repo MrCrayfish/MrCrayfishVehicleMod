@@ -161,7 +161,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(!this.fueling)
         {
-            this.getFuelPortType().playOpenSound();
+            this.getFuelFillerType().playOpenSound();
             this.fueling = true;
         }
     }
@@ -170,7 +170,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         if(this.fueling)
         {
-            this.getFuelPortType().playCloseSound();
+            this.getFuelFillerType().playCloseSound();
             this.fueling = false;
         }
     }
@@ -389,7 +389,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     protected abstract void updateVehicleMotion();
 
-    public final FuelFillerType getFuelPortType()
+    public final FuelFillerType getFuelFillerType()
     {
         return this.getPoweredProperties().getFuelFillerType();
     }

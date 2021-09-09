@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 
@@ -58,20 +59,13 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
         if(!wheelStack.isEmpty())
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            Wheel wheel = properties.getWheels().stream().filter(wheel1 -> wheel1.getPosition() == Wheel.Position.FRONT).findFirst().orElse(null);
+            Wheel wheel = properties.getFirstFrontWheel();
             if(wheel != null)
             {
                 matrixStack.pushPose();
                 matrixStack.translate(0, -0.5, 0);
                 matrixStack.translate(wheel.getOffsetX() * 0.0625, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
-                if(vehicle != null)
-                {
-                    float frontWheelSpin = vehicle.getFrontWheelRotation(partialTicks);
-                    if(vehicle.isMoving())
-                    {
-                        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
-                    }
-                }
+                matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-this.getWheelRotation(vehicle, wheel, partialTicks)));
                 matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
                 matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
                 RenderUtil.renderColoredModel(RenderUtil.getModel(wheelStack), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);

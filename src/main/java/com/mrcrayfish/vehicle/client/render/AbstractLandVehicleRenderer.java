@@ -78,4 +78,14 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity> e
 
         matrixStack.popPose();
     }
+
+    public void setWheelieProgress(float wheelieProgress)
+    {
+        this.wheelieProgressProperty.setDefaultValue(wheelieProgress);
+    }
+
+    public void setBoostStrengthP(float boostStrength)
+    {
+        this.boostStrengthProperty.setDefaultValue(boostStrength);
+    }
 }

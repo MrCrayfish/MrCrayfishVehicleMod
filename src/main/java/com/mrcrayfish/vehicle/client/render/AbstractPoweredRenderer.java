@@ -30,6 +30,9 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
     protected final PropertyFunction<T, ItemStack> engineStackProperty = new PropertyFunction<>(PoweredVehicleEntity::getEngineStack, ItemStack.EMPTY);
     protected final PropertyFunction<T, Boolean> renderFuelPortProperty = new PropertyFunction<>(PoweredVehicleEntity::shouldRenderFuelPort, true);
     protected final PropertyFunction<T, Float> wheelAngleProperty = new PropertyFunction<>(PoweredVehicleEntity::getRenderWheelAngle, 0F);
+    protected final PropertyFunction<T, Boolean> requiresEnergyProperty = new PropertyFunction<>(PoweredVehicleEntity::requiresEnergy, false);
+    protected final PropertyFunction<T, FuelFillerType> fuelFillerTypeProperty = new PropertyFunction<>(PoweredVehicleEntity::getFuelFillerType, FuelFillerType.DEFAULT);
+    protected final PropertyFunction<T, Boolean> needsKeyProperty = new PropertyFunction<>(PoweredVehicleEntity::isKeyNeeded, false);
 
     public AbstractPoweredRenderer(VehicleProperties defaultProperties)
     {
@@ -52,10 +55,10 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
 
     protected void renderFuelFiller(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        if(vehicle != null && vehicle.shouldRenderFuelPort() && vehicle.requiresEnergy())
+        if(this.renderFuelPortProperty.get(vehicle) && this.requiresEnergyProperty.get(vehicle))
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            FuelFillerType fuelFillerType = vehicle.getFuelPortType();
+            FuelFillerType fuelFillerType = this.fuelFillerTypeProperty.get(vehicle);
             VehicleRayTraceResult result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == vehicle && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
@@ -76,7 +79,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
 
     protected void renderIgnition(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
-        if(vehicle != null && vehicle.isKeyNeeded())
+        if(this.needsKeyProperty.get(vehicle))
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
             this.renderPart(properties.getExtended(PoweredProperties.class).getIgnitionTransform(), this.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
@@ -100,7 +103,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
             float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(wheelAngle));
         }
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.wheelRotationProperty.get(Pair.of(vehicle, wheel), partialTicks)));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.getWheelRotation(vehicle, wheel, partialTicks)));
         if(wheel.getSide() != Wheel.Side.NONE)
         {
             matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
@@ -123,5 +126,10 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
     public void setRenderFuelPort(boolean renderFuelPort)
     {
         this.renderFuelPortProperty.setDefaultValue(renderFuelPort);
+    }
+
+    public void setWheelAngle(float angle)
+    {
+        this.wheelAngleProperty.setDefaultValue(angle);
     }
 }

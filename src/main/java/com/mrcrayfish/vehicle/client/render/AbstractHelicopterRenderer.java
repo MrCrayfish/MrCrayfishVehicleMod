@@ -18,6 +18,8 @@ import javax.annotation.Nullable;
  */
 public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity> extends AbstractPoweredRenderer<T>
 {
+    protected final PropertyFunction<T, Float> bladeRotationProperty = new PropertyFunction<>(HelicopterEntity::getBladeRotation, 0F);
+
     public AbstractHelicopterRenderer(VehicleProperties defaultProperties)
     {
         super(defaultProperties);
@@ -28,11 +30,8 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity> ext
     {
         matrixStack.pushPose();
 
-        if(vehicle != null)
-        {
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(vehicle.getBodyRotationPitch(partialTicks)));
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(vehicle.getBodyRotationRoll(partialTicks)));
-        }
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(this.bodyPitchProperty.get(vehicle, partialTicks)));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(this.bodyRollProperty.get(vehicle, partialTicks)));
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         Transform bodyPosition = properties.getBodyTransform();

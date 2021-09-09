@@ -86,14 +86,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
                 matrixStack.translate(0.0, -8 * 0.0625, 0.0);
                 matrixStack.translate(0.0, -properties.getAxleOffset() * 0.0625F, 0.0);
                 matrixStack.translate(wheel.getOffsetX() * 0.0625, wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
-                if(vehicle != null)
-                {
-                    float frontWheelSpin = vehicle.getFrontWheelRotation(partialTicks);
-                    if(vehicle.isMoving())
-                    {
-                        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-frontWheelSpin));
-                    }
-                }
+                matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-this.getWheelRotation(vehicle, wheel, partialTicks)));
                 matrixStack.scale(wheel.getScaleX(), wheel.getScaleY(), wheel.getScaleZ());
                 IBakedModel wheelModel = RenderUtil.getModel(wheelStack);
                 int wheelColor = IDyeable.getColorFromStack(wheelStack);

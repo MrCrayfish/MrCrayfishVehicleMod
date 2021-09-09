@@ -98,7 +98,7 @@ public class SeederTrailerRenderer extends AbstractTrailerRenderer<SeederTrailer
     {
         matrixStack.pushPose();
         matrixStack.translate(offsetX, -0.65, 0.0);
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.wheelRotationProperty.get(Pair.of(vehicle, null), partialTicks)));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.getWheelRotation(vehicle, null, partialTicks)));
         matrixStack.scale(0.75F, 0.75F, 0.75F);
         RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.popPose();

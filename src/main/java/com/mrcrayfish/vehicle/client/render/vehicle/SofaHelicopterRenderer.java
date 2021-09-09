@@ -41,11 +41,7 @@ public class SofaHelicopterRenderer extends AbstractHelicopterRenderer<Sofacopte
 
         matrixStack.pushPose();
         matrixStack.translate(0.0, 32 * 0.0625, 0.0);
-        if(vehicle != null)
-        {
-            float bladeRotation = vehicle.getBladeRotation(partialTicks);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(bladeRotation));
-        }
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(this.bladeRotationProperty.get(vehicle, partialTicks)));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
         this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();

@@ -34,7 +34,6 @@ import java.util.function.Function;
 public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
 {
     protected final PropertyFunction<T, VehicleProperties> vehiclePropertiesProperty;
-    protected final PropertyFunction<T, Boolean> hasDriverProperty = new PropertyFunction<>(t -> t.getControllingPassenger() != null, false);
     protected final PropertyFunction<T, Integer> colorProperty = new PropertyFunction<>(VehicleEntity::getColor, -1);
     protected final PropertyFunction<T, Float> bodyYawProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationYaw, 0F);
     protected final PropertyFunction<T, Float> bodyPitchProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationPitch, 0F);
@@ -201,7 +200,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
 
         matrixStack.pushPose();
         matrixStack.translate((wheel.getOffsetX() * 0.0625) * wheel.getSide().getOffset(), wheel.getOffsetY() * 0.0625, wheel.getOffsetZ() * 0.0625);
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.wheelRotationProperty.get(Pair.of(vehicle, wheel), partialTicks)));
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.getWheelRotation(vehicle, wheel, partialTicks)));
         if(wheel.getSide() != Wheel.Side.NONE)
         {
             matrixStack.translate((((wheel.getWidth() * wheel.getScaleX()) / 2) * 0.0625) * wheel.getSide().getOffset(), 0.0, 0.0);
@@ -236,11 +235,6 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         this.vehiclePropertiesProperty.setDefaultValue(properties);
     }
 
-    public void setHasDriverProperty(boolean hasDriver)
-    {
-        this.hasDriverProperty.setDefaultValue(hasDriver);
-    }
-
     public void setColor(int color)
     {
         this.colorProperty.setDefaultValue(color);
@@ -269,6 +263,15 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
     public void setWheelRotation(float rotation)
     {
         this.wheelRotationProperty.setDefaultValue(rotation);
+    }
+
+    public float getWheelRotation(@Nullable T vehicle, @Nullable Wheel wheel, float partialTicks)
+    {
+        if(vehicle != null)
+        {
+            return this.wheelRotationProperty.get(Pair.of(vehicle, wheel), partialTicks);
+        }
+        return this.wheelRotationProperty.get();
     }
 
     protected static class PropertyFunction<V, T>
