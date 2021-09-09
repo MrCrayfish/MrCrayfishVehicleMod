@@ -225,7 +225,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFuelFillerTransform(Transform.create(0.0, 9.25, 8.5, -90, 0.0, 0.0, 0.35))
                         .setEnergyConsumptionPerTick(0.5F)
                         .setCanLockWithKey(false)
-                        .setEngineSound(ModSounds.ENTITY_SPEED_BOAT_ENGINE.getId())
+                        .setEngineSound(ModSounds.ENTITY_JET_SKI_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.LAWN_MOWER.get(), VehicleProperties.builder()
@@ -409,7 +409,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(14.5)
                         .setRearAxleOffset(-14.5)
                         .setEnergyCapacity(25000F)
-                        .setEngineSound(ModSounds.ENTITY_SPEED_BOAT_ENGINE.getId())
+                        .setEngineSound(ModSounds.ENTITY_JET_SKI_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.SPORTS_PLANE.get(), VehicleProperties.builder()

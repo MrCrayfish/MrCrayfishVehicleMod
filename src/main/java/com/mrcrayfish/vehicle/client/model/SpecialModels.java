@@ -17,18 +17,9 @@ public enum SpecialModels implements ISpecialModel
 {
     ATV_BODY("atv_body"),
     ATV_HANDLES("atv_handles"),
-    DUNE_BUGGY_BODY("dune_buggy_body"),
-    DUNE_BUGGY_HANDLES("dune_buggy_handles"),
     GO_KART_BODY("go_kart_body"),
     GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
-    SHOPPING_CART_BODY("shopping_cart_body"),
-    MINI_BIKE_BODY("mini_bike_body"),
-    MINI_BIKE_HANDLES("mini_bike_handles"),
-    BUMPER_CAR_BODY("bumper_car_body"),
     JET_SKI_BODY("jet_ski_body"),
-    SPEED_BOAT_BODY("speed_boat_body"),
-    ALUMINUM_BOAT_BODY("aluminum_boat_body"),
-    SMART_CAR_BODY("smart_car_body"),
     LAWN_MOWER_BODY("lawn_mower_body"),
     MOPED_BODY("moped_body"),
     MOPED_MUD_GUARD("moped_mud_guard"),
@@ -66,8 +57,7 @@ public enum SpecialModels implements ISpecialModel
     SOFA_HELICOPTER_SKID("sofa_helicopter_skid"),
 
     /* Mod dependent models */
-    RED_SOFA(new ModelResourceLocation("cfm:red_sofa", "inventory"), false),
-    RAINBOW_SOFA(new ModelResourceLocation("cfm:rainbow_sofa", "inventory"), false);
+    RED_SOFA(new ModelResourceLocation("cfm:red_sofa", "inventory"), false);
 
     // Add spray can lid
     /**

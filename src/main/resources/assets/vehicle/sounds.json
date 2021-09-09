@@ -23,26 +23,20 @@
     "entity.atv.engine": {
         "sounds": [ {"name": "vehicle:entity/atv/engine"}]
     },
-    "entity.bumper_car.engine": {
-        "sounds": [ {"name": "vehicle:entity/bumper_car/engine"}]
-    },
-    "entity.bumper_car.bonk": {
-        "sounds": [ {"name": "vehicle:entity/bumper_car/bonk"}]
-    },
     "entity.dirt_bike.engine": {
         "sounds": [ {"name": "vehicle:entity/dirt_bike/engine"}]
     },
     "entity.go_kart.engine": {
         "sounds": [ {"name": "vehicle:entity/go_kart/engine"}]
     },
+    "entity.jet_ski.engine": {
+        "sounds": [ {"name": "vehicle:entity/jet_ski/engine"}]
+    },
     "entity.mini_bus.engine": {
         "sounds": [ {"name": "vehicle:entity/mini_bus/engine"}]
     },
     "entity.moped.engine": {
         "sounds": [ {"name": "vehicle:entity/moped/engine"}]
-    },
-    "entity.speed_boat.engine": {
-        "sounds": [ {"name": "vehicle:entity/speed_boat/engine"}]
     },
     "entity.sports_plane.engine": {
         "sounds": [ {"name": "vehicle:entity/sports_plane/engine"}]

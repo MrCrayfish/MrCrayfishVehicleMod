@@ -22,13 +22,11 @@ public class ModSounds
     public static final RegistryObject<SoundEvent> BLOCK_JACK_AIR_WRENCH_GUN = register("block.jack.air_wrench_gun");
     public static final RegistryObject<SoundEvent> BLOCK_VEHICLE_CRATE_PANEL_LAND = register("block.vehicle_crate.panel_land");
     public static final RegistryObject<SoundEvent> ENTITY_ATV_ENGINE = register("entity.atv.engine");
-    public static final RegistryObject<SoundEvent> ENTITY_BUMPER_CAR_ENGINE = register("entity.bumper_car.engine");
-    public static final RegistryObject<SoundEvent> ENTITY_BUMPER_CAR_BONK = register("entity.bumper_car.bonk");
     public static final RegistryObject<SoundEvent> ENTITY_DIRT_BIKE_ENGINE = register("entity.dirt_bike.engine");
     public static final RegistryObject<SoundEvent> ENTITY_GO_KART_ENGINE = register("entity.go_kart.engine");
     public static final RegistryObject<SoundEvent> ENTITY_MINI_BUS_ENGINE = register("entity.mini_bus.engine");
     public static final RegistryObject<SoundEvent> ENTITY_MOPED_ENGINE = register("entity.moped.engine");
-    public static final RegistryObject<SoundEvent> ENTITY_SPEED_BOAT_ENGINE = register("entity.speed_boat.engine");
+    public static final RegistryObject<SoundEvent> ENTITY_JET_SKI_ENGINE = register("entity.jet_ski.engine");
     public static final RegistryObject<SoundEvent> ENTITY_SPORTS_PLANE_ENGINE = register("entity.sports_plane.engine");
     public static final RegistryObject<SoundEvent> ENTITY_TRACTOR_ENGINE = register("entity.tractor.engine");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_DESTROYED = register("entity.vehicle.destroyed");
