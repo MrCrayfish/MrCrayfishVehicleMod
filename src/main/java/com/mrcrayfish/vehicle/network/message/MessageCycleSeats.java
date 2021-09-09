@@ -1,14 +1,11 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.common.Seat;
-import com.mrcrayfish.vehicle.common.SeatTracker;
-import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 /**
@@ -35,27 +32,9 @@ public class MessageCycleSeats implements IMessage<MessageCycleSeats>
             supplier.get().enqueueWork(() ->
             {
                 ServerPlayerEntity player = supplier.get().getSender();
-                if(player != null && player.getVehicle() instanceof VehicleEntity)
+                if(player != null)
                 {
-                    VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-                    List<Seat> seats = vehicle.getProperties().getSeats();
-
-                    /* No need to cycle if already full of passengers */
-                    if(vehicle.getPassengers().size() >= seats.size())
-                        return;
-
-                    SeatTracker tracker = vehicle.getSeatTracker();
-                    int seatIndex = tracker.getSeatIndex(player.getUUID());
-                    for(int i = 0; i < seats.size() - 1; i++)
-                    {
-                        int nextIndex = (seatIndex + (i + 1)) % seats.size();
-                        if(tracker.isSeatAvailable(nextIndex))
-                        {
-                            tracker.setSeatIndex(nextIndex, player.getUUID());
-                            vehicle.onPlayerChangeSeat(player, seatIndex, nextIndex);
-                            return;
-                        }
-                    }
+                    ServerPlayHandler.handleCycleSeatsMessage(player, message);
                 }
             });
             supplier.get().setPacketHandled(true);

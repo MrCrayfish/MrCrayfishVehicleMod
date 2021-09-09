@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -55,51 +56,14 @@ public class MessageInteractKey implements IMessage<MessageInteractKey>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                Entity targetEntity = player.level.getEntity(message.entityId);
-                if(targetEntity instanceof PoweredVehicleEntity)
-                {
-                    PoweredVehicleEntity poweredVehicle = (PoweredVehicleEntity) targetEntity;
-                    if(poweredVehicle.isKeyNeeded())
-                    {
-                        ItemStack stack = player.getMainHandItem();
-                        if(!stack.isEmpty() && stack.getItem() == ModItems.WRENCH.get())
-                        {
-                            if(poweredVehicle.isOwner(player))
-                            {
-                                poweredVehicle.ejectKey();
-                                poweredVehicle.setKeyNeeded(false);
-                                CommonUtils.sendInfoMessage(player, "vehicle.status.key_removed");
-                            }
-                            else
-                            {
-                                CommonUtils.sendInfoMessage(player, "vehicle.status.invalid_owner");
-                            }
-                            return;
-                        }
-                        if(poweredVehicle.getKeyStack().isEmpty())
-                        {
-                            if(!stack.isEmpty() && stack.getItem() == ModItems.KEY.get())
-                            {
-                                UUID keyUuid = CommonUtils.getOrCreateStackTag(stack).getUUID("VehicleId");
-                                if(poweredVehicle.getUUID().equals(keyUuid))
-                                {
-                                    poweredVehicle.setKeyStack(stack.copy());
-                                    player.setItemSlot(EquipmentSlotType.MAINHAND, ItemStack.EMPTY);
-                                }
-                                else
-                                {
-                                    CommonUtils.sendInfoMessage(player, "vehicle.status.key_invalid");
-                                }
-                            }
-                        }
-                        else
-                        {
-                            poweredVehicle.ejectKey();
-                        }
-                    }
-                }
+                ServerPlayHandler.handleInteractKeyMessage(player, message);
             }
         });
         supplier.get().setPacketHandled(true);
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
     }
 }

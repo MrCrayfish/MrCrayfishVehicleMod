@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -48,15 +49,16 @@ public class MessagePickupVehicle implements IMessage<MessagePickupVehicle>
         supplier.get().enqueueWork(() ->
         {
             ServerPlayerEntity player = supplier.get().getSender();
-            if(player != null && player.isCrouching())
+            if(player != null)
             {
-                Entity targetEntity = player.level.getEntity(message.entityId);
-                if(targetEntity != null)
-                {
-                    CommonEvents.handleVehicleInteraction(player.level, player, Hand.MAIN_HAND, targetEntity);
-                }
+                ServerPlayHandler.handlePickupVehicleMessage(player, message);
             }
         });
         supplier.get().setPacketHandled(true);
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
     }
 }

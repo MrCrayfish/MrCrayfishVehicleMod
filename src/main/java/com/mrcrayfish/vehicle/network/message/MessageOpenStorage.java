@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.init.ModItems;
+import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -40,7 +41,6 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
         return new MessageOpenStorage(buffer.readInt());
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void handle(MessageOpenStorage message, Supplier<NetworkEvent.Context> supplier)
     {
@@ -49,38 +49,14 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                World world = player.level;
-                Entity targetEntity = world.getEntity(message.entityId);
-                if(targetEntity instanceof IStorage)
-                {
-                    IStorage storage = (IStorage) targetEntity;
-                    float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-                    if(player.distanceTo(targetEntity) < reachDistance)
-                    {
-                        if(targetEntity instanceof IAttachableChest)
-                        {
-                            IAttachableChest attachableChest = (IAttachableChest) targetEntity;
-                            if(attachableChest.hasChest())
-                            {
-                                ItemStack stack = player.inventory.getSelected();
-                                if(stack.getItem() == ModItems.WRENCH.get())
-                                {
-                                    ((IAttachableChest) targetEntity).removeChest();
-                                }
-                                else
-                                {
-                                    NetworkHooks.openGui(player, storage.getStorageContainerProvider(), buffer -> buffer.writeVarInt(message.entityId));
-                                }
-                            }
-                        }
-                        else
-                        {
-                            NetworkHooks.openGui(player, storage.getStorageContainerProvider(), buffer -> buffer.writeVarInt(message.entityId));
-                        }
-                    }
-                }
+                ServerPlayHandler.handleOpenStorageMessage(player, message);
             }
         });
         supplier.get().setPacketHandled(true);
+    }
+
+    public int getEntityId()
+    {
+        return this.entityId;
     }
 }

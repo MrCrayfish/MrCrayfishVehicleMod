@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.network.message;
 
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
+import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -45,16 +46,24 @@ public class MessagePlaneInput implements IMessage<MessagePlaneInput>
 			ServerPlayerEntity player = supplier.get().getSender();
 			if(player != null)
 			{
-				Entity riding = player.getVehicle();
-				if(riding instanceof PlaneEntity)
-				{
-					PlaneEntity plane = (PlaneEntity) riding;
-					plane.setLift(message.lift);
-					plane.setForwardInput(message.forward);
-					plane.setSideInput(message.side);
-				}
+				ServerPlayHandler.handlePlaneInputMessage(player, message);
 			}
 		});
 		supplier.get().setPacketHandled(true);
+	}
+
+	public float getLift()
+	{
+		return this.lift;
+	}
+
+	public float getForward()
+	{
+		return this.forward;
+	}
+
+	public float getSide()
+	{
+		return this.side;
 	}
 }

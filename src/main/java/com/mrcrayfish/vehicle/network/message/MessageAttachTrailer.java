@@ -3,6 +3,7 @@ package com.mrcrayfish.vehicle.network.message;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.entity.TrailerEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
+import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -44,18 +45,14 @@ public class MessageAttachTrailer implements IMessage<MessageAttachTrailer>
             ServerPlayerEntity player = supplier.get().getSender();
             if(player != null)
             {
-                Entity trailerEntity = player.level.getEntity(message.trailerId);
-                if(trailerEntity instanceof TrailerEntity)
-                {
-                    TrailerEntity trailer = (TrailerEntity) trailerEntity;
-                    if(player.getVehicle() == null)
-                    {
-                        trailer.setPullingEntity(player);
-                        SyncedPlayerData.instance().set(player, ModDataKeys.TRAILER, message.trailerId);
-                    }
-                }
+                ServerPlayHandler.handleAttachTrailerMessage(player, message);
             }
         });
         supplier.get().setPacketHandled(true);
+    }
+
+    public int getTrailerId()
+    {
+        return this.trailerId;
     }
 }

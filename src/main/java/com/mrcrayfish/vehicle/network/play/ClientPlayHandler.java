@@ -1,4 +1,4 @@
-package com.mrcrayfish.vehicle.client.network;
+package com.mrcrayfish.vehicle.network.play;
 
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
@@ -11,6 +11,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -20,9 +22,9 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 /**
  * Author: MrCrayfish
  */
+@OnlyIn(Dist.CLIENT)
 public class ClientPlayHandler
 {
-
     public static void handleSyncInventory(MessageSyncInventory message)
     {
         World world = Minecraft.getInstance().level;
