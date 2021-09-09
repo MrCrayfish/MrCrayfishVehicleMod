@@ -1,16 +1,8 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
 import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;

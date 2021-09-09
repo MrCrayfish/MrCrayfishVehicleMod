@@ -1,10 +1,6 @@
 package com.mrcrayfish.vehicle.network.message;
 
-import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.mrcrayfish.vehicle.entity.TrailerEntity;
-import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.network.play.ServerPlayHandler;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;

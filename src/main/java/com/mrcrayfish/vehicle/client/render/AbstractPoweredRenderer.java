@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3f;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 

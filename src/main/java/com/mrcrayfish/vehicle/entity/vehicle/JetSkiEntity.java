@@ -1,7 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.entity.BoatEntity;
-import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
