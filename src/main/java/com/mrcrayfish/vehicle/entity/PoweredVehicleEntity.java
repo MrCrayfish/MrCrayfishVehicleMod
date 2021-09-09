@@ -10,7 +10,6 @@ import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.vehicle.BumperCarEntity;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
@@ -372,16 +371,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
         /* Checks for block collisions */
         this.checkInsideBlocks();
-
-        /* Checks for collisions with any other vehicles */
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox(), entity -> entity instanceof BumperCarEntity);
-        if (!list.isEmpty())
-        {
-            for(Entity entity : list)
-            {
-                this.push(entity);
-            }
-        }
 
         //TODO improve fuel consumption logic
         if(this.requiresEnergy() && controllingPassenger instanceof PlayerEntity && !((PlayerEntity) controllingPassenger).isCreative() && this.isEnginePowered())

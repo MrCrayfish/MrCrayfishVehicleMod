@@ -27,15 +27,8 @@ public class ModEntities
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
     public static final RegistryObject<EntityType<ATVEntity>> ATV = VehicleUtil.createEntityType(REGISTER, "atv", ATVEntity::new, 1.5F, 1.0F);
-    public static final RegistryObject<EntityType<DuneBuggyEntity>> DUNE_BUGGY = VehicleUtil.createEntityType(REGISTER, "dune_buggy", DuneBuggyEntity::new, 0.75F, 0.75F);
     public static final RegistryObject<EntityType<GoKartEntity>> GO_KART = VehicleUtil.createEntityType(REGISTER, "go_kart", GoKartEntity::new, 1.5F, 0.5F);
-    public static final RegistryObject<EntityType<ShoppingCartEntity>> SHOPPING_CART = VehicleUtil.createEntityType(REGISTER, "shopping_cart", ShoppingCartEntity::new, 1.0F, 1.0F);
-    public static final RegistryObject<EntityType<MiniBikeEntity>> MINI_BIKE = VehicleUtil.createEntityType(REGISTER, "mini_bike", MiniBikeEntity::new, 1.0F, 1.0F);
-    public static final RegistryObject<EntityType<BumperCarEntity>> BUMPER_CAR = VehicleUtil.createEntityType(REGISTER, "bumper_car", BumperCarEntity::new, 1.5F, 1.0F);
     public static final RegistryObject<EntityType<JetSkiEntity>> JET_SKI = VehicleUtil.createEntityType(REGISTER, "jet_ski", JetSkiEntity::new, 1.5F, 1.0F);
-    public static final RegistryObject<EntityType<SpeedBoatEntity>> SPEED_BOAT = VehicleUtil.createEntityType(REGISTER, "speed_boat", SpeedBoatEntity::new, 1.5F, 1.0F);
-    public static final RegistryObject<EntityType<AluminumBoatEntity>> ALUMINUM_BOAT = VehicleUtil.createEntityType(REGISTER, "aluminum_boat", AluminumBoatEntity::new, 2.25F, 0.875F);
-    public static final RegistryObject<EntityType<SmartCarEntity>> SMART_CAR = VehicleUtil.createEntityType(REGISTER, "smart_car", SmartCarEntity::new, 1.85F, 1.15F);
     public static final RegistryObject<EntityType<LawnMowerEntity>> LAWN_MOWER = VehicleUtil.createEntityType(REGISTER, "lawn_mower", LawnMowerEntity::new, 1.2F, 1.0F);
     public static final RegistryObject<EntityType<MopedEntity>> MOPED = VehicleUtil.createEntityType(REGISTER, "moped", MopedEntity::new, 1.0F, 1.0F);
     public static final RegistryObject<EntityType<SportsPlaneEntity>> SPORTS_PLANE = VehicleUtil.createEntityType(REGISTER, "sports_plane", SportsPlaneEntity::new, 3.0F, 1.6875F);
@@ -53,8 +46,6 @@ public class ModEntities
     public static final RegistryObject<EntityType<FertilizerTrailerEntity>> FERTILIZER = VehicleUtil.createEntityType(REGISTER, "fertilizer", FertilizerTrailerEntity::new, 1.5F, 1.0F);
 
     /* Special Vehicles */
-    public static final RegistryObject<EntityType<CouchEntity>> SOFA = VehicleUtil.createModDependentEntityType(REGISTER, "cfm", "couch", CouchEntity::new, 1.0F, 1.0F, true);
-    public static final RegistryObject<EntityType<BathEntity>> BATH = VehicleUtil.createModDependentEntityType(REGISTER, "cfm", "bath", BathEntity::new, 1.0F, 1.0F, false);
     public static final RegistryObject<EntityType<SofacopterEntity>> SOFACOPTER = VehicleUtil.createModDependentEntityType(REGISTER, "cfm", "sofacopter", SofacopterEntity::new, 1.0F, 1.0F, false);
 
     /* Other */

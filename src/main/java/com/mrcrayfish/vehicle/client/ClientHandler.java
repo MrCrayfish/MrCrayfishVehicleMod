@@ -130,15 +130,8 @@ public class ClientHandler
     {
         /* Register Vehicles */
         VehicleUtil.registerVehicleRenderer(ModEntities.ATV.get(), ATVRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.DUNE_BUGGY.get(), DuneBuggyRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.GO_KART.get(), GoKartRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.SHOPPING_CART.get(), ShoppingCartRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.MINI_BIKE.get(), MiniBikeRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.BUMPER_CAR.get(), BumperCarModel::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.JET_SKI.get(), JetSkiRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.SPEED_BOAT.get(), SpeedBoatRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.ALUMINUM_BOAT.get(), AluminumBoatRenderer::new);
-        VehicleUtil.registerVehicleRenderer(ModEntities.SMART_CAR.get(), SmartCarRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.LAWN_MOWER.get(), LawnMowerRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.MOPED.get(), MopedRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.SPORTS_PLANE.get(), SportsPlaneRenderer::new);
@@ -158,8 +151,6 @@ public class ClientHandler
         /* Register Mod Exclusive Vehicles */
         if(ModList.get().isLoaded("cfm"))
         {
-            VehicleUtil.registerVehicleRenderer(ModEntities.SOFA.get(), SofaCarRenderer::new);
-            VehicleUtil.registerVehicleRenderer(ModEntities.BATH.get(), BathModel::new);
             VehicleUtil.registerVehicleRenderer(ModEntities.SOFACOPTER.get(), SofaHelicopterRenderer::new);
         }
 

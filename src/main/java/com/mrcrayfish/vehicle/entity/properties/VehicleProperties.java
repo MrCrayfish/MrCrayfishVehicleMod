@@ -661,8 +661,10 @@ public class VehicleProperties
                     try
                     {
                         IResource resource = manager.getResource(location);
-                        VehicleProperties properties = loadProperties(resource.getInputStream());
+                        InputStream stream = resource.getInputStream();
+                        VehicleProperties properties = loadProperties(stream);
                         propertiesMap.put(format(location), properties);
+                        stream.close();
                     }
                     catch(IOException e)
                     {
