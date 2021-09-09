@@ -34,7 +34,7 @@
             },
             "fuelFillerType": "small",
             "canLockWithKey": false,
-            "engineSound": "vehicle:entity.speed_boat.engine"
+            "engineSound": "vehicle:entity.jet_ski.engine"
         }
     }
 }
