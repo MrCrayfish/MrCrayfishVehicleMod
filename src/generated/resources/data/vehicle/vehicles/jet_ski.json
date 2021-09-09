@@ -32,6 +32,7 @@
                 "rotation": [ -90.0, 0.0, 0.0 ],
                 "scale": 0.35
             },
+            "fuelFillerType": "small",
             "canLockWithKey": false,
             "engineSound": "vehicle:entity.speed_boat.engine"
         }

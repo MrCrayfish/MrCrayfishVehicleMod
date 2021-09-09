@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
@@ -12,11 +13,5 @@ public class DirtBikeEntity extends MotorcycleEntity
     public DirtBikeEntity(EntityType<? extends DirtBikeEntity> type, World worldIn)
     {
         super(type, worldIn);
-    }
-
-    @Override
-    public FuelPortType getFuelPortType()
-    {
-        return FuelPortType.SMALL;
     }
 }

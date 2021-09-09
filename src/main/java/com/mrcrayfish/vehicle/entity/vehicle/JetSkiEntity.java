@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
 import com.mrcrayfish.vehicle.entity.BoatEntity;
+import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import net.minecraft.entity.EntityType;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
@@ -13,12 +14,6 @@ public class JetSkiEntity extends BoatEntity
     public JetSkiEntity(EntityType<? extends JetSkiEntity> type, World worldIn)
     {
         super(type, worldIn);
-    }
-
-    @Override
-    public FuelPortType getFuelPortType()
-    {
-        return FuelPortType.SMALL;
     }
 
     @Override

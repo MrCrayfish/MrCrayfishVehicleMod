@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.PlaneProperties;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -72,6 +73,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRearAxleOffset(-10.5)
                         .setEnergyCapacity(20000F)
                         .setEngineSound(ModSounds.ENTITY_ATV_ENGINE.getId())
+                        .setFuelFillerType(FuelFillerType.SMALL)
                         .build()));
 
         this.add(ModEntities.DIRT_BIKE.get(), VehicleProperties.builder()
@@ -110,6 +112,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setExhaustFumesPosition(-1, 16, -16) //TODO I think this will be wrong
                         .setRenderEngine(true)
                         .setEngineSound(ModSounds.ENTITY_DIRT_BIKE_ENGINE.getId())
+                        .setFuelFillerType(FuelFillerType.SMALL)
                         .build()));
 
         this.add(ModEntities.GO_KART.get(), VehicleProperties.builder()
@@ -226,6 +229,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyConsumptionPerTick(0.5F)
                         .setCanLockWithKey(false)
                         .setEngineSound(ModSounds.ENTITY_JET_SKI_ENGINE.getId())
+                        .setFuelFillerType(FuelFillerType.SMALL)
                         .build()));
 
         this.add(ModEntities.LAWN_MOWER.get(), VehicleProperties.builder()

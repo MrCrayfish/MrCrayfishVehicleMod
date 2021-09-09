@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.vehicle;
 
+import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import com.mrcrayfish.vehicle.entity.LandVehicleEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
@@ -12,11 +13,5 @@ public class ATVEntity extends LandVehicleEntity
     public ATVEntity(EntityType<? extends ATVEntity> type, World worldIn)
     {
         super(type, worldIn);
-    }
-
-    @Override
-    public FuelPortType getFuelPortType()
-    {
-        return FuelPortType.SMALL;
     }
 }

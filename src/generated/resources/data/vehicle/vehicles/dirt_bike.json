@@ -54,6 +54,7 @@
                 "rotation": [ 67.5, 180.0, 0.0 ],
                 "scale": 0.35
             },
+            "fuelFillerType": "small",
             "canLockWithKey": false,
             "frontAxleOffset": 14.08,
             "rearAxleOffset": -11.61,

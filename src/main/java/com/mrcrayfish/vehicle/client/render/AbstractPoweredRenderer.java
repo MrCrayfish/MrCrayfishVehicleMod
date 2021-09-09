@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
+import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
@@ -54,11 +55,11 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         if(vehicle != null && vehicle.shouldRenderFuelPort() && vehicle.requiresEnergy())
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            PoweredVehicleEntity.FuelPortType fuelPortType = vehicle.getFuelPortType();
+            FuelFillerType fuelFillerType = vehicle.getFuelPortType();
             VehicleRayTraceResult result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == vehicle && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelPortType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelFillerType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
                 if(this.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -67,7 +68,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
             }
             else
             {
-                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelPortType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelFillerType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
                 vehicle.playFuelPortCloseSound();
             }
         }

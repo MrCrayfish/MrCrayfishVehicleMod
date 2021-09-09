@@ -60,6 +60,7 @@
                 "rotation": [ -90.0, 0.0, 0.0 ],
                 "scale": 0.35
             },
+            "fuelFillerType": "small",
             "ignitionTransform": {
                 "translate": [ -5.0, 4.5, 6.5 ],
                 "rotation": [ -45.0, 0.0, 0.0 ],

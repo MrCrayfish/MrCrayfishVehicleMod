@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
+import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import com.mrcrayfish.vehicle.entity.IEngineType;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.util.JSONUtils;
@@ -32,6 +33,7 @@ public final class PoweredProperties extends ExtendedProperties
     public static final boolean DEFAULT_SHOW_EXHAUST_FUMES = false;
     public static final Vector3d DEFAULT_EXHAUST_FUMES_POSITION = Vector3d.ZERO;
     public static final Transform DEFAULT_FUEL_FILLER_TRANSFORM = Transform.DEFAULT;
+    public static final FuelFillerType DEFAULT_FUEL_FILLER_TYPE = FuelFillerType.DEFAULT;
     public static final Transform DEFAULT_IGNITION_TRANSFORM = Transform.DEFAULT;
     public static final boolean DEFAULT_HAS_HORN = true;
     public static final boolean DEFAULT_CAN_LOCK_WITH_KEY = true;
@@ -55,6 +57,7 @@ public final class PoweredProperties extends ExtendedProperties
     private final boolean showExhaustFumes;
     private final Vector3d exhaustFumesPosition;
     private final Transform fuelFillerTransform;
+    private final FuelFillerType fuelFillerType;
     private final Transform ignitionTransform;
     private final boolean hasHorn;
     private final boolean canLockWithKey;
@@ -80,6 +83,7 @@ public final class PoweredProperties extends ExtendedProperties
         this.showExhaustFumes = JSONUtils.getAsBoolean(object, "showExhaustFumes", DEFAULT_SHOW_EXHAUST_FUMES);
         this.exhaustFumesPosition = ExtraJSONUtils.getAsVector3d(object, "exhaustFumesPosition", DEFAULT_EXHAUST_FUMES_POSITION);
         this.fuelFillerTransform = ExtraJSONUtils.getAsTransform(object, "fuelFillerTransform", DEFAULT_FUEL_FILLER_TRANSFORM);
+        this.fuelFillerType = ExtraJSONUtils.getAsEnum(object, "fuelFillerType", FuelFillerType.class, FuelFillerType.DEFAULT);
         this.ignitionTransform = ExtraJSONUtils.getAsTransform(object, "ignitionTransform", DEFAULT_IGNITION_TRANSFORM);
         this.hasHorn = JSONUtils.getAsBoolean(object, "hasHorn", DEFAULT_HAS_HORN);
         this.canLockWithKey = JSONUtils.getAsBoolean(object, "canLockWithKey", DEFAULT_CAN_LOCK_WITH_KEY);
@@ -89,7 +93,7 @@ public final class PoweredProperties extends ExtendedProperties
         this.hornSound = ExtraJSONUtils.getAsResourceLocation(object, "hornSound", DEFAULT_HORN_SOUND);
     }
 
-    public PoweredProperties(boolean canDriveUpBlocks, float maxSteeringAngle, boolean requiresEnergy, float energyCapacity, float energyConsumptionPerTick, IEngineType engineType, float enginePower, float minEnginePitch, float maxEnginePitch, boolean renderEngine, Transform engineTransform, Transform exhaustTransform, boolean showExhaustFumes, Vector3d exhaustFumesPosition, Transform fuelFillerTransform, Transform ignitionTransform, boolean hasHorn, boolean canLockWithKey, Vector3d frontAxleOffset, Vector3d rearAxleOffset, ResourceLocation engineSound, ResourceLocation hornSound)
+    public PoweredProperties(boolean canDriveUpBlocks, float maxSteeringAngle, boolean requiresEnergy, float energyCapacity, float energyConsumptionPerTick, IEngineType engineType, float enginePower, float minEnginePitch, float maxEnginePitch, boolean renderEngine, Transform engineTransform, Transform exhaustTransform, boolean showExhaustFumes, Vector3d exhaustFumesPosition, Transform fuelFillerTransform, FuelFillerType fuelFillerType, Transform ignitionTransform, boolean hasHorn, boolean canLockWithKey, Vector3d frontAxleOffset, Vector3d rearAxleOffset, ResourceLocation engineSound, ResourceLocation hornSound)
     {
         this.canDriveUpBlocks = canDriveUpBlocks;
         this.maxSteeringAngle = maxSteeringAngle;
@@ -106,6 +110,7 @@ public final class PoweredProperties extends ExtendedProperties
         this.showExhaustFumes = showExhaustFumes;
         this.exhaustFumesPosition = exhaustFumesPosition;
         this.fuelFillerTransform = fuelFillerTransform;
+        this.fuelFillerType = fuelFillerType;
         this.ignitionTransform = ignitionTransform;
         this.hasHorn = hasHorn;
         this.canLockWithKey = canLockWithKey;
@@ -190,6 +195,11 @@ public final class PoweredProperties extends ExtendedProperties
         return this.fuelFillerTransform;
     }
 
+    public FuelFillerType getFuelFillerType()
+    {
+        return this.fuelFillerType;
+    }
+
     public Transform getIgnitionTransform()
     {
         return this.ignitionTransform;
@@ -244,6 +254,7 @@ public final class PoweredProperties extends ExtendedProperties
         ExtraJSONUtils.write(object, "showExhaustFumes", this.showExhaustFumes, DEFAULT_SHOW_EXHAUST_FUMES);
         ExtraJSONUtils.write(object, "exhaustFumesPosition", this.exhaustFumesPosition, DEFAULT_EXHAUST_FUMES_POSITION);
         ExtraJSONUtils.write(object, "fuelFillerTransform", this.fuelFillerTransform, DEFAULT_FUEL_FILLER_TRANSFORM);
+        ExtraJSONUtils.write(object, "fuelFillerType", this.fuelFillerType, DEFAULT_FUEL_FILLER_TYPE);
         ExtraJSONUtils.write(object, "ignitionTransform", this.ignitionTransform, DEFAULT_IGNITION_TRANSFORM);
         ExtraJSONUtils.write(object, "hasHorn", this.hasHorn, DEFAULT_HAS_HORN);
         ExtraJSONUtils.write(object, "canLockWithKey", this.canLockWithKey, DEFAULT_CAN_LOCK_WITH_KEY);
@@ -275,6 +286,7 @@ public final class PoweredProperties extends ExtendedProperties
         private boolean showExhaustFumes = DEFAULT_SHOW_EXHAUST_FUMES;
         private Vector3d exhaustFumesPosition = DEFAULT_EXHAUST_FUMES_POSITION;
         private Transform fuelFillerTransform = DEFAULT_FUEL_FILLER_TRANSFORM;
+        private FuelFillerType fuelFillerType = DEFAULT_FUEL_FILLER_TYPE;
         private Transform ignitionTransform = DEFAULT_IGNITION_TRANSFORM;
         private boolean hasHorn = DEFAULT_HAS_HORN;
         private boolean canLockWithKey = DEFAULT_CAN_LOCK_WITH_KEY;
@@ -373,6 +385,12 @@ public final class PoweredProperties extends ExtendedProperties
             return this;
         }
 
+        public Builder setFuelFillerType(FuelFillerType fuelFillerType)
+        {
+            this.fuelFillerType = fuelFillerType;
+            return this;
+        }
+
         public Builder setIgnitionTransform(Transform ignitionTransform)
         {
             this.ignitionTransform = ignitionTransform;
@@ -417,7 +435,7 @@ public final class PoweredProperties extends ExtendedProperties
 
         public PoweredProperties build()
         {
-            return new PoweredProperties(this.canDriveUpBlocks, this.maxSteeringAngle, this.requiresEnergy, this.energyCapacity, this.energyConsumptionPerTick, this.engineType, this.enginePower, this.minEnginePitch, this.maxEnginePitch, this.renderEngine, this.engineTransform, this.exhaustTransform, this.showExhaustFumes, this.exhaustFumesPosition, this.fuelFillerTransform, this.ignitionTransform, this.hasHorn, this.canLockWithKey, this.frontAxleOffset, this.rearAxleOffset, this.engineSound, this.hornSound);
+            return new PoweredProperties(this.canDriveUpBlocks, this.maxSteeringAngle, this.requiresEnergy, this.energyCapacity, this.energyConsumptionPerTick, this.engineType, this.enginePower, this.minEnginePitch, this.maxEnginePitch, this.renderEngine, this.engineTransform, this.exhaustTransform, this.showExhaustFumes, this.exhaustFumesPosition, this.fuelFillerTransform, this.fuelFillerType, this.ignitionTransform, this.hasHorn, this.canLockWithKey, this.frontAxleOffset, this.rearAxleOffset, this.engineSound, this.hornSound);
         }
     }
 }
