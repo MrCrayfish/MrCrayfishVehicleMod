@@ -191,11 +191,12 @@ public class CameraHandler
      * Called via transformer. Do not delete!
      */
     @SuppressWarnings("unused")
-    public static void setupVehicleCamera(ActiveRenderInfo info, MatrixStack matrixStack)
+    public static void setupVehicleCamera(MatrixStack matrixStack)
     {
         if(!Config.CLIENT.immersiveCamera.get())
             return;
 
+        ActiveRenderInfo info = Minecraft.getInstance().gameRenderer.getMainCamera();
         Entity entity = info.getEntity();
         if(!(entity instanceof PlayerEntity) || !(entity.getVehicle() instanceof VehicleEntity))
             return;

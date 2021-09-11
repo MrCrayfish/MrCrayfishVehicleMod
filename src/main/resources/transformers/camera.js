@@ -24,12 +24,10 @@ function initializeCoreMod() {
             },
             'transformer': function(method) {
                 var node = getFirstMatchingMethodNode(method, Opcodes.INVOKEVIRTUAL, "func_216778_f", "()F");
-                if(node !== null)
-                {
+                if(node !== null) {
                     var target = node.getNext().getNext().getNext().getNext();
-                    method.instructions.insert(target, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/mrcrayfish/vehicle/client/handler/CameraHandler", "setupVehicleCamera", "(Lnet/minecraft/client/renderer/ActiveRenderInfo;Lcom/mojang/blaze3d/matrix/MatrixStack;)V"));
+                    method.instructions.insert(target, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/mrcrayfish/vehicle/client/handler/CameraHandler", "setupVehicleCamera", "(Lcom/mojang/blaze3d/matrix/MatrixStack;)V"));
                     method.instructions.insert(target, new VarInsnNode(Opcodes.ALOAD, 4));
-                    method.instructions.insert(target, new VarInsnNode(Opcodes.ALOAD, 6));
                 }
                 return method;
             }
