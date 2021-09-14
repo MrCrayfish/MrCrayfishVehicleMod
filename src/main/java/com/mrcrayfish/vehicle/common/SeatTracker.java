@@ -22,13 +22,11 @@ import java.util.UUID;
  */
 public class SeatTracker
 {
-    private final int maxSeatSize;
-    private HashBiMap<UUID, Integer> playerSeatMap = HashBiMap.create();
-    private WeakReference<VehicleEntity> vehicleRef;
+    private final HashBiMap<UUID, Integer> playerSeatMap = HashBiMap.create();
+    private final WeakReference<VehicleEntity> vehicleRef;
 
     public SeatTracker(VehicleEntity entity)
     {
-        this.maxSeatSize = entity.getProperties().getSeats().size();
         this.vehicleRef = new WeakReference<>(entity);
     }
 
@@ -41,6 +39,16 @@ public class SeatTracker
         return -1;
     }
 
+    private int getMaxSeatSize()
+    {
+        VehicleEntity vehicle = this.vehicleRef.get();
+        if(vehicle != null)
+        {
+            return vehicle.getProperties().getSeats().size();
+        }
+        return 0;
+    }
+
     /**
      * Sets the seat index for the corresponding player uuid. If the uuid already exists
      * in the seating map, it will automatically be updated to the new index.
@@ -50,7 +58,7 @@ public class SeatTracker
      */
     public void setSeatIndex(int index, UUID uuid)
     {
-        if(index < 0 || index >= this.maxSeatSize)
+        if(index < 0 || index >= this.getMaxSeatSize())
             return;
         this.playerSeatMap.forcePut(uuid, index);
         VehicleEntity vehicle = this.vehicleRef.get();
@@ -62,7 +70,7 @@ public class SeatTracker
 
     public boolean isSeatAvailable(int index)
     {
-        if(index < 0 || index >= this.maxSeatSize)
+        if(index < 0 || index >= this.getMaxSeatSize())
             return false;
         if(!this.playerSeatMap.inverse().containsKey(index))
             return true;
