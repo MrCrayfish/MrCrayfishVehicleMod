@@ -723,7 +723,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         return this.getProperties().canFitInTrailer();
     }
 
-    public final VehicleProperties getProperties()
+    public VehicleProperties getProperties()
     {
         return VehicleProperties.get(this.getType());
     }
