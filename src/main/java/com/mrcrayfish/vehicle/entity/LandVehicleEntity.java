@@ -98,7 +98,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         {
             float speed = 0.1F;
             float steeringAngle = this.getSteeringAngle();
-            Vector3d frontWheel = forward.scale(wheelBase / 2.0);
+            Vector3d frontWheel = forward.scale(this.getFrontAxleOffset().z * 0.0625 * bodyPosition.getScale());
             Vector3d nextPosition = frontWheel.subtract(frontWheel.yRot((float) Math.toRadians(steeringAngle)));
             Vector3d nextMovement = Vector3d.ZERO.vectorTo(nextPosition).scale(speed);
             this.motion = this.motion.add(nextMovement);
@@ -153,19 +153,21 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         //TODO test with steering at the rear
         //Gets the new position of the wheels
-        Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
-        Vector3d rearWheel = this.position().add(forward.scale(-wheelBase / 2.0));
-        frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())).scale(0.05));
-        rearWheel = rearWheel.add(this.velocity.scale(0.05));
+        double frontAxleOffset = this.getFrontAxleOffset().z * 0.0625 * bodyPosition.getScale();
+        double rearAxleOffset = this.getRearAxleOffset().z * 0.0625 * bodyPosition.getScale();
+        Vector3d worldFrontWheel = this.position().add(forward.scale(frontAxleOffset));
+        Vector3d worldRearWheel = this.position().add(forward.scale(rearAxleOffset));
+        worldFrontWheel = worldFrontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())).scale(0.05));
+        worldRearWheel = worldRearWheel.add(this.velocity.scale(0.05));
 
         //Updates the delta movement based on the new wheel positions
-        Vector3d nextPosition = frontWheel.add(rearWheel).scale(0.5);
+        Vector3d heading = worldFrontWheel.subtract(worldRearWheel).normalize();
+        Vector3d nextPosition = worldRearWheel.add(heading.scale(-rearAxleOffset));
         Vector3d nextMovement = nextPosition.subtract(this.position());
         this.motion = this.motion.add(nextMovement);
 
         // Updates the velocity based on the heading
         float surfaceTraction = SurfaceHelper.getSurfaceTraction(this, this.traction);
-        Vector3d heading = frontWheel.subtract(rearWheel).normalize();
         if(heading.dot(this.velocity.normalize()) > 0)
         {
             this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.length()), surfaceTraction);
