@@ -11,14 +11,21 @@ import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
 import com.mrcrayfish.vehicle.util.CommonUtils;
-import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldVertexBufferUploader;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -40,6 +47,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
     private final IInventory vehicleInventory;
     private final CachedVehicle cachedVehicle;
 
+    private Framebuffer framebuffer;
     private boolean showHelp = true;
     private int windowZoom = 10;
     private int windowX, windowY;
@@ -53,7 +61,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         super(container, playerInventory, title);
         this.playerInventory = playerInventory;
         this.vehicleInventory = container.getVehicleInventory();
-        this.cachedVehicle = new CachedVehicle(container.getVehicle().getType());
+        this.cachedVehicle = new CachedVehicle(container.getVehicle());
         this.imageHeight = 184;
     }
 
@@ -90,6 +98,24 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         {
             this.blit(matrixStack, left + 8, top + 35, 176, 32, 16, 16);
         }
+
+        if(this.framebuffer != null)
+        {
+            this.framebuffer.bindRead();
+            int startX = left + 26;
+            int startY = top + 17;
+            RenderSystem.disableCull();
+            Matrix4f pose = matrixStack.last().pose();
+            BufferBuilder builder = Tessellator.getInstance().getBuilder();
+            builder.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);
+            builder.vertex(pose, startX, startY, this.getBlitOffset()).uv(0, 1).endVertex();
+            builder.vertex(pose, startX, startY + 70, this.getBlitOffset()).uv(0, 0).endVertex();
+            builder.vertex(pose, startX + 142, startY + 70, this.getBlitOffset()).uv(1, 0).endVertex();
+            builder.vertex(pose, startX + 142, startY, this.getBlitOffset()).uv(1, 1).endVertex();
+            builder.end();
+            RenderSystem.enableAlphaTest();
+            WorldVertexBufferUploader.end(builder);
+        }
     }
 
     @Override
@@ -100,28 +126,44 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         minecraft.font.draw(matrixStack, this.title.getString(), 8, 6, 4210752);
         minecraft.font.draw(matrixStack, this.playerInventory.getDisplayName().getString(), 8, this.imageHeight - 96 + 2, 4210752);
 
+        if(this.showHelp)
+        {
+            RenderSystem.pushMatrix();
+            RenderSystem.scalef(0.5F, 0.5F, 0.5F);
+            minecraft.font.draw(matrixStack, I18n.get("container.edit_vehicle.window_help"), 56, 38, 0xFFFFFF);
+            RenderSystem.popMatrix();
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void renderVehicleToBuffer(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    {
+        RenderSystem.matrixMode(GL11.GL_PROJECTION);
+        RenderSystem.pushMatrix();
+        RenderSystem.loadIdentity();
+        Matrix4f projectionMatrix = Matrix4f.perspective(30, (float) this.width / (float) this.height, 0.5F, 200.0F);
+        RenderSystem.multMatrix(projectionMatrix);
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.pushMatrix();
+        RenderSystem.loadIdentity();
+
         AbstractVehicleRenderer renderer = this.cachedVehicle.getRenderer();
         if(renderer != null)
         {
-            int startX = (this.width - this.imageWidth) / 2;
-            int startY = (this.height - this.imageHeight) / 2;
-
-            RenderSystem.pushMatrix();
-            RenderSystem.translatef(96, 78, 1050.0F);
-            RenderSystem.scalef(-1.0F, -1.0F, -1.0F);
-
-            GL11.glEnable(GL11.GL_SCISSOR_TEST);
-            RenderUtil.scissor(startX + 26, startY + 17, 142, 70);
+            this.bindFrameBuffer();
 
             matrixStack.pushPose();
-            matrixStack.translate(0.0, 0.0, 1000.0);
-            matrixStack.translate(this.windowX - (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
+            MatrixStack.Entry last = matrixStack.last();
+            last.pose().setIdentity();
+            last.normal().setIdentity();
+            matrixStack.translate(0, -20, -150);
+            matrixStack.translate(this.windowX + (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseX - this.mouseClickedX : 0), 0, 0);
             matrixStack.translate(0, this.windowY - (this.mouseGrabbed && this.mouseGrabbedButton == 0 ? mouseY - this.mouseClickedY : 0), 0);
 
-            Quaternion quaternion = Axis.POSITIVE_X.rotationDegrees(-10F);
-            quaternion.mul(Axis.POSITIVE_X.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
+            Quaternion quaternion = Axis.POSITIVE_X.rotationDegrees(20F);
+            quaternion.mul(Axis.NEGATIVE_X.rotationDegrees(this.windowRotationY - (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseY - this.mouseClickedY : 0)));
             quaternion.mul(Axis.POSITIVE_Y.rotationDegrees(this.windowRotationX + (this.mouseGrabbed && this.mouseGrabbedButton == 1 ? mouseX - this.mouseClickedX : 0)));
-            quaternion.mul(Axis.POSITIVE_Y.rotationDegrees(135F));
+            quaternion.mul(Axis.POSITIVE_Y.rotationDegrees(45F));
             matrixStack.mulPose(quaternion);
 
             matrixStack.scale(this.windowZoom / 10F, this.windowZoom / 10F, this.windowZoom / 10F);
@@ -140,17 +182,15 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
 
             matrixStack.popPose();
 
-            GL11.glDisable(GL11.GL_SCISSOR_TEST);
-            RenderSystem.popMatrix();
+            this.unbindFrameBuffer();
         }
 
-        if(this.showHelp)
-        {
-            RenderSystem.pushMatrix();
-            RenderSystem.scalef(0.5F, 0.5F, 0.5F);
-            minecraft.font.draw(matrixStack, I18n.get("container.edit_vehicle.window_help"), 56, 38, 0xFFFFFF);
-            RenderSystem.popMatrix();
-        }
+        RenderSystem.matrixMode(GL11.GL_PROJECTION);
+        RenderSystem.popMatrix();
+        RenderSystem.matrixMode(GL11.GL_MODELVIEW);
+        RenderSystem.popMatrix();
+        RenderHelper.setupFor3DItems();
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
     }
 
     @Override
@@ -203,7 +243,7 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
             if(this.mouseGrabbedButton == 0 && button == GLFW.GLFW_MOUSE_BUTTON_LEFT)
             {
                 this.mouseGrabbed = false;
-                this.windowX -= (mouseX - this.mouseClickedX);
+                this.windowX += (mouseX - this.mouseClickedX);
                 this.windowY -= (mouseY - this.mouseClickedY);
             }
             else if(mouseGrabbedButton == 1 && button == GLFW.GLFW_MOUSE_BUTTON_RIGHT)
@@ -219,8 +259,10 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
+        this.renderVehicleToBuffer(matrixStack, mouseX, mouseY, partialTicks);
         this.renderBackground(matrixStack);
         super.render(matrixStack, mouseX, mouseY, partialTicks);
+
         this.renderTooltip(matrixStack, mouseX, mouseY);
 
         int startX = (this.width - this.imageWidth) / 2;
@@ -254,6 +296,46 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
                     this.renderTooltip(matrixStack, Lists.transform(Arrays.asList(new StringTextComponent("Wheels"), new StringTextComponent(TextFormatting.GRAY + "Not applicable")), ITextComponent::getVisualOrderText), mouseX, mouseY);
                 }
             }
+        }
+    }
+
+    private void bindFrameBuffer()
+    {
+        Minecraft minecraft = Minecraft.getInstance();
+        MainWindow window = minecraft.getWindow();
+        int windowWidth = (int) (142 * window.getGuiScale());
+        int windowHeight = (int) (70 * window.getGuiScale());
+        if(this.framebuffer == null)
+        {
+            this.framebuffer = new Framebuffer(windowWidth, windowHeight, true, Minecraft.ON_OSX);
+            this.framebuffer.setClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        }
+        else if(this.framebuffer.width != windowWidth || this.framebuffer.height != windowHeight)
+        {
+            this.framebuffer.destroyBuffers();
+            this.framebuffer.resize(windowWidth, windowHeight, Minecraft.ON_OSX);
+        }
+        this.framebuffer.clear(Minecraft.ON_OSX);
+        this.framebuffer.bindWrite(true);
+    }
+
+    private void unbindFrameBuffer()
+    {
+        if(this.framebuffer != null)
+        {
+            this.framebuffer.unbindWrite();
+        }
+        // Rebind the main buffer
+        this.minecraft.getMainRenderTarget().bindWrite(true);
+    }
+
+    @Override
+    public void onClose()
+    {
+        super.onClose();
+        if(this.framebuffer != null)
+        {
+            this.framebuffer.destroyBuffers();
         }
     }
 }

@@ -52,7 +52,7 @@ public class LayerHeldVehicle extends LayerRenderer<AbstractClientPlayerEntity, 
                         entity.load(tagCompound);
                         this.vehicle = (VehicleEntity) entity;
                         this.width = entity.getBbWidth();
-                        this.cachedVehicle = new CachedVehicle(entityType);
+                        this.cachedVehicle = new CachedVehicle(this.vehicle);
                     }
                 }
             }
