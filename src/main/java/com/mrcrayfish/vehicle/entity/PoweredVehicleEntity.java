@@ -4,7 +4,6 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -919,7 +918,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
         if(!isCreativeMode && this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
         {
             // Spawns the engine if the vehicle has one
-            ItemStack engine = ItemLookup.getEngine(this);
+            ItemStack engine = this.getEngineStack();
             if(this.getEngineType() != EngineType.NONE && !engine.isEmpty())
             {
                 InventoryUtil.spawnItemStack(this.level, this.getX(), this.getY(), this.getZ(), engine);

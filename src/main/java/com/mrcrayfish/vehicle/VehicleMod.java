@@ -3,7 +3,6 @@ package com.mrcrayfish.vehicle;
 import com.mrcrayfish.vehicle.client.ClientHandler;
 import com.mrcrayfish.vehicle.common.CommonEvents;
 import com.mrcrayfish.vehicle.common.FluidNetworkHandler;
-import com.mrcrayfish.vehicle.common.ItemLookup;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.crafting.RecipeType;
 import com.mrcrayfish.vehicle.crafting.WorkstationIngredient;
@@ -83,7 +82,6 @@ public class VehicleMod
         VehicleProperties.loadProperties();
         PacketHandler.registerPlayMessage();
         HeldVehicleDataHandler.register();
-        ItemLookup.init();
         ModDataKeys.register();
         ModLootFunctions.init();
         CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workstation_ingredient"), WorkstationIngredient.Serializer.INSTANCE);
