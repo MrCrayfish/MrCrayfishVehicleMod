@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.entity;
 
 import net.minecraft.entity.EntityType;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 /**
@@ -8,19 +9,17 @@ import net.minecraft.world.World;
  */
 public abstract class MotorcycleEntity extends LandVehicleEntity
 {
-    public float prevLeanAngle;
-    public float leanAngle;
-
     public MotorcycleEntity(EntityType<?> entityType, World worldIn)
     {
         super(entityType, worldIn);
     }
 
     @Override
-    public void tick()
+    protected void updateBodyRotations()
     {
-        this.prevLeanAngle = this.leanAngle;
-        super.tick();
-        this.leanAngle = this.getSteeringAngle() / (float) getMaxSteeringAngle();
+        super.updateBodyRotations();
+        float leanAngle = 45F * (this.getSteeringAngle() / this.getMaxSteeringAngle());
+        leanAngle *= MathHelper.clamp(this.getSpeed() / 30.0, 0.0, 1.0);
+        this.bodyRotationRoll = -leanAngle;
     }
 }

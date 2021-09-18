@@ -27,6 +27,8 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity> ext
     {
         matrixStack.pushPose();
 
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees(this.bodyRollProperty.get(vehicle, partialTicks)));
+
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         Transform bodyPosition = properties.getBodyTransform();
         matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
