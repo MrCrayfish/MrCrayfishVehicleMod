@@ -7,11 +7,7 @@ public enum WheelType implements IWheelType
 {
     STANDARD(1.1F, 1.2F, 2.0F, 0.8F, 0.2F),
     SPORTS(1.0F, 1.4F, 2.0F, 0.9F, 0.05F),
-    RACING(0.9F, 1.5F, 2.0F, 1.0F, 0.5F),
-    OFF_ROAD(1.2F, 0.9F, 1.2F, 0.8F, 0.2F),
-    SNOW(1.8F, 1.0F, 0.7F, 0.9F, 0.5F),
-    ALL_TERRAIN(1.1F, 1.1F, 1.1F, 1.0F, 1.0F),
-    PLASTIC(2.0F, 2.0F, 2.0F, 0.5F, 0.01F);
+    OFF_ROAD(1.2F, 0.9F, 1.2F, 0.8F, 0.2F);
 
     private final float roadFrictionFactor;
     private final float dirtFrictionFactor;
