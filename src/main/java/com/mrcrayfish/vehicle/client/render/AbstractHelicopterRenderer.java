@@ -62,32 +62,4 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity> ext
 
         matrixStack.popPose();
     }
-
-    @Override
-    public void applyPreRotations(T entity, MatrixStack matrixStack, float partialTicks)
-    {
-
-    }
-
-    @Override
-    public void applyPlayerRender(T entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
-    {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
-        if(index != -1)
-        {
-            VehicleProperties properties = entity.getProperties();
-            Seat seat = properties.getSeats().get(index);
-            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625);
-            double playerScale = 32.0 / 30.0;
-            double offsetX = -seatVec.x * playerScale;
-            double offsetY = (seatVec.y + player.getMyRidingOffset()) * playerScale + (24 * 0.0625);
-            double offsetZ = seatVec.z * playerScale;
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(-seat.getYawOffset()));
-            matrixStack.translate(offsetX, offsetY, offsetZ);
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(entity.getBodyRotationPitch(partialTicks)));
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(-entity.getBodyRotationRoll(partialTicks)));
-            matrixStack.translate(-offsetX, -offsetY, -offsetZ);
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(seat.getYawOffset()));
-        }
-    }
 }

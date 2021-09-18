@@ -81,31 +81,6 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
     }
 
     @Override
-    public void applyPlayerRender(JetSkiEntity entity, PlayerEntity player, float partialTicks, MatrixStack matrixStack, IVertexBuilder builder)
-    {
-        int index = entity.getSeatTracker().getSeatIndex(player.getUUID());
-        if(index != -1)
-        {
-            VehicleProperties properties = entity.getProperties();
-            Seat seat = properties.getSeats().get(index);
-            Vector3d seatVec = seat.getPosition().add(0, properties.getAxleOffset() + properties.getWheelOffset(), 0).scale(properties.getBodyTransform().getScale()).multiply(-1, 1, 1).scale(0.0625);
-            double scale = 32.0 / 30.0;
-            double offsetX = -seatVec.x * scale;
-            double offsetY = (seatVec.y + player.getMyRidingOffset()) * scale + 24 * 0.0625; //Player is 2 blocks high tall but renders at 1.8 blocks tall
-            double offsetZ = seatVec.z * scale;
-
-
-            //TODO fix this
-            /*matrixStack.translate(offsetX, offsetY, offsetZ);
-            float currentSpeedNormal = (entity.prevCurrentSpeed + (entity.currentSpeed - entity.prevCurrentSpeed) * partialTicks) / entity.getMaxSpeed();
-            float turnAngleNormal = (entity.prevTurnAngle + (entity.steeringAngle - entity.prevTurnAngle) * partialTicks) / entity.getMaxSteeringAngle();
-            matrixStack.mulPose(Axis.POSITIVE_Z.rotationDegrees(turnAngleNormal * currentSpeedNormal * 15F));
-            matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-8F * Math.min(1.0F, currentSpeedNormal)));
-            matrixStack.translate(-offsetX, -offsetY, -offsetZ);*/
-        }
-    }
-
-    @Override
     protected boolean shouldRenderFuelLid()
     {
         return false;
