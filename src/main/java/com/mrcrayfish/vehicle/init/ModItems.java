@@ -30,11 +30,7 @@ public class ModItems
     public static final RegistryObject<Item> PANEL = register("panel", new Item(new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> STANDARD_WHEEL = register("standard_wheel", new WheelItem(WheelType.STANDARD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
     public static final RegistryObject<Item> SPORTS_WHEEL = register("sports_wheel", new WheelItem(WheelType.SPORTS, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
-    public static final RegistryObject<Item> RACING_WHEEL = register("racing_wheel", new WheelItem(WheelType.RACING, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
     public static final RegistryObject<Item> OFF_ROAD_WHEEL = register("off_road_wheel", new WheelItem(WheelType.OFF_ROAD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
-    public static final RegistryObject<Item> SNOW_WHEEL = register("snow_wheel", new WheelItem(WheelType.SNOW, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
-    public static final RegistryObject<Item> ALL_TERRAIN_WHEEL = register("all_terrain_wheel", new WheelItem(WheelType.ALL_TERRAIN, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)).setColored());
-    public static final RegistryObject<Item> PLASTIC_WHEEL = register("plastic_wheel", new WheelItem(WheelType.PLASTIC, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> IRON_SMALL_ENGINE = register("iron_small_engine", new EngineItem(EngineType.SMALL_MOTOR, EngineTier.IRON, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> GOLD_SMALL_ENGINE = register("gold_small_engine", new EngineItem(EngineType.SMALL_MOTOR, EngineTier.GOLD, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
     public static final RegistryObject<Item> DIAMOND_SMALL_ENGINE = register("diamond_small_engine", new EngineItem(EngineType.SMALL_MOTOR, EngineTier.DIAMOND, new Item.Properties().tab(VehicleMod.CREATIVE_TAB)));
