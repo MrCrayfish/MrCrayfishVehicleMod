@@ -147,7 +147,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         {
             float wheelTraction = this.getWheelType().map(IWheelType::getBaseTraction).orElse(1.0F);
             float targetTraction = acceleration.length() > 0 ? (float) (wheelTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : wheelTraction;
-            float side = MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.3F, 0.0F, 1.0F);
+            float side = this.canSlide() ? MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.3F, 0.0F, 1.0F) : 1.0F;
             this.traction = this.traction + (targetTraction - this.traction) * side * 0.2F;
         }
 
@@ -249,10 +249,19 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         return this.velocity;
     }
 
+    public boolean canSlide()
+    {
+        return this.getLandProperties().canSlide();
+    }
+
     public boolean isSliding()
     {
-        Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
-        return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
+        if(this.canSlide())
+        {
+            Vector3d forward = Vector3d.directionFromRotation(this.getRotationVector());
+            return this.velocity.normalize().cross(forward.normalize()).length() >= 0.3;
+        }
+        return false;
     }
 
     @Override
