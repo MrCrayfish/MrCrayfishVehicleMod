@@ -5,9 +5,9 @@ package com.mrcrayfish.vehicle.entity;
  */
 public enum WheelType implements IWheelType
 {
-    STANDARD(1.1F, 1.2F, 2.0F, 0.8F, 0.2F),
-    SPORTS(1.0F, 1.4F, 2.0F, 0.9F, 0.05F),
-    OFF_ROAD(1.2F, 0.9F, 1.2F, 0.8F, 0.2F);
+    STANDARD(1.1F, 1.3F, 1.7F, 0.8F, 0.15F),
+    SPORTS(0.8F, 1.5F, 2.2F, 0.9F, 0.05F),
+    OFF_ROAD(1.2F, 0.9F, 1.1F, 0.8F, 0.2F);
 
     private final float roadFrictionFactor;
     private final float dirtFrictionFactor;
