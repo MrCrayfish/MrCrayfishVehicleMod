@@ -23,7 +23,7 @@ public abstract class MotorcycleEntity extends LandVehicleEntity
         leanAngle *= MathHelper.clamp(this.getSpeed() / 30.0, 0.0, 1.0);
         this.bodyRotationRoll = -leanAngle;
     }
-    
+
     public float getMaxLeanAngle()
     {
         return this.getMotorcycleProperties().getMaxLeanAngle();
