@@ -74,6 +74,11 @@ public final class LandProperties extends ExtendedProperties
         ExtraJSONUtils.write(object, "maxReverseSpeed", this.maxReverseSpeed, DEFAULT_MAX_REVERSE_SPEED);
     }
 
+    public static Builder builder()
+    {
+        return new Builder();
+    }
+
     public final static class Builder
     {
         public boolean canCharge = DEFAULT_CAN_CHARGE;
@@ -81,6 +86,8 @@ public final class LandProperties extends ExtendedProperties
         public boolean canSlide = DEFAULT_CAN_SLIDE;
         public float brakePower = DEFAULT_BRAKE_POWER;
         public float maxReverseSpeed = DEFAULT_MAX_REVERSE_SPEED;
+
+        private Builder() {}
 
         public Builder setCanCharge(boolean canCharge)
         {

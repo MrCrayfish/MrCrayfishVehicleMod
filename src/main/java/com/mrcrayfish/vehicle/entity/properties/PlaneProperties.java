@@ -120,6 +120,8 @@ public final class PlaneProperties extends ExtendedProperties
         private float elevatorSensitivity = DEFAULT_ELEVATOR_SENSITIVITY;
         private float maxTurnAngle = DEFAULT_MAX_TURN_ANGLE;
 
+        private Builder() {}
+
         public Builder setMinimumSpeedToTakeOff(float minimumSpeedToTakeOff)
         {
             this.minimumSpeedToTakeOff = minimumSpeedToTakeOff;

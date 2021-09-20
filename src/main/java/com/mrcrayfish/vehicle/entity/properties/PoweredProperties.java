@@ -295,6 +295,8 @@ public final class PoweredProperties extends ExtendedProperties
         private ResourceLocation engineSound = DEFAULT_ENGINE_SOUND;
         private ResourceLocation hornSound = DEFAULT_HORN_SOUND;
 
+        private Builder() {}
+
         public Builder setCanDriveUpBlocks(boolean canDriveUpBlocks)
         {
             this.canDriveUpBlocks = canDriveUpBlocks;
