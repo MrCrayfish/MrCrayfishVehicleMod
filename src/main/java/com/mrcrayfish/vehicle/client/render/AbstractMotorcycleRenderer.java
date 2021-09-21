@@ -31,21 +31,16 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity> ext
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         Transform bodyPosition = properties.getBodyTransform();
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
-
-        //Translate the body
-        matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-
-        //Translate the vehicle to match how it is shown in the model creator
         matrixStack.scale((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
+        matrixStack.translate(bodyPosition.getX() * 0.0625, bodyPosition.getY() * 0.0625, bodyPosition.getZ() * 0.0625);
+
+        // Fixes the origin
         matrixStack.translate(0.0, 0.5, 0.0);
 
-        //Translate the vehicle so it's axles are half way into the ground
+        // Translate the vehicle so the center of the axles are touching the ground
         matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
 
-        //Translate the vehicle so it's actually riding on it's wheels
+        // Translate the vehicle so it's actually riding on it's wheels
         matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
 
         /* Rotates the wheel based relative to the rear axel to create a wheelie */
@@ -63,7 +58,12 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity> ext
         }
 
         //Render body
+        matrixStack.pushPose();
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
+        matrixStack.popPose();
 
         this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);

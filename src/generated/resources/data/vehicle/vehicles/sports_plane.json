@@ -4,7 +4,7 @@
         "scale": 0.85
     },
     "bodyTransform": {
-        "translate": [ 0.0, 0.0, -0.5 ],
+        "translate": [ 0.0, 0.0, -8.0 ],
         "scale": 1.8
     },
     "wheels": [

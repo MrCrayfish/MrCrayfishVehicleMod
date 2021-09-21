@@ -91,14 +91,13 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         // Calculates the distance between the front and rear axel
         Transform bodyPosition = properties.getBodyTransform();
-        double wheelBase = this.getFrontAxleOffset().distanceTo(this.getRearAxleOffset()) * 0.0625 * bodyPosition.getScale();
 
         // Performs the charging motion
         if(this.charging)
         {
             float speed = 0.1F;
             float steeringAngle = this.getSteeringAngle();
-            Vector3d frontWheel = forward.scale(this.getFrontAxleOffset().z * 0.0625 * bodyPosition.getScale());
+            Vector3d frontWheel = forward.scale((bodyPosition.getZ() + this.getFrontAxleOffset().z) * 0.0625 * bodyPosition.getScale());
             Vector3d nextPosition = frontWheel.subtract(frontWheel.yRot((float) Math.toRadians(steeringAngle)));
             Vector3d nextMovement = Vector3d.ZERO.vectorTo(nextPosition).scale(speed);
             this.motion = this.motion.add(nextMovement);
@@ -153,8 +152,8 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
 
         //TODO test with steering at the rear
         //Gets the new position of the wheels
-        double frontAxleOffset = this.getFrontAxleOffset().z * 0.0625 * bodyPosition.getScale();
-        double rearAxleOffset = this.getRearAxleOffset().z * 0.0625 * bodyPosition.getScale();
+        double frontAxleOffset = (bodyPosition.getZ() + this.getFrontAxleOffset().z) * 0.0625 * bodyPosition.getScale();
+        double rearAxleOffset = (bodyPosition.getZ() + this.getRearAxleOffset().z) * 0.0625 * bodyPosition.getScale();
         Vector3d worldFrontWheel = this.position().add(forward.scale(frontAxleOffset));
         Vector3d worldRearWheel = this.position().add(forward.scale(rearAxleOffset));
         worldFrontWheel = worldFrontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())).scale(0.05));

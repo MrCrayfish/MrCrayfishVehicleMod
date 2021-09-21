@@ -214,7 +214,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
         this.add(ModEntities.JET_SKI.get(), VehicleProperties.builder()
                 .setAxleOffset(2.75F)
                 .setBodyTransform(Transform.create(0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 1.25))
-                .setDisplayTransform(Transform.create(0.0F, 0.0F, -0.45F, 0.0F, 0.0F, 0.0F, 1.5F))
+                .setDisplayTransform(Transform.create(0.0F, 0.0F, -7.2F, 0.0F, 0.0F, 0.0F, 1.5F))
                 .setHeldOffset(6.0, 0.0, 0.0)
                 .setTrailerOffset(0.0, -0.09375, -0.65)
                 .addSeat(Seat.of(0.0, 5.0, 0.0, true))
@@ -417,7 +417,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .build()));
 
         this.add(ModEntities.SPORTS_PLANE.get(), VehicleProperties.builder()
-                .setBodyTransform(Transform.create(0.0, 0.0, -8.0 * 0.0625, 0.0, 0.0, 0.0, 1.8))
+                .setBodyTransform(Transform.create(0.0, 0.0, -8.0, 0.0, 0.0, 0.0, 1.8))
                 .setDisplayTransform(Transform.create(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.85))
                 .addSeat(Seat.of(0.0, 0.0, 0.0, true))
                 .addWheel(Wheel.builder()

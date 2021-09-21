@@ -58,27 +58,36 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
 
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         Transform bodyPosition = properties.getBodyTransform();
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
-        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
+        matrixStack.scale((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
+        matrixStack.translate(bodyPosition.getX() * 0.0625, bodyPosition.getY() * 0.0625, bodyPosition.getZ() * 0.0625);
 
         if(properties.canTowTrailers())
         {
             matrixStack.pushPose();
+            double inverseScale = 1.0 / bodyPosition.getScale();
+            matrixStack.scale((float) inverseScale, (float) inverseScale, (float) inverseScale);
             Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyPosition.getScale());
             matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, towBarOffset.z * 0.0625);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            RenderUtil.renderColoredModel(SpecialModels.TOW_BAR.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            RenderUtil.renderColoredModel(this.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
 
-        matrixStack.translate(bodyPosition.getX(), bodyPosition.getY(), bodyPosition.getZ());
-        matrixStack.scale((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
-        matrixStack.translate(0.0, 0.5, 0.0);
-        matrixStack.translate(0.0, properties.getAxleOffset() * 0.0625, 0.0);
-        matrixStack.translate(0.0, properties.getWheelOffset() * 0.0625, 0.0);
+        // Fixes the origin
+        matrixStack.translate(0, 0.5, 0);
 
+        // Translate the vehicle so the center of the axles are touching the ground
+        matrixStack.translate(0, properties.getAxleOffset() * 0.0625F, 0);
+
+        // Translate the vehicle so it's actually riding on it's wheels
+        matrixStack.translate(0, properties.getWheelOffset() * 0.0625F, 0);
+
+        matrixStack.pushPose();
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) bodyPosition.getRotX()));
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) bodyPosition.getRotY()));
+        matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) bodyPosition.getRotZ()));
         this.render(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
+        matrixStack.popPose();
 
         this.renderWheels(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
