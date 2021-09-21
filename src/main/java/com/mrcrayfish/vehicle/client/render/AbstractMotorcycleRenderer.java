@@ -6,7 +6,10 @@ import com.mrcrayfish.vehicle.entity.MotorcycleEntity;
 import com.mrcrayfish.vehicle.entity.properties.LandProperties;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -33,6 +36,18 @@ public abstract class AbstractMotorcycleRenderer<T extends MotorcycleEntity> ext
         Transform bodyPosition = properties.getBodyTransform();
         matrixStack.scale((float) bodyPosition.getScale(), (float) bodyPosition.getScale(), (float) bodyPosition.getScale());
         matrixStack.translate(bodyPosition.getX() * 0.0625, bodyPosition.getY() * 0.0625, bodyPosition.getZ() * 0.0625);
+
+        if(properties.canTowTrailers())
+        {
+            matrixStack.pushPose();
+            double inverseScale = 1.0 / bodyPosition.getScale();
+            matrixStack.scale((float) inverseScale, (float) inverseScale, (float) inverseScale);
+            Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyPosition.getScale());
+            matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, towBarOffset.z * 0.0625);
+            matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+            RenderUtil.renderColoredModel(this.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            matrixStack.popPose();
+        }
 
         // Fixes the origin
         matrixStack.translate(0.0, 0.5, 0.0);
