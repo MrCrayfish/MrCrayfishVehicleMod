@@ -73,7 +73,7 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
             TransformHelper.createTransformListForPart(SpecialModels.TRACTOR, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.66F, -0.475F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -67.5F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-67.5F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.9F));
             TransformHelper.createTowBarTransforms(ModEntities.TRACTOR.get(), SpecialModels.TOW_BAR, parts);

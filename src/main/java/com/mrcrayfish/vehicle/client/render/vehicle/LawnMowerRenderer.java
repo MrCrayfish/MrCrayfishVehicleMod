@@ -76,7 +76,7 @@ public class LawnMowerRenderer extends AbstractLandVehicleRenderer<LawnMowerEnti
             TransformHelper.createTransformListForPart(SpecialModels.LAWN_MOWER_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.4F, -0.15F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.scale(0.9F));
             TransformHelper.createTowBarTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.TOW_BAR, parts);
             TransformHelper.createFuelFillerTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);

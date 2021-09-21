@@ -123,7 +123,7 @@ public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEnti
             TransformHelper.createTransformListForPart(SpecialModels.OFF_ROADER_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(-0.3125F, 0.35F, 0.2F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.75F));
             TransformHelper.createFuelFillerTransforms(ModEntities.OFF_ROADER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);

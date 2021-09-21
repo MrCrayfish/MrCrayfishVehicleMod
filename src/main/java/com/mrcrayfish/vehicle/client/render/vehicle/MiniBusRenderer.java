@@ -80,7 +80,7 @@ public class MiniBusRenderer extends AbstractLandVehicleRenderer<MiniBusEntity>
             TransformHelper.createTransformListForPart(SpecialModels.MINI_BUS_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(-0.2825F, 0.225F, 1.0625F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -67.5F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-67.5F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.75F));
             TransformHelper.createTowBarTransforms(ModEntities.MINI_BUS.get(), SpecialModels.BIG_TOW_BAR, parts);

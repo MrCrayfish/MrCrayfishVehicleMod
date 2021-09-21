@@ -71,7 +71,7 @@ public class SofaHelicopterRenderer extends AbstractHelicopterRenderer<Sofacopte
         return (tracer, transforms, parts) ->
         {
             TransformHelper.createTransformListForPart(SpecialModels.RED_SOFA, parts, transforms,
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, 90F));
+                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees(90F)));
             TransformHelper.createTransformListForPart(SpecialModels.SOFA_HELICOPTER_ARM, parts, transforms,
                     MatrixTransform.translate(0.0F, 8 * 0.0625F, 0.0F));
             TransformHelper.createFuelFillerTransforms(ModEntities.SOFACOPTER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);

@@ -95,7 +95,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
             TransformHelper.createTransformListForPart(SpecialModels.JET_SKI_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.375F, 0.25F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, 0.02F, 0.0F));
             TransformHelper.createFuelFillerTransforms(ModEntities.JET_SKI.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
         };

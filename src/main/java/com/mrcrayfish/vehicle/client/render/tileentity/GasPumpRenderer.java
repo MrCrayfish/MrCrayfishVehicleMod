@@ -141,13 +141,13 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 MatrixTransform.translate((float) start.getPoint().x(), (float) start.getPoint().y(), (float) start.getPoint().z()).transform(startMatrix);
                 if(i == 0 && j == 0)
                 {
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(startMatrix);
-                    MatrixTransform.rotate(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(startMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z)))).transform(startMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) Math.toDegrees(Math.asin(-end.getDir().normalize().y)))).transform(startMatrix);
                 }
                 else
                 {
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(startMatrix);
-                    MatrixTransform.rotate(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(startMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z)))).transform(startMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) Math.toDegrees(Math.asin(-start.getDir().normalize().y)))).transform(startMatrix);
                 }
 
                 Matrix4f endMatrix = new Matrix4f();
@@ -155,13 +155,13 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
                 MatrixTransform.translate((float) end.getPoint().x, (float) end.getPoint().y, (float) end.getPoint().z).transform(endMatrix);
                 if(i == spline.getSize() - 2 && j == segments - 1)
                 {
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z))).transform(endMatrix);
-                    MatrixTransform.rotate(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-start.getDir().normalize().y))).transform(endMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) Math.toDegrees(Math.atan2(start.getDir().x, start.getDir().z)))).transform(endMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) Math.toDegrees(Math.asin(-start.getDir().normalize().y)))).transform(endMatrix);
                 }
                 else
                 {
-                    MatrixTransform.rotate(Axis.POSITIVE_Y, (float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z))).transform(endMatrix);
-                    MatrixTransform.rotate(Axis.POSITIVE_X, (float) Math.toDegrees(Math.asin(-end.getDir().normalize().y))).transform(endMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) Math.toDegrees(Math.atan2(end.getDir().x, end.getDir().z)))).transform(endMatrix);
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) Math.toDegrees(Math.asin(-end.getDir().normalize().y)))).transform(endMatrix);
                 }
 
                 Matrix4f startTemp = new Matrix4f(startMatrix);

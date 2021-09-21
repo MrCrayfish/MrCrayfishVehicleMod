@@ -39,9 +39,9 @@ public class TransformHelper
     {
         VehicleProperties properties = VehicleProperties.get(entityType);
         Transform bodyPosition = properties.getBodyTransform();
-        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X, (float) bodyPosition.getRotX()));
-        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y, (float) bodyPosition.getRotY()));
-        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z, (float) bodyPosition.getRotZ()));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) bodyPosition.getRotX())));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) bodyPosition.getRotY())));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ())));
         transforms.add(MatrixTransform.translate((float) bodyPosition.getX(), (float) bodyPosition.getY(), (float) bodyPosition.getZ()));
         transforms.add(MatrixTransform.scale((float) bodyPosition.getScale()));
         transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
@@ -67,9 +67,9 @@ public class TransformHelper
         transforms.add(MatrixTransform.translate(0.0F, -0.5F, 0.0F));
         transforms.add(MatrixTransform.scale(scale));
         transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
-        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X, (float) rotation.x));
-        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y, (float) rotation.y));
-        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z, (float) rotation.z));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) rotation.x)));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) rotation.y)));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) rotation.z)));
         createTransformListForPart(data, parts, transforms);
     }
 
@@ -114,7 +114,7 @@ public class TransformHelper
         double bodyScale = properties.getBodyTransform().getScale();
         List<MatrixTransform> transforms = new ArrayList<>();
         transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
-        transforms.add(MatrixTransform.rotate(Vector3f.YP, 180F));
+        transforms.add(MatrixTransform.rotate(Vector3f.YP.rotationDegrees(180F)));
         Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyScale).multiply(1, 1, -1);
         createPartTransforms(new SpecialModelRayTraceData(model, RayTraceFunction.FUNCTION_FUELING), towBarOffset, Vector3d.ZERO, 1.0F, parts, transforms);
     }

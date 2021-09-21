@@ -83,7 +83,7 @@ public class GolfCartRenderer extends AbstractHelicopterRenderer<GolfCartEntity>
             TransformHelper.createTransformListForPart(SpecialModels.GOLF_CART_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(-0.345F, 0.425F, 0.1F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X, -45F),
+                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.95F));
             TransformHelper.createFuelFillerTransforms(ModEntities.GOLF_CART.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
