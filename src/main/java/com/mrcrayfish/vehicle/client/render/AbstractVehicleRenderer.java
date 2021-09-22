@@ -164,7 +164,6 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         matrixStack.translate(position.getX() * 0.0625, position.getY() * 0.0625, position.getZ() * 0.0625);
         matrixStack.translate(0.0, -0.5, 0.0);
         matrixStack.scale((float) position.getScale(), (float) position.getScale(), (float) position.getScale());
-        matrixStack.translate(0.0, 0.5, 0.0);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees((float) position.getRotX()));
         matrixStack.mulPose(Vector3f.YP.rotationDegrees((float) position.getRotY()));
         matrixStack.mulPose(Vector3f.ZP.rotationDegrees((float) position.getRotZ()));

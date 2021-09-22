@@ -66,7 +66,6 @@ public class TransformHelper
         transforms.add(MatrixTransform.translate((float) offset.x * 0.0625F, (float) offset.y * 0.0625F, (float) offset.z * 0.0625F));
         transforms.add(MatrixTransform.translate(0.0F, -0.5F, 0.0F));
         transforms.add(MatrixTransform.scale(scale));
-        transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) rotation.x)));
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) rotation.y)));
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) rotation.z)));
