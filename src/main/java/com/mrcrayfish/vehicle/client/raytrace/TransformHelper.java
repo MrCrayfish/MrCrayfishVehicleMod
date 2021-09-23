@@ -112,8 +112,9 @@ public class TransformHelper
         VehicleProperties properties = VehicleProperties.get(entityType);
         double bodyScale = properties.getBodyTransform().getScale();
         List<MatrixTransform> transforms = new ArrayList<>();
-        transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
         transforms.add(MatrixTransform.rotate(Vector3f.YP.rotationDegrees(180F)));
+        transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
+        transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F)); // Need extra translate to prevent translation in #createPartTransforms call
         Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyScale).multiply(1, 1, -1);
         createPartTransforms(new SpecialModelRayTraceData(model), towBarOffset, Vector3d.ZERO, 1.0F, parts, transforms);
     }

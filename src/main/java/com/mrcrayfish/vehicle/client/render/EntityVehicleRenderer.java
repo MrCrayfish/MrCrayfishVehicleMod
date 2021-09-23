@@ -53,10 +53,10 @@ public class EntityVehicleRenderer<T extends VehicleEntity> extends EntityRender
             return;
 
         matrixStack.pushPose();
-        wrapper.applyPreRotations(entity, matrixStack, partialTicks);
+        this.wrapper.applyPreRotations(entity, matrixStack, partialTicks);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-entityYaw));
         this.setupBreakAnimation(entity, matrixStack, partialTicks);
-        wrapper.setupTransformsAndRender(entity, matrixStack, renderTypeBuffer, partialTicks, light);
+        this.wrapper.setupTransformsAndRender(entity, matrixStack, renderTypeBuffer, partialTicks, light);
         this.drawDebugging(entity, matrixStack);
         matrixStack.popPose();
 
