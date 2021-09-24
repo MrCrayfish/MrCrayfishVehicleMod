@@ -16,6 +16,11 @@ public class InteractableBoxRayTraceData extends BoxRayTraceData
         this.interactableBox = interactableBox;
     }
 
+    public InteractableBox<?> getInteractableBox()
+    {
+        return this.interactableBox;
+    }
+
     @Override
     public AxisAlignedBB getBox()
     {

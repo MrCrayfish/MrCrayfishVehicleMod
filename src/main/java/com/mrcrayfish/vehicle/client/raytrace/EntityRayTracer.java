@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.event.VehicleRayTraceEvent;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.data.InteractableBoxRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.SpecialModelRayTraceData;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -731,8 +732,18 @@ public class EntityRayTracer
 
     private static <T extends VehicleEntity> void drawTriangleList(T entity, @Nullable Map<RayTraceData, TriangleList> map, MatrixStack matrixStack, IVertexBuilder builder, int baseColor)
     {
-        Optional.ofNullable(map).ifPresent(map2 -> {
-            map2.forEach((data, list) -> {
+        Optional.ofNullable(map).ifPresent(map2 ->
+        {
+            map2.forEach((data, list) ->
+            {
+                if(!Config.CLIENT.forceRenderAllInteractableBoxes.get() && data instanceof InteractableBoxRayTraceData)
+                {
+                    InteractableBoxRayTraceData interactableBoxData = (InteractableBoxRayTraceData) data;
+                    if(!interactableBoxData.getInteractableBox().isActive(entity))
+                    {
+                        return;
+                    }
+                }
                 int color = data.getRayTraceFunction() != null ? 0x00FF00 : baseColor;
                 float r = (float) (color >> 16 & 255) / 255.0F;
                 float g = (float) (color >> 8 & 255) / 255.0F;

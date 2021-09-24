@@ -24,6 +24,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
         public final ForgeConfigSpec.BooleanValue useTriggers;
         public final ForgeConfigSpec.BooleanValue reloadVehiclePropertiesEachTick;
+        public final ForgeConfigSpec.BooleanValue forceRenderAllInteractableBoxes;
         public final ForgeConfigSpec.IntValue hoseSegments;
 
         public final ForgeConfigSpec.BooleanValue immersiveCamera;
@@ -42,6 +43,7 @@ public class Config
                 this.renderDebugging = builder.comment("If true, renders lines to help visualise steering direction and target position.").translation(Reference.MOD_ID + ".config.client.debug.render_steering_debug").define("renderSteeringDebug", false);
                 this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
                 this.reloadVehiclePropertiesEachTick = builder.comment("If true, the vehicle properties will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.properties.continuous_reload").define("reloadVehiclePropertiesEachTick", false);
+                this.forceRenderAllInteractableBoxes = builder.comment("If true, when rendering debug outlines all interactables boxes will be rendered rather than just the active").translation(Reference.MOD_ID + ".config.client.debug.properties.force_render_all_interactable_boxes").define("forceRenderAllInteractableBoxes", false);
                 builder.pop();
 
                 builder.comment("Configuration options for vehicle interaction").push("interaction");
