@@ -11,6 +11,8 @@ import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.init.ModEntities;
+import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -98,6 +100,14 @@ public class TransformHelper
         transformsAll.addAll(globalTransforms);
         transformsAll.addAll(Arrays.asList(transforms));
         parts.put(data, transformsAll);
+    }
+
+    public static void createEngineTransforms(Item engineItem, EntityType<? extends VehicleEntity> entityType, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
+    {
+        Transform engineTransform = VehicleProperties.get(entityType).getExtended(PoweredProperties.class).getEngineTransform();
+        List<MatrixTransform> transforms = new ArrayList<>(globalTransforms);
+        transforms.add(MatrixTransform.translate(0.0F, 0.5F * (float) engineTransform.getScale(), 0.0F));
+        createPartTransforms(engineItem, engineTransform, parts, transforms, function);
     }
 
     /**

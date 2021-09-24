@@ -81,7 +81,7 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.9F));
-            TransformHelper.createPartTransforms(ModItems.IRON_SMALL_ENGINE.get(), VehicleProperties.get(ModEntities.GO_KART.get()).getExtended(PoweredProperties.class).getEngineTransform(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
+            TransformHelper.createEngineTransforms(ModItems.IRON_SMALL_ENGINE.get(), ModEntities.GO_KART.get(), parts, transforms, RayTraceFunction.FUNCTION_FUELING);
         };
     }
 }

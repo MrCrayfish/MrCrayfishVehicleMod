@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
+import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.FuelFillerType;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -46,8 +47,18 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
             ItemStack engine = this.engineStackProperty.get(vehicle);
             if(!engine.isEmpty())
             {
+                matrixStack.pushPose();
+                if(vehicle != null && vehicle.isEnginePowered() && vehicle.getControllingPassenger() != null)
+                {
+                    matrixStack.mulPose(Vector3f.XP.rotationDegrees(0.5F * (vehicle.tickCount % 2)));
+                    matrixStack.mulPose(Vector3f.ZP.rotationDegrees(0.5F * (vehicle.tickCount % 2)));
+                    matrixStack.mulPose(Vector3f.YP.rotationDegrees(-0.5F * (vehicle.tickCount % 2)));
+                }
                 IBakedModel engineModel = RenderUtil.getModel(this.engineStackProperty.get(vehicle));
-                this.renderEngine(vehicle, properties.getExtended(PoweredProperties.class).getEngineTransform(), engineModel, matrixStack, renderTypeBuffer, light);
+                Transform engineTransform = properties.getExtended(PoweredProperties.class).getEngineTransform();
+                matrixStack.translate(0.0, 0.5 * engineTransform.getScale(), 0.0);
+                this.renderPart(engineTransform, engineModel, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+                matrixStack.popPose();
             }
         }
     }

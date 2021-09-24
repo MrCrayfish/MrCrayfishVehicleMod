@@ -186,26 +186,6 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         matrixStack.popPose();
     }
 
-
-    /**
-     * Renders the engine (ItemStack) on the vehicle using the specified PartPosition. It adds a
-     * subtle shake to the render to simulate it being powered.
-     *
-     * @param position the render definitions to construct to the part
-     */
-    protected void renderEngine(@Nullable PoweredVehicleEntity entity, @Nullable Transform position, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light)
-    {
-        matrixStack.pushPose();
-        if(entity != null && entity.isEnginePowered() && entity.getControllingPassenger() != null)
-        {
-            matrixStack.mulPose(Vector3f.XP.rotationDegrees(0.5F * (entity.tickCount % 2)));
-            matrixStack.mulPose(Vector3f.ZP.rotationDegrees(0.5F * (entity.tickCount % 2)));
-            matrixStack.mulPose(Vector3f.YP.rotationDegrees(-0.5F * (entity.tickCount % 2)));
-        }
-        this.renderPart(position, model, matrixStack, buffer, -1, light, OverlayTexture.NO_OVERLAY);
-        matrixStack.popPose();
-    }
-
     protected void renderWheels(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
