@@ -42,7 +42,7 @@ public class TransformHelper
         VehicleProperties properties = VehicleProperties.get(entityType);
         Transform bodyPosition = properties.getBodyTransform();
         transforms.add(MatrixTransform.scale((float) bodyPosition.getScale()));
-        transforms.add(MatrixTransform.translate((float) bodyPosition.getX(), (float) bodyPosition.getY(), (float) bodyPosition.getZ()));
+        transforms.add(MatrixTransform.translate((float) bodyPosition.getX() * 0.0625F, (float) bodyPosition.getY() * 0.0625F, (float) bodyPosition.getZ() * 0.0625F));
         transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
         transforms.add(MatrixTransform.translate(0.0F, properties.getAxleOffset() * 0.0625F, 0.0F));
         transforms.add(MatrixTransform.translate(0.0F, properties.getWheelOffset() * 0.0625F, 0.0F));
