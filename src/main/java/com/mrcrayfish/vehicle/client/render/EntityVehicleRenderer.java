@@ -94,7 +94,7 @@ public class EntityVehicleRenderer<T extends VehicleEntity> extends EntityRender
             double offset = properties.getWheels().stream().findFirst().map(wheel -> wheel.getOffset().y).orElse(0.0);
             Vector3d wheelOffset = new Vector3d(0, properties.getWheelOffset(), 0).add(0, offset, 0);
             Vector3d axle = position.add(wheelOffset).add(body.getTranslate()).scale(0.0625).scale(body.getScale());
-            this.drawLine(stack, axle.add(-1, 0, 0), axle.add(1, 0, 0), 0xFFB64C);
+            this.drawLine(stack, axle.add(-1, 0, 0), axle.add(1, 0, 0), 0xC300FF);
         }
     }
 

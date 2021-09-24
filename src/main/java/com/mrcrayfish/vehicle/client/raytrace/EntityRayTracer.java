@@ -11,7 +11,6 @@ import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.SpecialModelRayTraceData;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
@@ -710,7 +709,6 @@ public class EntityRayTracer
         matrixStack.pushPose();
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-yaw));
         IVertexBuilder builder = renderTypeBuffer.getBuffer(RenderType.LINES);
-        VehicleProperties properties = entity.getProperties();
         this.renderRayTraceTriangles(entity, matrixStack, builder);
         matrixStack.popPose();
     }
@@ -727,15 +725,19 @@ public class EntityRayTracer
     {
         EntityType<T> type = (EntityType<T>) entity.getType();
         this.initializeTransforms(type);
-        drawTriangleList(entity, this.entityRayTraceTriangles.get(type), matrixStack, builder, 1.0F, 0.0F, 0.0F);
-        drawTriangleList(entity, this.entityInteractableBoxesTriangles.get(type), matrixStack, builder, 0.0F, 1.0F, 0.0F);
+        drawTriangleList(entity, this.entityRayTraceTriangles.get(type), matrixStack, builder, 0xFFB64C);
+        drawTriangleList(entity, this.entityInteractableBoxesTriangles.get(type), matrixStack, builder, 0x00FF00);
     }
 
-    private static <T extends VehicleEntity> void drawTriangleList(T entity, @Nullable Map<RayTraceData, TriangleList> map, MatrixStack matrixStack, IVertexBuilder builder, float red, float green, float blue)
+    private static <T extends VehicleEntity> void drawTriangleList(T entity, @Nullable Map<RayTraceData, TriangleList> map, MatrixStack matrixStack, IVertexBuilder builder, int baseColor)
     {
         Optional.ofNullable(map).ifPresent(map2 -> {
             map2.forEach((data, list) -> {
-                list.getTriangles(data, entity).forEach(triangle -> triangle.draw(matrixStack, builder, red, green, blue, 0.4F));
+                int color = data.getRayTraceFunction() != null ? 0x00FF00 : baseColor;
+                float r = (float) (color >> 16 & 255) / 255.0F;
+                float g = (float) (color >> 8 & 255) / 255.0F;
+                float b = (float) (color & 255) / 255.0F;
+                list.getTriangles(data, entity).forEach(triangle -> triangle.draw(matrixStack, builder, r, g, b, 0.4F));
             });
         });
     }

@@ -21,6 +21,7 @@ import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -28,6 +29,7 @@ import java.util.Optional;
  */
 public interface RayTraceFunction
 {
+    @Nullable
     Hand apply(EntityRayTracer rayTracer, VehicleRayTraceResult result, PlayerEntity player);
 
     /**
