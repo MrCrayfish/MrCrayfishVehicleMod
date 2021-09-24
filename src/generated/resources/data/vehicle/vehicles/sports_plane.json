@@ -47,8 +47,8 @@
                 "rotation": [ -67.5, 0.0, 0.0 ],
                 "scale": 0.5
             },
-            "frontAxleOffset": 16.0,
-            "rearAxleOffset": -2.5,
+            "frontAxleOffset": 20.25,
+            "rearAxleOffset": 1.5,
             "engineSound": "vehicle:entity.sports_plane.engine"
         },
         "vehicle:plane": {
