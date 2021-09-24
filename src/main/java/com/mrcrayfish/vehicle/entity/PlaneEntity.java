@@ -151,19 +151,20 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         {
             // Gets the new position of the wheels
             Transform bodyPosition = properties.getBodyTransform();
-            double wheelBase = this.getFrontAxleOffset().distanceTo(this.getRearAxleOffset()) * 0.0625 * bodyPosition.getScale();
-            Vector3d frontWheel = this.position().add(forward.scale(wheelBase / 2.0));
-            Vector3d rearWheel = this.position().add(forward.scale(-wheelBase / 2.0));
-            frontWheel = frontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())));
-            rearWheel = rearWheel.add(this.velocity);
+            double frontAxleOffset = (bodyPosition.getZ() + this.getFrontAxleOffset().z) * 0.0625 * bodyPosition.getScale();
+            double rearAxleOffset = (bodyPosition.getZ() + this.getRearAxleOffset().z) * 0.0625 * bodyPosition.getScale();
+            Vector3d worldFrontWheel = this.position().add(forward.scale(frontAxleOffset));
+            Vector3d worldRearWheel = this.position().add(forward.scale(rearAxleOffset));
+            worldFrontWheel = worldFrontWheel.add(this.velocity.yRot((float) Math.toRadians(this.getSteeringAngle())));
+            worldRearWheel = worldRearWheel.add(this.velocity);
 
             // Updates the delta movement based on the new wheel positions
-            Vector3d nextPosition = frontWheel.add(rearWheel).scale(0.5);
+            Vector3d heading = worldFrontWheel.subtract(worldRearWheel).normalize();
+            Vector3d nextPosition = worldRearWheel.add(heading.scale(-rearAxleOffset));
             Vector3d nextMovement = nextPosition.subtract(this.position());
             this.motion = this.motion.add(nextMovement);
 
             // Updates the velocity based on the new heading
-            Vector3d heading = frontWheel.subtract(rearWheel).normalize();
             if(heading.dot(this.velocity.normalize()) > 0)
             {
                 this.velocity = CommonUtils.lerp(this.velocity, heading.scale(this.velocity.multiply(1, 0, 1).length()), 0.5F);
