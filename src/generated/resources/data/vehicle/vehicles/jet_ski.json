@@ -4,11 +4,11 @@
     "heldOffset": [ 6.0, 0.0, 0.0 ],
     "trailerOffset": [ 0.0, -0.094, -0.65 ],
     "displayTransform": {
-        "translate": [ 0.0, 0.0, -0.45 ],
+        "translate": [ 0.0, 0.0, -7.2 ],
         "scale": 1.5
     },
     "bodyTransform": {
-        "translate": [ 0.0, 0.0, 4.0 ],
+        "translate": [ 0.0, 0.0, 0.25 ],
         "scale": 1.25
     },
     "seats": [

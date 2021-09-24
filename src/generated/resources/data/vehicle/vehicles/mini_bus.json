@@ -67,9 +67,9 @@
             "enginePower": 14.0,
             "minEnginePitch": 0.75,
             "fuelFillerTransform": {
-                "translate": [ -12.0, 8.0, -8.75 ],
+                "translate": [ -12.0, 10.0, -8.75 ],
                 "rotation": [ 0.0, -90.0, 0.0 ],
-                "scale": 0.25
+                "scale": 0.5
             },
             "ignitionTransform": {
                 "translate": [ 0.0, 6.75, 19.5 ],

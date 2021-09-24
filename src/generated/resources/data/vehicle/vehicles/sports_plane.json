@@ -38,9 +38,9 @@
             "engineType": "vehicle:large_motor",
             "enginePower": 24.0,
             "fuelFillerTransform": {
-                "translate": [ -4.35, 4.0, -6.0 ],
+                "translate": [ -4.35, 6.0, -6.0 ],
                 "rotation": [ 0.0, -112.5, 0.0 ],
-                "scale": 0.25
+                "scale": 0.5
             },
             "ignitionTransform": {
                 "translate": [ 0.0, 3.75, 12.5 ],
