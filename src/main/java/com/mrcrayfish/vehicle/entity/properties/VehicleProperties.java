@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
  */
 public class VehicleProperties
 {
-    private static final double WHEEL_RADIUS = 8.0;
+    private static final double WHEEL_DIAMETER = 8.0;
     public static final Gson GSON = new GsonBuilder().registerTypeAdapter(VehicleProperties.class, new Serializer()).create();
     private static final Map<ResourceLocation, VehicleProperties> DEFAULT_VEHICLE_PROPERTIES = new HashMap<>();
     private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
@@ -617,7 +617,7 @@ public class VehicleProperties
         {
             return this.wheels.stream().map(wheel -> {
                 if(!wheel.isAutoScale()) return wheel;
-                double scale = ((wheelOffset + wheel.getOffsetY()) * 2) / WHEEL_RADIUS;
+                double scale = (wheelOffset + wheel.getOffsetY()) / (WHEEL_DIAMETER / 2.0);
                 double xScale = wheel.getScale().x != 0.0 ? wheel.getScale().x : scale;
                 double yScale = wheel.getScale().y != 0.0 ? wheel.getScale().y : scale;
                 double zScale = wheel.getScale().z != 0.0 ? wheel.getScale().z : scale;
@@ -628,15 +628,13 @@ public class VehicleProperties
 
         private float calculateWheelOffset()
         {
-            return this.wheels.stream().filter(wheel -> !wheel.isAutoScale()).max((w1, w2) -> (int) (this.getLowestSittingPosition(w1) - this.getLowestSittingPosition(w2))).map(this::getLowestSittingPosition).orElse(0F);
+            return (float) this.wheels.stream().filter(wheel -> !wheel.isAutoScale()).mapToDouble(this::getWheelOffset).max().orElse(0);
         }
 
-        private float getLowestSittingPosition(Wheel wheel)
+        private float getWheelOffset(Wheel wheel)
         {
-            double radius = WHEEL_RADIUS * wheel.getScaleY();
-            double lowestPosition = radius / 2;
-            lowestPosition -= wheel.getOffsetY();
-            return (float) lowestPosition;
+            double scaledDiameter = WHEEL_DIAMETER * wheel.getScaleY();
+            return (float) (scaledDiameter / 2.0) - wheel.getOffsetY();
         }
     }
 
