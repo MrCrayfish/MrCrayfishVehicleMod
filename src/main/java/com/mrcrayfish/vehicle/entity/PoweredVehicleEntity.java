@@ -1040,7 +1040,7 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
     {
         /* Updates the wheel positions as reloading vehicle properties
          * could cause a crash if wheels are added or removed. */
-        if(this.wheelPositions == null || this.wheelPositions.length != this.getProperties().getWheels().size())
+        if(this.wheelPositions == null || this.wheelPositions.length != this.getProperties().getWheels().size() * 3)
         {
             this.wheelPositions = new double[this.getProperties().getWheels().size() * 3];
         }
