@@ -76,8 +76,8 @@
                 "rotation": [ -67.5, 0.0, 0.0 ],
                 "scale": 0.5
             },
-            "frontAxleOffset": 14.5,
-            "rearAxleOffset": -14.5,
+            "frontAxleOffset": 13.5,
+            "rearAxleOffset": -13.5,
             "engineSound": "vehicle:entity.mini_bus.engine"
         }
     }
