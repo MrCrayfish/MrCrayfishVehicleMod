@@ -448,6 +448,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyCapacity(75000F)
                         .setEnergyConsumptionPerTick(1.0F)
                         .setEngineSound(ModSounds.ENTITY_SPORTS_PLANE_ENGINE.getId())
+                        .setMaxSteeringAngle(25F)
                         .build())
                 .addExtended(PlaneProperties.builder()
                         .setFlapSensitivity(0.1F)

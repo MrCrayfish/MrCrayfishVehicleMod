@@ -33,6 +33,7 @@
     },
     "extended": {
         "vehicle:powered": {
+            "maxSteeringAngle": 25.0,
             "energyCapacity": 75000.0,
             "energyConsumptionPerTick": 1.0,
             "engineType": "vehicle:large_motor",
