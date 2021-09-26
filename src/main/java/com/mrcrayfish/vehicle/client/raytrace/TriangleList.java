@@ -35,7 +35,6 @@ public class TriangleList
     /**
      * Gets list of static pre-transformed triangles, or gets a new list of dynamically transformed triangles
      *
-     * @param data   rendered item-part
      * @param entity raytraced entity
      */
     public List<Triangle> getTriangles(RayTraceData data, Entity entity)
@@ -46,7 +45,7 @@ public class TriangleList
             Matrix4f matrix = this.dynamicMatrix.apply(data, entity);
             for(Triangle triangle : this.triangles)
             {
-                triangles.add(new Triangle(EntityRayTracer.getTransformedTriangle(triangle.getData(), matrix)));
+                triangles.add(new Triangle(EntityRayTracer.getTransformedTriangle(triangle.getVertices(), matrix)));
             }
             return triangles;
         }

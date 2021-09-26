@@ -35,13 +35,13 @@ public class BoxRayTraceData extends RayTraceData
     }
 
     @Override
-    public TriangleList createTriangleList(Matrix4f matrix)
+    public TriangleList createTriangleList()
     {
         TriangleList triangleList = EntityRayTracer.boxToTriangles(this.getBox());
         List<Triangle> transformedTriangles = new ArrayList<>();
         for(Triangle triangle : triangleList.getTriangles())
         {
-            transformedTriangles.add(new Triangle(EntityRayTracer.getTransformedTriangle(triangle.getData(), matrix)));
+            transformedTriangles.add(new Triangle(EntityRayTracer.getTransformedTriangle(triangle.getVertices(), this.matrix)));
         }
         return new TriangleList(transformedTriangles);
     }

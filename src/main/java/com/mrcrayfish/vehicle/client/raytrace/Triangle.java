@@ -16,7 +16,7 @@ public class Triangle
         this.data = data;
     }
 
-    public float[] getData()
+    public float[] getVertices()
     {
         return this.data;
     }

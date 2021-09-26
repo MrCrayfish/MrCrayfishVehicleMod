@@ -33,8 +33,8 @@ public class ItemStackRayTraceData extends RayTraceData
     }
 
     @Override
-    public TriangleList createTriangleList(Matrix4f matrix)
+    public TriangleList createTriangleList()
     {
-        return new TriangleList(EntityRayTracer.trianglesFromBakedModel(RenderUtil.getModel(this.stack), matrix));
+        return new TriangleList(EntityRayTracer.trianglesFromBakedModel(RenderUtil.getModel(this.stack), this.matrix));
     }
 }

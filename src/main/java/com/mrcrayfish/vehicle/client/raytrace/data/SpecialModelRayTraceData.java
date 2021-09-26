@@ -32,8 +32,8 @@ public class SpecialModelRayTraceData extends RayTraceData
     }
 
     @Override
-    public TriangleList createTriangleList(Matrix4f matrix)
+    public TriangleList createTriangleList()
     {
-        return new TriangleList(EntityRayTracer.trianglesFromBakedModel(this.model.getModel(), matrix));
+        return new TriangleList(EntityRayTracer.trianglesFromBakedModel(this.model.getModel(), this.matrix));
     }
 }

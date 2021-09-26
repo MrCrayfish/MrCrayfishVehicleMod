@@ -52,12 +52,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -72,18 +72,13 @@ public class EntityRayTracer
     private static EntityRayTracer instance;
 
     //TODO lazy load ray trace transforms and regenerate when joining a server
-    private final Map<EntityType<?>, Supplier<RayTraceTransforms>> entityRayTraceTransforms = new HashMap<>();
+    private final Map<EntityType<?>, Supplier<RayTraceTransforms>> entityRayTraceTransformSuppliers = new HashMap<>();
 
     /**
      * Maps raytraceable entities to maps, which map rendered model item parts to the triangles that comprise static versions of the faces of their BakedQuads
      */
-    private final Map<EntityType<?>, Map<RayTraceData, TriangleList>> entityRayTraceTrianglesStatic = new HashMap<>();
-
-    /**
-     * Contains all data in entityRaytraceTrianglesStatic and entityRaytraceTrianglesDynamic
-     */
-    //TODO figure out if this is really needed
-    private final Map<EntityType<?>, Map<RayTraceData, TriangleList>> entityRayTraceTriangles = new HashMap<>();
+    private final Map<EntityType<?>, List<RayTraceData>> entityRayTraceData = new HashMap<>();
+    private final Map<EntityType<?>, Function<VehicleEntity, List<RayTraceData>>> entityDynamicRayTraceData = new HashMap<>();
 
     /**
      * Scales and offsets for rendering the entities in crates
@@ -91,8 +86,11 @@ public class EntityRayTracer
     private final Map<EntityType<?>, Pair<Float, Float>> entityCrateScalesAndOffsets = new HashMap<>();
     private final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<>(0.25F, 0.0F);
 
+    /**
+     * Interactable boxes
+     */
     private final Map<EntityType<?>, List<InteractableBox<?>>> entityInteractableBoxes = new HashMap<>();
-    private final Map<EntityType<?>, Map<RayTraceData, TriangleList>> entityInteractableBoxesTriangles = new HashMap<>();
+    private final Map<EntityType<?>, List<RayTraceData>> entityInteractableBoxData = new HashMap<>();
 
     /**
      * The result of clicking and holding on a continuously interactable raytrace part. Every tick that this is not null,
@@ -127,10 +125,9 @@ public class EntityRayTracer
      */
     public void clearDataForReregistration()
     {
-        this.entityRayTraceTrianglesStatic.clear();
-        this.entityRayTraceTriangles.clear();
+        this.entityRayTraceData.clear();
+        this.entityInteractableBoxData.clear();
         this.entityCrateScalesAndOffsets.clear();
-        this.entityInteractableBoxesTriangles.clear();
     }
 
     @Nullable
@@ -162,12 +159,17 @@ public class EntityRayTracer
      */
     public synchronized <T extends VehicleEntity> void registerTransforms(EntityType<T> type, Supplier<RayTraceTransforms> transforms)
     {
-        this.entityRayTraceTransforms.putIfAbsent(type, transforms);
+        this.entityRayTraceTransformSuppliers.putIfAbsent(type, transforms);
     }
 
     public synchronized <T extends VehicleEntity> void registerInteractionBox(EntityType<T> type, Supplier<AxisAlignedBB> boxSupplier, BiConsumer<T, Boolean> action, Predicate<T> active)
     {
         this.entityInteractableBoxes.computeIfAbsent(type, entityType -> new ArrayList<>()).add(new InteractableBox<>(boxSupplier, action, active));
+    }
+
+    public synchronized <T extends VehicleEntity> void registerDynamicRayTraceData(EntityType<T> type, Function<T, List<RayTraceData>> function)
+    {
+        this.entityDynamicRayTraceData.put(type, (Function<VehicleEntity, List<RayTraceData>>) function);
     }
 
     /**
@@ -178,31 +180,8 @@ public class EntityRayTracer
      */
     private <T extends VehicleEntity> void generateEntityTriangles(EntityType<T> entityType, Map<RayTraceData, List<MatrixTransform>> transforms)
     {
-        Map<RayTraceData, TriangleList> dataToTriangleList = new HashMap<>();
-        for(Entry<RayTraceData, List<MatrixTransform>> entry : transforms.entrySet())
-        {
-            /* Creates a matrix for each part */
-            Matrix4f matrix = new Matrix4f();
-            matrix.setIdentity();
-            entry.getValue().forEach(t -> t.transform(matrix));
-
-            /* Fixes matrix being based in the center of the model */
-            MatrixTransform.translate(-0.5F, -0.5F, -0.5F).transform(matrix);
-
-            /* Generates triangles from the data and applies the matrix */
-            RayTraceData data = entry.getKey();
-            dataToTriangleList.put(data, data.createTriangleList(matrix));
-        }
-        this.entityRayTraceTrianglesStatic.put(entityType, dataToTriangleList);
-
-        //TODO do we really need a copy?
-        HashMap<RayTraceData, TriangleList> partTrianglesCopy = new HashMap<>(dataToTriangleList);
-        Map<RayTraceData, TriangleList> partTrianglesAll = this.entityRayTraceTriangles.get(entityType);
-        if(partTrianglesAll != null)
-        {
-            partTrianglesCopy.putAll(partTrianglesAll);
-        }
-        this.entityRayTraceTriangles.put(entityType, partTrianglesCopy);
+        List<RayTraceData> dataList = new ArrayList<>(transforms.keySet());
+        this.entityRayTraceData.put(entityType, dataList);
     }
 
     /**
@@ -457,7 +436,7 @@ public class EntityRayTracer
         for(VehicleEntity entity : Objects.requireNonNull(minecraft.level).getEntitiesOfClass(VehicleEntity.class, box))
         {
             EntityType<T> type = (EntityType<T>) entity.getType();
-            if(this.entityRayTraceTransforms.containsKey(type))
+            if(this.entityRayTraceTransformSuppliers.containsKey(type))
             {
                 /* Initialize the vehicle triangles if they don't exist. Lazy loading for memory
                  * sake, not that it does much */
@@ -486,7 +465,7 @@ public class EntityRayTracer
             {
                 /* If the hit entity is a raytraceable entity, and if the player's eyes are inside what MC
                  * thinks the player is looking at, then process the hit regardless of what MC thinks */
-                boolean bypass = this.entityRayTraceTrianglesStatic.keySet().contains(closestRayTraceResult.getEntity().getType());
+                boolean bypass = this.entityRayTraceData.keySet().contains(closestRayTraceResult.getEntity().getType());
                 RayTraceResult result = Minecraft.getInstance().hitResult;
                 if(bypass && result != null && result.getType() != RayTraceResult.Type.MISS)
                 {
@@ -534,12 +513,12 @@ public class EntityRayTracer
 
     private <T extends VehicleEntity> void initializeTransforms(EntityType<T> type)
     {
-        if(!this.entityRayTraceTrianglesStatic.containsKey(type))
+        if(!this.entityRayTraceData.containsKey(type))
         {
             List<MatrixTransform> transforms = new ArrayList<>();
             TransformHelper.createBodyTransforms(transforms, type);
             HashMap<RayTraceData, List<MatrixTransform>> parts = Maps.newHashMap();
-            RayTraceTransforms rayTraceTransforms = this.entityRayTraceTransforms.get(type).get();
+            RayTraceTransforms rayTraceTransforms = this.entityRayTraceTransformSuppliers.get(type).get();
             rayTraceTransforms.load(this, transforms, parts);
             this.generateEntityTriangles(type, parts);
             this.generateScalingAndOffset(type);
@@ -551,19 +530,23 @@ public class EntityRayTracer
     {
         float min = 0;
         float max = 0;
-        for(Entry<RayTraceData, TriangleList> entry : this.entityRayTraceTriangles.get(type).entrySet())
+        for(RayTraceData data : this.entityRayTraceData.get(type))
         {
-            for(Triangle triangle : entry.getValue().getTriangles())
+            TriangleList triangleList = data.getTriangleList();
+            if(triangleList != null)
             {
-                float[] data = triangle.getData();
-                for(int i = 0; i < data.length; i += 3)
+                for(Triangle triangle : triangleList.getTriangles())
                 {
-                    min = Math.min(min, data[i]);
-                    min = Math.min(min, data[i + 1]);
-                    min = Math.min(min, data[i + 2]);
-                    max = Math.max(max, data[i]);
-                    max = Math.max(max, data[i + 1]);
-                    max = Math.max(max, data[i + 2]);
+                    float[] vertices = triangle.getVertices();
+                    for(int i = 0; i < vertices.length; i += 3)
+                    {
+                        min = Math.min(min, vertices[i]);
+                        min = Math.min(min, vertices[i + 1]);
+                        min = Math.min(min, vertices[i + 2]);
+                        max = Math.max(max, vertices[i]);
+                        max = Math.max(max, vertices[i + 1]);
+                        max = Math.max(max, vertices[i + 2]);
+                    }
                 }
             }
         }
@@ -575,13 +558,10 @@ public class EntityRayTracer
     {
         Optional.ofNullable(this.entityInteractableBoxes.get(type)).ifPresent(list -> {
             list.forEach(box -> {
-                Matrix4f matrix = new Matrix4f();
-                matrix.setIdentity();
-                transforms.forEach(t -> t.transform(matrix));
-                MatrixTransform.translate(0.0F, -0.5F, 0.0F).transform(matrix);
-                this.entityInteractableBoxesTriangles.computeIfAbsent(type, t -> {
-                    return new HashMap<>();
-                }).put(box.getData(), box.getData().createTriangleList(matrix));
+                RayTraceData data = box.getData();
+                data.clearTriangles();
+                data.setMatrix(TransformHelper.createMatrixFromTransformsForInteractionBox(transforms));
+                this.entityInteractableBoxData.computeIfAbsent(type, t -> new ArrayList<>()).add(data);
             });
         });
     }
@@ -606,21 +586,31 @@ public class EntityRayTracer
     @Nullable
     public VehicleRayTraceResult rayTraceEntityRotated(VehicleEntity entity, Vector3d eyeVec, Vector3d forwardVec, double reach, boolean rightClick)
     {
+        // Rotate the ray trace vectors in the opposite direction as the entity's rotation yaw
         Vector3d entityPos = entity.position();
         double angle = Math.toRadians(-entity.yRot);
-
-        // Rotate the ray trace vectors in the opposite direction as the entity's rotation yaw
         Vector3d eyeVecRotated = rotateVecXZ(eyeVec, angle, entityPos);
         Vector3d forwardVecRotated = rotateVecXZ(forwardVec, angle, entityPos);
-
         Vector3d look = forwardVecRotated.subtract(eyeVecRotated).normalize().scale(reach);
         float[] direction = new float[]{(float) look.x, (float) look.y, (float) look.z};
 
         // Perform ray trace on the entity's interaction boxes
         double distanceShortest = Double.MAX_VALUE;
-        InterceptResult lookBox = rayTracePartTriangles(entity, entityPos, eyeVecRotated, distanceShortest, direction, this.getApplicableInteractableBoxes(entity), false, this.entityInteractableBoxesTriangles.get(entity.getType()));
+        InterceptResult lookBox = rayTracePartTriangles(entity, entityPos, eyeVecRotated, distanceShortest, direction, this.getApplicableInteractableBoxes(entity), false, this.entityInteractableBoxData.get(entity.getType()));
         distanceShortest = updateShortestDistance(lookBox, distanceShortest);
-        InterceptResult lookPart = rayTracePartTriangles(entity, entityPos, eyeVecRotated, distanceShortest, direction, null, true, this.entityRayTraceTrianglesStatic.get(entity.getType()));
+        InterceptResult lookPart = rayTracePartTriangles(entity, entityPos, eyeVecRotated, distanceShortest, direction, null, true, this.entityRayTraceData.get(entity.getType()));
+
+        // Allows for dynamic triangles
+        if(this.entityDynamicRayTraceData.containsKey(entity.getType()))
+        {
+            distanceShortest = updateShortestDistance(lookPart, distanceShortest);
+            Function<VehicleEntity, List<RayTraceData>> function = this.entityDynamicRayTraceData.get(entity.getType());
+            InterceptResult customPart = rayTracePartTriangles(entity, entityPos, eyeVecRotated, distanceShortest, direction, null, true, function.apply(entity));
+            if(customPart != null)
+            {
+                lookPart = customPart;
+            }
+        }
 
         // Return the result object of hit with hit vector rotated back in the same direction as the entity's rotation yaw, or null it no hit occurred
         if (lookPart != null)
@@ -661,19 +651,22 @@ public class EntityRayTracer
      *
      * @return the result of the part raytrace
      */
-    private static InterceptResult rayTracePartTriangles(Entity entity, Vector3d entityPos, Vector3d eyePos, double closestDistance, float[] direction, @Nullable List<RayTraceData> partsApplicable, boolean invalidateParts, Map<RayTraceData, TriangleList> parts)
+    private static InterceptResult rayTracePartTriangles(Entity entity, Vector3d entityPos, Vector3d eyePos, double closestDistance, float[] direction, @Nullable List<RayTraceData> partsApplicable, boolean invalidateParts, List<RayTraceData> parts)
     {
         InterceptResult closestResult = null;
         if(parts != null)
         {
-            for(Entry<RayTraceData, TriangleList> entry : parts.entrySet())
+            for(RayTraceData data : parts)
             {
-                if(partsApplicable == null || (invalidateParts != partsApplicable.contains(entry.getKey())))
+                if(partsApplicable == null || (invalidateParts != partsApplicable.contains(data)))
                 {
-                    RayTraceData part = entry.getKey();
-                    for(Triangle triangle : entry.getValue().getTriangles(part, entity))
+                    TriangleList triangleList = data.getTriangleList();
+                    if(triangleList == null)
+                        continue;
+
+                    for(Triangle triangle : triangleList.getTriangles(data, entity))
                     {
-                        InterceptResult result = InterceptResult.calculate(entityPos, eyePos, direction, triangle.getData(), part);
+                        InterceptResult result = InterceptResult.calculate(entityPos, eyePos, direction, triangle.getVertices(), data);
                         if(result != null && result.getDistance() < closestDistance)
                         {
                             closestResult = result;
@@ -726,15 +719,21 @@ public class EntityRayTracer
     {
         EntityType<T> type = (EntityType<T>) entity.getType();
         this.initializeTransforms(type);
-        drawTriangleList(entity, this.entityRayTraceTriangles.get(type), matrixStack, builder, 0xFFB64C);
-        drawTriangleList(entity, this.entityInteractableBoxesTriangles.get(type), matrixStack, builder, 0x00FF00);
+        drawTriangleList(entity, this.entityRayTraceData.get(type), matrixStack, builder, 0xFFB64C);
+        drawTriangleList(entity, this.entityInteractableBoxData.get(type), matrixStack, builder, 0x00FF00);
+
+        if(this.entityDynamicRayTraceData.containsKey(entity.getType()))
+        {
+            Function<VehicleEntity, List<RayTraceData>> function = this.entityDynamicRayTraceData.get(entity.getType());
+            drawTriangleList(entity, function.apply(entity), matrixStack, builder, 0xFFB64C);
+        }
     }
 
-    private static <T extends VehicleEntity> void drawTriangleList(T entity, @Nullable Map<RayTraceData, TriangleList> map, MatrixStack matrixStack, IVertexBuilder builder, int baseColor)
+    private static <T extends VehicleEntity> void drawTriangleList(T entity, @Nullable List<RayTraceData> dataList, MatrixStack matrixStack, IVertexBuilder builder, int baseColor)
     {
-        Optional.ofNullable(map).ifPresent(map2 ->
+        Optional.ofNullable(dataList).ifPresent(list ->
         {
-            map2.forEach((data, list) ->
+            list.forEach(data ->
             {
                 if(!Config.CLIENT.forceRenderAllInteractableBoxes.get() && data instanceof InteractableBoxRayTraceData)
                 {
@@ -748,7 +747,11 @@ public class EntityRayTracer
                 float r = (float) (color >> 16 & 255) / 255.0F;
                 float g = (float) (color >> 8 & 255) / 255.0F;
                 float b = (float) (color & 255) / 255.0F;
-                list.getTriangles(data, entity).forEach(triangle -> triangle.draw(matrixStack, builder, r, g, b, 0.4F));
+                TriangleList triangleList = data.getTriangleList();
+                if(triangleList != null)
+                {
+                    triangleList.getTriangles(data, entity).forEach(triangle -> triangle.draw(matrixStack, builder, r, g, b, 0.4F));
+                }
             });
         });
     }

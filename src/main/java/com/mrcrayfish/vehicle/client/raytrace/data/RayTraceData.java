@@ -13,10 +13,16 @@ public abstract class RayTraceData
 {
     @Nullable
     private final RayTraceFunction function;
+    @Nullable
+    private TriangleList triangles = null;
+    protected Matrix4f matrix;
 
     public RayTraceData(@Nullable RayTraceFunction function)
     {
         this.function = function;
+        Matrix4f matrix = new Matrix4f();
+        matrix.setIdentity();
+        this.matrix = matrix;
     }
 
     @Nullable
@@ -25,5 +31,25 @@ public abstract class RayTraceData
         return this.function;
     }
 
-    public abstract TriangleList createTriangleList(Matrix4f matrix);
+    public void setMatrix(Matrix4f matrix)
+    {
+        this.matrix = matrix;
+    }
+
+    @Nullable
+    public final TriangleList getTriangleList()
+    {
+        if(this.triangles == null)
+        {
+            this.triangles = this.createTriangleList();
+        }
+        return this.triangles;
+    }
+
+    protected abstract TriangleList createTriangleList();
+
+    public final void clearTriangles()
+    {
+        this.triangles = null;
+    }
 }
