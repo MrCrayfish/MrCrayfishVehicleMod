@@ -5,7 +5,6 @@ import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Matrix4f;
 
 import javax.annotation.Nullable;
 
@@ -35,6 +34,6 @@ public class ItemStackRayTraceData extends RayTraceData
     @Override
     public TriangleList createTriangleList()
     {
-        return new TriangleList(EntityRayTracer.trianglesFromBakedModel(RenderUtil.getModel(this.stack), this.matrix));
+        return new TriangleList(EntityRayTracer.createTrianglesFromBakedModel(RenderUtil.getModel(this.stack), this.matrix));
     }
 }

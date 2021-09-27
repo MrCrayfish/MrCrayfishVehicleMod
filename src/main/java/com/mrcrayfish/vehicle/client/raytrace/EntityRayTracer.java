@@ -42,6 +42,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.loading.FMLLoader;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.glfw.GLFW;
@@ -84,7 +85,7 @@ public class EntityRayTracer
      * Scales and offsets for rendering the entities in crates
      */
     private final Map<EntityType<?>, Pair<Float, Float>> entityCrateScalesAndOffsets = new HashMap<>();
-    private final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<>(0.25F, 0.0F);
+    private static final Pair<Float, Float> SCALE_AND_OFFSET_DEFAULT = new ImmutablePair<>(0.25F, 0.0F);
 
     /**
      * Interactable boxes
@@ -162,11 +163,34 @@ public class EntityRayTracer
         this.entityRayTraceTransformSuppliers.putIfAbsent(type, transforms);
     }
 
+    /**
+     * Registers an interaction box for the specified entity type. An interaction box allows you to
+     * run a custom action when it is interacted with on the vehicle. This is currently used for the
+     * chest on the Moped. This interaction box will be global across all entities that match the
+     * given entity type. The AxisAlignBB supplier is positioned relative to the center of the vehicle.
+     *
+     * @param type        the entity type to pair the interaction box to
+     * @param boxSupplier a supplier that returns an AxisAlignedBB
+     * @param action      the custom action to run when the box is interacted with
+     * @param active      a predicate to determine if the interaction box is active
+     * @param <T>         an entity that extends vehicle entity
+     */
     public synchronized <T extends VehicleEntity> void registerInteractionBox(EntityType<T> type, Supplier<AxisAlignedBB> boxSupplier, BiConsumer<T, Boolean> action, Predicate<T> active)
     {
-        this.entityInteractableBoxes.computeIfAbsent(type, entityType -> new ArrayList<>()).add(new InteractableBox<>(boxSupplier, action, active));
+        this.entityInteractableBoxes.computeIfAbsent(type, entityType -> new ArrayList<>())
+                .add(new InteractableBox<>(boxSupplier, action, active));
     }
 
+    /**
+     * Registers a function that provides dynamic RayTraceData based on the given vehicle entity.
+     * Unlike registering normal transforms, the RayTraceData list returned from the provided function
+     * is not global across all entities of that type. It is recommended that the list of RayTraceData
+     * returned from the function is cached instead of creating new instances when the function is called.
+     *
+     * @param type     the entity type to pair the function to
+     * @param function a function that returns custom raytracedata
+     * @param <T>      an entity that extends vehicle entity
+     */
     public synchronized <T extends VehicleEntity> void registerDynamicRayTraceData(EntityType<T> type, Function<T, List<RayTraceData>> function)
     {
         this.entityDynamicRayTraceData.put(type, (Function<VehicleEntity, List<RayTraceData>>) function);
@@ -194,6 +218,7 @@ public class EntityRayTracer
     public Pair<Float, Float> getCrateScaleAndOffset(EntityType<? extends VehicleEntity> entityType)
     {
         Pair<Float, Float> scaleAndOffset = this.entityCrateScalesAndOffsets.get(entityType);
+        this.initializeTransforms(entityType);
         return scaleAndOffset == null ? SCALE_AND_OFFSET_DEFAULT : scaleAndOffset;
     }
 
@@ -205,65 +230,38 @@ public class EntityRayTracer
      * 
      * @return list of all triangles
      */
-    public static List<Triangle> trianglesFromBakedModel(IBakedModel model, @Nullable Matrix4f matrix)
+    public static List<Triangle> createTrianglesFromBakedModel(IBakedModel model, @Nullable Matrix4f matrix)
     {
-        List<Triangle> triangles = Lists.newArrayList();
+        List<Triangle> triangles = new ArrayList<>();
         try
         {
             Random random = new Random();
             random.setSeed(42L);
-            // Generate triangles for all faceless and faced quads
-            trianglesFromBakedModel(model.getQuads(null, null, random), matrix, triangles);
+            createTrianglesFromBakedModel(model.getQuads(null, null, random), matrix, triangles);
             for(Direction facing : Direction.values())
             {
                 random.setSeed(42L);
-                trianglesFromBakedModel(model.getQuads(null, facing, random), matrix, triangles);
+                createTrianglesFromBakedModel(model.getQuads(null, facing, random), matrix, triangles);
             }
         }
-        catch(Exception ignored)
-        {
-        }
+        catch(Exception ignored){}
         return triangles;
     }
 
     /**
-     * Converts quads into pairs of transformed triangles that represent them
+     * Converts BakedQuads from a BakedModel into triangles
      * 
-     * @param list list of BakedQuad
+     * @param quads list of BakedQuad
      * @param matrix part-specific matrix mirroring the static GL operations performed on that part during rendering - should be null for dynamic triangles
      * @param triangles list of all triangles for the given raytraceable entity class
      */
-    private static void trianglesFromBakedModel(List<BakedQuad> list, @Nullable Matrix4f matrix, List<Triangle> triangles)
+    private static void createTrianglesFromBakedModel(List<BakedQuad> quads, @Nullable Matrix4f matrix, List<Triangle> triangles)
     {
-        for(BakedQuad quad : list)
+        for(BakedQuad quad : quads)
         {
             int size = DefaultVertexFormats.BLOCK.getIntegerSize();
-            int[] data = quad.getVertices();
-            // Two triangles that represent the BakedQuad
-            float[] triangle1 = new float[9];
-            float[] triangle2 = new float[9];
-
-            // Corner 1
-            triangle1[0] = Float.intBitsToFloat(data[0]);
-            triangle1[1] = Float.intBitsToFloat(data[1]);
-            triangle1[2] = Float.intBitsToFloat(data[2]);
-            // Corner 2
-            triangle1[3] = triangle2[6] = Float.intBitsToFloat(data[size]);
-            triangle1[4] = triangle2[7] = Float.intBitsToFloat(data[size + 1]);
-            triangle1[5] = triangle2[8] = Float.intBitsToFloat(data[size + 2]);
-            // Corner 3
-            size *= 2;
-            triangle2[0] = Float.intBitsToFloat(data[size]);
-            triangle2[1] = Float.intBitsToFloat(data[size + 1]);
-            triangle2[2] = Float.intBitsToFloat(data[size + 2]);
-            // Corner 4
-            size *= 1.5;
-            triangle1[6] = triangle2[3] = Float.intBitsToFloat(data[size]);
-            triangle1[7] = triangle2[4] = Float.intBitsToFloat(data[size + 1]);
-            triangle1[8] = triangle2[5] = Float.intBitsToFloat(data[size + 2]);
-
-            transformTriangleAndAdd(triangle1, matrix, triangles);
-            transformTriangleAndAdd(triangle2, matrix, triangles);
+            Integer[] data = ArrayUtils.toObject(quad.getVertices());
+            createTrianglesFromDataAndAdd(triangles, matrix, size, data, Float::intBitsToFloat);
         }
     }
 
@@ -323,14 +321,10 @@ public class EntityRayTracer
     public void rayTraceEntitiesContinuously(TickEvent.ClientTickEvent event)
     {
         if(event.phase != TickEvent.Phase.START)
-        {
             return;
-        }
 
         if(this.continuousInteraction == null || Minecraft.getInstance().player == null)
-        {
             return;
-        }
 
         VehicleRayTraceResult result = rayTraceEntities(this.continuousInteraction.isRightClick());
         if(result == null || result.getEntity() != this.continuousInteraction.getEntity() || result.getData() != this.continuousInteraction.getData())
@@ -339,7 +333,9 @@ public class EntityRayTracer
             this.continuousInteractionTickCounter = 0;
             return;
         }
+
         this.continuousInteractionHand = result.performContinuousInteraction();
+
         if(this.continuousInteractionHand == null)
         {
             this.continuousInteraction = null;
@@ -387,10 +383,10 @@ public class EntityRayTracer
         // Return if not right and/or left clicking, if the mouse is being released, or if there are no entity classes to raytrace
         boolean rightClick = event.getButton() == Minecraft.getInstance().options.keyUse.getKey().getValue();
         boolean leftClick = event.getButton() == Minecraft.getInstance().options.keyAttack.getKey().getValue();
-        if((!rightClick && (!Config.CLIENT.enabledLeftClick.get() || !leftClick)))
-        {
+
+        if(!rightClick && (!Config.CLIENT.enabledLeftClick.get() || !leftClick))
             return;
-        }
+
         if(this.performRayTrace(rightClick))
         {
             event.setCanceled(true);
@@ -556,8 +552,10 @@ public class EntityRayTracer
 
     private <T extends VehicleEntity> void generateInteractableBoxes(EntityType<T> type, List<MatrixTransform> transforms)
     {
-        Optional.ofNullable(this.entityInteractableBoxes.get(type)).ifPresent(list -> {
-            list.forEach(box -> {
+        Optional.ofNullable(this.entityInteractableBoxes.get(type)).ifPresent(list ->
+        {
+            list.forEach(box ->
+            {
                 RayTraceData data = box.getData();
                 data.clearTriangles();
                 data.setMatrix(TransformHelper.createMatrixFromTransformsForInteractionBox(transforms));
@@ -566,6 +564,13 @@ public class EntityRayTracer
         });
     }
 
+    /**
+     * Gets a list of the ray trace data components from applicable interaction boxes. The applicable
+     * state is based on the active predicate of the interactable box. See {@link InteractableBox#isActive(VehicleEntity)}
+     *
+     * @param entity the entity to get interactable boxes
+     * @return a list of ray trace data
+     */
     private List<RayTraceData> getApplicableInteractableBoxes(VehicleEntity entity)
     {
         List<InteractableBox<?>> boxes = this.entityInteractableBoxes.get(entity.getType());
@@ -612,28 +617,23 @@ public class EntityRayTracer
             }
         }
 
-        // Return the result object of hit with hit vector rotated back in the same direction as the entity's rotation yaw, or null it no hit occurred
-        if (lookPart != null)
-        {
-            return new VehicleRayTraceResult(entity, rotateVecXZ(lookPart.getHitPos(), -angle, entityPos), lookPart.getDistance(), lookPart.getPart(), rightClick);
-        }
-
-        return lookBox == null ? null : new VehicleRayTraceResult(entity, rotateVecXZ(lookBox.getHitPos(), -angle, entityPos), lookBox.getDistance(), lookBox.getPart(), rightClick);
+        InterceptResult result = lookPart != null ? lookPart : lookBox;
+        return result != null ? new VehicleRayTraceResult(entity, rotateVecXZ(result.getHitPos(), -angle, entityPos), result.getDistance(), result.getPart(), rightClick) : null;
     }
 
     /**
      * Sets the current shortest distance to the current closest viewed object
      * 
-     * @param lookObject current closest viewed object
+     * @param result current closest viewed object
      * @param distanceShortest distance from eyes to the current closest viewed object
      * 
      * @return new shortest distance
      */
-    private static double updateShortestDistance(InterceptResult lookObject, double distanceShortest)
+    private static double updateShortestDistance(InterceptResult result, double distanceShortest)
     {
-        if (lookObject != null)
+        if(result != null)
         {
-            distanceShortest = lookObject.getDistance();
+            distanceShortest = result.getDistance();
         }
         return distanceShortest;
     }
@@ -776,13 +776,14 @@ public class EntityRayTracer
      */
     public static TriangleList boxToTriangles(AxisAlignedBB box, @Nullable BiFunction<RayTraceData, Entity, Matrix4f> matrixFactory)
     {
+        int size = 3;
         List<Triangle> triangles = Lists.newArrayList();
-        getTrianglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, box.minX, box.minY, box.minZ);
-        getTrianglesFromQuadAndAdd(triangles, box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.minY, box.maxZ, box.maxX, box.minY, box.minZ);
-        getTrianglesFromQuadAndAdd(triangles, box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ);
-        getTrianglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ);
-        getTrianglesFromQuadAndAdd(triangles, box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.maxY, box.minZ, box.minX, box.maxY, box.minZ);
-        getTrianglesFromQuadAndAdd(triangles, box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ);
+        createTrianglesFromDataAndAdd(triangles, null, size, new Double[]{box.minX, box.maxY, box.minZ, box.maxX, box.maxY, box.minZ, box.maxX, box.minY, box.minZ, box.minX, box.minY, box.minZ}, Double::floatValue);
+        createTrianglesFromDataAndAdd(triangles, null, size, new Double[]{box.maxX, box.maxY, box.minZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.minY, box.maxZ, box.maxX, box.minY, box.minZ}, Double::floatValue);
+        createTrianglesFromDataAndAdd(triangles, null, size, new Double[]{box.maxX, box.maxY, box.maxZ, box.minX, box.maxY, box.maxZ, box.minX, box.minY, box.maxZ, box.maxX, box.minY, box.maxZ}, Double::floatValue);
+        createTrianglesFromDataAndAdd(triangles, null, size, new Double[]{box.minX, box.maxY, box.maxZ, box.minX, box.maxY, box.minZ, box.minX, box.minY, box.minZ, box.minX, box.minY, box.maxZ}, Double::floatValue);
+        createTrianglesFromDataAndAdd(triangles, null, size, new Double[]{box.minX, box.maxY, box.maxZ, box.maxX, box.maxY, box.maxZ, box.maxX, box.maxY, box.minZ, box.minX, box.maxY, box.minZ}, Double::floatValue);
+        createTrianglesFromDataAndAdd(triangles, null, size, new Double[]{box.maxX, box.minY, box.maxZ, box.minX, box.minY, box.maxZ, box.minX, box.minY, box.minZ, box.maxX, box.minY, box.minZ}, Double::floatValue);
         return new TriangleList(triangles, matrixFactory);
     }
 
@@ -801,38 +802,34 @@ public class EntityRayTracer
 
     /**
      * Converts quad into a pair of triangles that represents it
-     * 
      * @param triangles list of all triangles for the given raytraceable entity class
+     * @param matrix
      * @param data four vertices of a quad
      */
-    private static void getTrianglesFromQuadAndAdd(List<Triangle> triangles, double... data)
+    private static <T> void createTrianglesFromDataAndAdd(List<Triangle> triangles, Matrix4f matrix, int size, T[] data, Function<T, Float> cast)
     {
-        int size = 3;
-        // Two triangles that represent the BakedQuad
         float[] triangle1 = new float[9];
         float[] triangle2 = new float[9];
-
         // Corner 1
-        triangle1[0] = (float) data[0];
-        triangle1[1] = (float) data[1];
-        triangle1[2] = (float) data[2];
+        triangle1[0] = cast.apply(data[0]);
+        triangle1[1] = cast.apply(data[1]);
+        triangle1[2] = cast.apply(data[2]);
         // Corner 2
-        triangle1[3] = triangle2[6] = (float) data[size];
-        triangle1[4] = triangle2[7] = (float) data[size + 1];
-        triangle1[5] = triangle2[8] = (float) data[size + 2];
+        triangle1[3] = triangle2[6] = cast.apply(data[size]);
+        triangle1[4] = triangle2[7] = cast.apply(data[size + 1]);
+        triangle1[5] = triangle2[8] = cast.apply(data[size + 2]);
         // Corner 3
         size *= 2;
-        triangle2[0] = (float) data[size];
-        triangle2[1] = (float) data[size + 1];
-        triangle2[2] = (float) data[size + 2];
+        triangle2[0] = cast.apply(data[size]);
+        triangle2[1] = cast.apply(data[size + 1]);
+        triangle2[2] = cast.apply(data[size + 2]);
         // Corner 4
         size *= 1.5;
-        triangle1[6] = triangle2[3] = (float) data[size];
-        triangle1[7] = triangle2[4] = (float) data[size + 1];
-        triangle1[8] = triangle2[5] = (float) data[size + 2];
-
-        transformTriangleAndAdd(triangle1, null, triangles);
-        transformTriangleAndAdd(triangle2, null, triangles);
+        triangle1[6] = triangle2[3] = cast.apply(data[size]);
+        triangle1[7] = triangle2[4] = cast.apply(data[size + 1]);
+        triangle1[8] = triangle2[5] = cast.apply(data[size + 2]);
+        transformTriangleAndAdd(triangle1, matrix, triangles);
+        transformTriangleAndAdd(triangle2, matrix, triangles);
     }
 
     /**

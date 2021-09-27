@@ -4,7 +4,6 @@ import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
-import net.minecraft.util.math.vector.Matrix4f;
 
 import javax.annotation.Nullable;
 
@@ -34,6 +33,6 @@ public class SpecialModelRayTraceData extends RayTraceData
     @Override
     public TriangleList createTriangleList()
     {
-        return new TriangleList(EntityRayTracer.trianglesFromBakedModel(this.model.getModel(), this.matrix));
+        return new TriangleList(EntityRayTracer.createTrianglesFromBakedModel(this.model.getModel(), this.matrix));
     }
 }

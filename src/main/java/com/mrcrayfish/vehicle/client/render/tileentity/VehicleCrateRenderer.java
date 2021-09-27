@@ -34,6 +34,7 @@ public class VehicleCrateRenderer extends TileEntityRenderer<VehicleCrateTileEnt
         super(dispatcher);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void render(VehicleCrateTileEntity crate, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, int overlay)
     {
