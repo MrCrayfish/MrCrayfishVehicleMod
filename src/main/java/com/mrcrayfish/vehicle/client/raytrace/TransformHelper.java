@@ -50,6 +50,15 @@ public class TransformHelper
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ())));
     }
 
+    public static void createSimpleTransforms(List<MatrixTransform> transforms, Transform transform)
+    {
+        transforms.add(MatrixTransform.scale((float) transform.getScale()));
+        transforms.add(MatrixTransform.translate((float) transform.getX() * 0.0625F, (float) transform.getY() * 0.0625F, (float) transform.getZ() * 0.0625F));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) transform.getRotX())));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) transform.getRotY())));
+        transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) transform.getRotZ())));
+    }
+
     public static void createPartTransforms(ISpecialModel model, Transform transform, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
     {
         createPartTransforms(new SpecialModelRayTraceData(model, function), transform.getTranslate(), transform.getRotation(), (float) transform.getScale(), parts, globalTransforms);
