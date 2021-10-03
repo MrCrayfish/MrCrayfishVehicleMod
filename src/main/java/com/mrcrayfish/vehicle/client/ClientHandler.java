@@ -130,6 +130,7 @@ public class ClientHandler
     {
         /* Register Vehicles */
         VehicleUtil.registerVehicleRenderer(ModEntities.ATV.get(), ATVRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.SPORTS_CAR.get(), SportsCarRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.GO_KART.get(), GoKartRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.JET_SKI.get(), JetSkiRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.LAWN_MOWER.get(), LawnMowerRenderer::new);
