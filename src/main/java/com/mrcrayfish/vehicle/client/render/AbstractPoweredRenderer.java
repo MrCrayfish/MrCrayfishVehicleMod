@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
@@ -125,6 +126,20 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         }
         int wheelColor = IDyeable.getColorFromStack(stack);
         RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, wheelColor, light, OverlayTexture.NO_OVERLAY);
+        matrixStack.popPose();
+    }
+
+    protected void renderSteeringWheel(T vehicle, IBakedModel model, double x, double y, double z, float scale, float angle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
+    {
+        matrixStack.pushPose();
+        matrixStack.translate(x * 0.0625, y * 0.0625, z * 0.0625);
+        matrixStack.mulPose(Vector3f.XP.rotationDegrees(angle));
+        matrixStack.scale(scale, scale, scale);
+        float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
+        float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
+        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
+        matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
+        this.renderDamagedPart(vehicle, SpecialModels.SPORTS_CAR_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
     }
 
