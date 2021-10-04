@@ -1,5 +1,5 @@
 {
-	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench",
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
 		"1": "vehicle:model/fuel_port_closed",
 		"particle": "vehicle:model/fuel_port_closed"
@@ -9,9 +9,9 @@
 			"from": [5, 5, 8],
 			"to": [11, 11, 9],
 			"faces": {
-				"east": {"uv": [0, 6, 1, 12], "texture": "#1"},
+				"east": {"uv": [0, 6, 1, 12], "texture": "#1", "tintindex": 0},
 				"south": {"uv": [0, 0, 6, 6], "texture": "#1", "tintindex": 0},
-				"west": {"uv": [6, 0, 7, 6], "texture": "#1"},
+				"west": {"uv": [6, 0, 7, 6], "texture": "#1", "tintindex": 0},
 				"up": {"uv": [7, 7, 1, 6], "texture": "#1", "tintindex": 0},
 				"down": {"uv": [13, 0, 7, 1], "texture": "#1", "tintindex": 0}
 			}
