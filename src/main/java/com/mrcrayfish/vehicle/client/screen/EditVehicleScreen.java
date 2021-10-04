@@ -141,11 +141,12 @@ public class EditVehicleScreen extends ContainerScreen<EditVehicleContainer>
         RenderSystem.matrixMode(GL11.GL_PROJECTION);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
-        Matrix4f projectionMatrix = Matrix4f.perspective(30, (float) this.width / (float) this.height, 0.5F, 200.0F);
+        Matrix4f projectionMatrix = Matrix4f.perspective(30, 142.0F / 70.0F, 0.5F, 200.0F);
         RenderSystem.multMatrix(projectionMatrix);
         RenderSystem.matrixMode(GL11.GL_MODELVIEW);
         RenderSystem.pushMatrix();
         RenderSystem.loadIdentity();
+        RenderHelper.setupLevel(matrixStack.last().pose());
 
         AbstractVehicleRenderer renderer = this.cachedVehicle.getRenderer();
         if(renderer != null)
