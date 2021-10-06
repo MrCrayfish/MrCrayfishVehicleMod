@@ -1,0 +1,62 @@
+{
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "bodyTransform": {
+        "scale": 1.6
+    },
+    "wheels": [
+        {
+            "side": "left",
+            "axle": "front",
+            "offset": [ 6.5, 0.25, 12.5 ],
+            "scale": [ 0.9, 0.9, 0.9 ]
+        },
+        {
+            "side": "right",
+            "axle": "front",
+            "offset": [ 6.5, 0.25, 12.5 ],
+            "scale": [ 0.9, 0.9, 0.9 ]
+        },
+        {
+            "side": "left",
+            "axle": "rear",
+            "offset": [ 6.5, 0.25, -11.5 ],
+            "scale": [ 0.9, 0.9, 0.9 ]
+        },
+        {
+            "side": "right",
+            "axle": "rear",
+            "offset": [ 6.5, 0.25, -11.5 ],
+            "scale": [ 0.9, 0.9, 0.9 ]
+        }
+    ],
+    "seats": [
+        {
+            "position": [ 4.0, -2.0, -4.0 ],
+            "driver": true
+        }
+    ],
+    "camera": {
+        "distance": 5.0
+    },
+    "extended": {
+        "vehicle:powered": {
+            "energyCapacity": 20000.0,
+            "engineType": "vehicle:large_motor",
+            "enginePower": 20.0,
+            "fuelFillerTransform": {
+                "translate": [ -10.0, 6.5, -14.0 ],
+                "rotation": [ 0.0, -90.0, 0.0 ],
+                "scale": 0.4
+            },
+            "ignitionTransform": {
+                "translate": [ -5.0, 4.5, 6.5 ],
+                "rotation": [ -45.0, 0.0, 0.0 ],
+                "scale": 0.5
+            },
+            "frontAxleOffset": 12.5,
+            "rearAxleOffset": -11.5,
+            "engineSound": "vehicle:entity.mini_bus.engine"
+        }
+    }
+}

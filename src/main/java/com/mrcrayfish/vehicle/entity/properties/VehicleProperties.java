@@ -225,7 +225,7 @@ public class VehicleProperties
 
     private static VehicleProperties loadProperties(ResourceLocation id)
     {
-        String resource = String.format("/data/%s/vehicles/%s.json", id.getNamespace(), id.getPath());
+        String resource = String.format("/data/%s/vehicles/properties/%s.json", id.getNamespace(), id.getPath());
         try(InputStream is = VehicleProperties.class.getResourceAsStream(resource))
         {
             return loadProperties(is);

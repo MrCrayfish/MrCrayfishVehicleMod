@@ -3,7 +3,7 @@
         "scale": 1.25
     },
     "bodyTransform": {
-        "translate": [ 0.0, 0.0, 1.0 ]
+        "translate": [ 0.0, 0.0, 0.062 ]
     },
     "seats": [
         {
