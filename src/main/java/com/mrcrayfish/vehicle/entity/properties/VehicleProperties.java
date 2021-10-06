@@ -641,7 +641,7 @@ public class VehicleProperties
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class Manager extends ReloadListener<Map<ResourceLocation, VehicleProperties>>
     {
-        private static final String DIRECTORY = "vehicles";
+        private static final String DIRECTORY = "vehicles/properties";
         private static final String FILE_SUFFIX = ".json";
 
         @Nullable
