@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
+import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -34,10 +35,13 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -82,8 +86,9 @@ public class VehicleProperties
     private final boolean canBePainted;
     private final CameraProperties camera;
     private final ImmutableMap<ResourceLocation, ExtendedProperties> extended;
+    private final ImmutableMap<ResourceLocation, CosmeticProperties> cosmetics;
 
-    private VehicleProperties(float maxHealth, float axleOffset, float wheelOffset, Vector3d heldOffset, boolean canTowTrailers, Vector3d towBarOffset, Vector3d trailerOffset, boolean canChangeWheels, boolean immuneToFallDamage, boolean canPlayerCarry, boolean canFitInTrailer, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean canBePainted, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended)
+    private VehicleProperties(float maxHealth, float axleOffset, float wheelOffset, Vector3d heldOffset, boolean canTowTrailers, Vector3d towBarOffset, Vector3d trailerOffset, boolean canChangeWheels, boolean immuneToFallDamage, boolean canPlayerCarry, boolean canFitInTrailer, List<Wheel> wheels, Transform bodyTransform, Transform displayTransform, List<Seat> seats, boolean canBePainted, CameraProperties camera, Map<ResourceLocation, ExtendedProperties> extended, Map<ResourceLocation, CosmeticProperties> cosmetics)
     {
         this.maxHealth = maxHealth;
         this.axleOffset = axleOffset;
@@ -103,6 +108,7 @@ public class VehicleProperties
         this.canBePainted = canBePainted;
         this.camera = camera;
         this.extended = ImmutableMap.copyOf(extended);
+        this.cosmetics = ImmutableMap.copyOf(cosmetics);
     }
 
     public float getMaxHealth()
@@ -215,6 +221,11 @@ public class VehicleProperties
         return (T) GLOBAL_EXTENDED_PROPERTIES.get(id);
     }
 
+    public ImmutableMap<ResourceLocation, CosmeticProperties> getCosmetics()
+    {
+        return this.cosmetics;
+    }
+
     public static void loadProperties()
     {
         for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
@@ -315,6 +326,7 @@ public class VehicleProperties
             this.writeSeats(properties, object);
             this.writeCamera(properties, object);
             this.writeExtended(properties, object);
+            this.writeCosmetics(properties, object);
             return object;
         }
 
@@ -339,6 +351,7 @@ public class VehicleProperties
             this.readSeats(builder, object);
             this.readCamera(builder, object);
             this.readExtended(builder, object);
+            this.readCosmetics(builder, object);
             return builder.build(true);
         }
 
@@ -438,6 +451,32 @@ public class VehicleProperties
                 object.add("extended", extended);
             }
         }
+
+        private void readCosmetics(VehicleProperties.Builder builder, JsonObject object)
+        {
+            JsonArray cosmetics = JSONUtils.getAsJsonArray(object, "cosmetics", new JsonArray());
+            if(cosmetics != null)
+            {
+                StreamSupport.stream(cosmetics.spliterator(), false).filter(JsonElement::isJsonObject).forEach(element -> {
+                    JsonObject properties = element.getAsJsonObject();
+                    builder.addCosmetic(new CosmeticProperties(properties));
+                });
+            }
+        }
+
+        private void writeCosmetics(VehicleProperties properties, JsonObject object)
+        {
+            JsonArray cosmetics = new JsonArray();
+            properties.cosmetics.forEach((id, cosmeticProperties) -> {
+                JsonObject content = new JsonObject();
+                cosmeticProperties.serialize(content);
+                cosmetics.add(content);
+            });
+            if(cosmetics.size() > 0)
+            {
+                object.add("cosmetics", cosmetics);
+            }
+        }
     }
 
     public static Builder builder()
@@ -464,6 +503,7 @@ public class VehicleProperties
         private boolean canBePainted = DEFAULT_CAN_BE_PAINTED;
         private CameraProperties camera = CameraProperties.DEFAULT_CAMERA;
         private Map<ResourceLocation, ExtendedProperties> extended = new HashMap<>();
+        private Map<ResourceLocation, CosmeticProperties> cosmetics = new HashMap<>();
 
         public Builder setMaxHealth(float maxHealth)
         {
@@ -593,7 +633,13 @@ public class VehicleProperties
 
         public Builder addExtended(ExtendedProperties properties)
         {
-            this.extended.putIfAbsent(properties.getId(), properties);
+            this.extended.put(properties.getId(), properties);
+            return this;
+        }
+
+        public Builder addCosmetic(CosmeticProperties properties)
+        {
+            this.cosmetics.put(properties.getId(), properties);
             return this;
         }
 
@@ -602,7 +648,7 @@ public class VehicleProperties
             this.validate();
             float wheelOffset = this.calculateWheelOffset();
             List<Wheel> wheels = scaleWheels ? this.generateScaledWheels(wheelOffset) : this.wheels;
-            return new VehicleProperties(this.maxHealth, this.axleOffset, wheelOffset, this.heldOffset, this.canTowTrailers, this.towBarOffset, this.trailerOffset, this.canChangeWheels, this.immuneToFallDamage, this.canPlayerCarry, this.canFitInTrailer, wheels, this.bodyTransform, this.displayTransform, this.seats, this.canBePainted, this.camera, this.extended);
+            return new VehicleProperties(this.maxHealth, this.axleOffset, wheelOffset, this.heldOffset, this.canTowTrailers, this.towBarOffset, this.trailerOffset, this.canChangeWheels, this.immuneToFallDamage, this.canPlayerCarry, this.canFitInTrailer, wheels, this.bodyTransform, this.displayTransform, this.seats, this.canBePainted, this.camera, this.extended, this.cosmetics);
         }
 
         private void validate()
@@ -641,7 +687,8 @@ public class VehicleProperties
     @Mod.EventBusSubscriber(modid = Reference.MOD_ID)
     public static class Manager extends ReloadListener<Map<ResourceLocation, VehicleProperties>>
     {
-        private static final String DIRECTORY = "vehicles/properties";
+        private static final String PROPERTIES_DIRECTORY = "vehicles/properties";
+        private static final String COSMETICS_DIRECTORY = "vehicles/cosmetics";
         private static final String FILE_SUFFIX = ".json";
 
         @Nullable
@@ -652,16 +699,16 @@ public class VehicleProperties
         protected Map<ResourceLocation, VehicleProperties> prepare(IResourceManager manager, IProfiler profiler)
         {
             Map<ResourceLocation, VehicleProperties> propertiesMap = new HashMap<>();
-            manager.listResources(DIRECTORY, location -> location.endsWith(FILE_SUFFIX))
+            manager.listResources(PROPERTIES_DIRECTORY, location -> location.endsWith(FILE_SUFFIX))
                 .stream()
-                .filter(location -> DEFAULT_VEHICLE_PROPERTIES.containsKey(format(location)))
+                .filter(location -> DEFAULT_VEHICLE_PROPERTIES.containsKey(format(location, PROPERTIES_DIRECTORY)))
                 .forEach(location -> {
                     try
                     {
                         IResource resource = manager.getResource(location);
                         InputStream stream = resource.getInputStream();
                         VehicleProperties properties = loadProperties(stream);
-                        propertiesMap.put(format(location), properties);
+                        propertiesMap.put(format(location, PROPERTIES_DIRECTORY), properties);
                         stream.close();
                     }
                     catch(IOException e)
@@ -669,6 +716,34 @@ public class VehicleProperties
                         VehicleMod.LOGGER.error("Couldn't parse vehicle properties {}", location);
                     }
                 });
+
+            propertiesMap.forEach((id, properties) ->
+            {
+                // Skips if vehicle has not cosmetics
+                if(properties.getCosmetics().isEmpty())
+                    return;
+
+                // Loads the cosmetics json for applicable vehicles
+                Map<ResourceLocation, List<ResourceLocation>> modelMap = new HashMap<>();
+                manager.listResources(COSMETICS_DIRECTORY, fileName -> {
+                    return fileName.equals(id.getPath() + FILE_SUFFIX);
+                }).stream().sorted(Comparator.comparing(ResourceLocation::getNamespace, (n1, n2) -> {
+                    return n1.equals(n2) ? 0 : n1.equals(Reference.MOD_ID) ? 1 : -1;
+                })).forEach(location -> {
+                    ResourceLocation vehicleId = format(location, COSMETICS_DIRECTORY);
+                    if(!vehicleId.getNamespace().equals(id.getNamespace()))
+                        return;
+                    CosmeticProperties.deserializeModels(location, manager, modelMap);
+                });
+                
+                // Applies the list of valid model locations to the corresponding cosmetic
+                modelMap.forEach((cosmeticId, models) -> {
+                    CosmeticProperties cosmetic = properties.getCosmetics().get(cosmeticId);
+                    if(cosmetic == null)
+                        return;
+                    cosmetic.setValidModels(models);
+                });
+            });
             return propertiesMap;
         }
 
@@ -678,9 +753,9 @@ public class VehicleProperties
             this.vehicleProperties = ImmutableMap.copyOf(propertiesMap);
         }
 
-        private static ResourceLocation format(ResourceLocation location)
+        private static ResourceLocation format(ResourceLocation location, String directory)
         {
-            return new ResourceLocation(location.getNamespace(), location.getPath().substring(DIRECTORY.length() + 1, location.getPath().length() - FILE_SUFFIX.length()));
+            return new ResourceLocation(location.getNamespace(), location.getPath().substring(directory.length() + 1, location.getPath().length() - FILE_SUFFIX.length()));
         }
 
         @SubscribeEvent
@@ -738,4 +813,5 @@ public class VehicleProperties
             return ImmutableMap.of();
         }
     }
+
 }
