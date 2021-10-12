@@ -643,6 +643,13 @@ public class VehicleProperties
             return this;
         }
 
+        public Builder addCosmetic(CosmeticProperties.Builder builder)
+        {
+            CosmeticProperties properties = builder.build();
+            this.cosmetics.put(properties.getId(), properties);
+            return this;
+        }
+
         public VehicleProperties build(boolean scaleWheels)
         {
             this.validate();

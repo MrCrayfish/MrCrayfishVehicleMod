@@ -2,6 +2,8 @@ package com.mrcrayfish.vehicle.datagen;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.data.DataGenerator;
@@ -76,6 +78,40 @@ public abstract class VehiclePropertiesProvider implements IDataProvider
             catch(IOException e)
             {
                 LOGGER.error("Couldn't save vehicle properties to {}", path, e);
+            }
+
+            if(properties.getCosmetics().isEmpty())
+                return;
+
+            path = this.generator.getOutputFolder().resolve("data/" + modId + "/vehicles/cosmetics/" + vehicleId + ".json");
+            try
+            {
+                JsonObject object = new JsonObject();
+                object.addProperty("replace", false);
+                JsonObject validModels = new JsonObject();
+                properties.getCosmetics().forEach((cosmeticId, cosmeticProperties) -> {
+                    JsonArray array = new JsonArray();
+                    cosmeticProperties.getModelLocations().forEach(location -> {
+                        array.add(location.toString());
+                    });
+                    validModels.add(cosmeticId.toString(), array);
+                });
+                object.add("valid_models", validModels);
+                String rawJson = GSON.toJson(object);
+                String hash = SHA1.hashUnencodedChars(rawJson).toString();
+                if(!Objects.equals(cache.getHash(path), hash) || !Files.exists(path))
+                {
+                    Files.createDirectories(path.getParent());
+                    try(BufferedWriter writer = Files.newBufferedWriter(path))
+                    {
+                        writer.write(rawJson);
+                    }
+                }
+                cache.putNew(path, hash);
+            }
+            catch(IOException e)
+            {
+                LOGGER.error("Couldn't save vehicle cosmetics to {}", path, e);
             }
         });
     }

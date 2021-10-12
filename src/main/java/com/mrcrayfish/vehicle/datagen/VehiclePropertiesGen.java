@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.datagen;
 
 import com.mrcrayfish.vehicle.client.CameraProperties;
+import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.FuelFillerType;
@@ -455,7 +457,38 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyCapacity(20000F)
                         .setEngineSound(ModSounds.ENTITY_MINI_BUS_ENGINE.getId())
                         .setMaxSteeringAngle(35F)
-                        .build()));
+                        .build())
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:hood"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_HOOD.getModelLocation())
+                        .setOffset(0, 7.5, 7.5))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:front_bumper"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_FRONT_BUMPER.getModelLocation())
+                        .setOffset(0, 1, 19))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:rear_bumper"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_REAR_BUMPER.getModelLocation())
+                        .setOffset(0, 1.5, -20))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:left_door"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_LEFT_DOOR.getModelLocation())
+                        .setOffset(8.5, 0, 5.5))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:right_door"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_RIGHT_DOOR.getModelLocation())
+                        .setOffset(-8.5, 0, 5.5))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:spoiler"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_SPOILER.getModelLocation())
+                        .setOffset(0, 7.5, -12.5))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:front_lights"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_FRONT_LIGHTS.getModelLocation())
+                        .setOffset(0, 3.5, 19))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:rear_lights"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_REAR_LIGHTS.getModelLocation())
+                        .setOffset(0, 4, -19))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:seat"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_SEAT.getModelLocation())
+                        .setOffset(0, 0, 1))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:dashboard"))
+                        .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_DASHBOARD.getModelLocation())
+                        .setOffset(0, 0, 1)));
+
 
         this.add(ModEntities.SPORTS_PLANE.get(), VehicleProperties.builder()
                 .setBodyTransform(Transform.create(0.0, 0.0, -8.0, 0.0, 0.0, 0.0, 1.8))

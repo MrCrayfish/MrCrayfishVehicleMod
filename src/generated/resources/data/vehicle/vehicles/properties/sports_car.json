@@ -58,5 +58,47 @@
             "rearAxleOffset": -11.5,
             "engineSound": "vehicle:entity.mini_bus.engine"
         }
-    }
+    },
+    "cosmetics": [
+        {
+            "id": "vehicle:rear_bumper",
+            "offset": [ 0.0, 1.5, -20.0 ]
+        },
+        {
+            "id": "vehicle:left_door",
+            "offset": [ 8.5, 0.0, 5.5 ]
+        },
+        {
+            "id": "vehicle:spoiler",
+            "offset": [ 0.0, 7.5, -12.5 ]
+        },
+        {
+            "id": "vehicle:dashboard",
+            "offset": [ 0.0, 0.0, 1.0 ]
+        },
+        {
+            "id": "vehicle:right_door",
+            "offset": [ -8.5, 0.0, 5.5 ]
+        },
+        {
+            "id": "vehicle:front_bumper",
+            "offset": [ 0.0, 1.0, 19.0 ]
+        },
+        {
+            "id": "vehicle:rear_lights",
+            "offset": [ 0.0, 4.0, -19.0 ]
+        },
+        {
+            "id": "vehicle:seat",
+            "offset": [ 0.0, 0.0, 1.0 ]
+        },
+        {
+            "id": "vehicle:front_lights",
+            "offset": [ 0.0, 3.5, 19.0 ]
+        },
+        {
+            "id": "vehicle:hood",
+            "offset": [ 0.0, 7.5, 7.5 ]
+        }
+    ]
 }
