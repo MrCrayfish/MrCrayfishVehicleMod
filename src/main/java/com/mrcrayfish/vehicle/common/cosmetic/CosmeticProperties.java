@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +29,7 @@ public class CosmeticProperties
     private final ResourceLocation id;
     private final Vector3d offset;
     private final List<ResourceLocation> modelLocations = new ArrayList<>();
-    //private List<Action> actions = new ArrayList<>(); //TODO implement actions
+    private final List<ResourceLocation> actions = new ArrayList<>();
 
     public CosmeticProperties(ResourceLocation id, Vector3d offset)
     {
@@ -87,6 +90,55 @@ public class CosmeticProperties
         catch(IOException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    public static Builder builder(ResourceLocation id)
+    {
+        return new Builder(id);
+    }
+
+    public static class Builder
+    {
+        private final ResourceLocation id;
+        private Vector3d offset = DEFAULT_OFFSET;
+        private List<ResourceLocation> modelLocations = new ArrayList<>();
+        private List<ResourceLocation> actions = new ArrayList<>();
+
+        public Builder(ResourceLocation id)
+        {
+            this.id = id;
+        }
+
+        public Builder setOffset(Vector3d offset)
+        {
+            this.offset = offset;
+            return this;
+        }
+
+        public Builder setOffset(double x, double y, double z)
+        {
+            this.offset = new Vector3d(x, y, z);
+            return this;
+        }
+
+        public Builder addModelLocation(ResourceLocation location)
+        {
+            this.modelLocations.add(location);
+            return this;
+        }
+
+        public Builder addModelLocation(ResourceLocation ... locations)
+        {
+            this.modelLocations.addAll(Arrays.asList(locations));
+            return this;
+        }
+
+        public CosmeticProperties build()
+        {
+            CosmeticProperties properties = new CosmeticProperties(this.id, this.offset);
+            properties.setModelLocations(this.modelLocations);
+            return properties;
         }
     }
 }
