@@ -1,0 +1,58 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+		"2": "vehicle:vehicle/sports_car/cosmetics/stock_front_lights"
+	},
+	"elements": [
+		{
+			"from": [-1, 8, 7],
+			"to": [3, 10.505, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 4.5, -21]},
+			"faces": {
+				"south": {"uv": [0, 0, 4, 3], "texture": "#2"},
+				"down": {"uv": [8, 4, 4, 5], "texture": "#2"}
+			}
+		},
+		{
+			"from": [-1, 7.73045, 6.61993],
+			"to": [2.998, 9.73045, 7.84593],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [17.998, 9.73045, 9.86993]},
+			"faces": {
+				"up": {"uv": [8, 6, 4, 5], "texture": "#2"}
+			}
+		},
+		{
+			"from": [13, 8, 7],
+			"to": [17, 10.505, 8],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 4.5, -21]},
+			"faces": {
+				"south": {"uv": [0, 3, 4, 6], "texture": "#2"},
+				"down": {"uv": [4, 6, 0, 7], "texture": "#2"}
+			}
+		},
+		{
+			"from": [13, 7.73045, 6.61993],
+			"to": [16.998, 9.73045, 7.84593],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [31.998, 9.73045, 9.86993]},
+			"faces": {
+				"up": {"uv": [8, 7, 4, 6], "texture": "#2"}
+			}
+		},
+		{
+			"from": [13.5, 8.5, 6.75],
+			"to": [16.5, 10, 7.75],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 4.5, -21]},
+			"faces": {
+				"south": {"uv": [4, 0, 7, 2], "texture": "#2"}
+			}
+		},
+		{
+			"from": [-0.5, 8.5, 6.75],
+			"to": [2.5, 10, 7.75],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 4.5, -21]},
+			"faces": {
+				"south": {"uv": [4, 2, 7, 4], "texture": "#2"}
+			}
+		}
+	]
+}
