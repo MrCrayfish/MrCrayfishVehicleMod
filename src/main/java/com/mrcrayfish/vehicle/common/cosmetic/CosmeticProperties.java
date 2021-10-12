@@ -25,8 +25,8 @@ public class CosmeticProperties
 
     private final ResourceLocation id;
     private final Vector3d offset;
+    private final List<ResourceLocation> modelLocations = new ArrayList<>();
     //private List<Action> actions = new ArrayList<>(); //TODO implement actions
-    private List<ResourceLocation> validModels = new ArrayList<>();
 
     public CosmeticProperties(ResourceLocation id, Vector3d offset)
     {
@@ -50,14 +50,15 @@ public class CosmeticProperties
         return this.offset;
     }
 
-    public void setValidModels(List<ResourceLocation> validModels)
+    public void setModelLocations(List<ResourceLocation> locations)
     {
-        this.validModels = validModels;
+        this.modelLocations.clear();
+        this.modelLocations.addAll(locations);
     }
 
-    public List<ResourceLocation> getValidModels()
+    public List<ResourceLocation> getModelLocations()
     {
-        return this.validModels;
+        return this.modelLocations;
     }
 
     public void serialize(JsonObject object)

@@ -35,11 +35,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -735,13 +735,13 @@ public class VehicleProperties
                         return;
                     CosmeticProperties.deserializeModels(location, manager, modelMap);
                 });
-                
+
                 // Applies the list of valid model locations to the corresponding cosmetic
                 modelMap.forEach((cosmeticId, models) -> {
                     CosmeticProperties cosmetic = properties.getCosmetics().get(cosmeticId);
                     if(cosmetic == null)
                         return;
-                    cosmetic.setValidModels(models);
+                    cosmetic.setModelLocations(models);
                 });
             });
             return propertiesMap;
@@ -792,6 +792,7 @@ public class VehicleProperties
             {
                 buffer.writeResourceLocation(id);
                 buffer.writeUtf(GSON.toJson(properties));
+                writeCosmeticModelLocations(buffer, properties);
             });
         }
 
@@ -807,11 +808,38 @@ public class VehicleProperties
                     String json = buffer.readUtf();
                     VehicleProperties properties = GSON.fromJson(json, VehicleProperties.class);
                     builder.put(id, properties);
+                    readCosmeticModelLocations(buffer, properties);
                 }
                 return builder.build();
             }
             return ImmutableMap.of();
         }
-    }
 
+        private static void writeCosmeticModelLocations(PacketBuffer buffer, VehicleProperties properties)
+        {
+            buffer.writeInt(properties.getCosmetics().size());
+            properties.getCosmetics().forEach((cosmeticId, cosmeticProperties) -> {
+                buffer.writeResourceLocation(cosmeticId);
+                buffer.writeInt(cosmeticProperties.getModelLocations().size());
+                cosmeticProperties.getModelLocations().forEach(buffer::writeResourceLocation);
+            });
+        }
+
+        private static void readCosmeticModelLocations(PacketBuffer buffer, VehicleProperties properties)
+        {
+            int cosmeticsLength = buffer.readInt();
+            for(int i = 0; i < cosmeticsLength; i++)
+            {
+                ResourceLocation cosmeticId = buffer.readResourceLocation();
+                int modelsLength = buffer.readInt();
+                for(int j = 0; j < modelsLength; j++)
+                {
+                    ResourceLocation modelLocation = buffer.readResourceLocation();
+                    Optional.ofNullable(properties.getCosmetics().get(cosmeticId)).ifPresent(cosmetic -> {
+                        cosmetic.getModelLocations().add(modelLocation);
+                    });
+                }
+            }
+        }
+    }
 }
