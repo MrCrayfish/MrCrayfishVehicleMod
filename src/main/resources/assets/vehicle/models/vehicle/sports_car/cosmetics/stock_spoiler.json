@@ -1,0 +1,46 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"texture_size": [64, 64],
+	"textures": {
+		"2": "vehicle:vehicle/sports_car/cosmetics/stock_spoiler"
+	},
+	"elements": [
+		{
+			"from": [1, 7.5, 1.5],
+			"to": [15, 8.5, 8.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0.5, 12.5]},
+			"faces": {
+				"north": {"uv": [3.5, 2.5, 7, 2.75], "texture": "#2", "tintindex": 0},
+				"east": {"uv": [3.5, 3, 5.25, 3.25], "texture": "#2", "tintindex": 0},
+				"west": {"uv": [3.5, 3.25, 5.25, 3.5], "texture": "#2", "tintindex": 0},
+				"up": {"uv": [3.5, 1.75, 0, 0], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [3.5, 1.75, 0, 3.5], "texture": "#2", "tintindex": 0}
+			}
+		},
+		{
+			"from": [-1.999, 8.5, 0.5],
+			"to": [17.999, 9.5, 2.925],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [-25, 8.5, 0.5]},
+			"faces": {
+				"north": {"uv": [3.5, 2, 8.5, 2.25], "texture": "#2", "tintindex": 0},
+				"east": {"uv": [0.5, 4, 1, 4.25], "texture": "#2", "tintindex": 0},
+				"south": {"uv": [3.5, 2.25, 8.5, 2.5], "texture": "#2"},
+				"west": {"uv": [1, 4, 1.5, 4.25], "texture": "#2", "tintindex": 0},
+				"up": {"uv": [5, 4, 0, 3.5], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [8.5, 0, 3.5, 0.5], "texture": "#2", "tintindex": 0}
+			}
+		},
+		{
+			"from": [3, 5.5, 0.5],
+			"to": [13, 8.5, 1.5],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, 0.5, 12.5]},
+			"faces": {
+				"north": {"uv": [3.5, 0.5, 6, 1.25], "texture": "#2", "tintindex": 0},
+				"east": {"uv": [0, 4, 0.25, 4.75], "texture": "#2", "tintindex": 0},
+				"south": {"uv": [3.5, 1.25, 6, 2], "texture": "#2", "tintindex": 0},
+				"west": {"uv": [0.25, 4, 0.5, 4.75], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [6, 2.75, 3.5, 3], "texture": "#2", "tintindex": 0}
+			}
+		}
+	]
+}

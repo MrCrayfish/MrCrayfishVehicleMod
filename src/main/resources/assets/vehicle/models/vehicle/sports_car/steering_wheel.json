@@ -1,8 +1,7 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"textures": {
-		"particle": "vehicle:model/sports_car_steering_wheel",
-		"texture": "vehicle:model/sports_car_steering_wheel"
+		"texture": "vehicle:vehicle/sports_car/steering_wheel"
 	},
 	"elements": [
 		{

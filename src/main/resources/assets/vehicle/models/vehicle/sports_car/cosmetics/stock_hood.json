@@ -1,0 +1,32 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"texture_size": [32, 32],
+	"textures": {
+		"2": "vehicle:vehicle/sports_car/cosmetics/stock_hood"
+	},
+	"elements": [
+		{
+			"from": [1, 7.5, 7.5],
+			"to": [15, 8.4999, 14.67181],
+			"rotation": {"angle": 0, "axis": "y", "origin": [16, 6.5, 17.5]},
+			"faces": {
+				"east": {"uv": [7, 2, 10.5, 2.5], "texture": "#2", "tintindex": 0},
+				"west": {"uv": [7, 2.5, 10.5, 3], "texture": "#2", "tintindex": 0},
+				"up": {"uv": [7, 3.5, 0, 0], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [7, 3.5, 0, 7], "texture": "#2"}
+			}
+		},
+		{
+			"from": [1.001, 4.72545, 14.11993],
+			"to": [14.999, 5.72545, 17.25553],
+			"rotation": {"angle": 22.5, "axis": "x", "origin": [16.999, 5.72545, 21.36993]},
+			"faces": {
+				"east": {"uv": [7, 3, 8.5, 3.5], "texture": "#2", "tintindex": 0},
+				"south": {"uv": [7, 1.5, 14, 2], "texture": "#2", "tintindex": 0},
+				"west": {"uv": [7, 3.5, 8.5, 4], "texture": "#2", "tintindex": 0},
+				"up": {"uv": [7, 8.5, 0, 7], "texture": "#2", "tintindex": 0},
+				"down": {"uv": [14, 0, 7, 1.5], "texture": "#2"}
+			}
+		}
+	]
+}
