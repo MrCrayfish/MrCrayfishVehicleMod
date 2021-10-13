@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityType;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -14,9 +15,9 @@ import java.util.function.Function;
 public final class VehicleRenderRegistry
 {
     private static final Map<EntityType<?>, AbstractVehicleRenderer<?>> RENDERER_MAP = new HashMap<>();
-    private static final Map<EntityType<?>, Function<VehicleProperties, ?>> RENDERER_FUNCTION_MAP = new HashMap<>();
+    private static final Map<EntityType<?>, BiFunction<?, VehicleProperties, ?>> RENDERER_FUNCTION_MAP = new HashMap<>();
 
-    public static synchronized void registerVehicleRendererFunction(EntityType<?> type, Function<VehicleProperties, ?> rendererFunction, AbstractVehicleRenderer<?> defaultRenderer)
+    public static synchronized void registerVehicleRendererFunction(EntityType<?> type, BiFunction<?, VehicleProperties, ?> rendererFunction, AbstractVehicleRenderer<?> defaultRenderer)
     {
         RENDERER_FUNCTION_MAP.put(type, rendererFunction);
         RENDERER_MAP.put(type, defaultRenderer);
@@ -27,8 +28,8 @@ public final class VehicleRenderRegistry
     public static AbstractVehicleRenderer<?> getRendererFunction(EntityType<?> type)
     {
         VehicleProperties properties = VehicleProperties.get(type);
-        Function<VehicleProperties, AbstractVehicleRenderer<?>> rendererFunction = (Function<VehicleProperties, AbstractVehicleRenderer<?>>) RENDERER_FUNCTION_MAP.get(type);
-        return rendererFunction != null ? rendererFunction.apply(properties) : null;
+        BiFunction<EntityType<?>, VehicleProperties, AbstractVehicleRenderer<?>> rendererFunction = (BiFunction<EntityType<?>, VehicleProperties, AbstractVehicleRenderer<?>>) RENDERER_FUNCTION_MAP.get(type);
+        return rendererFunction != null ? rendererFunction.apply(type, properties) : null;
     }
 
     @Nullable

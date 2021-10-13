@@ -4,6 +4,7 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.entity.Transform;
@@ -84,6 +85,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     protected double lerpPitch;
 
     protected final SeatTracker seatTracker;
+    protected final CosmeticTracker cosmeticTracker;
     protected final Map<DataParameter<?>, VehicleDataValue<?>> paramToDataValue = new HashMap<>();
 
     @OnlyIn(Dist.CLIENT)
@@ -107,6 +109,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         super(entityType, worldIn);
         this.seatTracker = new SeatTracker(this);
+        this.cosmeticTracker = new CosmeticTracker(this);
     }
 
     @Override
@@ -280,6 +283,10 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         {
             this.seatTracker.read(compound.getCompound("SeatTracker"));
         }
+        if(compound.contains("CosmeticTracker", Constants.NBT.TAG_COMPOUND))
+        {
+            this.cosmeticTracker.read(compound.getCompound("CosmeticTracker"));
+        }
         if(compound.contains("WheelStack", Constants.NBT.TAG_COMPOUND))
         {
             this.setWheelStack(ItemStack.of(compound.getCompound("WheelStack")));
@@ -300,12 +307,18 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
         }
 
         compound.put("SeatTracker", this.seatTracker.write());
+        compound.put("CosmeticTracker", this.cosmeticTracker.write());
         CommonUtils.writeItemStackToTag(compound, "WheelStack", this.getWheelStack());
     }
 
     @Override
     public void tick()
     {
+        if(!this.level.isClientSide())
+        {
+            this.cosmeticTracker.tick();
+        }
+
         if(this.getTimeSinceHit() > 0)
         {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
@@ -656,6 +669,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         buffer.writeFloat(this.yRot);
         this.seatTracker.write(buffer);
+        this.cosmeticTracker.write(buffer);
     }
 
     @Override
@@ -663,6 +677,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     {
         this.yRot = this.yRotO = buffer.readFloat();
         this.seatTracker.read(buffer);
+        this.cosmeticTracker.read(buffer);
     }
 
     public final boolean canTowTrailers()
@@ -748,6 +763,11 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     public IPacket<?> getAddEntityPacket()
     {
         return NetworkHooks.getEntitySpawningPacket(this);
+    }
+
+    public CosmeticTracker getCosmeticTracker()
+    {
+        return this.cosmeticTracker;
     }
 
     public SeatTracker getSeatTracker()

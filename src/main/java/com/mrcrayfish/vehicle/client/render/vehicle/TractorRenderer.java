@@ -13,6 +13,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.TractorEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -23,9 +24,9 @@ import javax.annotation.Nullable;
  */
 public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
 {
-    public TractorRenderer(VehicleProperties defaultProperties)
+    public TractorRenderer(EntityType<TractorEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

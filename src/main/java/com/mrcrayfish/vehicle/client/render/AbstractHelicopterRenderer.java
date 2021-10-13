@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -20,9 +21,9 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity> ext
 {
     protected final PropertyFunction<T, Float> bladeRotationProperty = new PropertyFunction<>(HelicopterEntity::getBladeRotation, 0F);
 
-    public AbstractHelicopterRenderer(VehicleProperties defaultProperties)
+    public AbstractHelicopterRenderer(EntityType<T> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

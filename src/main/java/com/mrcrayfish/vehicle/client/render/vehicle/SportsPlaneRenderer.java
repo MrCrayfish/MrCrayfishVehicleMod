@@ -14,6 +14,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -25,9 +26,9 @@ import javax.annotation.Nullable;
  */
 public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity>
 {
-    public SportsPlaneRenderer(VehicleProperties defaultProperties)
+    public SportsPlaneRenderer(EntityType<SportsPlaneEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

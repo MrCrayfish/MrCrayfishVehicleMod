@@ -51,6 +51,7 @@ public class PacketHandler
         registerPlayMessage(MessageCycleSeats.class, new MessageCycleSeats());
         registerPlayMessage(MessageSyncHeldVehicle.class, new MessageSyncHeldVehicle());
         registerPlayMessage(MessagePlaneInput.class, new MessagePlaneInput());
+        registerPlayMessage(MessageSyncCosmetics.class, new MessageSyncCosmetics());
     }
 
     private static <T> void registerPlayMessage(Class<T> clazz, IMessage<T> message)

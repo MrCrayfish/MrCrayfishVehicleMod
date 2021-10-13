@@ -11,10 +11,12 @@ import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.vehicle.GoKartEntity;
 import com.mrcrayfish.vehicle.entity.vehicle.JetSkiEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
@@ -26,9 +28,9 @@ import javax.annotation.Nullable;
  */
 public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
 {
-    public JetSkiRenderer(VehicleProperties defaultProperties)
+    public JetSkiRenderer(EntityType<JetSkiEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

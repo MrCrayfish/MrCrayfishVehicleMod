@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.entity.vehicle.SportsCarEntity;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -22,9 +23,9 @@ import javax.annotation.Nullable;
  */
 public class SportsCarRenderer extends AbstractLandVehicleRenderer<SportsCarEntity>
 {
-    public SportsCarRenderer(VehicleProperties properties)
+    public SportsCarRenderer(EntityType<SportsCarEntity> type, VehicleProperties properties)
     {
-        super(properties);
+        super(type, properties);
     }
 
     @Override

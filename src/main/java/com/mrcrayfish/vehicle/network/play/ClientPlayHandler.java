@@ -1,9 +1,11 @@
 package com.mrcrayfish.vehicle.network.play;
 
+import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.message.MessageEntityFluid;
+import com.mrcrayfish.vehicle.network.message.MessageSyncCosmetics;
 import com.mrcrayfish.vehicle.network.message.MessageSyncHeldVehicle;
 import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
 import com.mrcrayfish.vehicle.network.message.MessageSyncPlayerSeat;
@@ -90,5 +92,21 @@ public class ClientPlayHandler
                 HeldVehicleDataHandler.setHeldVehicle((PlayerEntity) entity, message.getVehicleTag());
             }
         }
+    }
+
+    public static void handleSyncCosmetics(MessageSyncCosmetics message)
+    {
+        World world = Minecraft.getInstance().level;
+        if(world == null)
+            return;
+
+        Entity entity = world.getEntity(message.getEntityId());
+        if(!(entity instanceof VehicleEntity))
+            return;
+
+        CosmeticTracker tracker = ((VehicleEntity) entity).getCosmeticTracker();
+        message.getDirtyEntries().forEach(pair -> {
+            tracker.setSelectedModel(pair.getLeft(), pair.getRight());
+        });
     }
 }

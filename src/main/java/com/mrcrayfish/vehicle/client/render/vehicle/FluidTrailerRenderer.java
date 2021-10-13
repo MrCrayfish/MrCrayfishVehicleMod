@@ -7,12 +7,14 @@ import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
+import com.mrcrayfish.vehicle.entity.trailer.FertilizerTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.FluidTrailerEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -28,9 +30,9 @@ public class FluidTrailerRenderer extends AbstractTrailerRenderer<FluidTrailerEn
 {
     protected final PropertyFunction<FluidTrailerEntity, FluidTank> fluidTankProperty = new PropertyFunction<>(FluidTrailerEntity::getTank, new FluidTank(FluidAttributes.BUCKET_VOLUME));
 
-    public FluidTrailerRenderer(VehicleProperties defaultProperties)
+    public FluidTrailerRenderer(EntityType<FluidTrailerEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

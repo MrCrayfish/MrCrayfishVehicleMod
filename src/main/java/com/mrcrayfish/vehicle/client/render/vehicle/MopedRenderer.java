@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
@@ -38,9 +39,9 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     protected final PropertyFunction<MopedEntity, Float> openProgressProperty = new PropertyFunction<>(MopedEntity::getOpenProgress, 0F);
     protected final PropertyFunction<MopedEntity, Float> prevOpenProgressProperty = new PropertyFunction<>(MopedEntity::getPrevOpenProgress, 0F);
 
-    public MopedRenderer(VehicleProperties properties)
+    public MopedRenderer(EntityType<MopedEntity> type, VehicleProperties properties)
     {
-        super(properties);
+        super(type, properties);
         this.chestModel = new ChestModel();
     }
 

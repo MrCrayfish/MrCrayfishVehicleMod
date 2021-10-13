@@ -64,10 +64,10 @@ public class VehicleUtil
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static <T extends VehicleEntity> void registerVehicleRenderer(EntityType<T> type, Function<VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
+    public static <T extends VehicleEntity> void registerVehicleRenderer(EntityType<T> type, BiFunction<EntityType<T>, VehicleProperties, AbstractVehicleRenderer<T>> rendererFunction)
     {
         VehicleProperties properties = VehicleProperties.get(type);
-        AbstractVehicleRenderer<T> renderer = rendererFunction.apply(properties);
+        AbstractVehicleRenderer<T> renderer = rendererFunction.apply(type, properties);
         RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
         VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);
         EntityRayTracer.instance().registerTransforms(type, renderer::getRayTraceTransforms);

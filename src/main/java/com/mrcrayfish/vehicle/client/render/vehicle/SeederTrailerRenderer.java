@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -26,9 +27,9 @@ public class SeederTrailerRenderer extends AbstractTrailerRenderer<SeederTrailer
 {
     protected final PropertyFunction<SeederTrailerEntity, StorageInventory> storageProperty = new PropertyFunction<>(SeederTrailerEntity::getInventory, null);
 
-    public SeederTrailerRenderer(VehicleProperties defaultProperties)
+    public SeederTrailerRenderer(EntityType<SeederTrailerEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

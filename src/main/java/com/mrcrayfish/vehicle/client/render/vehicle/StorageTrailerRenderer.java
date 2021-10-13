@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.EntityType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -22,9 +23,9 @@ public class StorageTrailerRenderer extends AbstractTrailerRenderer<StorageTrail
 {
     private static final ChestModel CHEST = new ChestModel();
 
-    public StorageTrailerRenderer(VehicleProperties properties)
+    public StorageTrailerRenderer(EntityType<StorageTrailerEntity> type, VehicleProperties properties)
     {
-        super(properties);
+        super(type, properties);
     }
 
     @Override

@@ -16,6 +16,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -26,9 +27,9 @@ import javax.annotation.Nullable;
  */
 public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEntity>
 {
-    public OffRoaderRenderer(VehicleProperties defaultProperties)
+    public OffRoaderRenderer(EntityType<OffRoaderEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

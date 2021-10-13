@@ -7,7 +7,9 @@ import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
+import com.mrcrayfish.vehicle.entity.vehicle.DirtBikeEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.EntityType;
 
 import javax.annotation.Nullable;
 
@@ -16,9 +18,9 @@ import javax.annotation.Nullable;
  */
 public class VehicleTrailerRenderer extends AbstractTrailerRenderer<VehicleTrailerEntity>
 {
-    public VehicleTrailerRenderer(VehicleProperties defaultProperties)
+    public VehicleTrailerRenderer(EntityType<VehicleTrailerEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

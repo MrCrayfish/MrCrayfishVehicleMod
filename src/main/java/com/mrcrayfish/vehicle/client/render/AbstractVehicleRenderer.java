@@ -5,22 +5,26 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
+import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.entity.Transform;
-import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
@@ -34,7 +38,9 @@ import java.util.function.Function;
  */
 public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
 {
+    protected final EntityType<T> type;
     protected final PropertyFunction<T, VehicleProperties> vehiclePropertiesProperty;
+    protected final PropertyFunction<T, CosmeticTracker> cosmeticTrackerProperty;
     protected final PropertyFunction<T, Integer> colorProperty = new PropertyFunction<>(VehicleEntity::getColor, -1);
     protected final PropertyFunction<T, Float> bodyYawProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationYaw, 0F);
     protected final PropertyFunction<T, Float> bodyPitchProperty = new PropertyFunction<>(VehicleEntity::getBodyRotationPitch, 0F);
@@ -42,9 +48,11 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
     protected final PropertyFunction<T, ItemStack> wheelStackProperty = new PropertyFunction<>(VehicleEntity::getWheelStack, ItemStack.EMPTY);
     protected final PropertyFunction<Pair<T, Wheel>, Float> wheelRotationProperty = new PropertyFunction<>((p, f) -> p.getLeft().getWheelRotation(p.getRight(), f), 0F);
 
-    public AbstractVehicleRenderer(VehicleProperties defaultProperties)
+    public AbstractVehicleRenderer(EntityType<T> type, VehicleProperties defaultProperties)
     {
+        this.type = type;
         this.vehiclePropertiesProperty = new PropertyFunction<>(VehicleEntity::getProperties, defaultProperties);
+        this.cosmeticTrackerProperty = new PropertyFunction<>(VehicleEntity::getCosmeticTracker, null);
     }
 
     @Nullable
@@ -223,6 +231,38 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         matrixStack.popPose();
     }
 
+    protected void renderCosmetics(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    {
+        VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
+        properties.getCosmetics().forEach((id, cosmetic) -> {
+            IBakedModel model = this.getCosmeticModel(vehicle, id);
+            if(model == null)
+                return;
+            matrixStack.pushPose();
+            Vector3d offset = cosmetic.getOffset().scale(0.0625);
+            matrixStack.translate(offset.x, offset.y, offset.z);
+            matrixStack.translate(0, -0.5, 0);
+            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY); //TODO allow individual cosmetic colours
+            matrixStack.popPose();
+        });
+    }
+
+    @Nullable
+    protected IBakedModel getCosmeticModel(@Nullable T vehicle, ResourceLocation cosmeticId)
+    {
+        if(vehicle != null)
+        {
+            return this.cosmeticTrackerProperty.get(vehicle).getSelectedBakedModel(cosmeticId);
+        }
+        CosmeticProperties properties = VehicleProperties.get(this.type).getCosmetics().get(cosmeticId);
+        if(!properties.getModelLocations().isEmpty())
+        {
+            ResourceLocation modelLocation = properties.getModelLocations().get(0);
+            return Minecraft.getInstance().getModelManager().getModel(modelLocation);
+        }
+        return null;
+    }
+
     protected ISpecialModel getKeyHoleModel()
     {
         return SpecialModels.KEY_HOLE;
@@ -280,6 +320,11 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             return this.wheelRotationProperty.get(Pair.of(vehicle, wheel), partialTicks);
         }
         return this.wheelRotationProperty.get();
+    }
+
+    public void setCosmeticTracker(CosmeticTracker tracker)
+    {
+        this.cosmeticTrackerProperty.setDefaultValue(tracker);
     }
 
     protected static class PropertyFunction<V, T>

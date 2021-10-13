@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -23,9 +24,9 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity> e
     protected final PropertyFunction<T, Float> wheelieProgressProperty = new PropertyFunction<>(LandVehicleEntity::getWheelieProgress, 0F);
     protected final PropertyFunction<T, Float> boostStrengthProperty = new PropertyFunction<>(LandVehicleEntity::getBoostStrength, 0F);
 
-    public AbstractLandVehicleRenderer(VehicleProperties defaultProperties)
+    public AbstractLandVehicleRenderer(EntityType<T> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override
@@ -84,6 +85,7 @@ public abstract class AbstractLandVehicleRenderer<T extends LandVehicleEntity> e
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderFuelFiller(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderIgnition(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderCosmetics(vehicle, matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }

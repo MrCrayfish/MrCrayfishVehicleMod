@@ -17,6 +17,7 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3f;
@@ -35,9 +36,9 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
     protected final PropertyFunction<T, FuelFillerType> fuelFillerTypeProperty = new PropertyFunction<>(PoweredVehicleEntity::getFuelFillerType, FuelFillerType.DEFAULT);
     protected final PropertyFunction<T, Boolean> needsKeyProperty = new PropertyFunction<>(PoweredVehicleEntity::isKeyNeeded, false);
 
-    public AbstractPoweredRenderer(VehicleProperties defaultProperties)
+    public AbstractPoweredRenderer(EntityType<T> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     protected void renderEngine(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)

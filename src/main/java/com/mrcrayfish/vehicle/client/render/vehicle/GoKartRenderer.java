@@ -15,6 +15,7 @@ import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModItems;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -25,9 +26,9 @@ import javax.annotation.Nullable;
  */
 public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
 {
-    public GoKartRenderer(VehicleProperties defaultProperties)
+    public GoKartRenderer(EntityType<GoKartEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override

@@ -5,6 +5,7 @@ import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
@@ -18,9 +19,9 @@ public abstract class AbstractPlaneRenderer<T extends PlaneEntity> extends Abstr
     protected final PropertyFunction<T, Float> flapAngleProperty = new PropertyFunction<>(PlaneEntity::getFlapAngle, 0F);
     protected final PropertyFunction<T, Float> elevatorAngleProperty = new PropertyFunction<>(PlaneEntity::getElevatorAngle, 0F);
 
-    public AbstractPlaneRenderer(VehicleProperties defaultProperties)
+    public AbstractPlaneRenderer(EntityType<T> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     public void setupTransformsAndRender(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)

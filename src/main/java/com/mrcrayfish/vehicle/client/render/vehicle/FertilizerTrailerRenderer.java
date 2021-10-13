@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -26,9 +27,9 @@ public class FertilizerTrailerRenderer extends AbstractTrailerRenderer<Fertilize
 {
     protected final PropertyFunction<FertilizerTrailerEntity, StorageInventory> storageProperty = new PropertyFunction<>(FertilizerTrailerEntity::getInventory, null);
 
-    public FertilizerTrailerRenderer(VehicleProperties defaultProperties)
+    public FertilizerTrailerRenderer(EntityType<FertilizerTrailerEntity> type, VehicleProperties defaultProperties)
     {
-        super(defaultProperties);
+        super(type, defaultProperties);
     }
 
     @Override
