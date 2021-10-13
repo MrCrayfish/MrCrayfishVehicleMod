@@ -73,6 +73,7 @@ public class ClientHandler
         }
 
         MinecraftForge.EVENT_BUS.register(EntityRayTracer.instance());
+        MinecraftForge.EVENT_BUS.register(CosmeticCache.instance());
         MinecraftForge.EVENT_BUS.register(CameraHandler.instance());
         MinecraftForge.EVENT_BUS.register(new FuelingHandler());
         MinecraftForge.EVENT_BUS.register(new HeldVehicleHandler());

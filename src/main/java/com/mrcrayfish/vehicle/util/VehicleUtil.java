@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.util;
 
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
+import com.mrcrayfish.vehicle.client.CosmeticCache;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
 import com.mrcrayfish.vehicle.client.render.AbstractVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.EntityVehicleRenderer;
 import com.mrcrayfish.vehicle.client.render.VehicleRenderRegistry;
@@ -22,6 +24,7 @@ import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.registries.DeferredRegister;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -68,5 +71,11 @@ public class VehicleUtil
         RenderingRegistry.registerEntityRenderingHandler(type, manager -> new EntityVehicleRenderer<>(manager, renderer));
         VehicleRenderRegistry.registerVehicleRendererFunction(type, rendererFunction, renderer);
         EntityRayTracer.instance().registerTransforms(type, renderer::getRayTraceTransforms);
+        EntityRayTracer.instance().registerDynamicRayTraceData(type, VehicleUtil::getCosmeticsRayTraceData);
+    }
+
+    private static <T extends VehicleEntity> List<RayTraceData> getCosmeticsRayTraceData(T vehicle)
+    {
+        return CosmeticCache.instance().getDataForVehicle(vehicle);
     }
 }
