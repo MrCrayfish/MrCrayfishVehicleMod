@@ -12,13 +12,26 @@ import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import javax.annotation.Nullable;
+
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels implements ISpecialModel
 {
+    SPORTS_CAR_BODY("sports_car/body"),
+    SPORTS_CAR_STEERING_WHEEL("sports_car/steering_wheel"),
+    SPORTS_CAR_COSMETIC_STOCK_DASHBOARD("sports_car/cosmetics/stock_dashboard"),
+    SPORTS_CAR_COSMETIC_STOCK_FRONT_BUMPER("sports_car/cosmetics/stock_front_bumper"),
+    SPORTS_CAR_COSMETIC_STOCK_REAR_BUMPER("sports_car/cosmetics/stock_rear_bumper"),
+    SPORTS_CAR_COSMETIC_STOCK_HOOD("sports_car/cosmetics/stock_hood"),
+    SPORTS_CAR_COSMETIC_STOCK_LEFT_DOOR("sports_car/cosmetics/stock_left_door"),
+    SPORTS_CAR_COSMETIC_STOCK_RIGHT_DOOR("sports_car/cosmetics/stock_right_door"),
+    SPORTS_CAR_COSMETIC_STOCK_FRONT_LIGHTS("sports_car/cosmetics/stock_front_lights"),
+    SPORTS_CAR_COSMETIC_STOCK_REAR_LIGHTS("sports_car/cosmetics/stock_rear_lights"),
+    SPORTS_CAR_COSMETIC_STOCK_SEAT("sports_car/cosmetics/stock_seat"),
+    SPORTS_CAR_COSMETIC_STOCK_SPOILER("sports_car/cosmetics/stock_spoiler"),
+
     ATV_BODY("atv_body"),
     ATV_HANDLES("atv_handles"),
-    SPORTS_CAR_BODY("sports_car_body"),
-    SPORTS_CAR_STEERING_WHEEL("sports_car_steering_wheel"),
     GO_KART_BODY("go_kart_body"),
     GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
     JET_SKI_BODY("jet_ski_body"),
@@ -75,6 +88,7 @@ public enum SpecialModels implements ISpecialModel
     /**
      * Cached model
      */
+    @Nullable
     @OnlyIn(Dist.CLIENT)
     private IBakedModel cachedModel;
 
@@ -97,6 +111,11 @@ public enum SpecialModels implements ISpecialModel
     {
         this.modelLocation = resource;
         this.specialModel = specialModel;
+    }
+
+    public ResourceLocation getModelLocation()
+    {
+        return this.modelLocation;
     }
 
     /**
