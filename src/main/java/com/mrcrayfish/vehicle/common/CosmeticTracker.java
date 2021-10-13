@@ -16,6 +16,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.network.PacketDistributor;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -56,7 +57,7 @@ public class CosmeticTracker
 
     public void setSelectedModel(ResourceLocation cosmeticId, ResourceLocation modelLocation)
     {
-        if(!this.isValidCosmeticModel(cosmeticId, modelLocation))
+        if(FMLLoader.isProduction() && !this.isValidCosmeticModel(cosmeticId, modelLocation))
             return;
         Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).ifPresent(entry -> entry.setModel(modelLocation));
         this.dirty = true;
@@ -70,7 +71,7 @@ public class CosmeticTracker
             CosmeticProperties properties = vehicle.getProperties().getCosmetics().get(cosmeticId);
             return properties != null && properties.getModelLocations().contains(modelLocation);
         }
-        return true;
+        return false;
     }
 
     @Nullable
