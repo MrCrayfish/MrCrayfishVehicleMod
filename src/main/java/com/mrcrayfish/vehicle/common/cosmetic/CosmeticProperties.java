@@ -1,7 +1,9 @@
 package com.mrcrayfish.vehicle.common.cosmetic;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
@@ -16,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 /**
  * Author: MrCrayfish
@@ -27,18 +32,29 @@ public class CosmeticProperties
     private final ResourceLocation id;
     private final Vector3d offset;
     private final List<ResourceLocation> modelLocations = new ArrayList<>();
-    private final List<ResourceLocation> actions = new ArrayList<>();
+    private final List<Action> actions;
 
-    public CosmeticProperties(ResourceLocation id, Vector3d offset)
+    public CosmeticProperties(ResourceLocation id, Vector3d offset, List<Action> actions)
     {
         this.id = id;
         this.offset = offset;
+        this.actions = actions;
     }
 
     public CosmeticProperties(JsonObject object)
     {
         this.id = new ResourceLocation(JSONUtils.getAsString(object, "id"));
         this.offset = ExtraJSONUtils.getAsVector3d(object, "offset", DEFAULT_OFFSET);
+        List<Action> actions = new ArrayList<>();
+        JsonArray array = JSONUtils.getAsJsonArray(object, "actions", new JsonArray());
+        StreamSupport.stream(array.spliterator(), false).filter(JsonElement::isJsonObject).forEach(element -> {
+            JsonObject action = element.getAsJsonObject();
+            ResourceLocation type = new ResourceLocation(JSONUtils.getAsString(action, "type"));
+            Supplier<Action> actionSupplier = CosmeticActions.getSupplier(type, action);
+            Objects.requireNonNull(actionSupplier, "Unregistered cosmetic action: " + type);
+            actions.add(actionSupplier.get());
+        });
+        this.actions = actions;
     }
 
     public ResourceLocation getId()
@@ -62,10 +78,28 @@ public class CosmeticProperties
         return this.modelLocations;
     }
 
+    public List<Action> getActions()
+    {
+        return this.actions;
+    }
+
     public void serialize(JsonObject object)
     {
         object.addProperty("id", this.id.toString());
         ExtraJSONUtils.write(object, "offset", this.offset, DEFAULT_OFFSET);
+        if(this.actions.isEmpty())
+            return;
+        JsonArray actions = new JsonArray();
+        this.actions.forEach(action -> {
+            ResourceLocation type = CosmeticActions.getId(action.getClass());
+            if(type == null)
+                return;
+            JsonObject actionData = new JsonObject();
+            actionData.addProperty("type", type.toString());
+            action.serialize(actionData);
+            actions.add(actionData);
+        });
+        object.add("actions", actions);
     }
 
     public static void deserializeModels(ResourceLocation location, IResourceManager manager, Map<ResourceLocation, List<ResourceLocation>> modelMap)
@@ -101,7 +135,7 @@ public class CosmeticProperties
         private final ResourceLocation id;
         private Vector3d offset = DEFAULT_OFFSET;
         private List<ResourceLocation> modelLocations = new ArrayList<>();
-        private List<ResourceLocation> actions = new ArrayList<>();
+        private List<Action> actions = new ArrayList<>();
 
         public Builder(ResourceLocation id)
         {
@@ -132,9 +166,15 @@ public class CosmeticProperties
             return this;
         }
 
+        public Builder addAction(Action action)
+        {
+            this.actions.add(action);
+            return this;
+        }
+
         public CosmeticProperties build()
         {
-            CosmeticProperties properties = new CosmeticProperties(this.id, this.offset);
+            CosmeticProperties properties = new CosmeticProperties(this.id, this.offset, this.actions);
             properties.setModelLocations(this.modelLocations);
             return properties;
         }

@@ -98,7 +98,16 @@
         },
         {
             "id": "vehicle:hood",
-            "offset": [ 0.0, 7.5, 7.5 ]
+            "offset": [ 0.0, 7.5, 7.5 ],
+            "actions": [
+                {
+                    "type": "vehicle:openable",
+                    "rotation": {
+                        "axis": "x",
+                        "angle": -45.0
+                    }
+                }
+            ]
         }
     ]
 }

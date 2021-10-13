@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.client.CameraProperties;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.OpenableAction;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.FuelFillerType;
@@ -460,7 +461,8 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .build())
                 .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:hood"))
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_HOOD.getModelLocation())
-                        .setOffset(0, 7.5, 7.5))
+                        .setOffset(0, 7.5, 7.5)
+                        .addAction(new OpenableAction(OpenableAction.Axis.X, -45F)))
                 .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:front_bumper"))
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_FRONT_BUMPER.getModelLocation())
                         .setOffset(0, 1, 19))

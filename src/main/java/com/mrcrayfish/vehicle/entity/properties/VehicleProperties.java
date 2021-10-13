@@ -842,7 +842,8 @@ public class VehicleProperties
                 for(int j = 0; j < modelsLength; j++)
                 {
                     ResourceLocation modelLocation = buffer.readResourceLocation();
-                    Optional.ofNullable(properties.getCosmetics().get(cosmeticId)).ifPresent(cosmetic -> {
+                    Optional.ofNullable(properties.getCosmetics().get(cosmeticId)).ifPresent(cosmetic ->
+                    {
                         cosmetic.getModelLocations().add(modelLocation);
                     });
                 }
