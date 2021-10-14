@@ -12,6 +12,7 @@ import com.mrcrayfish.vehicle.client.raytrace.data.CosmeticRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.InteractableBoxRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.SpecialModelRayTraceData;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageInteractCosmetic;
@@ -869,11 +870,13 @@ public class EntityRayTracer
             mc.player.swing(Hand.MAIN_HAND);
             ResourceLocation cosmeticId = ((CosmeticRayTraceData) data).getCosmeticId();
             VehicleEntity vehicle = (VehicleEntity) entity;
-            vehicle.getCosmeticTracker().getActions(cosmeticId).forEach(action -> {
-                action.onInteract(vehicle, mc.player);
-            });
-            PacketHandler.getPlayChannel().sendToServer(new MessageInteractCosmetic(vehicle.getId(), cosmeticId));
-            return true;
+            List<Action> actions = vehicle.getCosmeticTracker().getActions(cosmeticId);
+            if(!actions.isEmpty())
+            {
+                actions.forEach(action -> action.onInteract(vehicle, mc.player));
+                PacketHandler.getPlayChannel().sendToServer(new MessageInteractCosmetic(vehicle.getId(), cosmeticId));
+                return true;
+            }
         }
 
         if(data instanceof SpecialModelRayTraceData && ((SpecialModelRayTraceData) data).getModel() == SpecialModels.KEY_HOLE)
