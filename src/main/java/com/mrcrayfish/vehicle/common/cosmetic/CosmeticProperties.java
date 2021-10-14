@@ -32,9 +32,9 @@ public class CosmeticProperties
     private final ResourceLocation id;
     private final Vector3d offset;
     private final List<ResourceLocation> modelLocations = new ArrayList<>();
-    private final List<Action> actions;
+    private final List<Supplier<Action>> actions;
 
-    public CosmeticProperties(ResourceLocation id, Vector3d offset, List<Action> actions)
+    public CosmeticProperties(ResourceLocation id, Vector3d offset, List<Supplier<Action>> actions)
     {
         this.id = id;
         this.offset = offset;
@@ -45,14 +45,14 @@ public class CosmeticProperties
     {
         this.id = new ResourceLocation(JSONUtils.getAsString(object, "id"));
         this.offset = ExtraJSONUtils.getAsVector3d(object, "offset", DEFAULT_OFFSET);
-        List<Action> actions = new ArrayList<>();
+        List<Supplier<Action>> actions = new ArrayList<>();
         JsonArray array = JSONUtils.getAsJsonArray(object, "actions", new JsonArray());
         StreamSupport.stream(array.spliterator(), false).filter(JsonElement::isJsonObject).forEach(element -> {
             JsonObject action = element.getAsJsonObject();
             ResourceLocation type = new ResourceLocation(JSONUtils.getAsString(action, "type"));
             Supplier<Action> actionSupplier = CosmeticActions.getSupplier(type, action);
             Objects.requireNonNull(actionSupplier, "Unregistered cosmetic action: " + type);
-            actions.add(actionSupplier.get());
+            actions.add(actionSupplier);
         });
         this.actions = actions;
     }
@@ -78,7 +78,7 @@ public class CosmeticProperties
         return this.modelLocations;
     }
 
-    public List<Action> getActions()
+    public List<Supplier<Action>> getActions()
     {
         return this.actions;
     }
@@ -90,7 +90,8 @@ public class CosmeticProperties
         if(this.actions.isEmpty())
             return;
         JsonArray actions = new JsonArray();
-        this.actions.forEach(action -> {
+        this.actions.forEach(actionSupplier -> {
+            Action action = actionSupplier.get();
             ResourceLocation type = CosmeticActions.getId(action.getClass());
             if(type == null)
                 return;
@@ -135,7 +136,7 @@ public class CosmeticProperties
         private final ResourceLocation id;
         private Vector3d offset = DEFAULT_OFFSET;
         private List<ResourceLocation> modelLocations = new ArrayList<>();
-        private List<Action> actions = new ArrayList<>();
+        private List<Supplier<Action>> actions = new ArrayList<>();
 
         public Builder(ResourceLocation id)
         {
@@ -168,7 +169,7 @@ public class CosmeticProperties
 
         public Builder addAction(Action action)
         {
-            this.actions.add(action);
+            this.actions.add(() -> action);
             return this;
         }
 

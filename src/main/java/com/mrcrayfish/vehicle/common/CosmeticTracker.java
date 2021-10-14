@@ -2,8 +2,8 @@ package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
-import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageSyncCosmetics;
 import net.minecraft.client.Minecraft;
@@ -23,8 +23,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -40,7 +43,7 @@ public class CosmeticTracker
         this.vehicleRef = new WeakReference<>(vehicle);
         ImmutableMap.Builder<ResourceLocation, Entry> builder = ImmutableMap.builder();
         vehicle.getProperties().getCosmetics().forEach((cosmeticId, cosmeticProperties) -> {
-            builder.put(cosmeticId, new Entry(cosmeticProperties.getModelLocations().get(0)));
+            builder.put(cosmeticId, new Entry(cosmeticProperties));
         });
         this.selectedCosmetics = builder.build();
     }
@@ -85,6 +88,11 @@ public class CosmeticTracker
     public IBakedModel getSelectedBakedModel(ResourceLocation cosmeticId)
     {
         return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getBakedModel).orElse(Minecraft.getInstance().getModelManager().getMissingModel());
+    }
+
+    public List<Action> getActions(ResourceLocation cosmeticId)
+    {
+        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getActions).orElse(Collections.emptyList());
     }
 
     private List<Pair<ResourceLocation, ResourceLocation>> getDirtyEntries()
@@ -157,15 +165,17 @@ public class CosmeticTracker
     private static class Entry
     {
         private ResourceLocation model;
+        private List<Action> actions;
         private boolean dirty;
 
         @Nullable
         @OnlyIn(Dist.CLIENT)
         private IBakedModel cachedModel;
 
-        public Entry(ResourceLocation model)
+        public Entry(CosmeticProperties properties)
         {
-            this.model = model;
+            this.model = properties.getModelLocations().get(0);
+            this.actions = properties.getActions().stream().map(Supplier::get).collect(Collectors.toList());
         }
 
         public void setModel(ResourceLocation model)
@@ -188,6 +198,11 @@ public class CosmeticTracker
                 this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.model);
             }
             return this.cachedModel;
+        }
+
+        public List<Action> getActions()
+        {
+            return this.actions;
         }
     }
 }

@@ -8,6 +8,7 @@ import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
@@ -30,6 +31,9 @@ import net.minecraft.util.math.vector.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -231,7 +235,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         matrixStack.popPose();
     }
 
-    protected void renderCosmetics(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    protected void renderCosmetics(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         properties.getCosmetics().forEach((id, cosmetic) -> {
@@ -242,6 +246,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             Vector3d offset = cosmetic.getOffset().scale(0.0625);
             matrixStack.translate(offset.x, offset.y, offset.z);
             matrixStack.translate(0, -0.5, 0);
+            this.getCosmeticActions(vehicle, id).forEach(action -> action.beforeRender(matrixStack, vehicle, partialTicks));
             RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY); //TODO allow individual cosmetic colours
             matrixStack.popPose();
         });
@@ -261,6 +266,15 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             return Minecraft.getInstance().getModelManager().getModel(modelLocation);
         }
         return null;
+    }
+
+    protected List<Action> getCosmeticActions(@Nullable T vehicle, ResourceLocation cosmeticId)
+    {
+        if(vehicle != null)
+        {
+            return this.cosmeticTrackerProperty.get(vehicle).getActions(cosmeticId);
+        }
+        return Collections.emptyList();
     }
 
     protected ISpecialModel getKeyHoleModel()
