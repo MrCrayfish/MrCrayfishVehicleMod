@@ -3,10 +3,12 @@ package com.mrcrayfish.vehicle.common.cosmetic.actions;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.util.EasingHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -20,7 +22,11 @@ public class OpenableAction extends Action
 {
     private final Axis axis;
     private final float angle;
-    public boolean state = false; //Explicit to clearly indicate default state
+
+    private boolean state = false; //Explicit to clearly indicate default state
+    private int prevAnimationTick;
+    private int animationTick;
+    private int maxAnimationTicks = 12; //TODO make this serialized
 
     public OpenableAction(Axis axis, float angle)
     {
@@ -31,10 +37,7 @@ public class OpenableAction extends Action
     @Override
     public void onInteract(VehicleEntity vehicle, PlayerEntity player)
     {
-        if(!player.level.isClientSide())
-        {
-            this.state = !this.state;
-        }
+        this.state = !this.state;
     }
 
     @Override
@@ -46,20 +49,37 @@ public class OpenableAction extends Action
         object.add("rotation", rotation);
     }
 
-    /*@Override
+    @Override
     public void tick(VehicleEntity vehicle)
     {
-        if(this.state)
+        if(vehicle.level.isClientSide())
         {
-
+            this.prevAnimationTick = this.animationTick;
+            if(this.state)
+            {
+                if(this.animationTick < this.maxAnimationTicks)
+                {
+                    this.animationTick++;
+                }
+            }
+            else if(this.animationTick > 0)
+            {
+                this.animationTick--;
+            }
         }
-    }*/
+    }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void beforeRender(MatrixStack matrixStack, VehicleEntity vehicle, float partialTicks)
     {
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(vehicle.tickCount + partialTicks));
+        if(this.animationTick != 0 || this.prevAnimationTick != 0)
+        {
+            float progress = MathHelper.lerp(partialTicks, this.prevAnimationTick, this.animationTick) / (float) this.maxAnimationTicks;
+            progress = (float) EasingHelper.easeInOutBack(progress);
+            progress = Math.max(progress, 0F);
+            matrixStack.mulPose(this.axis.getAxis().rotationDegrees(this.angle * progress));
+        }
     }
 
     public enum Axis

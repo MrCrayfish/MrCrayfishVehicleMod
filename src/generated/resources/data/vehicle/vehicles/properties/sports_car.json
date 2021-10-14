@@ -66,11 +66,29 @@
         },
         {
             "id": "vehicle:left_door",
-            "offset": [ 8.5, 0.0, 5.5 ]
+            "offset": [ 8.5, 0.0, 5.5 ],
+            "actions": [
+                {
+                    "type": "vehicle:openable",
+                    "rotation": {
+                        "axis": "y",
+                        "angle": -75.0
+                    }
+                }
+            ]
         },
         {
             "id": "vehicle:spoiler",
-            "offset": [ 0.0, 7.5, -12.5 ]
+            "offset": [ 0.0, 7.5, -12.5 ],
+            "actions": [
+                {
+                    "type": "vehicle:openable",
+                    "rotation": {
+                        "axis": "x",
+                        "angle": 60.0
+                    }
+                }
+            ]
         },
         {
             "id": "vehicle:dashboard",
@@ -78,7 +96,16 @@
         },
         {
             "id": "vehicle:right_door",
-            "offset": [ -8.5, 0.0, 5.5 ]
+            "offset": [ -8.5, 0.0, 5.5 ],
+            "actions": [
+                {
+                    "type": "vehicle:openable",
+                    "rotation": {
+                        "axis": "y",
+                        "angle": 75.0
+                    }
+                }
+            ]
         },
         {
             "id": "vehicle:front_bumper",
@@ -104,7 +131,7 @@
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "x",
-                        "angle": -45.0
+                        "angle": -60.0
                     }
                 }
             ]

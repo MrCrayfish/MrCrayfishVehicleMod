@@ -48,14 +48,17 @@ public class CosmeticTracker
         this.selectedCosmetics = builder.build();
     }
 
-    public void tick()
+    public void tick(VehicleEntity vehicle)
     {
-        VehicleEntity vehicle = this.vehicleRef.get();
-        if(this.dirty && vehicle != null)
+        if(!vehicle.level.isClientSide() && this.dirty)
         {
             PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncCosmetics(vehicle.getId(), this.getDirtyEntries()));
             this.resetDirty();
         }
+
+        this.selectedCosmetics.forEach((cosmeticId, entry) -> {
+            entry.getActions().forEach(action -> action.tick(vehicle));
+        });
     }
 
     public void setSelectedModel(ResourceLocation cosmeticId, ResourceLocation modelLocation)
