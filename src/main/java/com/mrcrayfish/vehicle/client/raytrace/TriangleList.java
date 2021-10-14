@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.vector.Matrix4f;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -41,7 +42,7 @@ public class TriangleList
     {
         if(this.dynamicMatrix != null)
         {
-            List<Triangle> triangles = Lists.newArrayList();
+            List<Triangle> triangles = new ArrayList<>();
             Matrix4f matrix = this.dynamicMatrix.apply(data, entity);
             for(Triangle triangle : this.triangles)
             {

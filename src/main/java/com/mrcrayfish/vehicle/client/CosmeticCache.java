@@ -77,19 +77,7 @@ public class CosmeticCache
             cosmeticProperties.getModelLocations().forEach(modelLocation ->
             {
                 cosmeticData.computeIfAbsent(modelLocation, location ->
-                {
-                    CosmeticRayTraceData data = new CosmeticRayTraceData(cosmeticId, location);
-                    List<MatrixTransform> transforms = new ArrayList<>();
-                    VehicleProperties properties = vehicle.getProperties();
-                    Transform bodyTransform = properties.getBodyTransform();
-                    TransformHelper.createSimpleTransforms(transforms, bodyTransform);
-                    Vector3d offset = cosmeticProperties.getOffset().scale(0.0625);
-                    transforms.add(MatrixTransform.translate((float) offset.x, (float) offset.y, (float) offset.z));
-                    transforms.add(MatrixTransform.translate(0.0F, properties.getAxleOffset() * 0.0625F, 0.0F));
-                    transforms.add(MatrixTransform.translate(0.0F, properties.getWheelOffset() * 0.0625F, 0.0F));
-                    data.setMatrix(TransformHelper.createMatrixFromTransformsForPart(transforms));
-                    return data;
-                });
+                        new CosmeticRayTraceData(cosmeticId, location, cosmeticProperties.getOffset().scale(0.0625)));
             });
         });
     }
