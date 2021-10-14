@@ -8,11 +8,13 @@ import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.VehicleMod;
 import com.mrcrayfish.vehicle.client.event.VehicleRayTraceEvent;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.raytrace.data.CosmeticRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.InteractableBoxRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.SpecialModelRayTraceData;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageInteractCosmetic;
 import com.mrcrayfish.vehicle.network.message.MessageInteractKey;
 import com.mrcrayfish.vehicle.network.message.MessagePickupVehicle;
 import net.minecraft.client.Minecraft;
@@ -26,6 +28,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -861,6 +864,17 @@ public class EntityRayTracer
         }
 
         RayTraceData data = result.getData();
+        if(entity instanceof VehicleEntity && data instanceof CosmeticRayTraceData)
+        {
+            ResourceLocation cosmeticId = ((CosmeticRayTraceData) data).getCosmeticId();
+            VehicleEntity vehicle = (VehicleEntity) entity;
+            vehicle.getCosmeticTracker().getActions(cosmeticId).forEach(action -> {
+                action.onInteract(vehicle, mc.player);
+            });
+            PacketHandler.getPlayChannel().sendToServer(new MessageInteractCosmetic(vehicle.getId(), cosmeticId));
+            return true;
+        }
+
         if(data instanceof SpecialModelRayTraceData && ((SpecialModelRayTraceData) data).getModel() == SpecialModels.KEY_HOLE)
         {
             PacketHandler.getPlayChannel().sendToServer(new MessageInteractKey(entity));

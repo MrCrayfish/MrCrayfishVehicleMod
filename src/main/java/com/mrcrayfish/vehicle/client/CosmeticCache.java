@@ -78,7 +78,7 @@ public class CosmeticCache
             {
                 cosmeticData.computeIfAbsent(modelLocation, location ->
                 {
-                    CosmeticRayTraceData data = new CosmeticRayTraceData(location);
+                    CosmeticRayTraceData data = new CosmeticRayTraceData(cosmeticId, location);
                     List<MatrixTransform> transforms = new ArrayList<>();
                     VehicleProperties properties = vehicle.getProperties();
                     Transform bodyTransform = properties.getBodyTransform();

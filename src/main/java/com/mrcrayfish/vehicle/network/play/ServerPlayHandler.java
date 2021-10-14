@@ -4,6 +4,7 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.common.CommonEvents;
+import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
@@ -469,5 +470,21 @@ public class ServerPlayHandler
         {
             ((PoweredVehicleEntity) riding).setSteeringAngle(message.getAngle());
         }
+    }
+
+    public static void handleInteractCosmeticMessage(ServerPlayerEntity player, MessageInteractCosmetic message)
+    {
+        Entity targetEntity = player.level.getEntity(message.getEntityId());
+        if(!(targetEntity instanceof VehicleEntity))
+            return;
+
+        if(player.distanceTo(targetEntity) > 20.0D) //TODO determine a better condition to check if player is close to vehicle
+            return;
+
+        //TODO log if player tries to interact with cosmetic that doesn't exist?
+
+        VehicleEntity vehicle = (VehicleEntity) targetEntity;
+        CosmeticTracker tracker = vehicle.getCosmeticTracker();
+        tracker.getActions(message.getCosmeticId()).forEach(action -> action.onInteract(vehicle, player));
     }
 }

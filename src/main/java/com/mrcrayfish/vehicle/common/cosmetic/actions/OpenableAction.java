@@ -29,7 +29,7 @@ public class OpenableAction extends Action
     }
 
     @Override
-    public void onInteract(VehicleEntity vehicle, PlayerEntity player, Hand hand)
+    public void onInteract(VehicleEntity vehicle, PlayerEntity player)
     {
         if(!player.level.isClientSide())
         {

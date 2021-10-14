@@ -22,7 +22,7 @@ public abstract class Action
      * @param player the player interacting with the cosmetic
      * @param hand   the hand the player used to interact
      */
-    public void onInteract(VehicleEntity vehicle, PlayerEntity player, Hand hand) {}
+    public void onInteract(VehicleEntity vehicle, PlayerEntity player) {}
 
     /**
      * Called every time the vehicle ticks. This is called on both logical client and server.

@@ -14,17 +14,24 @@ import javax.annotation.Nullable;
  */
 public class CosmeticRayTraceData extends RayTraceData
 {
+    private final ResourceLocation cosmeticId;
     private final ResourceLocation modelLocation;
 
-    public CosmeticRayTraceData(ResourceLocation modelLocation)
+    public CosmeticRayTraceData(ResourceLocation cosmeticId, ResourceLocation modelLocation)
     {
-        this(modelLocation, null);
+        this(cosmeticId, modelLocation, null);
     }
 
-    public CosmeticRayTraceData(ResourceLocation modelLocation, @Nullable RayTraceFunction function)
+    public CosmeticRayTraceData(ResourceLocation cosmeticId, ResourceLocation modelLocation, @Nullable RayTraceFunction function)
     {
         super(function);
+        this.cosmeticId = cosmeticId;
         this.modelLocation = modelLocation;
+    }
+
+    public ResourceLocation getCosmeticId()
+    {
+        return this.cosmeticId;
     }
 
     @Override
