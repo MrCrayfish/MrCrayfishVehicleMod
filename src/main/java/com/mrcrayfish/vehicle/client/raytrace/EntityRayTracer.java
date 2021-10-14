@@ -866,6 +866,7 @@ public class EntityRayTracer
         RayTraceData data = result.getData();
         if(entity instanceof VehicleEntity && data instanceof CosmeticRayTraceData)
         {
+            mc.player.swing(Hand.MAIN_HAND);
             ResourceLocation cosmeticId = ((CosmeticRayTraceData) data).getCosmeticId();
             VehicleEntity vehicle = (VehicleEntity) entity;
             vehicle.getCosmeticTracker().getActions(cosmeticId).forEach(action -> {
