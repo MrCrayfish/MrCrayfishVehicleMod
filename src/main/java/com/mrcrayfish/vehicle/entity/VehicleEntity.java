@@ -7,6 +7,7 @@ import com.mrcrayfish.vehicle.client.VehicleHelper;
 import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.SeatTracker;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
@@ -314,10 +315,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @Override
     public void tick()
     {
-        if(!this.level.isClientSide())
-        {
-            this.cosmeticTracker.tick();
-        }
+        this.cosmeticTracker.tick(this);
 
         if(this.getTimeSinceHit() > 0)
         {
