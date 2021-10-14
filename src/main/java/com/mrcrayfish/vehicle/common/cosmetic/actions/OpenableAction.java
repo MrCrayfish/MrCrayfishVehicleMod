@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.common.cosmetic.actions;
 
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.util.EasingHelper;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
@@ -12,6 +13,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
@@ -22,6 +24,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Author: MrCrayfish
@@ -104,6 +107,18 @@ public class OpenableAction extends Action
             float progress = MathHelper.lerp(partialTicks, this.prevAnimationTick, this.animationTick) / (float) this.animationLength;
             progress = (float) EasingHelper.easeOutBack(progress);
             matrixStack.mulPose(this.axis.getAxis().rotationDegrees(this.angle * progress));
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void gatherTransforms(List<MatrixTransform> transforms)
+    {
+        if(this.animationTick != 0 || this.prevAnimationTick != 0)
+        {
+            float progress = (float) this.prevAnimationTick / (float) this.animationLength;
+            progress = (float) EasingHelper.easeOutBack(progress);
+            transforms.add(MatrixTransform.rotate(this.axis.getAxis().rotationDegrees(this.angle * progress)));
         }
     }
 
