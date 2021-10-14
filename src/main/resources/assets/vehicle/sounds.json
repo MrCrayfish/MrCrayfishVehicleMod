@@ -62,6 +62,12 @@
     "entity.vehicle.thud": {
         "sounds": [ {"name": "vehicle:entity/vehicle/thud"}]
     },
+    "entity.vehicle.door.open": {
+        "sounds": [ {"name": "vehicle:entity/vehicle/door/open"}]
+    },
+    "entity.vehicle.door.close": {
+        "sounds": [ {"name": "vehicle:entity/vehicle/door/close"}]
+    },
     "entity.vehicle.fuel_port.large.open": {
         "sounds": [ {"name": "vehicle:entity/vehicle/fuel_port/large/open"}]
     },
@@ -73,6 +79,12 @@
     },
     "entity.vehicle.fuel_port.small.close": {
         "sounds": [ {"name": "vehicle:entity/vehicle/fuel_port/small/close"}]
+    },
+    "entity.vehicle.hood.open": {
+        "sounds": [ {"name": "vehicle:entity/vehicle/hood/open"}]
+    },
+    "entity.vehicle.hood.close": {
+        "sounds": [ {"name": "vehicle:entity/vehicle/hood/close"}]
     },
     "item.jerry_can.liquid_glug": {
         "sounds": [ {"name": "vehicle:item/jerry_can/liquid_glug"}]

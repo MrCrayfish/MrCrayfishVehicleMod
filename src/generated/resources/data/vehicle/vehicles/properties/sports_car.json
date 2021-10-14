@@ -72,7 +72,12 @@
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
-                        "angle": -75.0
+                        "angle": -75.0,
+                        "animationLength": 12
+                    },
+                    "sound": {
+                        "open": "vehicle:entity.vehicle.door.open",
+                        "close": "vehicle:entity.vehicle.door.close"
                     }
                 }
             ]
@@ -85,7 +90,12 @@
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "x",
-                        "angle": 60.0
+                        "angle": 60.0,
+                        "animationLength": 12
+                    },
+                    "sound": {
+                        "open": "vehicle:entity.vehicle.door.open",
+                        "close": "vehicle:entity.vehicle.door.close"
                     }
                 }
             ]
@@ -102,7 +112,12 @@
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
-                        "angle": 75.0
+                        "angle": 75.0,
+                        "animationLength": 12
+                    },
+                    "sound": {
+                        "open": "vehicle:entity.vehicle.door.open",
+                        "close": "vehicle:entity.vehicle.door.close"
                     }
                 }
             ]
@@ -131,7 +146,12 @@
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "x",
-                        "angle": -60.0
+                        "angle": -60.0,
+                        "animationLength": 12
+                    },
+                    "sound": {
+                        "open": "vehicle:entity.vehicle.hood.open",
+                        "close": "vehicle:entity.vehicle.hood.close"
                     }
                 }
             ]

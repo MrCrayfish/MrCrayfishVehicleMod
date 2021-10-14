@@ -35,10 +35,14 @@ public class ModSounds
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_IMPACT = register("entity.vehicle.impact");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_PICK_UP = register("entity.vehicle.pick_up");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_THUD = register("entity.vehicle.thud");
+    public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_DOOR_OPEN = register("entity.vehicle.door.open");
+    public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_DOOR_CLOSE = register("entity.vehicle.door.close");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_FUEL_PORT_LARGE_OPEN = register("entity.vehicle.fuel_port.large.open");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_FUEL_PORT_LARGE_CLOSE = register("entity.vehicle.fuel_port.large.close");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_FUEL_PORT_SMALL_OPEN = register("entity.vehicle.fuel_port.small.open");
     public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_FUEL_PORT_SMALL_CLOSE = register("entity.vehicle.fuel_port.small.close");
+    public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_HOOD_OPEN = register("entity.vehicle.hood.open");
+    public static final RegistryObject<SoundEvent> ENTITY_VEHICLE_HOOD_CLOSE = register("entity.vehicle.hood.close");
     public static final RegistryObject<SoundEvent> ITEM_JERRY_CAN_LIQUID_GLUG = register("item.jerry_can.liquid_glug");
     public static final RegistryObject<SoundEvent> ITEM_SPRAY_CAN_SHAKE = register("item.spray_can.shake");
     public static final RegistryObject<SoundEvent> ITEM_SPRAY_CAN_SPRAY = register("item.spray_can.spray");
