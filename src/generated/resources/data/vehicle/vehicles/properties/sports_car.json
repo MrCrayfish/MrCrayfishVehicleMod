@@ -46,8 +46,8 @@
             "enginePower": 20.0,
             "renderEngine": true,
             "engineTransform": {
-                "translate": [ 0.0, 2.0, 12.0 ],
-                "scale": 0.7
+                "translate": [ 0.0, 0.5, 11.5 ],
+                "scale": 0.6
             },
             "fuelFillerTransform": {
                 "translate": [ -10.0, 6.5, -14.0 ],

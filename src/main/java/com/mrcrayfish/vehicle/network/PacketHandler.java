@@ -45,6 +45,7 @@ public class PacketHandler
         registerPlayMessage(MessageHitchTrailer.class, new MessageHitchTrailer());
         registerPlayMessage(MessageSyncInventory.class, new MessageSyncInventory());
         registerPlayMessage(MessageOpenStorage.class, new MessageOpenStorage());
+        registerPlayMessage(MessageOpenMultiStorage.class, new MessageOpenMultiStorage());
         registerPlayMessage(MessageThrottle.class, new MessageThrottle());
         registerPlayMessage(MessageEntityFluid.class, new MessageEntityFluid());
         registerPlayMessage(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());

@@ -28,6 +28,7 @@ import com.mrcrayfish.vehicle.entity.trailer.SeederTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
 import com.mrcrayfish.vehicle.entity.vehicle.MopedEntity;
+import com.mrcrayfish.vehicle.entity.vehicle.SportsCarEntity;
 import com.mrcrayfish.vehicle.init.ModBlocks;
 import com.mrcrayfish.vehicle.init.ModContainers;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -208,5 +209,6 @@ public class ClientHandler
         SeederTrailerEntity.registerInteractionBoxes();
         StorageTrailerEntity.registerInteractionBoxes();
         VehicleTrailerEntity.registerInteractionBoxes();
+        SportsCarEntity.registerInteractionBoxes();
     }
 }

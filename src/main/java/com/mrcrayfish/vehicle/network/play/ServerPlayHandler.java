@@ -10,6 +10,7 @@ import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
+import com.mrcrayfish.vehicle.common.inventory.IMultiStorage;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
@@ -24,6 +25,7 @@ import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModDataKeys;
 import com.mrcrayfish.vehicle.init.ModItems;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
 import com.mrcrayfish.vehicle.inventory.container.WorkstationContainer;
 import com.mrcrayfish.vehicle.item.EngineItem;
 import com.mrcrayfish.vehicle.item.WheelItem;
@@ -36,6 +38,8 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
+import net.minecraft.inventory.container.ChestContainer;
+import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -486,5 +490,28 @@ public class ServerPlayHandler
         VehicleEntity vehicle = (VehicleEntity) targetEntity;
         CosmeticTracker tracker = vehicle.getCosmeticTracker();
         tracker.getActions(message.getCosmeticId()).forEach(action -> action.onInteract(vehicle, player));
+    }
+
+    public static void handleOpenMultiStorageMessage(ServerPlayerEntity player, MessageOpenMultiStorage message)
+    {
+        World world = player.level;
+        Entity targetEntity = world.getEntity(message.getEntityId());
+        if(!(targetEntity instanceof IMultiStorage))
+            return;
+
+        IMultiStorage multiStorage = (IMultiStorage) targetEntity;
+        if(player.distanceTo(targetEntity) >= 64.0)
+            return;
+
+        IStorage storage = multiStorage.getStorageInventory(message.getKey());
+        if(storage == null)
+            return;
+
+        NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, playerEntity) -> {
+            return new StorageContainer(windowId, playerInventory, storage, playerEntity);
+        }, storage.getStorageName()), buffer -> {
+            buffer.writeVarInt(message.getEntityId());
+            buffer.writeUtf(message.getKey());
+        });
     }
 }

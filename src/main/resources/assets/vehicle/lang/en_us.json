@@ -67,6 +67,8 @@
     "container.fluid_mixer": "Fluid Mixer",
     "container.vehicle.workstation": "Workstation",
     "container.edit_vehicle.window_help": "Click to move and rotate",
+    "container.vehicle.storage.trunk": "Trunk",
+    "container.vehicle.storage.glove_box": "Glove Box",
 
     "vehicle.info_help": "Hold SHIFT for Info",
     "block.vehicle.boost_pad.info": "Gives your vehicle a speed boost when driving on this block.",
