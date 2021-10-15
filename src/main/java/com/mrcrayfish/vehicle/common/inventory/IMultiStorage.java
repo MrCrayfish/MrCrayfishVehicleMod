@@ -23,8 +23,7 @@ public interface IMultiStorage
     {
         CompoundNBT storageTag = tag.getCompound("Storage");
         this.getStorageInventories().forEach((key, storage) -> {
-            CompoundNBT inventory = storageTag.getCompound(key);
-            InventoryUtil.readInventoryToNBT(inventory, key, storage);
+            InventoryUtil.readInventoryToNBT(storageTag, key, storage);
         });
     }
 
