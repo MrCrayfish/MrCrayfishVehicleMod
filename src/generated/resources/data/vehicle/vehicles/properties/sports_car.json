@@ -44,6 +44,11 @@
             "energyCapacity": 20000.0,
             "engineType": "vehicle:large_motor",
             "enginePower": 20.0,
+            "renderEngine": true,
+            "engineTransform": {
+                "translate": [ 0.0, 2.0, 12.0 ],
+                "scale": 0.7
+            },
             "fuelFillerTransform": {
                 "translate": [ -10.0, 6.5, -14.0 ],
                 "rotation": [ 0.0, -90.0, 0.0 ],

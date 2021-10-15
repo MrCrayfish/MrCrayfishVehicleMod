@@ -458,6 +458,8 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyCapacity(20000F)
                         .setEngineSound(ModSounds.ENTITY_MINI_BUS_ENGINE.getId())
                         .setMaxSteeringAngle(35F)
+                        .setRenderEngine(true)
+                        .setEngineTransform(Transform.create(0.0, 2.0, 12.0, 0.7))
                         .build())
                 .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:hood"))
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_STOCK_HOOD.getModelLocation())
