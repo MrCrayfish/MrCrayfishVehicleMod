@@ -114,7 +114,7 @@ public class OpenableAction extends Action
     @OnlyIn(Dist.CLIENT)
     public void gatherTransforms(List<MatrixTransform> transforms)
     {
-        if(this.animationTick != 0 || this.prevAnimationTick != 0)
+        if(this.prevAnimationTick != 0)
         {
             float progress = (float) this.prevAnimationTick / (float) this.animationLength;
             progress = (float) EasingHelper.easeOutBack(progress);
