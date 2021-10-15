@@ -9,7 +9,6 @@ import com.mrcrayfish.vehicle.entity.trailer.StorageTrailerEntity;
 import com.mrcrayfish.vehicle.entity.trailer.VehicleTrailerEntity;
 import com.mrcrayfish.vehicle.entity.vehicle.*;
 import com.mrcrayfish.vehicle.util.VehicleUtil;
-import com.sun.org.apache.regexp.internal.RE;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
