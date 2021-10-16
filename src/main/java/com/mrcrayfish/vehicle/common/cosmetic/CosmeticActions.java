@@ -50,9 +50,10 @@ public class CosmeticActions
         return actionFunction != null ? actionFunction.apply(object) : null;
     }
 
-    @Nullable
     public static <A extends Action> ResourceLocation getId(Class<A> clazz)
     {
+        if(!CLASS_TO_ID.containsKey(clazz))
+            throw new IllegalArgumentException("Tried to get id for cosmetic action that doesn't exist!");
         return CLASS_TO_ID.get(clazz);
     }
 }

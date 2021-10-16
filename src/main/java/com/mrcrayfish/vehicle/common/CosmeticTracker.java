@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.common;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.common.cosmetic.CosmeticActions;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -24,7 +26,9 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -125,6 +129,12 @@ public class CosmeticTracker
             CompoundNBT cosmeticTag = new CompoundNBT();
             cosmeticTag.putString("Id", cosmeticId.toString());
             cosmeticTag.putString("Model", entry.getModel().toString());
+            CompoundNBT actions = new CompoundNBT();
+            entry.getActions().forEach(action -> {
+                ResourceLocation id = CosmeticActions.getId(action.getClass());
+                actions.put(id.toString(), action.save());
+            });
+            cosmeticTag.put("Actions", actions);
             list.add(cosmeticTag);
         });
         tag.put("Cosmetics", list);
@@ -141,6 +151,11 @@ public class CosmeticTracker
                 ResourceLocation cosmeticId = new ResourceLocation(cosmeticTag.getString("Id"));
                 ResourceLocation modelLocation = new ResourceLocation(cosmeticTag.getString("Model"));
                 this.setSelectedModel(cosmeticId, modelLocation);
+                CompoundNBT actions = cosmeticTag.getCompound("Actions");
+                this.selectedCosmetics.get(cosmeticId).getActions().forEach(action -> {
+                    ResourceLocation id = CosmeticActions.getId(action.getClass());
+                    action.load(actions.getCompound(id.toString()));
+                });
             });
         }
     }
@@ -151,6 +166,11 @@ public class CosmeticTracker
         this.selectedCosmetics.forEach((cosmeticId, entry) -> {
             buffer.writeResourceLocation(cosmeticId);
             buffer.writeResourceLocation(entry.getModel());
+            buffer.writeInt(entry.getActions().size());
+            entry.getActions().forEach(action -> {
+                buffer.writeResourceLocation(CosmeticActions.getId(action.getClass()));
+                buffer.writeNbt(action.save());
+            });
         });
     }
 
@@ -162,13 +182,33 @@ public class CosmeticTracker
             ResourceLocation cosmeticId = buffer.readResourceLocation();
             ResourceLocation modelLocation = buffer.readResourceLocation();
             this.setSelectedModel(cosmeticId, modelLocation);
+            int actionLength = buffer.readInt();
+            if(actionLength > 0)
+            {
+                Map<ResourceLocation, CompoundNBT> dataMap = new HashMap<>();
+                for(int j = 0; j < actionLength; j++)
+                {
+                    ResourceLocation id = buffer.readResourceLocation();
+                    CompoundNBT data = buffer.readNbt();
+                    dataMap.put(id, data);
+                }
+                this.selectedCosmetics.get(cosmeticId).getActions().forEach(action ->
+                {
+                    ResourceLocation id = CosmeticActions.getId(action.getClass());
+                    CompoundNBT data = dataMap.get(id);
+                    if(data != null)
+                    {
+                        action.load(data);
+                    }
+                });
+            }
         }
     }
 
     private static class Entry
     {
         private ResourceLocation model;
-        private List<Action> actions;
+        private final List<Action> actions;
         private boolean dirty;
 
         @Nullable
@@ -178,7 +218,7 @@ public class CosmeticTracker
         public Entry(CosmeticProperties properties)
         {
             this.model = properties.getModelLocations().get(0);
-            this.actions = properties.getActions().stream().map(Supplier::get).collect(Collectors.toList());
+            this.actions = ImmutableList.copyOf(properties.getActions().stream().map(Supplier::get).collect(Collectors.toList()));
         }
 
         public void setModel(ResourceLocation model)

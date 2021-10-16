@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
@@ -33,9 +34,11 @@ public class OpenableAction extends Action
 {
     private final Axis axis;
     private final float angle;
-    private final ResourceLocation openSound;
-    private final ResourceLocation closeSound;
     private final int animationLength;
+    @Nullable
+    private final ResourceLocation openSound;
+    @Nullable
+    private final ResourceLocation closeSound;
 
     private boolean state = false; //Explicit to clearly indicate default state
     private int prevAnimationTick;
@@ -54,6 +57,24 @@ public class OpenableAction extends Action
     public void onInteract(VehicleEntity vehicle, PlayerEntity player)
     {
         this.state = !this.state;
+    }
+
+    @Override
+    public void load(CompoundNBT tag)
+    {
+        this.state = tag.getBoolean("Open");
+        if(this.state)
+        {
+            this.animationTick = this.prevAnimationTick = this.animationLength;
+        }
+    }
+
+    @Override
+    public CompoundNBT save()
+    {
+        CompoundNBT tag = new CompoundNBT();
+        tag.putBoolean("Open", this.state);
+        return tag;
     }
 
     @Override

@@ -23,8 +23,8 @@ public abstract class Action
      * Called when a player interacts (right clicks) the cosmetic. This is called on both logical
      * client and server.
      *
+     * @param vehicle the vehicle associated with this action
      * @param player the player interacting with the cosmetic
-     * @param hand   the hand the player used to interact
      */
     public void onInteract(VehicleEntity vehicle, PlayerEntity player) {}
 
@@ -35,7 +35,10 @@ public abstract class Action
      */
     public void tick(VehicleEntity vehicle) {}
 
-    public void save(CompoundNBT tag) {}
+    public CompoundNBT save()
+    {
+        return new CompoundNBT();
+    }
 
     public void load(CompoundNBT tag) {}
 
