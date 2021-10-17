@@ -9,7 +9,7 @@ import net.minecraft.item.ItemStack;
  */
 public class SlotStorage extends Slot
 {
-    private StorageInventory storageInventory;
+    private final StorageInventory storageInventory;
 
     public SlotStorage(StorageInventory storageInventory, int index, int xPosition, int yPosition)
     {
@@ -20,6 +20,6 @@ public class SlotStorage extends Slot
     @Override
     public boolean mayPlace(ItemStack stack)
     {
-        return storageInventory.isStorageItem(stack);
+        return this.storageInventory.isStorageItem(stack);
     }
 }

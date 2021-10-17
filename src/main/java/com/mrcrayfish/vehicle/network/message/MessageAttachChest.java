@@ -13,24 +13,27 @@ import java.util.function.Supplier;
 public class MessageAttachChest implements IMessage<MessageAttachChest>
 {
     private int entityId;
+    private String key;
 
     public MessageAttachChest() {}
 
-    public MessageAttachChest(int entityId)
+    public MessageAttachChest(int entityId, String key)
     {
         this.entityId = entityId;
+        this.key = key;
     }
 
     @Override
     public void encode(MessageAttachChest message, PacketBuffer buffer)
     {
         buffer.writeInt(message.entityId);
+        buffer.writeUtf(message.key);
     }
 
     @Override
     public MessageAttachChest decode(PacketBuffer buffer)
     {
-        return new MessageAttachChest(buffer.readInt());
+        return new MessageAttachChest(buffer.readInt(), buffer.readUtf());
     }
 
     @Override
@@ -50,5 +53,10 @@ public class MessageAttachChest implements IMessage<MessageAttachChest>
     public int getEntityId()
     {
         return this.entityId;
+    }
+
+    public String getKey()
+    {
+        return this.key;
     }
 }

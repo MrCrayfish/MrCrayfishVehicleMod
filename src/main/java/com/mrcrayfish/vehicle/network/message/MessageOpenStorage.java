@@ -13,24 +13,27 @@ import java.util.function.Supplier;
 public class MessageOpenStorage implements IMessage<MessageOpenStorage>
 {
     private int entityId;
+    private String key;
 
     public MessageOpenStorage() {}
 
-    public MessageOpenStorage(int entityId)
+    public MessageOpenStorage(int entityId, String key)
     {
         this.entityId = entityId;
+        this.key = key;
     }
 
     @Override
     public void encode(MessageOpenStorage message, PacketBuffer buffer)
     {
         buffer.writeInt(message.entityId);
+        buffer.writeUtf(message.key);
     }
 
     @Override
     public MessageOpenStorage decode(PacketBuffer buffer)
     {
-        return new MessageOpenStorage(buffer.readInt());
+        return new MessageOpenStorage(buffer.readInt(), buffer.readUtf());
     }
 
     @Override
@@ -50,5 +53,10 @@ public class MessageOpenStorage implements IMessage<MessageOpenStorage>
     public int getEntityId()
     {
         return this.entityId;
+    }
+
+    public String getKey()
+    {
+        return this.key;
     }
 }

@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.init;
 
 import com.mrcrayfish.vehicle.Reference;
-import com.mrcrayfish.vehicle.common.inventory.IMultiStorage;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.inventory.container.EditVehicleContainer;
 import com.mrcrayfish.vehicle.inventory.container.FluidExtractorContainer;
@@ -47,8 +47,8 @@ public class ModContainers
     });
     public static final RegistryObject<ContainerType<StorageContainer>> STORAGE = register("storage", (IContainerFactory<StorageContainer>) (windowId, playerInventory, data) -> {
         Entity entity = playerInventory.player.level.getEntity(data.readVarInt());
-        IStorage storage = entity instanceof IMultiStorage ? ((IMultiStorage) entity).getStorageInventory(data.readUtf()) : (IStorage) entity;
-        return new StorageContainer(windowId, playerInventory, Objects.requireNonNull(storage), playerInventory.player);
+        StorageInventory storage = ((IStorage) entity).getStorageInventory(data.readUtf());
+        return new StorageContainer(windowId, playerInventory, storage, playerInventory.player);
     });
 
     private static <T extends Container> RegistryObject<ContainerType<T>> register(String id, ContainerType.IFactory<T> factory)

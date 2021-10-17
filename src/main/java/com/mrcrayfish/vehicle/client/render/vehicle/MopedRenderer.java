@@ -28,6 +28,7 @@ import net.minecraft.util.math.vector.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * Author: MrCrayfish
@@ -35,7 +36,7 @@ import javax.annotation.Nullable;
 public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
 {
     private final ChestModel chestModel;
-    protected final PropertyFunction<MopedEntity, Boolean> hasChestProperty = new PropertyFunction<>(MopedEntity::hasChest, false);
+    protected final PropertyFunction<MopedEntity, Boolean> hasChestProperty = new PropertyFunction<>((Function<MopedEntity, Boolean>) MopedEntity::hasChest, false);
     protected final PropertyFunction<MopedEntity, Float> openProgressProperty = new PropertyFunction<>(MopedEntity::getOpenProgress, 0F);
     protected final PropertyFunction<MopedEntity, Float> prevOpenProgressProperty = new PropertyFunction<>(MopedEntity::getPrevOpenProgress, 0F);
 

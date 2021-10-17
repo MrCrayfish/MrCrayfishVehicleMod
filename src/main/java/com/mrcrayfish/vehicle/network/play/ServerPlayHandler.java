@@ -10,8 +10,8 @@ import com.mrcrayfish.vehicle.common.SeatTracker;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IAttachableChest;
-import com.mrcrayfish.vehicle.common.inventory.IMultiStorage;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipe;
 import com.mrcrayfish.vehicle.crafting.WorkstationRecipes;
 import com.mrcrayfish.vehicle.entity.EngineType;
@@ -38,7 +38,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.ChestContainer;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
@@ -74,12 +73,12 @@ public class ServerPlayHandler
             if(player.distanceTo(targetEntity) < reachDistance)
             {
                 IAttachableChest attachableChest = (IAttachableChest) targetEntity;
-                if(!attachableChest.hasChest())
+                if(!attachableChest.hasChest(message.getKey()))
                 {
                     ItemStack stack = player.inventory.getSelected();
                     if(!stack.isEmpty() && stack.getItem() == Items.CHEST)
                     {
-                        attachableChest.attachChest(stack);
+                        attachableChest.attachChest(message.getKey(), stack);
                         world.playSound(null, targetEntity.getX(), targetEntity.getY(), targetEntity.getZ(), SoundType.WOOD.getPlaceSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     }
                 }
@@ -358,40 +357,6 @@ public class ServerPlayHandler
         }
     }
 
-    public static void handleOpenStorageMessage(ServerPlayerEntity player, MessageOpenStorage message)
-    {
-        World world = player.level;
-        Entity targetEntity = world.getEntity(message.getEntityId());
-        if(targetEntity instanceof IStorage)
-        {
-            IStorage storage = (IStorage) targetEntity;
-            float reachDistance = (float) player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
-            if(player.distanceTo(targetEntity) < reachDistance)
-            {
-                if(targetEntity instanceof IAttachableChest)
-                {
-                    IAttachableChest attachableChest = (IAttachableChest) targetEntity;
-                    if(attachableChest.hasChest())
-                    {
-                        ItemStack stack = player.inventory.getSelected();
-                        if(stack.getItem() == ModItems.WRENCH.get())
-                        {
-                            ((IAttachableChest) targetEntity).removeChest();
-                        }
-                        else
-                        {
-                            NetworkHooks.openGui(player, storage.getStorageContainerProvider(), buffer -> buffer.writeVarInt(message.getEntityId()));
-                        }
-                    }
-                }
-                else
-                {
-                    NetworkHooks.openGui(player, storage.getStorageContainerProvider(), buffer -> buffer.writeVarInt(message.getEntityId()));
-                }
-            }
-        }
-    }
-
     public static void handlePickupVehicleMessage(ServerPlayerEntity player, MessagePickupVehicle message)
     {
         if(player.isCrouching())
@@ -492,24 +457,45 @@ public class ServerPlayHandler
         tracker.getActions(message.getCosmeticId()).forEach(action -> action.onInteract(vehicle, player));
     }
 
-    public static void handleOpenMultiStorageMessage(ServerPlayerEntity player, MessageOpenMultiStorage message)
+    public static void handleOpenStorageMessage(ServerPlayerEntity player, MessageOpenStorage message)
     {
         World world = player.level;
         Entity targetEntity = world.getEntity(message.getEntityId());
-        if(!(targetEntity instanceof IMultiStorage))
+        if(!(targetEntity instanceof IStorage))
             return;
 
-        IMultiStorage multiStorage = (IMultiStorage) targetEntity;
+        IStorage storage = (IStorage) targetEntity;
         if(player.distanceTo(targetEntity) >= 64.0)
             return;
 
-        IStorage storage = multiStorage.getStorageInventory(message.getKey());
-        if(storage == null)
+        StorageInventory inventory = storage.getStorageInventory(message.getKey());
+        if(inventory == null)
             return;
 
+        if(targetEntity instanceof IAttachableChest)
+        {
+            //TODO prevent non-owners from removing chest
+            /*if(targetEntity instanceof VehicleEntity)
+            {
+                VehicleEntity vehicle = (VehicleEntity) targetEntity;
+                vehicle.get
+            }*/
+
+            IAttachableChest attachableChest = (IAttachableChest) targetEntity;
+            if(attachableChest.hasChest(message.getKey()))
+            {
+                ItemStack stack = player.inventory.getSelected();
+                if(stack.getItem() == ModItems.WRENCH.get())
+                {
+                    ((IAttachableChest) targetEntity).removeChest(message.getKey());
+                    return;
+                }
+            }
+        }
+
         NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, playerEntity) -> {
-            return new StorageContainer(windowId, playerInventory, storage, playerEntity);
-        }, storage.getStorageName()), buffer -> {
+            return new StorageContainer(windowId, playerInventory, inventory, playerEntity);
+        }, inventory.getDisplayName()), buffer -> {
             buffer.writeVarInt(message.getEntityId());
             buffer.writeUtf(message.getKey());
         });

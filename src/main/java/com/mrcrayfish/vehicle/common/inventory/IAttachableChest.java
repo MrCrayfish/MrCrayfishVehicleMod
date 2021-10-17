@@ -5,11 +5,11 @@ import net.minecraft.item.ItemStack;
 /**
  * Author: MrCrayfish
  */
-public interface IAttachableChest extends IStorage
+public interface IAttachableChest
 {
-    boolean hasChest();
+    boolean hasChest(String key);
 
-    void attachChest(ItemStack stack);
+    void attachChest(String key, ItemStack stack);
 
-    void removeChest();
+    void removeChest(String key);
 }

@@ -3,15 +3,17 @@ package com.mrcrayfish.vehicle.network.play;
 import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.entity.HeldVehicleDataHandler;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
+import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.message.MessageEntityFluid;
 import com.mrcrayfish.vehicle.network.message.MessageSyncCosmetics;
 import com.mrcrayfish.vehicle.network.message.MessageSyncHeldVehicle;
-import com.mrcrayfish.vehicle.network.message.MessageSyncInventory;
+import com.mrcrayfish.vehicle.network.message.MessageSyncStorage;
 import com.mrcrayfish.vehicle.network.message.MessageSyncPlayerSeat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -27,7 +29,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 @OnlyIn(Dist.CLIENT)
 public class ClientPlayHandler
 {
-    public static void handleSyncInventory(MessageSyncInventory message)
+    public static void handleSyncStorage(MessageSyncStorage message)
     {
         World world = Minecraft.getInstance().level;
         if(world == null)
@@ -37,7 +39,18 @@ public class ClientPlayHandler
         if(!(entity instanceof IStorage))
             return;
 
-        ((IStorage) entity).getInventory().fromTag(message.getCompound().getList("Inventory", Constants.NBT.TAG_COMPOUND));
+        IStorage storage = (IStorage) entity;
+        String[] keys = message.getKeys();
+        CompoundNBT[] tags = message.getTags();
+        for(int i = 0; i < keys.length; i++)
+        {
+            StorageInventory inventory = storage.getStorageInventory(keys[i]);
+            if(inventory != null)
+            {
+                CompoundNBT tag = tags[i];
+                inventory.fromTag(tag.getList("Inventory", Constants.NBT.TAG_COMPOUND));
+            }
+        }
     }
 
     public static void handleEntityFluid(MessageEntityFluid message)

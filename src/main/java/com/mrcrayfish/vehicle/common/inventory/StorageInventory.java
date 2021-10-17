@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.common.inventory;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -14,49 +15,48 @@ import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.text.ITextComponent;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
  */
-public class StorageInventory extends Inventory implements INamedContainerProvider
+public class StorageInventory extends Inventory
 {
+    private final WeakReference<Entity> entityRef;
     private final ITextComponent displayName;
-    private final IContainerProvider containerProvider;
     private final Predicate<ItemStack> itemPredicate;
 
-    public StorageInventory(IStorage wrapper, int size)
-    {
-        super(size);
-        this.displayName = wrapper.getStorageName();
-        this.containerProvider = wrapper.getStorageContainerProvider();
-        this.itemPredicate = wrapper::isStorageItem;
-    }
-
-    public StorageInventory(ITextComponent displayName, int rows, IContainerProvider provider)
+    public StorageInventory(Entity entity, ITextComponent displayName, int rows)
     {
         super(rows * 9);
+        this.entityRef = new WeakReference<>(entity);
         this.displayName = displayName;
-        this.containerProvider = provider;
         this.itemPredicate = stack -> true;
     }
 
-    public boolean isStorageItem(ItemStack stack)
+    public StorageInventory(Entity entity, ITextComponent displayName, int rows, Predicate<ItemStack> itemPredicate)
     {
-        return this.itemPredicate.test(stack);
+        super(rows * 9);
+        this.entityRef = new WeakReference<>(entity);
+        this.displayName = displayName;
+        this.itemPredicate = itemPredicate;
     }
 
-    @Override
+    @Nullable
+    public Entity getEntity()
+    {
+        return this.entityRef.get();
+    }
+
     public ITextComponent getDisplayName()
     {
         return this.displayName;
     }
 
-    @Nullable
-    @Override
-    public Container createMenu(int windowId, PlayerInventory playerInventory, PlayerEntity playerEntity)
+    public boolean isStorageItem(ItemStack stack)
     {
-        return this.containerProvider.createMenu(windowId, playerInventory, playerEntity);
+        return this.itemPredicate.test(stack);
     }
 
     public ListNBT createTag()
@@ -91,21 +91,10 @@ public class StorageInventory extends Inventory implements INamedContainerProvid
         }
     }
 
-    private static IStorage createStorage(StorageInventory inventory, ITextComponent displayName)
+    @Override
+    public boolean stillValid(PlayerEntity player)
     {
-        return new IStorage()
-        {
-            @Override
-            public StorageInventory getInventory()
-            {
-                return inventory;
-            }
-
-            @Override
-            public ITextComponent getStorageName()
-            {
-                return displayName;
-            }
-        };
+        Entity entity = this.entityRef.get();
+        return entity != null && entity.isAlive();
     }
 }

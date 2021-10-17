@@ -1,130 +1,57 @@
 package com.mrcrayfish.vehicle.common.inventory;
 
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.inventory.container.StorageContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.INamedContainerProvider;
+import com.mrcrayfish.vehicle.util.InventoryUtil;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraftforge.fml.network.NetworkHooks;
+
+import javax.annotation.Nullable;
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
-public interface IStorage extends IInventory
+public interface IStorage
 {
-    StorageInventory getInventory();
+    Map<String, StorageInventory> getStorageInventories();
 
-    /*@Override
-    default int[] getSlotsForFace(Direction side)
+    @Nullable
+    default StorageInventory getStorageInventory(String key)
     {
-        int[] slots = new int[this.getInventory().getSizeInventory()];
-        for(int i = 0; i < this.getInventory().getSizeInventory(); i++)
-        {
-            slots[i] = i;
-        }
-        return slots;
+        return this.getStorageInventories().get(key);
     }
 
-    @Override
-    default boolean canInsertItem(int index, ItemStack itemStackIn, Direction direction)
+    default void readInventories(CompoundNBT tag)
     {
-        return this.isItemValidForSlot(index, itemStackIn);
+        CompoundNBT storageTag = tag.getCompound("Storage");
+        this.getStorageInventories().forEach((key, storage) -> {
+            InventoryUtil.readInventoryToNBT(storageTag, key, storage);
+        });
     }
 
-    @Override
-    default boolean canExtractItem(int index, ItemStack stack, Direction direction)
+    default void writeInventories(CompoundNBT tag)
     {
-        return true;
-    }
-*/
-    @Override
-    default int getContainerSize()
-    {
-        return this.getInventory().getContainerSize();
+        CompoundNBT storageTag = new CompoundNBT();
+        this.getStorageInventories().forEach((key, storage) -> {
+            InventoryUtil.writeInventoryToNBT(storageTag, key, storage);
+        });
+        tag.put("Storage", storageTag);
     }
 
-    @Override
-    default boolean isEmpty()
+    static <T extends VehicleEntity & IStorage> void openStorage(ServerPlayerEntity player, T storage, String key)
     {
-        return this.getInventory().isEmpty();
-    }
+        StorageInventory inventory = storage.getStorageInventory(key);
+        if(inventory == null)
+            return;
 
-    @Override
-    default ItemStack getItem(int index)
-    {
-        return this.getInventory().getItem(index);
-    }
-
-    @Override
-    default ItemStack removeItem(int index, int count)
-    {
-        return this.getInventory().removeItem(index, count);
-    }
-
-    @Override
-    default ItemStack removeItemNoUpdate(int index)
-    {
-        return this.getInventory().removeItemNoUpdate(index);
-    }
-
-    @Override
-    default void setItem(int index, ItemStack stack)
-    {
-        this.getInventory().setItem(index, stack);
-    }
-
-    @Override
-    default int getMaxStackSize()
-    {
-        return this.getInventory().getMaxStackSize();
-    }
-
-    @Override
-    default void setChanged()
-    {
-        this.getInventory().setChanged();
-    }
-
-    @Override
-    default boolean stillValid(PlayerEntity player)
-    {
-        return this.getInventory().stillValid(player);
-    }
-
-    @Override
-    default void startOpen(PlayerEntity player)
-    {
-        this.getInventory().startOpen(player);
-    }
-
-    @Override
-    default void stopOpen(PlayerEntity player)
-    {
-        this.getInventory().startOpen(player);
-    }
-
-    @Override
-    default boolean canPlaceItem(int index, ItemStack stack)
-    {
-        return getInventory().canPlaceItem(index, stack);
-    }
-
-    @Override
-    default void clearContent()
-    {
-        getInventory().clearContent();
-    }
-
-    default boolean isStorageItem(ItemStack stack)
-    {
-        return true;
-    }
-
-    ITextComponent getStorageName();
-
-    default INamedContainerProvider getStorageContainerProvider()
-    {
-        return new SimpleNamedContainerProvider((windowId, playerInventory, playerEntity) -> new StorageContainer(windowId, playerInventory, this, playerEntity), this.getStorageName());
+        NetworkHooks.openGui(player, new SimpleNamedContainerProvider((windowId, playerInventory, playerEntity) -> {
+            return new StorageContainer(windowId, playerInventory, inventory, playerEntity);
+        }, inventory.getDisplayName()), buffer -> {
+            buffer.writeVarInt(storage.getId());
+            buffer.writeUtf(key);
+        });
     }
 }

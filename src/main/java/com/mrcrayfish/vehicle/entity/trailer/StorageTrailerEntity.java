@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.entity.trailer;
 
+import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
@@ -13,23 +14,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.item.BoneMealItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants;
+
+import java.util.Map;
 
 /**
  * Author: MrCrayfish
  */
 public class StorageTrailerEntity extends TrailerEntity implements IStorage
 {
+    private static final String INVENTORY_STORAGE_KEY = "Inventory";
+
     private StorageInventory inventory;
 
     public StorageTrailerEntity(EntityType<? extends StorageTrailerEntity> type, World worldIn)
@@ -48,10 +52,10 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
     protected void readAdditionalSaveData(CompoundNBT compound)
     {
         super.readAdditionalSaveData(compound);
-        if(compound.contains("Inventory", Constants.NBT.TAG_LIST))
+        if(compound.contains(INVENTORY_STORAGE_KEY, Constants.NBT.TAG_LIST))
         {
             this.initInventory();
-            InventoryUtil.readInventoryToNBT(compound, "Inventory", inventory);
+            InventoryUtil.readInventoryToNBT(compound, INVENTORY_STORAGE_KEY, this.inventory);
         }
     }
 
@@ -61,14 +65,15 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
         super.addAdditionalSaveData(compound);
         if(this.inventory != null)
         {
-            InventoryUtil.writeInventoryToNBT(compound, "Inventory", inventory);
+            InventoryUtil.writeInventoryToNBT(compound, INVENTORY_STORAGE_KEY, this.inventory);
         }
     }
 
     private void initInventory()
     {
         StorageInventory original = this.inventory;
-        this.inventory = new StorageInventory(this, 27);
+        this.inventory = new StorageInventory(this, this.getDisplayName(), 3, stack ->
+                !stack.isEmpty() && stack.getItem() instanceof BoneMealItem);
         // Copies the inventory if it exists already over to the new instance
         if(original != null)
         {
@@ -93,24 +98,6 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
         }
     }
 
-    @Override
-    public StorageInventory getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public void startOpen(PlayerEntity player)
-    {
-        this.playSound(SoundEvents.CHEST_OPEN, 0.5F, 0.9F);
-    }
-
-    @Override
-    public ITextComponent getStorageName()
-    {
-        return this.getDisplayName();
-    }
-
     @OnlyIn(Dist.CLIENT)
     public static void registerInteractionBoxes()
     {
@@ -129,9 +116,20 @@ public class StorageTrailerEntity extends TrailerEntity implements IStorage
             return createScaledBoundingBox(-0.4375, 0.125 * bodyScale, -0.4375, 0.4375, 0.9125 * bodyScale, 0.4375, chestScale);
         }, (entity, rightClick) -> {
             if(rightClick) {
-                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(entity.getId()));
+                PacketHandler.getPlayChannel().sendToServer(new MessageOpenStorage(entity.getId(), INVENTORY_STORAGE_KEY));
                 Minecraft.getInstance().player.swing(Hand.MAIN_HAND);
             }
         }, entity -> true);
+    }
+
+    @Override
+    public Map<String, StorageInventory> getStorageInventories()
+    {
+        return ImmutableMap.of(INVENTORY_STORAGE_KEY, this.inventory);
+    }
+
+    public StorageInventory getInventory()
+    {
+        return this.inventory;
     }
 }
