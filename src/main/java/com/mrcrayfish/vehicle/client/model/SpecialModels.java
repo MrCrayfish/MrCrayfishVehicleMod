@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public enum SpecialModels implements ISpecialModel
 {
+    /* Sports Car */
     SPORTS_CAR_BODY("sports_car/body"),
     SPORTS_CAR_STEERING_WHEEL("sports_car/steering_wheel"),
     SPORTS_CAR_COSMETIC_STOCK_DASHBOARD("sports_car/cosmetics/stock_dashboard"),
@@ -29,6 +30,17 @@ public enum SpecialModels implements ISpecialModel
     SPORTS_CAR_COSMETIC_STOCK_REAR_LIGHTS("sports_car/cosmetics/stock_rear_lights"),
     SPORTS_CAR_COSMETIC_STOCK_SEAT("sports_car/cosmetics/stock_seat"),
     SPORTS_CAR_COSMETIC_STOCK_SPOILER("sports_car/cosmetics/stock_spoiler"),
+
+    /* Mini Bus */
+    MINI_BUS_BODY("mini_bus/body"),
+    MINI_BUS_COSMETIC_STOCK_DASHBOARD("mini_bus/cosmetics/stock_dashboard"),
+    MINI_BUS_COSMETIC_STOCK_LEFT_DOOR("mini_bus/cosmetics/stock_left_door"),
+    MINI_BUS_COSMETIC_STOCK_RIGHT_DOOR("mini_bus/cosmetics/stock_right_door"),
+    MINI_BUS_COSMETIC_STOCK_SLIDING_DOOR("mini_bus/cosmetics/stock_sliding_door"),
+    MINI_BUS_COSMETIC_STOCK_SEATS("mini_bus/cosmetics/stock_seat"),
+    MINI_BUS_COSMETIC_STOCK_ROOF("mini_bus/cosmetics/stock_roof"),
+    MINI_BUS_COSMETIC_ROOF_RACKS("mini_bus/cosmetics/roof_racks"),
+    MINI_BUS_COSMETIC_AIRCON_LADDER_REAR_DECOR("mini_bus/cosmetics/aircon_ladder"),
 
     ATV_BODY("atv_body"),
     ATV_HANDLES("atv_handles"),
@@ -47,7 +59,6 @@ public enum SpecialModels implements ISpecialModel
     GOLF_CART_BODY("golf_cart_body"),
     OFF_ROADER_BODY("off_roader_body"),
     TRACTOR("tractor_body"),
-    MINI_BUS_BODY("mini_bus_body"),
     DIRT_BIKE_BODY("dirt_bike_body"),
     DIRT_BIKE_HANDLES("dirt_bike_handles"),
     VEHICLE_TRAILER("trailer_body"),
