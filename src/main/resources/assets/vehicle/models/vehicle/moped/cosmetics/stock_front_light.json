@@ -1,0 +1,33 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"textures": {
+		"1": "vehicle:vehicle/moped/cosmetics/stock_front_light"
+	},
+	"elements": [
+		{
+			"from": [6.51, 6.5, 8],
+			"to": [9.49, 9.5, 10.5],
+			"rotation": {"angle": 0, "axis": "x", "origin": [6.5, 7.25, 18.5]},
+			"faces": {
+				"east": {"uv": [4, 0, 7, 3], "texture": "#1"},
+				"south": {"uv": [4, 3, 7, 6], "texture": "#1"},
+				"west": {"uv": [4, 6, 7, 9], "texture": "#1"},
+				"up": {"uv": [10, 3, 7, 0], "texture": "#1"},
+				"down": {"uv": [10, 3, 7, 6], "texture": "#1"}
+			}
+		},
+		{
+			"from": [6.25, 6.25, 9.75],
+			"to": [9.75, 9.75, 10.75],
+			"rotation": {"angle": 0, "axis": "x", "origin": [6.5, 7.25, 18.75]},
+			"faces": {
+				"north": {"uv": [0, 0, 4, 4], "texture": "#1"},
+				"east": {"uv": [7, 6, 8, 10], "texture": "#1"},
+				"south": {"uv": [0, 4, 4, 8], "texture": "#1"},
+				"west": {"uv": [0, 8, 1, 12], "texture": "#1"},
+				"up": {"uv": [12, 7, 8, 6], "texture": "#1"},
+				"down": {"uv": [12, 7, 8, 8], "texture": "#1"}
+			}
+		}
+	]
+}

@@ -396,7 +396,17 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyConsumptionPerTick(0.225F)
                         .setCanLockWithKey(false)
                         .setEngineSound(ModSounds.ENTITY_MOPED_ENGINE.getId())
-                        .build()));
+                        .build())
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:seat"))
+                        .setOffset(0, 7, -6.5)
+                        .addModelLocation(SpecialModels.MOPED_COSMETIC_STOCK_SEAT.getModelLocation()))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:tray"))
+                        .setOffset(0, 7, -6.5)
+                        .addModelLocation(SpecialModels.MOPED_COSMETIC_STOCK_TRAY.getModelLocation()))
+                .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:front_lights"))
+                        .setOffset(0, 8, 11.1719)
+                        .addModelLocation(SpecialModels.MOPED_COSMETIC_STOCK_FRONT_LIGHT.getModelLocation()))
+        );
 
         this.add(ModEntities.OFF_ROADER.get(), VehicleProperties.builder()
                 .setAxleOffset(-1.0F)

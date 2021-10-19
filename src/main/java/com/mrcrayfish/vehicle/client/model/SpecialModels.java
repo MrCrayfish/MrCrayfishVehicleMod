@@ -43,13 +43,18 @@ public enum SpecialModels implements ISpecialModel
     MINI_BUS_COSMETIC_ROOF_RACKS("mini_bus/cosmetics/roof_racks"),
     MINI_BUS_COSMETIC_AIRCON_LADDER_REAR_DECOR("mini_bus/cosmetics/aircon_ladder"),
 
+    /* Moped */
+    MOPED_BODY("moped/body"),
+    MOPED_COSMETIC_STOCK_SEAT("moped/cosmetics/stock_seat"),
+    MOPED_COSMETIC_STOCK_TRAY("moped/cosmetics/stock_tray"),
+    MOPED_COSMETIC_STOCK_FRONT_LIGHT("moped/cosmetics/stock_front_light"),
+
     ATV_BODY("atv_body"),
     ATV_HANDLES("atv_handles"),
     GO_KART_BODY("go_kart_body"),
     GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
     JET_SKI_BODY("jet_ski_body"),
     LAWN_MOWER_BODY("lawn_mower_body"),
-    MOPED_BODY("moped_body"),
     MOPED_MUD_GUARD("moped_mud_guard"),
     MOPED_HANDLES("moped_handles"),
     SPORTS_PLANE("sports_plane_body"),
