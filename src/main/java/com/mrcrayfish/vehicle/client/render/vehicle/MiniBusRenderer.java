@@ -38,23 +38,7 @@ public class MiniBusRenderer extends AbstractLandVehicleRenderer<MiniBusEntity>
     protected void render(@Nullable MiniBusEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(vehicle, SpecialModels.MINI_BUS_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-
-        matrixStack.pushPose();
-
-        // Positions the steering wheel in the correct position
-        matrixStack.translate(-0.2825, 0.225, 1.0625);
-        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-67.5F));
-        matrixStack.translate(0, -0.02, 0);
-        matrixStack.scale(0.75F, 0.75F, 0.75F);
-
-        float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
-        float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
-        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
-
-        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
-
-        matrixStack.popPose();
+        this.renderSteeringWheel(vehicle, SpecialModels.MINI_BUS_STEERING_WHEEL.getModel(), -5.0, 4.9039, 15.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -65,9 +49,9 @@ public class MiniBusRenderer extends AbstractLandVehicleRenderer<MiniBusEntity>
             float wheelAngle = this.wheelAngleProperty.get(entity, partialTicks);
             float maxSteeringAngle = this.vehiclePropertiesProperty.get(entity).getExtended(PoweredProperties.class).getMaxSteeringAngle();
             float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F / 2F;
-            model.rightArm.xRot = (float) Math.toRadians(-65F - steeringWheelRotation);
+            model.rightArm.xRot = (float) Math.toRadians(-75F - steeringWheelRotation);
             model.rightArm.yRot = (float) Math.toRadians(-7F);
-            model.leftArm.xRot = (float) Math.toRadians(-65F + steeringWheelRotation);
+            model.leftArm.xRot = (float) Math.toRadians(-75F + steeringWheelRotation);
             model.leftArm.yRot = (float) Math.toRadians(7F);
         }
     }

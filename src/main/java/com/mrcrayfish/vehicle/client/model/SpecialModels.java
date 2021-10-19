@@ -33,11 +33,12 @@ public enum SpecialModels implements ISpecialModel
 
     /* Mini Bus */
     MINI_BUS_BODY("mini_bus/body"),
+    MINI_BUS_STEERING_WHEEL("mini_bus/steering_wheel"),
     MINI_BUS_COSMETIC_STOCK_DASHBOARD("mini_bus/cosmetics/stock_dashboard"),
     MINI_BUS_COSMETIC_STOCK_LEFT_DOOR("mini_bus/cosmetics/stock_left_door"),
     MINI_BUS_COSMETIC_STOCK_RIGHT_DOOR("mini_bus/cosmetics/stock_right_door"),
     MINI_BUS_COSMETIC_STOCK_SLIDING_DOOR("mini_bus/cosmetics/stock_sliding_door"),
-    MINI_BUS_COSMETIC_STOCK_SEATS("mini_bus/cosmetics/stock_seat"),
+    MINI_BUS_COSMETIC_STOCK_SEAT("mini_bus/cosmetics/stock_seat"),
     MINI_BUS_COSMETIC_STOCK_ROOF("mini_bus/cosmetics/stock_roof"),
     MINI_BUS_COSMETIC_ROOF_RACKS("mini_bus/cosmetics/roof_racks"),
     MINI_BUS_COSMETIC_AIRCON_LADDER_REAR_DECOR("mini_bus/cosmetics/aircon_ladder"),

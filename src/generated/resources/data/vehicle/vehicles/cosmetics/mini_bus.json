@@ -1,0 +1,29 @@
+{
+    "replace": false,
+    "valid_models": {
+        "vehicle:left_door": [
+            "vehicle:vehicle/mini_bus/cosmetics/stock_left_door"
+        ],
+        "vehicle:dashboard": [
+            "vehicle:vehicle/mini_bus/cosmetics/stock_dashboard"
+        ],
+        "vehicle:left_sliding_door": [
+            "vehicle:vehicle/mini_bus/cosmetics/stock_sliding_door"
+        ],
+        "vehicle:right_door": [
+            "vehicle:vehicle/mini_bus/cosmetics/stock_right_door"
+        ],
+        "vehicle:top": [
+            "vehicle:vehicle/mini_bus/cosmetics/stock_roof"
+        ],
+        "vehicle:rear_decor": [
+            "vehicle:vehicle/mini_bus/cosmetics/aircon_ladder"
+        ],
+        "vehicle:roof": [
+            "vehicle:vehicle/mini_bus/cosmetics/roof_racks"
+        ],
+        "vehicle:seat": [
+            "vehicle:vehicle/mini_bus/cosmetics/stock_seat"
+        ]
+    }
+}
