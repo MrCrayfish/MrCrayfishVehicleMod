@@ -1,1 +1,69 @@
-{"canBePainted":true,"canChangeWheels":true,"offsetToGround":-1.0,"heldOffset":[4.5,2.0,0.0],"trailerOffset":[0.0,-0.031,-0.65],"displayTransform":{"translate":[0.0,0.0,-0.25],"scale":1.5},"bodyTransform":{"scale":1.2},"wheels":[{"axle":"front","offset":[0.0,0.0,14.088],"scale":[0.6,0.8,0.8],"particles":true,"render":false},{"axle":"rear","offset":[0.0,0.0,-6.7],"scale":[1.0,0.0,0.0],"autoScale":true,"particles":true}],"seats":[{"position":[0.0,4.0,-1.0],"driver":true}],"extended":{"vehicle:powered":{"maxSteeringAngle":45.0,"energyCapacity":12000.0,"energyConsumptionPerTick":0.225,"engineType":"vehicle:small_motor","enginePower":12.0,"maxEnginePitch":1.2,"ignitionTransform":{"translate":[-2.5,4.2,-1.5],"rotation":[0.0,-90.0,0.0],"scale":0.2},"canLockWithKey":false,"frontAxleOffset":14.0,"rearAxleOffset":-6.7,"engineSound":"vehicle:entity.moped.engine"}},"cosmetics":[{"id":"vehicle:seat","offset":[0.0,7.0,-6.5]},{"id":"vehicle:tray","offset":[0.0,7.0,-6.5]},{"id":"vehicle:front_lights","offset":[0.0,8.0,11.172]}]}
+{
+    "canBePainted": true,
+    "canChangeWheels": true,
+    "offsetToGround": -1.0,
+    "heldOffset": [ 4.5, 2.0, 0.0 ],
+    "trailerOffset": [ 0.0, -0.031, -0.65 ],
+    "displayTransform": {
+        "translate": [ 0.0, 0.0, -0.25 ],
+        "scale": 1.5
+    },
+    "bodyTransform": {
+        "scale": 1.2
+    },
+    "wheels": [
+        {
+            "axle": "front",
+            "offset": [ 0.0, 0.0, 14.088 ],
+            "scale": [ 0.6, 0.8, 0.8 ],
+            "particles": true,
+            "render": false
+        },
+        {
+            "axle": "rear",
+            "offset": [ 0.0, 0.0, -6.7 ],
+            "scale": [ 1.0, 0.0, 0.0 ],
+            "autoScale": true,
+            "particles": true
+        }
+    ],
+    "seats": [
+        {
+            "position": [ 0.0, 4.0, -1.0 ],
+            "driver": true
+        }
+    ],
+    "extended": {
+        "vehicle:powered": {
+            "maxSteeringAngle": 45.0,
+            "energyCapacity": 12000.0,
+            "energyConsumptionPerTick": 0.225,
+            "engineType": "vehicle:small_motor",
+            "enginePower": 12.0,
+            "maxEnginePitch": 1.2,
+            "ignitionTransform": {
+                "translate": [ -2.5, 4.2, -1.5 ],
+                "rotation": [ 0.0, -90.0, 0.0 ],
+                "scale": 0.2
+            },
+            "canLockWithKey": false,
+            "frontAxleOffset": 14.0,
+            "rearAxleOffset": -6.7,
+            "engineSound": "vehicle:entity.moped.engine"
+        }
+    },
+    "cosmetics": [
+        {
+            "id": "vehicle:seat",
+            "offset": [ 0.0, 7.0, -6.5 ]
+        },
+        {
+            "id": "vehicle:tray",
+            "offset": [ 0.0, 7.0, -6.5 ]
+        },
+        {
+            "id": "vehicle:front_lights",
+            "offset": [ 0.0, 8.0, 11.172 ]
+        }
+    ]
+}
