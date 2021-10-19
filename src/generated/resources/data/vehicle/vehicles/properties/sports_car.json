@@ -44,6 +44,8 @@
             "energyCapacity": 20000.0,
             "engineType": "vehicle:large_motor",
             "enginePower": 20.0,
+            "minEnginePitch": 0.9,
+            "maxEnginePitch": 1.5,
             "renderEngine": true,
             "engineTransform": {
                 "translate": [ 0.0, 0.5, 11.5 ],
@@ -61,7 +63,7 @@
             },
             "frontAxleOffset": 12.5,
             "rearAxleOffset": -11.5,
-            "engineSound": "vehicle:entity.mini_bus.engine"
+            "engineSound": "vehicle:entity.sports_car.engine"
         }
     },
     "cosmetics": [

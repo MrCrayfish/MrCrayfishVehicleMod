@@ -38,6 +38,9 @@
     "entity.moped.engine": {
         "sounds": [ {"name": "vehicle:entity/moped/engine"}]
     },
+    "entity.sports_car.engine": {
+        "sounds": [ {"name": "vehicle:entity/sports_car/engine"}]
+    },
     "entity.sports_plane.engine": {
         "sounds": [ {"name": "vehicle:entity/sports_plane/engine"}]
     },
