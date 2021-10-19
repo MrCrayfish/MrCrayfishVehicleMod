@@ -45,6 +45,8 @@ public enum SpecialModels implements ISpecialModel
 
     /* Moped */
     MOPED_BODY("moped/body"),
+    MOPED_MUD_GUARD("moped/mud_guard"),
+    MOPED_HANDLES("moped/handles"),
     MOPED_COSMETIC_STOCK_SEAT("moped/cosmetics/stock_seat"),
     MOPED_COSMETIC_STOCK_TRAY("moped/cosmetics/stock_tray"),
     MOPED_COSMETIC_STOCK_FRONT_LIGHT("moped/cosmetics/stock_front_light"),
@@ -55,8 +57,6 @@ public enum SpecialModels implements ISpecialModel
     GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
     JET_SKI_BODY("jet_ski_body"),
     LAWN_MOWER_BODY("lawn_mower_body"),
-    MOPED_MUD_GUARD("moped_mud_guard"),
-    MOPED_HANDLES("moped_handles"),
     SPORTS_PLANE("sports_plane_body"),
     SPORTS_PLANE_WING("sports_plane_wing"),
     SPORTS_PLANE_WHEEL_COVER("sports_plane_wheel_cover"),

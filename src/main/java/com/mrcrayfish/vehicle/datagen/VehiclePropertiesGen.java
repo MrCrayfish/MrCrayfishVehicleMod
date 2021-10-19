@@ -404,7 +404,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setOffset(0, 7, -6.5)
                         .addModelLocation(SpecialModels.MOPED_COSMETIC_STOCK_TRAY.getModelLocation()))
                 .addCosmetic(CosmeticProperties.builder(new ResourceLocation("vehicle:front_lights"))
-                        .setOffset(0, 8, 11.1719)
+                        .setOffset(0, 10, 10.1719)
                         .addModelLocation(SpecialModels.MOPED_COSMETIC_STOCK_FRONT_LIGHT.getModelLocation()))
         );
 

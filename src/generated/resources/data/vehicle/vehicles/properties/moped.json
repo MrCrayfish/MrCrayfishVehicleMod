@@ -63,7 +63,7 @@
         },
         {
             "id": "vehicle:front_lights",
-            "offset": [ 0.0, 8.0, 11.172 ]
+            "offset": [ 0.0, 10.0, 10.172 ]
         }
     ]
 }
