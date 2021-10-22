@@ -848,6 +848,9 @@ public class EntityRayTracer
     private boolean processHit(VehicleRayTraceResult result)
     {
         Minecraft mc = Minecraft.getInstance();
+        if(mc.player == null)
+            return false;
+
         Entity entity = result.getEntity();
         boolean rightClick = result.isRightClick();
 
@@ -865,7 +868,7 @@ public class EntityRayTracer
         }
 
         RayTraceData data = result.getData();
-        if(entity instanceof VehicleEntity && data instanceof CosmeticRayTraceData)
+        if(!mc.player.isCrouching() && entity instanceof VehicleEntity && data instanceof CosmeticRayTraceData)
         {
             mc.player.swing(Hand.MAIN_HAND);
             ResourceLocation cosmeticId = ((CosmeticRayTraceData) data).getCosmeticId();
