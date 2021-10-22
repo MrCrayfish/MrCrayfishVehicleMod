@@ -10,12 +10,14 @@ import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import com.mrcrayfish.vehicle.init.ModParticleTypes;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.ISound;
 import net.minecraft.client.audio.ITickableSound;
 import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.client.particle.DiggingParticle;
+import net.minecraft.client.particle.Particle;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
@@ -125,8 +127,7 @@ public class VehicleHelper
             if(!(entity instanceof LivingEntity))
                 return 0F;
 
-            //TODO make the 0.25F configurable
-            float strength = 0.25F * (1.0F - (float) vehicle.getSpeed() / 30F);
+            float strength = 0.25F * MathHelper.clamp(1.0F - (float) vehicle.getSpeed() / 30F, 0.2F, 1.0F);
 
             if(ClientHandler.isControllableLoaded())
             {
