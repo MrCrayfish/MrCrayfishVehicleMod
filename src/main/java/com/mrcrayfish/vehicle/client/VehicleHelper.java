@@ -296,6 +296,20 @@ public class VehicleHelper
         }
     }
 
+    public static void spawnSmokeParticle(double x, double y, double z, Vector3d motion)
+    {
+        Minecraft mc = Minecraft.getInstance();
+        ClientWorld world = mc.level;
+        if(world != null)
+        {
+            Particle particle = mc.particleEngine.createParticle(ModParticleTypes.TYRE_SMOKE.get(), x, y, z, motion.x, motion.y, motion.z);
+            if(particle != null)
+            {
+                mc.particleEngine.add(particle);
+            }
+        }
+    }
+
     public static boolean isThirdPersonBack()
     {
         return Minecraft.getInstance().options.getCameraType() == PointOfView.THIRD_PERSON_BACK;

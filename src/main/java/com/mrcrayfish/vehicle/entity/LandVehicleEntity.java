@@ -147,7 +147,7 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
             float wheelTraction = this.getWheelType().map(IWheelType::getBaseTraction).orElse(1.0F);
             float targetTraction = acceleration.length() > 0 ? (float) (wheelTraction * MathHelper.clamp((this.velocity.length() / acceleration.length()), 0.0F, 1.0F)) : wheelTraction;
             float side = this.canSlide() ? MathHelper.clamp(1.0F - (float) this.velocity.normalize().cross(forward.normalize()).length() / 0.3F, 0.0F, 1.0F) : 1.0F;
-            this.traction = this.traction + (targetTraction - this.traction) * side * 0.2F;
+            this.traction = this.traction + (targetTraction - this.traction) * side * 0.15F;
         }
 
         //TODO test with steering at the rear
@@ -395,5 +395,11 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
         this.traction = compound.getFloat("Traction");
         CompoundNBT velocity = compound.getCompound("Velocity");
         this.velocity = new Vector3d(velocity.getDouble("X"), velocity.getDouble("Y"), velocity.getDouble("Z"));
+    }
+
+    @Override
+    protected boolean showTyreSmokeParticles()
+    {
+        return this.isSliding() || super.showTyreSmokeParticles();
     }
 }

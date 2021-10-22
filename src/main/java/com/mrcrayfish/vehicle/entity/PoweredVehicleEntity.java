@@ -4,6 +4,7 @@ import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.block.VehicleCrateBlock;
 import com.mrcrayfish.vehicle.client.VehicleHelper;
+import com.mrcrayfish.vehicle.common.SurfaceHelper;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -395,9 +396,19 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     protected void updateTurning() {}
 
+    protected boolean showWheelParticles()
+    {
+        return this.getThrottle() > 0 || this.charging;
+    }
+
+    protected boolean showTyreSmokeParticles()
+    {
+        return this.charging;
+    }
+
     public void createParticles()
     {
-        if(this.getThrottle() > 0 || this.charging)
+        if(this.showWheelParticles())
         {
             /* Uses the same logic when rendering wheels to determine the position, then spawns
              * particles at the contact of the wheel and the ground. */
@@ -422,14 +433,21 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                     BlockState state = this.level.getBlockState(pos);
                     if(state.getMaterial() != Material.AIR && state.getMaterial().isSolid())
                     {
-                        Vector3d dirVec = this.calculateViewVector(this.xRot, this.yRot + 180F).add(0, 0.5, 0);
+                        Vector3d dirVec = this.calculateViewVector(this.xRot, this.yRot + 180F).add(0, this.charging ? 0.5 : 1.0, 0);
                         if(this.charging)
                         {
                             dirVec = dirVec.scale(this.chargingAmount * this.getEnginePower() / 3F);
                         }
                         if(this.level.isClientSide())
                         {
-                            VehicleHelper.spawnWheelParticle(pos, state, this.getX() + wheelX, this.getY() + wheelY, this.getZ() + wheelZ, dirVec);
+                            double wheelWorldX = this.getX() + wheelX;
+                            double wheelWorldY = this.getY() + wheelY;
+                            double wheelWorldZ = this.getZ() + wheelZ;
+                            VehicleHelper.spawnWheelParticle(pos, state, wheelWorldX, wheelWorldY, wheelWorldZ, dirVec);
+                            if(this.showTyreSmokeParticles() && SurfaceHelper.getSurfaceTypeForMaterial(state.getMaterial()) == SurfaceHelper.SurfaceType.SOLID)
+                            {
+                                VehicleHelper.spawnSmokeParticle(wheelWorldX, wheelWorldY, wheelWorldZ, dirVec.multiply(0.03 * this.random.nextFloat(), 0.03, 0.03 * this.random.nextFloat()));
+                            }
                         }
                     }
                 }
