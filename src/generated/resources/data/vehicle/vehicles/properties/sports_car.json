@@ -21,13 +21,15 @@
             "side": "left",
             "axle": "rear",
             "offset": [ 6.5, 0.25, -11.5 ],
-            "scale": [ 0.9, 0.9, 0.9 ]
+            "scale": [ 0.9, 0.9, 0.9 ],
+            "particles": true
         },
         {
             "side": "right",
             "axle": "rear",
             "offset": [ 6.5, 0.25, -11.5 ],
-            "scale": [ 0.9, 0.9, 0.9 ]
+            "scale": [ 0.9, 0.9, 0.9 ],
+            "particles": true
         }
     ],
     "seats": [
