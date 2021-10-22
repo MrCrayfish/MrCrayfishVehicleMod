@@ -8,14 +8,15 @@ import net.minecraft.util.ResourceLocation;
  */
 public final class StandardCosmetics
 {
-    public static final ResourceLocation ROOF = new ResourceLocation(Reference.MOD_ID, "roof");
+    public static final ResourceLocation ROOF_FRAME = new ResourceLocation(Reference.MOD_ID, "roof_frame");
     public static final ResourceLocation LEFT_DOOR = new ResourceLocation(Reference.MOD_ID, "left_door");
     public static final ResourceLocation RIGHT_DOOR = new ResourceLocation(Reference.MOD_ID, "right_door");
     public static final ResourceLocation LEFT_SLIDING_DOOR = new ResourceLocation(Reference.MOD_ID, "left_sliding_door");
     public static final ResourceLocation RIGHT_SLIDING_DOOR = new ResourceLocation(Reference.MOD_ID, "left_sliding_door");
-    public static final ResourceLocation FRONT_DECOR = new ResourceLocation(Reference.MOD_ID, "front_decor");
-    public static final ResourceLocation TOP_DECOR = new ResourceLocation(Reference.MOD_ID, "top_decor");
-    public static final ResourceLocation REAR_DECOR = new ResourceLocation(Reference.MOD_ID, "rear_decor");
+    public static final ResourceLocation FRONT = new ResourceLocation(Reference.MOD_ID, "front");
+    public static final ResourceLocation ROOF = new ResourceLocation(Reference.MOD_ID, "roof");
+    public static final ResourceLocation SIDE = new ResourceLocation(Reference.MOD_ID, "side");
+    public static final ResourceLocation REAR = new ResourceLocation(Reference.MOD_ID, "rear");
     public static final ResourceLocation SEAT = new ResourceLocation(Reference.MOD_ID, "seat");
     public static final ResourceLocation FRONT_SEAT = new ResourceLocation(Reference.MOD_ID, "front_seat");
     public static final ResourceLocation REAR_SEAT = new ResourceLocation(Reference.MOD_ID, "rear_seat");

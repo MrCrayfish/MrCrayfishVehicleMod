@@ -13,13 +13,13 @@
         "vehicle:right_door": [
             "vehicle:vehicle/mini_bus/cosmetics/stock_right_door"
         ],
-        "vehicle:top": [
+        "vehicle:roof": [
             "vehicle:vehicle/mini_bus/cosmetics/stock_roof"
         ],
-        "vehicle:rear_decor": [
+        "vehicle:rear": [
             "vehicle:vehicle/mini_bus/cosmetics/aircon_ladder"
         ],
-        "vehicle:roof": [
+        "vehicle:roof_frame": [
             "vehicle:vehicle/mini_bus/cosmetics/roof_racks"
         ],
         "vehicle:seat": [

@@ -141,15 +141,15 @@
             ]
         },
         {
-            "id": "vehicle:top",
+            "id": "vehicle:roof",
             "offset": [ 0.0, 13.0, 0.0 ]
         },
         {
-            "id": "vehicle:rear_decor",
+            "id": "vehicle:rear",
             "offset": [ 0.0, 6.0, -22.0 ]
         },
         {
-            "id": "vehicle:roof",
+            "id": "vehicle:roof_frame",
             "offset": [ 0.0, 22.0, 0.0 ]
         },
         {
