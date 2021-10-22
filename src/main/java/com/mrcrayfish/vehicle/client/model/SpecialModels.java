@@ -51,6 +51,10 @@ public enum SpecialModels implements ISpecialModel
     MOPED_COSMETIC_STOCK_TRAY("moped/cosmetics/stock_tray"),
     MOPED_COSMETIC_STOCK_FRONT_LIGHT("moped/cosmetics/stock_front_light"),
 
+    /* Dirt Bike */
+    DIRT_BIKE_BODY("dirt_bike/body"),
+    DIRT_BIKE_HANDLES("dirt_bike/handles"),
+
     ATV_BODY("atv_body"),
     ATV_HANDLES("atv_handles"),
     GO_KART_BODY("go_kart_body"),
@@ -65,8 +69,6 @@ public enum SpecialModels implements ISpecialModel
     GOLF_CART_BODY("golf_cart_body"),
     OFF_ROADER_BODY("off_roader_body"),
     TRACTOR("tractor_body"),
-    DIRT_BIKE_BODY("dirt_bike_body"),
-    DIRT_BIKE_HANDLES("dirt_bike_handles"),
     VEHICLE_TRAILER("trailer_body"),
     STORAGE_TRAILER("trailer_chest_body"),
     SEEDER_TRAILER("trailer_seeder_body"),
