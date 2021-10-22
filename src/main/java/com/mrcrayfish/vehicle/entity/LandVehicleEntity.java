@@ -400,6 +400,6 @@ public abstract class LandVehicleEntity extends PoweredVehicleEntity
     @Override
     protected boolean showTyreSmokeParticles()
     {
-        return this.isSliding() || super.showTyreSmokeParticles();
+        return this.isSliding() && !this.isHandbraking() || super.showTyreSmokeParticles();
     }
 }

@@ -398,12 +398,12 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
 
     protected boolean showWheelParticles()
     {
-        return this.getThrottle() > 0 || this.charging;
+        return this.getThrottle() > 0 || this.charging || this.boosting;
     }
 
     protected boolean showTyreSmokeParticles()
     {
-        return this.charging;
+        return this.charging || this.boosting;
     }
 
     public void createParticles()
