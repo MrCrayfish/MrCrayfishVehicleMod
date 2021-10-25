@@ -27,6 +27,7 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -731,7 +732,7 @@ public class VehicleProperties
                     return;
 
                 // Loads the cosmetics json for applicable vehicles
-                Map<ResourceLocation, List<ResourceLocation>> modelMap = new HashMap<>();
+                Map<ResourceLocation, List<Pair<ResourceLocation, List<ResourceLocation>>>> modelMap = new HashMap<>();
                 manager.listResources(COSMETICS_DIRECTORY, fileName -> {
                     return fileName.equals(id.getPath() + FILE_SUFFIX);
                 }).stream().sorted(Comparator.comparing(ResourceLocation::getNamespace, (n1, n2) -> {
@@ -748,7 +749,8 @@ public class VehicleProperties
                     CosmeticProperties cosmetic = properties.getCosmetics().get(cosmeticId);
                     if(cosmetic == null)
                         return;
-                    cosmetic.setModelLocations(models);
+                    cosmetic.setModelLocations(models.stream().map(Pair::getLeft).collect(Collectors.toList()));
+                    cosmetic.setDisabledCosmetics(models.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
                 });
             });
             return propertiesMap;
@@ -825,10 +827,17 @@ public class VehicleProperties
         private static void writeCosmeticModelLocations(PacketBuffer buffer, VehicleProperties properties)
         {
             buffer.writeInt(properties.getCosmetics().size());
-            properties.getCosmetics().forEach((cosmeticId, cosmeticProperties) -> {
+            properties.getCosmetics().forEach((cosmeticId, cosmeticProperties) ->
+            {
                 buffer.writeResourceLocation(cosmeticId);
                 buffer.writeInt(cosmeticProperties.getModelLocations().size());
-                cosmeticProperties.getModelLocations().forEach(buffer::writeResourceLocation);
+                cosmeticProperties.getModelLocations().forEach(location ->
+                {
+                    buffer.writeResourceLocation(location);
+                    List<ResourceLocation> disabledCosmetics = cosmeticProperties.getDisabledCosmetics().get(location);
+                    buffer.writeInt(disabledCosmetics.size());
+                    disabledCosmetics.forEach(buffer::writeResourceLocation);
+                });
             });
         }
 
@@ -837,16 +846,25 @@ public class VehicleProperties
             int cosmeticsLength = buffer.readInt();
             for(int i = 0; i < cosmeticsLength; i++)
             {
+                List<Pair<ResourceLocation, List<ResourceLocation>>> models = new ArrayList<>();
                 ResourceLocation cosmeticId = buffer.readResourceLocation();
                 int modelsLength = buffer.readInt();
                 for(int j = 0; j < modelsLength; j++)
                 {
                     ResourceLocation modelLocation = buffer.readResourceLocation();
-                    Optional.ofNullable(properties.getCosmetics().get(cosmeticId)).ifPresent(cosmetic ->
+                    List<ResourceLocation> disabledCosmetics = new ArrayList<>();
+                    int disabledCosmeticsLength = buffer.readInt();
+                    for(int k = 0; k < disabledCosmeticsLength; k++)
                     {
-                        cosmetic.getModelLocations().add(modelLocation);
-                    });
+                        disabledCosmetics.add(buffer.readResourceLocation());
+                    }
+                    models.add(Pair.of(modelLocation, disabledCosmetics));
                 }
+                Optional.ofNullable(properties.getCosmetics().get(cosmeticId)).ifPresent(cosmetic ->
+                {
+                    cosmetic.setModelLocations(models.stream().map(Pair::getLeft).collect(Collectors.toList()));
+                    cosmetic.setDisabledCosmetics(models.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
+                });
             }
         }
     }

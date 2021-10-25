@@ -33,7 +33,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -239,6 +239,8 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
     {
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         properties.getCosmetics().forEach((id, cosmetic) -> {
+            if(!this.canRenderCosmetic(vehicle, id))
+                return;
             IBakedModel model = this.getCosmeticModel(vehicle, id);
             if(model == null)
                 return;
@@ -250,6 +252,25 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY); //TODO allow individual cosmetic colours
             matrixStack.popPose();
         });
+    }
+
+    protected boolean canRenderCosmetic(@Nullable T vehicle, ResourceLocation cosmeticId)
+    {
+        if(vehicle != null)
+        {
+            VehicleProperties vehicleProperties = this.vehiclePropertiesProperty.get(vehicle);
+            for(CosmeticProperties cosmeticProperties : vehicleProperties.getCosmetics().values())
+            {
+                CosmeticTracker tracker = this.cosmeticTrackerProperty.get(vehicle);
+                ResourceLocation location = tracker.getSelectedModelLocation(cosmeticProperties.getId());
+                Map<ResourceLocation, List<ResourceLocation>> disabledCosmetics = cosmeticProperties.getDisabledCosmetics();
+                if(disabledCosmetics.containsKey(location) && disabledCosmetics.get(location).contains(cosmeticId))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     @Nullable

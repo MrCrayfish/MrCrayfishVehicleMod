@@ -69,7 +69,7 @@ public class CosmeticTracker
     {
         if(FMLLoader.isProduction() && !this.isValidCosmeticModel(cosmeticId, modelLocation))
             return;
-        Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).ifPresent(entry -> entry.setModel(modelLocation));
+        Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).ifPresent(entry -> entry.setModelLocation(modelLocation));
         this.dirty = true;
     }
 
@@ -87,7 +87,7 @@ public class CosmeticTracker
     @Nullable
     public ResourceLocation getSelectedModelLocation(ResourceLocation cosmeticId)
     {
-        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getModel).orElse(null);
+        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getModelLocation).orElse(null);
     }
 
     @Nullable
@@ -109,7 +109,7 @@ public class CosmeticTracker
         {
             if(entry.dirty)
             {
-                dirtyEntries.add(Pair.of(cosmeticId, entry.getModel()));
+                dirtyEntries.add(Pair.of(cosmeticId, entry.getModelLocation()));
             }
         });
         return dirtyEntries;
@@ -128,7 +128,7 @@ public class CosmeticTracker
         this.selectedCosmetics.forEach((cosmeticId, entry) -> {
             CompoundNBT cosmeticTag = new CompoundNBT();
             cosmeticTag.putString("Id", cosmeticId.toString());
-            cosmeticTag.putString("Model", entry.getModel().toString());
+            cosmeticTag.putString("Model", entry.getModelLocation().toString());
             CompoundNBT actions = new CompoundNBT();
             entry.getActions().forEach(action -> {
                 ResourceLocation id = CosmeticActions.getId(action.getClass());
@@ -165,7 +165,7 @@ public class CosmeticTracker
         buffer.writeInt(this.selectedCosmetics.size());
         this.selectedCosmetics.forEach((cosmeticId, entry) -> {
             buffer.writeResourceLocation(cosmeticId);
-            buffer.writeResourceLocation(entry.getModel());
+            buffer.writeResourceLocation(entry.getModelLocation());
             buffer.writeInt(entry.getActions().size());
             entry.getActions().forEach(action -> {
                 buffer.writeResourceLocation(CosmeticActions.getId(action.getClass()));
@@ -207,7 +207,7 @@ public class CosmeticTracker
 
     private static class Entry
     {
-        private ResourceLocation model;
+        private ResourceLocation modelLocation;
         private final List<Action> actions;
         private boolean dirty;
 
@@ -217,20 +217,20 @@ public class CosmeticTracker
 
         public Entry(CosmeticProperties properties)
         {
-            this.model = properties.getModelLocations().get(0);
+            this.modelLocation = properties.getModelLocations().get(0);
             this.actions = ImmutableList.copyOf(properties.getActions().stream().map(Supplier::get).collect(Collectors.toList()));
         }
 
-        public void setModel(ResourceLocation model)
+        public void setModelLocation(ResourceLocation modelLocation)
         {
-            this.model = model;
+            this.modelLocation = modelLocation;
             this.dirty = true;
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> this.cachedModel = null);
         }
 
-        public ResourceLocation getModel()
+        public ResourceLocation getModelLocation()
         {
-            return this.model;
+            return this.modelLocation;
         }
 
         @OnlyIn(Dist.CLIENT)
@@ -238,7 +238,7 @@ public class CosmeticTracker
         {
             if(this.cachedModel == null)
             {
-                this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.model);
+                this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
             }
             return this.cachedModel;
         }

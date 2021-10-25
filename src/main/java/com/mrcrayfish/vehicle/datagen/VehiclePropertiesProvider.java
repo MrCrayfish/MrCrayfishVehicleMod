@@ -19,7 +19,9 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -89,10 +91,25 @@ public abstract class VehiclePropertiesProvider implements IDataProvider
                 JsonObject object = new JsonObject();
                 object.addProperty("replace", false);
                 JsonObject validModels = new JsonObject();
-                properties.getCosmetics().forEach((cosmeticId, cosmeticProperties) -> {
+                properties.getCosmetics().forEach((cosmeticId, cosmeticProperties) ->
+                {
                     JsonArray array = new JsonArray();
-                    cosmeticProperties.getModelLocations().forEach(location -> {
-                        array.add(location.toString());
+                    cosmeticProperties.getModelLocations().forEach(location ->
+                    {
+                        List<ResourceLocation> disabledCosmetics = cosmeticProperties.getDisabledCosmetics().getOrDefault(location, Collections.emptyList());
+                        if(disabledCosmetics.isEmpty())
+                        {
+                            array.add(location.toString());
+                        }
+                        else
+                        {
+                            JsonObject modelObject = new JsonObject();
+                            modelObject.addProperty("model", location.toString());
+                            JsonArray disables = new JsonArray();
+                            disabledCosmetics.forEach(disabledCosmeticId -> disables.add(disabledCosmeticId.toString()));
+                            modelObject.add("disables", disables);
+                            array.add(modelObject);
+                        }
                     });
                     validModels.add(cosmeticId.toString(), array);
                 });
