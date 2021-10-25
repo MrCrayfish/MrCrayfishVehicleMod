@@ -335,10 +335,13 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnergyConsumptionPerTick(0.375F)
                         .setEngineSound(ModSounds.ENTITY_MINI_BUS_ENGINE.getId())
                         .build())
-                .addCosmetic(CosmeticProperties.builder(StandardCosmetics.ROOF)
-                        .setOffset(0, 13, 0)
-                        .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_STOCK_ROOF.getModelLocation()))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.ROOF_FRAME)
+                        .setOffset(0, 13, 0)
+                        .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_STOCK_ROOF.getModelLocation())
+                        .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_FRONT_ROOF.getModelLocation(),
+                                StandardCosmetics.REAR,
+                                StandardCosmetics.ROOF))
+                .addCosmetic(CosmeticProperties.builder(StandardCosmetics.ROOF)
                         .setOffset(0, 22, 0)
                         .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_ROOF_RACKS.getModelLocation()))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.LEFT_DOOR)

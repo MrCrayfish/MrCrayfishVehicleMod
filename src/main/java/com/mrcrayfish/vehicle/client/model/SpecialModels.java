@@ -42,6 +42,7 @@ public enum SpecialModels implements ISpecialModel
     MINI_BUS_COSMETIC_STOCK_ROOF("mini_bus/cosmetics/stock_roof"),
     MINI_BUS_COSMETIC_ROOF_RACKS("mini_bus/cosmetics/roof_racks"),
     MINI_BUS_COSMETIC_AIRCON_LADDER_REAR_DECOR("mini_bus/cosmetics/aircon_ladder"),
+    MINI_BUS_COSMETIC_FRONT_ROOF("mini_bus/cosmetics/front_roof"),
 
     /* Moped */
     MOPED_BODY("moped/body"),
