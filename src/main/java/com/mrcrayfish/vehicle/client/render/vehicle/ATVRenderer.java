@@ -35,23 +35,8 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
     @Override
     protected void render(@Nullable ATVEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        //Body
         this.renderDamagedPart(vehicle, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-
-        //Handle bar transformations
-        matrixStack.pushPose();
-        matrixStack.translate(0.0, 0.3375, 0.25);
-        matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-45F));
-        matrixStack.translate(0.0, -0.025, 0);
-
-        float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
-        float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
-        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 15F;
-        matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(steeringWheelRotation));
-
-        RenderUtil.renderColoredModel(SpecialModels.ATV_HANDLES.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
-
-        matrixStack.popPose();
+        this.renderSteeringWheel(vehicle, SpecialModels.ATV_HANDLES.getModel(), 0.0, 6, 3, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -80,10 +65,10 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
             return;
         }
 
-        model.rightLeg.xRot = (float) Math.toRadians(-65F);
-        model.rightLeg.yRot = (float) Math.toRadians(30F);
-        model.leftLeg.xRot = (float) Math.toRadians(-65F);
-        model.leftLeg.yRot = (float) Math.toRadians(-30F);
+        model.rightLeg.xRot = (float) Math.toRadians(-45F);
+        model.rightLeg.yRot = (float) Math.toRadians(40F);
+        model.leftLeg.xRot = (float) Math.toRadians(-45F);
+        model.leftLeg.yRot = (float) Math.toRadians(-40F);
     }
 
     @Nullable

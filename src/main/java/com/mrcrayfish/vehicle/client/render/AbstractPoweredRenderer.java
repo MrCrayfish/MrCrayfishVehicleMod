@@ -140,7 +140,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
-        this.renderDamagedPart(vehicle, SpecialModels.SPORTS_CAR_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
     }
 
