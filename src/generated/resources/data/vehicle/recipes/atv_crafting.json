@@ -1,6 +1,6 @@
 {
   "type": "vehicle:workstation",
-  "vehicle": "vehicle:atv",
+  "vehicle": "vehicle:quad_bike",
   "materials": [
     {
       "tag": "forge:ingots/iron",

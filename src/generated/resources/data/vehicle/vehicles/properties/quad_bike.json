@@ -74,7 +74,7 @@
             },
             "frontAxleOffset": 10.5,
             "rearAxleOffset": -10.5,
-            "engineSound": "vehicle:entity.atv.engine"
+            "engineSound": "vehicle:entity.quad_bike.engine"
         }
     }
 }

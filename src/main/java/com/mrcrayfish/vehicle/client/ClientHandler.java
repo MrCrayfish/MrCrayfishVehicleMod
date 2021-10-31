@@ -54,14 +54,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Constants;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 /**
@@ -143,7 +140,7 @@ public class ClientHandler
     private static void setupVehicleRenders()
     {
         /* Register Vehicles */
-        VehicleUtil.registerVehicleRenderer(ModEntities.ATV.get(), ATVRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.QUAD_BIKE.get(), ATVRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.SPORTS_CAR.get(), SportsCarRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.GO_KART.get(), GoKartRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.JET_SKI.get(), JetSkiRenderer::new);

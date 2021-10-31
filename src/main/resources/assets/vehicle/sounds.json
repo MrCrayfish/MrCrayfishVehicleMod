@@ -20,9 +20,6 @@
     "block.vehicle_crate.panel_land": {
         "sounds": [ {"name": "vehicle:block/vehicle_crate/panel_land"}]
     },
-    "entity.atv.engine": {
-        "sounds": [ {"name": "vehicle:entity/atv/engine"}]
-    },
     "entity.dirt_bike.engine": {
         "sounds": [ {"name": "vehicle:entity/dirt_bike/engine"}]
     },
@@ -37,6 +34,9 @@
     },
     "entity.moped.engine": {
         "sounds": [ {"name": "vehicle:entity/moped/engine"}]
+    },
+    "entity.quad_bike.engine": {
+        "sounds": [ {"name": "vehicle:entity/quad_bike/engine"}]
     },
     "entity.sports_car.engine": {
         "sounds": [ {"name": "vehicle:entity/sports_car/engine"}]

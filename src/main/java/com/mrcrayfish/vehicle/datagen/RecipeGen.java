@@ -362,7 +362,7 @@ public class RecipeGen extends RecipeProvider
         CustomRecipeBuilder.special(ModRecipeSerializers.REFILL_SPRAY_CAN.get()).save(consumer, "vehicle:refill_spray_can");
 
         // Vehicles
-        workstationCrafting(consumer, ModEntities.ATV.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(Items.IRON_BARS, 4), WorkstationIngredient.of(Items.BLACK_WOOL, 4), WorkstationIngredient.of(Items.REDSTONE, 6), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
+        workstationCrafting(consumer, ModEntities.QUAD_BIKE.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(Items.IRON_BARS, 4), WorkstationIngredient.of(Items.BLACK_WOOL, 4), WorkstationIngredient.of(Items.REDSTONE, 6), WorkstationIngredient.of(ModItems.PANEL.get(), 8));
         workstationCrafting(consumer, ModEntities.DIRT_BIKE.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 32), WorkstationIngredient.of(ModItems.PANEL.get(), 2), WorkstationIngredient.of(Items.GRAY_WOOL, 2));
         workstationCrafting(consumer, ModEntities.GO_KART.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 48), WorkstationIngredient.of(ModItems.PANEL.get(), 4));
         workstationCrafting(consumer, ModEntities.GOLF_CART.get(), WorkstationIngredient.of(Tags.Items.INGOTS_IRON, 80), WorkstationIngredient.of(Items.IRON_BARS, 4), WorkstationIngredient.of(Items.WHITE_WOOL, 8), WorkstationIngredient.of(Items.REDSTONE, 12), WorkstationIngredient.of(ModItems.PANEL.get(), 16));

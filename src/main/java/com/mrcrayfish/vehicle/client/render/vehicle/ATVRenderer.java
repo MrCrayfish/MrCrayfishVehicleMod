@@ -11,12 +11,9 @@ import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.ATVEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
-import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 
@@ -36,7 +33,7 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
     protected void render(@Nullable ATVEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(vehicle, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, SpecialModels.ATV_HANDLES.getModel(), 0.0, 6, 3, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderSteeringWheel(vehicle, SpecialModels.QUAD_BIKE_HANDLES.getModel(), 0.0, 6, 3, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -78,13 +75,13 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
         return (entityRayTracer, transforms, parts) ->
         {
             TransformHelper.createTransformListForPart(SpecialModels.ATV_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.ATV_HANDLES, parts, transforms,
+            TransformHelper.createTransformListForPart(SpecialModels.QUAD_BIKE_HANDLES, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.3375F, 0.25F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.025F, 0.0F));
-            TransformHelper.createTowBarTransforms(ModEntities.ATV.get(), SpecialModels.TOW_BAR, parts);
-            TransformHelper.createFuelFillerTransforms(ModEntities.ATV.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
-            TransformHelper.createIgnitionTransforms(ModEntities.ATV.get(), parts, transforms);
+            TransformHelper.createTowBarTransforms(ModEntities.QUAD_BIKE.get(), SpecialModels.TOW_BAR, parts);
+            TransformHelper.createFuelFillerTransforms(ModEntities.QUAD_BIKE.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createIgnitionTransforms(ModEntities.QUAD_BIKE.get(), parts, transforms);
         };
     }
 
