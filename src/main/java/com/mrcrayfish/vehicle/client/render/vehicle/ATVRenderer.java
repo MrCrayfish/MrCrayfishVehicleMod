@@ -32,7 +32,7 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
     @Override
     protected void render(@Nullable ATVEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.ATV_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, SpecialModels.QUAD_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
         this.renderSteeringWheel(vehicle, SpecialModels.QUAD_BIKE_HANDLES.getModel(), 0.0, 6, 3, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
@@ -74,7 +74,7 @@ public class ATVRenderer extends AbstractLandVehicleRenderer<ATVEntity>
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.ATV_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(SpecialModels.QUAD_BIKE_BODY, parts, transforms);
             TransformHelper.createTransformListForPart(SpecialModels.QUAD_BIKE_HANDLES, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.3375F, 0.25F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),

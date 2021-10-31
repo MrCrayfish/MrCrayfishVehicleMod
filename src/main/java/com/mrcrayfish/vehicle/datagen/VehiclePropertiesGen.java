@@ -76,7 +76,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setFrontAxleOffset(10.5)
                         .setRearAxleOffset(-10.5)
                         .setEnergyCapacity(20000F)
-                        .setEngineSound(ModSounds.ENTITY_ATV_ENGINE.getId())
+                        .setEngineSound(ModSounds.ENTITY_QUAD_BIKE_ENGINE.getId())
                         .setFuelFillerType(FuelFillerType.SMALL)
                         .setRenderEngine(true)
                         .setEngineTransform(Transform.create(0.0, 1.0, -1.0, 0.0, 180.0, 0.0, 0.5))
@@ -282,7 +282,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRearAxleOffset(-10.7)
                         .setEnergyCapacity(5000F)
                         .setCanLockWithKey(false)
-                        .setEngineSound(ModSounds.ENTITY_ATV_ENGINE.getId())
+                        .setEngineSound(ModSounds.ENTITY_QUAD_BIKE_ENGINE.getId())
                         .build()));
 
         this.add(ModEntities.MINI_BUS.get(), VehicleProperties.builder()
