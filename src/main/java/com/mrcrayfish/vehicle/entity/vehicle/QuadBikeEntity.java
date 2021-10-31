@@ -7,9 +7,9 @@ import net.minecraft.world.World;
 /**
  * Author: MrCrayfish
  */
-public class ATVEntity extends LandVehicleEntity
+public class QuadBikeEntity extends LandVehicleEntity
 {
-    public ATVEntity(EntityType<? extends ATVEntity> type, World worldIn)
+    public QuadBikeEntity(EntityType<? extends QuadBikeEntity> type, World worldIn)
     {
         super(type, worldIn);
     }

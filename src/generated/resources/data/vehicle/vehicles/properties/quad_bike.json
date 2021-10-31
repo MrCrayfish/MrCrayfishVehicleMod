@@ -17,15 +17,13 @@
             "side": "left",
             "axle": "front",
             "offset": [ 4.5, 0.0, 9.5 ],
-            "scale": [ 1.1, 1.1, 1.1 ],
-            "particles": true
+            "scale": [ 1.1, 1.1, 1.1 ]
         },
         {
             "side": "right",
             "axle": "front",
             "offset": [ 4.5, 0.0, 9.5 ],
-            "scale": [ 1.1, 1.1, 1.1 ],
-            "particles": true
+            "scale": [ 1.1, 1.1, 1.1 ]
         },
         {
             "side": "left",

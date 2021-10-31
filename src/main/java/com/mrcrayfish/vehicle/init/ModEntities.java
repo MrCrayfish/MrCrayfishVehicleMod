@@ -26,7 +26,7 @@ public class ModEntities
 {
     public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, Reference.MOD_ID);
 
-    public static final RegistryObject<EntityType<ATVEntity>> QUAD_BIKE = VehicleUtil.createEntityType(REGISTER, "atv", ATVEntity::new, 1.5F, 1.0F);
+    public static final RegistryObject<EntityType<QuadBikeEntity>> QUAD_BIKE = VehicleUtil.createEntityType(REGISTER, "quad_bike", QuadBikeEntity::new, 1.5F, 1.0F);
     public static final RegistryObject<EntityType<SportsCarEntity>> SPORTS_CAR = VehicleUtil.createEntityType(REGISTER, "sports_car", SportsCarEntity::new, 1.5F, 1.0F);
     public static final RegistryObject<EntityType<GoKartEntity>> GO_KART = VehicleUtil.createEntityType(REGISTER, "go_kart", GoKartEntity::new, 1.5F, 0.5F);
     public static final RegistryObject<EntityType<JetSkiEntity>> JET_SKI = VehicleUtil.createEntityType(REGISTER, "jet_ski", JetSkiEntity::new, 1.5F, 1.0F);
