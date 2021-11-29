@@ -1,7 +1,7 @@
 {
     "canBePainted": true,
     "canChangeWheels": true,
-    "offsetToGround": -2.5,
+    "offsetToGround": -1.0,
     "heldOffset": [ 3.0, 0.5, 0.0 ],
     "trailerOffset": [ 0.0, -0.031, -0.375 ],
     "displayTransform": {
@@ -12,33 +12,35 @@
         {
             "side": "left",
             "axle": "front",
-            "offset": [ 9.0, 0.0, 13.5 ],
-            "scale": [ 0.8, 0.8, 0.8 ]
+            "offset": [ 7.0, 0.0, 8.75 ],
+            "scale": [ 1.0, 0.8, 0.8 ]
         },
         {
             "side": "right",
             "axle": "front",
-            "offset": [ 9.0, 0.0, 13.5 ],
-            "scale": [ 0.8, 0.8, 0.8 ]
+            "offset": [ 7.0, 0.0, 8.75 ],
+            "scale": [ 1.0, 0.8, 0.8 ]
         },
         {
             "side": "left",
             "axle": "rear",
-            "offset": [ 9.0, 0.0, -8.5 ],
-            "scale": [ 0.8, 0.8, 0.8 ],
+            "offset": [ 7.0, 0.25, -9.5 ],
+            "scale": [ 1.0, 0.0, 0.0 ],
+            "autoScale": true,
             "particles": true
         },
         {
             "side": "right",
             "axle": "rear",
-            "offset": [ 9.0, 0.0, -8.5 ],
-            "scale": [ 0.8, 0.8, 0.8 ],
+            "offset": [ 7.0, 0.25, -9.5 ],
+            "scale": [ 1.0, 0.0, 0.0 ],
+            "autoScale": true,
             "particles": true
         }
     ],
     "seats": [
         {
-            "position": [ 0.0, -2.0, -1.0 ],
+            "position": [ 0.0, -3.0, -1.5 ],
             "driver": true
         }
     ],
@@ -55,15 +57,15 @@
             "maxEnginePitch": 1.6,
             "renderEngine": true,
             "engineTransform": {
-                "translate": [ 0.0, 2.0, -9.0 ],
+                "translate": [ 0.0, 1.0, -11.0 ],
                 "rotation": [ 0.0, 180.0, 0.0 ],
                 "scale": 0.8
             },
             "showExhaustFumes": true,
             "exhaustFumesPosition": [ 0.0, 8.0, -16.0 ],
             "canLockWithKey": false,
-            "frontAxleOffset": 13.5,
-            "rearAxleOffset": -8.5,
+            "frontAxleOffset": 9.0,
+            "rearAxleOffset": -9.5,
             "engineSound": "vehicle:entity.go_kart.engine"
         }
     }

@@ -60,8 +60,10 @@ public enum SpecialModels implements ISpecialModel
     QUAD_BIKE_BODY("quad_bike/body"),
     QUAD_BIKE_HANDLES("quad_bike/handles"),
 
-    GO_KART_BODY("go_kart_body"),
+    /* Go Kart */
+    GO_KART_BODY("go_kart/body"),
     GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
+
     JET_SKI_BODY("jet_ski_body"),
     LAWN_MOWER_BODY("lawn_mower_body"),
     SPORTS_PLANE("sports_plane_body"),

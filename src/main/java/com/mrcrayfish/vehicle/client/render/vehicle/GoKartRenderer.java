@@ -35,22 +35,7 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
     protected void render(@Nullable GoKartEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         this.renderDamagedPart(vehicle, SpecialModels.GO_KART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-
-        //Render the handles bars
-        matrixStack.pushPose();
-        matrixStack.translate(0, 0.09, 0.49);
-        matrixStack.mulPose(Vector3f.XP.rotationDegrees(-45F));
-        matrixStack.translate(0, -0.02, 0);
-        matrixStack.scale(0.9F, 0.9F, 0.9F);
-
-        float wheelAngle = this.wheelAngleProperty.get(vehicle, partialTicks);
-        float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
-        float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
-        matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
-
-        this.renderDamagedPart(vehicle, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
-
-        matrixStack.popPose();
+        this.renderSteeringWheel(vehicle, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), 0.0, 1.0, 7.5, 1.0F, -45F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
