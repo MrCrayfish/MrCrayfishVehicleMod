@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class ATVRenderer extends AbstractLandVehicleRenderer<QuadBikeEntity>
+public class QuadBikeRenderer extends AbstractLandVehicleRenderer<QuadBikeEntity>
 {
-    public ATVRenderer(EntityType<QuadBikeEntity> type, VehicleProperties defaultProperties)
+    public QuadBikeRenderer(EntityType<QuadBikeEntity> type, VehicleProperties defaultProperties)
     {
         super(type, defaultProperties);
     }
