@@ -80,6 +80,7 @@ public class ClientHandler
         {
             ClientHandler.controllableLoaded = true;
             MinecraftForge.EVENT_BUS.register(new ControllerHandler());
+            ControllerHandler.init();
         }
 
         MinecraftForge.EVENT_BUS.register(EntityRayTracer.instance());

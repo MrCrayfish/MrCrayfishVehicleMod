@@ -4,10 +4,11 @@ import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
+import com.mrcrayfish.vehicle.client.audio.MovingSoundHornStart;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
+import com.mrcrayfish.vehicle.client.handler.ControllerHandler;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.init.ModParticleTypes;
@@ -74,7 +75,7 @@ public class VehicleHelper
                 ITickableSound sound = soundMap.get(SoundType.HORN);
                 if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
                 {
-                    sound = new MovingSoundHorn(vehicle);
+                    sound = new MovingSoundHornStart(vehicle);
                     soundMap.put(SoundType.HORN, sound);
                     Minecraft.getInstance().getSoundManager().play(sound);
                 }
@@ -127,7 +128,7 @@ public class VehicleHelper
             if(!(entity instanceof LivingEntity))
                 return 0F;
 
-            float strength = 0.25F * MathHelper.clamp(1.0F - (float) vehicle.getSpeed() / 30F, 0.2F, 1.0F);
+            float speedModifier = 0.25F * MathHelper.clamp(1.0F - (float) vehicle.getSpeed() / 35F, 0.2F, 1.0F);
 
             if(ClientHandler.isControllableLoaded())
             {
@@ -135,13 +136,14 @@ public class VehicleHelper
                 if(Controllable.getInput().isControllerInUse() && controller != null)
                 {
                     float leftStick = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
-                    return steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - steeringAngle) * strength;
+                    return steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - steeringAngle) * speedModifier;
                 }
             }
 
             LivingEntity livingEntity = (LivingEntity) entity;
             float turnValue = MathHelper.clamp(livingEntity.xxa, -1.0F, 1.0F);
-            return steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - steeringAngle) * strength * 0.75F;
+            float strengthModifier = livingEntity.xxa != 0 ? 0.05F : 0.2F;
+            return steeringAngle + (vehicle.getMaxSteeringAngle() * turnValue - steeringAngle) * strengthModifier;
         }
         return steeringAngle * 0.85F;
     }
@@ -151,9 +153,9 @@ public class VehicleHelper
         if(ClientHandler.isControllableLoaded())
         {
             Controller controller = Controllable.getController();
-            if(controller != null)
+            if(controller != null && Controllable.getInput().isControllerInUse())
             {
-                if(controller.getButtonsStates().getState(Buttons.RIGHT_BUMPER))
+                if(controller.isButtonPressed(ControllerHandler.HANDBRAKE.getButton()))
                 {
                     return true;
                 }
@@ -167,9 +169,9 @@ public class VehicleHelper
         if(ClientHandler.isControllableLoaded())
         {
             Controller controller = Controllable.getController();
-            if(controller != null)
+            if(controller != null && Controllable.getInput().isControllerInUse())
             {
-                if(controller.isButtonPressed(Buttons.RIGHT_THUMB_STICK))
+                if(controller.isButtonPressed(ControllerHandler.HORN.getButton()))
                 {
                     return true;
                 }
@@ -187,8 +189,8 @@ public class VehicleHelper
             Controller controller = Controllable.getController();
             if(controller != null && Controllable.getInput().isControllerInUse())
             {
-                up = controller.getButtonsStates().getState(Buttons.RIGHT_BUMPER) ? 1.0F : up;
-                down = controller.getButtonsStates().getState(Buttons.LEFT_BUMPER) ? -1.0F : down;
+                up = getTriggerInput(ControllerHandler.ASCEND.getButton());
+                down = -getTriggerInput(ControllerHandler.DESCEND.getButton());
             }
         }
         return up + down;
@@ -251,28 +253,45 @@ public class VehicleHelper
         //return helicopter.getAcceleration() != PoweredVehicleEntity.AccelerationDirection.NONE || helicopter.getTurnDirection() != PoweredVehicleEntity.TurnDirection.FORWARD ? 1.0F : 0.0F;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static float getThrottle(LivingEntity livingEntity)
     {
-        if(ClientHandler.isControllableLoaded() && Config.CLIENT.useTriggers.get())
+        if(ClientHandler.isControllableLoaded())
         {
             Controller controller = Controllable.getController();
-            if(controller != null)
+            if(controller != null && Controllable.getInput().isControllerInUse())
             {
-                //Maybe add a dead zone option to controllable for triggers
-                boolean forward = MathHelper.clamp(controller.getRTriggerValue(), 0.0F, 1.0F) > 0.1F;
-                boolean reverse = MathHelper.clamp(controller.getLTriggerValue(), 0.0F, 1.0F) > 0.1F;
+                boolean forward = Controllable.isButtonPressed(ControllerHandler.ACCELERATE.getButton());
+                boolean reverse = Controllable.isButtonPressed(ControllerHandler.REVERSE.getButton());
                 if(forward && !reverse)
                 {
-                    return (controller.getRTriggerValue() - 0.1F) / 0.9F;
+                    return getTriggerInput(ControllerHandler.ACCELERATE.getButton());
                 }
                 else if(!forward && reverse)
                 {
-                    return -(controller.getLTriggerValue() - 0.1F) / 0.9F;
+                    return -getTriggerInput(ControllerHandler.REVERSE.getButton());
                 }
+                return 0.0F;
             }
         }
         return MathHelper.clamp(livingEntity.zza, -1.0F, 1.0F);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    private static float getTriggerInput(int button)
+    {
+        Controller controller = Controllable.getController();
+        if(controller == null || !Controllable.getInput().isControllerInUse())
+            return 0.0F;
+
+        if(button == Buttons.RIGHT_TRIGGER)
+        {
+            return (controller.getRTriggerValue() - 0.1F) / 0.9F;
+        }
+        else if(button == Buttons.LEFT_TRIGGER)
+        {
+            return (controller.getLTriggerValue() - 0.1F) / 0.9F;
+        }
+        return controller.isButtonPressed(button) ? 1.0F : 0.0F;
     }
 
     public static boolean canFollowVehicleOrientation(Entity passenger)

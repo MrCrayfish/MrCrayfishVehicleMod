@@ -170,5 +170,15 @@
     "key.vehicle.horn": "Horn",
 
     "gui.vehicle.craft": "Craft",
-    "gui.vehicle.show_remaining": "Show Remaining"
+    "gui.vehicle.show_remaining": "Show Remaining",
+
+    "button.categories.vehicle": "MrCrayfish's Vehicle Mod",
+    "vehicle.button.accelerate": "Accelerate",
+    "vehicle.button.brake": "Brake / Reverse",
+    "vehicle.button.handbrake": "Handbrake",
+    "vehicle.button.horn": "Horn",
+    "vehicle.button.hitch_trailer": "Hitch Trailer",
+    "vehicle.button.reset_camera": "Reset Camera",
+    "vehicle.button.ascend": "Ascend",
+    "vehicle.button.descend": "Descend"
 }

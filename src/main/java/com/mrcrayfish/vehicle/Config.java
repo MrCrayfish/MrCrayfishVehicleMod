@@ -22,7 +22,6 @@ public class Config
         public final ForgeConfigSpec.BooleanValue autoPerspective;
         public final ForgeConfigSpec.BooleanValue forceFirstPersonOnExit;
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
-        public final ForgeConfigSpec.BooleanValue useTriggers;
         public final ForgeConfigSpec.BooleanValue reloadVehiclePropertiesEachTick;
         public final ForgeConfigSpec.BooleanValue forceRenderAllInteractableBoxes;
         public final ForgeConfigSpec.IntValue hoseSegments;
@@ -39,41 +38,40 @@ public class Config
             builder.comment("Client configuration settings").push("client");
             {
                 builder.comment("Configuration options for debugging vehicles").push("debug");
-                this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.").translation(Reference.MOD_ID + ".config.client.debug.render_outlines").define("renderOutlines", false);
-                this.renderDebugging = builder.comment("If true, renders lines to help visualise steering direction and target position.").translation(Reference.MOD_ID + ".config.client.debug.render_steering_debug").define("renderSteeringDebug", false);
-                this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
-                this.reloadVehiclePropertiesEachTick = builder.comment("If true, the vehicle properties will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.properties.continuous_reload").define("reloadVehiclePropertiesEachTick", false);
-                this.forceRenderAllInteractableBoxes = builder.comment("If true, when rendering debug outlines all interactables boxes will be rendered rather than just the active").translation(Reference.MOD_ID + ".config.client.debug.properties.force_render_all_interactable_boxes").define("forceRenderAllInteractableBoxes", false);
+                {
+                    this.renderOutlines = builder.comment("If true, renders an outline of all the elements on a vehicle's model. Useful for debugging interactions.").translation(Reference.MOD_ID + ".config.client.debug.render_outlines").define("renderOutlines", false);
+                    this.renderDebugging = builder.comment("If true, renders lines to help visualise steering direction and target position.").translation(Reference.MOD_ID + ".config.client.debug.render_steering_debug").define("renderSteeringDebug", false);
+                    this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
+                    this.reloadVehiclePropertiesEachTick = builder.comment("If true, the vehicle properties will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.properties.continuous_reload").define("reloadVehiclePropertiesEachTick", false);
+                    this.forceRenderAllInteractableBoxes = builder.comment("If true, when rendering debug outlines all interactables boxes will be rendered rather than just the active").translation(Reference.MOD_ID + ".config.client.debug.properties.force_render_all_interactable_boxes").define("forceRenderAllInteractableBoxes", false);
+                }
                 builder.pop();
 
                 builder.comment("Configuration options for vehicle interaction").push("interaction");
-                this.enabledLeftClick = builder.comment("If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.").translation(Reference.MOD_ID + ".config.client.interaction.left_click").define("enabledLeftClick", true);
+                {
+                    this.enabledLeftClick = builder.comment("If true, raytraces will be performed on nearby vehicles when left-clicking the mouse, rather than just right-clicking it. This allows one to be damaged/broken when clicking anywhere on it, rather than just on its bounding box.").translation(Reference.MOD_ID + ".config.client.interaction.left_click").define("enabledLeftClick", true);
+                }
                 builder.pop();
 
                 builder.comment("Configuration for display related options").push("display");
-                this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle").translation(Reference.MOD_ID + ".config.client.display.speedometer").define("enabledSpeedometer", true);
-                this.autoPerspective = builder.comment("If true, automatically switches to third person when mounting vehicles").translation(Reference.MOD_ID + ".config.client.display.auto_perspective").define("autoPerspective", true);
-                this.forceFirstPersonOnExit = builder.comment("If enabled, camera perspective will always be forced back to first person when exiting a vehicle.").translation(Reference.MOD_ID + ".config.client.display.force_first_person_on_exit").define("forceFirstPersonOnExit", false);
-                this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation").translation(Reference.MOD_ID + ".config.client.display.workstation_animation").define("workstationAnimation", true);
-                this.hoseSegments = builder.comment("The amount of segments to use to render the hose on a gas pump. The lower the value, the better the performance but renders a less realistically looking hose").translation(Reference.MOD_ID + ".config.client.display.hose_segments").defineInRange("hoseSegments", 10, 1, 100);
+                {
+                    this.enabledSpeedometer = builder.comment("If true, displays a speedometer on the HUD when driving a vehicle").translation(Reference.MOD_ID + ".config.client.display.speedometer").define("enabledSpeedometer", true);
+                    this.autoPerspective = builder.comment("If true, automatically switches to third person when mounting vehicles").translation(Reference.MOD_ID + ".config.client.display.auto_perspective").define("autoPerspective", true);
+                    this.forceFirstPersonOnExit = builder.comment("If enabled, camera perspective will always be forced back to first person when exiting a vehicle.").translation(Reference.MOD_ID + ".config.client.display.force_first_person_on_exit").define("forceFirstPersonOnExit", false);
+                    this.workstationAnimation = builder.comment("If true, an animation is performed while cycling vehicles in the workstation").translation(Reference.MOD_ID + ".config.client.display.workstation_animation").define("workstationAnimation", true);
+                    this.hoseSegments = builder.comment("The amount of segments to use to render the hose on a gas pump. The lower the value, the better the performance but renders a less realistically looking hose").translation(Reference.MOD_ID + ".config.client.display.hose_segments").defineInRange("hoseSegments", 10, 1, 100);
 
-                builder.comment("Configuration for camera related options").push("camera");
-                this.immersiveCamera = builder.comment("If true, uses an improved camera system when riding vehicles. Disabling this option will restore the default camera but it will break the experience of some vehicles. If you do disable this, clearly you don't care about the weeks MrCrayfish spent developing this awesome new camera system and want to hurt your eyes, you've been warned!").translation(Reference.MOD_ID + ".config.client.display.immersive_camera").define("immersiveCamera", true);
-                this.followVehicleOrientation = builder.comment("Makes the camera follow the vehicles traveling direction and rotations. This will be limited to yaw if immersiveCamera is disabled.").translation(Reference.MOD_ID + ".config.client.display.follow_vehicle_orientation").define("followVehicleOrientation", true);
-                this.useVehicleAsFocusPoint = builder.comment("In third person, uses the vehicle as the focus point rather than the players head. This only has an effect when immersiveCamera is enabled.").translation(Reference.MOD_ID + ".config.client.display.use_vehicle_as_focus_point").define("useVehicleAsFocusPoint", true);
-                this.shouldFollowPitch = builder.comment("Makes the camera follow vehicle rotations on the x-axis (pitch). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_pitch").define("shouldFollowPitch", true);
-                this.shouldFollowYaw = builder.comment("Makes the camera follow vehicle rotations on the y-axis (yaw). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_yaw").define("shouldFollowYaw", true);
-                this.shouldFollowRoll = builder.comment("Makes the camera follow vehicle rotations on the z-axis (roll). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_roll").define("shouldFollowRoll", true);
-                builder.pop();
-
-                builder.pop();
-
-                builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
-
-                builder.pop();
-
-                builder.comment("Configuration options for controller support (Must have Controllable install)").push("controller");
-                this.useTriggers = builder.comment("If true, will use the triggers on controller to control the acceleration of the vehicle.").translation(Reference.MOD_ID + ".config.client.controller.use_triggers").define("useTriggers", false);
+                    builder.comment("Configuration for camera related options").push("camera");
+                    {
+                        this.immersiveCamera = builder.comment("If true, uses an improved camera system when riding vehicles. Disabling this option will restore the default camera but it will break the experience of some vehicles. If you do disable this, clearly you don't care about the weeks MrCrayfish spent developing this awesome new camera system and want to hurt your eyes, you've been warned!").translation(Reference.MOD_ID + ".config.client.display.immersive_camera").define("immersiveCamera", true);
+                        this.followVehicleOrientation = builder.comment("Makes the camera follow the vehicles traveling direction and rotations. This will be limited to yaw if immersiveCamera is disabled.").translation(Reference.MOD_ID + ".config.client.display.follow_vehicle_orientation").define("followVehicleOrientation", true);
+                        this.useVehicleAsFocusPoint = builder.comment("In third person, uses the vehicle as the focus point rather than the players head. This only has an effect when immersiveCamera is enabled.").translation(Reference.MOD_ID + ".config.client.display.use_vehicle_as_focus_point").define("useVehicleAsFocusPoint", true);
+                        this.shouldFollowPitch = builder.comment("Makes the camera follow vehicle rotations on the x-axis (pitch). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_pitch").define("shouldFollowPitch", true);
+                        this.shouldFollowYaw = builder.comment("Makes the camera follow vehicle rotations on the y-axis (yaw). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_yaw").define("shouldFollowYaw", true);
+                        this.shouldFollowRoll = builder.comment("Makes the camera follow vehicle rotations on the z-axis (roll). This only has an effect when followVehicleOrientation is enabled.").translation(Reference.MOD_ID + ".config.client.display.should_follow_roll").define("shouldFollowRoll", true);
+                    }
+                    builder.pop();
+                }
                 builder.pop();
             }
             builder.pop();
