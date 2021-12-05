@@ -23,6 +23,8 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -47,6 +49,7 @@ import java.util.stream.StreamSupport;
 /**
  * Author: MrCrayfish
  */
+@Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT)
 public class VehicleProperties
 {
     private static final double WHEEL_DIAMETER = 8.0;
@@ -266,7 +269,7 @@ public class VehicleProperties
     public static VehicleProperties get(ResourceLocation id)
     {
         VehicleProperties properties = null;
-        if(Manager.get() != null)
+        if(!NETWORK_VEHICLE_PROPERTIES.isEmpty())
         {
             properties = NETWORK_VEHICLE_PROPERTIES.get(id);
         }
@@ -303,6 +306,12 @@ public class VehicleProperties
         NETWORK_VEHICLE_PROPERTIES.clear();
         NETWORK_VEHICLE_PROPERTIES.putAll(message.getPropertiesMap());
         return true;
+    }
+
+    @SubscribeEvent
+    public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
+    {
+        NETWORK_VEHICLE_PROPERTIES.clear();
     }
 
     public static class Serializer implements JsonDeserializer<VehicleProperties>, JsonSerializer<VehicleProperties>
