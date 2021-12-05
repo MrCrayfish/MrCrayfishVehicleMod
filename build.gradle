@@ -78,7 +78,8 @@ dependencies {
 
     compile fg.deobf('curse.maven:obfuscate-289380:3336021')
     compile fg.deobf('curse.maven:controllable-317269:3335987')
-    compile fg.deobf('curse.maven:configured-457570:3340535')
+    compile fg.deobf('curse.maven:configured-457570:3546348')
+    compile fg.deobf('curse.maven:catalogue-459701:3529457')
 }
 
 processResources {
