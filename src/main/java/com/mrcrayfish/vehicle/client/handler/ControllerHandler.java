@@ -48,6 +48,7 @@ public class ControllerHandler
     public static final ButtonBinding HORN = new ButtonBinding(Buttons.RIGHT_THUMB_STICK, "vehicle.button.horn", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding HITCH_TRAILER = new ButtonBinding(Buttons.X, "vehicle.button.hitch_trailer", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding RESET_CAMERA = new ButtonBinding(Buttons.SELECT, "vehicle.button.reset_camera", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
+    public static final ButtonBinding CYCLE_SEATS = new ButtonBinding(Buttons.DPAD_LEFT, "vehicle.button.cycle_seats", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
 
     public static final IKeyConflictContext AIR_VEHICLE_KEY_CONFLICT = new VehicleKeyConflict();
     public static final ButtonBinding ASCEND = new ButtonBinding(Buttons.A, "vehicle.button.ascend", "button.categories.vehicle", AIR_VEHICLE_KEY_CONFLICT);
@@ -63,6 +64,7 @@ public class ControllerHandler
         BindingRegistry.getInstance().register(RESET_CAMERA);
         BindingRegistry.getInstance().register(ASCEND);
         BindingRegistry.getInstance().register(DESCEND);
+        BindingRegistry.getInstance().register(CYCLE_SEATS);
     }
 
     @SubscribeEvent
@@ -98,6 +100,11 @@ public class ControllerHandler
             {
                 player.yRot = player.getVehicle().yRot;
                 player.xRot = 15F;
+                event.setCanceled(true);
+            }
+            else if(button == CYCLE_SEATS.getButton())
+            {
+                PacketHandler.getPlayChannel().sendToServer(new MessageCycleSeats());
                 event.setCanceled(true);
             }
         }
