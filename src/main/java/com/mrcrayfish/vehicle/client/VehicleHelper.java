@@ -4,9 +4,8 @@ import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
+import com.mrcrayfish.vehicle.client.audio.MovingEngineSound;
+import com.mrcrayfish.vehicle.client.audio.MovingHornSound;
 import com.mrcrayfish.vehicle.client.handler.ControllerHandler;
 import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
@@ -22,7 +21,6 @@ import net.minecraft.client.settings.PointOfView;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
@@ -41,45 +39,32 @@ import java.util.WeakHashMap;
  */
 public class VehicleHelper
 {
-    private static final WeakHashMap<PoweredVehicleEntity, Map<SoundType, ITickableSound>> SOUND_TRACKER = new WeakHashMap<>();
-    
-    public static void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle)
+    private static final WeakHashMap<PoweredVehicleEntity, EnumMap<SoundType, ITickableSound>> SOUND_TRACKER = new WeakHashMap<>();
+
+    public static void tryPlayEngineSound(PoweredVehicleEntity vehicle)
     {
-        Minecraft.getInstance().tell(() ->
+        if(vehicle.getEngineSound() != null && vehicle.getControllingPassenger() != null)
         {
-            /*Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, uuid -> new HashMap<>());
-            if(vehicle.getEngineSound() != null && player.equals(Minecraft.getInstance().player))
+            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, v -> new EnumMap<>(SoundType.class));
+            ITickableSound sound = soundMap.get(SoundType.ENGINE);
+            if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
             {
-                ITickableSound sound = soundMap.get(SoundType.ENGINE_RIDING);
-                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
-                {
-                    sound = new MovingSoundVehicleRiding(player, vehicle);
-                    soundMap.put(SoundType.ENGINE_RIDING, sound);
-                    Minecraft.getInstance().getSoundManager().play(sound);
-                }
+                sound = new MovingEngineSound(Minecraft.getInstance().player, vehicle);
+                soundMap.put(SoundType.ENGINE, sound);
+                Minecraft.getInstance().getSoundManager().play(sound);
             }
-            if(vehicle.getEngineSound() != null && !player.equals(Minecraft.getInstance().player))
-            {
-                ITickableSound sound = soundMap.get(SoundType.ENGINE);
-                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
-                {
-                    sound = new MovingSoundVehicle(vehicle);
-                    soundMap.put(SoundType.ENGINE, sound);
-                    Minecraft.getInstance().getSoundManager().play(new MovingSoundVehicle(vehicle));
-                }
-            }*/
-        });
+        }
     }
 
     public static void tryPlayHornSound(PoweredVehicleEntity vehicle)
     {
         if(vehicle.hasHorn() && vehicle.getHornSound() != null)
         {
-            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, v -> new HashMap<>());
+            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, v -> new EnumMap<>(SoundType.class));
             ITickableSound sound = soundMap.get(SoundType.HORN);
             if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
             {
-                sound = new MovingSoundHorn(Minecraft.getInstance().player, vehicle);
+                sound = new MovingHornSound(Minecraft.getInstance().player, vehicle);
                 soundMap.put(SoundType.HORN, sound);
                 Minecraft.getInstance().getSoundManager().play(sound);
             }
@@ -336,8 +321,6 @@ public class VehicleHelper
     private enum SoundType
     {
         ENGINE,
-        ENGINE_RIDING,
-        HORN,
-        HORN_RIDING;
+        HORN
     }
 }

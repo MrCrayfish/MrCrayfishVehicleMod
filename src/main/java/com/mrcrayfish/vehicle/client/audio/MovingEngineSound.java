@@ -1,32 +1,34 @@
 package com.mrcrayfish.vehicle.client.audio;
 
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.lang.ref.WeakReference;
+import java.util.function.Predicate;
 
 /**
  * Author: MrCrayfish
  */
 @OnlyIn(Dist.CLIENT)
-public class MovingSoundHorn extends TickableSound
+public class MovingEngineSound extends TickableSound
 {
-    private static final int MAX_FADE_IN_TICKS = 1;
-
     private final WeakReference<PlayerEntity> playerRef;
     private final WeakReference<PoweredVehicleEntity> vehicleRef;
-    private int fadeTicks;
 
-    public MovingSoundHorn(PlayerEntity player, PoweredVehicleEntity vehicle)
+    public MovingEngineSound(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
-        super(vehicle.getHornSound(), SoundCategory.NEUTRAL);
+        super(vehicle.getEngineSound(), SoundCategory.NEUTRAL);
         this.playerRef = new WeakReference<>(player);
         this.vehicleRef = new WeakReference<>(vehicle);
         this.volume = 0.0F;
+        this.pitch = 0.5F;
         this.looping = true;
         this.delay = 0;
     }
@@ -46,31 +48,21 @@ public class MovingSoundHorn extends TickableSound
 
         PoweredVehicleEntity vehicle = this.vehicleRef.get();
         PlayerEntity player = this.playerRef.get();
-        if(vehicle == null || player == null || (!vehicle.getHorn() && this.fadeTicks <= 0) || !vehicle.isAlive())
+        if(vehicle == null || player == null || (vehicle.getControllingPassenger() == null && this.volume <= 0.05F) || !vehicle.isAlive())
         {
             this.stop();
             return;
         }
 
-        if(vehicle.getHorn())
-        {
-            if(this.fadeTicks < MAX_FADE_IN_TICKS)
-            {
-                this.fadeTicks++;
-                this.volume = (float) this.fadeTicks / (float) MAX_FADE_IN_TICKS;
-            }
-        }
-        else if(this.fadeTicks > 0)
-        {
-            this.fadeTicks -= 2;
-            this.volume = (float) this.fadeTicks / (float) MAX_FADE_IN_TICKS;
-        }
+        this.volume = MathHelper.lerp(0.2F, this.volume, vehicle.getEngineVolume());
+        this.pitch = MathHelper.lerp(0.2F, this.pitch, vehicle.getEnginePitch());
+        this.attenuation = vehicle.equals(player.getVehicle()) ? AttenuationType.NONE : AttenuationType.LINEAR;
 
         if(!vehicle.equals(player.getVehicle()))
         {
-            this.x = (vehicle.getX() + (player.getX() - vehicle.getX()) * 0.65);
-            this.y = (vehicle.getY() + (player.getY() - vehicle.getY()) * 0.65);
-            this.z = (vehicle.getZ() + (player.getZ() - vehicle.getZ()) * 0.65);
+            this.x = (float) (vehicle.getX() + (player.getX() - vehicle.getX()) * 0.65);
+            this.y = (float) (vehicle.getY() + (player.getY() - vehicle.getY()) * 0.65);
+            this.z = (float) (vehicle.getZ() + (player.getZ() - vehicle.getZ()) * 0.65);
         }
         else
         {

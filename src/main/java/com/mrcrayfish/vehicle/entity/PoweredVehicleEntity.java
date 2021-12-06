@@ -500,6 +500,8 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             PacketHandler.getPlayChannel().sendToServer(new MessageTurnAngle(steeringAngle));
         }
 
+        VehicleHelper.tryPlayEngineSound(this);
+
         if(this.getHorn())
         {
             VehicleHelper.tryPlayHornSound(this);
@@ -812,16 +814,6 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
                         + color.getGreen() * color.getGreen() * 0.691
                         + color.getBlue() * color.getBlue() * 0.068) > 127 ? color.darker() : color.brighter()).getRGB();*/
             }
-        }
-    }
-
-    @Override
-    public void addPassenger(Entity passenger)
-    {
-        super.addPassenger(passenger);
-        if(passenger instanceof PlayerEntity && this.level.isClientSide())
-        {
-            VehicleHelper.playVehicleSound((PlayerEntity) passenger, this);
         }
     }
 
