@@ -43,7 +43,7 @@ public class VehicleHelper
 
     public static void tryPlayEngineSound(PoweredVehicleEntity vehicle)
     {
-        if(vehicle.getEngineSound() != null && vehicle.getControllingPassenger() != null)
+        if(vehicle.getEngineSound() != null && vehicle.getControllingPassenger() != null && vehicle.isEnginePowered())
         {
             Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, v -> new EnumMap<>(SoundType.class));
             ITickableSound sound = soundMap.get(SoundType.ENGINE);

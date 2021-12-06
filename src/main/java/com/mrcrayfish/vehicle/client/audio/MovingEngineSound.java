@@ -48,7 +48,7 @@ public class MovingEngineSound extends TickableSound
 
         PoweredVehicleEntity vehicle = this.vehicleRef.get();
         PlayerEntity player = this.playerRef.get();
-        if(vehicle == null || player == null || (vehicle.getControllingPassenger() == null && this.volume <= 0.05F) || !vehicle.isAlive())
+        if(vehicle == null || player == null || ((vehicle.getControllingPassenger() == null || !vehicle.isEnginePowered()) && this.volume <= 0.05F) || !vehicle.isAlive())
         {
             this.stop();
             return;
