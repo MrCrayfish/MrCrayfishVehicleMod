@@ -158,7 +158,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnginePower(18F)
                         .setMinEnginePitch(0.9F)
                         .setMaxEnginePitch(2.0F)
-                        .setEngineTransform(Transform.create(0.0, 2.0, -9.0, 0.0, 180.0, 0.0, 0.8))
+                        .setEngineTransform(Transform.create(0.0, 1.0, -11.0, 0.0, 180.0, 0.0, 0.8))
                         .setFrontAxleOffset(9.0)
                         .setRearAxleOffset(-9.5)
                         .setEnergyConsumptionPerTick(0.5F)
