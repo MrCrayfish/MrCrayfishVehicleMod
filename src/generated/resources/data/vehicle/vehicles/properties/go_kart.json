@@ -40,7 +40,7 @@
     ],
     "seats": [
         {
-            "position": [ 0.0, -3.0, -1.5 ],
+            "position": [ 0.0, -3.0, -1.0 ],
             "driver": true
         }
     ],
@@ -53,8 +53,8 @@
             "energyConsumptionPerTick": 0.5,
             "engineType": "vehicle:small_motor",
             "enginePower": 18.0,
-            "minEnginePitch": 0.8,
-            "maxEnginePitch": 1.6,
+            "minEnginePitch": 0.9,
+            "maxEnginePitch": 2.0,
             "renderEngine": true,
             "engineTransform": {
                 "translate": [ 0.0, 1.0, -11.0 ],
