@@ -106,15 +106,14 @@ public class VehicleHelper
             if(!(entity instanceof LivingEntity))
                 return 0F;
 
-            float speedModifier = 0.25F * MathHelper.clamp(1.0F - (float) vehicle.getSpeed() / 35F, 0.2F, 1.0F);
-
             if(ClientHandler.isControllableLoaded())
             {
                 Controller controller = Controllable.getController();
                 if(Controllable.getInput().isControllerInUse() && controller != null)
                 {
                     float leftStick = -MathHelper.clamp(controller.getLThumbStickXValue(), -1.0F, 1.0F);
-                    return steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - steeringAngle) * speedModifier;
+                    float strengthModifier = Math.abs(leftStick) > 0.1F ? 0.1F : 0.2F;
+                    return steeringAngle + (vehicle.getMaxSteeringAngle() * leftStick - steeringAngle) * strengthModifier;
                 }
             }
 
