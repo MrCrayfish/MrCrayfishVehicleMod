@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import net.minecraft.client.audio.TickableSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -15,11 +16,8 @@ import java.lang.ref.WeakReference;
 @OnlyIn(Dist.CLIENT)
 public class MovingHornSound extends TickableSound
 {
-    private static final int MAX_FADE_IN_TICKS = 1;
-
     private final WeakReference<PlayerEntity> playerRef;
     private final WeakReference<PoweredVehicleEntity> vehicleRef;
-    private int fadeTicks;
 
     public MovingHornSound(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
@@ -46,7 +44,7 @@ public class MovingHornSound extends TickableSound
 
         PoweredVehicleEntity vehicle = this.vehicleRef.get();
         PlayerEntity player = this.playerRef.get();
-        if(vehicle == null || player == null || (!vehicle.getHorn() && this.fadeTicks <= 0) || !vehicle.isAlive() || vehicle.getPassengers().isEmpty())
+        if(vehicle == null || player == null || (!vehicle.getHorn() && this.volume <= 0.05F) || !vehicle.isAlive() || vehicle.getPassengers().isEmpty())
         {
             this.stop();
             return;
@@ -54,16 +52,11 @@ public class MovingHornSound extends TickableSound
 
         if(vehicle.getHorn())
         {
-            if(this.fadeTicks < MAX_FADE_IN_TICKS)
-            {
-                this.fadeTicks++;
-                this.volume = (float) this.fadeTicks / (float) MAX_FADE_IN_TICKS;
-            }
+            this.volume = MathHelper.lerp(0.6F, this.volume, 1.0F);
         }
-        else if(this.fadeTicks > 0)
+        else
         {
-            this.fadeTicks -= 2;
-            this.volume = (float) this.fadeTicks / (float) MAX_FADE_IN_TICKS;
+            this.volume = MathHelper.lerp(0.75F, this.volume, 0.0F);
         }
 
         this.attenuation = vehicle.equals(player.getVehicle()) ? AttenuationType.NONE : AttenuationType.LINEAR;
