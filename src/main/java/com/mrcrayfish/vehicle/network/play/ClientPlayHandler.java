@@ -6,10 +6,11 @@ import com.mrcrayfish.vehicle.common.inventory.IStorage;
 import com.mrcrayfish.vehicle.common.inventory.StorageInventory;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.message.MessageEntityFluid;
+import com.mrcrayfish.vehicle.network.message.MessageSyncActionData;
 import com.mrcrayfish.vehicle.network.message.MessageSyncCosmetics;
 import com.mrcrayfish.vehicle.network.message.MessageSyncHeldVehicle;
-import com.mrcrayfish.vehicle.network.message.MessageSyncStorage;
 import com.mrcrayfish.vehicle.network.message.MessageSyncPlayerSeat;
+import com.mrcrayfish.vehicle.network.message.MessageSyncStorage;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -120,6 +121,26 @@ public class ClientPlayHandler
         CosmeticTracker tracker = ((VehicleEntity) entity).getCosmeticTracker();
         message.getDirtyEntries().forEach(pair -> {
             tracker.setSelectedModel(pair.getLeft(), pair.getRight());
+        });
+    }
+
+    public static void handleSyncActionData(MessageSyncActionData message)
+    {
+        World world = Minecraft.getInstance().level;
+        if(world == null)
+            return;
+
+        Entity entity = world.getEntity(message.getEntityId());
+        if(!(entity instanceof VehicleEntity))
+            return;
+
+        CosmeticTracker tracker = ((VehicleEntity) entity).getCosmeticTracker();
+        tracker.getSelectedCosmeticEntry(message.getCosmeticId()).ifPresent(entry -> {
+            message.getActionData().forEach(pair -> {
+                entry.getAction(pair.getLeft()).ifPresent(action -> {
+                    action.load(pair.getRight(), true);
+                });
+            });
         });
     }
 }

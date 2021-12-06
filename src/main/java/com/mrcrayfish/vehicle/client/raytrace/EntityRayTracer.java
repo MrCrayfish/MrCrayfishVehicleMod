@@ -53,6 +53,7 @@ import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -873,7 +874,7 @@ public class EntityRayTracer
             mc.player.swing(Hand.MAIN_HAND);
             ResourceLocation cosmeticId = ((CosmeticRayTraceData) data).getCosmeticId();
             VehicleEntity vehicle = (VehicleEntity) entity;
-            List<Action> actions = vehicle.getCosmeticTracker().getActions(cosmeticId);
+            Collection<Action> actions = vehicle.getCosmeticTracker().getActions(cosmeticId);
             if(!actions.isEmpty())
             {
                 actions.forEach(action -> action.onInteract(vehicle, mc.player));

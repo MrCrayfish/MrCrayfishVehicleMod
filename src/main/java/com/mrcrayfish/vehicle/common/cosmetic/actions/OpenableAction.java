@@ -5,22 +5,17 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.util.EasingHelper;
-import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.SimpleSound;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -57,20 +52,21 @@ public class OpenableAction extends Action
     public void onInteract(VehicleEntity vehicle, PlayerEntity player)
     {
         this.state = !this.state;
+        this.setDirty();
     }
 
     @Override
-    public void load(CompoundNBT tag)
+    public void load(CompoundNBT tag, boolean sync)
     {
         this.state = tag.getBoolean("Open");
-        if(this.state)
+        if(!sync && this.state)
         {
             this.animationTick = this.prevAnimationTick = this.animationLength;
         }
     }
 
     @Override
-    public CompoundNBT save()
+    public CompoundNBT save(boolean sync)
     {
         CompoundNBT tag = new CompoundNBT();
         tag.putBoolean("Open", this.state);

@@ -31,6 +31,7 @@ import net.minecraft.util.math.vector.Vector3f;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -289,7 +290,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         return null;
     }
 
-    protected List<Action> getCosmeticActions(@Nullable T vehicle, ResourceLocation cosmeticId)
+    protected Collection<Action> getCosmeticActions(@Nullable T vehicle, ResourceLocation cosmeticId)
     {
         if(vehicle != null)
         {

@@ -1,12 +1,12 @@
 package com.mrcrayfish.vehicle.common;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticActions;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageSyncActionData;
 import com.mrcrayfish.vehicle.network.message.MessageSyncCosmetics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.model.IBakedModel;
@@ -25,6 +25,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import java.util.stream.Collectors;
 public class CosmeticTracker
 {
     private final ImmutableMap<ResourceLocation, Entry> selectedCosmetics;
+    private final Map<ResourceLocation, List<Action>> dirtyActions = new HashMap<>();
     private final WeakReference<VehicleEntity> vehicleRef;
     private boolean dirty = false;
 
@@ -60,9 +62,36 @@ public class CosmeticTracker
             this.resetDirty();
         }
 
-        this.selectedCosmetics.forEach((cosmeticId, entry) -> {
-            entry.getActions().forEach(action -> action.tick(vehicle));
+        this.selectedCosmetics.forEach((cosmeticId, entry) ->
+        {
+            entry.getActions().forEach(action ->
+            {
+                action.tick(vehicle);
+                if(!vehicle.level.isClientSide() && action.isDirty())
+                {
+                    this.dirtyActions.computeIfAbsent(cosmeticId, id -> new ArrayList<>()).add(action);
+                }
+            });
         });
+
+        if(!vehicle.level.isClientSide())
+        {
+            if(!this.dirtyActions.isEmpty())
+            {
+                this.dirtyActions.forEach((cosmeticId, actions) ->
+                {
+                    List<Pair<ResourceLocation, CompoundNBT>> actionData = actions.stream().map(action -> Pair.of(CosmeticActions.getId(action.getClass()), action.save(true))).collect(Collectors.toList());
+                    PacketHandler.getPlayChannel().send(PacketDistributor.TRACKING_ENTITY.with(() -> vehicle), new MessageSyncActionData(vehicle.getId(), cosmeticId, actionData));
+                    actions.forEach(Action::clean);
+                });
+                this.dirtyActions.clear();
+            }
+        }
+    }
+
+    public Optional<Entry> getSelectedCosmeticEntry(ResourceLocation cosmeticId)
+    {
+        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId));
     }
 
     public void setSelectedModel(ResourceLocation cosmeticId, ResourceLocation modelLocation)
@@ -97,7 +126,7 @@ public class CosmeticTracker
         return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getBakedModel).orElse(Minecraft.getInstance().getModelManager().getMissingModel());
     }
 
-    public List<Action> getActions(ResourceLocation cosmeticId)
+    public Collection<Action> getActions(ResourceLocation cosmeticId)
     {
         return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getActions).orElse(Collections.emptyList());
     }
@@ -132,7 +161,7 @@ public class CosmeticTracker
             CompoundNBT actions = new CompoundNBT();
             entry.getActions().forEach(action -> {
                 ResourceLocation id = CosmeticActions.getId(action.getClass());
-                actions.put(id.toString(), action.save());
+                actions.put(id.toString(), action.save(false));
             });
             cosmeticTag.put("Actions", actions);
             list.add(cosmeticTag);
@@ -154,7 +183,7 @@ public class CosmeticTracker
                 CompoundNBT actions = cosmeticTag.getCompound("Actions");
                 this.selectedCosmetics.get(cosmeticId).getActions().forEach(action -> {
                     ResourceLocation id = CosmeticActions.getId(action.getClass());
-                    action.load(actions.getCompound(id.toString()));
+                    action.load(actions.getCompound(id.toString()), false);
                 });
             });
         }
@@ -169,7 +198,7 @@ public class CosmeticTracker
             buffer.writeInt(entry.getActions().size());
             entry.getActions().forEach(action -> {
                 buffer.writeResourceLocation(CosmeticActions.getId(action.getClass()));
-                buffer.writeNbt(action.save());
+                buffer.writeNbt(action.save(false));
             });
         });
     }
@@ -198,17 +227,17 @@ public class CosmeticTracker
                     CompoundNBT data = dataMap.get(id);
                     if(data != null)
                     {
-                        action.load(data);
+                        action.load(data, false);
                     }
                 });
             }
         }
     }
 
-    private static class Entry
+    public static class Entry
     {
         private ResourceLocation modelLocation;
-        private final List<Action> actions;
+        private final Map<ResourceLocation, Action> actions;
         private boolean dirty;
 
         @Nullable
@@ -218,7 +247,7 @@ public class CosmeticTracker
         public Entry(CosmeticProperties properties)
         {
             this.modelLocation = properties.getModelLocations().get(0);
-            this.actions = ImmutableList.copyOf(properties.getActions().stream().map(Supplier::get).collect(Collectors.toList()));
+            this.actions = ImmutableMap.copyOf(properties.getActions().stream().map(Supplier::get).collect(Collectors.toMap(a -> CosmeticActions.getId(a.getClass()), a -> a)));
         }
 
         public void setModelLocation(ResourceLocation modelLocation)
@@ -243,9 +272,14 @@ public class CosmeticTracker
             return this.cachedModel;
         }
 
-        public List<Action> getActions()
+        public Collection<Action> getActions()
         {
-            return this.actions;
+            return this.actions.values();
+        }
+
+        public Optional<Action> getAction(ResourceLocation id)
+        {
+            return Optional.ofNullable(this.actions.get(id));
         }
     }
 }
