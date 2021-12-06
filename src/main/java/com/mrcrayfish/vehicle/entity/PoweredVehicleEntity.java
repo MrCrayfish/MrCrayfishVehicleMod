@@ -499,6 +499,11 @@ public abstract class PoweredVehicleEntity extends VehicleEntity implements IInv
             this.setSteeringAngle(steeringAngle);
             PacketHandler.getPlayChannel().sendToServer(new MessageTurnAngle(steeringAngle));
         }
+
+        if(this.getHorn())
+        {
+            VehicleHelper.tryPlayHornSound(this);
+        }
     }
 
     @Override

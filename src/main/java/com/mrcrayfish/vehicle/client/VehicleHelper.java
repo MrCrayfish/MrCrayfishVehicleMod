@@ -4,8 +4,7 @@ import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Buttons;
 import com.mrcrayfish.controllable.client.Controller;
 import com.mrcrayfish.vehicle.Config;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundHornStart;
-import com.mrcrayfish.vehicle.client.audio.MovingSoundHornRiding;
+import com.mrcrayfish.vehicle.client.audio.MovingSoundHorn;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicle;
 import com.mrcrayfish.vehicle.client.audio.MovingSoundVehicleRiding;
 import com.mrcrayfish.vehicle.client.handler.ControllerHandler;
@@ -35,7 +34,6 @@ import net.minecraftforge.client.event.EntityViewRenderEvent;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 import java.util.WeakHashMap;
 
 /**
@@ -43,13 +41,13 @@ import java.util.WeakHashMap;
  */
 public class VehicleHelper
 {
-    private static final WeakHashMap<UUID, Map<SoundType, ITickableSound>> SOUND_TRACKER = new WeakHashMap<>();
+    private static final WeakHashMap<PoweredVehicleEntity, Map<SoundType, ITickableSound>> SOUND_TRACKER = new WeakHashMap<>();
     
     public static void playVehicleSound(PlayerEntity player, PoweredVehicleEntity vehicle)
     {
         Minecraft.getInstance().tell(() ->
         {
-            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle.getUUID(), uuid -> new HashMap<>());
+            /*Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, uuid -> new HashMap<>());
             if(vehicle.getEngineSound() != null && player.equals(Minecraft.getInstance().player))
             {
                 ITickableSound sound = soundMap.get(SoundType.ENGINE_RIDING);
@@ -69,28 +67,23 @@ public class VehicleHelper
                     soundMap.put(SoundType.ENGINE, sound);
                     Minecraft.getInstance().getSoundManager().play(new MovingSoundVehicle(vehicle));
                 }
-            }
-            if(vehicle.hasHorn() && vehicle.getHornSound() != null && !player.equals(Minecraft.getInstance().player))
-            {
-                ITickableSound sound = soundMap.get(SoundType.HORN);
-                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
-                {
-                    sound = new MovingSoundHornStart(vehicle);
-                    soundMap.put(SoundType.HORN, sound);
-                    Minecraft.getInstance().getSoundManager().play(sound);
-                }
-            }
-            if(vehicle.getHornSound() != null && player.equals(Minecraft.getInstance().player))
-            {
-                ITickableSound sound = soundMap.get(SoundType.HORN_RIDING);
-                if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
-                {
-                    sound = new MovingSoundHornRiding(player, vehicle);
-                    soundMap.put(SoundType.HORN_RIDING, sound);
-                    Minecraft.getInstance().getSoundManager().play(sound);
-                }
-            }
+            }*/
         });
+    }
+
+    public static void tryPlayHornSound(PoweredVehicleEntity vehicle)
+    {
+        if(vehicle.hasHorn() && vehicle.getHornSound() != null)
+        {
+            Map<SoundType, ITickableSound> soundMap = SOUND_TRACKER.computeIfAbsent(vehicle, v -> new HashMap<>());
+            ITickableSound sound = soundMap.get(SoundType.HORN);
+            if(sound == null || sound.isStopped() || !Minecraft.getInstance().getSoundManager().isActive(sound))
+            {
+                sound = new MovingSoundHorn(Minecraft.getInstance().player, vehicle);
+                soundMap.put(SoundType.HORN, sound);
+                Minecraft.getInstance().getSoundManager().play(sound);
+            }
+        }
     }
 
     public static void playSound(SoundEvent soundEvent, BlockPos pos, float volume, float pitch)
