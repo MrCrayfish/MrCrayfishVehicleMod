@@ -28,14 +28,14 @@
         {
             "side": "left",
             "axle": "rear",
-            "offset": [ 4.5, 0.0, -9.5 ],
+            "offset": [ 4.5, 0.0, -11.0 ],
             "scale": [ 1.1, 1.1, 1.1 ],
             "particles": true
         },
         {
             "side": "right",
             "axle": "rear",
-            "offset": [ 4.5, 0.0, -9.5 ],
+            "offset": [ 4.5, 0.0, -11.0 ],
             "scale": [ 1.1, 1.1, 1.1 ],
             "particles": true
         }
@@ -70,8 +70,8 @@
                 "rotation": [ -45.0, 0.0, 0.0 ],
                 "scale": 0.5
             },
-            "frontAxleOffset": 10.5,
-            "rearAxleOffset": -10.5,
+            "frontAxleOffset": 9.5,
+            "rearAxleOffset": -11.0,
             "engineSound": "vehicle:entity.quad_bike.engine"
         }
     }
