@@ -492,6 +492,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setScale(0.9)
                         .setParticles(true))
                 .addSeat(Seat.of(4, -2, -4, true))
+                .addSeat(Seat.of(-4, -2, -4))
                 .setCamera(CameraProperties.builder()
                         .setDistance(5.0))
                 .addExtended(PoweredProperties.builder()
