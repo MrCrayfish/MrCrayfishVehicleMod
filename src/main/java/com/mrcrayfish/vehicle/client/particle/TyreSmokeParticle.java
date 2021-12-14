@@ -20,7 +20,7 @@ public class TyreSmokeParticle extends SpriteTexturedParticle
     public TyreSmokeParticle(ClientWorld world, double x, double y, double z, double xd, double yd, double zd)
     {
         super(world, x, y, z);
-        this.lifetime = 50 + this.random.nextInt(50);
+        this.lifetime = 50 + this.random.nextInt(20);
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
@@ -34,7 +34,7 @@ public class TyreSmokeParticle extends SpriteTexturedParticle
         this.zo = this.z;
         if(this.age++ < this.lifetime)
         {
-            this.quadSize = 0.3F + 0.7F * (((float) this.age / (float) this.lifetime));
+            this.quadSize = 0.3F + 0.5F * (((float) this.age / (float) this.lifetime));
             this.xd *= 0.98;
             this.yd *= 0.98;
             this.zd *= 0.98;
