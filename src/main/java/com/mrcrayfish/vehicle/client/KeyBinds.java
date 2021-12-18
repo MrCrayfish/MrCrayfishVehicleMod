@@ -37,12 +37,14 @@ public class KeyBinds
     public static final KeyBinding KEY_HORN = new KeyBinding("key.vehicle.horn", GLFW.GLFW_KEY_H, "key.categories.vehicle");
     public static final KeyBinding KEY_CYCLE_SEATS = new KeyBinding("key.vehicle.cycle_seats", GLFW.GLFW_KEY_C, "key.categories.vehicle");
     public static final KeyBinding KEY_HITCH_TRAILER = new KeyBinding("key.vehicle.hitch_trailer", GLFW.GLFW_KEY_LEFT_CONTROL, "key.categories.vehicle");
+    public static final KeyBinding KEY_DASHBOARD = new KeyBinding("key.vehicle.dashboard", GLFW.GLFW_KEY_G, "key.categories.vehicle");
 
     static
     {
         KEY_HORN.setKeyConflictContext(RIDING_VEHICLE);
         KEY_CYCLE_SEATS.setKeyConflictContext(RIDING_VEHICLE);
         KEY_HITCH_TRAILER.setKeyConflictContext(RIDING_VEHICLE);
+        KEY_DASHBOARD.setKeyConflictContext(RIDING_VEHICLE);
     }
 
     public static void register()
@@ -50,5 +52,6 @@ public class KeyBinds
         ClientRegistry.registerKeyBinding(KEY_HORN);
         ClientRegistry.registerKeyBinding(KEY_CYCLE_SEATS);
         ClientRegistry.registerKeyBinding(KEY_HITCH_TRAILER);
+        ClientRegistry.registerKeyBinding(KEY_DASHBOARD);
     }
 }
