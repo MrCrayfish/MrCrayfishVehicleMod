@@ -92,11 +92,11 @@ public abstract class AbstractToolbarScreen extends Screen
             }
         }
 
-        if(hoveredWidget instanceof IconButton)
+        if(hoveredWidget instanceof IToolbarLabel)
         {
-            ITextComponent message = hoveredWidget.getMessage();
-            int width = this.minecraft.font.width(message);
-            drawString(matrixStack, this.minecraft.font, message, this.width / 2 - width / 2, startY - 12, 0xFFFFFF);
+            ITextComponent message = ((IToolbarLabel) hoveredWidget).getLabel();
+            int messageWidth = this.minecraft.font.width(message);
+            drawString(matrixStack, this.minecraft.font, message, this.width / 2 - messageWidth / 2, startY - 12, 0xFFFFFF);
         }
     }
 

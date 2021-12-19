@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.screen.toolbar.widget;
 
 import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,9 +15,9 @@ public class EnumButton<T extends Enum<?>> extends IconButton
     private final Class<T> enumClass;
     private T currentEnum;
 
-    public EnumButton(int x, int y, int width, int height, Class<T> enumClass, T initialEnum, Button.IPressable onPress)
+    public EnumButton(int x, int y, int width, int height, ITextComponent label, Class<T> enumClass, T initialEnum, Button.IPressable onPress)
     {
-        super(x, y, width, height, initialEnum instanceof IconProvider ? (IconProvider) initialEnum : null, onPress);
+        super(x, y, width, height, initialEnum instanceof IconProvider ? (IconProvider) initialEnum : null, label, onPress);
         this.enumClass = enumClass;
         this.currentEnum = initialEnum;
         this.updateLabel();

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.screen.toolbar.widget;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.client.screen.toolbar.IToolbarLabel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.widget.button.Button;
@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import org.lwjgl.opengl.GL11;
 
@@ -17,28 +18,28 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class IconButton extends Button
+public class IconButton extends Button implements IToolbarLabel
 {
-    private static final ResourceLocation ICONS_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/icons.png");
-
     private IconProvider icon;
-    private String description;
+    private ITextComponent label;
 
-    public IconButton(int x, int y, int width, int height, IconProvider icon, IPressable pressable)
+    public IconButton(int x, int y, int width, int height, @Nullable IconProvider icon, ITextComponent label, IPressable onPress)
     {
-        super(x, y, width, height, StringTextComponent.EMPTY, pressable);
+        super(x, y, width, height, StringTextComponent.EMPTY, onPress);
         this.icon = icon;
+        this.label = label;
     }
 
-    public IconButton setDescription(String description)
+    public IconButton setLabel(ITextComponent label)
     {
-        this.description = description;
+        this.label = label;
         return this;
     }
 
-    public String getDescription()
+    @Override
+    public ITextComponent getLabel()
     {
-        return this.description;
+        return this.label;
     }
 
     public IconButton setIcon(@Nullable IconProvider icon)
@@ -68,10 +69,10 @@ public class IconButton extends Button
             mc.getTextureManager().bind(this.icon.getTextureLocation());
             this.drawIcon(this.x + this.width / 2 - combinedWidth / 2, this.y + 5, this.icon.getU(), this.icon.getV());
         }
-        /*if(!message.isEmpty())
+        if(!message.isEmpty())
         {
-            font.drawStringWithShadow(matrixStack, message, this.x + this.width / 2 - combinedWidth / 2 + 10 + (this.icon == null ? 0 : 4), this.y + 6, 0xFFFFFF);
-        }*/
+            font.drawShadow(matrixStack, message, this.x + this.width / 2 - combinedWidth / 2 + 10 + (this.icon == null ? 0 : 4), this.y + 6, 0xFFFFFF);
+        }
     }
 
     private void drawIcon(int x, int y, int u, int v)
