@@ -58,7 +58,10 @@ public class DashboardScreen extends AbstractToolbarScreen
     public enum Icons implements IconButton.IconProvider
     {
         BACK,
-        DOOR;
+        LEFT_DOOR,
+        RIGHT_DOOR,
+        HOOD,
+        TRUNK;
 
         private static final ResourceLocation ICON_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/icons.png");
 
