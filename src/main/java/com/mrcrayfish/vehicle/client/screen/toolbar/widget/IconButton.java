@@ -23,9 +23,9 @@ public class IconButton extends Button implements IToolbarLabel
     private IconProvider icon;
     private ITextComponent label;
 
-    public IconButton(int x, int y, int width, int height, @Nullable IconProvider icon, ITextComponent label, IPressable onPress)
+    public IconButton(int width, int height, @Nullable IconProvider icon, ITextComponent label, IPressable onPress)
     {
-        super(x, y, width, height, StringTextComponent.EMPTY, onPress);
+        super(0, 0, width, height, StringTextComponent.EMPTY, onPress);
         this.icon = icon;
         this.label = label;
     }
@@ -75,11 +75,11 @@ public class IconButton extends Button implements IToolbarLabel
         }
     }
 
-    private void drawIcon(int x, int y, int u, int v)
+    protected void drawIcon(int x, int y, int u, int v)
     {
         int size = 10;
-        float uScale = 1.0F / 256.0F;
-        float vScale = 1.0F / 256.0F;
+        float uScale = 1.0F / 100.0F;
+        float vScale = 1.0F / 100.0F;
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder buffer = tessellator.getBuilder();
         buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX);

@@ -17,7 +17,7 @@ public class EnumButton<T extends Enum<?>> extends IconButton
 
     public EnumButton(int x, int y, int width, int height, ITextComponent label, Class<T> enumClass, T initialEnum, Button.IPressable onPress)
     {
-        super(x, y, width, height, initialEnum instanceof IconProvider ? (IconProvider) initialEnum : null, label, onPress);
+        super(width, height, initialEnum instanceof IconProvider ? (IconProvider) initialEnum : null, label, onPress);
         this.enumClass = enumClass;
         this.currentEnum = initialEnum;
         this.updateLabel();

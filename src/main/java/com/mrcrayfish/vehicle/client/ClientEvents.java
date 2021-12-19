@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.vehicle.client.screen.DashboardScreen;
+import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
@@ -19,16 +20,16 @@ public class ClientEvents
     @OnlyIn(Dist.CLIENT)
     public void onKeyInput(InputEvent.KeyInputEvent event)
     {
-        Minecraft minecraft = Minecraft.getInstance();
-        if(minecraft.overlay != null)
+        Minecraft mc = Minecraft.getInstance();
+        if(mc.overlay != null)
             return;
 
         if(event.getAction() != GLFW.GLFW_PRESS)
             return;
 
-        if(KeyBinds.KEY_DASHBOARD.isDown())
+        if(KeyBinds.KEY_DASHBOARD.isDown() && mc.player != null && mc.player.getVehicle() instanceof VehicleEntity)
         {
-            minecraft.setScreen(new DashboardScreen(null));
+            mc.setScreen(new DashboardScreen(null, (VehicleEntity) mc.player.getVehicle()));
         }
         else if(FMLLoader.isProduction() && event.getKey() == GLFW.GLFW_KEY_RIGHT_BRACKET)
         {

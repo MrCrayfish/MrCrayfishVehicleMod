@@ -115,6 +115,11 @@ public class OpenableAction extends Action
         }
     }
 
+    public boolean isOpen()
+    {
+        return this.state;
+    }
+
     @Override
     @OnlyIn(Dist.CLIENT)
     public void beforeRender(MatrixStack matrixStack, VehicleEntity vehicle, float partialTicks)
