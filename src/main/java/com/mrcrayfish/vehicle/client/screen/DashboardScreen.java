@@ -55,7 +55,9 @@ public class DashboardScreen extends AbstractToolbarScreen
         LEFT_DOOR,
         RIGHT_DOOR,
         HOOD,
-        TRUNK;
+        TRUNK,
+        SEAT_PASSENGER,
+        SEAT_DRIVER;
 
         private static final ResourceLocation ICON_TEXTURE = new ResourceLocation(Reference.MOD_ID, "textures/gui/icons.png");
 
