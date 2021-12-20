@@ -180,5 +180,11 @@
     "vehicle.button.hitch_trailer": "Hitch Trailer",
     "vehicle.button.reset_camera": "Reset Camera",
     "vehicle.button.ascend": "Ascend",
-    "vehicle.button.descend": "Descend"
+    "vehicle.button.descend": "Descend",
+
+    "vehicle.toolbar.label.back": "Go Back",
+    "vehicle.toolbar.label.left_door": "Left Door",
+    "vehicle.toolbar.label.right_door": "Right Door",
+    "vehicle.toolbar.label.spoiler": "Spoiler",
+    "vehicle.toolbar.label.hood": "Hood"
 }
