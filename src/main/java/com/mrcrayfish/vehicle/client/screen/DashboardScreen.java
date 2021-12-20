@@ -49,12 +49,6 @@ public class DashboardScreen extends AbstractToolbarScreen
         }
     }
 
-    @Override
-    public boolean isPauseScreen()
-    {
-        return false;
-    }
-
     public enum Icons implements IconButton.IconProvider
     {
         BACK,

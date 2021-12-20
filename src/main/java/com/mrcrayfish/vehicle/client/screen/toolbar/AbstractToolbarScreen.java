@@ -69,6 +69,12 @@ public abstract class AbstractToolbarScreen extends Screen
         }
     }
 
+    @Override
+    public boolean isPauseScreen()
+    {
+        return false;
+    }
+
     protected abstract void loadWidgets(List<Widget> widgets);
 
     @Override
