@@ -2,8 +2,9 @@ package com.mrcrayfish.vehicle.client.screen.toolbar;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mrcrayfish.configured.client.screen.widget.IconButton;
 import com.mrcrayfish.vehicle.Reference;
+import com.mrcrayfish.vehicle.client.screen.DashboardScreen;
+import com.mrcrayfish.vehicle.client.screen.toolbar.widget.IconButton;
 import com.mrcrayfish.vehicle.client.screen.toolbar.widget.Spacer;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.client.Minecraft;
@@ -14,6 +15,7 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import org.apache.commons.lang3.tuple.Pair;
 import org.lwjgl.opengl.GL11;
 
@@ -43,7 +45,7 @@ public abstract class AbstractToolbarScreen extends Screen
         List<Widget> widgets = new ArrayList<>();
         if(this.parent != null)
         {
-            //widgets.add(Icons.LEFT_ARROW.createButton(0, 0, button -> this.minecraft.setScreen(this.parent)).setDescription("vehicle.button.back"));
+            widgets.add(new IconButton(20, 20, DashboardScreen.Icons.BACK, new TranslationTextComponent("vehicle.toolbar.label.back"), onPress -> this.minecraft.setScreen(this.parent)));
             widgets.add(Spacer.of(5));
         }
         this.loadWidgets(widgets);

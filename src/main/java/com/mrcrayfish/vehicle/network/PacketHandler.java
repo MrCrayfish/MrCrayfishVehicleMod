@@ -49,6 +49,7 @@ public class PacketHandler
         registerPlayMessage(MessageEntityFluid.class, new MessageEntityFluid());
         registerPlayMessage(MessageSyncPlayerSeat.class, new MessageSyncPlayerSeat());
         registerPlayMessage(MessageCycleSeats.class, new MessageCycleSeats());
+        registerPlayMessage(MessageSetSeat.class, new MessageSetSeat());
         registerPlayMessage(MessageSyncHeldVehicle.class, new MessageSyncHeldVehicle());
         registerPlayMessage(MessagePlaneInput.class, new MessagePlaneInput());
         registerPlayMessage(MessageSyncCosmetics.class, new MessageSyncCosmetics());

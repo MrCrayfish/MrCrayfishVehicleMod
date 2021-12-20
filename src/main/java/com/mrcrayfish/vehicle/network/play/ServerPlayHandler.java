@@ -225,6 +225,22 @@ public class ServerPlayHandler
         }
     }
 
+    public static void handleSetSeatMessage(ServerPlayerEntity player, MessageSetSeat message)
+    {
+        Entity entity = player.getVehicle();
+        if(!(entity instanceof VehicleEntity))
+            return;
+
+        VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
+        SeatTracker tracker = vehicle.getSeatTracker();
+        if(!tracker.isSeatAvailable(message.getIndex()))
+            return;
+
+        int seatIndex = tracker.getSeatIndex(player.getUUID());
+        tracker.setSeatIndex(message.getIndex(), player.getUUID());
+        vehicle.onPlayerChangeSeat(player, seatIndex, message.getIndex());
+    }
+
     public static void handleFuelVehicleMessage(ServerPlayerEntity player, MessageFuelVehicle message)
     {
         Entity targetEntity = player.level.getEntity(message.getEntityId());
