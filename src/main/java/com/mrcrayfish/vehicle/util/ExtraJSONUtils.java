@@ -9,6 +9,7 @@ import com.mrcrayfish.vehicle.entity.IEngineType;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
@@ -105,6 +106,21 @@ public class ExtraJSONUtils
             }
         }
         return defaultValue;
+    }
+
+    public static Vector3f getAsVector3f(JsonObject object, String memberName) throws JsonParseException
+    {
+        if(!object.has(memberName))
+            throw new JsonParseException("Missing member " + memberName);
+
+        JsonArray jsonArray = JSONUtils.getAsJsonArray(object, memberName);
+        if(jsonArray.size() != 3)
+            throw new JsonParseException("Expected 3 " + memberName + " values, found: " + jsonArray.size());
+
+        float x = JSONUtils.convertToFloat(jsonArray.get(0), memberName + "[0]");
+        float y = JSONUtils.convertToFloat(jsonArray.get(1), memberName + "[1]");
+        float z = JSONUtils.convertToFloat(jsonArray.get(2), memberName + "[2]");
+        return new Vector3f(x, y, z);
     }
 
     public static Transform getAsTransform(JsonObject object, String key, Transform defaultValue)
