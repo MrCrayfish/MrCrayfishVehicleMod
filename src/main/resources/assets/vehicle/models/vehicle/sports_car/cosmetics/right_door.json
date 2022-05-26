@@ -1,6 +1,6 @@
 {
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
-	"loader": "vehicle:big_model",
+	"loader": "framework:open_model",
 	"textures": {
 		"12": "vehicle:vehicle/sports_car/cosmetics/right_door"
 	},
