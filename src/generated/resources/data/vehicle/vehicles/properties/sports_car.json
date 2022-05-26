@@ -1,44 +1,41 @@
 {
     "canBePainted": true,
     "canChangeWheels": true,
-    "bodyTransform": {
-        "scale": 1.6
-    },
     "wheels": [
         {
             "side": "left",
             "axle": "front",
-            "offset": [ 6.5, 0.25, 12.5 ],
-            "scale": [ 0.9, 0.9, 0.9 ]
+            "offset": [ 12.0, 3.0, 20.0 ],
+            "scale": [ 1.0, 1.4, 1.4 ]
         },
         {
             "side": "right",
             "axle": "front",
-            "offset": [ 6.5, 0.25, 12.5 ],
-            "scale": [ 0.9, 0.9, 0.9 ]
+            "offset": [ 12.0, 3.0, 20.0 ],
+            "scale": [ 1.0, 1.4, 1.4 ]
         },
         {
             "side": "left",
             "axle": "rear",
-            "offset": [ 6.5, 0.25, -11.5 ],
-            "scale": [ 0.9, 0.9, 0.9 ],
+            "offset": [ 12.0, 3.0, -19.0 ],
+            "scale": [ 1.0, 1.4, 1.4 ],
             "particles": true
         },
         {
             "side": "right",
             "axle": "rear",
-            "offset": [ 6.5, 0.25, -11.5 ],
-            "scale": [ 0.9, 0.9, 0.9 ],
+            "offset": [ 12.0, 3.0, -19.0 ],
+            "scale": [ 1.0, 1.4, 1.4 ],
             "particles": true
         }
     ],
     "seats": [
         {
-            "position": [ 4.0, -2.0, -4.0 ],
+            "position": [ 7.0, -2.0, -5.0 ],
             "driver": true
         },
         {
-            "position": [ -4.0, -2.0, -4.0 ]
+            "position": [ -7.0, -2.0, -5.0 ]
         }
     ],
     "camera": {
@@ -53,8 +50,8 @@
             "maxEnginePitch": 1.5,
             "renderEngine": true,
             "engineTransform": {
-                "translate": [ 0.0, 0.5, 11.5 ],
-                "scale": 0.6
+                "translate": [ 0.0, 3.01, 19.0 ],
+                "scale": 0.825
             },
             "fuelFillerTransform": {
                 "translate": [ -10.0, 6.5, -14.0 ],
@@ -66,19 +63,15 @@
                 "rotation": [ -45.0, 0.0, 0.0 ],
                 "scale": 0.5
             },
-            "frontAxleOffset": 12.5,
-            "rearAxleOffset": -11.5,
+            "frontAxleOffset": 20.0,
+            "rearAxleOffset": -19.0,
             "engineSound": "vehicle:entity.sports_car.engine"
         }
     },
     "cosmetics": [
         {
-            "id": "vehicle:rear_bumper",
-            "offset": [ 0.0, 1.5, -20.0 ]
-        },
-        {
             "id": "vehicle:left_door",
-            "offset": [ 8.5, 0.0, 5.5 ],
+            "offset": [ 15.0, 1.0, 10.0 ],
             "actions": [
                 {
                     "type": "vehicle:openable",
@@ -96,13 +89,13 @@
         },
         {
             "id": "vehicle:spoiler",
-            "offset": [ 0.0, 7.5, -12.5 ],
+            "offset": [ 0.0, 15.5, -23.5 ],
             "actions": [
                 {
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "x",
-                        "angle": 60.0,
+                        "angle": 90.0,
                         "animationLength": 12
                     },
                     "sound": {
@@ -114,17 +107,17 @@
         },
         {
             "id": "vehicle:dashboard",
-            "offset": [ 0.0, 0.0, 1.0 ]
+            "offset": [ 0.0, 14.0, 12.0 ]
         },
         {
             "id": "vehicle:right_door",
-            "offset": [ -8.5, 0.0, 5.5 ],
+            "offset": [ -15.0, 1.0, 10.0 ],
             "actions": [
                 {
                     "type": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
-                        "angle": 75.0,
+                        "angle": 90.0,
                         "animationLength": 12
                     },
                     "sound": {
@@ -135,24 +128,16 @@
             ]
         },
         {
-            "id": "vehicle:front_bumper",
-            "offset": [ 0.0, 1.0, 19.0 ]
-        },
-        {
-            "id": "vehicle:rear_lights",
-            "offset": [ 0.0, 4.0, -19.0 ]
+            "id": "vehicle:roof",
+            "offset": [ 0.0, 14.0, 0.0 ]
         },
         {
             "id": "vehicle:seat",
-            "offset": [ 0.0, 0.0, 1.0 ]
-        },
-        {
-            "id": "vehicle:front_lights",
-            "offset": [ 0.0, 3.5, 19.0 ]
+            "offset": [ 0.0, 1.0, 0.0 ]
         },
         {
             "id": "vehicle:hood",
-            "offset": [ 0.0, 7.5, 7.5 ],
+            "offset": [ 0.0, 13.5, 13.5 ],
             "actions": [
                 {
                     "type": "vehicle:openable",

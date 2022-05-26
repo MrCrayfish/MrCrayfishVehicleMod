@@ -18,8 +18,16 @@ import javax.annotation.Nullable;
 public enum SpecialModels implements ISpecialModel
 {
     /* Sports Car */
-    SPORTS_CAR_BODY("sports_car/body"),
+    SPORTS_CAR_BODY("sports_car/base"),
     SPORTS_CAR_STEERING_WHEEL("sports_car/steering_wheel"),
+    SPORTS_CAR_COSMETIC_DASHBOARD("sports_car/cosmetics/dashboard"),
+    SPORTS_CAR_COSMETIC_HOOD("sports_car/cosmetics/hood"),
+    SPORTS_CAR_COSMETIC_LEFT_DOOR("sports_car/cosmetics/left_door"),
+    SPORTS_CAR_COSMETIC_RIGHT_DOOR("sports_car/cosmetics/right_door"),
+    SPORTS_CAR_COSMETIC_SEAT("sports_car/cosmetics/seat"),
+    SPORTS_CAR_COSMETIC_BOOT("sports_car/cosmetics/boot"),
+    SPORTS_CAR_COSMETIC_ROOF("sports_car/cosmetics/roof"),
+
     SPORTS_CAR_COSMETIC_STOCK_DASHBOARD("sports_car/cosmetics/stock_dashboard"),
     SPORTS_CAR_COSMETIC_STOCK_FRONT_BUMPER("sports_car/cosmetics/stock_front_bumper"),
     SPORTS_CAR_COSMETIC_STOCK_REAR_BUMPER("sports_car/cosmetics/stock_rear_bumper"),

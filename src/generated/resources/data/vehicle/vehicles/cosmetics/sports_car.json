@@ -1,35 +1,12 @@
 {
     "replace": false,
     "valid_models": {
-        "vehicle:rear_bumper": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_rear_bumper"
-        ],
-        "vehicle:left_door": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_left_door"
-        ],
-        "vehicle:spoiler": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_spoiler"
-        ],
-        "vehicle:dashboard": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_dashboard"
-        ],
-        "vehicle:right_door": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_right_door"
-        ],
-        "vehicle:front_bumper": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_front_bumper"
-        ],
-        "vehicle:rear_lights": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_rear_lights"
-        ],
-        "vehicle:seat": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_seat"
-        ],
-        "vehicle:front_lights": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_front_lights"
-        ],
-        "vehicle:hood": [
-            "vehicle:vehicle/sports_car/cosmetics/stock_hood"
-        ]
+        "vehicle:left_door": [ "vehicle:vehicle/sports_car/cosmetics/left_door" ],
+        "vehicle:spoiler": [ "vehicle:vehicle/sports_car/cosmetics/boot" ],
+        "vehicle:dashboard": [ "vehicle:vehicle/sports_car/cosmetics/dashboard" ],
+        "vehicle:right_door": [ "vehicle:vehicle/sports_car/cosmetics/right_door" ],
+        "vehicle:roof": [ "vehicle:vehicle/sports_car/cosmetics/roof" ],
+        "vehicle:seat": [ "vehicle:vehicle/sports_car/cosmetics/seat" ],
+        "vehicle:hood": [ "vehicle:vehicle/sports_car/cosmetics/hood" ]
     }
 }
