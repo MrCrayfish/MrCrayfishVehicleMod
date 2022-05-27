@@ -2,6 +2,7 @@ package com.mrcrayfish.vehicle.client.handler;
 
 import com.mrcrayfish.controllable.Controllable;
 import com.mrcrayfish.controllable.client.Action;
+import com.mrcrayfish.controllable.client.ActionVisibility;
 import com.mrcrayfish.controllable.client.BindingRegistry;
 import com.mrcrayfish.controllable.client.ButtonBinding;
 import com.mrcrayfish.controllable.client.ButtonBindings;
@@ -18,6 +19,7 @@ import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.PoweredVehicleEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
+import com.mrcrayfish.vehicle.network.message.MessageCycleSeats;
 import com.mrcrayfish.vehicle.network.message.MessageHitchTrailer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -124,19 +126,42 @@ public class ControllerHandler
         Map<ButtonBinding, Action> actionMap = event.getActions();
         if(player.getVehicle() instanceof VehicleEntity)
         {
-            actionMap.put(ButtonBindings.SNEAK, new Action("Exit Vehicle", Action.Side.LEFT));
-            actionMap.put(ACCELERATE, new Action("Accelerate", Action.Side.RIGHT));
+            actionMap.remove(ButtonBindings.ATTACK);
+            actionMap.remove(ButtonBindings.INVENTORY);
 
             VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-            if(vehicle instanceof PoweredVehicleEntity)
+            actionMap.put(ButtonBindings.SNEAK, new Action("Exit Vehicle", Action.Side.LEFT));
+
+            if(vehicle.getProperties().getSeats().size() > 1)
             {
-                if(((PoweredVehicleEntity) vehicle).getSpeed() > 0.05F)
+                actionMap.put(CYCLE_SEATS, new Action("Cycle Seats", Action.Side.LEFT));
+            }
+
+            if(vehicle.canTowTrailers())
+            {
+                actionMap.put(HITCH_TRAILER, new Action("Hitch Trailer", Action.Side.LEFT));
+            }
+
+            if(event.getVisibility() == ActionVisibility.ALL)
+            {
+                actionMap.put(RESET_CAMERA, new Action("Reset Camera", Action.Side.LEFT));
+                actionMap.put(ACCELERATE, new Action("Accelerate", Action.Side.RIGHT));
+
+                if(vehicle instanceof PoweredVehicleEntity)
                 {
-                    actionMap.put(REVERSE, new Action("Brake", Action.Side.RIGHT));
-                }
-                else
-                {
-                    actionMap.put(REVERSE, new Action("Reverse", Action.Side.RIGHT));
+                    if(((PoweredVehicleEntity) vehicle).getSpeed() > 0.05F)
+                    {
+                        actionMap.put(REVERSE, new Action("Brake", Action.Side.RIGHT));
+                    }
+                    else
+                    {
+                        actionMap.put(REVERSE, new Action("Reverse", Action.Side.RIGHT));
+                    }
+
+                    if(((PoweredVehicleEntity) vehicle).hasHorn())
+                    {
+                        actionMap.put(HORN, new Action("Horn", Action.Side.RIGHT));
+                    }
                 }
             }
 
