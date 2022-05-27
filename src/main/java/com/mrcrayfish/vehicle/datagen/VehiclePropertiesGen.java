@@ -34,7 +34,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
     {
         this.add(ModEntities.QUAD_BIKE.get(), VehicleProperties.builder()
                 .setAxleOffset(-0.5F)
-                .setBodyTransform(Transform.create(1.2))
+                .setBodyTransform(Transform.create(1.1))
                 .setDisplayTransform(Transform.create(1.5))
                 .setHeldOffset(4.0, 3.5, 0.0)
                 .setCanTowTrailers(true)
