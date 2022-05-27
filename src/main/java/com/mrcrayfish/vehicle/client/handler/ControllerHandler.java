@@ -47,7 +47,7 @@ public class ControllerHandler
     public static final ButtonBinding ACCELERATE = new ButtonBinding(Buttons.A, "vehicle.button.accelerate", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding REVERSE = new ButtonBinding(Buttons.B, "vehicle.button.brake", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding HANDBRAKE = new ButtonBinding(Buttons.RIGHT_BUMPER, "vehicle.button.handbrake", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
-    public static final ButtonBinding HORN = new ButtonBinding(Buttons.RIGHT_THUMB_STICK, "vehicle.button.horn", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
+    public static final ButtonBinding HORN = new ButtonBinding(Buttons.LEFT_THUMB_STICK, "vehicle.button.horn", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding HITCH_TRAILER = new ButtonBinding(Buttons.X, "vehicle.button.hitch_trailer", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding RESET_CAMERA = new ButtonBinding(Buttons.SELECT, "vehicle.button.reset_camera", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
     public static final ButtonBinding CYCLE_SEATS = new ButtonBinding(Buttons.DPAD_LEFT, "vehicle.button.cycle_seats", "button.categories.vehicle", VEHICLE_KEY_CONFLICT);
