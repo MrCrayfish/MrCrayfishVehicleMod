@@ -1,0 +1,48 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"loader": "framework:open_model",
+	"textures": {
+		"7": "vehicle:vehicle/sports_plane/propeller"
+	},
+	"components": [
+		{
+			"from": [-12, 6, 11],
+			"to": [5, 10, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, -31]},
+			"faces": {
+				"north": {"uv": [0, 0, 8.5, 2], "texture": "#7"},
+				"east": {"uv": [0, 0, 0, 2], "texture": "#7"},
+				"south": {"uv": [0, 2, 8.5, 4], "texture": "#7"},
+				"west": {"uv": [0, 0, 0, 2], "texture": "#7"},
+				"up": {"uv": [8.5, 0, 0, 0], "texture": "#7"},
+				"down": {"uv": [8.5, 0, 0, 0], "texture": "#7"}
+			}
+		},
+		{
+			"from": [5, 5, 8],
+			"to": [11, 11, 13],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, -31]},
+			"faces": {
+				"north": {"uv": [0, 8, 3, 11], "texture": "#7"},
+				"east": {"uv": [6, 8, 8.5, 11], "texture": "#7"},
+				"south": {"uv": [3, 8, 6, 11], "texture": "#7"},
+				"west": {"uv": [8.5, 0, 11, 3], "texture": "#7"},
+				"up": {"uv": [11.5, 5.5, 8.5, 3], "texture": "#7"},
+				"down": {"uv": [11.5, 5.5, 8.5, 8], "texture": "#7"}
+			}
+		},
+		{
+			"from": [11, 6, 11],
+			"to": [28, 10, 11],
+			"rotation": {"angle": 0, "axis": "y", "origin": [0, -6, -31]},
+			"faces": {
+				"north": {"uv": [0, 4, 8.5, 6], "texture": "#7"},
+				"east": {"uv": [0, 0, 0, 2], "texture": "#7"},
+				"south": {"uv": [0, 6, 8.5, 8], "texture": "#7"},
+				"west": {"uv": [0, 0, 0, 2], "texture": "#7"},
+				"up": {"uv": [8.5, 0, 0, 0], "texture": "#7"},
+				"down": {"uv": [8.5, 0, 0, 0], "texture": "#7"}
+			}
+		}
+	]
+}

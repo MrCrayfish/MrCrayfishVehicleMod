@@ -72,13 +72,18 @@ public enum SpecialModels implements ISpecialModel
     GO_KART_BODY("go_kart/base"),
     GO_KART_STEERING_WHEEL("go_kart_steering_wheel"),
 
+    /* Sports Plane */
+    SPORTS_PLANE_BODY("sports_plane/base"),
+    SPORTS_PLANE_WINGS("sports_plane/cosmetics/wings"),
+    SPORTS_PLANE_SEAT("sports_plane/cosmetics/seat"),
+    SPORTS_PLANE_PROPELLER("sports_plane/cosmetics/propeller"),
+
     JET_SKI_BODY("jet_ski_body"),
     LAWN_MOWER_BODY("lawn_mower_body"),
     SPORTS_PLANE("sports_plane_body"),
     SPORTS_PLANE_WING("sports_plane_wing"),
     SPORTS_PLANE_WHEEL_COVER("sports_plane_wheel_cover"),
     SPORTS_PLANE_LEG("sports_plane_leg"),
-    SPORTS_PLANE_PROPELLER("sports_plane_propeller"),
     GOLF_CART_BODY("golf_cart_body"),
     OFF_ROADER_BODY("off_roader_body"),
     TRACTOR("tractor_body"),

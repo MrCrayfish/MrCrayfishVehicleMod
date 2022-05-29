@@ -28,4 +28,6 @@ public final class StandardCosmetics
     public static final ResourceLocation REAR_BUMPER = new ResourceLocation(Reference.MOD_ID, "rear_bumper");
     public static final ResourceLocation HOOD = new ResourceLocation(Reference.MOD_ID, "hood");
     public static final ResourceLocation SPOILER = new ResourceLocation(Reference.MOD_ID, "spoiler");
+    public static final ResourceLocation WINGS = new ResourceLocation(Reference.MOD_ID, "wings");
+    public static final ResourceLocation PROPELLER = new ResourceLocation(Reference.MOD_ID, "propeller");
 }

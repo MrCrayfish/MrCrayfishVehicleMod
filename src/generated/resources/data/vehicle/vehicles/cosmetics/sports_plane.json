@@ -1,0 +1,8 @@
+{
+    "replace": false,
+    "valid_models": {
+        "vehicle:wings": [ "vehicle:vehicle/sports_plane/cosmetics/wings" ],
+        "vehicle:propeller": [ "vehicle:vehicle/sports_plane/cosmetics/propeller" ],
+        "vehicle:seat": [ "vehicle:vehicle/sports_plane/cosmetics/seat" ]
+    }
+}

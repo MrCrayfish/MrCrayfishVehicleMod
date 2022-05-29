@@ -4,32 +4,31 @@
         "scale": 0.85
     },
     "bodyTransform": {
-        "translate": [ 0.0, 0.0, -8.0 ],
-        "scale": 1.8
+        "translate": [ 0.0, 0.0, -8.0 ]
     },
     "wheels": [
         {
             "axle": "front",
-            "offset": [ 0.0, -4.5, 20.25 ],
-            "scale": [ 0.45, 0.45, 0.45 ]
+            "offset": [ 0.0, -0.902, 26.827 ],
+            "scale": [ 1.0, 0.0, 0.0 ],
+            "autoScale": true
         },
         {
-            "offset": [ 6.5, -4.5, 1.5 ],
-            "scale": [ 0.45, 0.45, 0.45 ]
+            "offset": [ 15.5, 0.0, -5.5 ]
         },
         {
-            "offset": [ -6.5, -4.5, 1.5 ],
-            "scale": [ 0.45, 0.45, 0.45 ]
+            "offset": [ -15.5, 0.0, -5.5 ]
         }
     ],
     "seats": [
         {
+            "position": [ 0.0, 6.0, 0.0 ],
             "driver": true
         }
     ],
     "camera": {
         "position": [ 0.0, 2.0, 0.0 ],
-        "distance": 7.0
+        "distance": 9.0
     },
     "extended": {
         "vehicle:powered": {
@@ -57,5 +56,19 @@
             "elevatorSensitivity": 0.075,
             "maxTurnAngle": 2.0
         }
-    }
+    },
+    "cosmetics": [
+        {
+            "id": "vehicle:wings",
+            "offset": [ 0.0, 20.0, -7.0 ]
+        },
+        {
+            "id": "vehicle:propeller",
+            "offset": [ 0.0, 14.0, 31.0 ]
+        },
+        {
+            "id": "vehicle:seat",
+            "offset": [ 0.0, 8.0, 0.0 ]
+        }
+    ]
 }
