@@ -347,6 +347,7 @@ public class VehicleProperties
         DYNAMIC_SUPPLIERS.forEach(supplier ->
         {
             VehiclePropertiesProvider provider = supplier.get();
+            provider.setScaleWheels(true);
             provider.registerProperties();
             provider.getVehiclePropertiesMap().forEach(DEFAULT_VEHICLE_PROPERTIES::put);
             provider.getVehiclePropertiesMap().forEach(NETWORK_VEHICLE_PROPERTIES::put);

@@ -36,10 +36,16 @@ public abstract class VehiclePropertiesProvider implements IDataProvider
 
     private final DataGenerator generator;
     private final Map<ResourceLocation, VehicleProperties> vehiclePropertiesMap = new HashMap<>();
+    private boolean scaleWheels = false;
 
     protected VehiclePropertiesProvider(DataGenerator generator)
     {
         this.generator = generator;
+    }
+
+    public void setScaleWheels(boolean scaleWheels)
+    {
+        this.scaleWheels = scaleWheels;
     }
 
     protected final void add(EntityType<? extends VehicleEntity> type, VehicleProperties.Builder builder)
@@ -49,7 +55,7 @@ public abstract class VehiclePropertiesProvider implements IDataProvider
 
     protected final void add(ResourceLocation id, VehicleProperties.Builder builder)
     {
-        this.vehiclePropertiesMap.put(id, builder.build(false));
+        this.vehiclePropertiesMap.put(id, builder.build(this.scaleWheels));
     }
 
     public Map<ResourceLocation, VehicleProperties> getVehiclePropertiesMap()
