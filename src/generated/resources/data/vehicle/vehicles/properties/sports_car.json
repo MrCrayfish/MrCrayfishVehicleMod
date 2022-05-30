@@ -74,7 +74,7 @@
             "offset": [ 15.0, 1.0, 10.0 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
                         "angle": -75.0,
@@ -92,7 +92,7 @@
             "offset": [ 0.0, 15.5, -23.5 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "x",
                         "angle": 90.0,
@@ -114,7 +114,7 @@
             "offset": [ -15.0, 1.0, 10.0 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
                         "angle": 90.0,
@@ -140,7 +140,7 @@
             "offset": [ 0.0, 13.5, 13.5 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "x",
                         "angle": -60.0,

@@ -87,7 +87,7 @@
             "offset": [ 11.5, 5.0, 20.5 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
                         "angle": -75.0,
@@ -109,7 +109,7 @@
             "offset": [ 11.5, 5.0, -7.5 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
                         "angle": 105.0,
@@ -127,7 +127,7 @@
             "offset": [ -11.5, 5.0, 20.5 ],
             "actions": [
                 {
-                    "type": "vehicle:openable",
+                    "id": "vehicle:openable",
                     "rotation": {
                         "axis": "y",
                         "angle": 75.0,

@@ -109,11 +109,11 @@ public class CosmeticProperties
         JsonArray actions = new JsonArray();
         this.actions.forEach(actionSupplier -> {
             Action action = actionSupplier.get();
-            ResourceLocation type = CosmeticActions.getId(action.getClass());
-            if(type == null)
+            ResourceLocation id = CosmeticActions.getId(action.getClass());
+            if(id == null)
                 return;
             JsonObject actionData = new JsonObject();
-            actionData.addProperty("type", type.toString());
+            actionData.addProperty("id", id.toString());
             action.serialize(actionData);
             actions.add(actionData);
         });

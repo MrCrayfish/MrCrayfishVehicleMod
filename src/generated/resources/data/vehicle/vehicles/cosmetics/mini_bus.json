@@ -1,35 +1,19 @@
 {
     "replace": false,
     "valid_models": {
-        "vehicle:left_door": [
-            "vehicle:vehicle/mini_bus/cosmetics/stock_left_door"
-        ],
-        "vehicle:dashboard": [
-            "vehicle:vehicle/mini_bus/cosmetics/stock_dashboard"
-        ],
-        "vehicle:left_sliding_door": [
-            "vehicle:vehicle/mini_bus/cosmetics/stock_sliding_door"
-        ],
-        "vehicle:right_door": [
-            "vehicle:vehicle/mini_bus/cosmetics/stock_right_door"
-        ],
-        "vehicle:roof": [
-            "vehicle:vehicle/mini_bus/cosmetics/roof_racks"
-        ],
-        "vehicle:rear": [
-            "vehicle:vehicle/mini_bus/cosmetics/aircon_ladder"
-        ],
+        "vehicle:left_door": [ "vehicle:vehicle/mini_bus/cosmetics/stock_left_door" ],
+        "vehicle:dashboard": [ "vehicle:vehicle/mini_bus/cosmetics/stock_dashboard" ],
+        "vehicle:left_sliding_door": [ "vehicle:vehicle/mini_bus/cosmetics/stock_sliding_door" ],
+        "vehicle:right_door": [ "vehicle:vehicle/mini_bus/cosmetics/stock_right_door" ],
+        "vehicle:roof": [ "vehicle:vehicle/mini_bus/cosmetics/roof_racks" ],
+        "vehicle:rear": [ "vehicle:vehicle/mini_bus/cosmetics/aircon_ladder" ],
         "vehicle:roof_frame": [
             "vehicle:vehicle/mini_bus/cosmetics/stock_roof",
             {
                 "model": "vehicle:vehicle/mini_bus/cosmetics/front_roof",
-                "disables": [
-                    "vehicle:rear", "vehicle:roof"
-                ]
+                "disables": [ "vehicle:rear", "vehicle:roof" ]
             }
         ],
-        "vehicle:seat": [
-            "vehicle:vehicle/mini_bus/cosmetics/stock_seat"
-        ]
+        "vehicle:seat": [ "vehicle:vehicle/mini_bus/cosmetics/stock_seat" ]
     }
 }

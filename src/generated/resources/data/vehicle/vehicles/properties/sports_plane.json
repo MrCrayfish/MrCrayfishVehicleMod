@@ -67,7 +67,7 @@
             "offset": [ 0.0, 14.0, 31.0 ],
             "actions": [
                 {
-                    "type": "vehicle:rotate",
+                    "id": "vehicle:rotate",
                     "source": "propeller",
                     "axis": "z",
                     "scale": 1.0
