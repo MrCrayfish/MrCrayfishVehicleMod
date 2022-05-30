@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.OpenableAction;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.RotateAction;
+import com.mrcrayfish.vehicle.util.Axis;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
@@ -26,7 +28,7 @@ public class CosmeticActions
     {
         register(new ResourceLocation(Reference.MOD_ID, "openable"), OpenableAction.class, object -> {
             JsonObject rotation = object.getAsJsonObject("rotation");
-            OpenableAction.Axis axis = OpenableAction.Axis.fromKey(JSONUtils.getAsString(rotation, "axis", "x"));
+            Axis axis = Axis.fromKey(JSONUtils.getAsString(rotation, "axis", "x"));
             float angle = JSONUtils.getAsFloat(rotation, "angle", 0F);
             int animationLength = JSONUtils.getAsInt(rotation, "animationLength", 12);
             JsonObject sound = object.getAsJsonObject("sound");
@@ -34,6 +36,7 @@ public class CosmeticActions
             ResourceLocation closeSound = ExtraJSONUtils.getAsResourceLocation(sound, "close", null);
             return () -> new OpenableAction(axis, angle, openSound, closeSound, animationLength);
         });
+        register(new ResourceLocation(Reference.MOD_ID, "rotate"), RotateAction.class, RotateAction::createSupplier);
     }
 
     public static <A extends Action> void register(ResourceLocation id, Class<A> clazz, Function<JsonObject, Supplier<A>> deserializer)

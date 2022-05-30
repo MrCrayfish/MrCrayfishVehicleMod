@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import com.mrcrayfish.vehicle.util.Axis;
 import com.mrcrayfish.vehicle.util.EasingHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
@@ -13,13 +14,11 @@ import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -156,37 +155,6 @@ public class OpenableAction extends Action
                 float pitch = 0.8F + 0.2F * vehicle.level.random.nextFloat();
                 vehicle.level.playSound(Minecraft.getInstance().player, position.x, position.y, position.z, event, SoundCategory.NEUTRAL, 1.0F, pitch);
             }
-        }
-    }
-
-    public enum Axis
-    {
-        X(Vector3f.XP, "x"),
-        Y(Vector3f.YP, "y"),
-        Z(Vector3f.ZP, "z");
-
-        private final Vector3f axis;
-        private final String key;
-
-        Axis(Vector3f axis, String key)
-        {
-            this.axis = axis;
-            this.key = key;
-        }
-
-        public Vector3f getAxis()
-        {
-            return this.axis;
-        }
-
-        public String getKey()
-        {
-            return this.key;
-        }
-
-        public static Axis fromKey(String key)
-        {
-            return Arrays.stream(values()).filter(axis -> axis.key.equals(key)).findFirst().orElse(Axis.X);
         }
     }
 }

@@ -6,6 +6,7 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.cosmetic.StandardCosmetics;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.OpenableAction;
+import com.mrcrayfish.vehicle.common.cosmetic.actions.RotateAction;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.EngineType;
 import com.mrcrayfish.vehicle.entity.FuelFillerType;
@@ -16,6 +17,7 @@ import com.mrcrayfish.vehicle.entity.properties.TrailerProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.init.ModSounds;
+import com.mrcrayfish.vehicle.util.Axis;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
 
@@ -350,15 +352,15 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.LEFT_DOOR)
                         .setOffset(11.5, 5, 20.5)
                         .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_STOCK_LEFT_DOOR.getModelLocation())
-                        .addAction(new OpenableAction(OpenableAction.Axis.Y, -75F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
+                        .addAction(new OpenableAction(Axis.Y, -75F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.RIGHT_DOOR)
                         .setOffset(-11.5, 5, 20.5)
                         .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_STOCK_RIGHT_DOOR.getModelLocation())
-                        .addAction(new OpenableAction(OpenableAction.Axis.Y, 75F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
+                        .addAction(new OpenableAction(Axis.Y, 75F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.LEFT_SLIDING_DOOR)
                         .setOffset(11.5, 5, -7.5)
                         .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_STOCK_SLIDING_DOOR.getModelLocation())
-                        .addAction(new OpenableAction(OpenableAction.Axis.Y, 105F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 20)))
+                        .addAction(new OpenableAction(Axis.Y, 105F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 20)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.REAR)
                         .setOffset(0, 6, -22.0)
                         .addModelLocation(SpecialModels.MINI_BUS_COSMETIC_AIRCON_LADDER_REAR_DECOR.getModelLocation()))
@@ -512,19 +514,19 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.HOOD)
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_HOOD.getModelLocation())
                         .setOffset(0, 13.5, 13.5)
-                        .addAction(new OpenableAction(OpenableAction.Axis.X, -60F, new ResourceLocation("vehicle:entity.vehicle.hood.open"), new ResourceLocation("vehicle:entity.vehicle.hood.close"), 12)))
+                        .addAction(new OpenableAction(Axis.X, -60F, new ResourceLocation("vehicle:entity.vehicle.hood.open"), new ResourceLocation("vehicle:entity.vehicle.hood.close"), 12)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.LEFT_DOOR)
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_LEFT_DOOR.getModelLocation())
                         .setOffset(15.0, 1.0, 10.0)
-                        .addAction(new OpenableAction(OpenableAction.Axis.Y, -75F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
+                        .addAction(new OpenableAction(Axis.Y, -75F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.RIGHT_DOOR)
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_RIGHT_DOOR.getModelLocation())
                         .setOffset(-15.0, 1.0, 10.0)
-                        .addAction(new OpenableAction(OpenableAction.Axis.Y, 90F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
+                        .addAction(new OpenableAction(Axis.Y, 90F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.SPOILER)
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_BOOT.getModelLocation())
                         .setOffset(0, 15.5, -23.5)
-                        .addAction(new OpenableAction(OpenableAction.Axis.X, 90F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
+                        .addAction(new OpenableAction(Axis.X, 90F, new ResourceLocation("vehicle:entity.vehicle.door.open"), new ResourceLocation("vehicle:entity.vehicle.door.close"), 12)))
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.SEAT)
                         .addModelLocation(SpecialModels.SPORTS_CAR_COSMETIC_SEAT.getModelLocation())
                         .setOffset(0, 1.0, 0))
@@ -583,6 +585,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.PROPELLER)
                         .addModelLocation(SpecialModels.SPORTS_PLANE_PROPELLER.getModelLocation())
                         .setOffset(0, 14, 31)
+                        .addAction(new RotateAction(RotateAction.Source.PROPELLER, Axis.Z, 1.0F))
                         .build())
         );
 
