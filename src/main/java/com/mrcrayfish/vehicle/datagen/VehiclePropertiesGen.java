@@ -30,7 +30,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
     }
 
     @Override
-    protected void registerProperties()
+    public void registerProperties()
     {
         this.add(ModEntities.QUAD_BIKE.get(), VehicleProperties.builder()
                 .setAxleOffset(-0.5F)

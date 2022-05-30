@@ -10,10 +10,12 @@ import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.VehicleRegistry;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.entity.Transform;
+import com.mrcrayfish.vehicle.datagen.VehiclePropertiesProvider;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.network.HandshakeMessages;
 import com.mrcrayfish.vehicle.util.ExtraJSONUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.ReloadListener;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.PacketBuffer;
@@ -23,13 +25,17 @@ import net.minecraft.resources.IResourceManager;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.text.StringTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -43,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
@@ -57,6 +64,7 @@ public class VehicleProperties
     private static final Map<ResourceLocation, VehicleProperties> DEFAULT_VEHICLE_PROPERTIES = new HashMap<>();
     private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
     private static final Map<ResourceLocation, VehicleProperties> NETWORK_VEHICLE_PROPERTIES = new HashMap<>();
+    private static final List<Supplier<VehiclePropertiesProvider>> DYNAMIC_SUPPLIERS = new ArrayList<>();
 
     public static final float DEFAULT_MAX_HEALTH = 100F;
     public static final float DEFAULT_AXLE_OFFSET = 0F;
@@ -312,6 +320,39 @@ public class VehicleProperties
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggedOutEvent event)
     {
         NETWORK_VEHICLE_PROPERTIES.clear();
+    }
+
+    /**
+     * Registers vehicle properties providers to be used as a way to refresh properties while in
+     * game. This helps speed up designing vehicle properties since they are data driven.
+     *
+     * @param supplier an instance of a vehicle provider
+     */
+    public static void registerDynamicProvider(Supplier<VehiclePropertiesProvider> supplier)
+    {
+        if(FMLEnvironment.production)
+            return;
+        DYNAMIC_SUPPLIERS.add(supplier);
+    }
+
+    @SubscribeEvent
+    public static void onKeyPress(InputEvent.KeyInputEvent event)
+    {
+        if(FMLEnvironment.production)
+            return;
+
+        if(event.getKey() != GLFW.GLFW_KEY_F6 || (event.getModifiers() % GLFW.GLFW_KEY_LEFT_CONTROL) <= 0)
+            return;
+
+        DYNAMIC_SUPPLIERS.forEach(supplier ->
+        {
+            VehiclePropertiesProvider provider = supplier.get();
+            provider.registerProperties();
+            provider.getVehiclePropertiesMap().forEach(DEFAULT_VEHICLE_PROPERTIES::put);
+            provider.getVehiclePropertiesMap().forEach(NETWORK_VEHICLE_PROPERTIES::put);
+        });
+
+        Minecraft.getInstance().gui.setOverlayMessage(new StringTextComponent("Refreshed vehicle properties!"), false);
     }
 
     public static class Serializer implements JsonDeserializer<VehicleProperties>, JsonSerializer<VehicleProperties>

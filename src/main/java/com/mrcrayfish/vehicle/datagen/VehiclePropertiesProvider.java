@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.datagen;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -51,7 +52,12 @@ public abstract class VehiclePropertiesProvider implements IDataProvider
         this.vehiclePropertiesMap.put(id, builder.build(false));
     }
 
-    protected abstract void registerProperties();
+    public Map<ResourceLocation, VehicleProperties> getVehiclePropertiesMap()
+    {
+        return ImmutableMap.copyOf(this.vehiclePropertiesMap);
+    }
+
+    public abstract void registerProperties();
 
     @Override
     public void run(DirectoryCache cache) throws IOException

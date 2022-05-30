@@ -89,6 +89,7 @@ public class VehicleMod
         ModDataKeys.register();
         ModLootFunctions.init();
         CraftingHelper.register(new ResourceLocation(Reference.MOD_ID, "workstation_ingredient"), WorkstationIngredient.Serializer.INSTANCE);
+        event.enqueueWork(() -> VehicleProperties.registerDynamicProvider(() -> new VehiclePropertiesGen(null)));
     }
 
     private void onClientSetup(FMLClientSetupEvent event)
