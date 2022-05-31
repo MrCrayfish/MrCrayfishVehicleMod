@@ -126,6 +126,13 @@ public class CosmeticTracker
         return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getBakedModel).orElse(Minecraft.getInstance().getModelManager().getMissingModel());
     }
 
+    @Nullable
+    @OnlyIn(Dist.CLIENT)
+    public Entry getSelectedEntry(ResourceLocation cosmeticId)
+    {
+        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).orElse(null);
+    }
+
     public Collection<Action> getActions(ResourceLocation cosmeticId)
     {
         return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getActions).orElse(Collections.emptyList());

@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.mrcrayfish.vehicle.client.model.ISpecialModel;
 import com.mrcrayfish.vehicle.client.model.SpecialModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
+import com.mrcrayfish.vehicle.client.render.complex.ComplexRenderer;
 import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
@@ -250,7 +251,8 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             matrixStack.translate(offset.x, offset.y, offset.z);
             matrixStack.translate(0, -0.5, 0);
             this.getCosmeticActions(vehicle, id).forEach(action -> action.beforeRender(matrixStack, vehicle, partialTicks));
-            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY); //TODO allow individual cosmetic colours
+            ResourceLocation location = this.getCosmeticModelLocation(vehicle, id);
+            ComplexRenderer.renderModel(location, model, vehicle, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, partialTicks); //TODO allow individual cosmetic colours
             matrixStack.popPose();
         });
     }
@@ -272,6 +274,25 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             }
         }
         return true;
+    }
+
+    @Nullable
+    protected ResourceLocation getCosmeticModelLocation(@Nullable T vehicle, ResourceLocation cosmeticId)
+    {
+        if(vehicle != null)
+        {
+            CosmeticTracker.Entry entry = this.cosmeticTrackerProperty.get(vehicle).getSelectedEntry(cosmeticId);
+            if(entry != null)
+            {
+                return entry.getModelLocation();
+            }
+        }
+        CosmeticProperties properties = VehicleProperties.get(this.type).getCosmetics().get(cosmeticId);
+        if(!properties.getModelLocations().isEmpty())
+        {
+            return properties.getModelLocations().get(0);
+        }
+        return null;
     }
 
     @Nullable
