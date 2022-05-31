@@ -10,7 +10,7 @@ import net.minecraftforge.client.model.ModelLoader;
 /**
  * Author: MrCrayfish
  */
-public interface ISpecialModel
+public interface IVehicleModel
 {
     @OnlyIn(Dist.CLIENT)
     IBakedModel getModel();

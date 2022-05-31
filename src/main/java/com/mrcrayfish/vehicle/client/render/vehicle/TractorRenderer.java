@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -32,7 +32,7 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
     @Override
     public void render(@Nullable TractorEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.TRACTOR.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.TRACTOR.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -44,7 +44,7 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
         float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
-        this.renderDamagedPart(vehicle, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
     }
 
@@ -71,14 +71,14 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.TRACTOR, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.TRACTOR, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.66F, -0.475F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-67.5F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.9F));
-            TransformHelper.createTowBarTransforms(ModEntities.TRACTOR.get(), SpecialModels.TOW_BAR, parts);
-            TransformHelper.createFuelFillerTransforms(ModEntities.TRACTOR.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTowBarTransforms(ModEntities.TRACTOR.get(), VehicleModels.TOW_BAR, parts);
+            TransformHelper.createFuelFillerTransforms(ModEntities.TRACTOR.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.TRACTOR.get(), parts, transforms);
         };
     }

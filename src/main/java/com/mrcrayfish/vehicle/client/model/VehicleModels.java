@@ -14,7 +14,7 @@ import net.minecraftforge.fml.common.Mod;
 import javax.annotation.Nullable;
 
 @Mod.EventBusSubscriber(modid = Reference.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public enum SpecialModels implements ISpecialModel
+public enum VehicleModels implements IVehicleModel
 {
     /* Sports Car */
     SPORTS_CAR_BODY("sports_car/base"),
@@ -76,6 +76,8 @@ public enum SpecialModels implements ISpecialModel
     SPORTS_PLANE_WINGS("sports_plane/cosmetics/wings"),
     SPORTS_PLANE_SEAT("sports_plane/cosmetics/seat"),
     SPORTS_PLANE_PROPELLER("sports_plane/cosmetics/propeller"),
+    SPORTS_PLANE_LEFT_AILERON("sports_plane/cosmetics/left_aileron"),
+    SPORTS_PLANE_RIGHT_AILERON("sports_plane/cosmetics/right_aileron"),
 
     JET_SKI_BODY("jet_ski_body"),
     LAWN_MOWER_BODY("lawn_mower_body"),
@@ -133,7 +135,7 @@ public enum SpecialModels implements ISpecialModel
      *
      * @param modelName name of the model file
      */
-    SpecialModels(String modelName)
+    VehicleModels(String modelName)
     {
         this(new ResourceLocation(Reference.MOD_ID, "vehicle/" + modelName), true);
     }
@@ -143,7 +145,7 @@ public enum SpecialModels implements ISpecialModel
      *
      * @param resource name of the model file
      */
-    SpecialModels(ResourceLocation resource, boolean specialModel)
+    VehicleModels(ResourceLocation resource, boolean specialModel)
     {
         this.modelLocation = resource;
         this.specialModel = specialModel;
@@ -179,19 +181,19 @@ public enum SpecialModels implements ISpecialModel
     @OnlyIn(Dist.CLIENT)
     public static void register(ModelRegistryEvent event)
     {
-        for(SpecialModels model : values())
+        for(VehicleModels model : values())
         {
             if(model.specialModel)
             {
-                ISpecialModel.registerCosmeticModel(model.modelLocation);
+                IVehicleModel.registerCosmeticModel(model.modelLocation);
             }
         }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void clearModelCache()
+    public static void clearCache()
     {
-        for(SpecialModels model : values())
+        for(VehicleModels model : values())
         {
             model.cachedModel = null;
         }

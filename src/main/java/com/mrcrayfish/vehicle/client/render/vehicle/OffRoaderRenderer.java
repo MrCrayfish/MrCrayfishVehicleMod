@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -35,7 +35,7 @@ public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEnti
     @Override
     protected void render(@Nullable OffRoaderEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.OFF_ROADER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -50,7 +50,7 @@ public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEnti
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
 
-        RenderUtil.renderColoredModel(SpecialModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+        RenderUtil.renderColoredModel(VehicleModels.GO_KART_STEERING_WHEEL.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
 
         matrixStack.popPose();
     }
@@ -121,13 +121,13 @@ public class OffRoaderRenderer extends AbstractLandVehicleRenderer<OffRoaderEnti
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.OFF_ROADER_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.OFF_ROADER_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(-0.3125F, 0.35F, 0.2F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.75F));
-            TransformHelper.createFuelFillerTransforms(ModEntities.OFF_ROADER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.OFF_ROADER.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.OFF_ROADER.get(), parts, transforms);
         };
     }

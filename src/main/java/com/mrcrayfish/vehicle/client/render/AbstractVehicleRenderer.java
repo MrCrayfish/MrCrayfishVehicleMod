@@ -2,8 +2,8 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.model.ISpecialModel;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.IVehicleModel;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.render.complex.ComplexRenderer;
 import com.mrcrayfish.vehicle.common.CosmeticTracker;
@@ -320,14 +320,14 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         return Collections.emptyList();
     }
 
-    protected ISpecialModel getKeyHoleModel()
+    protected IVehicleModel getKeyHoleModel()
     {
-        return SpecialModels.KEY_HOLE;
+        return VehicleModels.KEY_HOLE;
     }
 
-    protected ISpecialModel getTowBarModel()
+    protected IVehicleModel getTowBarModel()
     {
-        return SpecialModels.TOW_BAR;
+        return VehicleModels.TOW_BAR;
     }
 
     protected boolean shouldRenderFuelLid()

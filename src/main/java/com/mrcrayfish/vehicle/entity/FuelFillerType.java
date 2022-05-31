@@ -1,8 +1,8 @@
 package com.mrcrayfish.vehicle.entity;
 
 import com.mrcrayfish.vehicle.client.VehicleHelper;
-import com.mrcrayfish.vehicle.client.model.ISpecialModel;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.IVehicleModel;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.init.ModSounds;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.api.distmarker.Dist;
@@ -13,11 +13,11 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 public enum FuelFillerType
 {
-    DEFAULT(SpecialModels.FUEL_DOOR_CLOSED, SpecialModels.FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_OPEN.get(), 0.25F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_CLOSE.get(), 0.12F, 0.6F),
-    SMALL(SpecialModels.SMALL_FUEL_DOOR_CLOSED, SpecialModels.SMALL_FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_SMALL_OPEN.get(), 0.4F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_SMALL_CLOSE.get(), 0.3F, 0.6F);
+    DEFAULT(VehicleModels.FUEL_DOOR_CLOSED, VehicleModels.FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_OPEN.get(), 0.25F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_LARGE_CLOSE.get(), 0.12F, 0.6F),
+    SMALL(VehicleModels.SMALL_FUEL_DOOR_CLOSED, VehicleModels.SMALL_FUEL_DOOR_OPEN, ModSounds.ENTITY_VEHICLE_FUEL_PORT_SMALL_OPEN.get(), 0.4F, 0.6F, ModSounds.ENTITY_VEHICLE_FUEL_PORT_SMALL_CLOSE.get(), 0.3F, 0.6F);
 
-    private ISpecialModel closed;
-    private ISpecialModel open;
+    private IVehicleModel closed;
+    private IVehicleModel open;
     private SoundEvent openSound;
     private SoundEvent closeSound;
     private float openVolume;
@@ -25,7 +25,7 @@ public enum FuelFillerType
     private float openPitch;
     private float closePitch;
 
-    FuelFillerType(ISpecialModel closed, ISpecialModel open, SoundEvent openSound, float openVolume, float openPitch, SoundEvent closeCount, float closeVolume, float closePitch)
+    FuelFillerType(IVehicleModel closed, IVehicleModel open, SoundEvent openSound, float openVolume, float openPitch, SoundEvent closeCount, float closeVolume, float closePitch)
     {
         this.closed = closed;
         this.open = open;
@@ -37,12 +37,12 @@ public enum FuelFillerType
         this.closePitch = closePitch;
     }
 
-    public ISpecialModel getClosedModel()
+    public IVehicleModel getClosedModel()
     {
         return closed;
     }
 
-    public ISpecialModel getOpenModel()
+    public IVehicleModel getOpenModel()
     {
         return open;
     }

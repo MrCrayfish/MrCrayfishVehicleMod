@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -33,7 +33,7 @@ public class LawnMowerRenderer extends AbstractLandVehicleRenderer<LawnMowerEnti
     protected void render(@Nullable LawnMowerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Body
-        this.renderDamagedPart(vehicle, SpecialModels.LAWN_MOWER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.LAWN_MOWER_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -47,7 +47,7 @@ public class LawnMowerRenderer extends AbstractLandVehicleRenderer<LawnMowerEnti
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
 
-        this.renderDamagedPart(vehicle, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }
@@ -74,13 +74,13 @@ public class LawnMowerRenderer extends AbstractLandVehicleRenderer<LawnMowerEnti
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.LAWN_MOWER_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.LAWN_MOWER_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.4F, -0.15F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.scale(0.9F));
-            TransformHelper.createTowBarTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.TOW_BAR, parts);
-            TransformHelper.createFuelFillerTransforms(ModEntities.LAWN_MOWER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTowBarTransforms(ModEntities.LAWN_MOWER.get(), VehicleModels.TOW_BAR, parts);
+            TransformHelper.createFuelFillerTransforms(ModEntities.LAWN_MOWER.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

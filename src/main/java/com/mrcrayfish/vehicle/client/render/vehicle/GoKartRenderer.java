@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
@@ -17,7 +17,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -34,8 +33,8 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
     @Override
     protected void render(@Nullable GoKartEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.GO_KART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), 0.0, 0.6814, 8.0426, 1.0F, -45F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderSteeringWheel(vehicle, VehicleModels.GO_KART_STEERING_WHEEL.getModel(), 0.0, 0.6814, 8.0426, 1.0F, -45F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -61,8 +60,8 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.GO_KART_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.09F, 0.49F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),

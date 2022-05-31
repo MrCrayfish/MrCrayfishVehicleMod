@@ -1,20 +1,18 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractLandVehicleRenderer;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
-import com.mrcrayfish.vehicle.entity.vehicle.GoKartEntity;
 import com.mrcrayfish.vehicle.entity.vehicle.SportsCarEntity;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -31,8 +29,8 @@ public class SportsCarRenderer extends AbstractLandVehicleRenderer<SportsCarEnti
     @Override
     protected void render(@Nullable SportsCarEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        //this.renderDamagedPart(vehicle, SpecialModels.SPORTS_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, SpecialModels.SPORTS_CAR_STEERING_WHEEL.getModel(), -4.0, -1.0961, 1.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderSteeringWheel(vehicle, VehicleModels.SPORTS_CAR_STEERING_WHEEL.getModel(), -4.0, -1.0961, 1.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -57,7 +55,7 @@ public class SportsCarRenderer extends AbstractLandVehicleRenderer<SportsCarEnti
     public RayTraceTransforms getRayTraceTransforms()
     {
         return (tracer, transforms, parts) -> {
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_CAR_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_CAR_BODY, parts, transforms);
         };
     }
 }

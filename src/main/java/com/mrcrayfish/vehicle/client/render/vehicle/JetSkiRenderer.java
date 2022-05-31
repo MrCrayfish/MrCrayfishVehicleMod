@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -33,7 +33,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
     protected void render(@Nullable JetSkiEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(vehicle, SpecialModels.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -46,7 +46,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 15F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
 
-        this.renderDamagedPart(vehicle, SpecialModels.QUAD_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.QUAD_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }
@@ -90,12 +90,12 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.JET_SKI_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.QUAD_BIKE_HANDLES, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.JET_SKI_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.QUAD_BIKE_HANDLES, parts, transforms,
                     MatrixTransform.translate(0.0F, 0.375F, 0.25F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, 0.02F, 0.0F));
-            TransformHelper.createFuelFillerTransforms(ModEntities.JET_SKI.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.JET_SKI.get(), VehicleModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

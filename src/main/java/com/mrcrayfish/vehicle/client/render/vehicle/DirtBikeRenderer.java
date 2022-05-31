@@ -1,8 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractMotorcycleRenderer;
@@ -11,7 +10,6 @@ import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.PoweredProperties;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.DirtBikeEntity;
-import com.mrcrayfish.vehicle.entity.vehicle.MiniBusEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
 import com.mrcrayfish.vehicle.util.RenderUtil;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
@@ -38,7 +36,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
     @Override
     protected void render(@Nullable DirtBikeEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.DIRT_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.DIRT_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -54,7 +52,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
 
-        this.renderDamagedPart(vehicle, SpecialModels.DIRT_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.DIRT_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
 
         ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
         if(!wheelStack.isEmpty())
@@ -109,9 +107,9 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.DIRT_BIKE_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.DIRT_BIKE_HANDLES, parts, transforms);
-            TransformHelper.createFuelFillerTransforms(ModEntities.DIRT_BIKE.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.DIRT_BIKE_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.DIRT_BIKE_HANDLES, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.DIRT_BIKE.get(), VehicleModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -32,19 +32,19 @@ public class SofaHelicopterRenderer extends AbstractHelicopterRenderer<Sofacopte
     protected void render(@Nullable SofacopterEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.pushPose();
-        this.renderDamagedPart(vehicle, SpecialModels.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(0.0, 8 * 0.0625, 0.0);
-        this.renderDamagedPart(vehicle, SpecialModels.SOFA_HELICOPTER_ARM.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SOFA_HELICOPTER_ARM.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(0.0, 32 * 0.0625, 0.0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(this.bladeRotationProperty.get(vehicle, partialTicks)));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
-        this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
 
        /* GlStateManager.pushMatrix();
@@ -71,11 +71,11 @@ public class SofaHelicopterRenderer extends AbstractHelicopterRenderer<Sofacopte
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.RED_SOFA, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.RED_SOFA, parts, transforms,
                     MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees(90F)));
-            TransformHelper.createTransformListForPart(SpecialModels.SOFA_HELICOPTER_ARM, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SOFA_HELICOPTER_ARM, parts, transforms,
                     MatrixTransform.translate(0.0F, 8 * 0.0625F, 0.0F));
-            TransformHelper.createFuelFillerTransforms(ModEntities.SOFACOPTER.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.SOFACOPTER.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.SOFACOPTER.get(), parts, transforms);
         };
     }

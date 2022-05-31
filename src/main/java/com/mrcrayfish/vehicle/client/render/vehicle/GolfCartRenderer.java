@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -33,7 +33,7 @@ public class GolfCartRenderer extends AbstractHelicopterRenderer<GolfCartEntity>
     protected void render(@Nullable GolfCartEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(vehicle, SpecialModels.GOLF_CART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.GOLF_CART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -50,7 +50,7 @@ public class GolfCartRenderer extends AbstractHelicopterRenderer<GolfCartEntity>
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
 
-        this.renderDamagedPart(vehicle, SpecialModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.popPose();
     }
@@ -81,13 +81,13 @@ public class GolfCartRenderer extends AbstractHelicopterRenderer<GolfCartEntity>
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.GOLF_CART_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.GO_KART_STEERING_WHEEL, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.GOLF_CART_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.GO_KART_STEERING_WHEEL, parts, transforms,
                     MatrixTransform.translate(-0.345F, 0.425F, 0.1F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-45F)),
                     MatrixTransform.translate(0.0F, -0.02F, 0.0F),
                     MatrixTransform.scale(0.95F));
-            TransformHelper.createFuelFillerTransforms(ModEntities.GOLF_CART.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.GOLF_CART.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.GOLF_CART.get(), parts, transforms);
         };
     }

@@ -1,14 +1,12 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractPlaneRenderer;
 import com.mrcrayfish.vehicle.client.render.Axis;
-import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.entity.vehicle.SportsPlaneEntity;
 import com.mrcrayfish.vehicle.init.ModEntities;
@@ -16,8 +14,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
 
 import javax.annotation.Nullable;
 
@@ -34,7 +30,7 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
     @Override
     protected void render(@Nullable SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.SPORTS_PLANE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_PLANE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
     }
 
     @Override
@@ -52,31 +48,31 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE, parts, transforms);
-            TransformHelper.createFuelFillerTransforms(ModEntities.SPORTS_PLANE.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.SPORTS_PLANE.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.SPORTS_PLANE.get(), parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_WING, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WING, parts, transforms,
                     MatrixTransform.translate(0, -0.1875F, 0.5F),
                     MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees(180F)),
                     MatrixTransform.translate(0.875F, 0.0625F, 0.0F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(5F)));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_WING, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WING, parts, transforms,
                     MatrixTransform.translate(0.875F, -0.1875F, 0.5F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-5F)));
             transforms.add(MatrixTransform.translate(0.0F, -0.5F, 0.0F));
             transforms.add(MatrixTransform.scale(0.85F));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
                     MatrixTransform.translate(0.0F, -0.1875F, 1.5F));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_LEG, parts, transforms,
                     MatrixTransform.translate(0.0F, -0.1875F, 1.5F));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
                     MatrixTransform.translate(-0.46875F, -0.1875F, 0.125F));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_LEG, parts, transforms,
                     MatrixTransform.translate(-0.46875F, -0.1875F, 0.125F),
                     MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees(-100F)));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
                     MatrixTransform.translate(0.46875F, -0.1875F, 0.125F));
-            TransformHelper.createTransformListForPart(SpecialModels.SPORTS_PLANE_LEG, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_LEG, parts, transforms,
                     MatrixTransform.translate(0.46875F, -0.1875F, 0.125F),
                     MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees(100F)));
         };

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.obfuscate.client.event.PlayerModelEvent;
 import com.mrcrayfish.obfuscate.client.event.RenderItemEvent;
 import com.mrcrayfish.obfuscate.common.data.SyncedPlayerData;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
@@ -129,7 +129,7 @@ public class FuelingHandler
                 matrixStack.pushPose();
                 matrixStack.translate(handOffset * 0.65, -0.27, -0.72);
                 matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(45F));
-                RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY); //TODO check
+                RenderUtil.renderColoredModel(VehicleModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY); //TODO check
                 matrixStack.popPose();
             }
         }
@@ -168,7 +168,7 @@ public class FuelingHandler
         matrixStack.translate(0, -9 * 0.0625F, 5.75 * 0.0625F);
 
         IRenderTypeBuffer renderTypeBuffer = Minecraft.getInstance().renderBuffers().bufferSource();
-        RenderUtil.renderColoredModel(SpecialModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.NO_OVERLAY);
+        RenderUtil.renderColoredModel(VehicleModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, 15728880, OverlayTexture.NO_OVERLAY);
 
         matrixStack.popPose();
     }

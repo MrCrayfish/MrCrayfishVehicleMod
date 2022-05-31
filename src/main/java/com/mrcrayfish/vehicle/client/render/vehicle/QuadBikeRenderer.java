@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -32,8 +32,8 @@ public class QuadBikeRenderer extends AbstractLandVehicleRenderer<QuadBikeEntity
     @Override
     protected void render(@Nullable QuadBikeEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.QUAD_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, SpecialModels.QUAD_BIKE_HANDLES.getModel(), 0.0, 6.0, 3.0, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.QUAD_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderSteeringWheel(vehicle, VehicleModels.QUAD_BIKE_HANDLES.getModel(), 0.0, 6.0, 3.0, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -74,12 +74,12 @@ public class QuadBikeRenderer extends AbstractLandVehicleRenderer<QuadBikeEntity
     {
         return (entityRayTracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.QUAD_BIKE_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.QUAD_BIKE_HANDLES, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.QUAD_BIKE_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.QUAD_BIKE_HANDLES, parts, transforms,
                     MatrixTransform.translate(0.0F, 6.0F, 3.0F),
                     MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-35F)));
-            TransformHelper.createTowBarTransforms(ModEntities.QUAD_BIKE.get(), SpecialModels.TOW_BAR, parts);
-            TransformHelper.createFuelFillerTransforms(ModEntities.QUAD_BIKE.get(), SpecialModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createTowBarTransforms(ModEntities.QUAD_BIKE.get(), VehicleModels.TOW_BAR, parts);
+            TransformHelper.createFuelFillerTransforms(ModEntities.QUAD_BIKE.get(), VehicleModels.SMALL_FUEL_DOOR_CLOSED, parts, transforms);
             TransformHelper.createIgnitionTransforms(ModEntities.QUAD_BIKE.get(), parts, transforms);
         };
     }

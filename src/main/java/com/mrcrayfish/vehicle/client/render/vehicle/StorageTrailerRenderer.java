@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
@@ -31,7 +31,7 @@ public class StorageTrailerRenderer extends AbstractTrailerRenderer<StorageTrail
     @Override
     public void render(@Nullable StorageTrailerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.pushPose();
         matrixStack.translate(0, -6 * 0.0625, 0);
@@ -48,8 +48,8 @@ public class StorageTrailerRenderer extends AbstractTrailerRenderer<StorageTrail
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.STORAGE_TRAILER, parts, transforms);
-            TransformHelper.createTowBarTransforms(ModEntities.STORAGE_TRAILER.get(), SpecialModels.TOW_BAR, parts);
+            TransformHelper.createTransformListForPart(VehicleModels.STORAGE_TRAILER, parts, transforms);
+            TransformHelper.createTowBarTransforms(ModEntities.STORAGE_TRAILER.get(), VehicleModels.TOW_BAR, parts);
         };
     }
 }

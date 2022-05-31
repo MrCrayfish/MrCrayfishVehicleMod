@@ -1,8 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
@@ -49,7 +48,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     @Override
     public void render(@Nullable MopedEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);
 
         matrixStack.pushPose();
 
@@ -65,14 +64,14 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         //Render handles bars
         matrixStack.pushPose();
         matrixStack.translate(0, (12.2739 - 8) * 0.0625, (16.4071 - 8) * 0.0625);
-        this.renderDamagedPart(vehicle, SpecialModels.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
 
         //Render front bar and mud guard
         matrixStack.pushPose();
         {
             matrixStack.translate(0, (4.1044 - 8) * 0.0625, (19.8181 - 8) * 0.0625);
-            this.renderDamagedPart(vehicle, SpecialModels.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(vehicle, VehicleModels.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
         }
         matrixStack.popPose();
 
@@ -136,12 +135,12 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.MOPED_BODY, parts, transforms);
-            TransformHelper.createTransformListForPart(SpecialModels.MOPED_HANDLES, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.MOPED_BODY, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.MOPED_HANDLES, parts, transforms,
                     MatrixTransform.translate(0.0F, 4.2739F * 0.0625F, 8.4071F * 0.0625F));
-            TransformHelper.createTransformListForPart(SpecialModels.MOPED_MUD_GUARD, parts, transforms,
+            TransformHelper.createTransformListForPart(VehicleModels.MOPED_MUD_GUARD, parts, transforms,
                     MatrixTransform.translate(0.0F, -3.8956F * 0.0625F, 11.8181F * 0.0625F));
-            TransformHelper.createFuelFillerTransforms(ModEntities.MOPED.get(), SpecialModels.FUEL_DOOR_CLOSED, parts, transforms);
+            TransformHelper.createFuelFillerTransforms(ModEntities.MOPED.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
         };
     }
 }

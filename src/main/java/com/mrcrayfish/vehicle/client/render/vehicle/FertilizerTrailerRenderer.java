@@ -1,7 +1,7 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.SpecialModels;
+import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
 import com.mrcrayfish.vehicle.client.raytrace.TransformHelper;
 import com.mrcrayfish.vehicle.client.render.AbstractTrailerRenderer;
@@ -35,7 +35,7 @@ public class FertilizerTrailerRenderer extends AbstractTrailerRenderer<Fertilize
     @Override
     protected void render(@Nullable FertilizerTrailerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, SpecialModels.FERTILIZER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.FERTILIZER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
 
         StorageInventory inventory = this.storageProperty.get(vehicle);
         if(inventory != null)
@@ -87,7 +87,7 @@ public class FertilizerTrailerRenderer extends AbstractTrailerRenderer<Fertilize
             matrixStack.mulPose(Vector3f.ZP.rotationDegrees(90F));
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(-this.getWheelRotation(vehicle, null, partialTicks)));
             matrixStack.scale((float) 1.25, (float) 1.25, (float) 1.25);
-            RenderUtil.renderColoredModel(SpecialModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            RenderUtil.renderColoredModel(VehicleModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         }
         matrixStack.popPose();
     }
@@ -98,7 +98,7 @@ public class FertilizerTrailerRenderer extends AbstractTrailerRenderer<Fertilize
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(SpecialModels.FERTILIZER_TRAILER, parts, transforms);
+            TransformHelper.createTransformListForPart(VehicleModels.FERTILIZER_TRAILER, parts, transforms);
         };
     }
 }
