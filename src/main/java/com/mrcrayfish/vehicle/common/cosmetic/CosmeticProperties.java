@@ -57,7 +57,7 @@ public class CosmeticProperties
         JsonArray array = JSONUtils.getAsJsonArray(object, "actions", new JsonArray());
         StreamSupport.stream(array.spliterator(), false).filter(JsonElement::isJsonObject).forEach(element -> {
             JsonObject action = element.getAsJsonObject();
-            ResourceLocation type = new ResourceLocation(JSONUtils.getAsString(action, "type"));
+            ResourceLocation type = new ResourceLocation(JSONUtils.getAsString(action, "id"));
             Supplier<Action> actionSupplier = CosmeticActions.getSupplier(type, action);
             Objects.requireNonNull(actionSupplier, "Unregistered cosmetic action: " + type);
             actions.add(actionSupplier);
