@@ -58,11 +58,14 @@ public class Dynamic implements IValue
     // TODO remove hardcoded nature and allow externals to register custom sources
     public enum Source
     {
-        STEERING("flaps", (vehicle, partialTicks) -> {
+        PLANE_AILERON("plane_aileron", (vehicle, partialTicks) -> {
             return vehicle instanceof PlaneEntity ? (double) ((PlaneEntity) vehicle).getFlapAngle(partialTicks) : 0.0;
         }),
-        PROPELLER("propeller", (vehicle, partialTicks) -> {
+        PLANE_PROPELLER("plane_propeller", (vehicle, partialTicks) -> {
             return vehicle instanceof PlaneEntity ? (double) ((PlaneEntity) vehicle).getPropellerRotation(partialTicks) : 0.0;
+        }),
+        PLANE_ELEVATOR("plane_elevator", (vehicle, partialTicks) -> {
+            return vehicle instanceof PlaneEntity ? (double) ((PlaneEntity) vehicle).getElevatorAngle(partialTicks) : 0.0;
         });
 
         private final String key;

@@ -78,6 +78,7 @@ public class VehicleModels
     public static final ComponentModel SPORTS_PLANE_PROPELLER = LOADER.create("vehicle/sports_plane/cosmetics/propeller");
     public static final ComponentModel SPORTS_PLANE_LEFT_AILERON = LOADER.create("vehicle/sports_plane/cosmetics/left_aileron");
     public static final ComponentModel SPORTS_PLANE_RIGHT_AILERON = LOADER.create("vehicle/sports_plane/cosmetics/right_aileron");
+    public static final ComponentModel SPORTS_PLANE_ELEVATOR = LOADER.create("vehicle/sports_plane/cosmetics/elevator");
 
     public static final ComponentModel JET_SKI_BODY = LOADER.create("vehicle/jet_ski_body");
     public static final ComponentModel LAWN_MOWER_BODY = LOADER.create("vehicle/lawn_mower_body");

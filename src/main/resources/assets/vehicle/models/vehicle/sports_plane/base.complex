@@ -1,0 +1,21 @@
+{
+    "model": "vehicle:vehicle/sports_plane/base",
+    "children": [
+        {
+            "model": "vehicle:vehicle/sports_plane/cosmetics/elevator",
+            "transforms": [
+                {
+                    "type": "translate",
+                    "y": 7.0,
+                    "z": -63.0
+                }, {
+                    "type": "rotate",
+                    "x": {
+                        "source": "plane_elevator",
+                        "scale": 0.5
+                    }
+                }
+            ]
+        }
+    ]
+}

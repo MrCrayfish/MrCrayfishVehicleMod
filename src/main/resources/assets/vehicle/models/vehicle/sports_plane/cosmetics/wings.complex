@@ -1,0 +1,51 @@
+{
+    "model": "vehicle:vehicle/sports_plane/cosmetics/wings",
+    "children": [
+        {
+            "model": "vehicle:vehicle/sports_plane/cosmetics/left_aileron",
+            "transforms": [
+                {
+                    "type": "translate",
+                    "x": 28.815,
+                    "y": -8.0,
+                    "z": 3.3371
+                }, {
+                    "type": "rotate",
+                    "y": -5
+                }, {
+                    "type": "rotate",
+                    "x": {
+                        "source": "plane_aileron",
+                        "scale": 0.5
+                    }
+                }, {
+                    "type": "rotate",
+                    "y": 5
+                }
+            ]
+        }, {
+            "model": "vehicle:vehicle/sports_plane/cosmetics/right_aileron",
+            "transforms": [
+                {
+                    "type": "translate",
+                    "x": -28.815,
+                    "y": -8.0,
+                    "z": 3.3371
+                }, {
+                    "type": "rotate",
+                    "y": 5
+                }, {
+                    "type": "rotate",
+                    "x": {
+                        "source": "plane_aileron",
+                        "inverse": true,
+                        "scale": 0.5
+                    }
+                }, {
+                    "type": "rotate",
+                    "y": -5
+                }
+            ]
+        }
+    ]
+}

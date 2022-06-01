@@ -64,15 +64,7 @@
         },
         {
             "id": "vehicle:propeller",
-            "offset": [ 0.0, 14.0, 31.0 ],
-            "actions": [
-                {
-                    "id": "vehicle:rotate",
-                    "source": "propeller",
-                    "axis": "z",
-                    "scale": 1.0
-                }
-            ]
+            "offset": [ 0.0, 14.0, 31.0 ]
         },
         {
             "id": "vehicle:seat",
