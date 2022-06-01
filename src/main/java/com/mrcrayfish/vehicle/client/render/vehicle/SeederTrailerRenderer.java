@@ -36,7 +36,7 @@ public class SeederTrailerRenderer extends AbstractTrailerRenderer<SeederTrailer
     public void render(@Nullable SeederTrailerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(vehicle, VehicleModels.SEEDER_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SEEDER_TRAILER, matrixStack, renderTypeBuffer, light, partialTicks);
 
         StorageInventory inventory = this.storageProperty.get(vehicle);
         if(inventory != null)
@@ -100,7 +100,7 @@ public class SeederTrailerRenderer extends AbstractTrailerRenderer<SeederTrailer
         matrixStack.translate(offsetX, -0.65, 0.0);
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(-this.getWheelRotation(vehicle, null, partialTicks)));
         matrixStack.scale(0.75F, 0.75F, 0.75F);
-        RenderUtil.renderColoredModel(VehicleModels.SEED_SPIKER.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+        RenderUtil.renderColoredModel(VehicleModels.SEED_SPIKER.getBaseModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
         matrixStack.popPose();
     }
 

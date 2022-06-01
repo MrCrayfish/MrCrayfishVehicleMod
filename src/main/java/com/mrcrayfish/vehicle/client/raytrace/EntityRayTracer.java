@@ -11,7 +11,7 @@ import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.data.CosmeticRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.InteractableBoxRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
-import com.mrcrayfish.vehicle.client.raytrace.data.VehicleModelRayTraceData;
+import com.mrcrayfish.vehicle.client.raytrace.data.ComponentModelRayTraceData;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.network.PacketHandler;
@@ -883,7 +883,7 @@ public class EntityRayTracer
             }
         }
 
-        if(data instanceof VehicleModelRayTraceData && ((VehicleModelRayTraceData) data).getModel() == VehicleModels.KEY_HOLE)
+        if(data instanceof ComponentModelRayTraceData && ((ComponentModelRayTraceData) data).getModel() == VehicleModels.KEY_HOLE)
         {
             PacketHandler.getPlayChannel().sendToServer(new MessageInteractKey(entity));
             return true;

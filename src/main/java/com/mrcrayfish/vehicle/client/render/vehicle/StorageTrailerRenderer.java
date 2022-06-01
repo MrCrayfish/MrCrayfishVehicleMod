@@ -31,7 +31,7 @@ public class StorageTrailerRenderer extends AbstractTrailerRenderer<StorageTrail
     @Override
     public void render(@Nullable StorageTrailerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.STORAGE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.STORAGE_TRAILER, matrixStack, renderTypeBuffer, light, partialTicks);
 
         matrixStack.pushPose();
         matrixStack.translate(0, -6 * 0.0625, 0);

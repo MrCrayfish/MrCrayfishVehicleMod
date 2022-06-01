@@ -30,7 +30,7 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
     @Override
     protected void render(@Nullable SportsPlaneEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_PLANE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_PLANE_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override

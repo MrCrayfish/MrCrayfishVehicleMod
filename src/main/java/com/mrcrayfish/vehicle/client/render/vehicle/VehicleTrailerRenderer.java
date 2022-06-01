@@ -25,7 +25,7 @@ public class VehicleTrailerRenderer extends AbstractTrailerRenderer<VehicleTrail
     @Override
     protected void render(@Nullable VehicleTrailerEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.VEHICLE_TRAILER.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.VEHICLE_TRAILER, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Nullable

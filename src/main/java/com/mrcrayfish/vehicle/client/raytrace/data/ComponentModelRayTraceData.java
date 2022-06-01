@@ -1,6 +1,6 @@
 package com.mrcrayfish.vehicle.client.raytrace.data;
 
-import com.mrcrayfish.vehicle.client.model.IVehicleModel;
+import com.mrcrayfish.vehicle.client.model.IComplexModel;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
@@ -10,22 +10,22 @@ import javax.annotation.Nullable;
 /**
  * Author: MrCrayfish
  */
-public class VehicleModelRayTraceData extends RayTraceData
+public class ComponentModelRayTraceData extends RayTraceData
 {
-    private final IVehicleModel model;
+    private final IComplexModel model;
 
-    public VehicleModelRayTraceData(IVehicleModel model)
+    public ComponentModelRayTraceData(IComplexModel model)
     {
         this(model, null);
     }
 
-    public VehicleModelRayTraceData(IVehicleModel model, @Nullable RayTraceFunction function)
+    public ComponentModelRayTraceData(IComplexModel model, @Nullable RayTraceFunction function)
     {
         super(function);
         this.model = model;
     }
 
-    public IVehicleModel getModel()
+    public IComplexModel getModel()
     {
         return this.model;
     }
@@ -33,6 +33,6 @@ public class VehicleModelRayTraceData extends RayTraceData
     @Override
     public TriangleList createTriangleList()
     {
-        return new TriangleList(EntityRayTracer.createTrianglesFromBakedModel(this.model.getModel(), this.matrix));
+        return new TriangleList(EntityRayTracer.createTrianglesFromBakedModel(this.model.getBaseModel(), this.matrix));
     }
 }

@@ -32,7 +32,7 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
     @Override
     public void render(@Nullable TractorEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.TRACTOR.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.TRACTOR, matrixStack, renderTypeBuffer, light, partialTicks);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -44,7 +44,7 @@ public class TractorRenderer extends AbstractLandVehicleRenderer<TractorEntity>
         float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
-        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_STEERING_WHEEL.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_STEERING_WHEEL, matrixStack, renderTypeBuffer, light, partialTicks);
         matrixStack.popPose();
     }
 

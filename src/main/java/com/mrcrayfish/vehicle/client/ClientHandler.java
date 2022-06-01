@@ -9,7 +9,8 @@ import com.mrcrayfish.vehicle.client.handler.InputHandler;
 import com.mrcrayfish.vehicle.client.handler.OverlayHandler;
 import com.mrcrayfish.vehicle.client.handler.PlayerModelHandler;
 import com.mrcrayfish.vehicle.client.handler.SprayCanHandler;
-import com.mrcrayfish.vehicle.client.model.VehicleModels;
+import com.mrcrayfish.vehicle.client.model.ComponentLoader;
+import com.mrcrayfish.vehicle.client.model.ComponentManager;
 import com.mrcrayfish.vehicle.client.particle.TyreSmokeParticle;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
@@ -109,7 +110,7 @@ public class ClientHandler
                 return stage.wait(Unit.INSTANCE).thenRun(() -> {
                     FluidUtils.clearCacheFluidColor();
                     EntityRayTracer.instance().clearDataForReregistration();
-                    VehicleModels.clearCache();
+                    ComponentManager.clearCache();
                 });
             });
         }

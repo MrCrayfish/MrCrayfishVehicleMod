@@ -33,7 +33,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
     protected void render(@Nullable JetSkiEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         //Render the body
-        this.renderDamagedPart(vehicle, VehicleModels.JET_SKI_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.JET_SKI_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -46,7 +46,7 @@ public class JetSkiRenderer extends AbstractBoatRenderer<JetSkiEntity>
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 15F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
 
-        this.renderDamagedPart(vehicle, VehicleModels.QUAD_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.QUAD_BIKE_HANDLES, matrixStack, renderTypeBuffer, light, partialTicks);
 
         matrixStack.popPose();
     }

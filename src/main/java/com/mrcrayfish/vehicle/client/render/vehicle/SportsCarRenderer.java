@@ -29,8 +29,8 @@ public class SportsCarRenderer extends AbstractLandVehicleRenderer<SportsCarEnti
     @Override
     protected void render(@Nullable SportsCarEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_CAR_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, VehicleModels.SPORTS_CAR_STEERING_WHEEL.getModel(), -4.0, -1.0961, 1.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_CAR_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderSteeringWheel(vehicle, VehicleModels.SPORTS_CAR_STEERING_WHEEL, -4.0, -1.0961, 1.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override

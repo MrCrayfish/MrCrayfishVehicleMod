@@ -1,7 +1,8 @@
 package com.mrcrayfish.vehicle.client.render.vehicle;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mrcrayfish.vehicle.client.model.IVehicleModel;
+import com.mrcrayfish.vehicle.client.model.ComponentModel;
+import com.mrcrayfish.vehicle.client.model.IComplexModel;
 import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
@@ -33,8 +34,8 @@ public class MiniBusRenderer extends AbstractLandVehicleRenderer<MiniBusEntity>
     @Override
     protected void render(@Nullable MiniBusEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.MINI_BUS_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, VehicleModels.MINI_BUS_STEERING_WHEEL.getModel(), -5.0, 4.9039, 15.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.MINI_BUS_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderSteeringWheel(vehicle, VehicleModels.MINI_BUS_STEERING_WHEEL, -5.0, 4.9039, 15.6378, 0.7F, -67.5F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override
@@ -71,7 +72,7 @@ public class MiniBusRenderer extends AbstractLandVehicleRenderer<MiniBusEntity>
     }
 
     @Override
-    public IVehicleModel getTowBarModel()
+    public ComponentModel getTowBarModel()
     {
         return VehicleModels.BIG_TOW_BAR;
     }

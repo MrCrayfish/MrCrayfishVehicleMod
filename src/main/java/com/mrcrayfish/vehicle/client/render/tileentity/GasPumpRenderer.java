@@ -106,7 +106,7 @@ public class GasPumpRenderer extends TileEntityRenderer<GasPumpTileEntity>
             matrixStack.mulPose(Axis.POSITIVE_Y.rotationDegrees(180F));
             matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(90F));
             matrixStack.scale(0.8F, 0.8F, 0.8F);
-            RenderUtil.renderColoredModel(VehicleModels.NOZZLE.getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            RenderUtil.renderColoredModel(VehicleModels.NOZZLE.getBaseModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
             matrixStack.popPose();
         }
 

@@ -169,7 +169,7 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setExhaustFumesPosition(0, 8, -16) // TODO might be wrong
                         .setRenderEngine(true)
                         .setEngineSound(ModSounds.ENTITY_GO_KART_ENGINE.getId())
-                        .setMaxSteeringAngle(25F)
+                        .setMaxSteeringAngle(20F)
                         .build()));
 
         this.add(ModEntities.GOLF_CART.get(), VehicleProperties.builder()

@@ -36,7 +36,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
     @Override
     protected void render(@Nullable DirtBikeEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.DIRT_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.DIRT_BIKE_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
 
         //Render the handles bars
         matrixStack.pushPose();
@@ -52,7 +52,7 @@ public class DirtBikeRenderer extends AbstractMotorcycleRenderer<DirtBikeEntity>
         matrixStack.mulPose(Axis.POSITIVE_X.rotationDegrees(22.5F));
         matrixStack.translate(0.0, 0.0, -10.5 * 0.0625);
 
-        this.renderDamagedPart(vehicle, VehicleModels.DIRT_BIKE_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.DIRT_BIKE_HANDLES, matrixStack, renderTypeBuffer, light, partialTicks);
 
         ItemStack wheelStack = this.wheelStackProperty.get(vehicle);
         if(!wheelStack.isEmpty())

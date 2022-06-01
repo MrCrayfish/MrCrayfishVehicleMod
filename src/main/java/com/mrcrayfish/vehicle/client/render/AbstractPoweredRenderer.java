@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.model.ComponentModel;
+import com.mrcrayfish.vehicle.client.model.IComplexModel;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.VehicleRayTraceResult;
@@ -40,6 +42,21 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         super(type, defaultProperties);
     }
 
+    public void setEngineStack(ItemStack engine)
+    {
+        this.engineStackProperty.setDefaultValue(engine);
+    }
+
+    public void setRenderFuelPort(boolean renderFuelPort)
+    {
+        this.renderFuelPortProperty.setDefaultValue(renderFuelPort);
+    }
+
+    public void setWheelAngle(float angle)
+    {
+        this.wheelAngleProperty.setDefaultValue(angle);
+    }
+
     protected void renderEngine(@Nullable T vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
     {
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
@@ -73,7 +90,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
             VehicleRayTraceResult result = EntityRayTracer.instance().getContinuousInteraction();
             if(result != null && result.getType() == RayTraceResult.Type.ENTITY && result.getEntity() == vehicle && result.equalsContinuousInteraction(RayTraceFunction.FUNCTION_FUELING))
             {
-                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelFillerType.getOpenModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), ((ComponentModel) fuelFillerType.getOpenModel().get()).getBaseModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
                 if(this.shouldRenderFuelLid())
                 {
                     //this.renderPart(properties.getFuelPortLidPosition(), entity.fuelPortLid);
@@ -82,7 +99,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
             }
             else
             {
-                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), fuelFillerType.getClosedModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+                this.renderPart(properties.getExtended(PoweredProperties.class).getFuelFillerTransform(), ((ComponentModel) fuelFillerType.getClosedModel().get()).getBaseModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
                 vehicle.playFuelPortCloseSound();
             }
         }
@@ -93,7 +110,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         if(this.needsKeyProperty.get(vehicle))
         {
             VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
-            this.renderPart(properties.getExtended(PoweredProperties.class).getIgnitionTransform(), this.getKeyHoleModel().getModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
+            this.renderPart(properties.getExtended(PoweredProperties.class).getIgnitionTransform(), this.getKeyHoleModel().getBaseModel(), matrixStack, renderTypeBuffer, vehicle.getColor(), light, OverlayTexture.NO_OVERLAY);
             if(!vehicle.getKeyStack().isEmpty())
             {
                 this.renderKey(properties.getExtended(PoweredProperties.class).getIgnitionTransform(), vehicle.getKeyStack(), RenderUtil.getModel(vehicle.getKeyStack()), matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
@@ -129,7 +146,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         matrixStack.popPose();
     }
 
-    protected void renderSteeringWheel(T vehicle, IBakedModel model, double x, double y, double z, float scale, float angle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
+    protected void renderSteeringWheel(T vehicle, ComponentModel model, double x, double y, double z, float scale, float angle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
     {
         matrixStack.pushPose();
         matrixStack.translate(x * 0.0625, y * 0.0625, z * 0.0625);
@@ -139,22 +156,7 @@ public abstract class AbstractPoweredRenderer<T extends PoweredVehicleEntity> ex
         float maxSteeringAngle = this.vehiclePropertiesProperty.get(vehicle).getExtended(PoweredProperties.class).getMaxSteeringAngle();
         float steeringWheelRotation = (wheelAngle / maxSteeringAngle) * 25F;
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(steeringWheelRotation));
-        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, light, partialTicks);
         matrixStack.popPose();
-    }
-
-    public void setEngineStack(ItemStack engine)
-    {
-        this.engineStackProperty.setDefaultValue(engine);
-    }
-
-    public void setRenderFuelPort(boolean renderFuelPort)
-    {
-        this.renderFuelPortProperty.setDefaultValue(renderFuelPort);
-    }
-
-    public void setWheelAngle(float angle)
-    {
-        this.wheelAngleProperty.setDefaultValue(angle);
     }
 }

@@ -32,8 +32,8 @@ public class QuadBikeRenderer extends AbstractLandVehicleRenderer<QuadBikeEntity
     @Override
     protected void render(@Nullable QuadBikeEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.QUAD_BIKE_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, VehicleModels.QUAD_BIKE_HANDLES.getModel(), 0.0, 6.0, 3.0, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.QUAD_BIKE_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderSteeringWheel(vehicle, VehicleModels.QUAD_BIKE_HANDLES, 0.0, 6.0, 3.0, 1.0F, -35F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override

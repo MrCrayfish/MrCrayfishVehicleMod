@@ -33,8 +33,8 @@ public class GoKartRenderer extends AbstractLandVehicleRenderer<GoKartEntity>
     @Override
     protected void render(@Nullable GoKartEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_BODY.getModel(), matrixStack, renderTypeBuffer, light);
-        this.renderSteeringWheel(vehicle, VehicleModels.GO_KART_STEERING_WHEEL.getModel(), 0.0, 0.6814, 8.0426, 1.0F, -45F, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderDamagedPart(vehicle, VehicleModels.GO_KART_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
+        this.renderSteeringWheel(vehicle, VehicleModels.GO_KART_STEERING_WHEEL, 0.0, 0.6814, 8.0426, 1.0F, -45F, matrixStack, renderTypeBuffer, light, partialTicks);
     }
 
     @Override

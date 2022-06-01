@@ -1,11 +1,11 @@
 package com.mrcrayfish.vehicle.client.raytrace;
 
 import com.google.common.collect.Lists;
-import com.mrcrayfish.vehicle.client.model.IVehicleModel;
+import com.mrcrayfish.vehicle.client.model.IComplexModel;
 import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.data.ItemStackRayTraceData;
 import com.mrcrayfish.vehicle.client.raytrace.data.RayTraceData;
-import com.mrcrayfish.vehicle.client.raytrace.data.VehicleModelRayTraceData;
+import com.mrcrayfish.vehicle.client.raytrace.data.ComponentModelRayTraceData;
 import com.mrcrayfish.vehicle.client.render.Axis;
 import com.mrcrayfish.vehicle.common.entity.Transform;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
@@ -59,9 +59,9 @@ public class TransformHelper
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) transform.getRotZ())));
     }
 
-    public static void createPartTransforms(IVehicleModel model, Transform transform, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
+    public static void createPartTransforms(IComplexModel model, Transform transform, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
     {
-        createPartTransforms(new VehicleModelRayTraceData(model, function), transform.getTranslate(), transform.getRotation(), (float) transform.getScale(), parts, globalTransforms);
+        createPartTransforms(new ComponentModelRayTraceData(model, function), transform.getTranslate(), transform.getRotation(), (float) transform.getScale(), parts, globalTransforms);
     }
 
     public static void createPartTransforms(Item part, Transform transform, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
@@ -82,14 +82,14 @@ public class TransformHelper
         createTransformListForPart(data, parts, transforms);
     }
 
-    public static void createTransformListForPart(IVehicleModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, MatrixTransform... transforms)
+    public static void createTransformListForPart(IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, MatrixTransform... transforms)
     {
-        createTransformListForPart(new VehicleModelRayTraceData(model), parts, globalTransforms, transforms);
+        createTransformListForPart(new ComponentModelRayTraceData(model), parts, globalTransforms, transforms);
     }
 
-    public static void createTransformListForPart(IVehicleModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function, MatrixTransform... transforms)
+    public static void createTransformListForPart(IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function, MatrixTransform... transforms)
     {
-        createTransformListForPart(new VehicleModelRayTraceData(model, function), parts, globalTransforms, transforms);
+        createTransformListForPart(new ComponentModelRayTraceData(model, function), parts, globalTransforms, transforms);
     }
 
     public static void createTransformListForPart(Item item, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, MatrixTransform... transforms)
@@ -127,7 +127,7 @@ public class TransformHelper
      * @param entityType the vehicle entity type
      * @param parts map of all parts to their transforms
      */
-    public static void createTowBarTransforms(EntityType<? extends VehicleEntity> entityType, IVehicleModel model, HashMap<RayTraceData, List<MatrixTransform>> parts)
+    public static void createTowBarTransforms(EntityType<? extends VehicleEntity> entityType, IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts)
     {
         VehicleProperties properties = VehicleProperties.get(entityType);
         double bodyScale = properties.getBodyTransform().getScale();
@@ -136,7 +136,7 @@ public class TransformHelper
         transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F));
         transforms.add(MatrixTransform.translate(0.0F, 0.5F, 0.0F)); // Need extra translate to prevent translation in #createPartTransforms call
         Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyScale).multiply(1, 1, -1);
-        createPartTransforms(new VehicleModelRayTraceData(model), towBarOffset, Vector3d.ZERO, 1.0F, parts, transforms);
+        createPartTransforms(new ComponentModelRayTraceData(model), towBarOffset, Vector3d.ZERO, 1.0F, parts, transforms);
     }
 
     /**
@@ -147,7 +147,7 @@ public class TransformHelper
      * @param parts map of all parts to their transforms
      * @param transformsGlobal transforms that construct to all parts for this entity
      */
-    public static void createFuelFillerTransforms(EntityType<? extends VehicleEntity> entityType, IVehicleModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> transformsGlobal)
+    public static void createFuelFillerTransforms(EntityType<? extends VehicleEntity> entityType, IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> transformsGlobal)
     {
         Transform fuelPortPosition = VehicleProperties.get(entityType).getExtended(PoweredProperties.class).getFuelFillerTransform();
         createPartTransforms(model, fuelPortPosition, parts, transformsGlobal, RayTraceFunction.FUNCTION_FUELING);

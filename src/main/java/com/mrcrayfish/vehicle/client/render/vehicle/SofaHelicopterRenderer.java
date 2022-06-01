@@ -32,19 +32,19 @@ public class SofaHelicopterRenderer extends AbstractHelicopterRenderer<Sofacopte
     protected void render(@Nullable SofacopterEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
         matrixStack.pushPose();
-        this.renderDamagedPart(vehicle, VehicleModels.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
+        //this.renderDamagedPart(vehicle, VehicleModels.RED_SOFA.getModel(), matrixStack, renderTypeBuffer, light);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(0.0, 8 * 0.0625, 0.0);
-        this.renderDamagedPart(vehicle, VehicleModels.SOFA_HELICOPTER_ARM.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SOFA_HELICOPTER_ARM, matrixStack, renderTypeBuffer, light, partialTicks);
         matrixStack.popPose();
 
         matrixStack.pushPose();
         matrixStack.translate(0.0, 32 * 0.0625, 0.0);
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(this.bladeRotationProperty.get(vehicle, partialTicks)));
         matrixStack.scale(1.5F, 1.5F, 1.5F);
-        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_PLANE_WING.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.SPORTS_PLANE_WING, matrixStack, renderTypeBuffer, light, partialTicks);
         matrixStack.popPose();
 
        /* GlStateManager.pushMatrix();

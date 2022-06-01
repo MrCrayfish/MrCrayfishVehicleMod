@@ -2,10 +2,10 @@ package com.mrcrayfish.vehicle.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mrcrayfish.vehicle.client.model.IVehicleModel;
+import com.mrcrayfish.vehicle.client.model.ComponentManager;
+import com.mrcrayfish.vehicle.client.model.ComponentModel;
 import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceTransforms;
-import com.mrcrayfish.vehicle.client.render.complex.ComplexRenderer;
 import com.mrcrayfish.vehicle.common.CosmeticTracker;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
@@ -16,7 +16,6 @@ import com.mrcrayfish.vehicle.entity.Wheel;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
 import com.mrcrayfish.vehicle.item.IDyeable;
 import com.mrcrayfish.vehicle.util.RenderUtil;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -36,6 +35,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -83,7 +83,7 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
             Vector3d towBarOffset = properties.getTowBarOffset().scale(bodyPosition.getScale());
             matrixStack.translate(towBarOffset.x * 0.0625, towBarOffset.y * 0.0625 + 0.5, towBarOffset.z * 0.0625);
             matrixStack.mulPose(Vector3f.YP.rotationDegrees(180F));
-            RenderUtil.renderColoredModel(this.getTowBarModel().getModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, -1, light, OverlayTexture.NO_OVERLAY);
+            this.getTowBarModel().render(vehicle, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, partialTicks);
             matrixStack.popPose();
         }
 
@@ -138,29 +138,24 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         }
     }
 
-    protected void renderDamagedPart(@Nullable T vehicle, ItemStack part, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
+    protected void renderDamagedPart(@Nullable T vehicle, ComponentModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light, float partialTicks)
     {
-        this.renderDamagedPart(vehicle, RenderUtil.getModel(part), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, false, light, partialTicks);
+        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, true, light, partialTicks);
     }
 
-    protected void renderDamagedPart(@Nullable T vehicle, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, int light)
-    {
-        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, false, light);
-        this.renderDamagedPart(vehicle, model, matrixStack, renderTypeBuffer, true, light);
-    }
-
-    private void renderDamagedPart(@Nullable T vehicle, IBakedModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, boolean renderDamage, int light)
+    private void renderDamagedPart(@Nullable T vehicle, ComponentModel model, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, boolean renderDamage, int light, float partialTicks)
     {
         if(renderDamage && vehicle != null)
         {
             if(vehicle.getDestroyedStage() > 0)
             {
-                RenderUtil.renderDamagedVehicleModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, vehicle.getDestroyedStage(), this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+                RenderUtil.renderDamagedVehicleModel(model.getBaseModel(), ItemCameraTransforms.TransformType.NONE, false, matrixStack, vehicle.getDestroyedStage(), this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
             }
         }
         else
         {
-            RenderUtil.renderColoredModel(model, ItemCameraTransforms.TransformType.NONE, false, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, OverlayTexture.NO_OVERLAY);
+            model.render(vehicle, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, partialTicks);
         }
     }
 
@@ -241,19 +236,16 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
     {
         VehicleProperties properties = this.vehiclePropertiesProperty.get(vehicle);
         properties.getCosmetics().forEach((id, cosmetic) -> {
-            if(!this.canRenderCosmetic(vehicle, id))
-                return;
-            IBakedModel model = this.getCosmeticModel(vehicle, id);
-            if(model == null)
-                return;
-            matrixStack.pushPose();
-            Vector3d offset = cosmetic.getOffset().scale(0.0625);
-            matrixStack.translate(offset.x, offset.y, offset.z);
-            matrixStack.translate(0, -0.5, 0);
-            this.getCosmeticActions(vehicle, id).forEach(action -> action.beforeRender(matrixStack, vehicle, partialTicks));
-            ResourceLocation location = this.getCosmeticModelLocation(vehicle, id);
-            ComplexRenderer.renderModel(location, model, vehicle, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, partialTicks); //TODO allow individual cosmetic colours
-            matrixStack.popPose();
+            if(!this.canRenderCosmetic(vehicle, id)) return;
+            this.getCosmeticModel(vehicle, id).ifPresent(model -> {
+                Vector3d offset = cosmetic.getOffset().scale(0.0625);
+                matrixStack.pushPose();
+                matrixStack.translate(offset.x, offset.y, offset.z);
+                matrixStack.translate(0, -0.5, 0);
+                this.getCosmeticActions(vehicle, id).forEach(action -> action.beforeRender(matrixStack, vehicle, partialTicks));
+                model.render(vehicle, matrixStack, renderTypeBuffer, this.colorProperty.get(vehicle), light, partialTicks); //TODO allow individual cosmetic colours
+                matrixStack.popPose();
+            });
         });
     }
 
@@ -295,20 +287,19 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         return null;
     }
 
-    @Nullable
-    protected IBakedModel getCosmeticModel(@Nullable T vehicle, ResourceLocation cosmeticId)
+    protected Optional<ComponentModel> getCosmeticModel(@Nullable T vehicle, ResourceLocation cosmeticId)
     {
         if(vehicle != null)
         {
-            return this.cosmeticTrackerProperty.get(vehicle).getSelectedBakedModel(cosmeticId);
+            return Optional.ofNullable(this.cosmeticTrackerProperty.get(vehicle).getSelectedModel(cosmeticId));
         }
         CosmeticProperties properties = VehicleProperties.get(this.type).getCosmetics().get(cosmeticId);
         if(!properties.getModelLocations().isEmpty())
         {
             ResourceLocation modelLocation = properties.getModelLocations().get(0);
-            return Minecraft.getInstance().getModelManager().getModel(modelLocation);
+            return Optional.ofNullable(ComponentManager.lookupModel(modelLocation));
         }
-        return null;
+        return Optional.empty();
     }
 
     protected Collection<Action> getCosmeticActions(@Nullable T vehicle, ResourceLocation cosmeticId)
@@ -320,12 +311,12 @@ public abstract class AbstractVehicleRenderer<T extends VehicleEntity>
         return Collections.emptyList();
     }
 
-    protected IVehicleModel getKeyHoleModel()
+    protected ComponentModel getKeyHoleModel()
     {
         return VehicleModels.KEY_HOLE;
     }
 
-    protected IVehicleModel getTowBarModel()
+    protected ComponentModel getTowBarModel()
     {
         return VehicleModels.TOW_BAR;
     }

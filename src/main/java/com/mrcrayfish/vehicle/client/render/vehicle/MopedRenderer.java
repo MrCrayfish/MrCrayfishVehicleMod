@@ -48,7 +48,7 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
     @Override
     public void render(@Nullable MopedEntity vehicle, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int light)
     {
-        this.renderDamagedPart(vehicle, VehicleModels.MOPED_BODY.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.MOPED_BODY, matrixStack, renderTypeBuffer, light, partialTicks);
 
         matrixStack.pushPose();
 
@@ -64,14 +64,14 @@ public class MopedRenderer extends AbstractMotorcycleRenderer<MopedEntity>
         //Render handles bars
         matrixStack.pushPose();
         matrixStack.translate(0, (12.2739 - 8) * 0.0625, (16.4071 - 8) * 0.0625);
-        this.renderDamagedPart(vehicle, VehicleModels.MOPED_HANDLES.getModel(), matrixStack, renderTypeBuffer, light);
+        this.renderDamagedPart(vehicle, VehicleModels.MOPED_HANDLES, matrixStack, renderTypeBuffer, light, partialTicks);
         matrixStack.popPose();
 
         //Render front bar and mud guard
         matrixStack.pushPose();
         {
             matrixStack.translate(0, (4.1044 - 8) * 0.0625, (19.8181 - 8) * 0.0625);
-            this.renderDamagedPart(vehicle, VehicleModels.MOPED_MUD_GUARD.getModel(), matrixStack, renderTypeBuffer, light);
+            this.renderDamagedPart(vehicle, VehicleModels.MOPED_MUD_GUARD, matrixStack, renderTypeBuffer, light, partialTicks);
         }
         matrixStack.popPose();
 

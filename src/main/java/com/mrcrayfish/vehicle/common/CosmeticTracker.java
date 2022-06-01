@@ -1,6 +1,8 @@
 package com.mrcrayfish.vehicle.common;
 
 import com.google.common.collect.ImmutableMap;
+import com.mrcrayfish.vehicle.client.model.ComponentManager;
+import com.mrcrayfish.vehicle.client.model.ComponentModel;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticActions;
 import com.mrcrayfish.vehicle.common.cosmetic.CosmeticProperties;
 import com.mrcrayfish.vehicle.common.cosmetic.actions.Action;
@@ -9,7 +11,6 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.message.MessageSyncActionData;
 import com.mrcrayfish.vehicle.network.message.MessageSyncCosmetics;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.IBakedModel;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.PacketBuffer;
@@ -121,9 +122,9 @@ public class CosmeticTracker
 
     @Nullable
     @OnlyIn(Dist.CLIENT)
-    public IBakedModel getSelectedBakedModel(ResourceLocation cosmeticId)
+    public ComponentModel getSelectedModel(ResourceLocation cosmeticId)
     {
-        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(Entry::getBakedModel).orElse(Minecraft.getInstance().getModelManager().getMissingModel());
+        return Optional.ofNullable(this.selectedCosmetics.get(cosmeticId)).map(entry -> (ComponentModel) entry.getComponentModel()).orElse(null);
     }
 
     @Nullable
@@ -248,8 +249,7 @@ public class CosmeticTracker
         private boolean dirty;
 
         @Nullable
-        @OnlyIn(Dist.CLIENT)
-        private IBakedModel cachedModel;
+        private Object componentModel; // ComponentModel
 
         public Entry(CosmeticProperties properties)
         {
@@ -261,7 +261,7 @@ public class CosmeticTracker
         {
             this.modelLocation = modelLocation;
             this.dirty = true;
-            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> this.cachedModel = null);
+            this.componentModel = null;
         }
 
         public ResourceLocation getModelLocation()
@@ -269,14 +269,14 @@ public class CosmeticTracker
             return this.modelLocation;
         }
 
-        @OnlyIn(Dist.CLIENT)
-        public IBakedModel getBakedModel()
+        @Nullable
+        public Object getComponentModel()
         {
-            if(this.cachedModel == null)
+            if(this.componentModel == null)
             {
-                this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
+                this.componentModel = ComponentManager.lookupModel(this.modelLocation);
             }
-            return this.cachedModel;
+            return this.componentModel;
         }
 
         public Collection<Action> getActions()
