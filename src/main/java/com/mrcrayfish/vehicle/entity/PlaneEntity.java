@@ -276,7 +276,7 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         if(entity != null && entity.equals(Minecraft.getInstance().player))
         {
             ClientPlayerEntity player = (ClientPlayerEntity) entity;
-            this.setLift(VehicleHelper.getLift());
+            this.setLift(VehicleHelper.getElevator());
             this.setForwardInput(player.zza);
             this.setSideInput(player.xxa);
             PacketHandler.getPlayChannel().sendToServer(new MessagePlaneInput(this.lift.getLocalValue(), player.zza, player.xxa));

@@ -173,6 +173,21 @@ public class VehicleHelper
         return up + down;
     }
 
+    public static float getElevator()
+    {
+        if(ClientHandler.isControllableLoaded())
+        {
+            Controller controller = Controllable.getController();
+            if(controller != null && Controllable.getInput().isControllerInUse())
+            {
+                return controller.getLThumbStickYValue();
+            }
+        }
+        float up = Minecraft.getInstance().options.keyJump.isDown() ? 1.0F : 0F;
+        float down = Minecraft.getInstance().options.keySprint.isDown() ? -1.0F : 0F;
+        return up + down;
+    }
+
     public static float getTravelDirection(HelicopterEntity vehicle)
     {
         if(ClientHandler.isControllableLoaded())
