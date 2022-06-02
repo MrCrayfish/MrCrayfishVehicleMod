@@ -31,7 +31,9 @@ import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.thread.EffectiveSide;
 import net.minecraftforge.fml.event.server.FMLServerStoppedEvent;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,6 +50,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -61,9 +64,9 @@ public class VehicleProperties
 {
     private static final double WHEEL_DIAMETER = 8.0;
     public static final Gson GSON = new GsonBuilder().registerTypeAdapter(VehicleProperties.class, new Serializer()).create();
-    private static final Map<ResourceLocation, VehicleProperties> DEFAULT_VEHICLE_PROPERTIES = new HashMap<>();
+    private static final Map<ResourceLocation, VehicleProperties> DEFAULT_VEHICLE_PROPERTIES = new HashMap<>();  // Properties loaded from mod jar
+    private static final Map<ResourceLocation, VehicleProperties> NETWORK_VEHICLE_PROPERTIES = new HashMap<>(); // Properties from the server (client only)
     private static final Map<ResourceLocation, ExtendedProperties> GLOBAL_EXTENDED_PROPERTIES = new HashMap<>();
-    private static final Map<ResourceLocation, VehicleProperties> NETWORK_VEHICLE_PROPERTIES = new HashMap<>();
     private static final List<Supplier<VehiclePropertiesProvider>> DYNAMIC_SUPPLIERS = new ArrayList<>();
 
     public static final float DEFAULT_MAX_HEALTH = 100F;
@@ -238,20 +241,22 @@ public class VehicleProperties
         return this.cosmetics;
     }
 
-    public static void loadProperties()
+    public static void loadDefaultProperties()
     {
         for(EntityType<? extends VehicleEntity> entityType : VehicleRegistry.getRegisteredVehicleTypes())
         {
-            DEFAULT_VEHICLE_PROPERTIES.computeIfAbsent(entityType.getRegistryName(), VehicleProperties::loadProperties);
+            DEFAULT_VEHICLE_PROPERTIES.computeIfAbsent(entityType.getRegistryName(), VehicleProperties::loadDefaultProperties);
         }
     }
 
-    private static VehicleProperties loadProperties(ResourceLocation id)
+    private static VehicleProperties loadDefaultProperties(ResourceLocation id)
     {
         String resource = String.format("/data/%s/vehicles/properties/%s.json", id.getNamespace(), id.getPath());
         try(InputStream is = VehicleProperties.class.getResourceAsStream(resource))
         {
-            return loadProperties(is);
+            VehicleProperties properties = loadPropertiesFromStream(is);
+            loadDefaultCosmetics(id, properties);
+            return properties;
         }
         catch(JsonParseException | IOException e)
         {
@@ -264,7 +269,32 @@ public class VehicleProperties
         return null;
     }
 
-    private static VehicleProperties loadProperties(InputStream is)
+    private static void loadDefaultCosmetics(ResourceLocation id, VehicleProperties properties)
+    {
+        String resource = String.format("/data/%s/vehicles/cosmetics/%s.json", id.getNamespace(), id.getPath());
+        try(InputStream is = VehicleProperties.class.getResourceAsStream(resource))
+        {
+            Objects.requireNonNull(is, "");
+            Map<ResourceLocation, List<Pair<ResourceLocation, List<ResourceLocation>>>> modelMap = new HashMap<>();
+            CosmeticProperties.deserializeModels(is, modelMap);
+            modelMap.forEach((cosmeticId, models) -> {
+                CosmeticProperties cosmetic = properties.getCosmetics().get(cosmeticId);
+                if(cosmetic == null) throw new JsonParseException("Invalid cosmetic '" + cosmeticId + "' doesn't exist for vehicle '" + id + "'");
+                cosmetic.setModelLocations(models.stream().map(Pair::getLeft).collect(Collectors.toList()));
+                cosmetic.setDisabledCosmetics(models.stream().collect(Collectors.toMap(Pair::getLeft, Pair::getRight)));
+            });
+        }
+        catch(JsonParseException | IOException e)
+        {
+            VehicleMod.LOGGER.error("Couldn't load cosmetic definitions: " + resource, e);
+        }
+        catch(NullPointerException e)
+        {
+            VehicleMod.LOGGER.error("Missing cosmetic definitions file: " + resource, e);
+        }
+    }
+
+    private static VehicleProperties loadPropertiesFromStream(InputStream is)
     {
         return GSON.fromJson(new InputStreamReader(is, StandardCharsets.UTF_8), VehicleProperties.class);
     }
@@ -277,7 +307,15 @@ public class VehicleProperties
     public static VehicleProperties get(ResourceLocation id)
     {
         VehicleProperties properties = null;
-        if(!NETWORK_VEHICLE_PROPERTIES.isEmpty())
+        if(EffectiveSide.get() == LogicalSide.SERVER)
+        {
+            Manager manager = Manager.get();
+            if(manager != null && manager.getVehicleProperties() != null)
+            {
+                properties = manager.getVehicleProperties().get(id);
+            }
+        }
+        else if(!NETWORK_VEHICLE_PROPERTIES.isEmpty())
         {
             properties = NETWORK_VEHICLE_PROPERTIES.get(id);
         }
@@ -752,7 +790,7 @@ public class VehicleProperties
 
         @Nullable
         private static Manager instance;
-        private ImmutableMap<ResourceLocation, VehicleProperties> vehicleProperties = ImmutableMap.of();
+        private Map<ResourceLocation, VehicleProperties> vehicleProperties;
 
         @Override
         protected Map<ResourceLocation, VehicleProperties> prepare(IResourceManager manager, IProfiler profiler)
@@ -766,7 +804,7 @@ public class VehicleProperties
                     {
                         IResource resource = manager.getResource(location);
                         InputStream stream = resource.getInputStream();
-                        VehicleProperties properties = loadProperties(stream);
+                        VehicleProperties properties = loadPropertiesFromStream(stream);
                         propertiesMap.put(format(location, PROPERTIES_DIRECTORY), properties);
                         stream.close();
                     }
@@ -813,6 +851,12 @@ public class VehicleProperties
             this.vehicleProperties = ImmutableMap.copyOf(propertiesMap);
         }
 
+        @Nullable
+        public Map<ResourceLocation, VehicleProperties> getVehicleProperties()
+        {
+            return this.vehicleProperties;
+        }
+
         private static ResourceLocation format(ResourceLocation location, String directory)
         {
             return new ResourceLocation(location.getNamespace(), location.getPath().substring(directory.length() + 1, location.getPath().length() - FILE_SUFFIX.length()));
@@ -838,11 +882,6 @@ public class VehicleProperties
         public static Manager get()
         {
             return instance;
-        }
-
-        public ImmutableMap<ResourceLocation, VehicleProperties> getVehicleProperties()
-        {
-            return this.vehicleProperties;
         }
 
         public void writeVehicleProperties(PacketBuffer buffer)

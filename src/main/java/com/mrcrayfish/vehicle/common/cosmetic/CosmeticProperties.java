@@ -16,6 +16,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -125,44 +126,49 @@ public class CosmeticProperties
         try
         {
             IResource resource = manager.getResource(cosmeticLocation);
-            JsonObject object = JSONUtils.parse(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8));
-            boolean replace = JSONUtils.getAsBoolean(object, "replace", false);
-            if(replace) modelMap.clear();
-            JsonObject validModelsObject = JSONUtils.getAsJsonObject(object, "valid_models", new JsonObject());
-            validModelsObject.entrySet().stream().filter(entry -> entry.getValue().isJsonArray()).forEach(entry ->
-            {
-                JsonArray modelArray = entry.getValue().getAsJsonArray();
-                ResourceLocation cosmeticId = new ResourceLocation(entry.getKey());
-                modelArray.forEach(modelElement ->
-                {
-                    if(modelElement.isJsonPrimitive() && modelElement.getAsJsonPrimitive().isString())
-                    {
-                        ResourceLocation location = new ResourceLocation(modelElement.getAsString());
-                        modelMap.computeIfAbsent(cosmeticId, id -> new ArrayList<>()).add(Pair.of(location, Collections.emptyList()));
-                    }
-                    else if(modelElement.isJsonObject())
-                    {
-                        JsonObject modelObject = modelElement.getAsJsonObject();
-                        ResourceLocation location = new ResourceLocation(JSONUtils.getAsString(modelObject, "model"));
-                        JsonArray disabledArray = JSONUtils.getAsJsonArray(modelObject, "disables", new JsonArray());
-                        List<ResourceLocation> disabledCosmetics = StreamSupport.stream(disabledArray.spliterator(), false)
-                                .filter(JsonElement::isJsonPrimitive)
-                                .filter(e -> e.getAsJsonPrimitive().isString())
-                                .map(e -> new ResourceLocation(e.getAsString()))
-                                .collect(Collectors.toList());
-                        modelMap.computeIfAbsent(cosmeticId, id -> new ArrayList<>()).add(Pair.of(location, disabledCosmetics));
-                    }
-                    else
-                    {
-                        throw new JsonSyntaxException("Expected a string or an object for cosmetic model definition");
-                    }
-                });
-            });
+            deserializeModels(resource.getInputStream(), modelMap);
         }
         catch(IOException e)
         {
             e.printStackTrace();
         }
+    }
+
+    public static void deserializeModels(InputStream is, Map<ResourceLocation, List<Pair<ResourceLocation, List<ResourceLocation>>>> modelMap)
+    {
+        JsonObject object = JSONUtils.parse(new InputStreamReader(is, StandardCharsets.UTF_8));
+        boolean replace = JSONUtils.getAsBoolean(object, "replace", false);
+        if(replace) modelMap.clear();
+        JsonObject validModelsObject = JSONUtils.getAsJsonObject(object, "valid_models", new JsonObject());
+        validModelsObject.entrySet().stream().filter(entry -> entry.getValue().isJsonArray()).forEach(entry ->
+        {
+            JsonArray modelArray = entry.getValue().getAsJsonArray();
+            ResourceLocation cosmeticId = new ResourceLocation(entry.getKey());
+            modelArray.forEach(modelElement ->
+            {
+                if(modelElement.isJsonPrimitive() && modelElement.getAsJsonPrimitive().isString())
+                {
+                    ResourceLocation location = new ResourceLocation(modelElement.getAsString());
+                    modelMap.computeIfAbsent(cosmeticId, id -> new ArrayList<>()).add(Pair.of(location, Collections.emptyList()));
+                }
+                else if(modelElement.isJsonObject())
+                {
+                    JsonObject modelObject = modelElement.getAsJsonObject();
+                    ResourceLocation location = new ResourceLocation(JSONUtils.getAsString(modelObject, "model"));
+                    JsonArray disabledArray = JSONUtils.getAsJsonArray(modelObject, "disables", new JsonArray());
+                    List<ResourceLocation> disabledCosmetics = StreamSupport.stream(disabledArray.spliterator(), false)
+                            .filter(JsonElement::isJsonPrimitive)
+                            .filter(e -> e.getAsJsonPrimitive().isString())
+                            .map(e -> new ResourceLocation(e.getAsString()))
+                            .collect(Collectors.toList());
+                    modelMap.computeIfAbsent(cosmeticId, id -> new ArrayList<>()).add(Pair.of(location, disabledCosmetics));
+                }
+                else
+                {
+                    throw new JsonSyntaxException("Expected a string or an object for cosmetic model definition");
+                }
+            });
+        });
     }
 
     public static Builder builder(ResourceLocation id)

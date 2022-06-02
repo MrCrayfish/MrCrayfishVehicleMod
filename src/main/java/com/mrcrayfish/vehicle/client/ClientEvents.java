@@ -33,7 +33,7 @@ public class ClientEvents
         }
         else if(FMLLoader.isProduction() && event.getKey() == GLFW.GLFW_KEY_RIGHT_BRACKET)
         {
-            VehicleProperties.loadProperties();
+            VehicleProperties.loadDefaultProperties();
         }
     }
 

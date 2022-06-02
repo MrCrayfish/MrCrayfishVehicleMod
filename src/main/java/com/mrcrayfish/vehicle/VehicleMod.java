@@ -88,7 +88,7 @@ public class VehicleMod
     private void onCommonSetup(FMLCommonSetupEvent event)
     {
         RecipeType.init();
-        VehicleProperties.loadProperties();
+        VehicleProperties.loadDefaultProperties();
         PacketHandler.registerPlayMessage();
         HeldVehicleDataHandler.register();
         ModDataKeys.register();
