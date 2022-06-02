@@ -4,6 +4,7 @@ import com.mrcrayfish.vehicle.Reference;
 import com.mrcrayfish.vehicle.client.render.complex.ComplexModel;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -13,6 +14,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 /**
  * Author: MrCrayfish
@@ -25,7 +27,11 @@ public class ComponentManager
 
     public static void registerLoader(ComponentLoader loader)
     {
-        LOADERS.putIfAbsent(loader.getModId(), loader);
+        if(!LOADERS.containsKey(loader.getModId()))
+        {
+            LOADERS.put(loader.getModId(), loader);
+            loader.getModels().forEach(model -> ALL_MODELS.put(model.getModelLocation(), model));
+        }
     }
 
     @SubscribeEvent
@@ -36,8 +42,18 @@ public class ComponentManager
             loader.getModels().forEach(model ->
             {
                 ModelLoader.addSpecialModel(model.getModelLocation());
+            });
+        });
+    }
+
+    @SubscribeEvent
+    public static void onBakeEvent(ModelBakeEvent event)
+    {
+        LOADERS.forEach((modId, loader) ->
+        {
+            loader.getModels().forEach(model ->
+            {
                 model.setComplexModel(ComplexModel.load(model));
-                ALL_MODELS.put(model.getModelLocation(), model);
             });
         });
     }
