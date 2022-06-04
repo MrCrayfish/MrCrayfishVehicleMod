@@ -2,7 +2,7 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"loader": "framework:open_model",
 	"textures": {
-		"16": "vehicle:vehicle/sports_plane/left_aileron"
+		"left_aileron": "vehicle:vehicle/sports_plane/left_aileron"
 	},
 	"components": [
 		{
@@ -10,12 +10,12 @@
 			"to": [41.185, 9.00099, 11.7629],
 			"rotation": {"angle": -5, "axis": "y", "origin": [51.185, 6.9983, 7.7629]},
 			"faces": {
-				"north": {"uv": [0, 3.33333, 11, 4], "texture": "#16"},
-				"east": {"uv": [0, 4.66667, 1.66667, 5.33333], "texture": "#16"},
-				"south": {"uv": [0, 4, 11, 4.66667], "texture": "#16"},
-				"west": {"uv": [1.66667, 4.66667, 3.33333, 5.33333], "texture": "#16"},
-				"up": {"uv": [11, 1.66667, 0, 0], "texture": "#16"},
-				"down": {"uv": [11, 1.66667, 0, 3.33333], "texture": "#16"}
+				"north": {"uv": [0, 3.33333, 11, 4], "texture": "#left_aileron"},
+				"east": {"uv": [0, 4.66667, 1.66667, 5.33333], "texture": "#left_aileron"},
+				"south": {"uv": [0, 4, 11, 4.66667], "texture": "#left_aileron"},
+				"west": {"uv": [1.66667, 4.66667, 3.33333, 5.33333], "texture": "#left_aileron"},
+				"up": {"uv": [11, 1.66667, 0, 0], "texture": "#left_aileron"},
+				"down": {"uv": [11, 1.66667, 0, 3.33333], "texture": "#left_aileron"}
 			}
 		}
 	]

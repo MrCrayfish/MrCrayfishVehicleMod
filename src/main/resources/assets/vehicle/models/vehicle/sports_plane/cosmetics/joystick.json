@@ -2,7 +2,7 @@
 	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
 	"loader": "framework:open_model",
 	"textures": {
-		"23": "vehicle:vehicle/sports_plane/joystick"
+		"joystick": "vehicle:vehicle/sports_plane/joystick"
 	},
 	"components": [
 		{
@@ -10,10 +10,10 @@
 			"to": [8.5, 16, 8.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11, -4.5]},
 			"faces": {
-				"north": {"uv": [0, 0, 1, 8], "texture": "#23"},
-				"east": {"uv": [1, 0, 2, 8], "texture": "#23"},
-				"south": {"uv": [2, 0, 3, 8], "texture": "#23"},
-				"west": {"uv": [3, 0, 4, 8], "texture": "#23"}
+				"north": {"uv": [0, 0, 1, 8], "texture": "#joystick"},
+				"east": {"uv": [1, 0, 2, 8], "texture": "#joystick"},
+				"south": {"uv": [2, 0, 3, 8], "texture": "#joystick"},
+				"west": {"uv": [3, 0, 4, 8], "texture": "#joystick"}
 			}
 		},
 		{
@@ -21,12 +21,12 @@
 			"to": [8.5, 17, 8.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11, -4.5]},
 			"faces": {
-				"north": {"uv": [7, 4, 8, 5], "texture": "#23"},
-				"east": {"uv": [4, 0, 8, 1], "texture": "#23"},
-				"south": {"uv": [7, 5, 8, 6], "texture": "#23"},
-				"west": {"uv": [4, 1, 8, 2], "texture": "#23"},
-				"up": {"uv": [5, 6, 4, 2], "texture": "#23"},
-				"down": {"uv": [6, 2, 5, 6], "texture": "#23"}
+				"north": {"uv": [7, 2, 8, 3], "texture": "#joystick"},
+				"east": {"uv": [4, 0, 8, 1], "texture": "#joystick"},
+				"south": {"uv": [7, 3, 8, 4], "texture": "#joystick"},
+				"west": {"uv": [4, 1, 8, 2], "texture": "#joystick"},
+				"up": {"uv": [5, 6, 4, 2], "texture": "#joystick"},
+				"down": {"uv": [6, 2, 5, 6], "texture": "#joystick"}
 			}
 		},
 		{
@@ -34,11 +34,11 @@
 			"to": [8.5, 21, 5.5],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 11, -4.5]},
 			"faces": {
-				"north": {"uv": [6, 2, 7, 6], "texture": "#23"},
-				"east": {"uv": [4, 6, 5, 10], "texture": "#23"},
-				"south": {"uv": [5, 6, 6, 10], "texture": "#23"},
-				"west": {"uv": [6, 6, 7, 10], "texture": "#23"},
-				"up": {"uv": [8, 7, 7, 6], "texture": "#23"}
+				"north": {"uv": [6, 2, 7, 6], "texture": "#joystick"},
+				"east": {"uv": [4, 6, 5, 10], "texture": "#joystick"},
+				"south": {"uv": [5, 6, 6, 10], "texture": "#joystick"},
+				"west": {"uv": [6, 6, 7, 10], "texture": "#joystick"},
+				"up": {"uv": [8, 5, 7, 4], "texture": "#joystick"}
 			}
 		}
 	]
