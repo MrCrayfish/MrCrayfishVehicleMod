@@ -16,6 +16,27 @@
                     }
                 }
             ]
+        }, {
+            "model": "vehicle:vehicle/sports_plane/cosmetics/joystick",
+            "transforms": [
+                {
+                    "type": "translate",
+                    "y": -3.0,
+                    "z": 12.5
+                }, {
+                    "type": "rotate",
+                    "x": {
+                        "source": "plane_elevator",
+                        "inverse": true,
+                        "scale": 0.25
+                    },
+                    "z": {
+                        "source": "plane_aileron",
+                        "inverse": true,
+                        "scale": 0.25
+                    }
+                }
+            ]
         }
     ]
 }
