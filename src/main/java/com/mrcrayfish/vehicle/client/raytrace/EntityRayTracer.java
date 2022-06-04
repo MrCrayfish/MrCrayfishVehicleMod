@@ -533,7 +533,7 @@ public class EntityRayTracer
         float max = 0;
         for(RayTraceData data : this.entityRayTraceData.get(type))
         {
-            TriangleList triangleList = data.getTriangleList();
+            ITriangleList triangleList = data.getTriangleList();
             if(triangleList != null)
             {
                 for(Triangle triangle : triangleList.getTriangles())
@@ -665,7 +665,7 @@ public class EntityRayTracer
             {
                 if(partsApplicable == null || (invalidateParts != partsApplicable.contains(data)))
                 {
-                    TriangleList triangleList = data.getTriangleList();
+                    ITriangleList triangleList = data.getTriangleList();
                     if(triangleList == null)
                         continue;
 
@@ -752,7 +752,7 @@ public class EntityRayTracer
                 float r = (float) (color >> 16 & 255) / 255.0F;
                 float g = (float) (color >> 8 & 255) / 255.0F;
                 float b = (float) (color & 255) / 255.0F;
-                TriangleList triangleList = data.getTriangleList();
+                ITriangleList triangleList = data.getTriangleList();
                 if(triangleList != null)
                 {
                     triangleList.getTriangles(data, entity).forEach(triangle -> triangle.draw(matrixStack, builder, r, g, b, 0.4F));
@@ -779,7 +779,7 @@ public class EntityRayTracer
      * 
      * @return triangle list
      */
-    public static TriangleList boxToTriangles(AxisAlignedBB box, @Nullable BiFunction<RayTraceData, Entity, Matrix4f> matrixFactory)
+    public static ITriangleList boxToTriangles(AxisAlignedBB box, @Nullable BiFunction<RayTraceData, Entity, Matrix4f> matrixFactory)
     {
         int size = 3;
         List<Triangle> triangles = Lists.newArrayList();
@@ -800,7 +800,7 @@ public class EntityRayTracer
      * 
      * @return triangle list
      */
-    public static TriangleList boxToTriangles(AxisAlignedBB box)
+    public static ITriangleList boxToTriangles(AxisAlignedBB box)
     {
         return boxToTriangles(box, null);
     }

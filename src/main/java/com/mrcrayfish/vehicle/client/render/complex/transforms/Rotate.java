@@ -6,10 +6,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.render.complex.value.Dynamic;
 import com.mrcrayfish.vehicle.client.render.complex.value.IValue;
 import com.mrcrayfish.vehicle.client.render.complex.value.Static;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
+import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 
 import java.lang.reflect.Type;
@@ -34,6 +36,12 @@ public class Rotate implements Transform
         stack.mulPose(Vector3f.XP.rotationDegrees((float) this.x.getValue(entity, partialTicks)));
         stack.mulPose(Vector3f.YP.rotationDegrees((float) this.y.getValue(entity, partialTicks)));
         stack.mulPose(Vector3f.ZP.rotationDegrees((float) this.z.getValue(entity, partialTicks)));
+    }
+
+    @Override
+    public MatrixTransform create(VehicleEntity entity, float partialTicks)
+    {
+        return MatrixTransform.rotate(new Quaternion((float) this.x.getValue(entity, partialTicks), (float) this.y.getValue(entity, partialTicks), (float) this.z.getValue(entity, partialTicks), true));
     }
 
     public static class Deserializer implements JsonDeserializer<Rotate>

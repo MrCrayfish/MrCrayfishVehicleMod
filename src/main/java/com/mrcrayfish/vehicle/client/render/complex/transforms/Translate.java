@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mrcrayfish.vehicle.client.raytrace.MatrixTransform;
 import com.mrcrayfish.vehicle.client.render.complex.value.Dynamic;
 import com.mrcrayfish.vehicle.client.render.complex.value.IValue;
 import com.mrcrayfish.vehicle.client.render.complex.value.Static;
@@ -31,6 +32,12 @@ public class Translate implements Transform
     public void apply(VehicleEntity entity, MatrixStack stack, float partialTicks)
     {
         stack.translate(this.x.getValue(entity, partialTicks) * 0.0625, this.y.getValue(entity, partialTicks) * 0.0625, this.z.getValue(entity, partialTicks) * 0.0625);
+    }
+
+    @Override
+    public MatrixTransform create(VehicleEntity entity, float partialTicks)
+    {
+        return MatrixTransform.translate((float) this.x.getValue(entity, partialTicks) * 0.0625F, (float) this.y.getValue(entity, partialTicks) * 0.0625F, (float) this.z.getValue(entity, partialTicks) * 0.0625F);
     }
 
     public static class Deserializer implements JsonDeserializer<Translate>

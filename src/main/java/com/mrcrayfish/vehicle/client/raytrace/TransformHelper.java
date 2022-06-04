@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.raytrace;
 
 import com.google.common.collect.Lists;
+import com.mrcrayfish.vehicle.client.model.ComponentModel;
 import com.mrcrayfish.vehicle.client.model.IComplexModel;
 import com.mrcrayfish.vehicle.client.model.VehicleModels;
 import com.mrcrayfish.vehicle.client.raytrace.data.ItemStackRayTraceData;
@@ -48,6 +49,7 @@ public class TransformHelper
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees((float) bodyPosition.getRotX())));
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees((float) bodyPosition.getRotY())));
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) bodyPosition.getRotZ())));
+        transforms.add(MatrixTransform.translate(0.5F, 0.5F, 0.5F));
     }
 
     public static void createSimpleTransforms(List<MatrixTransform> transforms, Transform transform)
@@ -59,7 +61,7 @@ public class TransformHelper
         transforms.add(MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees((float) transform.getRotZ())));
     }
 
-    public static void createPartTransforms(IComplexModel model, Transform transform, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
+    public static void createPartTransforms(ComponentModel model, Transform transform, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function)
     {
         createPartTransforms(new ComponentModelRayTraceData(model, function), transform.getTranslate(), transform.getRotation(), (float) transform.getScale(), parts, globalTransforms);
     }
@@ -82,12 +84,12 @@ public class TransformHelper
         createTransformListForPart(data, parts, transforms);
     }
 
-    public static void createTransformListForPart(IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, MatrixTransform... transforms)
+    public static void createTransformListForPart(ComponentModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, MatrixTransform... transforms)
     {
         createTransformListForPart(new ComponentModelRayTraceData(model), parts, globalTransforms, transforms);
     }
 
-    public static void createTransformListForPart(IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function, MatrixTransform... transforms)
+    public static void createTransformListForPart(ComponentModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> globalTransforms, @Nullable RayTraceFunction function, MatrixTransform... transforms)
     {
         createTransformListForPart(new ComponentModelRayTraceData(model, function), parts, globalTransforms, transforms);
     }
@@ -127,7 +129,7 @@ public class TransformHelper
      * @param entityType the vehicle entity type
      * @param parts map of all parts to their transforms
      */
-    public static void createTowBarTransforms(EntityType<? extends VehicleEntity> entityType, IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts)
+    public static void createTowBarTransforms(EntityType<? extends VehicleEntity> entityType, ComponentModel model, HashMap<RayTraceData, List<MatrixTransform>> parts)
     {
         VehicleProperties properties = VehicleProperties.get(entityType);
         double bodyScale = properties.getBodyTransform().getScale();
@@ -147,7 +149,7 @@ public class TransformHelper
      * @param parts map of all parts to their transforms
      * @param transformsGlobal transforms that construct to all parts for this entity
      */
-    public static void createFuelFillerTransforms(EntityType<? extends VehicleEntity> entityType, IComplexModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> transformsGlobal)
+    public static void createFuelFillerTransforms(EntityType<? extends VehicleEntity> entityType, ComponentModel model, HashMap<RayTraceData, List<MatrixTransform>> parts, List<MatrixTransform> transformsGlobal)
     {
         Transform fuelPortPosition = VehicleProperties.get(entityType).getExtended(PoweredProperties.class).getFuelFillerTransform();
         createPartTransforms(model, fuelPortPosition, parts, transformsGlobal, RayTraceFunction.FUNCTION_FUELING);

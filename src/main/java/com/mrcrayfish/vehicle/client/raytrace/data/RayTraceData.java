@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.raytrace.data;
 
+import com.mrcrayfish.vehicle.client.raytrace.ITriangleList;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -14,7 +15,7 @@ public abstract class RayTraceData
     @Nullable
     private final RayTraceFunction function;
     @Nullable
-    private TriangleList triangles = null;
+    private ITriangleList triangles = null;
     protected Matrix4f matrix;
 
     public RayTraceData(@Nullable RayTraceFunction function)
@@ -37,7 +38,7 @@ public abstract class RayTraceData
     }
 
     @Nullable
-    public final TriangleList getTriangleList()
+    public final ITriangleList getTriangleList()
     {
         if(this.triangles == null)
         {
@@ -46,7 +47,7 @@ public abstract class RayTraceData
         return this.triangles;
     }
 
-    protected abstract TriangleList createTriangleList();
+    protected abstract ITriangleList createTriangleList();
 
     public final void clearTriangles()
     {

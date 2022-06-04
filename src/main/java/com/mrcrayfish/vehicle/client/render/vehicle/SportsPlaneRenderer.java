@@ -48,33 +48,7 @@ public class SportsPlaneRenderer extends AbstractPlaneRenderer<SportsPlaneEntity
     {
         return (tracer, transforms, parts) ->
         {
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE, parts, transforms);
-            TransformHelper.createFuelFillerTransforms(ModEntities.SPORTS_PLANE.get(), VehicleModels.FUEL_DOOR_CLOSED, parts, transforms);
-            TransformHelper.createIgnitionTransforms(ModEntities.SPORTS_PLANE.get(), parts, transforms);
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WING, parts, transforms,
-                    MatrixTransform.translate(0, -0.1875F, 0.5F),
-                    MatrixTransform.rotate(Axis.POSITIVE_Z.rotationDegrees(180F)),
-                    MatrixTransform.translate(0.875F, 0.0625F, 0.0F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(5F)));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WING, parts, transforms,
-                    MatrixTransform.translate(0.875F, -0.1875F, 0.5F),
-                    MatrixTransform.rotate(Axis.POSITIVE_X.rotationDegrees(-5F)));
-            transforms.add(MatrixTransform.translate(0.0F, -0.5F, 0.0F));
-            transforms.add(MatrixTransform.scale(0.85F));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
-                    MatrixTransform.translate(0.0F, -0.1875F, 1.5F));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_LEG, parts, transforms,
-                    MatrixTransform.translate(0.0F, -0.1875F, 1.5F));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
-                    MatrixTransform.translate(-0.46875F, -0.1875F, 0.125F));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_LEG, parts, transforms,
-                    MatrixTransform.translate(-0.46875F, -0.1875F, 0.125F),
-                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees(-100F)));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_WHEEL_COVER, parts, transforms,
-                    MatrixTransform.translate(0.46875F, -0.1875F, 0.125F));
-            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_LEG, parts, transforms,
-                    MatrixTransform.translate(0.46875F, -0.1875F, 0.125F),
-                    MatrixTransform.rotate(Axis.POSITIVE_Y.rotationDegrees(100F)));
+            TransformHelper.createTransformListForPart(VehicleModels.SPORTS_PLANE_BODY, parts, transforms);
         };
     }
 }

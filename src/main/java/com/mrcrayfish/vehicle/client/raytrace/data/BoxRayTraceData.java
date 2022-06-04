@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client.raytrace.data;
 
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
+import com.mrcrayfish.vehicle.client.raytrace.ITriangleList;
 import com.mrcrayfish.vehicle.client.raytrace.RayTraceFunction;
 import com.mrcrayfish.vehicle.client.raytrace.Triangle;
 import com.mrcrayfish.vehicle.client.raytrace.TriangleList;
@@ -35,9 +36,9 @@ public class BoxRayTraceData extends RayTraceData
     }
 
     @Override
-    public TriangleList createTriangleList()
+    public ITriangleList createTriangleList()
     {
-        TriangleList triangleList = EntityRayTracer.boxToTriangles(this.getBox());
+        ITriangleList triangleList = EntityRayTracer.boxToTriangles(this.getBox());
         List<Triangle> transformedTriangles = new ArrayList<>();
         for(Triangle triangle : triangleList.getTriangles())
         {

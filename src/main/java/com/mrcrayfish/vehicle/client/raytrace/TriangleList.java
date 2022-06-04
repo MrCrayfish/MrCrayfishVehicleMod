@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
 
-public class TriangleList
+public class TriangleList implements ITriangleList
 {
     private final List<Triangle> triangles;
     private final BiFunction<RayTraceData, Entity, Matrix4f> dynamicMatrix;
@@ -38,6 +38,7 @@ public class TriangleList
      *
      * @param entity raytraced entity
      */
+    @Override
     public List<Triangle> getTriangles(RayTraceData data, Entity entity)
     {
         if(this.dynamicMatrix != null)
@@ -53,6 +54,7 @@ public class TriangleList
         return this.triangles;
     }
 
+    @Override
     public List<Triangle> getTriangles()
     {
         return this.triangles;

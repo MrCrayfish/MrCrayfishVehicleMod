@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.render.complex;
 
+import com.google.common.collect.ImmutableList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -62,8 +63,8 @@ public class ComplexModel
     public ComplexModel(ResourceLocation modelLocation, List<Transform> transforms, List<ComplexModel> children)
     {
         this.modelLocation = modelLocation;
-        this.transforms = transforms;
-        this.children = children;
+        this.transforms = ImmutableList.copyOf(transforms);
+        this.children = ImmutableList.copyOf(children);
     }
 
     public void render(VehicleEntity entity, MatrixStack matrixStack, IRenderTypeBuffer renderTypeBuffer, float partialTicks, int color, int light)
@@ -84,6 +85,16 @@ public class ComplexModel
             this.cachedModel = Minecraft.getInstance().getModelManager().getModel(this.modelLocation);
         }
         return this.cachedModel;
+    }
+
+    public List<Transform> getTransforms()
+    {
+        return this.transforms;
+    }
+
+    public List<ComplexModel> getChildren()
+    {
+        return this.children;
     }
 
     public static class Deserializer implements JsonDeserializer<ComplexModel>
