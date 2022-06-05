@@ -1,0 +1,35 @@
+{
+    "model": "vehicle:vehicle/helicopter/base",
+    "children": [{
+        "model": "vehicle:vehicle/helicopter/cosmetics/joystick",
+        "transforms": [{
+            "type": "translate",
+            "x": -7.5,
+            "y": 4.0,
+            "z": 13.5
+        }, {
+            "type": "rotate",
+            "x": {
+                "source": "helicopter_forwards",
+                "scale": 10.0
+            },
+            "z": {
+                "source": "helicopter_sidewards",
+                "inverse": true,
+                "scale": 10.0
+            }
+        }]
+    }, {
+        "model": "vehicle:vehicle/helicopter/cosmetics/blades",
+        "transforms": [{
+            "type": "translate",
+            "y": 37.0,
+            "z": -9.0
+        }, {
+            "type": "rotate",
+            "y": {
+                "source": "helicopter_blades"
+            }
+        }]
+    }]
+}

@@ -20,6 +20,7 @@ import com.mrcrayfish.vehicle.init.ModSounds;
 import com.mrcrayfish.vehicle.util.Axis;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.Mod;
 
 /**
  * Author: MrCrayfish
@@ -81,6 +82,25 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setRenderEngine(true)
                         .setEngineTransform(Transform.create(0.0, 1.0, -1.0, 0.0, 180.0, 0.0, 0.5))
                         .build()));
+
+        this.add(ModEntities.COMPACT_HELICOPTER.get(), VehicleProperties.builder()
+                .addSeat(Seat.of(7.5, 10.0, 3.0, true))
+                .addSeat(Seat.of(-7.5, 10.0, 3.0))
+                .setCanBePainted(true)
+                .setCamera(CameraProperties.builder()
+                        .setStrength(0.25F)
+                        .setPosition(0, 2, 0)
+                        .setDistance(9.0))
+                .addExtended(PoweredProperties.builder()
+                        .setEnginePower(25F)
+                        .setMaxEnginePitch(1.0F)
+                        .setEngineSound(ModSounds.ENTITY_VEHICLE_HELICOPTER_ROTOR.getId())
+                        .build())
+                .addCosmetic(CosmeticProperties.builder(StandardCosmetics.SEAT)
+                        .setOffset(0, 11, 0)
+                        .addModelLocation(VehicleModels.HELICOPTER_SEAT.getModelLocation())
+                        .build())
+        );
 
         this.add(ModEntities.DIRT_BIKE.get(), VehicleProperties.builder()
                 .setDisplayTransform(Transform.create(1.4))

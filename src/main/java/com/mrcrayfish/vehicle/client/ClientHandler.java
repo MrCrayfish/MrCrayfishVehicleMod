@@ -154,6 +154,7 @@ public class ClientHandler
         VehicleUtil.registerVehicleRenderer(ModEntities.TRACTOR.get(), TractorRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.MINI_BUS.get(), MiniBusRenderer::new);
         VehicleUtil.registerVehicleRenderer(ModEntities.DIRT_BIKE.get(), DirtBikeRenderer::new);
+        VehicleUtil.registerVehicleRenderer(ModEntities.COMPACT_HELICOPTER.get(), CompactHelicopterRenderer::new);
 
         /* Register Trailers */
         VehicleUtil.registerVehicleRenderer(ModEntities.VEHICLE_TRAILER.get(), VehicleTrailerRenderer::new);

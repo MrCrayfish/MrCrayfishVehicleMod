@@ -38,6 +38,7 @@ public class ModEntities
     public static final RegistryObject<EntityType<TractorEntity>> TRACTOR = VehicleUtil.createEntityType(REGISTER, "tractor", TractorEntity::new, 1.5F, 1.5F);
     public static final RegistryObject<EntityType<MiniBusEntity>> MINI_BUS = VehicleUtil.createEntityType(REGISTER, "mini_bus", MiniBusEntity::new, 2.0F, 2.0F);
     public static final RegistryObject<EntityType<DirtBikeEntity>> DIRT_BIKE = VehicleUtil.createEntityType(REGISTER, "dirt_bike", DirtBikeEntity::new, 1.0F, 1.5F);
+    public static final RegistryObject<EntityType<CompactHelicopterEntity>> COMPACT_HELICOPTER = VehicleUtil.createEntityType(REGISTER, "compact_helicopter", CompactHelicopterEntity::new, 2.0F, 2.0F);
 
     /* Trailers */
     public static final RegistryObject<EntityType<VehicleTrailerEntity>> VEHICLE_TRAILER = VehicleUtil.createEntityType(REGISTER, "vehicle_trailer", VehicleTrailerEntity::new, 1.5F, 0.75F);

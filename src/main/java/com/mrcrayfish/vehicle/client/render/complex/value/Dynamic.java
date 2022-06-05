@@ -5,6 +5,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mrcrayfish.vehicle.entity.HelicopterEntity;
 import com.mrcrayfish.vehicle.entity.PlaneEntity;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import net.minecraft.util.JSONUtils;
@@ -66,6 +67,15 @@ public class Dynamic implements IValue
         }),
         PLANE_ELEVATOR("plane_elevator", (vehicle, partialTicks) -> {
             return vehicle instanceof PlaneEntity ? (double) ((PlaneEntity) vehicle).getElevatorAngle(partialTicks) : 0.0;
+        }),
+        HELICOPTER_BLADES("helicopter_blades", (vehicle, partialTicks) -> {
+            return vehicle instanceof HelicopterEntity ? (double) ((HelicopterEntity) vehicle).getBladeRotation(partialTicks) : 0.0;
+        }),
+        HELICOPTER_FORWARDS("helicopter_forwards", (vehicle, partialTicks) -> {
+            return vehicle instanceof HelicopterEntity ? (double) ((HelicopterEntity) vehicle).getForwards(partialTicks) : 0.0;
+        }),
+        HELICOPTER_SIDEWARDS("helicopter_sidewards", (vehicle, partialTicks) -> {
+            return vehicle instanceof HelicopterEntity ? (double) ((HelicopterEntity) vehicle).getSidewards(partialTicks) : 0.0;
         });
 
         private final String key;

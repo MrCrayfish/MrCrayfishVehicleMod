@@ -1,0 +1,1 @@
+{"canBePainted":true,"seats":[{"position":[7.5,10.0,3.0],"driver":true},{"position":[-7.5,10.0,3.0]}],"camera":{"position":[0.0,2.0,0.0],"distance":9.0},"extended":{"vehicle:powered":{"enginePower":25.0,"maxEnginePitch":1.0,"engineSound":"vehicle:entity.vehicle.helicopter_rotor"}},"cosmetics":[{"id":"vehicle:seat","offset":[0.0,11.0,0.0]}]}

@@ -41,6 +41,14 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     protected float bladeRotation;
     @OnlyIn(Dist.CLIENT)
     protected float prevBladeRotation;
+    @OnlyIn(Dist.CLIENT)
+    protected float joystickStrafe;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevJoystickStrafe;
+    @OnlyIn(Dist.CLIENT)
+    protected float joystickForward;
+    @OnlyIn(Dist.CLIENT)
+    protected float prevJoystickForward;
 
     protected HelicopterEntity(EntityType<?> entityType, World worldIn)
     {
@@ -196,6 +204,8 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
         super.onClientUpdate();
 
         this.prevBladeRotation = this.bladeRotation;
+        this.prevJoystickStrafe = this.joystickStrafe;
+        this.prevJoystickForward = this.joystickForward;
 
         Entity entity = this.getControllingPassenger();
         if(entity != null && entity.equals(Minecraft.getInstance().player))
@@ -207,6 +217,9 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
             this.setSideInput(player.xxa);
             PacketHandler.getPlayChannel().sendToServer(new MessageHelicopterInput(lift, player.zza, player.xxa));
         }
+
+        this.joystickStrafe = MathHelper.lerp(0.25F, this.joystickStrafe, this.getSideInput());
+        this.joystickForward = MathHelper.lerp(0.25F, this.joystickForward, this.getForwardInput());
     }
 
     @Override
@@ -324,6 +337,18 @@ public abstract class HelicopterEntity extends PoweredVehicleEntity
     public float getBladeRotation(float partialTicks)
     {
         return this.prevBladeRotation + (this.bladeRotation - this.prevBladeRotation) * partialTicks;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getSidewards(float partialTicks)
+    {
+        return this.prevJoystickStrafe + (this.joystickStrafe - this.prevJoystickStrafe) * partialTicks;
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public float getForwards(float partialTicks)
+    {
+        return this.prevJoystickForward + (this.joystickForward - this.prevJoystickForward) * partialTicks;
     }
 
     @Override

@@ -60,6 +60,7 @@ public abstract class AbstractHelicopterRenderer<T extends HelicopterEntity> ext
         this.renderEngine(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderFuelFiller(vehicle, matrixStack, renderTypeBuffer, light);
         this.renderIgnition(vehicle, matrixStack, renderTypeBuffer, light);
+        this.renderCosmetics(vehicle, matrixStack, renderTypeBuffer, partialTicks, light);
 
         matrixStack.popPose();
     }
