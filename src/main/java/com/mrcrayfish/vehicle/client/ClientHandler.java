@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.client.handler.PlayerModelHandler;
 import com.mrcrayfish.vehicle.client.handler.SprayCanHandler;
 import com.mrcrayfish.vehicle.client.model.ComponentLoader;
 import com.mrcrayfish.vehicle.client.model.ComponentManager;
+import com.mrcrayfish.vehicle.client.particle.DustParticle;
 import com.mrcrayfish.vehicle.client.particle.TyreSmokeParticle;
 import com.mrcrayfish.vehicle.client.raytrace.EntityRayTracer;
 import com.mrcrayfish.vehicle.client.render.tileentity.FluidExtractorRenderer;
@@ -229,5 +230,6 @@ public class ClientHandler
     {
         ParticleManager manager = Minecraft.getInstance().particleEngine;
         manager.register(ModParticleTypes.TYRE_SMOKE.get(), TyreSmokeParticle.Factory::new);
+        manager.register(ModParticleTypes.DUST.get(), DustParticle.Factory::new);
     }
 }
