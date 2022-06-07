@@ -1,0 +1,49 @@
+{
+	"credit": "Model by MrCrayfish (https://twitter.com/MrCrayfish) using Blockbench. All Rights Reserved.",
+	"loader": "framework:open_model",
+	"textures": {
+		"tail_rotor": "vehicle:vehicle/helicopter/tail_rotor"
+	},
+	"components": [
+		{
+			"from": [6, 7, 7],
+			"to": [11, 9, 9],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-3, -24.5, 82]},
+			"faces": {
+				"north": {"uv": [7.5, 0, 10, 1], "texture": "#tail_rotor"},
+				"east": {"uv": [8, 4, 9, 5], "texture": "#tail_rotor"},
+				"south": {"uv": [7.5, 1, 10, 2], "texture": "#tail_rotor"},
+				"west": {"uv": [8, 5, 9, 6], "texture": "#tail_rotor"},
+				"up": {"uv": [10, 3, 7.5, 2], "texture": "#tail_rotor"},
+				"down": {"uv": [10, 3, 7.5, 4], "texture": "#tail_rotor"}
+			}
+		},
+		{
+			"from": [10, 6, 8],
+			"to": [10, 10, 23],
+			"rotation": {"angle": 0, "axis": "y", "origin": [-3, -24.5, 82]},
+			"faces": {
+				"east": {"uv": [0, 0, 7.5, 2], "texture": "#tail_rotor"},
+				"west": {"uv": [0, 2, 7.5, 4], "texture": "#tail_rotor"}
+			}
+		},
+		{
+			"from": [10, -7, 6],
+			"to": [10, 8, 10],
+			"rotation": {"angle": 30, "axis": "x", "origin": [10, 8, 8]},
+			"faces": {
+				"east": {"uv": [0, 4, 2, 11.5], "texture": "#tail_rotor"},
+				"west": {"uv": [2, 4, 4, 11.5], "texture": "#tail_rotor"}
+			}
+		},
+		{
+			"from": [10, 8, 6],
+			"to": [10, 23, 10],
+			"rotation": {"angle": -30, "axis": "x", "origin": [10, 8, 8]},
+			"faces": {
+				"east": {"uv": [4, 4, 6, 11.5], "texture": "#tail_rotor"},
+				"west": {"uv": [6, 4, 8, 11.5], "texture": "#tail_rotor"}
+			}
+		}
+	]
+}

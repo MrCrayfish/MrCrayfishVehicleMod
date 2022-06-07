@@ -95,6 +95,8 @@ public class VehiclePropertiesGen extends VehiclePropertiesProvider
                         .setEnginePower(25F)
                         .setMaxEnginePitch(1.0F)
                         .setEngineSound(ModSounds.ENTITY_VEHICLE_HELICOPTER_ROTOR.getId())
+                        .setExhaustFumesPosition(-9.5564, 23.5, -38.1927)
+                        .setFuelFillerTransform(Transform.create(0, 0, 0, 0))
                         .build())
                 .addCosmetic(CosmeticProperties.builder(StandardCosmetics.SEAT)
                         .setOffset(0, 11, 0)

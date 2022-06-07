@@ -21,7 +21,7 @@
 		{
 			"from": [5.5, 16, 8.5],
 			"to": [10.5, 16, 68.5],
-			"rotation": {"angle": 0, "axis": "z", "origin": [8, 16, 14]},
+			"rotation": {"angle": 0, "axis": "y", "origin": [8, 16, 14]},
 			"faces": {
 				"up": {"uv": [1, 12, 0, 0], "texture": "#blades"},
 				"down": {"uv": [2, 0, 1, 12], "texture": "#blades"}

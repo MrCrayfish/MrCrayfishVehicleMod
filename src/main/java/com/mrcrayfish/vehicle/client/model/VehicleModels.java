@@ -86,6 +86,7 @@ public class VehicleModels
     public static final ComponentModel HELICOPTER_BLADES = LOADER.create("vehicle/helicopter/cosmetics/blades");
     public static final ComponentModel HELICOPTER_SEAT = LOADER.create("vehicle/helicopter/cosmetics/seat");
     public static final ComponentModel HELICOPTER_JOYSTICK = LOADER.create("vehicle/helicopter/cosmetics/joystick");
+    public static final ComponentModel HELICOPTER_TAIL_ROTOR = LOADER.create("vehicle/helicopter/cosmetics/tail_rotor");
 
     public static final ComponentModel JET_SKI_BODY = LOADER.create("vehicle/jet_ski_body");
     public static final ComponentModel LAWN_MOWER_BODY = LOADER.create("vehicle/lawn_mower_body");
