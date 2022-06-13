@@ -170,6 +170,11 @@ public class CameraHandler
     @SubscribeEvent
     public void onCameraSetup(EntityViewRenderEvent.CameraSetup event)
     {
+        this.setupVanillaCamera(event.getInfo(), (float) event.getRenderPartialTicks());
+    }
+
+    public void setupVanillaCamera(ActiveRenderInfo info, float partialTicks)
+    {
         if(!Config.CLIENT.immersiveCamera.get())
             return;
 
@@ -182,9 +187,8 @@ public class CameraHandler
             return;
 
         PointOfView pointOfView = minecraft.options.getCameraType();
-        float partialTicks = (float) event.getRenderPartialTicks();
         VehicleEntity vehicle = (VehicleEntity) player.getVehicle();
-        this.cameraHelper.setupVanillaCamera(event.getInfo(), pointOfView, vehicle, player, partialTicks);
+        this.cameraHelper.setupVanillaCamera(info, pointOfView, vehicle, player, partialTicks);
     }
 
     /*
@@ -211,5 +215,13 @@ public class CameraHandler
         quaternion.mul(Vector3f.YP.rotationDegrees(180F));
         quaternion.conj();
         matrixStack.mulPose(quaternion);
+    }
+
+    /*
+     * Called via transformer. Do not delete!
+     */
+    public static void setupShaderCamera(ActiveRenderInfo info, float partialTicks)
+    {
+        CameraHandler.instance().setupVanillaCamera(info, partialTicks);
     }
 }
