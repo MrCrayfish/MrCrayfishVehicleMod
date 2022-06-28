@@ -1,5 +1,6 @@
 package com.mrcrayfish.vehicle.client.handler;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mrcrayfish.vehicle.Config;
 import com.mrcrayfish.vehicle.client.CameraHelper;
@@ -10,6 +11,7 @@ import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.event.EntityViewRenderEvent;
@@ -18,8 +20,12 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * Manages changing the point of view of the camera when mounting and dismount vehicles
@@ -224,4 +230,58 @@ public class CameraHandler
     {
         CameraHandler.instance().setupVanillaCamera(info, partialTicks);
     }
+
+    @SubscribeEvent
+    public void onMouseScroll(InputEvent.MouseScrollEvent event)
+    {
+        if(!Config.CLIENT.debugCamera.get())
+            return;
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.level == null)
+            return;
+        long windowId = Minecraft.getInstance().getWindow().getWindow();
+        for(Map.Entry<Integer, BiConsumer<Float, CameraHelper>> entry : DEBUG_CAMERA_KEY_MAP.entrySet())
+        {
+            if(GLFW.glfwGetKey(windowId, entry.getKey()) == GLFW.GLFW_PRESS)
+            {
+                entry.getValue().accept((float) event.getScrollDelta() * 0.1F, this.cameraHelper);
+                event.setCanceled(true);
+                break;
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onKeyPress(InputEvent.KeyInputEvent event)
+    {
+        if(!Config.CLIENT.debugCamera.get())
+            return;
+        Minecraft minecraft = Minecraft.getInstance();
+        if(minecraft.level == null)
+            return;
+        if(event.getKey() == GLFW.GLFW_KEY_KP_7 && event.getAction() == GLFW.GLFW_PRESS)
+        {
+            this.cameraHelper.enableStrength = !this.cameraHelper.enableStrength;
+        }
+        else if(event.getKey() == GLFW.GLFW_KEY_KP_8 && event.getAction() == GLFW.GLFW_PRESS)
+        {
+            this.cameraHelper.offsetX = 0F;
+            this.cameraHelper.offsetY = 0F;
+            this.cameraHelper.offsetZ = 0F;
+            this.cameraHelper.offsetPitch = 0F;
+            this.cameraHelper.offsetYaw = 0F;
+            this.cameraHelper.offsetRoll = 0F;
+        }
+    }
+
+    private static final Map<Integer, BiConsumer<Float, CameraHelper>> DEBUG_CAMERA_KEY_MAP = Util.make(() -> {
+        Map<Integer, BiConsumer<Float, CameraHelper>> map = new HashMap<>();
+        map.put(GLFW.GLFW_KEY_KP_1, (value, handler) -> handler.offsetX += value);
+        map.put(GLFW.GLFW_KEY_KP_2, (value, handler) -> handler.offsetY += value);
+        map.put(GLFW.GLFW_KEY_KP_3, (value, handler) -> handler.offsetZ += value);
+        map.put(GLFW.GLFW_KEY_KP_4, (value, handler) -> handler.offsetPitch += value * 10F);
+        map.put(GLFW.GLFW_KEY_KP_5, (value, handler) -> handler.offsetYaw += value * 10F);
+        map.put(GLFW.GLFW_KEY_KP_6, (value, handler) -> handler.offsetRoll += value * 10F);
+        return ImmutableMap.copyOf(map);
+    });
 }

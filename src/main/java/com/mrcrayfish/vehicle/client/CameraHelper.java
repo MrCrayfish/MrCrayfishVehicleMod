@@ -27,7 +27,6 @@ import java.lang.reflect.Method;
 @OnlyIn(Dist.CLIENT)
 public class CameraHelper
 {
-    private static final Method SET_ROTATION_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216776_a", float.class, float.class);
     private static final Method SET_POSITION_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216775_b", double.class, double.class, double.class);
     private static final Method MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216782_a", double.class, double.class, double.class);
     private static final Method GET_MAX_MOVE_METHOD = ObfuscationReflectionHelper.findMethod(ActiveRenderInfo.class, "func_216779_a", double.class);
@@ -40,6 +39,15 @@ public class CameraHelper
     private float prevPitch;
     private float prevYaw;
     private float prevRoll;
+
+    // Debug properties
+    public float offsetX;
+    public float offsetY;
+    public float offsetZ;
+    public float offsetPitch;
+    public float offsetYaw;
+    public float offsetRoll;
+    public boolean enableStrength = true;
 
     public void load(VehicleEntity vehicle)
     {
@@ -65,22 +73,22 @@ public class CameraHelper
 
     private float getStrength(PointOfView pov)
     {
-        return pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED ? this.properties.getCamera().getStrength() : 1.0F;
+        return (!Config.CLIENT.debugCamera.get() || this.enableStrength) && pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED ? this.properties.getCamera().getStrength() : 1.0F;
     }
 
     public float getPitch(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevPitch, this.pitch);
+        return MathHelper.rotLerp(partialTicks, this.prevPitch, this.pitch) + (Config.CLIENT.debugCamera.get() ? this.offsetPitch : 0F);
     }
 
     public float getYaw(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevYaw, this.yaw);
+        return MathHelper.rotLerp(partialTicks, this.prevYaw, this.yaw) + (Config.CLIENT.debugCamera.get() ? this.offsetYaw : 0F);
     }
 
     public float getRoll(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevRoll, this.roll);
+        return MathHelper.rotLerp(partialTicks, this.prevRoll, this.roll) + (Config.CLIENT.debugCamera.get() ? this.offsetRoll : 0F);
     }
 
     public void setupVanillaCamera(ActiveRenderInfo info, PointOfView pov, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
@@ -147,6 +155,7 @@ public class CameraHelper
                 quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
                 quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
                 Vector3f rotatedPosition = new Vector3f(position);
+                if(Config.CLIENT.debugCamera.get()) rotatedPosition.add(this.offsetX, this.offsetY, this.offsetZ);
                 rotatedPosition.transform(quaternion);
                 float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedPosition.x());
                 float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedPosition.y());

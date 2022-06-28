@@ -24,6 +24,7 @@ public class Config
         public final ForgeConfigSpec.BooleanValue workstationAnimation;
         public final ForgeConfigSpec.BooleanValue reloadVehiclePropertiesEachTick;
         public final ForgeConfigSpec.BooleanValue forceRenderAllInteractableBoxes;
+        public final ForgeConfigSpec.BooleanValue debugCamera;
         public final ForgeConfigSpec.IntValue hoseSegments;
 
         public final ForgeConfigSpec.BooleanValue immersiveCamera;
@@ -44,6 +45,7 @@ public class Config
                     this.reloadRayTracerEachTick = builder.comment("If true, the raytracer will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.raytracer.continuous_reload").define("reloadRaytracerEachTick", false);
                     this.reloadVehiclePropertiesEachTick = builder.comment("If true, the vehicle properties will be reloaded each tick.").translation(Reference.MOD_ID + ".config.client.debug.properties.continuous_reload").define("reloadVehiclePropertiesEachTick", false);
                     this.forceRenderAllInteractableBoxes = builder.comment("If true, when rendering debug outlines all interactables boxes will be rendered rather than just the active").translation(Reference.MOD_ID + ".config.client.debug.properties.force_render_all_interactable_boxes").define("forceRenderAllInteractableBoxes", false);
+                    this.debugCamera = builder.comment("Enables use of debug camera tools").define("debugCamera", false);
                 }
                 builder.pop();
 
