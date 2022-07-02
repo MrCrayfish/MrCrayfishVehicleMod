@@ -145,8 +145,11 @@ public class CameraHandler
         if(!(event.getEntityBeingMounted() instanceof VehicleEntity))
             return;
 
-        VehicleEntity vehicle = (VehicleEntity) event.getEntityBeingMounted();
-        this.cameraHelper.load(vehicle);
+        Entity entity = event.getEntityMounting();
+        if(!(entity instanceof PlayerEntity) || !((PlayerEntity) entity).isLocalPlayer())
+            return;
+
+        this.cameraHelper.load((VehicleEntity) event.getEntityBeingMounted());
     }
 
     @SubscribeEvent
