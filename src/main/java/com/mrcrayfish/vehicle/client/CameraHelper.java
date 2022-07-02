@@ -1,6 +1,7 @@
 package com.mrcrayfish.vehicle.client;
 
 import com.mrcrayfish.vehicle.Config;
+import com.mrcrayfish.vehicle.client.util.MathUtil;
 import com.mrcrayfish.vehicle.common.Seat;
 import com.mrcrayfish.vehicle.entity.VehicleEntity;
 import com.mrcrayfish.vehicle.entity.properties.VehicleProperties;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.model.TransformationHelper;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import java.lang.reflect.Field;
@@ -33,62 +35,43 @@ public class CameraHelper
     private static final Field LEFT_FIELD = ObfuscationReflectionHelper.findField(ActiveRenderInfo.class, "field_216796_h");
 
     private VehicleProperties properties;
-    private float pitch;
-    private float yaw;
-    private float roll;
-    private float prevPitch;
-    private float prevYaw;
-    private float prevRoll;
+    private Quaternion currentRotation;
+    private Quaternion prevRotation;
+    private float pitchOffset;
+    private float yawOffset;
 
     // Debug properties
-    public float offsetX;
-    public float offsetY;
-    public float offsetZ;
-    public float offsetPitch;
-    public float offsetYaw;
-    public float offsetRoll;
-    public boolean enableStrength = true;
+    public float debugOffsetX;
+    public float debugOffsetY;
+    public float debugOffsetZ;
+    public float debugOffsetPitch;
+    public float debugOffsetYaw;
+    public float debugOffsetRoll;
+    public boolean debugEnableStrength = true;
 
     public void load(VehicleEntity vehicle)
     {
         this.properties = vehicle.getProperties();
-        this.pitch = vehicle.getViewPitch(1F);
-        this.yaw = vehicle.getViewYaw(1F);
-        this.roll = vehicle.getViewRoll(1F);
-        this.prevPitch = this.pitch;
-        this.prevYaw = this.yaw;
-        this.prevRoll = this.roll;
+        this.pitchOffset = 0F;
+        this.yawOffset = 0F;
+        this.currentRotation = new Quaternion(vehicle.getViewPitch(1F), -vehicle.getViewYaw(1F), vehicle.getViewRoll(1F), true);
+        this.prevRotation = new Quaternion(this.currentRotation);
     }
 
     public void tick(VehicleEntity vehicle, PointOfView pov)
     {
         float strength = this.getStrength(pov);
-        this.prevPitch = this.pitch;
-        this.prevYaw = this.yaw;
-        this.prevRoll = this.roll;
-        this.pitch = MathHelper.rotLerp(strength, this.pitch, vehicle.getViewPitch(1F));
-        this.yaw = MathHelper.rotLerp(strength, this.yaw, vehicle.getViewYaw(1F));
-        this.roll = MathHelper.rotLerp(strength, this.roll, vehicle.getViewRoll(1F));
+        this.prevRotation = this.currentRotation;
+        Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
+        quaternion.mul(Vector3f.YP.rotationDegrees(-vehicle.getViewYaw(1F) + (Config.CLIENT.debugCamera.get() ? this.debugOffsetYaw : 0F)));
+        quaternion.mul(Vector3f.XP.rotationDegrees(vehicle.getViewPitch(1F) + (Config.CLIENT.debugCamera.get() ? this.debugOffsetPitch : 0F)));
+        quaternion.mul(Vector3f.ZP.rotationDegrees(vehicle.getViewRoll(1F) + (Config.CLIENT.debugCamera.get() ? this.debugOffsetRoll : 0F)));
+        this.currentRotation = MathUtil.slerp(this.currentRotation, quaternion, strength);
     }
 
     private float getStrength(PointOfView pov)
     {
-        return (!Config.CLIENT.debugCamera.get() || this.enableStrength) && pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED ? this.properties.getCamera().getStrength() : 1.0F;
-    }
-
-    public float getPitch(float partialTicks)
-    {
-        return MathHelper.rotLerp(partialTicks, this.prevPitch, this.pitch) + (Config.CLIENT.debugCamera.get() ? this.offsetPitch : 0F);
-    }
-
-    public float getYaw(float partialTicks)
-    {
-        return MathHelper.rotLerp(partialTicks, this.prevYaw, this.yaw) + (Config.CLIENT.debugCamera.get() ? this.offsetYaw : 0F);
-    }
-
-    public float getRoll(float partialTicks)
-    {
-        return MathHelper.rotLerp(partialTicks, this.prevRoll, this.roll) + (Config.CLIENT.debugCamera.get() ? this.offsetRoll : 0F);
+        return (!Config.CLIENT.debugCamera.get() || this.debugEnableStrength) && pov == PointOfView.THIRD_PERSON_BACK && this.properties.getCamera().getType() != CameraProperties.Type.LOCKED ? this.properties.getCamera().getStrength() : 1.0F;
     }
 
     public void setupVanillaCamera(ActiveRenderInfo info, PointOfView pov, VehicleEntity vehicle, ClientPlayerEntity player, float partialTicks)
@@ -122,11 +105,8 @@ public class CameraHelper
                 Seat seat = this.properties.getSeats().get(index);
                 Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyTransform().getScale()).multiply(-1, 1, 1).add(this.properties.getBodyTransform().getTranslate()).scale(0.0625);
                 eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
-                Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
-                quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
-                quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
                 Vector3f rotatedEyePos = new Vector3f(eyePos);
-                rotatedEyePos.transform(quaternion);
+                rotatedEyePos.transform(MathUtil.slerp(this.prevRotation, this.currentRotation, partialTicks));
                 float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedEyePos.x());
                 float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedEyePos.y());
                 float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + rotatedEyePos.z());
@@ -151,12 +131,9 @@ public class CameraHelper
             if(Config.CLIENT.useVehicleAsFocusPoint.get() && !front)
             {
                 Vector3d position = this.properties.getCamera().getPosition();
-                Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
-                quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
-                quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
                 Vector3f rotatedPosition = new Vector3f(position);
-                if(Config.CLIENT.debugCamera.get()) rotatedPosition.add(this.offsetX, this.offsetY, this.offsetZ);
-                rotatedPosition.transform(quaternion);
+                if(Config.CLIENT.debugCamera.get()) rotatedPosition.add(this.debugOffsetX, this.debugOffsetY, this.debugOffsetZ);
+                rotatedPosition.transform(MathUtil.slerp(this.prevRotation, this.currentRotation, partialTicks));
                 float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedPosition.x());
                 float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedPosition.y());
                 float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + rotatedPosition.z());
@@ -170,11 +147,8 @@ public class CameraHelper
                     Seat seat = this.properties.getSeats().get(index);
                     Vector3d eyePos = seat.getPosition().add(0, this.properties.getAxleOffset() + this.properties.getWheelOffset(), 0).scale(this.properties.getBodyTransform().getScale()).multiply(-1, 1, 1).add(this.properties.getBodyTransform().getTranslate()).scale(0.0625);
                     eyePos = eyePos.add(0, player.getMyRidingOffset() + player.getEyeHeight(), 0);
-                    Quaternion quaternion = new Quaternion(0F, -this.getYaw(partialTicks), 0F, true);
-                    quaternion.mul(Vector3f.XP.rotationDegrees(this.getPitch(partialTicks)));
-                    quaternion.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
                     Vector3f rotatedEyePos = new Vector3f(eyePos);
-                    rotatedEyePos.transform(quaternion);
+                    rotatedEyePos.transform(TransformationHelper.slerp(this.prevRotation, this.currentRotation, partialTicks));
                     float cameraX = (float) (MathHelper.lerp(partialTicks, vehicle.xo, vehicle.getX()) + rotatedEyePos.x());
                     float cameraY = (float) (MathHelper.lerp(partialTicks, vehicle.yo, vehicle.getY()) + rotatedEyePos.y());
                     float cameraZ = (float) (MathHelper.lerp(partialTicks, vehicle.zo, vehicle.getZ()) + rotatedEyePos.z());
@@ -199,7 +173,8 @@ public class CameraHelper
             rotation.set(0.0F, 0.0F, 0.0F, 1.0F);
 
             // Applies the vehicle's body rotations to the camera
-            if(Config.CLIENT.shouldFollowYaw.get())
+            //TODO add this back
+            /*if(Config.CLIENT.shouldFollowYaw.get())
             {
                 rotation.mul(Vector3f.YP.rotationDegrees(-this.getYaw(partialTicks)));
             }
@@ -210,7 +185,9 @@ public class CameraHelper
             if(Config.CLIENT.shouldFollowRoll.get())
             {
                 rotation.mul(Vector3f.ZP.rotationDegrees(this.getRoll(partialTicks)));
-            }
+            }*/
+
+            rotation.mul(MathUtil.slerp(this.prevRotation, this.currentRotation, partialTicks));
 
             // Applies the player's pitch and yaw offset
             Quaternion quaternion = new Quaternion(0.0F, 0.0F, 0.0F, 1.0F);
@@ -222,20 +199,20 @@ public class CameraHelper
 
             if(vehicle.canApplyYawOffset(player) && Config.CLIENT.shouldFollowYaw.get())
             {
-                quaternion.mul(Vector3f.YP.rotationDegrees(vehicle.getPassengerYawOffset()));
+                quaternion.mul(Vector3f.YP.rotationDegrees(-this.yawOffset));
             }
             else
             {
                 quaternion.mul(Vector3f.YP.rotationDegrees(-player.getViewYRot(partialTicks)));
-                if(Config.CLIENT.shouldFollowYaw.get())
+                /*if(Config.CLIENT.shouldFollowYaw.get())
                 {
                     quaternion.mul(Vector3f.YP.rotationDegrees(this.getYaw(partialTicks)));
-                }
+                }*/
             }
 
             if(Config.CLIENT.shouldFollowPitch.get())
             {
-                quaternion.mul(Vector3f.XP.rotationDegrees(VehicleHelper.isThirdPersonFront() ? -vehicle.getPassengerPitchOffset() : vehicle.getPassengerPitchOffset()));
+                quaternion.mul(Vector3f.XP.rotationDegrees(VehicleHelper.isThirdPersonFront() ? -this.pitchOffset : this.pitchOffset));
             }
             else
             {
@@ -271,5 +248,13 @@ public class CameraHelper
         {
             e.printStackTrace();
         }
+    }
+
+    public void turnPlayerView(double x, double y)
+    {
+        this.pitchOffset += y * 0.15F;
+        this.yawOffset += x * 0.15F;
+        this.pitchOffset = MathHelper.clamp(this.pitchOffset, -90F, 90F);
+        this.yawOffset = MathHelper.clamp(this.yawOffset, -135F, 135F);
     }
 }

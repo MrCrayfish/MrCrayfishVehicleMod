@@ -11,6 +11,7 @@ import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
 import com.mrcrayfish.vehicle.util.CommonUtils;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
@@ -182,11 +183,25 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         // Updates the pitch and yaw based on the velocity
         if(this.isFlying())
         {
-            this.xRot = -CommonUtils.pitch(this.velocity);
-            this.xRot = MathHelper.clamp(this.xRot, -89F, 89F);
-            if(this.velocity.multiply(1, 0, 1).length() > 0.001)
+            float pitchDelta = MathHelper.degreesDifference(90F, Math.abs(this.xRotO));
+            float yawDelta = (float) Math.floor(Math.abs(CommonUtils.yaw(this.motion) - this.yRot));
+            boolean flipped = this.motion.multiply(1, 0, 1).length() > 0 && yawDelta > 45F && yawDelta <= 180F;
+            this.xRot = -CommonUtils.pitch(this.motion);
+            this.yRot = this.motion.multiply(1, 0, 1).length() > 0 ? CommonUtils.yaw(this.motion) : this.yRot;
+            if(flipped)
             {
-                this.yRot = CommonUtils.yaw(this.velocity);
+                pitchDelta += MathHelper.degreesDifference(90F, Math.abs(this.xRot));
+                this.xRotO = this.xRot + pitchDelta * -Math.signum(this.xRot);
+                this.yRotO = MathHelper.wrapDegrees(this.yRotO + yawDelta);
+                this.planeRoll.set(this, this.planeRoll.get(this) + 180F);
+                this.getPassengers().forEach(this::updatePassengerPosition);
+                if(this.level.isClientSide())
+                {
+                    this.bodyRotationPitch = this.xRotO;
+                    this.bodyRotationYaw = this.yRotO;
+                    this.bodyRotationRoll += 180F;
+                    this.getPassengers().forEach(this::onPassengerTurned);
+                }
             }
         }
         else

@@ -234,6 +234,14 @@ public class CameraHandler
         CameraHandler.instance().setupVanillaCamera(info, partialTicks);
     }
 
+    /*
+     * Called via transformer. Do not delete!
+     */
+    public static void onPlayerTurn(double x, double y)
+    {
+        CameraHandler.instance().cameraHelper.turnPlayerView(x, y);
+    }
+
     @SubscribeEvent
     public void onMouseScroll(InputEvent.MouseScrollEvent event)
     {
@@ -264,27 +272,27 @@ public class CameraHandler
             return;
         if(event.getKey() == GLFW.GLFW_KEY_KP_7 && event.getAction() == GLFW.GLFW_PRESS)
         {
-            this.cameraHelper.enableStrength = !this.cameraHelper.enableStrength;
+            this.cameraHelper.debugEnableStrength = !this.cameraHelper.debugEnableStrength;
         }
         else if(event.getKey() == GLFW.GLFW_KEY_KP_8 && event.getAction() == GLFW.GLFW_PRESS)
         {
-            this.cameraHelper.offsetX = 0F;
-            this.cameraHelper.offsetY = 0F;
-            this.cameraHelper.offsetZ = 0F;
-            this.cameraHelper.offsetPitch = 0F;
-            this.cameraHelper.offsetYaw = 0F;
-            this.cameraHelper.offsetRoll = 0F;
+            this.cameraHelper.debugOffsetX = 0F;
+            this.cameraHelper.debugOffsetY = 0F;
+            this.cameraHelper.debugOffsetZ = 0F;
+            this.cameraHelper.debugOffsetPitch = 0F;
+            this.cameraHelper.debugOffsetYaw = 0F;
+            this.cameraHelper.debugOffsetRoll = 0F;
         }
     }
 
     private static final Map<Integer, BiConsumer<Float, CameraHelper>> DEBUG_CAMERA_KEY_MAP = Util.make(() -> {
         Map<Integer, BiConsumer<Float, CameraHelper>> map = new HashMap<>();
-        map.put(GLFW.GLFW_KEY_KP_1, (value, handler) -> handler.offsetX += value);
-        map.put(GLFW.GLFW_KEY_KP_2, (value, handler) -> handler.offsetY += value);
-        map.put(GLFW.GLFW_KEY_KP_3, (value, handler) -> handler.offsetZ += value);
-        map.put(GLFW.GLFW_KEY_KP_4, (value, handler) -> handler.offsetPitch += value * 10F);
-        map.put(GLFW.GLFW_KEY_KP_5, (value, handler) -> handler.offsetYaw += value * 10F);
-        map.put(GLFW.GLFW_KEY_KP_6, (value, handler) -> handler.offsetRoll += value * 10F);
+        map.put(GLFW.GLFW_KEY_KP_1, (value, handler) -> handler.debugOffsetX += value);
+        map.put(GLFW.GLFW_KEY_KP_2, (value, handler) -> handler.debugOffsetY += value);
+        map.put(GLFW.GLFW_KEY_KP_3, (value, handler) -> handler.debugOffsetZ += value);
+        map.put(GLFW.GLFW_KEY_KP_4, (value, handler) -> handler.debugOffsetPitch += value * 10F);
+        map.put(GLFW.GLFW_KEY_KP_5, (value, handler) -> handler.debugOffsetYaw += value * 10F);
+        map.put(GLFW.GLFW_KEY_KP_6, (value, handler) -> handler.debugOffsetRoll += value * 10F);
         return ImmutableMap.copyOf(map);
     });
 }

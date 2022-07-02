@@ -386,6 +386,22 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
             this.prevBodyRotationRoll = this.bodyRotationRoll;
             this.updateBodyRotations();
             this.updateWheelRotations();
+            while(this.bodyRotationYaw - this.prevBodyRotationYaw < -180F)
+            {
+                this.prevBodyRotationYaw -= 360F;
+            }
+            while(this.bodyRotationYaw - this.prevBodyRotationYaw >= 180F)
+            {
+                this.prevBodyRotationYaw += 360F;
+            }
+            while(this.bodyRotationRoll - this.prevBodyRotationRoll < -180F)
+            {
+                this.prevBodyRotationRoll -= 360F;
+            }
+            while(this.bodyRotationRoll - this.prevBodyRotationRoll >= 180F)
+            {
+                this.prevBodyRotationRoll += 360F;
+            }
         }
     }
 
@@ -931,7 +947,7 @@ public abstract class VehicleEntity extends Entity implements IEntityAdditionalS
     @OnlyIn(Dist.CLIENT)
     public float getBodyRotationPitch(float partialTicks)
     {
-        return MathHelper.rotLerp(partialTicks, this.prevBodyRotationPitch, this.bodyRotationPitch);
+        return MathHelper.lerp(partialTicks, this.prevBodyRotationPitch, this.bodyRotationPitch);
     }
 
     @OnlyIn(Dist.CLIENT)

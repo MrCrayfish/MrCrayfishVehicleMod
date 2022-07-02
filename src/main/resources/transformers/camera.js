@@ -48,6 +48,21 @@ function initializeCoreMod() {
                 }
                 return method;
             }
+        },
+        'view_offset': {
+            'target': {
+                'type': 'METHOD',
+                'class': 'net.minecraft.entity.Entity',
+                'methodName': 'func_195049_a',
+                'methodDesc': '(DD)V'
+            },
+            'transformer': function(method) {
+                var target = method.instructions.get(0);
+                method.instructions.insert(target, new MethodInsnNode(Opcodes.INVOKESTATIC, "com/mrcrayfish/vehicle/client/handler/CameraHandler", "onPlayerTurn", "(DD)V"));
+                method.instructions.insert(target, new VarInsnNode(Opcodes.DLOAD, 3));
+                method.instructions.insert(target, new VarInsnNode(Opcodes.DLOAD, 1));
+                return method;
+            }
         }
     };
 }
