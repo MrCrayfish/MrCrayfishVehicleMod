@@ -9,8 +9,6 @@ import com.mrcrayfish.vehicle.network.PacketHandler;
 import com.mrcrayfish.vehicle.network.datasync.VehicleDataValue;
 import com.mrcrayfish.vehicle.network.message.MessagePlaneInput;
 import com.mrcrayfish.vehicle.util.CommonUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.nbt.CompoundNBT;
@@ -273,13 +271,12 @@ public abstract class PlaneEntity extends PoweredVehicleEntity
         this.prevElevatorAngle = this.elevatorAngle;
 
         LivingEntity entity = (LivingEntity) this.getControllingPassenger();
-        if(entity != null && entity.equals(Minecraft.getInstance().player))
+        if(entity instanceof PlayerEntity && ((PlayerEntity) entity).isLocalPlayer())
         {
-            ClientPlayerEntity player = (ClientPlayerEntity) entity;
             this.setLift(VehicleHelper.getElevator());
-            this.setForwardInput(player.zza);
-            this.setSideInput(player.xxa);
-            PacketHandler.getPlayChannel().sendToServer(new MessagePlaneInput(this.lift.getLocalValue(), player.zza, player.xxa));
+            this.setForwardInput(entity.zza);
+            this.setSideInput(entity.xxa);
+            PacketHandler.getPlayChannel().sendToServer(new MessagePlaneInput(this.lift.getLocalValue(), entity.zza, entity.xxa));
         }
     }
 
