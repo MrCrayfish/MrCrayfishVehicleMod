@@ -255,6 +255,6 @@ public class CameraHelper
         this.pitchOffset += y * 0.15F;
         this.yawOffset += x * 0.15F;
         this.pitchOffset = MathHelper.clamp(this.pitchOffset, -90F, 90F);
-        this.yawOffset = MathHelper.clamp(this.yawOffset, -135F, 135F);
+        this.yawOffset = MathHelper.clamp(this.yawOffset, -120F, 120F);
     }
 }
