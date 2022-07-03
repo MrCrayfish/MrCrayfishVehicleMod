@@ -79,7 +79,6 @@ public class OpenModel implements IModelGeometry<OpenModel>
         @SubscribeEvent
         public static void onModelRegister(ModelRegistryEvent event)
         {
-            System.out.println("Yo!");
             ModelLoaderRegistry.registerLoader(new ResourceLocation("framework", "open_model"), new Loader());
         }
     }
