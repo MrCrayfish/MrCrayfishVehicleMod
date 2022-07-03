@@ -204,10 +204,10 @@ public class CameraHelper
             else
             {
                 quaternion.mul(Vector3f.YP.rotationDegrees(-player.getViewYRot(partialTicks)));
-                /*if(Config.CLIENT.shouldFollowYaw.get())
+                if(Config.CLIENT.shouldFollowYaw.get())
                 {
-                    quaternion.mul(Vector3f.YP.rotationDegrees(this.getYaw(partialTicks)));
-                }*/
+                    quaternion.mul(Vector3f.YP.rotationDegrees(vehicle.getViewYaw(partialTicks)));
+                }
             }
 
             if(Config.CLIENT.shouldFollowPitch.get())
